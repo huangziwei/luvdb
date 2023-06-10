@@ -1,6 +1,8 @@
 django
 django-admin-csvexport
 django-crispy-forms
+django-markdownx
+django-mathfilters
 crispy-bootstrap5
 black
 isort

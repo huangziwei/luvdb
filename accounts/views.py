@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.crypto import get_random_string
 from django.utils.safestring import mark_safe
 from django.views import View
 from django.views.generic import CreateView, DetailView, UpdateView
@@ -57,10 +56,8 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
             generated_at__gte=start_date
         ).first()
         # Check if the code is used
-        if code_this_month.is_used:
-            context["can_generate_code"] = False
-        else:
-            context["can_generate_code"] = True
+        if code_this_month:
+            context["can_generate_code"] = False if code_this_month.is_used else True
         return context
 
 
