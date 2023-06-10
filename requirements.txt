@@ -1,0 +1,14 @@
+django
+django-admin-csvexport
+django-crispy-forms
+crispy-bootstrap5
+black
+isort
+whitenoise
+environs[django]
+psycopg2-binary
+psycopg[binary]
+gunicorn
+djangorestframework
+Pillow
+unique_names_generator
