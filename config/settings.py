@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     "markdownx",
     "mathfilters",
     # local apps
-    "book",
 ]
 
 MIDDLEWARE = [
