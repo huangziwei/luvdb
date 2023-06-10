@@ -24,14 +24,26 @@
 {% if object == request.user %}
 <!-- Action buttons -->
 <div class="row">
-
   <div class="col-sm-12">
     <a class="btn btn-primary" href="{% url 'accounts:update' %}" role="button">Update Profile</a>
+    {% if can_generate_code %}
+    <form class="d-inline-block" method="post" action="{% url 'accounts:generate_invitation_code' %}">
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit">Invite</button>
+    </form>
+    {% endif %}
     {% comment %} <a class="btn btn-primary" href="{% url 'password_change' %}" role="button">Change Password</a> {% endcomment %}
     <!-- Your Stuff: Custom user template urls -->
+    {% if messages %}
+    <div class="messages" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f0f0f0; margin-top: 1em;">
+        {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="margin: 0;">{{ message|safe }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
   </div>
-
 </div>
+
 <!-- End Action buttons -->
 {% endif %}
 
