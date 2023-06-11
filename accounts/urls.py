@@ -6,6 +6,7 @@ from .views import (
     GenerateInvitationCodeView,
     SignUpView,
     redirect_to_profile,
+    search_view,
 )
 
 app_name = "accounts"
@@ -18,6 +19,7 @@ urlpatterns = [
         GenerateInvitationCodeView.as_view(),
         name="generate_invitation_code",
     ),
+    path("search/", search_view, name="search"),
     path("<str:username>/", view=AccountDetailView.as_view(), name="detail"),
     path("", view=redirect_to_profile, name="profile"),
 ]

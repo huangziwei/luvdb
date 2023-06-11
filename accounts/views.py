@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from django.db.models import Q
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.safestring import mark_safe
@@ -115,3 +116,14 @@ def home(request, *args, **kwargs):
         return redirect("accounts:profile")
     else:
         return login(request, *args, **kwargs)
+
+
+def search_view(request):
+    query = request.GET.get("q")
+    if query:
+        results = User.objects.filter(
+            Q(username__icontains=query) | Q(display_name__icontains=query)
+        )
+    else:
+        results = []
+    return render(request, "accounts/search_results.html", {"results": results})
