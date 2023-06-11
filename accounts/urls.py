@@ -10,6 +10,7 @@ from .views import (
 
 app_name = "accounts"
 urlpatterns = [
+    path("login/", view=redirect_to_profile, name="login"),
     path("signup/", SignUpView.as_view(), name="signup"),
     path("update/", view=AccountUpdateView.as_view(), name="update"),
     path(

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
@@ -108,3 +108,10 @@ class GenerateInvitationCodeView(View):
         messages.success(request, "Every invitation code can only be used once. ")
         messages.success(request, "You can only invite one friend every month. ")
         return redirect("accounts:profile")
+
+
+def home(request, *args, **kwargs):
+    if request.user.is_authenticated:
+        return redirect("accounts:profile")
+    else:
+        return login(request, *args, **kwargs)

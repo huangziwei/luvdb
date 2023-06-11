@@ -10,7 +10,7 @@ from django.utils.crypto import get_random_string
 class InvitationCode(models.Model):
     """Model representing invitation codes."""
 
-    code = models.CharField(max_length=100, unique=True, default=get_random_string(8))
+    code = models.CharField(max_length=100, unique=True, blank=True)
     is_used = models.BooleanField(default=False)
     generated_by = models.ForeignKey(
         "CustomUser",
@@ -19,6 +19,12 @@ class InvitationCode(models.Model):
         null=True,
     )
     generated_at = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            # Generate a new code if one hasn't been assigned yet
+            self.code = get_random_string(8)
+        super().save(*args, **kwargs)
 
 
 class CustomUser(AbstractUser):
