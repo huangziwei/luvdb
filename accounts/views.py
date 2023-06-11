@@ -119,7 +119,7 @@ class GenerateInvitationCodeView(View):
 
 def home(request, *args, **kwargs):
     if request.user.is_authenticated:
-        return redirect("accounts:profile")
+        return redirect("activity_feed:activity_feed")
     else:
         return login(request, *args, **kwargs)
 

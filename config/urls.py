@@ -23,5 +23,6 @@ urlpatterns = [
     path("", include("django.contrib.auth.urls")),
     path("", include("accounts.urls")),
     path("", include("write.urls")),
+    path("feed/", include("activity_feed.urls")),
     path("", view=home, name="home"),
 ]

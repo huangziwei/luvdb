@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
+from activity_feed.models import Activity
+
 from .forms import PostForm, SayForm
 from .models import Post, Say
 

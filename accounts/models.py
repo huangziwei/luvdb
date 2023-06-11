@@ -3,8 +3,12 @@ import string
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+
+from activity_feed.models import Activity, Follow
 
 
 class InvitationCode(models.Model):
@@ -42,3 +46,11 @@ class CustomUser(AbstractUser):
     )
     display_name = models.CharField(max_length=100, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
+
+
+@receiver(post_save, sender=Follow)
+def create_follow_activity(sender, instance, created, **kwargs):
+    if created:
+        Activity.objects.create(
+            user=instance.follower, activity_type="follow", content_object=instance
+        )

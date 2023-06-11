@@ -9,12 +9,13 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ("contenttypes", "0002_remove_content_type_name"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="Say",
+            name="Follow",
             fields=[
                 (
                     "id",
@@ -25,19 +26,28 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("content", models.TextField()),
                 ("timestamp", models.DateTimeField(auto_now_add=True)),
                 (
-                    "author",
+                    "followed",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
+                        related_name="followers",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "follower",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="following",
+                        related_query_name="following",
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name="Post",
+            name="Activity",
             fields=[
                 (
                     "id",
@@ -48,11 +58,21 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("title", models.CharField(blank=True, max_length=200, null=True)),
-                ("content", models.TextField()),
-                ("timestamp", models.DateTimeField(auto_now_add=True)),
                 (
-                    "author",
+                    "activity_type",
+                    models.CharField(default="default_value", max_length=100),
+                ),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                ("object_id", models.PositiveIntegerField()),
+                (
+                    "content_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="contenttypes.contenttype",
+                    ),
+                ),
+                (
+                    "user",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         to=settings.AUTH_USER_MODEL,

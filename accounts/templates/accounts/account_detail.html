@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ object.username }}{% endblock %}
+{% block title %}{% if object.display_name %}{{ object.display_name }} {% else %} {{ object.username }} {% endif %}
+{% endblock %}
+
 
 {% block content %}
 <div class="container">
@@ -11,30 +13,34 @@
       <div class="d-flex justify-content-between align-items-center">
         <h2>Says</h2>
         <div>
-          <a class="btn btn-secondary btn-sm" href="{% url 'write:say_list' object.username %}">See All</a>
+          <a class="btn btn-secondary btn-sm" href="{% url 'write:say_list' object.username %}">All</a>
           {% if object == request.user %}
-          <a class="btn btn-primary btn-sm" href="{% url 'write:say_create' %}">Add New</a>
+          <a class="btn btn-primary btn-sm" href="{% url 'write:say_create' %}">New</a>
           {% endif %}
         </div>
       </div>
       {% for say in says|slice:":3" %}
         <div>
-            <p>{{ say.content }} <a href="{% url 'write:say_detail' say.id %}">{{ say.timestamp |date:"Y.m.d H:i" }}</a></p>
+            <a href="{% url 'write:say_detail' say.id %}">{{ say.timestamp |date:"Y.m.d H:i" }}</a>:
+            <div style="background-color:#f9f9f9; padding: 0.5em">
+              {{ say.content }}
+            </div>
         </div>
+        <br/>
       {% endfor %}
-    
+      <br/>
       <div class="d-flex justify-content-between align-items-center">
         <h2>Posts</h2>
         <div>
-          <a class="btn btn-secondary btn-sm" href="{% url 'write:post_list' object.username %}">See All</a>
+          <a class="btn btn-secondary btn-sm" href="{% url 'write:post_list' object.username %}">All</a>
           {% if object == request.user %}
-          <a class="btn btn-primary btn-sm" href="{% url 'write:post_create' %}">Add New</a>
+          <a class="btn btn-primary btn-sm" href="{% url 'write:post_create' %}">New</a>
           {% endif %}
         </div>
       </div>
       {% for post in posts|slice:":3" %}
         <div>
-            <h3><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></h3>
+            <h4><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></h4>
             <p>{{ post.timestamp|date:"Y.m.d H:i" }}</p>
         </div>
       {% endfor %}
@@ -43,6 +49,7 @@
 
     <!-- Right column -->
     <div class="col-sm-4">
+
       <div style="background-color:#fff6ed; padding: 0.5em">
         {% if object.display_name %}
           <h2 style=''>{{ object.display_name }}</h2>
@@ -56,23 +63,44 @@
         {% if object == request.user %}
         <!-- Action buttons -->
         <a class="btn btn-primary btn-sm" href="{% url 'accounts:update' %}" role="button">Update Profile</a>
-        {% if can_generate_code %}
-        <form class="d-inline-block" method="post" action="{% url 'accounts:generate_invitation_code' %}">
-            {% csrf_token %}
-            <button class="btn btn-primary btn-sm" type="submit">Invite</button>
-        </form>
-        {% endif %}
+          {% if can_generate_code %}
+          <form class="d-inline-block" method="post" action="{% url 'accounts:generate_invitation_code' %}">
+              {% csrf_token %}
+              <button class="btn btn-primary btn-sm" type="submit">Invite</button>
+          </form>
+          {% endif %}
         {% comment %} <a class="btn btn-primary btn-sm" href="{% url 'password_change' %}" role="button">Change Password</a> {% endcomment %}
         <!-- Your Stuff: Custom user template urls -->
-        {% if messages %}
-        <div class="messages" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f0f0f0; margin-top: 1em;">
-            {% for message in messages %}
-                <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="margin: 0;">{{ message|safe }}</p>
-            {% endfor %}
-        </div>
+          {% if messages %}
+          <div class="messages" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f0f0f0; margin-top: 1em;">
+              {% for message in messages %}
+                  <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="margin: 0;">{{ message|safe }}</p>
+              {% endfor %}
+          </div>
+          {% endif %}
+
         {% endif %}
-        <!-- End Action buttons -->
+
+        {% if object != request.user %}
+            {% if object in request.user.following.all %}
+                <form method="POST" action="{% url 'activity_feed:unfollow' object.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-primary btn-sm" type="submit">Unfollow</button>
+                </form>
+            {% else %}
+                <form method="POST" action="{% url 'activity_feed:follow' object.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-primary btn-sm" type="submit">Follow</button>
+                </form>
+            {% endif %}
         {% endif %}
+      
+      </div>
+
+      <div> <!--following-->
+      </div>
+
+      <div> <!--followers-->
       </div>
     </div>
   </div>

@@ -20,6 +20,6 @@ urlpatterns = [
         name="generate_invitation_code",
     ),
     path("search/", search_view, name="search"),
-    path("<str:username>/", view=AccountDetailView.as_view(), name="detail"),
+    path("people/<str:username>/", view=AccountDetailView.as_view(), name="detail"),
     path("", view=redirect_to_profile, name="profile"),
 ]
