@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "markdownx",
     "mathfilters",
     # local apps
-    # "whispers",
+    "write",
 ]
 
 MIDDLEWARE = [

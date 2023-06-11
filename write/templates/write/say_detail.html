@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Say{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Say</h1>
+  <p>{{ object.content }}</p>
+  <p>{{ object.timestamp|date:"Y.m.d H:i" }}</p>
+</div>
+{% endblock content %}

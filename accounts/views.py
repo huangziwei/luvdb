@@ -61,6 +61,12 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
             context["can_generate_code"] = False
         else:
             context["can_generate_code"] = True
+
+        user_posts = self.object.post_set.all().order_by("-timestamp")
+        user_says = self.object.say_set.all().order_by("-timestamp")
+        context["says"] = user_says
+        context["posts"] = user_posts.filter(title__isnull=False)
+
         return context
 
 

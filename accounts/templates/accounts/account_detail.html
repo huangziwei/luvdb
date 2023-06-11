@@ -5,48 +5,76 @@
 
 {% block content %}
 <div class="container">
-
   <div class="row">
-    <div class="col-sm-12">
+    <!-- Left column -->
+    <div class="col-sm-8">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Says</h2>
+        <div>
+          <a class="btn btn-secondary btn-sm" href="{% url 'write:say_list' object.username %}">See All</a>
+          {% if object == request.user %}
+          <a class="btn btn-primary btn-sm" href="{% url 'write:say_create' %}">Add New</a>
+          {% endif %}
+        </div>
+      </div>
+      {% for say in says|slice:":3" %}
+        <div>
+            <p>{{ say.content }} <a href="{% url 'write:say_detail' say.id %}">{{ say.timestamp |date:"Y.m.d H:i" }}</a></p>
+        </div>
+      {% endfor %}
+    
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Posts</h2>
+        <div>
+          <a class="btn btn-secondary btn-sm" href="{% url 'write:post_list' object.username %}">See All</a>
+          {% if object == request.user %}
+          <a class="btn btn-primary btn-sm" href="{% url 'write:post_create' %}">Add New</a>
+          {% endif %}
+        </div>
+      </div>
+      {% for post in posts|slice:":3" %}
+        <div>
+            <h3><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></h3>
+            <p>{{ post.timestamp|date:"Y.m.d H:i" }}</p>
+        </div>
+      {% endfor %}
+    </div>
+    
 
-      {% if object.display_name %}
-        <h2>{{ object.display_name }}</h2>
-      {% endif %}
-      <p>@{{ object.username }}</p>
+    <!-- Right column -->
+    <div class="col-sm-4">
+      <div style="background-color:#fff6ed; padding: 0.5em">
+        {% if object.display_name %}
+          <h2 style=''>{{ object.display_name }}</h2>
+        {% endif %}
+        <p>@{{ object.username }}</p>
 
-      {% if object.bio %}
-      <p>{{ object.bio }}</p>
-      {% endif %}
-      
+        {% if object.bio %}
+        <p>{{ object.bio }}</p>
+        {% endif %}
+        
+        {% if object == request.user %}
+        <!-- Action buttons -->
+        <a class="btn btn-primary btn-sm" href="{% url 'accounts:update' %}" role="button">Update Profile</a>
+        {% if can_generate_code %}
+        <form class="d-inline-block" method="post" action="{% url 'accounts:generate_invitation_code' %}">
+            {% csrf_token %}
+            <button class="btn btn-primary btn-sm" type="submit">Invite</button>
+        </form>
+        {% endif %}
+        {% comment %} <a class="btn btn-primary btn-sm" href="{% url 'password_change' %}" role="button">Change Password</a> {% endcomment %}
+        <!-- Your Stuff: Custom user template urls -->
+        {% if messages %}
+        <div class="messages" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f0f0f0; margin-top: 1em;">
+            {% for message in messages %}
+                <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="margin: 0;">{{ message|safe }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <!-- End Action buttons -->
+        {% endif %}
+      </div>
     </div>
   </div>
-
-{% if object == request.user %}
-<!-- Action buttons -->
-<div class="row">
-  <div class="col-sm-12">
-    <a class="btn btn-primary" href="{% url 'accounts:update' %}" role="button">Update Profile</a>
-    {% if can_generate_code %}
-    <form class="d-inline-block" method="post" action="{% url 'accounts:generate_invitation_code' %}">
-        {% csrf_token %}
-        <button class="btn btn-primary" type="submit">Invite</button>
-    </form>
-    {% endif %}
-    {% comment %} <a class="btn btn-primary" href="{% url 'password_change' %}" role="button">Change Password</a> {% endcomment %}
-    <!-- Your Stuff: Custom user template urls -->
-    {% if messages %}
-    <div class="messages" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f0f0f0; margin-top: 1em;">
-        {% for message in messages %}
-            <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="margin: 0;">{{ message|safe }}</p>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-  </div>
-</div>
-
-<!-- End Action buttons -->
-{% endif %}
-
 </div>
 {% endblock content %}

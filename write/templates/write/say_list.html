@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Says{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Says</h1>
+  {% for say in say_list %}
+    <div>
+      <p>{{ say.content }}</p>
+      <p><a href="{% url 'write:say_detail' say.id %}">{{ say.timestamp|date:"Y.m.d H:i" }}</a></p>
+      <br />
+    </div>
+  {% endfor %}
+</div>
+{% endblock content %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Posts{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Posts</h1>
+  {% for post in post_list %}
+    <div>
+      <h3><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></h3>
+      <p>{{ post.timestamp|date:"Y.m.d H:i" }}</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock content %}
