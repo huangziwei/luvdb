@@ -56,8 +56,10 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
             generated_at__gte=start_date
         ).first()
         # Check if the code is used
-        if code_this_month:
-            context["can_generate_code"] = False if code_this_month.is_used else True
+        if code_this_month and code_this_month.is_used:
+            context["can_generate_code"] = False
+        else:
+            context["can_generate_code"] = True
         return context
 
 
