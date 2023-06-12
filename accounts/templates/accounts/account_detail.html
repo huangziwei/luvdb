@@ -98,12 +98,25 @@
     
       
       </div>
-
+      <br/>
       <div> <!--following-->
+          <h5>Following</h5>
+          {% for follow in object.following.all %}
+              <p><a href="{% url 'accounts:detail' username=follow.followed.username %}">{{ follow.followed.username }}</a></p>
+          {% empty %}
+              <p>This user is not following anyone.</p>
+          {% endfor %}
       </div>
-
+      
       <div> <!--followers-->
+          <h5>Followers</h5>
+          {% for follow in object.followers.all %}
+              <p><a href="{% url 'accounts:detail' username=follow.follower.username %}">{{ follow.follower.username }}</a></p>
+          {% empty %}
+              <p>This user has no followers.</p>
+          {% endfor %}
       </div>
+    
     </div>
   </div>
 </div>

@@ -2,6 +2,7 @@ import random
 import string
 
 from django.contrib.auth.models import AbstractUser
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -46,6 +47,26 @@ class CustomUser(AbstractUser):
     )
     display_name = models.CharField(max_length=100, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        # Check if the user has used an invitation code and hasn't been assigned an inviter yet
+        if self.code_used:
+            # Save the user instance before creating the Follow and Activity instances
+            super().save(*args, **kwargs)
+
+            # Create a Follow instance
+            follow = Follow.objects.create(follower=self, followed=self.invited_by)
+
+            # Create an Activity instance
+            content_type = ContentType.objects.get_for_model(Follow)
+            Activity.objects.create(
+                user=self,
+                activity_type="follow",
+                content_type=content_type,
+                object_id=follow.id,
+            )
+        else:
+            super().save(*args, **kwargs)
 
 
 @receiver(post_save, sender=Follow)
