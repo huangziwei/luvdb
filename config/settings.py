@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     # third-party apps
     "crispy_forms",
     "crispy_bootstrap5",
-    "markdownx",
+    "markdownify",
     "mathfilters",
     # local apps
     "activity_feed",
@@ -147,3 +147,30 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 LOGIN_REDIRECT_URL = "activity_feed:activity_feed"
 LOGOUT_REDIRECT_URL = "login"
+
+# Markdownify settings
+MARKDOWNIFY = {
+    "default": {
+        "WHITELIST_TAGS": [
+            "a",
+            "abbr",
+            "acronym",
+            "b",
+            "blockquote",
+            "em",
+            "i",
+            "li",
+            "ol",
+            "p",
+            "strong",
+            "ul",
+            "h2",
+            "img",
+        ],
+        "WHITELIST_ATTRS": [
+            "href",
+            "src",
+            "alt",
+        ],
+    }
+}

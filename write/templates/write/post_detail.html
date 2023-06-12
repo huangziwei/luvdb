@@ -1,11 +1,13 @@
 {% extends "base.html" %}
+{% load markdownify %}
+
 {% block title %}Post Detail{% endblock %}
 
 {% block content %}
 <div class="container">
   <h1>{{ object.title }}</h1>
   
-  <p>{{ object.content }}</p>
+  <p>{{ object.content|markdownify }}</p>
   <p>{{ object.timestamp|date:"Y.m.d H:i" }} {% if object.author == request.user %} | <a href="{% url "write:post_update" object.pk %}">Edit</a>{% endif %}</p>
 </div>
 {% endblock content %}

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load url_filters %}
+{% load markdownify %}
 {% block title %}Pin{% endblock %}
 
 {% block content %}
@@ -7,7 +8,7 @@
   <h1>Pin</h1>
   <h3><a href="{{ object.url }}">{{ object.title }}</a></h3>
   <p>({{ object.url|root_url }})</p>
-  <p>{{ object.content }}</p>
+  <p>{{ object.content|markdownify }}</p>
   <p>{{ object.timestamp|date:"Y.m.d H:i" }} {% if object.author == request.user %} | <a href="{% url "write:pin_update" object.pk %}">Edit</a>{% endif %}</p>
 </div>
 {% endblock content %}

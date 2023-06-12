@@ -1,7 +1,7 @@
 django
 django-admin-csvexport
 django-crispy-forms
-django-markdownx
+django-markdownify
 django-mathfilters
 crispy-bootstrap5
 black
