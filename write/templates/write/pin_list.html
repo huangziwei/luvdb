@@ -7,7 +7,7 @@
   {% for pin in pin_list %}
     <div>
       <p><a href="{{ pin.url }}">{{ pin.title }}</a></p>
-      <p><a href="{% url 'write:pin_detail' say.id %}">{{ pin.timestamp|date:"Y.m.d H:i" }}</a></p>
+      <p><a href="{% url 'write:pin_detail' pin.id %}">{{ pin.timestamp|date:"Y.m.d H:i" }}</a></p>
       <br />
     </div>
   {% endfor %}

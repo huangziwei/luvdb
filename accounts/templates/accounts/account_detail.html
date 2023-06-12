@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load account_tags %}
+{% load url_filters %}
 
 {% block title %}{{ object.display_name|default:object.username }}{% endblock %}
 
@@ -46,7 +47,7 @@
         <div>
             <a href="{% url 'write:pin_detail' pin.id %}">{{ pin.timestamp |date:"Y.m.d H:i" }}</a>:
             <div style="background-color:#f9f9f9; padding: 0.5em">
-              <a href="{{pin.url}}">{{ pin.title }}</a> ({{ pin.url }})
+              <a href="{{pin.url}}">{{ pin.title }}</a> ({{ pin.url|root_url }})
             </div>
         </div>
         <br/>

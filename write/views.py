@@ -101,7 +101,7 @@ class PinListView(ListView):
         self.user = get_object_or_404(
             get_user_model(), username=self.kwargs["username"]
         )
-        return Say.objects.filter(author=self.user)
+        return Pin.objects.filter(author=self.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

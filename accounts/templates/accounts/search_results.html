@@ -7,7 +7,7 @@
         <h3>Users</h3>
         {% for user in user_results %}
             <p>
-                <a href="{% url 'accounts:detail' username=user.username %}">{{ user.username }}</a>
+                <a href="{% url 'accounts:detail' username=user.username %}">{{ user.display_name | default:user.username }}</a>
             </p>
         {% empty %}
             <p>No user results found.</p>
@@ -28,6 +28,7 @@
     {% if say_results %}
         <h3>Says</h3>
         {% for say in say_results %}
+            <p>{{ say.author.display_name | default:say.author.username }} said: </p>
             <p>
                 <a href="{% url 'write:say_detail' say.id %}">{{ say.content|truncatechars:50 }}</a>
             </p>
