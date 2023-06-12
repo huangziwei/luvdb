@@ -63,4 +63,6 @@ class CommentForm(forms.ModelForm):
 
 
 class ActivityFeedSayForm(SayForm):
-    content = forms.CharField(widget=forms.Textarea(attrs={"rows": 3}))
+    content = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 3, "placeholder": "What's on your mind?"})
+    )

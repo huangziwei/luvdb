@@ -27,30 +27,30 @@
                     <a href="{% url 'accounts:detail' activity.user.username %}">
                         {{ activity.user.display_name | default:activity.user.username }}
                     </a> said:
-                    <div style="background-color:#f9f9f9; padding: 0.5em">
+                    <div style="background-color:#f9f9f9; padding: 1em 1em 0.25em 1em;">
                         {{ activity.content_object.content | markdownify }}
                     </div>
                     {{ activity.timestamp |date:"Y.m.d H:i" }} <a href="{% url 'write:say_detail' activity.content_object.id %}">Reply</a>
-                
+                    
                 <!--Post-->
                 {% elif activity.activity_type == 'post' %}
                     <a href="{% url 'accounts:detail' activity.user.username %}">
                         {{ activity.user.display_name | default:activity.user.username }}
                     </a> posted:
-                    <div style="background-color:#f9f9f9; padding: 0.5em">
+                    <div style="background-color:#f9f9f9; padding: 1em;">
                         <a href="{% url 'write:post_detail' activity.content_object.id %}">{{activity.content_object.title}}</a>
                     </div>
-                    {{ activity.timestamp |date:"Y.m.d H:i" }} <a href="{% url 'write:post_detail' activity.content_object.id %}">Reply</a>
+                    {{ activity.timestamp |date:"Y.m.d H:i" }} <a href="{% url 'write:say_detail' activity.content_object.id %}">Reply</a>
 
                 <!--Pin-->
                 {% elif activity.activity_type == 'pin' %}
                     <a href="{% url 'accounts:detail' activity.user.username %}">
                         {{ activity.user.display_name | default:activity.user.username }}
                     </a> pinned:
-                    <div style="background-color:#f9f9f9; padding: 0.5em">
+                    <div style="background-color:#f9f9f9; padding: 1em;">
                         <a href="{{ activity.content_object.url }}">{{activity.content_object.title}}</a> ({{activity.content_object.url|root_url}})
                     </div>
-                    {{ activity.timestamp |date:"Y.m.d H:i" }} <a href="{% url 'write:pin_detail' activity.content_object.id %}">Reply</a>
+                    {{ activity.timestamp |date:"Y.m.d H:i" }} <a href="{% url 'write:say_detail' activity.content_object.id %}">Reply</a>
                     
                 <!--Follow-->
                 {% elif activity.activity_type == 'follow' %}

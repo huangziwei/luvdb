@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView
 
@@ -15,6 +17,19 @@ class ActivityFeedView(ListView):
     model = Activity
     template_name = "activity_feed/activity_feed.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["say_form"] = ActivityFeedSayForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = ActivityFeedSayForm(request.POST)
+        if form.is_valid():
+            say = form.save(commit=False)
+            say.author = request.user
+            say.save()
+        return redirect("activity_feed:activity_feed")
+
     def get_queryset(self):
         user = self.request.user
         following_users = user.following.all().values_list("followed", flat=True)
@@ -24,11 +39,6 @@ class ActivityFeedView(ListView):
             .filter(user__in=list(following_users) + [user.id])
             .order_by("-timestamp")
         )
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["say_form"] = ActivityFeedSayForm()
-        return context
 
 
 @login_required

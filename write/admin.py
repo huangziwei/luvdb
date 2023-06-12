@@ -16,7 +16,7 @@ class PinAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("author", "content", "timestamp")
+    list_display = ("author", "content_type", "content", "timestamp")
 
 
 admin.site.register(Comment, CommentAdmin)

@@ -19,7 +19,7 @@
   <button type="submit">Add Comment</button>
 </form>
 <br>
-<h3>Comments</h3>
+<h3>Comments ({{ comments|length }})</h3> 
 {% for comment in comments %}
   <div>
     <span><strong>{{ comment.author.display_name | default:comment.author.username }}</strong> {{comment.timestamp | date:"Y.m.d H:i"}}</span>
