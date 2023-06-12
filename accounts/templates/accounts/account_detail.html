@@ -2,8 +2,7 @@
 {% load static %}
 {% load account_tags %}
 
-{% block title %}{% if object.display_name %}{{ object.display_name }} {% else %} {{ object.username }} {% endif %}
-{% endblock %}
+{% block title %}{{ object.display_name|default:object.username }}{% endblock %}
 
 
 {% block content %}
@@ -11,6 +10,8 @@
   <div class="row">
     <!-- Left column -->
     <div class="col-sm-8">
+
+      <!--Say-->
       <div class="d-flex justify-content-between align-items-center">
         <h2>Says</h2>
         <div>
@@ -30,6 +31,29 @@
         <br/>
       {% endfor %}
       <br/>
+
+      <!--Pins-->
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Pins</h2>
+        <div>
+          <a class="btn btn-secondary btn-sm" href="{% url 'write:pin_list' object.username %}">All</a>
+          {% if object == request.user %}
+          <a class="btn btn-primary btn-sm" href="{% url 'write:pin_create' %}">New</a>
+          {% endif %}
+        </div>
+      </div>
+      {% for pin in pins|slice:":3" %}
+        <div>
+            <a href="{% url 'write:pin_detail' pin.id %}">{{ pin.timestamp |date:"Y.m.d H:i" }}</a>:
+            <div style="background-color:#f9f9f9; padding: 0.5em">
+              <a href="{{pin.url}}">{{ pin.title }}</a> ({{ pin.url }})
+            </div>
+        </div>
+        <br/>
+      {% endfor %}
+      <br/>
+
+      <!--Posts-->
       <div class="d-flex justify-content-between align-items-center">
         <h2>Posts</h2>
         <div>
@@ -102,7 +126,7 @@
       <div> <!--following-->
           <h5>Following</h5>
           {% for follow in object.following.all %}
-              <p><a href="{% url 'accounts:detail' username=follow.followed.username %}">{{ follow.followed.username }}</a></p>
+            <span><a href="{% url 'accounts:detail' username=follow.followed.username %}">{{ follow.followed.display_name|default:follow.followed.username }}</a></span>
           {% empty %}
               <p>This user is not following anyone.</p>
           {% endfor %}
@@ -111,7 +135,7 @@
       <div> <!--followers-->
           <h5>Followers</h5>
           {% for follow in object.followers.all %}
-              <p><a href="{% url 'accounts:detail' username=follow.follower.username %}">{{ follow.follower.username }}</a></p>
+              <span><a href="{% url 'accounts:detail' username=follow.follower.username %}">{{ follow.follower.display_name|default:follow.follower.username }}</a></span>
           {% empty %}
               <p>This user has no followers.</p>
           {% endfor %}

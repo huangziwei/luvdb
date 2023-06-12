@@ -12,6 +12,8 @@ from django.utils.safestring import mark_safe
 from django.views import View
 from django.views.generic import CreateView, DetailView, UpdateView
 
+from write.models import Pin, Post, Say
+
 from .forms import CustomUserCreationForm
 from .models import InvitationCode
 
@@ -63,9 +65,11 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
             context["can_generate_code"] = True
 
         user_posts = self.object.post_set.all().order_by("-timestamp")
+        user_pins = self.object.pin_set.all().order_by("-timestamp")
         user_says = self.object.say_set.all().order_by("-timestamp")
+        context["posts"] = user_posts
+        context["pins"] = user_pins
         context["says"] = user_says
-        context["posts"] = user_posts.filter(title__isnull=False)
 
         return context
 
@@ -127,9 +131,31 @@ def home(request, *args, **kwargs):
 def search_view(request):
     query = request.GET.get("q")
     if query:
-        results = User.objects.filter(
+        user_results = User.objects.filter(
             Q(username__icontains=query) | Q(display_name__icontains=query)
         )
+        post_results = Post.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)
+        )
+        say_results = Say.objects.filter(content__icontains=query)
+        pin_results = Pin.objects.filter(
+            Q(title__icontains=query)
+            | Q(content__icontains=query)
+            | Q(url__icontains=query)
+        )
     else:
-        results = []
-    return render(request, "accounts/search_results.html", {"results": results})
+        user_results = []
+        post_results = []
+        say_results = []
+        pin_results = []
+
+    return render(
+        request,
+        "accounts/search_results.html",
+        {
+            "user_results": user_results,
+            "post_results": post_results,
+            "say_results": say_results,
+            "pin_results": pin_results,
+        },
+    )

@@ -21,7 +21,9 @@ class Post(models.Model):
         super().save(*args, **kwargs)
         if is_new:
             Activity.objects.create(
-                user=self.author, activity_type="post", content_object=self
+                user=self.author,
+                activity_type="post",
+                content_object=self,
             )
 
 
@@ -38,5 +40,28 @@ class Say(models.Model):
         super().save(*args, **kwargs)
         if is_new:
             Activity.objects.create(
-                user=self.author, activity_type="say", content_object=self
+                user=self.author,
+                activity_type="say",
+                content_object=self,
+            )
+
+
+class Pin(models.Model):
+    title = models.TextField()
+    url = models.URLField()
+    content = models.TextField(null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def get_absolute_url(self):
+        return reverse("write:pin_detail", args=[str(self.id)])
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new:
+            Activity.objects.create(
+                user=self.author,
+                activity_type="pin",
+                content_object=self,
             )

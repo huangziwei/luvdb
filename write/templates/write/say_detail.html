@@ -5,6 +5,6 @@
 <div class="container">
   <h1>Say</h1>
   <p>{{ object.content }}</p>
-  <p>{{ object.timestamp|date:"Y.m.d H:i" }}</p>
+  <p>{{ object.timestamp|date:"Y.m.d H:i" }} {% if object.author == request.user %}| <a href="{% url "write:say_update" object.pk %}">Edit</a>{% endif %}</p>
 </div>
 {% endblock content %}

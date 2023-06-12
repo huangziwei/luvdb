@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Pins{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Pins</h1>
+  {% for pin in pin_list %}
+    <div>
+      <p><a href="{{ pin.url }}">{{ pin.title }}</a></p>
+      <p><a href="{% url 'write:pin_detail' say.id %}">{{ pin.timestamp|date:"Y.m.d H:i" }}</a></p>
+      <br />
+    </div>
+  {% endfor %}
+</div>
+{% endblock content %}

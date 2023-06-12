@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Pin{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Pin</h1>
+  <h3><a href="{{ object.url }}">{{ object.title }}</a></h3>
+  <p>({{ object.url }})</p>
+  <p>{{ object.content }}</p>
+  <p>{{ object.timestamp|date:"Y.m.d H:i" }} {% if object.author == request.user %} | <a href="{% url "write:pin_update" object.pk %}">Edit</a>{% endif %}</p>
+</div>
+{% endblock content %}

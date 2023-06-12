@@ -5,44 +5,44 @@
 
 {% for activity in object_list %}
     <div>
+
+        <!--Say-->
         {% if activity.activity_type == 'say' %}
             <a href="{% url 'accounts:detail' activity.user.username %}">
-                {% if activity.user.display_name %}
-                    {{ activity.user.display_name }}
-                {% else %}
-                    {{ activity.user.username }}
-                {% endif %}
+                {{ activity.user.display_name | default:activity.user.username }}
             </a> said:
             <div style="background-color:#f9f9f9; padding: 0.5em">
                 {{ activity.content_object.content }}
             </div>
             <a href="{% url 'write:say_detail' activity.content_object.id %}">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+        
+        <!--Post-->
         {% elif activity.activity_type == 'post' %}
             <a href="{% url 'accounts:detail' activity.user.username %}">
-                {% if activity.user.display_name %}
-                    {{ activity.user.display_name }}
-                {% else %}
-                    {{ activity.user.username }}
-                {% endif %}
+                {{ activity.user.display_name | default:activity.user.username }}
             </a> posted:
             <div style="background-color:#f9f9f9; padding: 0.5em">
-                <a href="{% url 'write:post_detail' activity.content_object.id %}"></a>
+                <a href="{% url 'write:post_detail' activity.content_object.id %}">{{activity.content_object.title}}</a>
             </div>
             {{ activity.timestamp |date:"Y.m.d H:i" }}
+
+        <!--Pin-->
+        {% elif activity.activity_type == 'pin' %}
+            <a href="{% url 'accounts:detail' activity.user.username %}">
+                {{ activity.user.display_name | default:activity.user.username }}
+            </a> pinned:
+            <div style="background-color:#f9f9f9; padding: 0.5em">
+                <a href="{{ activity.content_object.url }}">{{activity.content_object.title}}</a> ()
+            </div>
+            {{ activity.timestamp |date:"Y.m.d H:i" }}
+            
+        <!--Follow-->
         {% elif activity.activity_type == 'follow' %}
             <a href="{% url 'accounts:detail' activity.user.username %}">
-                {% if activity.user.display_name %}
-                    {{ activity.user.display_name }}
-                {% else %}
-                    {{ activity.user.username }}
-                {% endif %}
+                {{ activity.user.display_name | default:activity.user.username }}
             </a> followed 
             <a href="{% url 'accounts:detail' activity.content_object.followed.username %}">
-                {% if activity.content_object.followed.display_name %}
-                    {{ activity.content_object.followed.display_name }}
-                {% else %}
-                    {{ activity.content_object.followed.username }}
-                {% endif %}
+                {{ activity.content_object.followed.display_name | default:activity.content_object.followed.username }}
             </a>
             {{ activity.timestamp |date:"Y.m.d H:i" }}
         {% endif %}

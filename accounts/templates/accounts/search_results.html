@@ -2,11 +2,49 @@
 
 {% block content %}
     <h2>Search Results</h2>
-    {% for user in results %}
-        <p>
-            <a href="{% url 'accounts:detail' username=user.username %}">{{ user.username }}</a>
-        </p>
-    {% empty %}
-        <p>No results found.</p>
-    {% endfor %}
+
+    {% if user_results %}
+        <h3>Users</h3>
+        {% for user in user_results %}
+            <p>
+                <a href="{% url 'accounts:detail' username=user.username %}">{{ user.username }}</a>
+            </p>
+        {% empty %}
+            <p>No user results found.</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if post_results %}
+        <h3>Posts</h3>
+        {% for post in post_results %}
+            <p>
+                <a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a>
+            </p>
+        {% empty %}
+            <p>No post results found.</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if say_results %}
+        <h3>Says</h3>
+        {% for say in say_results %}
+            <p>
+                <a href="{% url 'write:say_detail' say.id %}">{{ say.content|truncatechars:50 }}</a>
+            </p>
+        {% empty %}
+            <p>No say results found.</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if pin_results %}
+        <h3>Pins</h3>
+        {% for pin in pin_results %}
+            <p>
+                <a href="{% url 'write:pin_detail' pin.id %}">{{ pin.title|truncatechars:50 }}</a>
+            </p>
+        {% empty %}
+            <p>No pin results found.</p>
+        {% endfor %}
+    {% endif %}
+
 {% endblock %}
