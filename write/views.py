@@ -50,7 +50,7 @@ class PostDetailView(ShareDetailView):
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
-    template_name = "write/post_form.html"
+    template_name = "write/post_create.html"
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -100,7 +100,7 @@ class SayCreateView(LoginRequiredMixin, CreateView):
     model = Say
     form_class = SayForm
     # fields = ["content"]
-    template_name = "write/say_form.html"
+    template_name = "write/say_create.html"
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -149,7 +149,7 @@ class PinDetailView(ShareDetailView):
 class PinCreateView(LoginRequiredMixin, CreateView):
     model = Pin
     form_class = PinForm
-    template_name = "write/pin_form.html"
+    template_name = "write/pin_create.html"
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -174,21 +174,21 @@ class PinDeleteView(DeleteView):
     success_url = reverse_lazy("activity_feed:activity_feed")
 
 
-def add_comment(request, app_label, model_name, object_id):
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.author = request.user
-            comment.content_type = ContentType.objects.get(
-                app_label=app_label, model=model_name.lower()
-            )
-            comment.object_id = object_id
-            comment.save()
-            return redirect(comment.content_object.get_absolute_url())
-    else:
-        form = CommentForm()
-    return render(request, "write/add_comment.html", {"form": form})
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = "write/comment_create.html"
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.content_type = ContentType.objects.get(
+            app_label=self.kwargs["app_label"], model=self.kwargs["model_name"].lower()
+        )
+        form.instance.object_id = self.kwargs["object_id"]
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.content_object.get_absolute_url()
 
 
 class CommentUpdateView(UpdateView):

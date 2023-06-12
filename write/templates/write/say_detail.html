@@ -44,7 +44,7 @@
         {% endif %}
         
         {% if object.comments_enabled %}
-        <form method="POST" action="{% url 'write:add_comment' 'write' 'say' object.id %}">
+        <form method="POST" action="{% url 'write:comment_create' 'write' 'say' object.id %}">
         {% csrf_token %}
         {{ comment_form|crispy }}
         <button type="submit" class='btn btn-sm btn-primary'>Add Comment</button>
