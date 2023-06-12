@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.contrib import messages
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
@@ -121,7 +121,7 @@ def home(request, *args, **kwargs):
     if request.user.is_authenticated:
         return redirect("activity_feed:activity_feed")
     else:
-        return login(request, *args, **kwargs)
+        return redirect("login")
 
 
 def search_view(request):

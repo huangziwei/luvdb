@@ -77,6 +77,9 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
+            "libraries": {
+                "account_tags": "accounts.templatetags.account_tags",
+            },
         },
     },
 ]
@@ -141,5 +144,5 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-LOGIN_REDIRECT_URL = "accounts:profile"
+LOGIN_REDIRECT_URL = "activity_feed:activity_feed"
 LOGOUT_REDIRECT_URL = "login"

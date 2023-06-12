@@ -52,5 +52,7 @@ class CustomUser(AbstractUser):
 def create_follow_activity(sender, instance, created, **kwargs):
     if created:
         Activity.objects.create(
-            user=instance.follower, activity_type="follow", content_object=instance
+            user=instance.follower,
+            activity_type="follow",
+            content_object=instance,
         )

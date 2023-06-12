@@ -21,5 +21,5 @@ urlpatterns = [
     ),
     path("search/", search_view, name="search"),
     path("people/<str:username>/", view=AccountDetailView.as_view(), name="detail"),
-    path("", view=redirect_to_profile, name="profile"),
+    path("profile", view=redirect_to_profile, name="profile"),
 ]

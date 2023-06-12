@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load account_tags %}
 
 {% block title %}{% if object.display_name %}{{ object.display_name }} {% else %} {{ object.username }} {% endif %}
 {% endblock %}
@@ -82,7 +83,7 @@
         {% endif %}
 
         {% if object != request.user %}
-            {% if object in request.user.following.all %}
+            {% if request.user|is_following:object %}
                 <form method="POST" action="{% url 'activity_feed:unfollow' object.id %}">
                     {% csrf_token %}
                     <button class="btn btn-primary btn-sm" type="submit">Unfollow</button>
@@ -94,6 +95,7 @@
                 </form>
             {% endif %}
         {% endif %}
+    
       
       </div>
 

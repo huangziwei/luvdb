@@ -20,9 +20,9 @@ from accounts.views import home
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", home, name="home"),  # Updated home view
     path("", include("django.contrib.auth.urls")),
     path("", include("accounts.urls")),
-    path("", include("write.urls")),
+    path("write/", include("write.urls")),
     path("feed/", include("activity_feed.urls")),
-    path("", view=home, name="home"),
 ]
