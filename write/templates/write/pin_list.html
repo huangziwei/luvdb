@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-  <h1>Pins</h1>
+  <h3>{{object.display_name | default:object.username}} pinned</h3>
   {% for pin in pin_list %}
     <div>
       <p><a href="{{ pin.url }}">{{ pin.title }}</a></p>

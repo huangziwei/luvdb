@@ -25,7 +25,7 @@
             </a>
             {{comment.timestamp | date:"Y.m.d H:i"}} 
             {% if comment.author == request.user %} 
-            <a href="{% url "write:comment_update" object.pk %}">Edit</a>
+              <a href="{% url "write:comment_update" object.pk %}">Edit</a>
             {% endif %}
             {% if object.author == request.user or comment.author == request.user %} 
               <a href="{% url "write:comment_delete" object.pk %}">Delete</a>
@@ -42,7 +42,7 @@
       <form method="POST" action="{% url 'write:add_comment' 'write' 'post' object.id %}">
       {% csrf_token %}
       {{ comment_form|crispy }}
-      <button type="submit" class='btn-sm btn-primary'>Add Comment</button>
+      <button type="submit" class='btn btn-sm btn-primary'>Add Comment</button>
       </form>
       <br>
       {% else %}

@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-  <h1>Posts</h1>
+  <h3>{{object.display_name | default:object.username}} posted</h3>
   {% for post in post_list %}
     <div>
       <h3><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></h3>

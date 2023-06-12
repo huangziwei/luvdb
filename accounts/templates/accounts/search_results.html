@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Search Results</h2>
 
+<div class="container">
+    <div class="row">
+      <div class="col-sm-8">
+    <h2>Search Results</h2>
+    <hr>
     {% if user_results %}
         <h3>Users</h3>
         {% for user in user_results %}
@@ -12,6 +16,7 @@
         {% empty %}
             <p>No user results found.</p>
         {% endfor %}
+        <hr>
     {% endif %}
 
     {% if post_results %}
@@ -23,6 +28,7 @@
         {% empty %}
             <p>No post results found.</p>
         {% endfor %}
+        <hr>
     {% endif %}
 
     {% if say_results %}
@@ -35,6 +41,7 @@
         {% empty %}
             <p>No say results found.</p>
         {% endfor %}
+        <hr>
     {% endif %}
 
     {% if pin_results %}
@@ -46,6 +53,9 @@
         {% empty %}
             <p>No pin results found.</p>
         {% endfor %}
+        <hr>
     {% endif %}
-
+</div>
+</div>
+</div>
 {% endblock %}

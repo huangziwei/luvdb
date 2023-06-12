@@ -11,8 +11,6 @@ from django.views.generic import (
     UpdateView,
 )
 
-from activity_feed.models import Activity
-
 from .forms import CommentForm, PinForm, PostForm, SayForm
 from .models import Comment, Pin, Post, Say
 
@@ -30,14 +28,6 @@ class ShareDetailView(DetailView):
         return context
 
 
-class ShareDeleteView(DeleteView):
-    def delete(self, request, *args, **kwargs):
-        object = self.get_object()
-        content_type = ContentType.objects.get_for_model(object)
-        Activity.objects.filter(content_type=content_type, object_id=object.id).delete()
-        return super().delete(request, *args, **kwargs)
-
-
 class PostListView(ListView):
     model = Post
     template_name = "write/post_list.html"
@@ -45,6 +35,11 @@ class PostListView(ListView):
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs["username"])
         return Post.objects.filter(author=self.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["object"] = self.request.user
+        return context
 
 
 class PostDetailView(ShareDetailView):
@@ -74,7 +69,7 @@ class PostUpdateView(UpdateView):
         return reverse_lazy("write:post_detail", kwargs={"pk": self.object.id})
 
 
-class PostDeleteView(ShareDeleteView):
+class PostDeleteView(DeleteView):
     model = Post
     template_name = "write/post_confirm_delete.html"
     success_url = reverse_lazy("activity_feed:activity_feed")
@@ -124,22 +119,10 @@ class SayUpdateView(UpdateView):
         return reverse_lazy("write:say_detail", kwargs={"pk": self.object.id})
 
 
-class SayDeleteView(ShareDeleteView):
+class SayDeleteView(DeleteView):
     model = Say
     template_name = "write/say_confirm_delete.html"
     success_url = reverse_lazy("activity_feed:activity_feed")
-
-    def delete(self, request, *args, **kwargs):
-        say = self.get_object()
-        content_type = ContentType.objects.get_for_model(say)
-        Activity.objects.filter(
-            user=request.user,
-            activity_type="say",
-            content_type=content_type,
-            object_id=say.id,
-        ).delete()
-
-        return super().delete(request, *args, **kwargs)
 
 
 class PinListView(ListView):

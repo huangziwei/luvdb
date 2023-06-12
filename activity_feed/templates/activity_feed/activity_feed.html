@@ -16,7 +16,8 @@
             <form method="POST">
                 {% csrf_token %}
                 {{ say_form.content|as_crispy_field }}
-                <button type="submit" class="btn-sm btn-primary">Add Say</button>
+                {{ say_form.comments_enabled|as_crispy_field }}
+                <button type="submit" class="btn btn-primary btn-sm ">Add Say</button>
             </form>
             <hr>
 
@@ -27,14 +28,17 @@
                     <a href="{% url 'accounts:detail' activity.user.username %}">
                         {{ activity.user.display_name | default:activity.user.username }}
                     </a> said:
-                    <div style="background-color:#f9f9f9; padding: 1em 1em 0.25em 1em;">
+                    <div style="background-color:#f9f9f9; padding: 1em 1em 0.25em 1em;margin-top:0.5em;">
                         {{ activity.content_object.content | markdownify }}
                     </div>
                     <span style='display: flex;'>
                         <p style='margin-right: 0.5em'>{{ activity.timestamp |date:"Y.m.d H:i" }}</p>
-                        <p style='margin: 0 0.5em'><a href="{% url 'write:say_detail' activity.content_object.id %}">Reply</a></p>
+                        {% if activity.content_object.comments_enabled %}
+                            <p style='margin: 0 0.5em'><a href="{% url 'write:say_detail' activity.content_object.id %}">Reply</a></p>
+                        {% endif %}
                         {% if activity.user == request.user %}
-                        <p style='margin: 0 0.5em'><a href="{% url 'activity_feed:activity_delete' activity.id %}">Delete</a></p>
+                            <p style='margin: 0 0.5em'><a href="{% url 'write:say_update' activity.content_object.id %}">Edit</a></p>
+                            <p style='margin: 0 0.5em'><a href="{% url 'activity_feed:activity_delete' activity.id %}">Delete</a></p>
                         {% endif %}
                     </span>
                     
@@ -48,9 +52,12 @@
                     </div>
                     <span style='display: flex;'>
                         <p style='margin-right: 0.5em'>{{ activity.timestamp |date:"Y.m.d H:i" }}</p>
-                        <p style='margin: 0 0.5em'><a href="{% url 'write:post_detail' activity.content_object.id %}">Reply</a></p>
+                        {% if activity.content_object.comments_enabled %}
+                            <p style='margin: 0 0.5em'><a href="{% url 'write:post_detail' activity.content_object.id %}">Reply</a></p>
+                        {% endif %}
                         {% if activity.user == request.user %}
-                        <p style='margin: 0 0.5em'><a href="{% url 'activity_feed:activity_delete' activity.id %}">Delete</a></p>
+                            <p style='margin: 0 0.5em'><a href="{% url 'write:post_update' activity.content_object.id %}">Edit</a></p>
+                            <p style='margin: 0 0.5em'><a href="{% url 'activity_feed:activity_delete' activity.id %}">Delete</a></p>
                         {% endif %}
                     </span>
 
@@ -64,20 +71,26 @@
                     </div>
                     <span style='display: flex;'>
                         <p style='margin-right: 0.5em'>{{ activity.timestamp |date:"Y.m.d H:i" }}</p>
-                        <p style='margin: 0 0.5em'><a href="{% url 'write:pin_detail' activity.content_object.id %}">Reply</a></p>
+                        {% if activity.content_object.comments_enabled %}   
+                            <p style='margin: 0 0.5em'><a href="{% url 'write:pin_detail' activity.content_object.id %}">Reply</a></p>
+                        {% endif %}
                         {% if activity.user == request.user %}
+                        <p style='margin: 0 0.5em'><a href="{% url 'write:pin_update' activity.content_object.id %}">Edit</a></p>
                         <p style='margin: 0 0.5em'><a href="{% url 'activity_feed:activity_delete' activity.id %}">Delete</a></p>
                         {% endif %}
                     </span>
 
                 <!--Follow-->
                 {% elif activity.activity_type == 'follow' %}
-                    <a href="{% url 'accounts:detail' activity.user.username %}">
-                        {{ activity.user.display_name | default:activity.user.username }}
-                    </a> followed 
-                    <a href="{% url 'accounts:detail' activity.content_object.followed.username %}">
-                        {{ activity.content_object.followed.display_name | default:activity.content_object.followed.username }}
-                    </a>
+                    <p>
+                        <a href="{% url 'accounts:detail' activity.user.username %}">
+                            {{ activity.user.display_name | default:activity.user.username }}
+                        </a> followed 
+                        <a href="{% url 'accounts:detail' activity.content_object.followed.username %}">
+                            {{ activity.content_object.followed.display_name | default:activity.content_object.followed.username }}
+                        </a>
+                    </p>
+
                     <span style='display: flex;'>    
                         {{ activity.timestamp |date:"Y.m.d H:i" }}
                         {% if activity.user == request.user %}

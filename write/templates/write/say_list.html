@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-  <h1>Says</h1>
+  <h3>{{object.display_name | default:object.username}} said</h3>
   {% for say in say_list %}
     <div>
       <p>{{ say.content }}</p>

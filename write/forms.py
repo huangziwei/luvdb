@@ -18,6 +18,7 @@ class PostForm(forms.ModelForm):
         super(PostForm, self).__init__(*args, **kwargs)
         self.fields["title"].label = ""
         self.fields["content"].label = ""
+        self.fields["comments_enabled"].label = "Enable comments"
 
 
 class SayForm(forms.ModelForm):
@@ -31,6 +32,7 @@ class SayForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SayForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
+        self.fields["comments_enabled"].label = "Enable comments"
 
 
 class PinForm(forms.ModelForm):
@@ -50,6 +52,7 @@ class PinForm(forms.ModelForm):
         self.fields["title"].label = ""
         self.fields["url"].label = ""
         self.fields["content"].label = ""
+        self.fields["comments_enabled"].label = "Enable comments"
 
 
 class CommentForm(forms.ModelForm):
@@ -66,3 +69,8 @@ class ActivityFeedSayForm(SayForm):
     content = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3, "placeholder": "What's on your mind?"})
     )
+
+    def __init__(self, *args, **kwargs):
+        super(ActivityFeedSayForm, self).__init__(*args, **kwargs)
+        self.fields["comments_enabled"].initial = True
+        self.fields["comments_enabled"].label = "Enable comments"
