@@ -1,15 +1,20 @@
 from django.urls import path
 
 from .views import (
+    CommentDeleteView,
+    CommentUpdateView,
     PinCreateView,
+    PinDeleteView,
     PinDetailView,
     PinListView,
     PinUpdateView,
     PostCreateView,
+    PostDeleteView,
     PostDetailView,
     PostListView,
     PostUpdateView,
     SayCreateView,
+    SayDeleteView,
     SayDetailView,
     SayListView,
     SayUpdateView,
@@ -34,5 +39,14 @@ urlpatterns = [
         "add_comment/<str:app_label>/<str:model_name>/<int:object_id>/",
         add_comment,
         name="add_comment",
+    ),
+    path("post/<int:pk>/delete/", PostDeleteView.as_view(), name="post_delete"),
+    path("say/<int:pk>/delete/", SayDeleteView.as_view(), name="say_delete"),
+    path("pin/<int:pk>/delete/", PinDeleteView.as_view(), name="pin_delete"),
+    path(
+        "comment/<int:pk>/update/", CommentUpdateView.as_view(), name="comment_update"
+    ),
+    path(
+        "comment/<int:pk>/delete/", CommentDeleteView.as_view(), name="comment_delete"
     ),
 ]

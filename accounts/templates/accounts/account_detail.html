@@ -14,7 +14,7 @@
 
       <!--Say-->
       <div class="d-flex justify-content-between align-items-center">
-        <h2>Says</h2>
+        <h3>I said</h3>
         <div>
           <a class="btn btn-secondary btn-sm" href="{% url 'write:say_list' object.username %}">All</a>
           {% if object == request.user %}
@@ -24,10 +24,13 @@
       </div>
       {% for say in says|slice:":3" %}
         <div>
-            <a href="{% url 'write:say_detail' say.id %}">{{ say.timestamp |date:"Y.m.d H:i" }}</a>:
             <div style="background-color:#f9f9f9; padding: 0.5em">
               {{ say.content }}
             </div>
+            <span style='display: flex'>
+              <p style='margin-right: 0.5em'>{{ say.timestamp |date:"Y.m.d H:i" }}</p>
+              <p style='margin: 0 0.5em'><a href="{% url 'write:say_detail' say.id %}">Reply</a></p>
+            </span>
         </div>
         <br/>
       {% endfor %}
@@ -35,7 +38,7 @@
 
       <!--Pins-->
       <div class="d-flex justify-content-between align-items-center">
-        <h2>Pins</h2>
+        <h3>I pinned</h3>
         <div>
           <a class="btn btn-secondary btn-sm" href="{% url 'write:pin_list' object.username %}">All</a>
           {% if object == request.user %}
@@ -45,10 +48,13 @@
       </div>
       {% for pin in pins|slice:":3" %}
         <div>
-            <a href="{% url 'write:pin_detail' pin.id %}">{{ pin.timestamp |date:"Y.m.d H:i" }}</a>:
             <div style="background-color:#f9f9f9; padding: 0.5em">
               <a href="{{pin.url}}">{{ pin.title }}</a> ({{ pin.url|root_url }})
-            </div>
+            </div> 
+            <span style='display: flex'>
+              <p style='margin-right: 0.5em'>{{ pin.timestamp |date:"Y.m.d H:i" }}</p>
+              <p style='margin: 0 0.5em'><a href="{% url 'write:pin_detail' pin.id %}">Reply</a></p>
+            </span>
         </div>
         <br/>
       {% endfor %}
@@ -56,7 +62,7 @@
 
       <!--Posts-->
       <div class="d-flex justify-content-between align-items-center">
-        <h2>Posts</h2>
+        <h3>I posted</h3>
         <div>
           <a class="btn btn-secondary btn-sm" href="{% url 'write:post_list' object.username %}">All</a>
           {% if object == request.user %}
@@ -66,8 +72,11 @@
       </div>
       {% for post in posts|slice:":3" %}
         <div>
-            <h4><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></h4>
-            <p>{{ post.timestamp|date:"Y.m.d H:i" }}</p>
+            <p><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></p>
+            <span style='display: flex'>
+              <p style='margin-right: 0.5em'>{{ post.timestamp |date:"Y.m.d H:i" }}</p>
+              <p style='margin: 0 0.5em'><a href="{% url 'write:post_detail' post.id %}">Reply</a></p>
+            </span>
         </div>
       {% endfor %}
     </div>
@@ -78,7 +87,7 @@
 
       <div style="background-color:#fff6ed; padding: 0.5em">
         {% if object.display_name %}
-          <h2 style=''>{{ object.display_name }}</h2>
+          <h3 style=''>{{ object.display_name }}</h3>
         {% endif %}
         <p>@{{ object.username }}</p>
 

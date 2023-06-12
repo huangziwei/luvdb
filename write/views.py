@@ -3,7 +3,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+)
 
 from activity_feed.models import Activity
 
@@ -22,6 +28,14 @@ class ShareDetailView(DetailView):
         )
         context["comment_form"] = CommentForm()
         return context
+
+
+class ShareDeleteView(DeleteView):
+    def delete(self, request, *args, **kwargs):
+        object = self.get_object()
+        content_type = ContentType.objects.get_for_model(object)
+        Activity.objects.filter(content_type=content_type, object_id=object.id).delete()
+        return super().delete(request, *args, **kwargs)
 
 
 class PostListView(ListView):
@@ -58,6 +72,12 @@ class PostUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("write:post_detail", kwargs={"pk": self.object.id})
+
+
+class PostDeleteView(ShareDeleteView):
+    model = Post
+    template_name = "write/post_confirm_delete.html"
+    success_url = reverse_lazy("activity_feed:activity_feed")
 
 
 class SayListView(ListView):
@@ -104,6 +124,24 @@ class SayUpdateView(UpdateView):
         return reverse_lazy("write:say_detail", kwargs={"pk": self.object.id})
 
 
+class SayDeleteView(ShareDeleteView):
+    model = Say
+    template_name = "write/say_confirm_delete.html"
+    success_url = reverse_lazy("activity_feed:activity_feed")
+
+    def delete(self, request, *args, **kwargs):
+        say = self.get_object()
+        content_type = ContentType.objects.get_for_model(say)
+        Activity.objects.filter(
+            user=request.user,
+            activity_type="say",
+            content_type=content_type,
+            object_id=say.id,
+        ).delete()
+
+        return super().delete(request, *args, **kwargs)
+
+
 class PinListView(ListView):
     model = Pin
     template_name = "write/pin_list.html"
@@ -147,6 +185,12 @@ class PinUpdateView(UpdateView):
         return reverse_lazy("write:pin_detail", kwargs={"pk": self.object.id})
 
 
+class PinDeleteView(DeleteView):
+    model = Pin
+    template_name = "write/pin_confirm_delete.html"
+    success_url = reverse_lazy("activity_feed:activity_feed")
+
+
 def add_comment(request, app_label, model_name, object_id):
     if request.method == "POST":
         form = CommentForm(request.POST)
@@ -162,3 +206,20 @@ def add_comment(request, app_label, model_name, object_id):
     else:
         form = CommentForm()
     return render(request, "write/add_comment.html", {"form": form})
+
+
+class CommentUpdateView(UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = "write/comment_update.html"
+
+    def get_success_url(self):
+        return self.object.content_object.get_absolute_url()
+
+
+class CommentDeleteView(DeleteView):
+    model = Comment
+    template_name = "write/comment_confirm_delete.html"
+
+    def get_success_url(self):
+        return self.object.content_object.get_absolute_url()

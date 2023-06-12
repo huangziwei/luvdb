@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
-from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
+from django.views.generic import DeleteView, ListView
 
 from write.forms import ActivityFeedSayForm
 
@@ -39,6 +40,14 @@ class ActivityFeedView(ListView):
             .filter(user__in=list(following_users) + [user.id])
             .order_by("-timestamp")
         )
+
+
+class ActivityFeedDeleteView(DeleteView):
+    model = Activity
+    template_name = "activity_feed/activity_confirm_delete.html"
+
+    def get_success_url(self):
+        return reverse_lazy("activity_feed:activity_feed")
 
 
 @login_required

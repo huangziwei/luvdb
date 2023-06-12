@@ -6,7 +6,7 @@ from .models import Comment, Pin, Post, Say
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["title", "content"]
+        fields = ["title", "content", "comments_enabled"]
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Title..."}),
             "content": forms.Textarea(
@@ -23,7 +23,7 @@ class PostForm(forms.ModelForm):
 class SayForm(forms.ModelForm):
     class Meta:
         model = Say
-        fields = ["content"]
+        fields = ["content", "comments_enabled"]
         widgets = {
             "content": forms.Textarea(attrs={"placeholder": "What's on your mind?"}),
         }
@@ -36,7 +36,7 @@ class SayForm(forms.ModelForm):
 class PinForm(forms.ModelForm):
     class Meta:
         model = Pin
-        fields = ["title", "url", "content"]
+        fields = ["title", "url", "content", "comments_enabled"]
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Title..."}),
             "url": forms.TextInput(attrs={"placeholder": "https://www.example.com"}),

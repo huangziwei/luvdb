@@ -1,25 +1,54 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load markdownify %}
 
 {% block content %}
-  <h2>{{ object.title }}</h2>
-  <p>{{ object.content }}</p>
 
-  <form method="POST" action="{% url 'write:add_comment' 'write' 'post' object.id %}">
-    {% csrf_token %}
-    {{ comment_form|crispy }}
-    <button type="submit">Add Comment</button>
-  </form>
-  <br>
-  <h3>Comments ({{ comments|length }})</h3> 
-  {% for comment in comments %}
-    <div>
-      <span><strong>{{ comment.author.display_name | default:comment.author.username }}</strong> {{comment.timestamp | date:"Y.m.d H:i"}}</span>
-      <p>{{ comment.content }}</p>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <h2>{{ object.title }}</h2>
+      <p>{{ object.timestamp|date:"Y.m.d H:i" }} 
+        {% if object.author == request.user %} | <a href="{% url "write:post_update" object.pk %}">Edit</a> |
+        <a href="{% url "write:post_delete" object.pk %}">Delete</a>{% endif %}
+      </p>
+      <p>{{ object.content | markdownify }}</p>
+      <hr>
+
+      {% if comments %}
+      <h3>Comments ({{ comments|length }})</h3> 
+      {% for comment in comments %}
+        <div>
+          <span>
+            <a href="{% url 'accounts:detail' comment.author.username%}">
+              {{ comment.author.display_name | default:comment.author.username }}
+            </a>
+            {{comment.timestamp | date:"Y.m.d H:i"}} 
+            {% if comment.author == request.user %} 
+            <a href="{% url "write:comment_update" object.pk %}">Edit</a>
+            {% endif %}
+            {% if object.author == request.user or comment.author == request.user %} 
+              <a href="{% url "write:comment_delete" object.pk %}">Delete</a>
+            {% endif %}
+          </span>
+          <p style="background-color:#f9f9f9; padding: 1em;">{{ comment.content }}</p>
+        </div>
+      {% empty %}
+        <p>No comments yet.</p>
+      {% endfor %}
+      {% endif %}
+      
+      {% if object.comments_enabled %}
+      <form method="POST" action="{% url 'write:add_comment' 'write' 'post' object.id %}">
+      {% csrf_token %}
+      {{ comment_form|crispy }}
+      <button type="submit" class='btn-sm btn-primary'>Add Comment</button>
+      </form>
+      <br>
+      {% else %}
+      <p>Comment disabled by the author.</p>
+      {% endif %} 
     </div>
-  {% empty %}
-    <p>No comments yet.</p>
-  {% endfor %}
-
-
+  </div>
+</div>
 {% endblock %}

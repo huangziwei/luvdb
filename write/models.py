@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.urls import reverse
 
 from activity_feed.models import Activity
@@ -29,6 +31,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = GenericRelation(Comment)
+    comments_enabled = models.BooleanField(default=True)
 
     def get_absolute_url(self):
         return reverse("write:post_detail", args=[str(self.id)])
@@ -49,6 +52,7 @@ class Say(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = GenericRelation(Comment)
+    comments_enabled = models.BooleanField(default=True)
 
     def get_absolute_url(self):
         return reverse("write:say_detail", args=[str(self.id)])
@@ -71,6 +75,7 @@ class Pin(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = GenericRelation(Comment)
+    comments_enabled = models.BooleanField(default=True)
 
     def get_absolute_url(self):
         return reverse("write:pin_detail", args=[str(self.id)])
@@ -84,3 +89,11 @@ class Pin(models.Model):
                 activity_type="pin",
                 content_object=self,
             )
+
+
+@receiver(post_delete, sender=Post)
+@receiver(post_delete, sender=Say)
+@receiver(post_delete, sender=Pin)
+def delete_activity(sender, instance, **kwargs):
+    content_type = ContentType.objects.get_for_model(instance)
+    Activity.objects.filter(content_type=content_type, object_id=instance.id).delete()
