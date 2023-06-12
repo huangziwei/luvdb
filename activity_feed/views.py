@@ -32,7 +32,6 @@ def follow(request, user_id):
 
 
 @login_required
-@login_required
 def unfollow(request, user_id):
     # Get the user to be unfollowed
     user_to_unfollow = User.objects.get(id=user_id)

@@ -27,3 +27,6 @@ class Follow(models.Model):
         settings.AUTH_USER_MODEL, related_name="followers", on_delete=models.CASCADE
     )
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("follower", "followed")

@@ -51,20 +51,39 @@ class CustomUser(AbstractUser):
     def save(self, *args, **kwargs):
         # Check if the user has used an invitation code and hasn't been assigned an inviter yet
         if self.code_used:
-            # Save the user instance before creating the Follow and Activity instances
+            # # Save the user instance before creating the Follow and Activity instances
             super().save(*args, **kwargs)
 
-            # Create a Follow instance
-            follow = Follow.objects.create(follower=self, followed=self.invited_by)
-
-            # Create an Activity instance
-            content_type = ContentType.objects.get_for_model(Follow)
-            Activity.objects.create(
-                user=self,
-                activity_type="follow",
-                content_type=content_type,
-                object_id=follow.id,
+            # Get or create a Follow instance for the new user following the inviter
+            follow_new_user, created = Follow.objects.get_or_create(
+                follower=self, followed=self.invited_by
             )
+
+            # # If the Follow instance was created, create an Activity instance
+            # if created:
+            #     content_type = ContentType.objects.get_for_model(Follow)
+            #     Activity.objects.create(
+            #         user=self,
+            #         activity_type="follow",
+            #         content_type=content_type,
+            #         object_id=follow_new_user.id,
+            #     )
+
+            # Get or create a Follow instance for the inviter following the new user
+            follow_inviter, created = Follow.objects.get_or_create(
+                follower=self.invited_by, followed=self
+            )
+
+            # # If the Follow instance was created, create an Activity instance
+            # if created:
+            #     content_type = ContentType.objects.get_for_model(Follow)
+            #     Activity.objects.create(
+            #         user=self.invited_by,
+            #         activity_type="follow",
+            #         content_type=content_type,
+            #         object_id=follow_inviter.id,
+            #     )
+
         else:
             super().save(*args, **kwargs)
 
