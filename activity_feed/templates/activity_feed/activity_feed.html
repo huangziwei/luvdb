@@ -1,54 +1,71 @@
 {% extends "base.html" %}
 {% load url_filters %}
 {% load markdownify %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-<h2>Activity Feed</h2>
 
-{% for activity in object_list %}
-    <div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
+            <span style='display: flex;'>
+                <p style='padding-right:0.5em'>Say</p> | 
+                <a href="{% url 'write:post_create' %}"><p style='padding: 0 0.5em'>Post</p></a> | 
+                <a href="{% url 'write:pin_create' %}"><p style='padding: 0 0.5em'>Pin</p></a>
+            </span>
+            <form method="POST">
+                {% csrf_token %}
+                {{ say_form.content|as_crispy_field }}
+                <button type="submit" class="btn-sm btn-primary">Add Say</button>
+            </form>
+            <hr>
 
-        <!--Say-->
-        {% if activity.activity_type == 'say' %}
-            <a href="{% url 'accounts:detail' activity.user.username %}">
-                {{ activity.user.display_name | default:activity.user.username }}
-            </a> said:
-            <div style="background-color:#f9f9f9; padding: 0.5em">
-                {{ activity.content_object.content | markdownify }}
-            </div>
-            <a href="{% url 'write:say_detail' activity.content_object.id %}">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
-        
-        <!--Post-->
-        {% elif activity.activity_type == 'post' %}
-            <a href="{% url 'accounts:detail' activity.user.username %}">
-                {{ activity.user.display_name | default:activity.user.username }}
-            </a> posted:
-            <div style="background-color:#f9f9f9; padding: 0.5em">
-                <a href="{% url 'write:post_detail' activity.content_object.id %}">{{activity.content_object.title}}</a>
-            </div>
-            {{ activity.timestamp |date:"Y.m.d H:i" }}
+            {% for activity in object_list %}
+            <div>
+                <!--Say-->
+                {% if activity.activity_type == 'say' %}
+                    <a href="{% url 'accounts:detail' activity.user.username %}">
+                        {{ activity.user.display_name | default:activity.user.username }}
+                    </a> said:
+                    <div style="background-color:#f9f9f9; padding: 0.5em">
+                        {{ activity.content_object.content | markdownify }}
+                    </div>
+                    {{ activity.timestamp |date:"Y.m.d H:i" }} <a href="{% url 'write:say_detail' activity.content_object.id %}">Reply</a>
+                
+                <!--Post-->
+                {% elif activity.activity_type == 'post' %}
+                    <a href="{% url 'accounts:detail' activity.user.username %}">
+                        {{ activity.user.display_name | default:activity.user.username }}
+                    </a> posted:
+                    <div style="background-color:#f9f9f9; padding: 0.5em">
+                        <a href="{% url 'write:post_detail' activity.content_object.id %}">{{activity.content_object.title}}</a>
+                    </div>
+                    {{ activity.timestamp |date:"Y.m.d H:i" }} <a href="{% url 'write:post_detail' activity.content_object.id %}">Reply</a>
 
-        <!--Pin-->
-        {% elif activity.activity_type == 'pin' %}
-            <a href="{% url 'accounts:detail' activity.user.username %}">
-                {{ activity.user.display_name | default:activity.user.username }}
-            </a> pinned:
-            <div style="background-color:#f9f9f9; padding: 0.5em">
-                <a href="{{ activity.content_object.url }}">{{activity.content_object.title}}</a> ({{activity.content_object.url|root_url}})
+                <!--Pin-->
+                {% elif activity.activity_type == 'pin' %}
+                    <a href="{% url 'accounts:detail' activity.user.username %}">
+                        {{ activity.user.display_name | default:activity.user.username }}
+                    </a> pinned:
+                    <div style="background-color:#f9f9f9; padding: 0.5em">
+                        <a href="{{ activity.content_object.url }}">{{activity.content_object.title}}</a> ({{activity.content_object.url|root_url}})
+                    </div>
+                    {{ activity.timestamp |date:"Y.m.d H:i" }} <a href="{% url 'write:pin_detail' activity.content_object.id %}">Reply</a>
+                    
+                <!--Follow-->
+                {% elif activity.activity_type == 'follow' %}
+                    <a href="{% url 'accounts:detail' activity.user.username %}">
+                        {{ activity.user.display_name | default:activity.user.username }}
+                    </a> followed 
+                    <a href="{% url 'accounts:detail' activity.content_object.followed.username %}">
+                        {{ activity.content_object.followed.display_name | default:activity.content_object.followed.username }}
+                    </a>
+                    {{ activity.timestamp |date:"Y.m.d H:i" }}
+                {% endif %}
             </div>
-            {{ activity.timestamp |date:"Y.m.d H:i" }}
-            
-        <!--Follow-->
-        {% elif activity.activity_type == 'follow' %}
-            <a href="{% url 'accounts:detail' activity.user.username %}">
-                {{ activity.user.display_name | default:activity.user.username }}
-            </a> followed 
-            <a href="{% url 'accounts:detail' activity.content_object.followed.username %}">
-                {{ activity.content_object.followed.display_name | default:activity.content_object.followed.username }}
-            </a>
-            {{ activity.timestamp |date:"Y.m.d H:i" }}
-        {% endif %}
+            <br/>
+        {% endfor %}
+        </div>
     </div>
-    <br/>
-{% endfor %}
+</div>
 {% endblock %}

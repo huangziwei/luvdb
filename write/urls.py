@@ -13,6 +13,7 @@ from .views import (
     SayDetailView,
     SayListView,
     SayUpdateView,
+    add_comment,
 )
 
 app_name = "write"
@@ -29,4 +30,9 @@ urlpatterns = [
     path("say/new/", SayCreateView.as_view(), name="say_create"),
     path("say/<int:pk>/", SayDetailView.as_view(), name="say_detail"),
     path("say/<int:pk>/update/", SayUpdateView.as_view(), name="say_update"),
+    path(
+        "add_comment/<str:app_label>/<str:model_name>/<int:object_id>/",
+        add_comment,
+        name="add_comment",
+    ),
 ]

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Pin, Post, Say
+from .models import Comment, Pin, Post, Say
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -15,6 +15,11 @@ class PinAdmin(admin.ModelAdmin):
     list_display = ("author", "title", "url", "content", "timestamp")
 
 
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ("author", "content", "timestamp")
+
+
+admin.site.register(Comment, CommentAdmin)
 admin.site.register(Pin, PinAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Say, SayAdmin)

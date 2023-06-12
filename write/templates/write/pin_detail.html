@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load url_filters %}
 {% load markdownify %}
+{% load crispy_forms_tags %}
 {% block title %}Pin{% endblock %}
 
 {% block content %}
@@ -11,4 +12,22 @@
   <p>{{ object.content|markdownify }}</p>
   <p>{{ object.timestamp|date:"Y.m.d H:i" }} {% if object.author == request.user %} | <a href="{% url "write:pin_update" object.pk %}">Edit</a>{% endif %}</p>
 </div>
+
+<form method="POST" action="{% url 'write:add_comment' 'write' 'pin' object.id %}">
+  {% csrf_token %}
+  {{ comment_form|crispy }}
+  <button type="submit">Add Comment</button>
+</form>
+<br>
+<h3>Comments</h3>
+{% for comment in comments %}
+  <div>
+    <span><strong>{{ comment.author.display_name | default:comment.author.username }}</strong> {{comment.timestamp | date:"Y.m.d H:i"}}</span>
+    <p>{{ comment.content }}</p>
+  </div>
+  <br>
+{% empty %}
+  <p>No comments yet.</p>
+{% endfor %}
+
 {% endblock content %}

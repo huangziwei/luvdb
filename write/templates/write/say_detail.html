@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load markdownify %}
+{% load crispy_forms_tags %}
 
 {% block title %}Say{% endblock %}
 
@@ -9,4 +10,20 @@
   <p>{{ object.content|markdownify }}</p>
   <p>{{ object.timestamp|date:"Y.m.d H:i" }} {% if object.author == request.user %}| <a href="{% url "write:say_update" object.pk %}">Edit</a>{% endif %}</p>
 </div>
+
+<form method="POST" action="{% url 'write:add_comment' 'write' 'say' object.id %}">
+  {% csrf_token %}
+  {{ comment_form|crispy }}
+  <button type="submit">Add Comment</button>
+</form>
+<br>
+<h3>Comments</h3>
+{% for comment in comments %}
+  <div>
+    <span><strong>{{ comment.author.display_name | default:comment.author.username }}</strong> {{comment.timestamp | date:"Y.m.d H:i"}}</span>
+    <p>{{ comment.content }}</p>
+  </div>
+{% empty %}
+  <p>No comments yet.</p>
+{% endfor %}
 {% endblock content %}

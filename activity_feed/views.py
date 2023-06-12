@@ -4,6 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView
 
+from write.forms import ActivityFeedSayForm
+
 from .models import Activity, Follow
 
 User = get_user_model()
@@ -22,6 +24,11 @@ class ActivityFeedView(ListView):
             .filter(user__in=list(following_users) + [user.id])
             .order_by("-timestamp")
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["say_form"] = ActivityFeedSayForm()
+        return context
 
 
 @login_required

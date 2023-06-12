@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Pin, Post, Say
+from .models import Comment, Pin, Post, Say
 
 
 class PostForm(forms.ModelForm):
@@ -50,3 +50,17 @@ class PinForm(forms.ModelForm):
         self.fields["title"].label = ""
         self.fields["url"].label = ""
         self.fields["content"].label = ""
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["content"]
+
+    def __init__(self, *args, **kwargs):
+        super(CommentForm, self).__init__(*args, **kwargs)
+        self.fields["content"].label = ""
+
+
+class ActivityFeedSayForm(SayForm):
+    content = forms.CharField(widget=forms.Textarea(attrs={"rows": 3}))
