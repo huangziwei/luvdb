@@ -2,6 +2,8 @@
 {% load static %}
 {% load account_tags %}
 {% load url_filters %}
+{% load markdownify %}
+{% load linkify %}
 
 {% block title %}{{ object.display_name|default:object.username }}{% endblock %}
 
@@ -25,7 +27,7 @@
       {% for say in says|slice:":3" %}
         <div>
             <div style="background-color:#f9f9f9; padding: 0.5em">
-              {{ say.content }}
+              {{ say.content| linkify_tags | linkify_mentions | markdownify }}
             </div>
             <span style='display: flex'>
               <p style='margin-right: 0.5em'>{{ say.timestamp |date:"Y.m.d H:i" }}</p>
@@ -110,7 +112,7 @@
         <p>@{{ object.username }}</p>
 
         {% if object.bio %}
-        <p>{{ object.bio }}</p>
+        <p>{{ object.bio | linkify_tags | linkify_mentions | markdownify }}</p>
         {% endif %}
         
         {% if object == request.user %}

@@ -6,7 +6,7 @@
   <h3>{{object.display_name | default:object.username}} said</h3>
   {% for say in say_list %}
     <div>
-      <p>{{ say.content }}</p>
+      <p>{{ say.content | linkify_tags | linkify_mentions | markdownify }}</p>
       <p><a href="{% url 'write:say_detail' say.id %}">{{ say.timestamp|date:"Y.m.d H:i" }}</a></p>
       <br />
     </div>

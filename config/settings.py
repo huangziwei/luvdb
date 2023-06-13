@@ -80,6 +80,7 @@ TEMPLATES = [
             "libraries": {
                 "account_tags": "accounts.templatetags.account_tags",
                 "url_filters": "activity_feed.templatetags.url_filters",
+                "linkify": "write.templatetags.linkify",
             },
         },
     },

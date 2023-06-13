@@ -5,7 +5,6 @@
   <p>Are you sure you want to delete this comment?</p>
   <form method="POST">
     {% csrf_token %}
-    <button type="submit">Yes, delete</button>
+    <button type="submit" class="btn btn-danger btn-sm">Yes, delete</button>
   </form>
-  {% comment %} <a href="{% url 'write:comment_detail' object.id %}">No, take me back</a> {% endcomment %}
 {% endblock %}

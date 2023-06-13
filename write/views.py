@@ -1,7 +1,9 @@
+from itertools import chain
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -206,3 +208,23 @@ class CommentDeleteView(DeleteView):
 
     def get_success_url(self):
         return self.object.content_object.get_absolute_url()
+
+
+class TagListView(ListView):
+    template_name = "write/tag_list.html"
+
+    def get_queryset(self):
+        tag = self.kwargs["tag"]
+        posts = Post.objects.filter(tags__name=tag)
+        says = Say.objects.filter(tags__name=tag)
+        pins = Pin.objects.filter(tags__name=tag)
+        return list(chain(posts, says, pins))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag = self.kwargs["tag"]
+        context["tag"] = tag
+        context["posts"] = Post.objects.filter(tags__name=tag)
+        context["says"] = Say.objects.filter(tags__name=tag)
+        context["pins"] = Pin.objects.filter(tags__name=tag)
+        return context

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load url_filters %}
 {% load markdownify %}
+{% load linkify %}
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -29,7 +30,7 @@
                         {{ activity.user.display_name | default:activity.user.username }}
                     </a> said:
                     <div style="background-color:#f9f9f9; padding: 1em 1em 0.25em 1em;margin-top:0.5em;">
-                        {{ activity.content_object.content | markdownify }}
+                        {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
                     </div>
                     <span style='display: flex;'>
                         <p style='margin-right: 0.5em'>{{ activity.timestamp |date:"Y.m.d H:i" }}</p>
@@ -49,6 +50,7 @@
                     </a> posted:
                     <div style="background-color:#f9f9f9; padding: 1em;">
                         <a href="{% url 'write:post_detail' activity.content_object.id %}">{{activity.content_object.title}}</a>
+                        <blockquote>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
                     </div>
                     <span style='display: flex;'>
                         <p style='margin-right: 0.5em'>{{ activity.timestamp |date:"Y.m.d H:i" }}</p>
@@ -68,6 +70,7 @@
                     </a> pinned:
                     <div style="background-color:#f9f9f9; padding: 1em;">
                         <a href="{{ activity.content_object.url }}">{{activity.content_object.title}}</a> ({{activity.content_object.url|root_url}})
+                        <blockquote>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
                     </div>
                     <span style='display: flex;'>
                         <p style='margin-right: 0.5em'>{{ activity.timestamp |date:"Y.m.d H:i" }}</p>

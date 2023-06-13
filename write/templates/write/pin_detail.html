@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load url_filters %}
 {% load markdownify %}
+{% load linkify %}
 {% load crispy_forms_tags %}
 {% block title %}Pin{% endblock %}
 
@@ -12,7 +13,7 @@
         <h1>Pin</h1>
         <h3><a href="{{ object.url }}">{{ object.title }}</a></h3>
         <p>({{ object.url|root_url }})</p>
-        <p>{{ object.content|markdownify }}</p>
+        <p>{{ object.content| linkify_tags | linkify_mentions | markdownify }}</p>
         <p>
           {{ object.timestamp|date:"Y.m.d H:i" }} 
           {% if object.author == request.user %}
@@ -31,10 +32,10 @@
               </a>
               {{comment.timestamp | date:"Y.m.d H:i"}} 
               {% if comment.author == request.user %} 
-                <a href="{% url "write:comment_update" object.pk %}">Edit</a>
+                <a href="{% url "write:comment_update" comment.pk %}">Edit</a>
               {% endif %}
               {% if object.author == request.user or comment.author == request.user %} 
-                <a href="{% url "write:comment_delete" object.pk %}">Delete</a>
+                <a href="{% url "write:comment_delete" comment.pk %}">Delete</a>
               {% endif %}
             </span>
             <p style="background-color:#f9f9f9; padding: 1em;">{{ comment.content }}</p>

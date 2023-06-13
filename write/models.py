@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -11,10 +13,26 @@ from activity_feed.models import Activity
 User = get_user_model()
 
 
+def handle_tags(instance, content):
+    instance.tags.clear()
+    tags = set(re.findall(r"#(\w+)", content))
+    for tag in tags:
+        tag_obj, created = Tag.objects.get_or_create(name=tag)
+        instance.tags.add(tag_obj)
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Comment(models.Model):
     content = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     # Polymorphic relationship to Post, Say, or Pin
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -24,6 +42,11 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.author} on {self.content_object}"
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Handle tags
+        handle_tags(self, self.content)
+
 
 class Post(models.Model):
     title = models.CharField(max_length=200, null=True, blank=True)
@@ -32,6 +55,7 @@ class Post(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = GenericRelation(Comment)
     comments_enabled = models.BooleanField(default=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def get_absolute_url(self):
         return reverse("write:post_detail", args=[str(self.id)])
@@ -45,6 +69,8 @@ class Post(models.Model):
                 activity_type="post",
                 content_object=self,
             )
+        # Handle tags
+        handle_tags(self, self.content)
 
 
 class Say(models.Model):
@@ -53,6 +79,7 @@ class Say(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = GenericRelation(Comment)
     comments_enabled = models.BooleanField(default=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def get_absolute_url(self):
         return reverse("write:say_detail", args=[str(self.id)])
@@ -66,6 +93,8 @@ class Say(models.Model):
                 activity_type="say",
                 content_object=self,
             )
+        # Handle tags
+        handle_tags(self, self.content)
 
 
 class Pin(models.Model):
@@ -76,6 +105,7 @@ class Pin(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = GenericRelation(Comment)
     comments_enabled = models.BooleanField(default=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def get_absolute_url(self):
         return reverse("write:pin_detail", args=[str(self.id)])
@@ -89,6 +119,8 @@ class Pin(models.Model):
                 activity_type="pin",
                 content_object=self,
             )
+        # Handle tags
+        handle_tags(self, self.content)
 
 
 @receiver(post_delete, sender=Post)

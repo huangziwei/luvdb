@@ -19,6 +19,7 @@ from .views import (
     SayDetailView,
     SayListView,
     SayUpdateView,
+    TagListView,
 )
 
 app_name = "write"
@@ -53,4 +54,5 @@ urlpatterns = [
     path(
         "comment/<int:pk>/delete/", CommentDeleteView.as_view(), name="comment_delete"
     ),
+    path("tag/<str:tag>/", TagListView.as_view(), name="tag_list"),
 ]

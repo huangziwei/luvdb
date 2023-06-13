@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load markdownify %}
+{% load linkify %}
+{% block content %}
+
+  <h1>Items with tag "{{ tag }}"</h1>
+
+  <h2>Says</h2>
+  {% for say in says %}
+    <div class="item">
+        <p><a href="{{ say.author.username }}"> {{ say.author.display_name | default:say.author.username }} </a>said:</p>
+        <p>{{ say.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</p>
+        <p><small>{{ say.timestamp }}</small></p>
+    </div>
+  {% endfor %}
+  
+  <hr>
+  <h2>Pins</h2>
+  {% for pin in pins %}
+    <div class="item">
+        <h2><a href="{{ pin.get_absolute_url }}">{{ pin.title }}</a></h2>
+        <p>{{ pin.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</p>
+        <p><small>By {{ pin.author }} on {{ pin.timestamp }}</small></p>
+    </div>
+  {% endfor %}
+
+  <hr>
+  <h2>Posts</h2>
+  {% for post in posts %}
+    <div class="item">
+        <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+        <p>{{ post.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</p>
+        <p><small>By {{ post.author }} on {{ post.timestamp }}</small></p>
+    </div>
+  {% endfor %}
+  
+{% endblock %}
