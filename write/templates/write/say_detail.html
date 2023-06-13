@@ -12,7 +12,7 @@
       <a href="{% url 'accounts:detail' object.author.username %}">
         {{ object.author.display_name | default:object.author.username }}
       </a> said:
-      <div style="background-color:#f9f9f9; padding: 1em 1em 0.2em 1em;">{{ object.content| linkify_tags | linkify_mentions | markdownify }}</div>
+      <div style="background-color:#f9f9f9; padding: 0.5em; margin: 0.5em">{{ object.content| linkify_tags | linkify_mentions | markdownify }}</div>
       <p>
         {{ object.timestamp|date:"Y.m.d H:i" }} 
         {% if object.author == request.user %}
@@ -37,7 +37,7 @@
                 <a href="{% url "write:comment_delete" comment.pk %}">Delete</a>
               {% endif %}
             </span>
-            <div style="background-color:#f9f9f9; padding: 1em;">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
+            <div style="background-color:#f9f9f9; padding: 0.5em; margin: 0.5em">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
           </div>
         {% empty %}
           <p>No comments yet.</p>

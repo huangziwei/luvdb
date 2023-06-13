@@ -10,7 +10,10 @@ class PostForm(forms.ModelForm):
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Title..."}),
             "content": forms.Textarea(
-                attrs={"placeholder": "What do you want to share?"}
+                attrs={
+                    "placeholder": "What do you want to share?",
+                    "rows": 20,
+                }
             ),
         }
 

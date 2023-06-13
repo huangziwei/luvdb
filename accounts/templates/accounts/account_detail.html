@@ -26,7 +26,7 @@
       </div>
       {% for say in says|slice:":3" %}
         <div>
-            <div style="background-color:#f9f9f9; padding: 0.5em">
+            <div style="background-color:#f9f9f9; padding: 0.5em; margin: 0.5em">
               {{ say.content| linkify_tags | linkify_mentions | markdownify }}
             </div>
             <span style='display: flex'>
@@ -106,7 +106,7 @@
     <!-- Right column -->
     <div class="col-sm-4">
 
-      <div style="background-color:#fff6ed; padding: 0.5em">
+      <div style="background-color:#fff6ed; padding: 0.5em; margin: 0.5em">
         {% if object.display_name %}
           <h3 style=''>{{ object.display_name }}</h3>
         {% endif %}

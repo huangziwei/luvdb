@@ -40,7 +40,7 @@ class PostListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["object"] = self.request.user
+        context["object"] = self.user
         return context
 
 
@@ -89,7 +89,7 @@ class SayListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["object"] = self.request.user
+        context["object"] = self.user
         return context
 
 
@@ -139,7 +139,7 @@ class PinListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["object"] = self.request.user
+        context["object"] = self.user
         return context
 
 
