@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     # local apps
     "activity_feed",
     "write",
+    "notify",
 ]
 
 MIDDLEWARE = [
@@ -76,6 +77,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "notify.context_processors.notifications",
             ],
             "libraries": {
                 "account_tags": "accounts.templatetags.account_tags",

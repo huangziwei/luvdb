@@ -25,4 +25,5 @@ urlpatterns = [
     path("", include("accounts.urls")),
     path("write/", include("write.urls")),
     path("feed/", include("activity_feed.urls")),
+    path("", include("notify.urls")),
 ]

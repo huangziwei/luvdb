@@ -9,6 +9,8 @@ from django.dispatch import receiver
 from django.urls import reverse
 
 from activity_feed.models import Activity
+from notify.models import Notification
+from notify.views import create_mentions_notifications
 
 User = get_user_model()
 
@@ -43,9 +45,25 @@ class Comment(models.Model):
         return f"Comment by {self.author} on {self.content_object}"
 
     def save(self, *args, **kwargs):
+        is_new = self.pk is None
         super().save(*args, **kwargs)
+
+        if is_new and self.author != self.content_object.author:
+            author_url = reverse("accounts:detail", args=[self.author.username])
+            content_url = self.content_object.get_absolute_url()
+            content_name = self.content_object.__class__.__name__.capitalize()
+            message = f'<a href="{author_url}">{self.author.username}</a> commented on your <a href="{content_url}">{content_name}</a>.'
+
+            Notification.objects.create(
+                recipient=self.content_object.author,
+                sender_content_type=ContentType.objects.get_for_model(self.author),
+                sender_object_id=self.author.id,
+                notification_type="comment",
+                message=message,
+            )
         # Handle tags
         handle_tags(self, self.content)
+        create_mentions_notifications(self.author, self.content, self)
 
 
 class Post(models.Model):
@@ -71,6 +89,7 @@ class Post(models.Model):
             )
         # Handle tags
         handle_tags(self, self.content)
+        create_mentions_notifications(self.author, self.content, self)
 
 
 class Say(models.Model):
@@ -95,6 +114,7 @@ class Say(models.Model):
             )
         # Handle tags
         handle_tags(self, self.content)
+        create_mentions_notifications(self.author, self.content, self)
 
 
 class Pin(models.Model):
@@ -121,6 +141,7 @@ class Pin(models.Model):
             )
         # Handle tags
         handle_tags(self, self.content)
+        create_mentions_notifications(self.author, self.content, self)
 
 
 @receiver(post_delete, sender=Post)

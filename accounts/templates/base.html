@@ -37,6 +37,12 @@
                             <button class="btn btn-outline-success btn-sm" type="submit">Search</button>
                         </form>
                     </ul>
+                        
+                    <div class="me-3">
+                        <a href="{% url 'notify:notification_list' %}" class="btn btn-outline-primary">
+                            Notifications {% if new_notifications %}({{ new_notifications }}){% endif %}
+                        </a>
+                    </div>
                     
                     <div class="dropdown text-end">
                         <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"

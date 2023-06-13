@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Notifications</h1>
+
+  <form method="post" action="{% url 'notify:mark_all_as_read' %}">
+    {% csrf_token %}
+    <input type="submit" class='btn btn-sm btn-warning' value="Mark all as read">
+  </form>
+
+  <hr>
+
+  {% for notification in object_list %}
+  <div class="notification">
+    <span style='display: flex'>
+    <p>{{ notification.message | safe}}</p>
+    <p>&nbsp;<small style='color:gray;'>{{ notification.timestamp | date:"Y.m.d H:i"}}</small>&nbsp;</p>
+    {% if not notification.read %}
+      <form method="post" action="{% url 'notify:mark_as_read' notification.pk %}">
+        {% csrf_token %}
+        <input type="submit" class='btn btn-sm btn-light' value="Mark as read">
+      </form>
+    {% endif %}
+    </span>
+  </div>
+{% empty %}
+  <p>You have no notifications.</p>
+{% endfor %}
+{% endblock %}

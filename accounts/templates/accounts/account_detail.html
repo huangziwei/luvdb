@@ -56,8 +56,9 @@
       </div>
       {% for pin in pins|slice:":3" %}
         <div>
-            <div style="background-color:#f9f9f9; padding: 0.5em">
+            <div>
               <a href="{{pin.url}}">{{ pin.title }}</a> ({{ pin.url|root_url }})
+              </span>
             </div> 
             <span style='display: flex'>
               <p style='margin-right: 0.5em'>{{ pin.timestamp |date:"Y.m.d H:i" }}</p>
@@ -112,7 +113,7 @@
         <p>@{{ object.username }}</p>
 
         {% if object.bio %}
-        <p>{{ object.bio | linkify_tags | linkify_mentions | markdownify }}</p>
+        <div>{{ object.bio | linkify_tags | linkify_mentions | markdownify }}</div>
         {% endif %}
         
         {% if object == request.user %}
