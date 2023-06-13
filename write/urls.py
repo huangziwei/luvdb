@@ -30,6 +30,7 @@ urlpatterns = [
     path("pin/<int:pk>/", PinDetailView.as_view(), name="pin_detail"),
     path("pin/<int:pk>/update/", PinUpdateView.as_view(), name="pin_update"),
     path("pin/<int:pk>/delete/", PinDeleteView.as_view(), name="pin_delete"),
+    path("pin/copy/<int:pk>/", PinCreateView.as_view(), name="pin_copy"),
     # post
     path("posts/<str:username>", PostListView.as_view(), name="post_list"),
     path("post/new/", PostCreateView.as_view(), name="post_create"),

@@ -53,7 +53,7 @@
                         <blockquote>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
                     </div>
                     <span style='display: flex;'>
-                        <p style='margin-right: 0.5em'>{{ activity.timestamp |date:"Y.m.d H:i" }}</p>
+                        <p style='margin-right: 0.5em'>{{ activity.timestamp | date:"Y.m.d H:i" }}</p>
                         {% if activity.content_object.comments_enabled %}
                             <p style='margin: 0 0.5em'><a href="{% url 'write:post_detail' activity.content_object.id %}">Reply</a></p>
                         {% endif %}
@@ -77,9 +77,12 @@
                         {% if activity.content_object.comments_enabled %}   
                             <p style='margin: 0 0.5em'><a href="{% url 'write:pin_detail' activity.content_object.id %}">Reply</a></p>
                         {% endif %}
+                        {% if activity.user != request.user %}
+                            <p style='margin: 0 0.5em'><a href="{% url 'write:pin_copy' activity.content_object.id %}">Copy</a></p>
+                        {% endif %}
                         {% if activity.user == request.user %}
-                        <p style='margin: 0 0.5em'><a href="{% url 'write:pin_update' activity.content_object.id %}">Edit</a></p>
-                        <p style='margin: 0 0.5em'><a href="{% url 'activity_feed:activity_delete' activity.id %}">Delete</a></p>
+                            <p style='margin: 0 0.5em'><a href="{% url 'write:pin_update' activity.content_object.id %}">Edit</a></p>
+                            <p style='margin: 0 0.5em'><a href="{% url 'activity_feed:activity_delete' activity.id %}">Delete</a></p>
                         {% endif %}
                     </span>
 

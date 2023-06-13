@@ -153,6 +153,15 @@ class PinCreateView(LoginRequiredMixin, CreateView):
     form_class = PinForm
     template_name = "write/pin_create.html"
 
+    def get_initial(self):
+        initial = super().get_initial()
+        original_pin_id = self.kwargs.get("pk")
+        if original_pin_id:
+            original_pin = get_object_or_404(Pin, pk=original_pin_id)
+            initial["title"] = original_pin.title
+            initial["url"] = original_pin.url
+        return initial
+
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
