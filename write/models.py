@@ -91,6 +91,18 @@ class Repost(models.Model):
     def get_absolute_url(self):
         return reverse("write:repost_detail", args=[str(self.id)])
 
+    def get_activity_id(self):
+        try:
+            activity = Activity.objects.get(
+                content_type__model="repost", object_id=self.id
+            )
+            return activity.id
+        except ObjectDoesNotExist:
+            return None
+
+    def get_reposts(self):
+        return Repost.objects.filter(original_activity=self.original_activity)
+
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
