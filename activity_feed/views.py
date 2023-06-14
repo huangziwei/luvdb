@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
@@ -14,7 +15,7 @@ from .models import Activity, Follow
 User = get_user_model()
 
 
-class ActivityFeedView(ListView):
+class ActivityFeedView(LoginRequiredMixin, ListView):
     model = Activity
     template_name = "activity_feed/activity_feed.html"
 
