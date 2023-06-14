@@ -48,7 +48,7 @@ def create_mentions_notifications(user, text, content_object):
                 author_url = reverse("accounts:detail", args=[user.username])
                 content_url = content_object.get_absolute_url()
                 content_name = content_object.__class__.__name__.capitalize()
-                message = f'<a href="{author_url}">{user.username}</a> mentioned you in a <a href="{content_url}">{content_name}</a>.'
+                message = f'<a href="{author_url}">@{user.username}</a> mentioned you in a <a href="{content_url}">{content_name}</a>.'
 
                 Notification.objects.create(
                     recipient=mentioned_user,

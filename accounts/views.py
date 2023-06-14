@@ -53,13 +53,17 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Check if the user has already generated an invitation code this month
-        start_date = datetime.now().replace(day=1)
-        code_this_month = self.request.user.codes_generated.filter(
+        # Define the time restriction here (in days)
+        time_restriction = 365  # Change this to modify the time restriction
+
+        # Check if the user has already generated an invitation code within the time restriction
+        start_date = datetime.now() - timedelta(days=time_restriction)
+        code_recently_generated = self.request.user.codes_generated.filter(
             generated_at__gte=start_date
         ).first()
+
         # Check if the code is used
-        if code_this_month and code_this_month.is_used:
+        if code_recently_generated and code_recently_generated.is_used:
             context["can_generate_code"] = False
         else:
             context["can_generate_code"] = True

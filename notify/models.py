@@ -8,6 +8,8 @@ class Notification(models.Model):
     NOTIFICATION_TYPES = (
         ("comment", "Comment"),
         ("mention", "Mention"),
+        ("repost", "Repost"),
+        ("follow", "Follow"),
     )
 
     recipient = models.ForeignKey(

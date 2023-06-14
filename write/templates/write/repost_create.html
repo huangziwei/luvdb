@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
+            <h2>Repost</h2>
+            <div style="background-color:#f9f9f9; padding: 0.5em; margin:0.5">
+                <!-- Display the original activity -->
+                <p>{{ original_activity.user.username }} {{ original_activity.activity_type }}:</p>
+                <p>{{ original_activity.content_object.content }}</p>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Repost</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

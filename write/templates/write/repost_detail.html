@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Repost by {{ repost.author.username }}</h1>
+  <p>{{ repost.content }}</p>
+  <p><strong>Original Post:</strong> {{ repost.original_activity.content_object.content }}</p>
+  <p><a href="{% url 'write:repost_update' repost.id %}">Edit</a></p>
+  <p><a href="{% url 'write:repost_delete' repost.id %}">Delete</a></p>
+{% endblock %}

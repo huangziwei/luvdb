@@ -1,5 +1,7 @@
 from django.urls import path
 
+from write.views import RepostDetailView
+
 from .views import ActivityFeedDeleteView, ActivityFeedView, follow, unfollow
 
 app_name = "activity_feed"
@@ -12,4 +14,5 @@ urlpatterns = [
     ),
     path("follow/<int:user_id>/", follow, name="follow"),
     path("unfollow/<int:user_id>/", unfollow, name="unfollow"),
+    path("repost/<int:pk>/", RepostDetailView.as_view(), name="repost_detail"),
 ]

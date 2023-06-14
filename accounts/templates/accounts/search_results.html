@@ -55,6 +55,19 @@
         {% endfor %}
         <hr>
     {% endif %}
+
+    {% if repost_results %}
+        <h3>Reposts</h3>
+        {% for repost in repost_results %}
+            <p>
+                <a href="{% url 'write:repost_detail' pin.id %}">{{ repost.content|truncatechars:50 }}</a>
+            </p>
+        {% empty %}
+            <p>No repost results found.</p>
+        {% endfor %}
+        <hr>
+    {% endif %}
+
 </div>
 </div>
 </div>

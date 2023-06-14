@@ -2,6 +2,7 @@
 {% load url_filters %}
 {% load markdownify %}
 {% load linkify %}
+{% load past_tense %}
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -26,17 +27,20 @@
             <div>
                 <!--Say-->
                 {% if activity.activity_type == 'say' %}
-                    <a href="{% url 'accounts:detail' activity.user.username %}">
-                        {{ activity.user.display_name | default:activity.user.username }}
-                    </a> said:
-                    <div style="background-color:#f9f9f9; padding: 1em 1em 0.25em 1em;margin-top:0.5em;">
+                    <p>
+                        <a href="{% url 'accounts:detail' activity.user.username %}">
+                            {{ activity.user.display_name | default:activity.user.username }}
+                        </a> {{ activity.activity_type | past_tense}}:
+                    </p>
+                    <p>
                         {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
-                    </div>
+                    </p>
                     <span style='display: flex;'>
                         <p style='margin-right: 0.5em'>{{ activity.timestamp |date:"Y.m.d H:i" }}</p>
                         {% if activity.content_object.comments_enabled %}
                             <p style='margin: 0 0.5em'><a href="{% url 'write:say_detail' activity.content_object.id %}">Reply</a></p>
                         {% endif %}
+                        <p style='margin: 0 0.5em'><a href="{% url 'write:repost_create' activity.id %}">Repost</a></p>
                         {% if activity.user == request.user %}
                             <p style='margin: 0 0.5em'><a href="{% url 'write:say_update' activity.content_object.id %}">Edit</a></p>
                             <p style='margin: 0 0.5em'><a href="{% url 'activity_feed:activity_delete' activity.id %}">Delete</a></p>
@@ -45,18 +49,21 @@
                     
                 <!--Post-->
                 {% elif activity.activity_type == 'post' %}
-                    <a href="{% url 'accounts:detail' activity.user.username %}">
-                        {{ activity.user.display_name | default:activity.user.username }}
-                    </a> posted:
-                    <div style="background-color:#f9f9f9; padding: 0.5em; margin: 0.5em">
+                    <p>
+                        <a href="{% url 'accounts:detail' activity.user.username %}">
+                            {{ activity.user.display_name | default:activity.user.username }}
+                        </a> {{ activity.activity_type | past_tense}}:
+                    </p>
+                    <p style="background-color:#f9f9f9; padding: 1em;">
                         <a href="{% url 'write:post_detail' activity.content_object.id %}">{{activity.content_object.title}}</a>
                         <blockquote>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
-                    </div>
+                    </p>
                     <span style='display: flex;'>
                         <p style='margin-right: 0.5em'>{{ activity.timestamp | date:"Y.m.d H:i" }}</p>
                         {% if activity.content_object.comments_enabled %}
                             <p style='margin: 0 0.5em'><a href="{% url 'write:post_detail' activity.content_object.id %}">Reply</a></p>
                         {% endif %}
+                        <p style='margin: 0 0.5em'><a href="{% url 'write:repost_create' activity.id %}">Repost</a></p>
                         {% if activity.user == request.user %}
                             <p style='margin: 0 0.5em'><a href="{% url 'write:post_update' activity.content_object.id %}">Edit</a></p>
                             <p style='margin: 0 0.5em'><a href="{% url 'activity_feed:activity_delete' activity.id %}">Delete</a></p>
@@ -65,10 +72,12 @@
 
                 <!--Pin-->
                 {% elif activity.activity_type == 'pin' %}
-                    <a href="{% url 'accounts:detail' activity.user.username %}">
-                        {{ activity.user.display_name | default:activity.user.username }}
-                    </a> pinned:
-                    <div style="background-color:#f9f9f9; padding: 0.5em; margin:0.5">
+                    <p>
+                        <a href="{% url 'accounts:detail' activity.user.username %}">
+                            {{ activity.user.display_name | default:activity.user.username }}
+                        </a> {{ activity.activity_type | past_tense}}:
+                    </p>
+                    <div style="background-color:#f9f9f9; padding: 1em;">
                         <a href="{{ activity.content_object.url }}">{{activity.content_object.title}}</a> ({{activity.content_object.url|root_url}})
                         <blockquote>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
                     </div>
@@ -77,6 +86,7 @@
                         {% if activity.content_object.comments_enabled %}   
                             <p style='margin: 0 0.5em'><a href="{% url 'write:pin_detail' activity.content_object.id %}">Reply</a></p>
                         {% endif %}
+                        <p style='margin: 0 0.5em'><a href="{% url 'write:repost_create' activity.id %}">Repost</a></p>
                         {% if activity.user != request.user %}
                             <p style='margin: 0 0.5em'><a href="{% url 'write:pin_copy' activity.content_object.id %}">Copy</a></p>
                         {% endif %}
@@ -103,6 +113,49 @@
                         <p style='margin: 0 0.5em'><a href="{% url 'activity_feed:activity_delete' activity.content_object.id %}">Delete</a></p>
                         {% endif %}
                     </span>
+
+                <!--repost--> 
+                {% elif activity.activity_type == 'repost' %}
+                <div>
+                    <p>
+                        <a href="{% url 'accounts:detail' activity.user.username %}">
+                            {{ activity.user.display_name | default:activity.user.username }}
+                        </a> {{ activity.activity_type | past_tense}}:
+                    </p>
+                    {% if activity.content_object.content %}
+                        <p>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200  }}</p>
+                    {% endif %}
+                    <div style="background-color:#f9f9f9; padding: 1em; ">
+                        <!-- Display the reposted activity -->
+                        <p>
+                            <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}">
+                                {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
+                            </a> {{ activity.content_object.original_activity.activity_type | past_tense }}:
+                        </p>
+
+                        {% if activity.content_object.original_activity.activity_type == "post" %}
+                        <p><a href="{% url 'write:post_detail' activity.content_object.original_activity.content_object.id %}" >{{ activity.content_object.original_activity.content_object.title }}</a></p>
+                        {% elif activity.content_object.original_activity.activity_type == "pin" %}
+                        <p><a href="{{ activity.content_object.original_activity.content_object.url }}" >{{ activity.content_object.original_activity.content_object.title }}</a> ({{  activity.content_object.original_activity.content_object.url | root_url }})</p>
+                        {% endif %}
+                        <blockquote>
+                            {{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}
+                            <p class='fs-6 fw-lighter'>(<a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}">View Original</a>)</p>
+
+                        </blockquote>
+                    </div>
+                    <span style='display: flex;'>
+                        <p style='margin-right: 0.5em'>{{ activity.timestamp |date:"Y.m.d H:i" }}</p>
+                        {% if activity.content_object.content %}
+                            <p style='margin: 0 0.5em'><a href="{% url 'write:repost_create' activity.id %}">Repost</a></p>
+                        {% endif %}
+                        {% if activity.user == request.user %}
+                            <p style='margin: 0 0.5em'><a href="{% url 'write:repost_update' activity.content_object.id %}">Edit</a></p>
+                            <p style='margin: 0 0.5em'><a href="{% url 'activity_feed:activity_delete' activity.id %}">Delete</a></p>
+                        {% endif %}
+                    </span> 
+                </div>   
+                
                 {% endif %}
 
             </div>

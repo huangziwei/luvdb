@@ -1,4 +1,4 @@
 fly.toml
 .git/
-*.sqlite3*
 .luvdb
+db.sqlite3*

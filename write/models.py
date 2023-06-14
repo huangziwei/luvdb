@@ -50,9 +50,14 @@ class Comment(models.Model):
 
         if is_new and self.author != self.content_object.author:
             author_url = reverse("accounts:detail", args=[self.author.username])
+            author_name = (
+                self.author.display_name
+                if self.author.display_name
+                else self.author.username
+            )
             content_url = self.content_object.get_absolute_url()
             content_name = self.content_object.__class__.__name__.capitalize()
-            message = f'<a href="{author_url}">{self.author.username}</a> commented on your <a href="{content_url}">{content_name}</a>.'
+            message = f'<a href="{author_url}">@{author_name}</a> commented on your <a href="{content_url}">{content_name}</a>.'
 
             Notification.objects.create(
                 recipient=self.content_object.author,
@@ -144,9 +149,56 @@ class Pin(models.Model):
         create_mentions_notifications(self.author, self.content, self)
 
 
+class Repost(models.Model):
+    original_activity = models.ForeignKey(
+        Activity, on_delete=models.CASCADE, related_name="reposts"
+    )
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    comments = GenericRelation(Comment)
+    comments_enabled = models.BooleanField(default=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+
+    def get_absolute_url(self):
+        return reverse("activity_feed:repost_detail", args=[str(self.id)])
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new:
+            Activity.objects.create(
+                user=self.author,
+                activity_type="repost",
+                content_object=self,
+            )
+
+            # Create notification for repost
+            if self.author != self.original_activity.user:
+                author_url = reverse("accounts:detail", args=[self.author.username])
+                content_url = self.original_activity.content_object.get_absolute_url()
+                content_name = (
+                    self.original_activity.content_object.__class__.__name__.capitalize()
+                )
+                message = f'<a href="{author_url}">@{self.author.username}</a> reposted your <a href="{content_url}">{content_name}</a>.'
+
+                Notification.objects.create(
+                    recipient=self.original_activity.user,
+                    sender_content_type=ContentType.objects.get_for_model(self.author),
+                    sender_object_id=self.author.id,
+                    notification_type="repost",
+                    message=message,
+                )
+
+        # Handle tags
+        handle_tags(self, self.content)
+        create_mentions_notifications(self.author, self.content, self)
+
+
 @receiver(post_delete, sender=Post)
 @receiver(post_delete, sender=Say)
 @receiver(post_delete, sender=Pin)
+@receiver(post_delete, sender=Repost)
 def delete_activity(sender, instance, **kwargs):
     content_type = ContentType.objects.get_for_model(instance)
     Activity.objects.filter(content_type=content_type, object_id=instance.id).delete()

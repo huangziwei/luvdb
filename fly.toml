@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for luvdb on 2023-06-14T11:35:33+02:00
+# fly.toml app configuration file generated for luvdb on 2023-06-14T12:42:49+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -12,7 +12,6 @@ console_command = "/code/manage.py shell"
 
 [env]
   PORT = "8000"
-  DATABASE_PATH = "/code/db.sqlite3"
 
 [http_service]
   internal_port = 8000

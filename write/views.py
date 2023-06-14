@@ -1,9 +1,9 @@
 from itertools import chain
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -12,9 +12,12 @@ from django.views.generic import (
     ListView,
     UpdateView,
 )
+from django.views.generic.edit import FormView
 
-from .forms import CommentForm, PinForm, PostForm, SayForm
-from .models import Comment, Pin, Post, Say
+from activity_feed.models import Activity
+
+from .forms import CommentForm, PinForm, PostForm, RepostForm, SayForm
+from .models import Comment, Pin, Post, Repost, Say
 
 User = get_user_model()
 
@@ -237,3 +240,50 @@ class TagListView(ListView):
         context["says"] = Say.objects.filter(tags__name=tag)
         context["pins"] = Pin.objects.filter(tags__name=tag)
         return context
+
+
+class RepostCreateView(LoginRequiredMixin, CreateView):
+    model = Repost
+    template_name = "write/repost_create.html"
+    form_class = RepostForm
+
+    def form_valid(self, form):
+        original_activity = get_object_or_404(Activity, id=self.kwargs["activity_id"])
+        repost = form.save(commit=False)
+        repost.author = self.request.user
+        repost.original_activity = original_activity
+        repost.save()
+        return redirect("activity_feed:activity_feed")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["original_activity"] = get_object_or_404(
+            Activity, id=self.kwargs["activity_id"]
+        )
+        return context
+
+
+class RepostDetailView(DetailView):
+    model = Repost
+    template_name = "write/repost_detail.html"
+    context_object_name = "repost"
+
+
+class RepostDeleteView(LoginRequiredMixin, DeleteView):
+    model = Repost
+    template_name = "write/repost_confirm_delete.html"
+    success_url = reverse_lazy("activity_feed:activity_feed")
+
+
+class RepostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Repost
+    template_name = "write/repost_update.html"
+    form_class = RepostForm
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        repost = self.get_object()
+        return self.request.user == repost.author

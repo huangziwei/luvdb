@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Comment, Pin, Post, Say
+from .models import Comment, Pin, Post, Repost, Say
 
 
 class PostForm(forms.ModelForm):
@@ -77,3 +77,13 @@ class ActivityFeedSayForm(SayForm):
         super(ActivityFeedSayForm, self).__init__(*args, **kwargs)
         self.fields["comments_enabled"].initial = True
         self.fields["comments_enabled"].label = "Enable comments"
+
+
+class RepostForm(forms.ModelForm):
+    class Meta:
+        model = Repost
+        fields = ["content"]
+
+    def __init__(self, *args, **kwargs):
+        super(RepostForm, self).__init__(*args, **kwargs)
+        self.fields["content"].label = ""
