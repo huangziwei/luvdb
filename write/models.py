@@ -101,7 +101,9 @@ class Repost(models.Model):
             return None
 
     def get_reposts(self):
-        return Repost.objects.filter(original_activity=self.original_activity)
+        return Repost.objects.filter(original_activity=self.original_activity).exclude(
+            id=self.id
+        )
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
