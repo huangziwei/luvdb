@@ -7,7 +7,6 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-8">
-            <h2>New Pin</h2>
             <form method="post">
                 {% csrf_token %}
                 {{ form|crispy }}

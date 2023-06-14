@@ -60,7 +60,11 @@ urlpatterns = [
         "comment/<int:pk>/delete/", CommentDeleteView.as_view(), name="comment_delete"
     ),
     path("tag/<str:tag>/", TagListView.as_view(), name="tag_list"),
-    path("repost/<int:activity_id>/", RepostCreateView.as_view(), name="repost_create"),
+    path(
+        "repost/new/<int:activity_id>/",
+        RepostCreateView.as_view(),
+        name="repost_create",
+    ),
     path("repost/<int:pk>/", RepostDetailView.as_view(), name="repost_detail"),
     path("repost/<int:pk>/delete/", RepostDeleteView.as_view(), name="repost_delete"),
     path("repost/<int:pk>/update/", RepostUpdateView.as_view(), name="repost_update"),

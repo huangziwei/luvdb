@@ -89,23 +89,3 @@ def unfollow(request, user_id):
 
     # Redirect to the unfollowed user's profile page
     return redirect("accounts:detail", username=user_to_unfollow.username)
-
-
-@login_required
-def repost_create(request, activity_id):
-    original_activity = get_object_or_404(Activity, id=activity_id)
-    if request.method == "POST":
-        form = RepostForm(request.POST)
-        if form.is_valid():
-            repost = form.save(commit=False)
-            repost.user = request.user
-            repost.original_activity = original_activity
-            repost.save()
-            return redirect("activity_feed:activity_feed")
-    else:
-        form = RepostForm()
-    return render(
-        request,
-        "activity_feed/repost_create.html",
-        {"form": form, "original_activity": original_activity},
-    )

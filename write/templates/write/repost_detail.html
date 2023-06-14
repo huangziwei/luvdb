@@ -1,9 +1,83 @@
 {% extends "base.html" %}
+{% load markdownify %}
+{% load linkify %}
+{% load crispy_forms_tags %}
+{% load past_tense %}
+{% load url_filters %}
 
 {% block content %}
-  <h1>Repost by {{ repost.author.username }}</h1>
-  <p>{{ repost.content }}</p>
-  <p><strong>Original Post:</strong> {{ repost.original_activity.content_object.content }}</p>
-  <p><a href="{% url 'write:repost_update' repost.id %}">Edit</a></p>
-  <p><a href="{% url 'write:repost_delete' repost.id %}">Delete</a></p>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <p>
+        <a href="{% url 'accounts:detail' repost.author.username %}">
+          {{ repost.author.display_name | default:repost.author.username }}
+        </a> reposted:
+      </p>
+      {% if repost.content %}
+        <p>{{ repost.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200  }}</p>
+      {% endif %}
+      <div style="background-color:#f9f9f9; padding: 1em; ">
+        <!-- Display the reposted activity -->
+        <p>
+          <a href="{% url 'accounts:detail' repost.original_activity.user.username %}">
+            {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
+          </a> {{ repost.original_activity.activity_type | past_tense }}:
+        </p>
+
+        {% if repost.original_activity.activity_type == "post" %}
+        <p><a href="{% url 'write:post_detail' repost.original_activity.content_object.id %}" >{{ repost.original_activity.content_object.title }}</a></p>
+        {% elif repost.original_activity.activity_type == "pin" %}
+        <p><a href="{{ repost.original_activity.content_object.url }}" >{{ repost.original_activity.content_object.title }}</a> ({{  repost.original_activity.content_object.url | root_url }})</p>
+        {% endif %}
+        <div style="background-color:#f9f9f9;">
+          {{ repost.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}
+          <p><a href="{{ repost.original_activity.content_object.get_absolute_url }}" style='color:gray;'>{{ repost.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
+        </div>
+      </div>
+      <span style='display: flex;'>
+        <p style='margin-right: 0.5em'>{{ repost.timestamp |date:"Y.m.d H:i" }}</p>
+        {% if repost.author == request.user %}
+          <p style='margin: 0 0.5em'><a href="{% url 'write:repost_update' repost.id %}">Edit</a></p>
+          <p style='margin: 0 0.5em'><a href="{% url 'write:repost_delete' repost.id %}">Delete</a></p>
+        {% endif %}
+      </span> 
+      
+      {% if comments %}
+      <hr>
+      <h5>Comments ({{ comments|length }})</h5> 
+      {% for comment in comments %}
+        <div>
+          <span style='display: flex;'>
+            <a href="{% url 'accounts:detail' comment.author.username%}">
+              {{ comment.author.display_name | default:comment.author.username }}
+            </a>
+            <p style='margin: 0 0.5em'>{{comment.timestamp | date:"Y.m.d H:i"}}</p>
+            {% if comment.author == request.user %} 
+            <p style='margin: 0 0.5em'><a href="{% url "write:comment_update" comment.pk %}">Edit</a><p>
+            {% endif %}
+            {% if object.author == request.user or comment.author == request.user %} 
+            <p style='margin: 0 0.5em'><a href="{% url "write:comment_delete" comment.pk %}">Delete</a></p>
+            {% endif %}
+          </span>
+          <div style="background-color:#f9f9f9; padding: 1em; margin-button: 0.5em">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
+        </div>
+      {% empty %}
+        <p>No comments yet.</p>
+      {% endfor %}
+      {% endif %}
+      
+      {% if repost.comments_enabled %}
+        <form method="POST" action="{% url 'write:comment_create' 'write' 'repost' repost.id %}">
+        {% csrf_token %}
+        {{ comment_form|crispy }}
+          <button type="submit" class='btn btn-sm btn-primary'>Add Comment</button>
+          </form>
+          <br>
+        {% else %}
+        <p>Comment disabled.</p>
+      {% endif %} 
+    </div>       
+  </div>
+</div>
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Comment, Pin, Post, Say
+from .models import Comment, Pin, Post, Repost, Say
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -19,6 +19,11 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ("author", "content_type", "content", "timestamp")
 
 
+class RepostAdmin(admin.ModelAdmin):
+    list_display = ("author", "content", "timestamp")
+
+
+admin.site.register(Repost, RepostAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Pin, PinAdmin)
 admin.site.register(Post, PostAdmin)

@@ -8,7 +8,7 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ["title", "content", "comments_enabled"]
         widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "Title..."}),
+            "title": forms.TextInput(attrs={"placeholder": "Post title..."}),
             "content": forms.Textarea(
                 attrs={
                     "placeholder": "What do you want to share?",
@@ -43,7 +43,7 @@ class PinForm(forms.ModelForm):
         model = Pin
         fields = ["title", "url", "content", "comments_enabled"]
         widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "Title..."}),
+            "title": forms.TextInput(attrs={"placeholder": "Pin title..."}),
             "url": forms.TextInput(attrs={"placeholder": "https://www.example.com"}),
             "content": forms.Textarea(
                 attrs={"placeholder": "What do you want to share?"}
@@ -82,8 +82,9 @@ class ActivityFeedSayForm(SayForm):
 class RepostForm(forms.ModelForm):
     class Meta:
         model = Repost
-        fields = ["content"]
+        fields = ["content", "comments_enabled"]
 
     def __init__(self, *args, **kwargs):
         super(RepostForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
+        self.fields["comments_enabled"].label = "Enable comments"

@@ -25,11 +25,12 @@ User = get_user_model()
 class ShareDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        post_content_type = ContentType.objects.get_for_model(self.object)
         context["comments"] = Comment.objects.filter(
-            content_type=post_content_type, object_id=self.object.id
+            content_type=ContentType.objects.get_for_model(self.object),
+            object_id=self.object.id,
         )
         context["comment_form"] = CommentForm()
+        context["repost_form"] = RepostForm()
         return context
 
 
@@ -252,6 +253,7 @@ class RepostCreateView(LoginRequiredMixin, CreateView):
         repost = form.save(commit=False)
         repost.author = self.request.user
         repost.original_activity = original_activity
+        repost.content_object = original_activity.content_object
         repost.save()
         return redirect("activity_feed:activity_feed")
 
@@ -263,7 +265,7 @@ class RepostCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
-class RepostDetailView(DetailView):
+class RepostDetailView(ShareDetailView):
     model = Repost
     template_name = "write/repost_detail.html"
     context_object_name = "repost"

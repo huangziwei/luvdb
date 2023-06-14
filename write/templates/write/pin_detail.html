@@ -10,17 +10,27 @@
 <div class="container">
     <div class="row">
       <div class="col-sm-8">
-        <h1>Pin</h1>
-        <h3><a href="{{ object.url }}">{{ object.title }}</a></h3>
-        <p>({{ object.url|root_url }})</p>
-        <div>{{ object.content| linkify_tags | linkify_mentions | markdownify }}</div>
-        <p>
-          {{ object.timestamp|date:"Y.m.d H:i" }} 
+        <a href="{% url 'accounts:detail' object.author.username %}">
+          {{ object.author.display_name | default:object.author.username }}
+        </a> pinned:
+        <div style="background-color:#f9f9f9; padding: 1em; margin: 0.5em">
+          <p><a href="{{ object.url }}">{{ object.title }}</a> ({{ object.url|root_url }})</p>
+          <blockquote>{{ object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
+        </div>
+        <span style="display: flex;">
+          <p style='margin-right: 0.5em'>{{ object.timestamp|date:"Y.m.d H:i" }}</p>
           {% if object.author == request.user %}
-            <a href="{% url "write:pin_update" object.pk %}">Edit</a> 
-            <a href="{% url "write:pin_delete" object.pk %}">Delete</a>
+            <p style='margin: 0 0.5em'><a href="{% url "write:pin_update" object.pk %}">Edit</a></p>
+            <p style='margin: 0 0.5em'><a href="{% url "write:pin_delete" object.pk %}">Delete</a></p>
           {% endif %}
-        </p>
+        </span>
+
+        <button id="show-comments" class="btn btn-primary btn-sm mx-auto">Comments ({{ comments|length }})</button>
+        <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto">Reposts ({{ object.reposts.count }})</button>
+  
+        <hr>
+  
+        <div id="comments-section">
 
         {% if comments %}
         <h3>Comments ({{ comments|length }})</h3> 
@@ -53,14 +63,57 @@
         </form>
         <br>
         {% else %}
-        <p>Comment disabled by the author.</p>
+        <p>Comment disabled.</p>
         {% endif %} 
+      </div>
 
-
-
+        <div id="reposts-section" style="display: none;">
+          {% if object.reposts.count != 0 %}
+            <h5>Reposts ({{ object.reposts.count }})</h5> 
+            {% for repost in object.reposts.all %}
+              <div>
+                <span style='display: flex;'>
+                  <a href="{% url 'accounts:detail' repost.author.username%}">
+                    {{ repost.author.display_name | default:repost.author.username }}
+                  </a>
+                  <p style='margin: 0 0.5em'><a href="{{repost.get_absolute_url}}" style='color:gray;'>{{repost.timestamp | date:"Y.m.d H:i"}}</a></p>
+  
+                </span>
+              
+              {% if repost.content  %}  
+                <div style="background-color:#f9f9f9; padding: 1em; margin-button: 0.5em">{{ repost.content| linkify_tags | linkify_mentions | markdownify }}</div>
+              {% endif %}
+            </div>
+            {% empty %}
+              <p>No reposts yet.</p>
+            {% endfor %}
+            <hr>
+          {% endif %}
+  
+          {% if object.get_activity_id is not None %}
+          <form method="POST" action="{% url 'write:repost_create' object.get_activity_id %}">
+            {% csrf_token %}
+            {{ repost_form | crispy }}
+            <button type="submit" class='btn btn-sm btn-primary'>Add Repost</button>
+          </form> 
+          {% else %}
+            <p>Repost disabled.</p>
+          {% endif %}
+  
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
-
+  
+  <script>
+    document.getElementById('show-comments').addEventListener('click', function() {
+        document.getElementById('comments-section').style.display = 'block';
+        document.getElementById('reposts-section').style.display = 'none';
+    });
+    
+    document.getElementById('show-reposts').addEventListener('click', function() {
+        document.getElementById('comments-section').style.display = 'none';
+        document.getElementById('reposts-section').style.display = 'block';
+    });
+  </script>
 {% endblock content %}

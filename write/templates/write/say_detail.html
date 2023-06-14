@@ -13,35 +13,42 @@
         {{ object.author.display_name | default:object.author.username }}
       </a> said:
       <div style="background-color:#f9f9f9; padding: 0.5em; margin: 0.5em">{{ object.content| linkify_tags | linkify_mentions | markdownify }}</div>
-      <p>
-        {{ object.timestamp|date:"Y.m.d H:i" }} 
+      <span style="display: flex;">
+        <p style='margin-right: 0.5em'>{{ object.timestamp|date:"Y.m.d H:i" }} </p> 
         {% if object.author == request.user %}
-          <a href="{% url "write:say_update" object.pk %}">Edit</a>
-          <a href="{% url "write:say_delete" object.pk %}">Delete</a>
+          <p style='margin: 0 0.5em'><a href="{% url "write:say_update" object.pk %}">Edit</a></p>
+          <p style='margin: 0 0.5em'><a href="{% url "write:say_delete" object.pk %}">Delete</a></p>
         {% endif %}
-      </p>
+      </span>
 
+      <button id="show-comments" class="btn btn-primary btn-sm mx-auto">Comments ({{ comments|length }})</button>
+      <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto">Reposts ({{ object.reposts.count }})</button>
+
+      <hr>
+
+      <div id="comments-section">
         {% if comments %}
-        <h3>Comments ({{ comments|length }})</h3> 
+        <h5>Comments ({{ comments|length }})</h5> 
         {% for comment in comments %}
           <div>
-            <span>
+            <span style='display: flex;'>
               <a href="{% url 'accounts:detail' comment.author.username%}">
                 {{ comment.author.display_name | default:comment.author.username }}
               </a>
-              {{comment.timestamp | date:"Y.m.d H:i"}} 
+              <p style='margin: 0 0.5em'>{{comment.timestamp | date:"Y.m.d H:i"}}</p>
               {% if comment.author == request.user %} 
-                <a href="{% url "write:comment_update" comment.pk %}">Edit</a>
+              <p style='margin: 0 0.5em'><a href="{% url "write:comment_update" comment.pk %}">Edit</a><p>
               {% endif %}
               {% if object.author == request.user or comment.author == request.user %} 
-                <a href="{% url "write:comment_delete" comment.pk %}">Delete</a>
+              <p style='margin: 0 0.5em'><a href="{% url "write:comment_delete" comment.pk %}">Delete</a></p>
               {% endif %}
             </span>
-            <div style="background-color:#f9f9f9; padding: 0.5em; margin: 0.5em">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
+            <div style="background-color:#f9f9f9; padding: 1em; margin-button: 0.5em">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
           </div>
         {% empty %}
           <p>No comments yet.</p>
         {% endfor %}
+        <hr>
         {% endif %}
         
         {% if object.comments_enabled %}
@@ -52,11 +59,56 @@
         </form>
         <br>
         {% else %}
-        <p>Comment disabled by the author.</p>
+        <p>Comment disabled.</p>
         {% endif %} 
+        
+      </div>
+
+      <div id="reposts-section" style="display: none;">
+        {% if object.reposts.count != 0 %}
+        <h5>Reposts ({{ object.reposts.count }})</h5> 
+        {% for repost in object.reposts.all %}
+          <div>
+            <span style='display: flex;'>
+              <a href="{% url 'accounts:detail' repost.author.username%}">
+                {{ repost.author.display_name | default:repost.author.username }}
+              </a>
+              <p style='margin: 0 0.5em'><a href="{{repost.get_absolute_url}}" style='color:gray;'>{{repost.timestamp | date:"Y.m.d H:i"}}</a></p>
+
+            </span>
+            
+            {% if repost.content  %}
+            
+            <div style="background-color:#f9f9f9; padding: 1em; margin-button: 0.5em">{{ repost.content| linkify_tags | linkify_mentions | markdownify }}</div>
+            {% endif %}
+          </div>
+        {% empty %}
+          <p>No reposts yet.</p>
+        {% endfor %}
+        <hr>
+        {% endif %}
+
+        <form method="POST" action="{% url 'write:repost_create' object.get_activity_id %}">
+          {% csrf_token %}
+          {{ repost_form | crispy }}
+          <button type="submit" class='btn btn-sm btn-primary'>Add Repost</button>
+        </form> 
+
+      </div>
+
     </div>
   </div>
 </div>
-
  
+<script>
+  document.getElementById('show-comments').addEventListener('click', function() {
+      document.getElementById('comments-section').style.display = 'block';
+      document.getElementById('reposts-section').style.display = 'none';
+  });
+  
+  document.getElementById('show-reposts').addEventListener('click', function() {
+      document.getElementById('comments-section').style.display = 'none';
+      document.getElementById('reposts-section').style.display = 'block';
+  });
+</script>
 {% endblock content %}

@@ -1,15 +1,31 @@
 {% extends "base.html" %}
+{% load markdownify %}
+{% load linkify %}
 {% load crispy_forms_tags %}
+{% load past_tense %}
+{% load url_filters %}
 
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-sm-8">
-            <h2>Repost</h2>
-            <div style="background-color:#f9f9f9; padding: 0.5em; margin:0.5">
+            <div style="background-color:#f9f9f9; padding: 1em; ">
                 <!-- Display the original activity -->
-                <p>{{ original_activity.user.username }} {{ original_activity.activity_type }}:</p>
-                <p>{{ original_activity.content_object.content }}</p>
+                <p>
+                    <a href="{% url 'accounts:detail' original_activity.user.username %}">
+                        {{ original_activity.user.display_name | default:original_activity.user.username }}
+                    </a> {{ original_activity.activity_type | past_tense }}:
+                </p>
+
+                {% if original_activity.activity_type == "post" %}
+                <p><a href="{% url 'write:post_detail' original_activity.content_object.id %}" >{{ original_activity.content_object.title }}</a></p>
+                {% elif original_activity.activity_type == "pin" %}
+                <p><a href="{{ original_activity.content_object.url }}" >{{ original_activity.content_object.title }}</a> ({{  original_activity.content_object.url | root_url }})</p>
+                {% endif %}
+                <div style="background-color:#f9f9f9;">
+                    {{ original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}
+                    <p><a href="{{ original_activity.content_object.get_absolute_url }}" style='color:gray;'>{{ original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
+                </div>
             </div>
             <form method="POST">
                 {% csrf_token %}
