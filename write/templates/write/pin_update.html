@@ -2,10 +2,17 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-  <h2>Edit pin</h2>
-  <form method="POST">
-  {% csrf_token %}
-  {{ form|crispy }}
-  <button type="submit" class="btn btn-sm btn-primary">Update</button>
-  </form>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <h2>Edit pin</h2>
+      <form method="POST">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <button type="submit" class="btn btn-sm btn-primary">Update</button>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

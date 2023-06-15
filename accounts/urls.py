@@ -4,6 +4,7 @@ from .views import (
     AccountDetailView,
     AccountUpdateView,
     GenerateInvitationCodeView,
+    PersonalActivityFeedView,
     SignUpView,
     redirect_to_profile,
     search_view,
@@ -20,5 +21,10 @@ urlpatterns = [
     ),
     path("search/", search_view, name="search"),
     path("people/<str:username>/", view=AccountDetailView.as_view(), name="detail"),
+    path(
+        "people/<str:username>/feed",
+        view=PersonalActivityFeedView.as_view(),
+        name="feed",
+    ),
     path("profile", view=redirect_to_profile, name="profile"),
 ]

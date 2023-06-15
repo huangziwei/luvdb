@@ -22,6 +22,7 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["say_form"] = ActivityFeedSayForm()
+        context["feed_type"] = "public"
         return context
 
     def post(self, request, *args, **kwargs):

@@ -10,8 +10,9 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views import View
-from django.views.generic import CreateView, DetailView, UpdateView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
+from activity_feed.models import Activity
 from write.models import Pin, Post, Say
 
 from .forms import CustomUserCreationForm
@@ -74,6 +75,9 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
         context["posts"] = user_posts
         context["pins"] = user_pins
         context["says"] = user_says
+        context["recent_activities"] = Activity.objects.filter(
+            user=self.object
+        ).order_by("-timestamp")[:5]
 
         return context
 
@@ -136,7 +140,9 @@ def search_view(request):
     query = request.GET.get("q")
     if query:
         user_results = User.objects.filter(
-            Q(username__icontains=query) | Q(display_name__icontains=query)
+            Q(username__icontains=query)
+            | Q(display_name__icontains=query)
+            | Q(bio__icontains=query)
         )
         post_results = Post.objects.filter(
             Q(title__icontains=query) | Q(content__icontains=query)
@@ -157,9 +163,28 @@ def search_view(request):
         request,
         "accounts/search_results.html",
         {
+            "query": query,
             "user_results": user_results,
             "post_results": post_results,
             "say_results": say_results,
             "pin_results": pin_results,
         },
     )
+
+
+class PersonalActivityFeedView(LoginRequiredMixin, ListView):
+    model = Activity
+    template_name = "activity_feed/activity_feed.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["feed_type"] = "personal"
+        return context
+
+    def get_queryset(self):
+        # Get the username from the URL
+        username = self.kwargs["username"]
+        # Get the User object for this username
+        user = User.objects.get(username=username)
+        # Return only the activities for this user
+        return super().get_queryset().filter(user=user).order_by("-timestamp")

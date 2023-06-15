@@ -185,6 +185,7 @@ MARKDOWNIFY = {
             "h5",
             "h6",
             "img",
+            "br",
         ],
         "WHITELIST_ATTRS": [
             "href",

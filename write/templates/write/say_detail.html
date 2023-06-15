@@ -88,11 +88,15 @@
         <hr>
         {% endif %}
 
+        {% if object.get_activity_id is not None %}
         <form method="POST" action="{% url 'write:repost_create' object.get_activity_id %}">
           {% csrf_token %}
           {{ repost_form | crispy }}
           <button type="submit" class='btn btn-sm btn-primary'>Add Repost</button>
         </form> 
+        {% else %}
+        <p>Repost disabled.</p>
+        {% endif %}
 
       </div>
 

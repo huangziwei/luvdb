@@ -240,6 +240,7 @@ class TagListView(ListView):
         context["posts"] = Post.objects.filter(tags__name=tag)
         context["says"] = Say.objects.filter(tags__name=tag)
         context["pins"] = Pin.objects.filter(tags__name=tag)
+        context["users"] = User.objects.filter(bio__icontains=tag)
         return context
 
 
