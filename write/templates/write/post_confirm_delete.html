@@ -5,7 +5,6 @@
   <p>Are you sure you want to delete the post "{{ object.title }}"?</p>
   <form method="POST">
     {% csrf_token %}
-    <button type="submit" class="btn btn-danger btn-sm">Yes, delete</button>
+    <button type="submit" class="btn btn-danger">Yes, delete</button>
   </form>
-  <a href="{% url 'write:post_detail' object.id %}">No, take me back</a>
 {% endblock %}

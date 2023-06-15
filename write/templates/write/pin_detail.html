@@ -19,9 +19,11 @@
             {% comment %} ({{ object.url|root_url }}) {% endcomment %}
             (<a href="{% url 'write:pins_from_url' object.url|root_url %}">{{ pin.url|root_url }}</a>)
           </p>
+          {% if object.content %}
           <blockquote>{{ object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
+          {% endif %}
         </div>
-        <span style="display: flex;">
+        <span class="d-flex mb-3">
           <p style='margin-right: 0.5em'>{{ object.timestamp|date:"Y.m.d H:i" }}</p>
           {% if object.author == request.user %}
             <p style='margin: 0 0.5em'><a href="{% url "write:pin_update" object.pk %}">Edit</a></p>

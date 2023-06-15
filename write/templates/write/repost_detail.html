@@ -35,15 +35,13 @@
           <p><a href="{{ repost.original_activity.content_object.get_absolute_url }}" style='color:gray;'>{{ repost.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
         </div>
       </div>
-      <span style='display: flex;'>
+      <span class="d-flex mt-3">
         <p style='margin-right: 0.5em'>{{ repost.timestamp |date:"Y.m.d H:i" }}</p>
         {% if repost.author == request.user %}
           <p style='margin: 0 0.5em'><a href="{% url 'write:repost_update' repost.id %}">Edit</a></p>
           <p style='margin: 0 0.5em'><a href="{% url 'write:repost_delete' repost.id %}">Delete</a></p>
         {% endif %}
       </span> 
-
-      <br>
       
       <button id="show-comments" class="btn btn-primary btn-sm mx-auto">Comments ({{ comments|length }})</button>
       <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto">Reposts ({{ object.get_reposts.count }})</button>

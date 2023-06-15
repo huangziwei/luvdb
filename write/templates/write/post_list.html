@@ -3,9 +3,11 @@
 
 {% block content %}
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mt-2">
-        <h4>{{object.display_name | default:object.username}} posted</h4>
-    </div>
+    <h5>
+      <a href="{% url 'accounts:detail' object.username %}">
+        {{object.display_name | default:object.username}} 
+      </a> posted
+    </h5>
     {% for post in post_list %}
         <div>
             <div><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></div>
@@ -14,12 +16,17 @@
                 {% if post.comments_enabled %}
                 <p class="ms-2 me-2"><a href="{% url 'write:post_detail' post.id %}">Reply</a></p>
                 {% endif %}
+                {% if post.get_activity_id is not None %}
+                    <p style='margin: 0 0.5em'><a href="{% url 'write:repost_create' post.get_activity_id %}">Repost</a></p>
+                    {% endif %}
                 {% if object == request.user %}
                 <p class="ms-2 me-2"><a href="{% url 'write:post_update' post.id %}">Edit</a></p>
                 <p class="ms-2 me-2"><a href="{% url 'write:post_delete' post.id %}">Delete</a></p>
                 {% endif %}
             </span>
         </div>
+    {% empty %}
+        <p>Nothing yet.</p>
     {% endfor %}
 </div>
 {% endblock content %}

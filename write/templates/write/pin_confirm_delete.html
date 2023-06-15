@@ -10,7 +10,6 @@
 
   <form method="POST">
     {% csrf_token %}
-    <button type="buttun" class='btn btn-sm btn-danger'>Yes, delete</button>
+    <button type="buttun" class='btn btn-danger'>Yes, delete</button>
   </form>
-  <a href="{% url 'write:pin_detail' object.id %}"><button type="button" class="btn btn-link">No, take me back</button><a>
 {% endblock %}

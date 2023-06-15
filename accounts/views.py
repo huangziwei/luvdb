@@ -76,7 +76,7 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
         context["says"] = user_says
         context["recent_activities"] = Activity.objects.filter(
             user=self.object
-        ).order_by("-timestamp")[:5]
+        ).order_by("-timestamp")[:3]
 
         return context
 

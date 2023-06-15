@@ -61,6 +61,7 @@
     {% for post in posts|slice:":3" %}
       <div>
           <div><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></div>
+          {% comment %} <div class='mt-2 mb-2 me-5 justify-content-between'>{{post.content | truncatewords:35}}</div> {% endcomment %}
           <span class="d-flex">
               <p class="me-2">{{ post.timestamp |date:"Y.m.d H:i" }}</p>
               {% if post.comments_enabled %}
@@ -77,8 +78,6 @@
       </div>
     {% endfor %}
     </div>
-
-    
 
     <!-- Right column -->
     <div class="col-sm-4">

@@ -7,15 +7,12 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-8">
-      <h3>{{object.display_name | default:object.username}} said</h3>
-      {% for say in say_list %}
+      <div class="d-flex justify-content-between align-items-center mt-2">
+        <h4>{{object.display_name | default:object.username}} said</h4>
+      </div>
+          {% for say in say_list %}
           <!--Say-->
           <div class="activity-item mb-3">
-              <p>
-                  <a href="{% url 'accounts:detail' say.author.username %}">
-                      {{ say.author.display_name | default:say.author.username }}
-                  </a> said:
-              </p>
               <p>
                   {{ say.content | linkify_tags | linkify_mentions | markdownify }}
               </p>
@@ -28,6 +25,9 @@
                           <a href="{% url 'write:say_detail' say.id %}">Reply</a>
                       </p>
                   {% endif %}
+                  {% if say.get_activity_id is not None %}
+                    <p style='margin: 0 0.5em'><a href="{% url 'write:repost_create' say.get_activity_id %}">Repost</a></p>
+                    {% endif %}
                   {% if object == request.user %}
                       <p class="ms-2 me-2"><a href="{% url 'write:say_update' say.id %}">Edit</a></p>
                       <p class="ms-2 me-2"><a href="{% url 'write:say_delete' say.id %}">Delete</a></p>
@@ -35,7 +35,7 @@
               </span>
           </div>
       {% empty %}
-          <p>nothing.</p>
+          <p>Nothing.</p>
       {% endfor %}
     </div>
   </div>
