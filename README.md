@@ -1,4 +1,4 @@
-# LuvDB
+# LʌvDB
 
 Built with Django and Bootstrap.
 

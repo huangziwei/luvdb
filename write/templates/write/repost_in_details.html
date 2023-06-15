@@ -2,10 +2,10 @@
 {% load linkify %}
 {% load crispy_forms_tags %}
 
-{% if object.reposts.count != 0 %}
+{% if reposts.count != 0 %}
   
-    <h5>Reposts ({{ object.reposts.count }})</h5> 
-    {% for repost in object.reposts.all %}
+    <h5>Reposts ({{ reposts.count }})</h5> 
+    {% for repost in reposts.all %}
 
     <div>
       <span style='display: flex;'>

@@ -154,13 +154,12 @@ LOGOUT_REDIRECT_URL = "login"
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "static"
-# STATICFILES_DIRS = [BASE_DIR / "static"]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-CSRF_TRUSTED_ORIGINS = ["https://*.fly.dev/"]
+CSRF_TRUSTED_ORIGINS = ["https://*.fly.dev/", "https://*.luvdb.com"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
