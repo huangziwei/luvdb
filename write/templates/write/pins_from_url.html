@@ -8,15 +8,16 @@
     <div class="row">
       <div class="col-sm-8">
 
-        <h5>
-          <a href="{% url 'accounts:detail' object.username %}">
-            {{object.display_name | default:object.username}} 
-          </a> pinned
-        </h5>
+        <h4>Pins from {{ root_url }}</h4>
         
-        {% for pin in pin_list %}
+        {% for pin in pins %}
             <!--Pin-->
             <div class="activity-item mb-3">
+                <p>
+                    <a href="{% url 'accounts:detail' pin.author.username %}">
+                        {{ pin.author.display_name | default:pin.author.username }}
+                    </a> pinned:
+                </p>
                 <div style="background-color:#f9f9f9; padding: 1em;">
                     <a href="{{ pin.url }}">{{ pin.title }}</a> 
                     (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
@@ -44,7 +45,7 @@
                 </span>
             </div>
         {% empty %}
-            <p>Nothing.</p>
+            <p>No pins from this URL.</p>
         {% endfor %}
         </div>
     </div>

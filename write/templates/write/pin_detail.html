@@ -14,7 +14,11 @@
           {{ object.author.display_name | default:object.author.username }}
         </a> pinned:
         <div style="background-color:#f9f9f9; padding: 1em; margin: 0.5em">
-          <p><a href="{{ object.url }}">{{ object.title }}</a> ({{ object.url|root_url }})</p>
+          <p>
+            <a href="{{ object.url }}">{{ object.title }}</a> 
+            {% comment %} ({{ object.url|root_url }}) {% endcomment %}
+            (<a href="{% url 'write:pins_from_url' object.url|root_url %}">{{ pin.url|root_url }}</a>)
+          </p>
           <blockquote>{{ object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
         </div>
         <span style="display: flex;">
@@ -24,7 +28,6 @@
             <p style='margin: 0 0.5em'><a href="{% url "write:pin_delete" object.pk %}">Delete</a></p>
           {% endif %}
         </span>
-
         <button id="show-comments" class="btn btn-primary btn-sm mx-auto">Comments ({{ comments|length }})</button>
         <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto">Reposts ({{ object.reposts.count }})</button>
   

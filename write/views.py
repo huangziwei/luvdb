@@ -40,7 +40,7 @@ class PostListView(ListView):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs["username"])
-        return Post.objects.filter(author=self.user)
+        return Post.objects.filter(author=self.user).order_by("-timestamp")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -89,7 +89,7 @@ class SayListView(ListView):
         self.user = get_object_or_404(
             get_user_model(), username=self.kwargs["username"]
         )
-        return Say.objects.filter(author=self.user)
+        return Say.objects.filter(author=self.user).order_by("-timestamp")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -139,7 +139,7 @@ class PinListView(ListView):
         self.user = get_object_or_404(
             get_user_model(), username=self.kwargs["username"]
         )
-        return Pin.objects.filter(author=self.user)
+        return Pin.objects.filter(author=self.user).order_by("-timestamp")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -187,6 +187,29 @@ class PinDeleteView(DeleteView):
     model = Pin
     template_name = "write/pin_confirm_delete.html"
     success_url = reverse_lazy("activity_feed:activity_feed")
+
+
+class PinsFromURLView(ListView):
+    model = Pin
+    template_name = "write/pins_from_url.html"
+    context_object_name = "pins"
+
+    def get_queryset(self):
+        root_url = self.kwargs["root_url"]
+
+        # Add the scheme to the root_url if it's not there
+        if not root_url.startswith("http"):
+            root_url = "http://" + root_url
+
+        # Get all pins with a URL that starts with the root_url
+        return Pin.objects.filter(url__startswith=root_url)
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add root_url to the context
+        context["root_url"] = self.kwargs["root_url"]
+        return context
 
 
 class CommentCreateView(LoginRequiredMixin, CreateView):

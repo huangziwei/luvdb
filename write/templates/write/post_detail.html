@@ -14,7 +14,7 @@
         <a href="{% url "write:post_delete" object.pk %}">Delete</a>{% endif %}
       </p>
       <div>{{ object.content | linkify_tags | linkify_mentions | markdownify}}</div>
-      
+      <br>
       <button id="show-comments" class="btn btn-primary btn-sm mx-auto">Comments ({{ comments|length }})</button>
       <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto">Reposts ({{ object.reposts.count }})</button>
 

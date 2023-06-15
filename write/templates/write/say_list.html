@@ -5,13 +5,39 @@
 
 {% block content %}
 <div class="container">
-  <h3>{{object.display_name | default:object.username}} said</h3>
-  {% for say in say_list %}
-    <div>
-      <div>{{ say.content | linkify_tags | linkify_mentions | markdownify }}</div>
-      <p><a href="{% url 'write:say_detail' say.id %}">{{ say.timestamp|date:"Y.m.d H:i" }}</a></p>
-      <br />
+  <div class="row">
+    <div class="col-sm-8">
+      <h3>{{object.display_name | default:object.username}} said</h3>
+      {% for say in say_list %}
+          <!--Say-->
+          <div class="activity-item mb-3">
+              <p>
+                  <a href="{% url 'accounts:detail' say.author.username %}">
+                      {{ say.author.display_name | default:say.author.username }}
+                  </a> said:
+              </p>
+              <p>
+                  {{ say.content | linkify_tags | linkify_mentions | markdownify }}
+              </p>
+              <span class="d-flex mt-3">
+                  <p class="me-2">
+                      <a href="{% url 'write:say_detail' say.id %}" class="link-secondary">{{ say.timestamp |date:"Y.m.d H:i" }}</a>
+                  </p>
+                  {% if say.comments_enabled %}
+                      <p class="ms-2 me-2">
+                          <a href="{% url 'write:say_detail' say.id %}">Reply</a>
+                      </p>
+                  {% endif %}
+                  {% if object == request.user %}
+                      <p class="ms-2 me-2"><a href="{% url 'write:say_update' say.id %}">Edit</a></p>
+                      <p class="ms-2 me-2"><a href="{% url 'write:say_delete' say.id %}">Delete</a></p>
+                  {% endif %}
+              </span>
+          </div>
+      {% empty %}
+          <p>nothing.</p>
+      {% endfor %}
     </div>
-  {% endfor %}
+  </div>
 </div>
 {% endblock content %}

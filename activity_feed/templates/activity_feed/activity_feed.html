@@ -24,9 +24,9 @@
                 </form>
                 <hr>
             {% endif %}
+            {% include "activity_feed/activity_filter.html" %}
             {% for activity in object_list %}
                 {% include "activity_feed/activity_item.html" %}
-                <br/>
             {% endfor %}
         </div>
     </div>

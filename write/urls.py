@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from .views import (
     CommentCreateView,
@@ -8,6 +8,7 @@ from .views import (
     PinDeleteView,
     PinDetailView,
     PinListView,
+    PinsFromURLView,
     PinUpdateView,
     PostCreateView,
     PostDeleteView,
@@ -30,6 +31,11 @@ app_name = "write"
 urlpatterns = [
     # pin
     path("pins/<str:username>", PinListView.as_view(), name="pin_list"),
+    re_path(
+        r"^pins/from/(?P<root_url>.+)/$",
+        PinsFromURLView.as_view(),
+        name="pins_from_url",
+    ),
     path("pin/new/", PinCreateView.as_view(), name="pin_create"),
     path("pin/<int:pk>/", PinDetailView.as_view(), name="pin_detail"),
     path("pin/<int:pk>/update/", PinUpdateView.as_view(), name="pin_update"),

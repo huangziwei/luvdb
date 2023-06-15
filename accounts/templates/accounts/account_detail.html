@@ -14,93 +14,70 @@
     <!-- Left column -->
     <div class="col-sm-8">
 
-      <!--Say-->
-      <div class="d-flex justify-content-between align-items-center">
-        <h4>Says</h4>
-        <div>
-          <a class="btn btn-secondary btn-sm" href="{% url 'write:say_list' object.username %}">All</a>
-          {% if object == request.user %}
-          <a class="btn btn-primary btn-sm" href="{% url 'write:say_create' %}">New</a>
-          {% endif %}
-        </div>
-      </div>
-      {% for say in says|slice:":3" %}
-        <div>
-            <div style="background-color:#f9f9f9; padding: 0.5em; margin: 0.5em">
-              {{ say.content| linkify_tags | linkify_mentions | markdownify }}
-            </div>
-            <span style='display: flex'>
-              <p style='margin-right: 0.5em'>{{ say.timestamp |date:"Y.m.d H:i" }}</p>
-              {% if say.comments_enabled %}
-              <p style='margin: 0 0.5em'><a href="{% url 'write:say_detail' say.id %}">Reply</a></p>
-              {% endif %}
-              {% if object == request.user %}
-              <p style='margin: 0 0.5em'><a href="{% url 'write:say_update' say.id %}">Edit</a></p>
-              <p style='margin: 0 0.5em'><a href="{% url 'write:say_delete' say.id %}">Delete</a></p>
-              {% endif %}
-            </span>
-        </div>
-        <br/>
-      {% endfor %}
-      <br/>
-
-      <!--Pins-->
-      <div class="d-flex justify-content-between align-items-center">
-        <h4>Pins</h4>
-        <div>
-          <a class="btn btn-secondary btn-sm" href="{% url 'write:pin_list' object.username %}">All</a>
+    <!--Pins-->
+    <div class="d-flex justify-content-between align-items-center mt-2">
+      <h4>Pins</h4>
+      <div>
+          <a class="btn btn-outline-secondary btn-sm" href="{% url 'write:pin_list' object.username %}">All</a>
           {% if object == request.user %}
           <a class="btn btn-primary btn-sm" href="{% url 'write:pin_create' %}">New</a>
           {% endif %}
-        </div>
       </div>
-      {% for pin in pins|slice:":3" %}
-        <div>
-            <div>
-              <a href="{{pin.url}}">{{ pin.title }}</a> ({{ pin.url|root_url }})
-              </span>
-            </div> 
-            <span style='display: flex'>
-              <p style='margin-right: 0.5em'>{{ pin.timestamp |date:"Y.m.d H:i" }}</p>
+    </div>
+    {% for pin in pins|slice:":3" %}
+      <div>
+          <div>
+              <a href="{{pin.url}}">{{ pin.title }}</a> 
+              (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
+          </div> 
+          <span class="d-flex">
+              <p class="me-2">{{ pin.timestamp |date:"Y.m.d H:i" }}</p>
               {% if pin.comments_enabled %}
-              <p style='margin: 0 0.5em'><a href="{% url 'write:pin_detail' pin.id %}">Reply</a></p>
+              <p class="ms-2 me-2"><a href="{% url 'write:pin_detail' pin.id %}">Reply</a></p>
+              {% endif %}
+              {% if pin.get_activity_id is not None %}
+              <p class="ms-2 me-2"><a href="{% url 'write:repost_create' pin.get_activity_id %}">Repost</a></p>
               {% endif %}
               {% if object == request.user %}
-              <p style='margin: 0 0.5em'><a href="{% url 'write:pin_update' pin.id %}">Edit</a></p>
-              <p style='margin: 0 0.5em'><a href="{% url 'write:pin_delete' pin.id %}">Delete</a></p>
+              <p class="ms-2 me-2"><a href="{% url 'write:pin_update' pin.id %}">Edit</a></p>
+              <p class="ms-2 me-2"><a href="{% url 'write:pin_delete' pin.id %}">Delete</a></p>
               {% endif %}
-            </span>
-        </div>
-        <br/>
-      {% endfor %}
-      <br/>
+          </span>
+      </div>
+    {% endfor %}
+    <br/>
 
-      <!--Posts-->
-      <div class="d-flex justify-content-between align-items-center">
-        <h4>Posts</h4>
-        <div>
-          <a class="btn btn-secondary btn-sm" href="{% url 'write:post_list' object.username %}">All</a>
+
+    <!--Posts-->
+    <div class="d-flex justify-content-between align-items-center">
+      <h4>Posts</h4>
+      <div>
+          <a class="btn btn-outline-secondary btn-sm" href="{% url 'write:post_list' object.username %}">All</a>
           {% if object == request.user %}
           <a class="btn btn-primary btn-sm" href="{% url 'write:post_create' %}">New</a>
           {% endif %}
-        </div>
       </div>
-      {% for post in posts|slice:":3" %}
-        <div>
-            <p><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></p>
-            <span style='display: flex'>
-              <p style='margin-right: 0.5em'>{{ post.timestamp |date:"Y.m.d H:i" }}</p>
+    </div>
+    {% for post in posts|slice:":3" %}
+      <div>
+          <div><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></div>
+          <span class="d-flex">
+              <p class="me-2">{{ post.timestamp |date:"Y.m.d H:i" }}</p>
               {% if post.comments_enabled %}
-              <p style='margin: 0 0.5em'><a href="{% url 'write:post_detail' post.id %}">Reply</a></p>
+              <p class="ms-2 me-2"><a href="{% url 'write:post_detail' post.id %}">Reply</a></p>
+              {% endif %}
+              {% if post.get_activity_id is not None %}
+              <p class="ms-2 me-2"><a href="{% url 'write:repost_create' post.get_activity_id %}">Repost</a></p>
               {% endif %}
               {% if object == request.user %}
-              <p style='margin: 0 0.5em'><a href="{% url 'write:post_update' post.id %}">Edit</a></p>
-              <p style='margin: 0 0.5em'><a href="{% url 'write:post_delete' post.id %}">Delete</a></p>
+              <p class="ms-2 me-2"><a href="{% url 'write:post_update' post.id %}">Edit</a></p>
+              <p class="ms-2 me-2"><a href="{% url 'write:post_delete' post.id %}">Delete</a></p>
               {% endif %}
-            </span>
-        </div>
-      {% endfor %}
+          </span>
+      </div>
+    {% endfor %}
     </div>
+
     
 
     <!-- Right column -->
@@ -118,7 +95,7 @@
         
         {% if object == request.user %}
             <!-- Action buttons -->
-            <a class="btn btn-primary btn-sm" href="{% url 'accounts:update' %}" role="button">Update Profile</a>
+            <a class="btn btn-primary btn-sm mt-3" href="{% url 'accounts:update' %}" role="button">Update Profile</a>
             {% if can_generate_code %}
               <form class="d-inline-block" method="post" action="{% url 'accounts:generate_invitation_code' %}">
                   {% csrf_token %}
@@ -147,16 +124,13 @@
                 </form>
             {% endif %}
         {% endif %}
-
-
-    
       </div>
       <hr>
 
       <div> <!--Most recent activity-->
         <div class="d-flex justify-content-between align-items-center"> <!-- Most recent activity -->
             <h5>Recent</h5>
-           <a class="btn btn-secondary btn-sm" href="{% url 'accounts:feed' object.username %}">All</a>
+           <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:feed' object.username %}">All</a>
         </div>
         {% for activity in recent_activities %}
             {% include "activity_feed/activity_item.html" %}

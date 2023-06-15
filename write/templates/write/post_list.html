@@ -3,12 +3,23 @@
 
 {% block content %}
 <div class="container">
-  <h3>{{object.display_name | default:object.username}} posted</h3>
-  {% for post in post_list %}
-    <div>
-      <h3><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></h3>
-      <p>{{ post.timestamp|date:"Y.m.d H:i" }}</p>
+    <div class="d-flex justify-content-between align-items-center mt-2">
+        <h4>{{object.display_name | default:object.username}} posted</h4>
     </div>
-  {% endfor %}
+    {% for post in post_list %}
+        <div>
+            <div><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></div>
+            <span class="d-flex">
+                <p class="me-2">{{ post.timestamp|date:"Y.m.d H:i" }}</p>
+                {% if post.comments_enabled %}
+                <p class="ms-2 me-2"><a href="{% url 'write:post_detail' post.id %}">Reply</a></p>
+                {% endif %}
+                {% if object == request.user %}
+                <p class="ms-2 me-2"><a href="{% url 'write:post_update' post.id %}">Edit</a></p>
+                <p class="ms-2 me-2"><a href="{% url 'write:post_delete' post.id %}">Delete</a></p>
+                {% endif %}
+            </span>
+        </div>
+    {% endfor %}
 </div>
 {% endblock content %}

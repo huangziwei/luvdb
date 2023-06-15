@@ -42,6 +42,8 @@
           <p style='margin: 0 0.5em'><a href="{% url 'write:repost_delete' repost.id %}">Delete</a></p>
         {% endif %}
       </span> 
+
+      <br>
       
       <button id="show-comments" class="btn btn-primary btn-sm mx-auto">Comments ({{ comments|length }})</button>
       <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto">Reposts ({{ object.get_reposts.count }})</button>
@@ -95,11 +97,9 @@
                 {{ repost.author.display_name | default:repost.author.username }}
               </a>
               <p style='margin: 0 0.5em'><a href="{{repost.get_absolute_url}}" style='color:gray;'>{{repost.timestamp | date:"Y.m.d H:i"}}</a></p>
-
             </span>
             
             {% if repost.content  %}
-            
             <div style="background-color:#f9f9f9; padding: 1em; margin-button: 0.5em">{{ repost.content| linkify_tags | linkify_mentions | markdownify }}</div>
             {% endif %}
           </div>

@@ -18,6 +18,7 @@ from write.models import Pin, Post, Say
 from .forms import CustomUserCreationForm
 from .models import InvitationCode
 
+TIME_RESTRICTION = 365  # time restriction for generating invitation codes
 User = get_user_model()
 
 
@@ -54,11 +55,9 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Define the time restriction here (in days)
-        time_restriction = 365  # Change this to modify the time restriction
 
         # Check if the user has already generated an invitation code within the time restriction
-        start_date = datetime.now() - timedelta(days=time_restriction)
+        start_date = datetime.now() - timedelta(days=TIME_RESTRICTION)
         code_recently_generated = self.request.user.codes_generated.filter(
             generated_at__gte=start_date
         ).first()
@@ -108,7 +107,7 @@ class GenerateInvitationCodeView(View):
         if unused_code:
             code = unused_code
         elif not user.codes_generated.filter(
-            generated_at__gte=timezone.now() - timedelta(days=30)
+            generated_at__gte=timezone.now() - timedelta(days=TIME_RESTRICTION)
         ).exists():
             # User has not generated a code this month, so generate a new one
             code = InvitationCode.objects.create(generated_by=user)

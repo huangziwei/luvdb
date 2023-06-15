@@ -1,0 +1,32 @@
+<div class="activity-filter-buttons">
+    <button class="btn btn-light btn-sm activity-filter" data-filter="all">All</button>
+    <button class="btn btn-light btn-sm activity-filter" data-filter="say">Say</button>
+    <button class="btn btn-light btn-sm activity-filter" data-filter="post">Post</button>
+    <button class="btn btn-light btn-sm activity-filter" data-filter="pin">Pin</button>
+    <button class="btn btn-light btn-sm activity-filter" data-filter="repost">Repost</button>
+    <button class="btn btn-light btn-sm activity-filter" data-filter="follow">Follow</button>
+</div>
+<br>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var filterButtons = document.querySelectorAll('.activity-filter');
+    filterButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var filter = this.getAttribute('data-filter');
+            filterActivities(filter);
+        });
+    });
+});
+
+function filterActivities(filter) {
+    var activities = document.querySelectorAll('.activity-item');
+    activities.forEach(function(activity) {
+        if (filter === 'all' || activity.getAttribute('data-activity-type') === filter) {
+            activity.style.display = 'block';
+        } else {
+            activity.style.display = 'none';
+        }
+    });
+}
+</script>
