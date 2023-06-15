@@ -1,0 +1,36 @@
+{% load markdownify %}
+{% load linkify %}
+{% load crispy_forms_tags %}
+
+{% if object.reposts.count != 0 %}
+  
+    <h5>Reposts ({{ object.reposts.count }})</h5> 
+    {% for repost in object.reposts.all %}
+
+    <div>
+      <span style='display: flex;'>
+        <a href="{% url 'accounts:detail' repost.author.username%}">
+          {{ repost.author.display_name | default:repost.author.username }}
+        </a>
+        <p style='margin: 0 0.5em'><a href="{{repost.get_absolute_url}}" style='color:gray;'>{{repost.timestamp | date:"Y.m.d H:i"}}</a></p>
+      </span>
+    
+    {% if repost.content  %}  
+      <div style="background-color:#f9f9f9; padding: 1em; margin-button: 0.5em">{{ repost.content| linkify_tags | linkify_mentions | markdownify }}</div>
+    {% endif %}
+  </div>
+  {% empty %}
+    <p>No reposts yet.</p>
+  {% endfor %}
+  <hr>
+{% endif %}
+
+{% if object.get_activity_id is not None %}
+<form method="POST" action="{% url 'write:repost_create' object.get_activity_id %}">
+  {% csrf_token %}
+  {{ repost_form | crispy }}
+  <button type="submit" class='btn btn-sm btn-primary'>Add Repost</button>
+</form> 
+{% else %}
+  <p>Repost disabled.</p>
+{% endif %}

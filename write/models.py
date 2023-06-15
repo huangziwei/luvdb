@@ -5,6 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.urls import reverse
@@ -101,9 +102,15 @@ class Repost(models.Model):
             return None
 
     def get_reposts(self):
-        return Repost.objects.filter(original_activity=self.original_activity).exclude(
-            id=self.id
-        )
+        return Repost.objects.filter(
+            Q(original_activity=self.original_activity)
+            | Q(
+                original_activity__content_type=ContentType.objects.get_for_model(
+                    Repost
+                ),
+                original_activity__object_id=self.id,
+            )
+        ).exclude(id=self.id)
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None

@@ -20,7 +20,7 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 class RepostAdmin(admin.ModelAdmin):
-    list_display = ("author", "content", "timestamp")
+    list_display = ("author", "content", "original_activity", "timestamp")
 
 
 admin.site.register(Repost, RepostAdmin)

@@ -1,0 +1,38 @@
+{% load markdownify %}
+{% load linkify %}
+{% load crispy_forms_tags %}
+
+{% if comments %}
+  <h5>Comments ({{ comments|length }})</h5> 
+  {% for comment in comments %}
+    <div>
+      <span>
+        <a href="{% url 'accounts:detail' comment.author.username%}">
+          {{ comment.author.display_name | default:comment.author.username }}
+        </a>
+        {{comment.timestamp | date:"Y.m.d H:i"}} 
+        {% if comment.author == request.user %} 
+          <a href="{% url "write:comment_update" comment.pk %}">Edit</a>
+        {% endif %}
+        {% if object.author == request.user or comment.author == request.user %} 
+          <a href="{% url "write:comment_delete" comment.pk %}">Delete</a>
+        {% endif %}
+      </span>
+      <div style="background-color:#f9f9f9; padding: 0.5em; margin: 0.5em">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
+    </div>
+  {% empty %}
+    <p>No comments yet.</p>
+  {% endfor %}
+  <hr>
+{% endif %}
+
+{% if object.comments_enabled %}
+  <form method="POST" action="{% url 'write:comment_create' 'write' object_type object.id %}">
+    {% csrf_token %}
+    {{ comment_form|crispy }}
+    <button type="submit" class='btn btn-sm btn-primary'>Add Comment</button>
+  </form>
+  <br>
+{% else %}
+  <p>Comment disabled.</p>
+{% endif %} 
