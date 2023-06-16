@@ -3,9 +3,9 @@ import re
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import DeleteView, ListView
 
 from .models import Notification
 
@@ -31,6 +31,20 @@ class MarkAllNotificationsReadView(View):
         Notification.objects.filter(recipient=request.user, read=False).update(
             read=True
         )
+        return redirect("notify:notification_list")
+
+
+class NotificationDeleteView(DeleteView):
+    model = Notification
+    success_url = reverse_lazy("notify:notification_list")
+
+    def get_queryset(self):
+        return self.request.user.notifications.all()
+
+
+class NotificationDeleteAllView(View):
+    def post(self, request, *args, **kwargs):
+        Notification.objects.filter(recipient=request.user).delete()
         return redirect("notify:notification_list")
 
 
