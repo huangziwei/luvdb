@@ -10,11 +10,20 @@
             <div class="book-detail">
                 <h4>{{ object.edition_title }}</h4>
                 <div class="book-meta">
-                    {% if object.edition_title != object.book.title %}
-                    <p><strong>Original Title</strong> {{ object.book.title }}</p>
+                    {% if object.book.id and object.edition_title != object.book.title %}
+                    <p>
+                        <strong>Original Title</strong> 
+                        {% if object.book.pk %}
+                        <a href="{% url 'read:book_detail' object.book.pk %}">{{ object.book.title }}</a>
+                        {% endif %}
+                    </p>
                     {% endif %}
                     {% for edition_role in object.editionrole_set.all %}
-                        <p><strong>{{ edition_role.role.name }}</strong> {{ edition_role.name | default:edition_role.person.name }}</p>
+                        <p>
+                            <strong>{{ edition_role.role.name }}</strong> 
+                            <a href="{% url 'read:person_detail' edition_role.person.id %}">{{ edition_role.name | default:edition_role.person.name }}</a>
+                            
+                        </p>
                     {% endfor %}
                     {% if object.publisher %}
                         <p>

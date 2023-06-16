@@ -3,7 +3,11 @@
 {% block content %}
   <h1>Delete activity</h1>
   <p>Are you sure you want to delete this activity?</p>
-  <p>(This will only delete the activity from your public feed.)</p>
+  {% if object.activity_type == "repost" %}
+    <p>(This will delete the activity from your public feed <strong>and also the repost itself</strong>.)</p>
+  {% else %}
+    <p>(This will only delete the activity from your public feed.)</p>
+  {% endif %}
   <form method="post">
     {% csrf_token %}
     <input type="submit" class="btn btn-sm btn-danger" value="Confirm">

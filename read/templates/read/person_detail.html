@@ -3,9 +3,15 @@
 {% block content %}
 <div class="container">
     <h2>{{ object.name }}</h2>
+    {% if object.bio %}
     <p><strong>Bio:</strong> {{ object.bio }}</p>
+    {% endif %}
+    {% if object.birth_date %}
     <p><strong>Birth Date:</strong> {{ object.birth_date }}</p>
+    {% endif %}
+    {% if object.death_date %}
     <p><strong>Death Date:</strong> {{ object.death_date }}</p>
+    {% endif %}
 
     <h3>Books</h3>
     <ul>

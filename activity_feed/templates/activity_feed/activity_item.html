@@ -127,22 +127,26 @@
             <p>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:50  }}</p>
         {% endif %}
         <div style="background-color:#f9f9f9; padding: 1em; ">
-            <!-- Display the reposted activity -->
-            <p>
-                <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}">
-                    {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
-                </a> {{ activity.content_object.original_activity.activity_type | past_tense }}:
-            </p>
+            {% if activity.content_object.original_activity %}
+                <!-- Display the reposted activity -->
+                <p>
+                    <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}">
+                        {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
+                    </a> {{ activity.content_object.original_activity.activity_type | past_tense }}:
+                </p>
 
-            {% if activity.content_object.original_activity.activity_type == "post" %}
-            <p><a href="{% url 'write:post_detail' activity.content_object.original_activity.content_object.id %}" >{{ activity.content_object.original_activity.content_object.title }}</a></p>
-            {% elif activity.content_object.original_activity.activity_type == "pin" %}
-            <p><a href="{{ activity.content_object.original_activity.content_object.url }}" >{{ activity.content_object.original_activity.content_object.title }}</a> ({{  activity.content_object.original_activity.content_object.url | root_url }})</p>
-            {% endif %}
-            <div style="background-color:#f9f9f9;">
-                {{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}
-                <p><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="link-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
-            </div>
+                {% if activity.content_object.original_activity.activity_type == "post" %}
+                <p><a href="{% url 'write:post_detail' activity.content_object.original_activity.content_object.id %}" >{{ activity.content_object.original_activity.content_object.title }}</a></p>
+                {% elif activity.content_object.original_activity.activity_type == "pin" %}
+                <p><a href="{{ activity.content_object.original_activity.content_object.url }}" >{{ activity.content_object.original_activity.content_object.title }}</a> ({{  activity.content_object.original_activity.content_object.url | root_url }})</p>
+                {% endif %}
+                <div style="background-color:#f9f9f9;">
+                    {{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}
+                    <p><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="link-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
+                </div>
+            {% else %}
+                <p>The original content has been deleted.</p>
+            {% endif %}    
         </div>
         <span style='display: flex; margin-top:0.5em'>
             <p style='margin-right: 0.5em'>
