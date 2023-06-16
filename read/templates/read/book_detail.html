@@ -2,12 +2,25 @@
 
 {% block content %}
 <div class="container">
-    <h2>{{ object.title }}</h2>
-    <p><strong>Description:</strong> {{ object.description }}</p>
-    <p><strong>Publication Date:</strong> {{ object.publication_date }}</p>
-    <h3>Roles</h3>
+    <span class='d-flex align-items-start'>
+        <h2>{{ object.title }} ({{ object.publication_date }})</h2>
+        <a href="{% url 'read:book_edit' object.pk %}" class='fs-6 text-secondary'>Edit Book</a>
+    </span>
+    
     {% for role in object.bookrole_set.all %}
-        <p>{{ role.person.name }} - {{ role.role.name }}</p>
+    <p>
+        <a href="{% url 'read:person_detail' role.person.id %}">{{ role.person.name }}</a> ({{ role.person.romanized_name }}) 
+    </p>
+    {% endfor %}
+
+    <h3>Editions</h3>
+    {% for edition in object.editions.all %}
+        <p>
+            <a href="{% url 'read:edition_detail' edition.pk %}">{{ edition.edition_title }}</a>
+            {{ edition.publication_date }}
+        </p>
+    {% empty %}
+        <p>This book has no editions.</p>
     {% endfor %}
 </div>
 {% endblock %}

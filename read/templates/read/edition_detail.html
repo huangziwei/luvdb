@@ -6,6 +6,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
+        <!--left column-->
         <div class="col-sm-8">
             <div class="book-detail">
                 <h4>{{ object.edition_title }}</h4>
@@ -62,6 +63,11 @@
                     <a href="{% url 'read:edition_edit' object.pk %}">Edit Data</a>
                 {% endif %}
             </div>
+        </div>
+
+        <!--right column-->
+        <div class="col-sm-8">
+            
         </div>
     </div>
 </div>

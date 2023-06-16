@@ -2,21 +2,22 @@
 
 {% block content %}
 <div class="container">
-    <h2>{{ object.name }}</h2>
+    <div class="row">
+        <div class="col-sm-8">
+    <h2>{{ object.name }} / {{ object.romanized_name }}</h2> 
+    <span class="text-secondary">
+        {% if object.birth_date %}({{ object.birth_date }}-{% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %})
+    </span>
     {% if object.bio %}
-    <p><strong>Bio:</strong> {{ object.bio }}</p>
-    {% endif %}
-    {% if object.birth_date %}
-    <p><strong>Birth Date:</strong> {{ object.birth_date }}</p>
-    {% endif %}
-    {% if object.death_date %}
-    <p><strong>Death Date:</strong> {{ object.death_date }}</p>
+        <p>{{ object.bio }}</p>
     {% endif %}
 
-    <h3>Books</h3>
+    <h3>Bibliography</h3>
     <ul>
     {% for book in object.books.all %}
-        <li>{{ book.title }}</li>
+        <li>
+            <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a> ({{ book.publication_date}})
+        </li>
     {% empty %}
         <li>This person has no books.</li>
     {% endfor %}
@@ -30,8 +31,8 @@
         <li>This person has no books.</li>
     {% endfor %}
     </ul>    {% endcomment %}
-    
-
+</div>
+</div>
 </div>
 
 {% endblock %}

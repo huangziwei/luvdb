@@ -3,36 +3,35 @@
 {% block content %}
   <h1>Notifications</h1>
 
-  <div style="display: flex; justify-content: space-between; width: 300px;">
-    <form method="post" action="{% url 'notify:mark_all_as_read' %}">
+  <div class="d-flex">
+    <form method="post" action="{% url 'notify:mark_all_as_read' %}" class="d-inline-block me-2">
       {% csrf_token %}
       <input type="submit" class='btn btn-sm btn-success' value="Mark all as read">
     </form>
     <form method="post" action="{% url 'notify:delete_all' %}">
       {% csrf_token %}
-      <input type="submit" class='btn btn-sm btn-danger' value="Delete all Notifications">
+      <input type="submit" class='btn btn-sm btn-danger' value="Delete all">
     </form>
   </div>
   <hr>
-
   {% for notification in object_list %}
   <div class="notification">
-    <span style='display: flex;'>
+    <div class="d-flex">
       <p>{{ notification.message | safe}}</p>
-      <p>&nbsp;<small style='color:gray;'>{{ notification.timestamp | date:"Y.m.d H:i"}}</small>&nbsp;</p>
-      <div style="display: flex; justify-content: space-between; width: 170px;">
+      <p class="d-inline-block me-2">&nbsp;<small class='text-muted'>{{ notification.timestamp | date:"Y.m.d H:i"}}</small></p>
+      <div>
         {% if not notification.read %}
-          <form method="post" action="{% url 'notify:mark_as_read' notification.pk %}">
+          <form method="post" action="{% url 'notify:mark_as_read' notification.pk %}" class="d-inline-block me-2">
             {% csrf_token %}
             <input type="submit" class='btn btn-sm btn-outline-success' value="Mark as read">
           </form>
         {% endif %}
-        <form method="post" action="{% url 'notify:delete' notification.pk %}">
+        <form method="post" action="{% url 'notify:delete' notification.pk %}" class="d-inline-block">
           {% csrf_token %}
           <input type="submit" class='btn btn-sm btn-outline-danger' value="Delete">
         </form>
       </div>
-    </span>
+    </div>
   </div>
   {% empty %}
     <p>You have no notifications.</p>

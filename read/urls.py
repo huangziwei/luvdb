@@ -4,6 +4,7 @@ from .views import (
     BookAutocomplete,
     BookCreateView,
     BookDetailView,
+    BookUpdateView,
     EditionCreateView,
     EditionDetailView,
     EditionUpdateView,
@@ -21,6 +22,7 @@ urlpatterns = [
     # book
     path("book/new/", BookCreateView.as_view(), name="book_new"),
     path("book/<int:pk>/", BookDetailView.as_view(), name="book_detail"),
+    path("book/<int:pk>/edit/", BookUpdateView.as_view(), name="book_edit"),
     # edition
     path("edition/new/", EditionCreateView.as_view(), name="edition_new"),
     path("edition/<int:pk>/", EditionDetailView.as_view(), name="edition_detail"),

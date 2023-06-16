@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <h2>Update Book</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.title|as_crispy_field }}
+        {{ bookroles.management_form|crispy }}
+        <div id="book-role-formset">
+            {% for form in bookroles %}
+                <div class="row">
+                    <div class="col-md-5 mb-5">
+                        {{ form.person | as_crispy_field}}
+                    </div>
+                    <div class="col-md-5 mb-5">
+                        {{ form.role | as_crispy_field}}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {{ form.description|as_crispy_field }}
+        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+    </form>
+</div>
+
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ bookroles.media }}
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        // Initially hide all formset rows except the first one
+        var formsetRows = document.querySelectorAll('#book-role-formset .row');
+        formsetRows.forEach(function(row, index) {
+            if (index > 0) {
+                row.style.visibility = 'hidden';
+                row.style.height = '0';
+            }
+        });
+
+        // Add a button to the end of each row
+        formsetRows.forEach(function(row) {
+            var buttonDiv = document.createElement('div');
+            buttonDiv.className = 'col-md-1 mb-5';
+            var innerDiv = document.createElement('div');
+            innerDiv.className = 'mb-1';
+            var label = document.createElement('label');
+            label.className = 'form-label';
+            label.textContent = 'Add';
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.textContent = '+';
+            button.className = 'btn btn-sm btn-light add-book-role';
+
+            innerDiv.appendChild(label);
+            innerDiv.appendChild(button);
+            buttonDiv.appendChild(innerDiv);
+            row.appendChild(buttonDiv);
+        });
+
+        // When the button is clicked, reveal the next hidden row
+        document.querySelectorAll('.add-book-role').forEach(function(addButton) {
+            addButton.addEventListener('click', function() {
+                var nextHiddenRow = this.parentElement.parentElement.parentElement.nextElementSibling;
+                if (nextHiddenRow) {
+                    nextHiddenRow.style.visibility = 'visible';
+                    nextHiddenRow.style.height = 'auto';
+                }
+                // Remove the button from the current row
+                this.parentElement.parentElement.remove();
+            });
+        });
+    });
+</script>
+
+
+<style>
+    .select2-container .select2-selection--single {
+        height: calc(1.5em + .75rem + 2px);
+        border: 1px solid #ced4da;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: calc(1.5em + .75rem + 2px);
+    }
+    {% comment %} https://github.com/yourlabs/django-autocomplete-light/issues/1055#issuecomment-610613743 {% endcomment %}
+
+    .add-book-role {
+        height: 38px;  /* Adjust this value to your liking */
+        width: 100% !important;
+    }
+</style>
+
+{% endblock %}

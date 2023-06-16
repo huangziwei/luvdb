@@ -1,4 +1,5 @@
 from dal import autocomplete
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -13,10 +14,15 @@ from .models import Book, Edition, Person, Publisher, Role
 ##########
 
 
-class PersonCreateView(CreateView):
+class PersonCreateView(LoginRequiredMixin, CreateView):
     model = Person
-    fields = ["name", "bio", "birth_date", "death_date"]
+    fields = ["name", "romanized_name", "bio", "birth_date", "death_date"]
     template_name = "read/person_create.html"
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy("read:person_detail", kwargs={"pk": self.object.pk})
@@ -42,10 +48,23 @@ class PersonDetailView(DetailView):
 #############
 
 
-class PublisherCreateView(CreateView):
+class PublisherCreateView(LoginRequiredMixin, CreateView):
     model = Publisher
-    fields = ["name", "history", "location", "website", "founded_date", "closed_date"]
+    fields = [
+        "name",
+        "romanized_name",
+        "history",
+        "location",
+        "website",
+        "founded_date",
+        "closed_date",
+    ]
     template_name = "read/publisher_create.html"
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy("read:publisher_detail", kwargs={"pk": self.object.pk})
@@ -61,7 +80,7 @@ class PublisherDetailView(DetailView):
 ##########
 
 
-class BookCreateView(CreateView):
+class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
     form_class = BookForm
     template_name = "read/book_create.html"
@@ -90,6 +109,32 @@ class BookCreateView(CreateView):
         return super().form_valid(form)
 
 
+class BookUpdateView(LoginRequiredMixin, UpdateView):
+    model = Book
+    fields = ["title", "description"]
+    template_name = "read/book_update.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
+        else:
+            data["bookroles"] = BookRoleFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        bookroles = context["bookroles"]
+        self.object = form.save()
+        if bookroles.is_valid():
+            bookroles.instance = self.object
+            bookroles.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("read:book_detail", kwargs={"pk": self.object.pk})
+
+
 class BookDetailView(DetailView):
     model = Book
     template_name = "read/book_detail.html"
@@ -100,7 +145,7 @@ class BookDetailView(DetailView):
 ###########
 
 
-class EditionCreateView(CreateView):
+class EditionCreateView(LoginRequiredMixin, CreateView):
     model = Edition
     form_class = EditionForm
     template_name = "read/edition_create.html"
