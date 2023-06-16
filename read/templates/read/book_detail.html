@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ object.title }}</h2>
+    <p><strong>Description:</strong> {{ object.description }}</p>
+    <p><strong>Publication Date:</strong> {{ object.publication_date }}</p>
+    <h3>Roles</h3>
+    {% for role in object.bookrole_set.all %}
+        <p>{{ role.person.name }} - {{ role.role.name }}</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ object.edition_title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="book-detail">
+                <h4>{{ object.edition_title }}</h4>
+                <div class="book-meta">
+                    {% if object.edition_title != object.book.title %}
+                    <p><strong>Original Title</strong> {{ object.book.title }}</p>
+                    {% endif %}
+                    {% for edition_role in object.editionrole_set.all %}
+                        <p><strong>{{ edition_role.role.name }}</strong> {{ edition_role.name | default:edition_role.person.name }}</p>
+                    {% endfor %}
+                    {% if object.publisher %}
+                        <p>
+                            <strong>Publisher </strong>
+                            {% if object.publisher.location %}{{ object.publisher.location }}: {% endif %} {{ object.publisher.name }}
+                        </p>
+                    {% endif %}
+                    {% if object.publication_date %}
+                        <p><strong>Publication Date</strong> {{ object.publication_date }}</p>
+                    {% endif %}
+                    {% if object.edition_format %}
+                        <p><strong>Format</strong> {{ object.edition_format }}</p>
+                    {% endif %}
+                    {% if object.pages %}
+                        <p><strong>Pages</strong> {{ object.pages }}</p>
+                    {% endif %}
+                    {% if object.isbn_10 %}
+                        <p><strong>ISBN-10</strong> {{ object.isbn_10 }}</p>
+                    {% endif %}
+                    {% if object.isbn_13 %}
+                        <p><strong>ISBN-13</strong> {{ object.isbn_13 }}</p>
+                    {% endif %}
+                    {% if object.asin %}
+                        <p><strong>ASIN</strong> {{ object.asin }}</p>
+                    {% endif %}
+
+                </div>
+                {% if object.details %}
+                    <div class="book-details">
+                        <h2>Details</h2>
+                        <p>{{ object.details }}</p>
+                    </div>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'read:edition_edit' object.pk %}">Edit Data</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

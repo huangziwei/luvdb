@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ object.name }}</h2>
+    <p><strong>Bio:</strong> {{ object.bio }}</p>
+    <p><strong>Birth Date:</strong> {{ object.birth_date }}</p>
+    <p><strong>Death Date:</strong> {{ object.death_date }}</p>
+
+    <h3>Books</h3>
+    <ul>
+    {% for book in object.books.all %}
+        <li>{{ book.title }}</li>
+    {% empty %}
+        <li>This person has no books.</li>
+    {% endfor %}
+    </ul>
+
+    {% comment %} <h3>Edition</h3>
+    <ul>
+    {% for edtion in object.editions.all %}
+        <li>{{ edtion.edition_title }}</li>
+    {% empty %}
+        <li>This person has no books.</li>
+    {% endfor %}
+    </ul>    {% endcomment %}
+    
+
+</div>
+
+{% endblock %}

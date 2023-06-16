@@ -4,6 +4,8 @@ django-crispy-forms
 django-markdownify
 django-mathfilters
 crispy-bootstrap5
+django-reversion
+django-autocomplete-light
 black
 isort
 whitenoise

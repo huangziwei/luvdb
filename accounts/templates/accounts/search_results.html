@@ -68,6 +68,31 @@
         <hr>
     {% endif %}
 
+    {% if person_results %}
+        <h3>Persons</h3>
+        {% for person in person_results %}
+            <p>
+                <a href="{% url 'read:person_detail' person.id %}">{{ person.name|truncatechars:50 }}</a>
+            </p>
+        {% empty %}
+            <p>No person results found.</p>
+        {% endfor %}
+        <hr>
+    {% endif %}
+
+    {% if edition_results %}
+        <h3>Book Editions</h3>
+        {% for edition in edition_results %}
+            <p>
+                <a href="{% url 'read:edition_detail' edition.id %}">{{ edition.edition_title|truncatechars:50 }}</a>
+            </p>
+        {% empty %}
+            <p>No edition results found.</p>
+        {% endfor %}
+        <hr>
+    {% endif %}
+
+
 </div>
 </div>
 </div>

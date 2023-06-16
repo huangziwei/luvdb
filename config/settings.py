@@ -37,6 +37,8 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "accounts",
+    "dal",
+    "dal_select2",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -49,10 +51,12 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "markdownify",
     "mathfilters",
+    "reversion",
     # local apps
+    "notify",
     "activity_feed",
     "write",
-    "notify",
+    "read",
 ]
 
 MIDDLEWARE = [
@@ -147,6 +151,13 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+CRISPY_CLASS_CONVERTERS = {
+    "select2-container": "",
+    "select2-selection": "",
+    "select2-selection--single": "",
+    "modelselect2": "",
+    "form-select": "",
+}
 
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "activity_feed:activity_feed"

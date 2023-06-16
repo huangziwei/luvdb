@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,6 +24,19 @@
     p:last-child, blockquote:last-child {
         margin-bottom: 0;
     }
+
+    /* dal bootstrap css fix */
+    .select2-container {
+        width: 100% !important;
+        min-width: 10em !important;
+    }
+
+    .select2-selection__rendered {
+        line-height: normal !important;
+        padding: 0 !important;
+        vertical-align: middle !important;
+    }
+    
 </style>
 <body>
     <div class="container">

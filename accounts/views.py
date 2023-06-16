@@ -13,6 +13,7 @@ from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from activity_feed.models import Activity
+from read.models import Edition, Person
 from write.models import Pin, Post, Say
 
 from .forms import CustomUserCreationForm
@@ -152,11 +153,22 @@ def search_view(request):
             | Q(content__icontains=query)
             | Q(url__icontains=query)
         )
+        person_results = Person.objects.filter(
+            Q(name__icontains=query) | Q(bio__icontains=query)
+        )
+        edition_results = Edition.objects.filter(
+            Q(edition_title__icontains=query)
+            | Q(isbn_10__icontains=query)
+            | Q(isbn_13__icontains=query)
+            | Q(asin__icontains=query)
+        )
     else:
         user_results = []
         post_results = []
         say_results = []
         pin_results = []
+        person_results = []
+        edition_results = []
 
     return render(
         request,
@@ -167,6 +179,8 @@ def search_view(request):
             "post_results": post_results,
             "say_results": say_results,
             "pin_results": pin_results,
+            "person_results": person_results,
+            "edition_results": edition_results,
         },
     )
 
