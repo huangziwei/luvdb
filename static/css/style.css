@@ -1,0 +1,70 @@
+.select2-container .select2-selection--single {
+    height: calc(1.5em + .75rem + 2px) !important;
+    border: 1px solid #ced4da !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: calc(1.5em + .75rem + 2px) !important;
+}
+
+/* https://github.com/yourlabs/django-autocomplete-light/issues/1055#issuecomment-610613743  */
+
+.add-book-role,
+.add-edition-role {
+    height: 38px !important;
+    /* Adjust this value to your liking */
+    width: 100% !important;
+}
+
+blockquote {
+    font: 16px/22px normal helvetica, sans-serif;
+    margin-top: 10px;
+    margin-left: 0;
+    padding-left: 15px;
+    border-left: 3px solid #ccc;
+}
+
+a {
+    text-decoration: none;
+}
+
+p:last-child,
+blockquote:last-child {
+    margin-bottom: 0;
+}
+
+/* dal bootstrap css fix */
+.select2-container {
+    width: 100% !important;
+    min-width: 10em !important;
+}
+
+.select2-selection__rendered {
+    line-height: normal !important;
+    padding: 0 !important;
+    vertical-align: middle !important;
+}
+
+.cover-box {
+    width: 200px;
+    /* adjust as needed */
+    height: 300px;
+    /* adjust as needed */
+    background-color: #f0f0f0;
+    /* light gray */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.cover-image {
+    width: 95%;
+    height: auto;
+}
+
+.no-cover-text {
+    color: #888;
+    /* dark gray */
+    font-size: 1.2em;
+}

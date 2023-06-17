@@ -6,13 +6,12 @@
     <div class="row">
         <div class="col-sm-8">
             <h2>Create a new Person entry</h2>
-            <form method="post">
+            <form method="post" en>
                 {% csrf_token %}
                 {{ form|crispy }}
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
     </div>
-
 </div>
 {% endblock %}
