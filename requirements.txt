@@ -15,4 +15,5 @@ psycopg[binary]
 gunicorn
 djangorestframework
 Pillow
-unique_names_generator
+django-storages[boto3]
+boto3 

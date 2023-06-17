@@ -9,10 +9,12 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 from environs import Env
+
+from .s3_storage_backends import MediaStorage
 
 env = Env()
 env.read_env()
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     "markdownify",
     "mathfilters",
     "reversion",
+    "storages",
     # local apps
     "notify",
     "activity_feed",
@@ -165,13 +168,13 @@ LOGIN_REDIRECT_URL = "activity_feed:activity_feed"
 LOGOUT_REDIRECT_URL = "login"
 
 
-STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "static"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATIC_URL = "static/"
+# STATIC_ROOT = BASE_DIR / "static"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
+# MEDIA_URL = "media/"
 
+CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = ["https://*.fly.dev/", "https://*.luvdb.com"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
@@ -206,3 +209,36 @@ MARKDOWNIFY = {
         ],
     }
 }
+
+
+# AWS S3
+
+
+AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env.str("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400",
+}
+AWS_LOCATION = "static"
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static/luvdb"),
+]
+STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+MEDIA_URL = "https://%s/media/" % (AWS_S3_CUSTOM_DOMAIN)
+MEDIA_ROOT = BASE_DIR / "media"
+DEFAULT_FILE_STORAGE = "config.s3_storage_backends.MediaStorage"
+
+# HTTP Strict Transport Security
+
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+SECURE_SSL_REDIRECT = True
+
+SESSION_COOKIE_SECURE = True

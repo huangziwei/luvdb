@@ -1,17 +1,24 @@
 import os
+import uuid
+from io import BytesIO
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile
 from django.db import models
+from django.db.models import signals
+from django.dispatch import receiver
 from django.utils.text import slugify
 from PIL import Image
 
 
 # helpers
 def rename_edition_cover(instance, filename):
-    base, extension = os.path.splitext(filename)
-    new_name = f"{slugify(instance.edition_title, allow_unicode=True)}-{instance.publication_date}{extension}"
-    return os.path.join("covers/", new_name)
+    _, extension = os.path.splitext(filename)
+    unique_id = uuid.uuid4()
+    directory_name = f"{slugify(instance.edition_title, allow_unicode=True)}-{instance.publication_date}"
+    new_name = f"{unique_id}{extension}"
+    return os.path.join("covers", directory_name, new_name)
 
 
 # validators
@@ -235,15 +242,38 @@ class Edition(models.Model):
         return self.edition_title
 
     def save(self, *args, **kwargs):
+        # If the instance already exists in the database
+        if self.pk:
+            # Get the existing instance from the database
+            old_instance = Edition.objects.get(pk=self.pk)
+            # If the cover has been updated
+            if old_instance.cover != self.cover:
+                # Delete the old cover
+                old_instance.cover.delete(save=False)
+
         super().save(*args, **kwargs)
 
         if self.cover:
-            img = Image.open(self.cover.path)
+            img = Image.open(self.cover.open(mode="rb"))
 
             if img.height > 500 or img.width > 500:
                 output_size = (500, 500)
                 img.thumbnail(output_size)
-                img.save(self.cover.path)
+
+                # Save the image to a BytesIO object
+                temp_file = BytesIO()
+                img.save(temp_file, format=img.format)
+                temp_file.seek(0)
+
+                # Save the BytesIO object to the FileField
+                self.cover.save(
+                    self.cover.name, ContentFile(temp_file.read()), save=False
+                )
+
+            img.close()
+            self.cover.close()
+
+        super().save(*args, **kwargs)
 
 
 class EditionRole(models.Model):
@@ -254,3 +284,14 @@ class EditionRole(models.Model):
 
     def __str__(self):
         return f"{self.edition} - {self.name or self.person.name} - {self.role}"
+
+
+# This receiver handles deletion of the cover file when the Edition instance is deleted
+@receiver(signals.post_delete, sender=Edition)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `Edition` object is deleted.
+    """
+    if instance.cover:
+        instance.cover.delete(save=False)

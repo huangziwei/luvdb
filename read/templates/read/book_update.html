@@ -25,6 +25,7 @@
                         </div>
                     {% endfor %}
                 </div>
+                {{ form.publication_date|as_crispy_field }}
                 {{ form.description|as_crispy_field }}
                 <button type="submit" class="btn btn-primary btn-sm">Submit</button>
             </form>
