@@ -7,9 +7,27 @@
 <div class="container">
     <div class="row">
         <!--left column-->
-        <div class="col-sm-8">
+        <div class="col-sm-2">
+            <div class="cover-box">
+                {% if object.cover %}
+                    <img src="{{ object.cover.url }}" alt="{{ object.edition_title }} cover" class="cover-image">
+                {% else %}
+                    <p class="no-cover-text">No Cover</p>
+                {% endif %}
+            </div>
+            <div class='d-flex justify-content-center'>
+            {% if user.is_authenticated %}
+                <a href="{% url 'read:edition_update' object.pk %}" class='fs-6 text-secondary'>Edit Edition</a>
+            {% endif %}
+            </div>
+        </div>        
+        <!--right column-->
+        <div class="col-sm-10">
             <div class="book-detail">
-                <h4>{{ object.edition_title }}</h4>
+                <span class='d-flex align-items-start'>
+                    <h2>{{ object.edition_title }} </h2>
+                    
+                </span>
                 <div class="book-meta">
                     {% if object.book.id and object.edition_title != object.book.title %}
                     <p>
@@ -29,11 +47,14 @@
                     {% if object.publisher %}
                         <p>
                             <strong>Publisher </strong>
-                            {% if object.publisher.location %}{{ object.publisher.location }}: {% endif %} {{ object.publisher.name }}
+                            <a href="{% url 'read:publisher_detail' object.publisher.id %}">
+                                {% if object.publisher.location %}{{ object.publisher.location }}: {% endif %} 
+                                {{ object.publisher.name }}
+                            </a>
                         </p>
                     {% endif %}
                     {% if object.publication_date %}
-                        <p><strong>Publication Date</strong> {{ object.publication_date }}</p>
+                        <p><strong>Date</strong> {{ object.publication_date }}</p>
                     {% endif %}
                     {% if object.edition_format %}
                         <p><strong>Format</strong> {{ object.edition_format }}</p>
@@ -58,10 +79,6 @@
                         <p>{{ object.details }}</p>
                     </div>
                 {% endif %}
-
-                {% if user.is_authenticated %}
-                    <a href="{% url 'read:edition_edit' object.pk %}">Edit Data</a>
-                {% endif %}
             </div>
         </div>
 
@@ -71,4 +88,25 @@
         </div>
     </div>
 </div>
+<style>
+    .cover-box {
+        width: 200px; /* adjust as needed */
+        height: 300px; /* adjust as needed */
+        background-color: #f0f0f0; /* light gray */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    
+    .cover-image {
+        width: 95%;
+        height: auto;
+    }
+    
+    .no-cover-text {
+        color: #888; /* dark gray */
+        font-size: 1.2em;
+    }
+</style>
 {% endblock content %}

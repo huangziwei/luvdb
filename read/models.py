@@ -1,6 +1,17 @@
+import os
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.text import slugify
+from PIL import Image
+
+
+# helpers
+def rename_edition_cover(instance, filename):
+    base, extension = os.path.splitext(filename)
+    new_name = f"{slugify(instance.edition_title, allow_unicode=True)}-{instance.publication_date}{extension}"
+    return os.path.join("covers/", new_name)
 
 
 # validators
@@ -97,10 +108,15 @@ class Role(models.Model):
     A Role of a Person
     """
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        # captialize letter of each word
+        self.name = " ".join([word.capitalize() for word in self.name.split()])
+        return super(Role, self).save(*args, **kwargs)
 
 
 class Book(models.Model):
@@ -156,6 +172,7 @@ class Edition(models.Model):
 
     # edition meta data
     edition_title = models.CharField(max_length=255)
+    cover = models.ImageField(upload_to=rename_edition_cover, null=True, blank=True)
     book = models.ForeignKey(
         Book, on_delete=models.SET_NULL, related_name="editions", null=True, blank=True
     )
@@ -216,6 +233,17 @@ class Edition(models.Model):
 
     def __str__(self):
         return self.edition_title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.cover:
+            img = Image.open(self.cover.path)
+
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
+                img.thumbnail(output_size)
+                img.save(self.cover.path)
 
 
 class EditionRole(models.Model):

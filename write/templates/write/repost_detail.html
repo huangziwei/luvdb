@@ -18,33 +18,40 @@
         <p>{{ repost.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200  }}</p>
       {% endif %}
       <div style="background-color:#f9f9f9; padding: 1em; ">
+        {% if repost.original_activity %}
         <!-- Display the reposted activity -->
         <p>
           <a href="{% url 'accounts:detail' repost.original_activity.user.username %}">
             {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
           </a> {{ repost.original_activity.activity_type | past_tense }}:
         </p>
-
+        
         {% if repost.original_activity.activity_type == "post" %}
         <p><a href="{% url 'write:post_detail' repost.original_activity.content_object.id %}" >{{ repost.original_activity.content_object.title }}</a></p>
+        
         {% elif repost.original_activity.activity_type == "pin" %}
         <p><a href="{{ repost.original_activity.content_object.url }}" >{{ repost.original_activity.content_object.title }}</a> ({{  repost.original_activity.content_object.url | root_url }})</p>
         {% endif %}
+        
         <div style="background-color:#f9f9f9;">
-          {{ repost.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}
+          <blockquote>
+            {{ repost.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}
+          </blockquote>
           <p><a href="{{ repost.original_activity.content_object.get_absolute_url }}" style='color:gray;'>{{ repost.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
         </div>
+        {% else %}
+        <p>The original content has been deleted.</p>
+        {% endif %} 
       </div>
-      <span class="d-flex mt-3">
-        <p style='margin-right: 0.5em'>{{ repost.timestamp |date:"Y.m.d H:i" }}</p>
-        {% if repost.author == request.user %}
-          <p style='margin: 0 0.5em'><a href="{% url 'write:repost_update' repost.id %}">Edit</a></p>
-          <p style='margin: 0 0.5em'><a href="{% url 'write:repost_delete' repost.id %}">Delete</a></p>
-        {% endif %}
-      </span> 
+      <span class="d-flex">
+        <p class='me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
+        {% if object.author == request.user %}
+        <a href="{% url "write:repost_update" object.pk %}" class="me-2">Edit</a>
+        <a href="{% url "write:repost_delete" object.pk %}" class="me-2">Delete</a>{% endif %}
+      </span>
       
-      <button id="show-comments" class="btn btn-primary btn-sm mx-auto">Comments ({{ comments|length }})</button>
-      <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto">Reposts ({{ object.get_reposts.count }})</button>
+      <button id="show-comments" class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
+      <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto toggle-button">Reposts ({{ object.get_reposts.count }})</button>
 
       <hr>
 
@@ -60,14 +67,24 @@
 </div>
 
 <script>
-  document.getElementById('show-comments').addEventListener('click', function() {
-      document.getElementById('comments-section').style.display = 'block';
-      document.getElementById('reposts-section').style.display = 'none';
-  });
-  
-  document.getElementById('show-reposts').addEventListener('click', function() {
-      document.getElementById('comments-section').style.display = 'none';
-      document.getElementById('reposts-section').style.display = 'block';
-  });
+  var buttons = document.getElementsByClassName('toggle-button');
+
+  for (var i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener('click', function() {
+          // Hide all sections and make all buttons secondary
+          for (var j = 0; j < buttons.length; j++) {
+              var sectionId = buttons[j].id.replace('show-', '') + '-section';
+              document.getElementById(sectionId).style.display = 'none';
+              buttons[j].classList.remove('btn-primary');
+              buttons[j].classList.add('btn-secondary');
+          }
+
+          // Show the clicked section and make the button primary
+          var sectionId = this.id.replace('show-', '') + '-section';
+          document.getElementById(sectionId).style.display = 'block';
+          this.classList.remove('btn-secondary');
+          this.classList.add('btn-primary');
+      });
+  }
 </script>
 {% endblock %}

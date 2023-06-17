@@ -4,26 +4,33 @@
 
 {% block content %}
 <div class="container">
-    <h2>Create Book</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.title|as_crispy_field }}
-        {{ bookroles.management_form|crispy }}
-        <div id="book-role-formset">
-            {% for form in bookroles %}
-                <div class="row">
-                    <div class="col-md-5 mb-5">
-                        {{ form.person | as_crispy_field}}
-                    </div>
-                    <div class="col-md-5 mb-5">
-                        {{ form.role | as_crispy_field}}
-                    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            <h2>Create a new book entry</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.title|as_crispy_field }}
+                {{ bookroles.management_form|crispy }}
+                <div id="book-role-formset">
+                    {% for form in bookroles %}
+                        <div class="row">
+                            <div class="col-md-6 mb-5">
+                                {{ form.person | as_crispy_field}}
+                                <a href="{% url 'read:person_create' %}?next={{ request.path }}" class="text-secondary">Add a new person entry?</a>
+                            </div>
+                            <div class="col-md-5 mb-5">
+                                {{ form.role | as_crispy_field}}
+                                <a href="{% url 'read:role_create' %}?next={{ request.path }}" class="text-secondary">Add a new role entry?</a>
+
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+                {{ form.description|as_crispy_field }}
+                <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+            </form>
         </div>
-        {{ form.description|as_crispy_field }}
-        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-    </form>
+    </div>
 </div>
 
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
@@ -45,7 +52,7 @@
         // Add a button to the end of each row
         formsetRows.forEach(function(row) {
             var buttonDiv = document.createElement('div');
-            buttonDiv.className = 'col-md-1 mb-5';
+            buttonDiv.className = 'col-md-1';
             var innerDiv = document.createElement('div');
             innerDiv.className = 'mb-1';
             var label = document.createElement('label');
@@ -75,6 +82,27 @@
             });
         });
     });
+
+    $(document).ready(function() {
+        // Initialize the Select2 fields
+        $('.autocomplete-light-widget').each(function() {
+            var select = $(this).yourlabsAutocomplete();
+            var createUrl = $(this).data('create-url');
+            var select2 = select.djangoSelect2({
+                placeholder: 'Select an option',
+                minimumInputLength: 2
+            });
+    
+            // Modify the "No results found" message
+            select2.on('results:message', function(params) {
+                if (params.message === 'No results found') {
+                    params.message = 'No results found. <a href="' + createUrl + '">Add a new entry?</a>';
+                }
+            });
+        });
+    });
+    
+    
 </script>
 
 

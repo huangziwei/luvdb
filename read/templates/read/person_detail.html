@@ -4,35 +4,37 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-8">
-    <h2>{{ object.name }} / {{ object.romanized_name }}</h2> 
-    <span class="text-secondary">
-        {% if object.birth_date %}({{ object.birth_date }}-{% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %})
-    </span>
-    {% if object.bio %}
-        <p>{{ object.bio }}</p>
-    {% endif %}
+    
+            <span class='d-flex align-items-start'>
+                <h2>
+                    {{ object.name }}
+                    {% if object.romanized_name %} / {{ object.romanized_name }} {% endif %}
+                </h2> 
+                {% if user.is_authenticated %}
+                <a href="{% url 'read:person_update' object.pk %}" class='fs-6 text-secondary'>Edit Person</a>
+                {% endif %}
+            </span>
+            <span class="text-secondary">
+                {% if object.birth_date %}({{ object.birth_date }}-{% endif %}{% if object.death_date %}{{ object.death_date }}){% endif %}
+            </span>
+            {% if object.bio %}
+                <p>{{ object.bio }}</p>
+            {% endif %}
 
-    <h3>Bibliography</h3>
-    <ul>
-    {% for book in object.books.all %}
-        <li>
-            <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a> ({{ book.publication_date}})
-        </li>
-    {% empty %}
-        <li>This person has no books.</li>
-    {% endfor %}
-    </ul>
-
-    {% comment %} <h3>Edition</h3>
-    <ul>
-    {% for edtion in object.editions.all %}
-        <li>{{ edtion.edition_title }}</li>
-    {% empty %}
-        <li>This person has no books.</li>
-    {% endfor %}
-    </ul>    {% endcomment %}
-</div>
-</div>
+            {% if object.books.count != 0 %}
+                <h3>Bibliography</h3>
+                <ul>
+                {% for book in object.books.all %}
+                    <li>
+                        <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a> ({{ book.publication_date}})
+                    </li>
+                {% empty %}
+                    <li>This person has no books.</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
 {% endblock %}

@@ -8,7 +8,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-8">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.edition_title|as_crispy_field }}
                 {{ form.book|as_crispy_field }}
@@ -28,6 +28,7 @@
                         </div>
                     {% endfor %}
                 </div>
+                {{ form.cover|as_crispy_field}}
                 {{ form.publisher|as_crispy_field }}
                 {{ form.language|as_crispy_field}}
                 {{ form.details|as_crispy_field }}

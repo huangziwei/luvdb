@@ -4,7 +4,9 @@
 <div class="container">
     <span class='d-flex align-items-start'>
         <h2>{{ object.title }} ({{ object.publication_date }})</h2>
-        <a href="{% url 'read:book_edit' object.pk %}" class='fs-6 text-secondary'>Edit Book</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'read:book_update' object.pk %}" class='fs-6 text-secondary'>Edit Book</a>
+        {% endif %}
     </span>
     
     {% for role in object.bookrole_set.all %}
@@ -13,14 +15,25 @@
     </p>
     {% endfor %}
 
+
     <h3>Editions</h3>
-    {% for edition in object.editions.all %}
-        <p>
-            <a href="{% url 'read:edition_detail' edition.pk %}">{{ edition.edition_title }}</a>
-            {{ edition.publication_date }}
-        </p>
-    {% empty %}
-        <p>This book has no editions.</p>
-    {% endfor %}
+    <div class="row">
+        {% regroup object.editions.all by language as edition_list %}
+        {% for language in edition_list %}
+            <div class="col-md-4">
+                <h4>{{ language.grouper }}</h4>
+                {% for edition in language.list|dictsort:"publication_date" %}
+                    <p>
+                        <a href="{% url 'read:edition_detail' edition.pk %}">{{ edition.edition_title }}</a>
+                        ({{ edition.publication_date }})
+                    </p>
+                {% empty %}
+                    <p>This language has no editions.</p>
+                {% endfor %}
+            </div>
+        {% empty %}
+            <p>This book has no editions.</p>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

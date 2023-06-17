@@ -6,7 +6,13 @@ from django.urls import reverse_lazy
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
-from .forms import BookForm, BookRoleFormSet, EditionForm, EditionRoleFormSet
+from .forms import (
+    BookForm,
+    BookRoleFormSet,
+    EditionForm,
+    EditionRoleFormSet,
+    PersonForm,
+)
 from .models import Book, Edition, Person, Publisher, Role
 
 ##########
@@ -16,7 +22,7 @@ from .models import Book, Edition, Person, Publisher, Role
 
 class PersonCreateView(LoginRequiredMixin, CreateView):
     model = Person
-    fields = ["name", "romanized_name", "bio", "birth_date", "death_date"]
+    form_class = PersonForm
     template_name = "read/person_create.html"
 
     def form_valid(self, form):
@@ -41,6 +47,36 @@ class PersonDetailView(DetailView):
             editionrole__role__name="Translator", editionrole__person=self.object
         )
         return context
+
+
+class PersonUpdateView(LoginRequiredMixin, UpdateView):
+    model = Person
+    form_class = PersonForm
+    template_name = "read/person_update.html"
+
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("read:person_detail", kwargs={"pk": self.object.pk})
+
+
+class RoleCreateView(LoginRequiredMixin, CreateView):
+    model = Role
+    fields = ["name"]
+    template_name = "read/role_create.html"
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        next_url = self.request.GET.get("next")
+        if next_url:
+            return next_url
+        return reverse_lazy("activity_feed:activity_feed")
 
 
 #############
@@ -111,7 +147,7 @@ class BookCreateView(LoginRequiredMixin, CreateView):
 
 class BookUpdateView(LoginRequiredMixin, UpdateView):
     model = Book
-    fields = ["title", "description"]
+    form_class = BookForm
     template_name = "read/book_update.html"
 
     def get_context_data(self, **kwargs):
@@ -204,10 +240,15 @@ class EditionUpdateView(UpdateView):
         editionroles = context["editionroles"]
         with transaction.atomic():
             form.instance.updated_by = self.request.user
-            self.object = form.save()
-            if editionroles.is_valid():
-                editionroles.instance = self.object
-                editionroles.save()
+            if self.request.method == "POST":
+                form = EditionForm(
+                    self.request.POST, self.request.FILES, instance=self.object
+                )
+                if form.is_valid():
+                    self.object = form.save()
+                    if editionroles.is_valid():
+                        editionroles.instance = self.object
+                        editionroles.save()
         return super().form_valid(form)
 
 

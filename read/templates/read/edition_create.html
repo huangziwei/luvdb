@@ -8,8 +8,9 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-8">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
+                {{ form.cover|as_crispy_field}}
                 {{ form.edition_title|as_crispy_field }}
                 {{ form.book|as_crispy_field }}
                 {{ editionroles.management_form|crispy }}
@@ -38,6 +39,7 @@
                 {{ form.isbn_10|as_crispy_field }}
                 {{ form.isbn_13|as_crispy_field }}
                 {{ form.asin|as_crispy_field }}
+                
                 
                 <button type="submit" class="btn btn-primary btn-sm">Submit</button>
             </form>

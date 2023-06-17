@@ -9,21 +9,24 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-8">
-      <a href="{% url 'accounts:detail' object.author.username %}">
-        {{ object.author.display_name | default:object.author.username }}
-      </a> said:
-      <div style="background-color:#f9f9f9; padding: 0.5em; margin: 0.5em">{{ object.content| linkify_tags | linkify_mentions | markdownify }}</div>
-      <span style="display: flex;">
-        <p style='margin-right: 0.5em'>{{ object.timestamp|date:"Y.m.d H:i" }} </p> 
-        {% if object.author == request.user %}
-          <p style='margin: 0 0.5em'><a href="{% url "write:say_update" object.pk %}">Edit</a></p>
-          <p style='margin: 0 0.5em'><a href="{% url "write:say_delete" object.pk %}">Delete</a></p>
-        {% endif %}
-      </span>
-
-      <button id="show-comments" class="btn btn-primary btn-sm mx-auto">Comments ({{ comments|length }})</button>
-      <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto">Reposts ({{ object.reposts.count }})</button>
-
+      <div>
+        <p class="d-flex"> 
+          <a href="{% url 'accounts:detail' object.author.username %}">
+            {{ object.author.display_name | default:object.author.username }}
+          </a> said:
+        </p>
+        <div class="bg-light p-3">{{ object.content| linkify_tags | linkify_mentions | markdownify }}</div>
+        <span class="d-flex mt-2">
+          <p class='me-2 text-secondary mb-2'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
+          {% if object.author == request.user %}
+          <a href="{% url "write:say_update" object.pk %}" class="me-2">Edit</a>
+          <a href="{% url "write:say_delete" object.pk %}" class="me-2">Delete</a>{% endif %}
+        </span>
+      </div>
+      
+      <button id="show-comments" class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
+      <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto toggle-button">Reposts ({{ object.reposts.count }})</button>
+      
       <hr>
 
       <div id="comments-section">
@@ -39,14 +42,24 @@
 </div>
  
 <script>
-  document.getElementById('show-comments').addEventListener('click', function() {
-      document.getElementById('comments-section').style.display = 'block';
-      document.getElementById('reposts-section').style.display = 'none';
-  });
-  
-  document.getElementById('show-reposts').addEventListener('click', function() {
-      document.getElementById('comments-section').style.display = 'none';
-      document.getElementById('reposts-section').style.display = 'block';
-  });
+  var buttons = document.getElementsByClassName('toggle-button');
+
+  for (var i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener('click', function() {
+          // Hide all sections and make all buttons secondary
+          for (var j = 0; j < buttons.length; j++) {
+              var sectionId = buttons[j].id.replace('show-', '') + '-section';
+              document.getElementById(sectionId).style.display = 'none';
+              buttons[j].classList.remove('btn-primary');
+              buttons[j].classList.add('btn-secondary');
+          }
+
+          // Show the clicked section and make the button primary
+          var sectionId = this.id.replace('show-', '') + '-section';
+          document.getElementById(sectionId).style.display = 'block';
+          this.classList.remove('btn-secondary');
+          this.classList.add('btn-primary');
+      });
+  }
 </script>
 {% endblock content %}

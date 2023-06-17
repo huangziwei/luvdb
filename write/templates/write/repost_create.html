@@ -23,7 +23,9 @@
                 <p><a href="{{ original_activity.content_object.url }}" >{{ original_activity.content_object.title }}</a> ({{  original_activity.content_object.url | root_url }})</p>
                 {% endif %}
                 <div style="background-color:#f9f9f9;">
-                    {{ original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}
+                    <blockquote>
+                        {{ original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}
+                    </blockquote>
                     <p><a href="{{ original_activity.content_object.get_absolute_url }}" style='color:gray;'>{{ original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
                 </div>
             </div>

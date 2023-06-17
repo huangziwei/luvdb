@@ -1,15 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Delete activity</h1>
-  <p>Are you sure you want to delete this activity?</p>
-  {% if object.activity_type == "repost" %}
-    <p>(This will delete the activity from your public feed <strong>and also the repost itself</strong>.)</p>
-  {% else %}
-    <p>(This will only delete the activity from your public feed.)</p>
-  {% endif %}
-  <form method="post">
-    {% csrf_token %}
-    <input type="submit" class="btn btn-sm btn-danger" value="Confirm">
-  </form>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      {% if object.activity_type == "repost" %}
+        <h3>Delete this repost</h3>
+        <p>Are you sure you want to delete this repost ?</p>
+        <p class="text-secondary">This will delete the repost from your public feed <strong>and also the repost itself</strong>.</p>
+        <p class="text-secondary">All comments you received in this repost will also be deleted.</p>
+      {% else %}
+        <h3>Delete this activity</h3>
+        <p>Are you sure you want to delete this activity?</p>
+        <p class="text-secondary">This will <strong>only</strong> delete the activity from your public feed. The {{object.content_type.model|title}} per se will not be deleted.</p>
+        <p class="text-secondary">
+          If what you want is to delete the {{object.content_type.model|title}}, please delete it from
+          <a href="{% url 'write:'|add:object.content_type.model|add:'_detail' object.content_object.id %}">its own page</a>.
+        </p>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-sm btn-danger" value="Confirm">
+      </form>
+    </div>
+  </div>
+</div>    
 {% endblock %}

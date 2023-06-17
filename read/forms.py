@@ -5,7 +5,20 @@ from django import forms
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
-from .models import Book, BookRole, Edition, EditionRole
+from .models import Book, BookRole, Edition, EditionRole, Person
+
+
+##########
+# Person #
+##########
+class PersonForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ["name", "romanized_name", "bio", "birth_date", "death_date"]
+        help_texts = {
+            "name": "Enter the person's name in their original language. ",
+            "romanized_name": "Enter the romanized version of the person's name.",
+        }
 
 
 ########
@@ -16,6 +29,9 @@ class BookForm(forms.ModelForm):
         model = Book
         exclude = ["created_by", "updated_by"]
         fields = "__all__"
+        help_texts = {
+            "title": "Enter the book's title in their original language. ",
+        }
 
 
 class BookRoleForm(forms.ModelForm):
@@ -32,9 +48,13 @@ BookRoleFormSet = inlineformset_factory(
     can_delete=False,
     widgets={
         "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("read:person-autocomplete")
+            url=reverse_lazy("read:person-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("read:person_create")},
         ),
-        "role": autocomplete.ModelSelect2(url=reverse_lazy("read:role-autocomplete")),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("read:role-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("read:role_create")},
+        ),
     },
 )
 
