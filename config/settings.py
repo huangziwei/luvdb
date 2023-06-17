@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -159,9 +159,11 @@ CRISPY_CLASS_CONVERTERS = {
     "form-select": "",
 }
 
+# TEMPLATE_404 = "404.html"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "activity_feed:activity_feed"
 LOGOUT_REDIRECT_URL = "login"
+
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "static"

@@ -13,3 +13,5 @@ urlpatterns = [
     path("", include("notify.urls")),
     path("", include("django.contrib.auth.urls")),  # Moved to the end
 ]
+
+# handler404 = "django.views.defaults.page_not_found"

@@ -4,9 +4,21 @@
 {% block title %}Sign Up{% endblock title %}
 
 {% block content %}
-<h2>Sign Up</h2>
-<form method="post">{% csrf_token%}
-    {{ form|crispy }}
-    <button type="submit" class="btn btn-primary">Sign Up</button>
-</form>
+
+
+<div class="container">
+    <div class="row">
+        <!-- Left column -->
+        <div class="col-sm-8">
+        <h2>Sign Up</h2>
+        {% if not user.is_authenticated %}
+        <form method="post">{% csrf_token%}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+        {% endif %}
+        </div>
+    </div>
+</div>
+
 {% endblock content %}

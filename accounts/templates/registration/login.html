@@ -12,6 +12,7 @@
             <p>Mark the things you <ruby>LOVE<rp>(</rp><rt>/lʌv/</rt><rp>)</rp></ruby>.<p>
         </div>
         <!-- Right column -->
+        {% if not user.is_authenticated %}
         <div class="col-sm-4">
             <h2>Log In</h2>
             <form method="post">{% csrf_token %}
@@ -19,6 +20,7 @@
                 <button class="btn btn-success ml-2" type="submit">Log In</button>
             </form>
         </div>
+        {% endif %}
     </div>
 </div>
 {% comment %} <p><a href="{% url 'password_reset' %}">Forgot your passworld?</a></p> {% endcomment %}
