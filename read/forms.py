@@ -30,7 +30,8 @@ class BookForm(forms.ModelForm):
         exclude = ["created_by", "updated_by", "persons"]
         fields = "__all__"
         help_texts = {
-            "title": "Enter the book's title in their original language. ",
+            "title": "Enter the book's title in its original language. ",
+            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
         }
 
 

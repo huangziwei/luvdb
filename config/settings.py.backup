@@ -232,13 +232,3 @@ STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 MEDIA_URL = "https://%s/media/" % (AWS_S3_CUSTOM_DOMAIN)
 MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_FILE_STORAGE = "config.s3_storage_backends.MediaStorage"
-
-# HTTP Strict Transport Security
-
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-
-SECURE_SSL_REDIRECT = True
-
-SESSION_COOKIE_SECURE = True
