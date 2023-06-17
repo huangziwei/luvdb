@@ -27,7 +27,7 @@ class PersonForm(forms.ModelForm):
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
-        exclude = ["created_by", "updated_by"]
+        exclude = ["created_by", "updated_by", "persons"]
         fields = "__all__"
         help_texts = {
             "title": "Enter the book's title in their original language. ",

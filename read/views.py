@@ -142,6 +142,8 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             if bookroles.is_valid():
                 bookroles.instance = self.object
                 bookroles.save()
+            else:
+                print(bookroles.errors)  # print out formset errors
         return super().form_valid(form)
 
 
@@ -161,10 +163,15 @@ class BookUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         bookroles = context["bookroles"]
-        self.object = form.save()
-        if bookroles.is_valid():
-            bookroles.instance = self.object
-            bookroles.save()
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if bookroles.is_valid():
+                bookroles.instance = self.object
+                bookroles.save()
+            else:
+                print(bookroles.errors)  # print out formset errors
         return super().form_valid(form)
 
     def get_success_url(self):

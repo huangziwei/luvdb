@@ -158,7 +158,7 @@ class BookRole(models.Model):
     """
 
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
