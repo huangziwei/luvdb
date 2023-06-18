@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.utils.html import format_html
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
@@ -272,6 +273,26 @@ class BookAutocomplete(autocomplete.Select2QuerySetView):
 
         return qs
 
+    def get_result_label(self, item):
+        # Get the first person with a role of 'Author' for the book
+        author_role = Role.objects.filter(
+            name="Author"
+        ).first()  # Adjust 'Author' to match your data
+        book_role = item.bookrole_set.filter(role=author_role).first()
+        author_name = (
+            book_role.person.name if book_role and book_role.person else "Unknown"
+        )
+
+        # Get the year from the publication_date
+        publication_year = (
+            item.publication_date[:4] if item.publication_date else "Unknown"
+        )
+
+        # Format the label
+        label = format_html("{} ({}, {})", item.title, author_name, publication_year)
+
+        return label
+
 
 class PublisherAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -294,6 +315,16 @@ class PersonAutoComplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__istartswith=self.q)
 
         return qs
+
+    def get_result_label(self, item):
+        # Get the birth and death years
+        birth_year = item.birth_date[:4] if item.birth_date else "Unk."
+        death_year = item.death_date[:4] if item.death_date else "Pres."
+
+        # Format the label
+        label = format_html("{} ({} - {})", item.name, birth_year, death_year)
+
+        return label
 
 
 class RoleAutocomplete(autocomplete.Select2QuerySetView):

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             <h2>Create a new book entry</h2>
             <form method="post">
                 {% csrf_token %}
@@ -14,11 +14,11 @@
                 <div id="book-role-formset">
                     {% for form in bookroles %}
                         <div class="row">
-                            <div class="col-md-6 mb-5">
+                            <div class="col-md-6 mb-3">
                                 {{ form.person | as_crispy_field}}
                                 <a href="{% url 'read:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person entry?</a>
                             </div>
-                            <div class="col-md-5 mb-5">
+                            <div class="col-md-5 mb-3">
                                 {{ form.role | as_crispy_field}}
                                 <a href="{% url 'read:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role entry?</a>
                             </div>

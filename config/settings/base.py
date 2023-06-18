@@ -14,6 +14,8 @@ from pathlib import Path
 
 from environs import Env
 
+from write.spoiler_extension import SpoilerExtension
+
 from ..s3_storage_backends import MediaStorage
 
 env = Env()
@@ -173,6 +175,9 @@ MARKDOWNIFY = {
             "acronym",
             "b",
             "blockquote",
+            "code",
+            "pre",
+            "div",
             "em",
             "i",
             "li",
@@ -186,11 +191,26 @@ MARKDOWNIFY = {
             "h6",
             "img",
             "br",
+            "details",
+            "summary",
+            "table",
+            "thead",
+            "tbody",
+            "ruby",
+            "rt",
+            "cite",
         ],
-        "WHITELIST_ATTRS": [
-            "href",
-            "src",
-            "alt",
+        "WHITELIST_ATTRS": ["href", "src", "alt", "class"],
+        "WHITELIST_STYLES": [
+            "color",
+            "font-weight",
         ],
+        "MARKDOWN_EXTENSIONS": [
+            "fenced_code",
+            "extra",
+            "nl2br",
+            "codehilite",
+        ],
+        "BLEACH": False,
     }
 }

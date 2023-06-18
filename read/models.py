@@ -180,6 +180,7 @@ class Edition(models.Model):
     # edition meta data
     edition_title = models.CharField(max_length=255)
     cover = models.ImageField(upload_to=rename_edition_cover, null=True, blank=True)
+    cover_sens = models.BooleanField(default=False)
     book = models.ForeignKey(
         Book, on_delete=models.SET_NULL, related_name="editions", null=True, blank=True
     )

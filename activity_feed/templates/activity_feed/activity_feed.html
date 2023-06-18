@@ -4,12 +4,12 @@
 {% load linkify %}
 {% load past_tense %}
 {% load crispy_forms_tags %}
-
+{% load static %}
 {% block content %}
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             {% if feed_type == "public" %}
                 <span style='display: flex;'>
                     <p style='padding-right:0.5em'>Say</p> | 
@@ -52,4 +52,7 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="{% static 'js/text-input-shortcuts.js' %}"></script>
+
 {% endblock %}
+

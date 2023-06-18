@@ -3,6 +3,8 @@ from django.urls import path
 from .views import (
     AccountDetailView,
     AccountUpdateView,
+    FollowerListView,
+    FollowingListView,
     GenerateInvitationCodeView,
     PersonalActivityFeedView,
     SignUpView,
@@ -25,6 +27,16 @@ urlpatterns = [
         "people/<str:username>/feed",
         view=PersonalActivityFeedView.as_view(),
         name="feed",
+    ),
+    path(
+        "people/<str:username>/following/",
+        FollowingListView.as_view(),
+        name="following_list",
+    ),
+    path(
+        "people/<str:username>/followers/",
+        FollowerListView.as_view(),
+        name="follower_list",
     ),
     path("profile", view=redirect_to_profile, name="profile"),
 ]

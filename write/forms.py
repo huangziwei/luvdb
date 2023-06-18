@@ -29,7 +29,12 @@ class SayForm(forms.ModelForm):
         model = Say
         fields = ["content", "comments_enabled"]
         widgets = {
-            "content": forms.Textarea(attrs={"placeholder": "What's on your mind?"}),
+            "content": forms.Textarea(
+                attrs={
+                    "placeholder": "What's on your mind?",
+                    "what": "text-input",
+                },
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -70,7 +75,9 @@ class CommentForm(forms.ModelForm):
 
 class ActivityFeedSayForm(SayForm):
     content = forms.CharField(
-        widget=forms.Textarea(attrs={"rows": 3, "placeholder": "What's on your mind?"})
+        widget=forms.Textarea(
+            attrs={"rows": 3, "placeholder": "What's on your mind?", "id": "text-input"}
+        )
     )
 
     def __init__(self, *args, **kwargs):

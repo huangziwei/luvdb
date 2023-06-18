@@ -12,7 +12,7 @@
 <div class="container">
   <div class="row">
     <!-- Left column -->
-    <div class="col-sm-8 order-2 order-sm-1">
+    <div class="col-sm-7 order-2 order-sm-1">
 
     <!--Pins-->
     <div class="d-flex justify-content-between align-items-center mt-2">
@@ -127,9 +127,9 @@
       <hr>
 
       <div> <!--Most recent activity-->
-        <div class="d-flex justify-content-between align-items-center"> <!-- Most recent activity -->
+        <div class="d-flex justify-content-between align-items-center"> 
             <h5>Recent</h5>
-           <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:feed' object.username %}">All</a>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:feed' object.username %}">All</a>
         </div>
         {% for activity in recent_activities %}
             {% include "activity_feed/activity_item.html" %}
@@ -138,8 +138,11 @@
       </div>
 
       <div> <!--following-->
+        <div class="d-flex justify-content-between align-items-center">
           <h5>Following</h5>
-          {% for follow in object.following.all %}
+          <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:following_list' object.username %}">All</a>
+        </div>
+          {% for follow in recent_following %}
             <span><a href="{% url 'accounts:detail' username=follow.followed.username %}">{{ follow.followed.display_name|default:follow.followed.username }}</a></span>
           {% empty %}
               <p>This user is not following anyone.</p>
@@ -147,8 +150,11 @@
       </div>
       <br>
       <div> <!--followers-->
+        <div class="d-flex justify-content-between align-items-center"> <!-- Most recent activity -->
           <h5>Followers</h5>
-          {% for follow in object.followers.all %}
+          <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:follower_list' object.username %}">All</a>
+        </div>
+          {% for follow in recent_followers %}
               <span><a href="{% url 'accounts:detail' username=follow.follower.username %}">{{ follow.follower.display_name|default:follow.follower.username }}</a></span>
           {% empty %}
               <p>This user has no followers.</p>

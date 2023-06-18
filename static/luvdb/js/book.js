@@ -53,24 +53,5 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 $(document).ready(function() {
-    // Initialize the Select2 fields
-    $('.autocomplete-light-widget').each(function() {
-        var select = $(this).yourlabsAutocomplete();
-        var createUrl = $(this).data('create-url');
-        var select2 = select.djangoSelect2({
-            placeholder: 'Select an option',
-            minimumInputLength: 2
-        });
-
-        // Modify the "No results found" message
-        select2.on('results:message', function(params) {
-            if (params.message === 'No results found') {
-                params.message = 'No results found. <a href="' + createUrl + '">Add a new entry?</a>';
-            }
-        });
-    });
-});
-
-$(document).ready(function() {
     $('select').removeClass('form-select');
 });

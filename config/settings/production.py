@@ -25,3 +25,8 @@ DEFAULT_FILE_STORAGE = "config.s3_storage_backends.MediaStorage"
 CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = ["https://*.fly.dev/", "https://*.luvdb.com"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = True
+SESSION_COOKIE_SECURE = True
+SECURE_REFERRER_POLICY = True

@@ -10,3 +10,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+SECURE_HSTS_SECONDS = False
+SECURE_SSL_REDIRECT = False
+CSRF_COOKIE_SECURE = False

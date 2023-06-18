@@ -7,7 +7,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-7">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.edition_title|as_crispy_field }}
@@ -16,15 +16,15 @@
                 <div id="edition-role-formset">
                     {% for form in editionroles %}
                         <div class="row">
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-4 mb-3">
                                 {{ form.person | as_crispy_field}}
                                 <a href="{% url 'read:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>
                             </div>
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-4 mb-3">
                                 {{ form.role | as_crispy_field}}
                                 <a href="{% url 'read:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
                             </div>
-                            <div class="col-md-5 mb-3">
+                            <div class="col-md-3 mb-3">
                                 {{ form.name | as_crispy_field}}
                             </div>
                         </div>

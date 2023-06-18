@@ -5,14 +5,14 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
-from activity_feed.models import Activity
+from activity_feed.models import Activity, Follow
 from read.models import Edition, Person
 from write.models import Pin, Post, Say
 
@@ -78,6 +78,12 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
         context["recent_activities"] = Activity.objects.filter(
             user=self.object
         ).order_by("-timestamp")[:3]
+        context["recent_following"] = Follow.objects.filter(
+            follower=self.object
+        ).order_by("-timestamp")[:5]
+        context["recent_followers"] = Follow.objects.filter(
+            followed=self.object
+        ).order_by("-timestamp")[:5]
 
         return context
 
@@ -202,3 +208,23 @@ class PersonalActivityFeedView(LoginRequiredMixin, ListView):
         user = User.objects.get(username=username)
         # Return only the activities for this user
         return super().get_queryset().filter(user=user).order_by("-timestamp")
+
+
+class FollowingListView(ListView):
+    model = Follow
+    template_name = "accounts/following_list.html"
+    context_object_name = "following_list"
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs["username"])
+        return user.following.all()
+
+
+class FollowerListView(ListView):
+    model = Follow
+    template_name = "accounts/follower_list.html"
+    context_object_name = "follower_list"
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs["username"])
+        return user.followers.all()

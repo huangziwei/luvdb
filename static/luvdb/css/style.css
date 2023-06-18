@@ -107,3 +107,63 @@ blockquote:last-child {
 .hover-username:hover .username {
     display: block;
 }
+
+/* spoiler */
+
+a[href$="/spoiler"],
+a[href$="#spoiler"],
+a[href$="/s"],
+a[href$="#s"] {
+    background: #000 !important;
+    color: #000 !important
+}
+
+a[href$="/spoiler"]:hover,
+a[href$="#spoiler"]:hover,
+a[href$="/s"]:hover,
+a[href$="#s"]:hover {
+    color: #FFF !important
+}
+
+/* popup footnote */
+
+.popupnote-parent {
+    position: relative;
+    display: inline-block;
+    /* Make the footnote reference an inline block */
+    font-size: 0.8em;
+    vertical-align: super;
+}
+
+.popupnote {
+    position: absolute;
+    display: none;
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: left;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 1em 0.5em;
+    font-size: 1em;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Center the sidenote */
+    width: 200px;
+
+}
+
+.popupnote-parent:hover .popupnote {
+    display: block;
+}
+
+.footnote {
+    display: none;
+}
+
+cite,
+cite>a {
+    color: #0c920c;
+    font-style: normal;
+}

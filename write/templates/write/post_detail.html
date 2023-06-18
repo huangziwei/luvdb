@@ -8,7 +8,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-sm-8">
+    <div class="col-sm-7">
       <h2>{{ object.title }}</h2>
       <span class="d-flex">
         <p class='me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
@@ -30,11 +30,36 @@
       <div id="reposts-section" style="display: none;">
         {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts%}
       </div>
-
     </div>
+
   </div>
 </div>
 
 <script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
-
+<script type="text/javascript" src="{% static 'js/popup-footnote.js' %}"></script>
+<style>
+  /* citation */
+  @media (min-width: 768px) {
+      blockquote {
+          position: relative;
+      }
+  
+      cite {
+          position: absolute;
+          left: 102%;
+          top: 0;
+          width: 20%;
+          color: darkgreen;
+          font-style: normal;
+      }
+  
+      cite>a:link {
+          color: green;
+      }
+  
+      cite>a:visited {
+          color: darkgreen;
+      }
+  }
+</style>
 {% endblock %}

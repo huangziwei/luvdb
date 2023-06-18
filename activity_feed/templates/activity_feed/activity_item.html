@@ -47,7 +47,7 @@
     </p>
     <div class="bg-light p-3">
         <a href="{% url 'write:post_detail' activity.content_object.id %}" class="text-decoration-none">{{activity.content_object.title}}</a>
-        <blockquote>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</blockquote>
+        <div>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</div>
     </div>
     <div class="d-flex mt-2">
         <p class="me-2">
@@ -108,7 +108,7 @@
             <span class="username">@{{activity.user.username}}</span>
         </a> 
         followed 
-        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
+        <a href="{% url 'accounts:detail' activity.content_object.followed.username %}" class="text-decoration-none hover-username">
             {{ activity.content_object.followed.display_name | default:activity.content_object.followed.username }}
             <span class="username">@{{activity.content_object.followed.username}}</span>
         </a> 
