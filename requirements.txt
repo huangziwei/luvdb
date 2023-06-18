@@ -19,3 +19,4 @@ django-storages[boto3]
 boto3 
 python-dotenv
 Pygments
+beautifulsoup4

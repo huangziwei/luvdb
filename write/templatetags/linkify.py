@@ -1,6 +1,5 @@
 import re
 
-import markdown
 from django import template
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -11,26 +10,25 @@ register = template.Library()
 
 @register.filter
 def linkify_tags(value):
-    md = markdown.Markdown(extensions=["fenced_code"])
+    # Split the content by triple backticks to distinguish code blocks
+    split_by_backticks = value.split("```")
 
-    def replace(match):
-        tag = match.group(1)
-        url = reverse("write:tag_list", args=[tag])
-        return f'<a href="{url}">#{tag}</a>'
+    for i in range(len(split_by_backticks)):
+        # If the index is even, it means this is not inside a code block.
+        # Hence, replace the hashtags.
+        if i % 2 == 0:
 
-    def replacer(m):
-        if m.group(1):  # it's a code block, ignore
-            return m.group(0)
-        else:  # it's not a code block, replace hashtags
-            return re.sub(r"#(\w+)", replace, m.group(2))
+            def replace(match):
+                tag = match.group(1)
+                url = reverse("write:tag_list", args=[tag])
+                return f'<a href="{url}">#{tag}</a>'
 
-    # Parse the markdown text and replace the hashtags
-    html = md.convert(value)
-    html = re.sub(
-        r"(<pre><code>.*?</code></pre>)|([^<]+)", replacer, html, flags=re.DOTALL
-    )
+            split_by_backticks[i] = re.sub(r"#(\w+)", replace, split_by_backticks[i])
 
-    return mark_safe(html)
+    # Join back the content
+    value = "```".join(split_by_backticks)
+
+    return mark_safe(value)
 
 
 @register.filter

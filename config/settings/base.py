@@ -211,6 +211,5 @@ MARKDOWNIFY = {
             "nl2br",
             "codehilite",
         ],
-        "BLEACH": False,
     }
 }
