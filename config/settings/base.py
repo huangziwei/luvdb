@@ -199,6 +199,7 @@ MARKDOWNIFY = {
             "ruby",
             "rt",
             "cite",
+            "span",
         ],
         "WHITELIST_ATTRS": ["href", "src", "alt", "class"],
         "WHITELIST_STYLES": [
