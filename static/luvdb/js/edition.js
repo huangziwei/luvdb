@@ -50,3 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+$(document).ready(function() {
+    $('select').removeClass('form-select');
+});

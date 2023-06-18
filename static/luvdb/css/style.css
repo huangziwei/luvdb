@@ -39,12 +39,6 @@ blockquote:last-child {
     min-width: 10em !important;
 }
 
-.select2-selection__rendered {
-    line-height: normal !important;
-    padding: 0 !important;
-    vertical-align: middle !important;
-}
-
 .cover-box {
     width: 200px;
     /* adjust as needed */
@@ -67,4 +61,15 @@ blockquote:last-child {
     color: #888;
     /* dark gray */
     font-size: 1.2em;
+}
+
+.select2-selection__rendered {
+    line-height: normal !important;
+    padding: 0.6em 1.5em 0em 0.8em !important;
+    vertical-align: middle !important;
+}
+
+.activity-filter.selected {
+    background-color: #777777;
+    color: #fff;
 }

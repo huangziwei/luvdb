@@ -16,22 +16,25 @@
                 <div id="edition-role-formset">
                     {% for form in editionroles %}
                         <div class="row">
-                            <div class="col-md-3 mb-5">
+                            <div class="col-md-3 mb-3">
                                 {{ form.person | as_crispy_field}}
-                                <a href="{% url 'read:person_create' %}?next={{ request.path }}" class="text-secondary">Add a new person?</a>
+                                <a href="{% url 'read:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>
                             </div>
-                            <div class="col-md-3 mb-5">
+                            <div class="col-md-3 mb-3">
                                 {{ form.role | as_crispy_field}}
-                                <a href="{% url 'read:role_create' %}?next={{ request.path }}" class="text-secondary">Add a new role?</a>
+                                <a href="{% url 'read:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
                             </div>
-                            <div class="col-md-5 mb-5">
+                            <div class="col-md-5 mb-3">
                                 {{ form.name | as_crispy_field}}
                             </div>
                         </div>
                     {% endfor %}
                 </div>
                 {{ form.cover|as_crispy_field}}
-                {{ form.publisher|as_crispy_field }}
+                <div class="mb-3">
+                    {{ form.publisher|as_crispy_field }}
+                    <a href="{% url 'read:publisher_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new publisher?</a>                   
+                </div>
                 {{ form.language|as_crispy_field}}
                 {{ form.details|as_crispy_field }}
                 {{ form.publication_date|as_crispy_field }}

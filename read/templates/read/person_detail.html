@@ -15,7 +15,7 @@
                 {% endif %}
             </span>
             <span class="text-secondary">
-                {% if object.birth_date %}({{ object.birth_date }}-{% endif %}{% if object.death_date %}{{ object.death_date }}){% endif %}
+                {% if object.birth_date %}{{ object.birth_date }}-{% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %}
             </span>
             {% if object.bio %}
                 <p>{{ object.bio }}</p>

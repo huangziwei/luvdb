@@ -155,10 +155,6 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 CRISPY_CLASS_CONVERTERS = {
-    "select2-container": "",
-    "select2-selection": "",
-    "select2-selection--single": "",
-    "modelselect2": "",
     "form-select": "",
 }
 

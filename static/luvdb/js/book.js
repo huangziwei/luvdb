@@ -70,3 +70,7 @@ $(document).ready(function() {
         });
     });
 });
+
+$(document).ready(function() {
+    $('select').removeClass('form-select');
+});
