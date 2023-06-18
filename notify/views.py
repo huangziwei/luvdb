@@ -13,6 +13,7 @@ from .models import Notification
 class NotificationListView(ListView):
     model = Notification
     template_name = "notify/notification_list.html"
+    paginate_by = 50
 
     def get_queryset(self):
         return self.request.user.notifications.order_by("-timestamp")

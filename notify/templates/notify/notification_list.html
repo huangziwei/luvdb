@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load markdownify %}
 {% block content %}
 <div class="container">
   <div class="row">
@@ -17,10 +17,10 @@
         </form>
       </div>
       <hr>
-      {% for notification in object_list %}
-      <div class="notification">
+      {% for notification in page_obj %}
+      <div class="notification {% if notification.is_delete %}notification-delete{% else %}notification-default{% endif %}">
+        <p>{{ notification.message | markdownify | safe}}</p>
         <div class="d-flex">
-          <p>{{ notification.message | safe}}</p>
           <p class="d-inline-block me-2">&nbsp;<small class='text-muted'>{{ notification.timestamp | date:"Y.m.d H:i"}}</small></p>
           <div>
             {% if not notification.read %}
@@ -39,6 +39,20 @@
       {% empty %}
         <p>You have no notifications.</p>
       {% endfor %}
+      {% if page_obj.paginator.num_pages > 1 %}
+      <hr>
+      <div class="pagination">
+          <span class="step-links">
+              {% for i in page_obj.paginator.page_range %}
+                  {% if page_obj.number == i %}
+                      <span class="current">{{ i }}</span>
+                  {% else %}
+                      <a href="?page={{ i }}">{{ i }}</a>
+                  {% endif %}
+              {% endfor %}
+          </span>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>

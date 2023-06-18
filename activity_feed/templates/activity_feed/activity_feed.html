@@ -23,6 +23,9 @@
                     <button type="submit" class="btn btn-primary btn-sm ">Add Say</button>
                 </form>
                 <hr>
+            {% elif feed_type == "personal"%}
+                <h3>{{  user.display_name | default:user.username }}'s Feed</h3>
+                <hr>
             {% endif %}
 
             {% include "activity_feed/activity_filter.html" %}

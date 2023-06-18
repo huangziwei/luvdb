@@ -8,9 +8,11 @@
 <!--Say-->  
 <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
     <p>
-        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none">
+        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
             {{ activity.user.display_name | default:activity.user.username }}
-        </a> {{ activity.activity_type | past_tense}}:
+            <span class="username">@{{activity.user.username}}</span>
+        </a> 
+        {{ activity.activity_type | past_tense}}:
     </p>
     <p>
         {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
@@ -37,9 +39,11 @@
 <!--Post-->
 <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
     <p>
-        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none">
+        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
             {{ activity.user.display_name | default:activity.user.username }}
-        </a> {{ activity.activity_type | past_tense}}:
+            <span class="username">@{{activity.user.username}}</span>
+        </a> 
+        {{ activity.activity_type | past_tense}}:
     </p>
     <div class="bg-light p-3">
         <a href="{% url 'write:post_detail' activity.content_object.id %}" class="text-decoration-none">{{activity.content_object.title}}</a>
@@ -64,9 +68,11 @@
 <!--Pin-->
 <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
     <p>
-        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none">
+        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
             {{ activity.user.display_name | default:activity.user.username }}
-        </a> {{ activity.activity_type | past_tense}}:
+            <span class="username">@{{activity.user.username}}</span>
+        </a> 
+        {{ activity.activity_type | past_tense}}:
     </p>
     <div class="bg-light p-3">
         <a href="{{ activity.content_object.url }}" class="text-decoration-none">{{activity.content_object.title}}</a> 
@@ -97,12 +103,15 @@
 <!--Follow-->
 <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
     <p>
-        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none">
+        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
             {{ activity.user.display_name | default:activity.user.username }}
-        </a> followed 
-        <a href="{% url 'accounts:detail' activity.content_object.followed.username %}" class="text-decoration-none">
+            <span class="username">@{{activity.user.username}}</span>
+        </a> 
+        followed 
+        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
             {{ activity.content_object.followed.display_name | default:activity.content_object.followed.username }}
-        </a>
+            <span class="username">@{{activity.content_object.followed.username}}</span>
+        </a> 
     </p>
     <div class="d-flex mt-2 text-secondary">
         <p class="me-2">{{ activity.timestamp |date:"Y.m.d H:i" }}</p>
@@ -116,9 +125,11 @@
 <!--Repost--> 
 <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
     <p>
-        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none">
+        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
             {{ activity.user.display_name | default:activity.user.username }}
-        </a> {{ activity.activity_type | past_tense}}:
+            <span class="username">@{{activity.user.username}}</span>
+        </a> 
+        {{ activity.activity_type | past_tense}}:
     </p>
     {% if activity.content_object.content %}
         <p>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:50  }}</p>
@@ -127,9 +138,11 @@
         {% if activity.content_object.original_activity %}
             <!-- Display the reposted activity -->
             <p>
-                <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}" class="text-decoration-none">
+                <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}" class="text-decoration-none hover-username">
                     {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
-                </a> {{ activity.content_object.original_activity.activity_type | past_tense }}:
+                    <span class="username">@{{activity.content_object.original_activity.user.username}}</span>
+                </a> 
+                {{ activity.content_object.original_activity.activity_type | past_tense }}:
             </p>
 
             {% if activity.content_object.original_activity.activity_type == "post" %}

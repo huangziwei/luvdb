@@ -188,6 +188,7 @@ def search_view(request):
 class PersonalActivityFeedView(LoginRequiredMixin, ListView):
     model = Activity
     template_name = "activity_feed/activity_feed.html"
+    paginate_by = 50
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -10,6 +10,7 @@ class Notification(models.Model):
         ("mention", "Mention"),
         ("repost", "Repost"),
         ("follow", "Follow"),
+        ("delete", "Delete"),
     )
 
     recipient = models.ForeignKey(
@@ -28,3 +29,9 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.recipient.username} at {self.timestamp}"
+
+    def is_delete(self):
+        return (
+            self.notification_type == "comment_on_deleted"
+            or self.notification_type == "comment_deleted_by_author"
+        )

@@ -253,6 +253,7 @@ class Pin(models.Model):
         create_mentions_notifications(self.author, self.content, self)
 
 
+# delete activity when a `write` is deleted
 @receiver(post_delete, sender=Post)
 @receiver(post_delete, sender=Say)
 @receiver(post_delete, sender=Pin)
@@ -262,6 +263,7 @@ def delete_activity(sender, instance, **kwargs):
     Activity.objects.filter(content_type=content_type, object_id=instance.id).delete()
 
 
+# notify comment authors when a `write` is deleted
 @receiver(pre_delete, sender=Post)
 @receiver(pre_delete, sender=Say)
 @receiver(pre_delete, sender=Pin)
@@ -278,7 +280,7 @@ def notify_comment_authors(sender, instance, **kwargs):
             continue
 
         # Create a message for the notification
-        message = f'A {sender.__name__} your commented was deleted, thus your comment was also deleted: "{comment.content}"'
+        message = f"A {sender.__name__} your commented was deleted, thus your comment was also deleted: <br><blockquote>{comment.content}</blockquote>"
 
         # Create the notification
         Notification.objects.create(
@@ -290,6 +292,7 @@ def notify_comment_authors(sender, instance, **kwargs):
         )
 
 
+# notify comment author when comment is deleted by parent author
 @receiver(pre_delete, sender=Comment)
 def notify_comment_author_on_deletion(sender, instance, **kwargs):
     # Delay the execution of the following code until after the current transaction is committed
@@ -302,7 +305,8 @@ def notify_comment_author_on_deletion(sender, instance, **kwargs):
             # If the content_object is not being deleted, check if the author of the comment is not the same as the author of the object
             if instance.author != instance.content_object.author:
                 # Create a message for the notification
-                message = f'Your comment on a {instance.content_object.__class__.__name__} was deleted by the author: "{instance.content}"'
+                content_url = instance.content_object.get_absolute_url()
+                message = f"Your comment on a <a href={content_url}>{instance.content_object.__class__.__name__}</a> was deleted by the author: <br><blockquote>{instance.content}</blockquote>"
 
                 # Create the notification
                 Notification.objects.create(
@@ -318,33 +322,7 @@ def notify_comment_author_on_deletion(sender, instance, **kwargs):
     transaction.on_commit(_notify_comment_author_on_deletion)
 
 
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
-
-
-@receiver(pre_delete, sender=Activity)
-def notify_repost_author_on_deletion(sender, instance, **kwargs):
-    # Delay the execution of the following code until after the current transaction is committed
-    def _notify_repost_author_on_deletion():
-        # Check if the content_object of the activity is a Repost
-        if isinstance(instance.content_object, Repost):
-            # Create a message for the notification
-            message = f'Your repost was deleted because the original {instance.content_object.original_activity.activity_type} was deleted: "{instance.content_object.content}"'
-
-            # Create the notification
-            Notification.objects.create(
-                recipient=instance.content_object.author,
-                sender_content_type=ContentType.objects.get_for_model(
-                    instance.content_object.original_activity.user
-                ),
-                sender_object_id=instance.content_object.original_activity.user.id,
-                notification_type="repost_deleted_due_to_original",
-                message=message,
-            )
-
-    transaction.on_commit(_notify_repost_author_on_deletion)
-
-
+# delete repost when activity is deleted
 @receiver(post_delete, sender=Activity)
 def delete_repost(sender, instance, **kwargs):
     # Check if the associated object is a Repost
