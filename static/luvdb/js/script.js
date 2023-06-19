@@ -35,7 +35,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
     for (var i = 0; i < cites.length; i++) {
         // Get the previous element
         var previousElement = cites[i].parentElement;
-        console.log(previousElement);
         if (previousElement) {
             // Calculate the difference in their vertical positions
             var offset = previousElement.getBoundingClientRect().top - cites[i].getBoundingClientRect().top;

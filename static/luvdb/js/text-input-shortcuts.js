@@ -28,21 +28,25 @@ document.getElementById('text-input').addEventListener('keydown', function(e) {
         }
     }
 
-    // first diable browser back navigation with Ctrl+Z (or Command+Z on Mac) in the text-input field
-    // then add undo delete with Ctrl+Z (or Command+Z on Mac) in the text-input field
-    if ((e.ctrlKey || e.metaKey) && (e.key == 'z' || e.code == 'KeyZ')) {
+    // Move cursor one word left or right with Ctrl+Left Arrow / Right Arrow
+    if ((e.ctrlKey || e.metaKey) && (e.key == 'ArrowLeft' || e.key == 'ArrowRight')) {
         e.preventDefault();
-        if (e.shiftKey) {
-            document.execCommand('redo', false);
-        } else {
-            document.execCommand('undo', false);
+        // Determine direction
+        var direction = (e.key == 'ArrowLeft') ? -1 : 1;
+        // Split input value by space
+        var words = this.value.split(' ');
+        // Get current cursor position
+        var position = this.selectionStart;
+        // Determine number of characters to the next space
+        var shift = (direction == -1)
+            ? this.value.slice(0, position).lastIndexOf(' ')
+            : this.value.slice(position).indexOf(' ');
+        // If space was found
+        if (shift !== -1) {
+            // Calculate new position
+            var newPosition = position + direction * shift;
+            // Move cursor to the new position
+            this.selectionStart = this.selectionEnd = newPosition;
         }
     }
-
-    // add redo delete with Ctrl+Shift+Z (or Command+Shift+Z on Mac) in the text-input field
-    if ((e.ctrlKey || e.metaKey) && (e.shiftKey) && (e.key == 'z' || e.code == 'KeyZ')) {
-        e.preventDefault();
-        document.execCommand('redo', false);
-    }
-
 });

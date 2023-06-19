@@ -139,15 +139,14 @@ a[href$="/s"].revealed {
     text-decoration: none;
 }
 
-
 /* popup footnote */
+sup {
+    line-height: normal !important;
+}
 
 .popupnote-parent {
     position: relative;
     display: inline-block;
-    /* Make the footnote reference an inline block */
-    font-size: 0.8em;
-    vertical-align: super;
 }
 
 .popupnote {
@@ -164,18 +163,21 @@ a[href$="/s"].revealed {
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    /* Center the sidenote */
-    width: 200px;
-
+    min-width: 250px;
+    height: auto;
+    white-space: normal;
+    overflow: auto;
 }
 
 .popupnote-parent:hover .popupnote {
-    display: block;
+    display: inline-block;
 }
+
 
 .footnote {
     display: none;
 }
+
 
 cite,
 cite>a {

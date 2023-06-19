@@ -22,19 +22,19 @@ urlpatterns = [
         name="generate_invitation_code",
     ),
     path("search/", search_view, name="search"),
-    path("people/<str:username>/", view=AccountDetailView.as_view(), name="detail"),
+    path("u/<str:username>/", view=AccountDetailView.as_view(), name="detail"),
     path(
-        "people/<str:username>/feed",
+        "u/<str:username>/feed",
         view=PersonalActivityFeedView.as_view(),
         name="feed",
     ),
     path(
-        "people/<str:username>/following/",
+        "u/<str:username>/following/",
         FollowingListView.as_view(),
         name="following_list",
     ),
     path(
-        "people/<str:username>/followers/",
+        "u/<str:username>/followers/",
         FollowerListView.as_view(),
         name="follower_list",
     ),

@@ -85,6 +85,9 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
             followed=self.object
         ).order_by("-timestamp")[:5]
 
+        context["no_citation_css"] = True
+        context["no_text_input"] = True
+
         return context
 
 
@@ -199,6 +202,7 @@ class PersonalActivityFeedView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["feed_type"] = "personal"
+        context["no_citation_css"] = True
         return context
 
     def get_queryset(self):
