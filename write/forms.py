@@ -13,6 +13,7 @@ class PostForm(forms.ModelForm):
                 attrs={
                     "placeholder": "What do you want to share?",
                     "rows": 20,
+                    "id": "text-input",
                 }
             ),
         }
@@ -32,7 +33,7 @@ class SayForm(forms.ModelForm):
             "content": forms.Textarea(
                 attrs={
                     "placeholder": "What's on your mind?",
-                    "what": "text-input",
+                    "id": "text-input",
                 },
             ),
         }
@@ -51,7 +52,10 @@ class PinForm(forms.ModelForm):
             "title": forms.TextInput(attrs={"placeholder": "Pin title..."}),
             "url": forms.TextInput(attrs={"placeholder": "https://www.example.com"}),
             "content": forms.Textarea(
-                attrs={"placeholder": "What do you want to share?"}
+                attrs={
+                    "placeholder": "What do you want to share?",
+                    "id": "text-input",
+                }
             ),
         }
 
@@ -64,6 +68,8 @@ class PinForm(forms.ModelForm):
 
 
 class CommentForm(forms.ModelForm):
+    content = forms.CharField(widget=forms.Textarea(attrs={"id": "text-input"}))
+
     class Meta:
         model = Comment
         fields = ["content"]
@@ -87,6 +93,8 @@ class ActivityFeedSayForm(SayForm):
 
 
 class RepostForm(forms.ModelForm):
+    content = forms.CharField(widget=forms.Textarea(attrs={"id": "text-input"}))
+
     class Meta:
         model = Repost
         fields = ["content", "comments_enabled"]

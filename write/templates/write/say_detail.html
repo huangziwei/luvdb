@@ -16,7 +16,7 @@
             {{ object.author.display_name | default:object.author.username }}
           </a> said:
         </p>
-        <div class="bg-light p-3">{{ object.content| linkify_tags | linkify_mentions | markdownify }}</div>
+        <div>{{ object.content| linkify_tags | linkify_mentions | markdownify }}</div>
         <span class="d-flex mt-2">
           <p class='me-2 text-secondary mb-2'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
           {% if object.author == request.user %}

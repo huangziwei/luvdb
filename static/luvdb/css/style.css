@@ -167,3 +167,7 @@ cite>a {
     color: #0c920c;
     font-style: normal;
 }
+
+pre {
+    padding: 1em;
+}

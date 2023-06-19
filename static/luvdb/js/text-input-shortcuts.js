@@ -11,4 +11,19 @@ document.getElementById('text-input').addEventListener('keydown', function(e) {
         // Put cursor at right position again
         this.selectionStart = this.selectionEnd = start + 4;
     }
+
+    // Add new shortcut for submitting form with Ctrl+Enter (or Command+Enter on Mac)
+    if ((e.ctrlKey || e.metaKey) && (e.key == 'Enter' || e.keyCode == 13)) {
+        e.preventDefault();
+
+        // Find closest form and submit
+        let elem = e.target;
+        while (elem) {
+            if (elem.tagName === 'FORM') {
+                elem.submit();
+                break;
+            }
+            elem = elem.parentElement;
+        }
+    }
 });
