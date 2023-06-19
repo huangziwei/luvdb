@@ -9,10 +9,10 @@
 {% block content %}
 <div class="container">
   <div class="row">
-    <div class="col-sm-7">
+    <div class="col-sm-7 left-column">
       <div>
         <p class="d-flex"> 
-          <a href="{% url 'accounts:detail' object.author.username %}">
+          <a href="{% url 'accounts:detail' object.author.username %}" class='me-1'>
             {{ object.author.display_name | default:object.author.username }}
           </a> said:
         </p>

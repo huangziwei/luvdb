@@ -7,7 +7,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-sm-7">
+        <div class="col-sm-7 left-column">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.edition_title|as_crispy_field }}

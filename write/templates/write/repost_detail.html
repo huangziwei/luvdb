@@ -9,7 +9,7 @@
 {% block content %}
 <div class="container">
   <div class="row">
-    <div class="col-sm-7">
+    <div class="col-sm-7 left-column">
       <p>
         <a href="{% url 'accounts:detail' repost.author.username %}">
           {{ repost.author.display_name | default:repost.author.username }}

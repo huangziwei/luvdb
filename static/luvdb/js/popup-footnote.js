@@ -22,3 +22,14 @@ for (var i = 0; i < refs.length; i++) {
     // Append the footnote to the footnote reference
     refs[i].appendChild(footnoteSpan);
 }
+
+
+$(window).on('resize scroll', function() {
+    var leftColumn = $('.left-column').offset();
+    var citeWidth = $('cite').outerWidth();
+    $('cite').css({
+        position: 'absolute',
+        top: leftColumn.top,
+        left: leftColumn.left - citeWidth
+    });
+}).trigger('resize'); // Trigger resize to position cite on page load
