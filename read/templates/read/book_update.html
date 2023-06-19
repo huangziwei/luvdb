@@ -1,42 +1,56 @@
 {% extends "base.html" %}
-{% load static %}
 {% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Update Edition{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-sm-7 left-column">
-            <h2>Update Book entry: {{ object.title }}</h2>
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ form.title|as_crispy_field }}
-                {{ bookroles.management_form|crispy }}
-                <div id="book-role-formset">
-                    {% for form in bookroles %}
+                {{ form.edition_title|as_crispy_field }}
+                {{ form.book|as_crispy_field }}
+                {{ editionroles.management_form|crispy }}
+                <div id="edition-role-formset">
+                    {% for form in editionroles %}
                         <div class="row">
-                            <div class="col-md-5 mb-5">
+                            <div class="col-md-3 mb-5">
                                 {{ form.person | as_crispy_field}}
-                                <a href="{% url 'read:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>
+                                <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary">Add a new person?</a>
+                            </div>
+                            <div class="col-md-3 mb-5">
+                                {{ form.role | as_crispy_field}}
+                                <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary">Add a new role?</a>
                             </div>
                             <div class="col-md-5 mb-5">
-                                {{ form.role | as_crispy_field}}
-                                <a href="{% url 'read:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
+                                {{ form.name | as_crispy_field}}
                             </div>
                         </div>
                     {% endfor %}
                 </div>
+                {{ form.cover|as_crispy_field}}
+                {{ form.publisher|as_crispy_field }}
+                {{ form.language|as_crispy_field}}
+                {{ form.details|as_crispy_field }}
                 {{ form.publication_date|as_crispy_field }}
-                {{ form.description|as_crispy_field }}
-                <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                {{ form.book_format|as_crispy_field }}
+                {{ form.book_type|as_crispy_field}}
+                {{ form.pages|as_crispy_field }}
+                {{ form.price|as_crispy_field }}
+                {{ form.isbn_10|as_crispy_field }}
+                {{ form.isbn_13|as_crispy_field }}
+                {{ form.asin|as_crispy_field }}
+                
+                <button type="submit" class="btn btn-primary btn-sm">Update</button>
             </form>
         </div>
     </div>
 </div>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+{{ form.media }}
 
-{{ bookroles.media }}
+<script type="text/javascript" src="{% static 'js/edition.js' %}"></script>
 
-<script type="text/javascript" src="{% static 'js/book.js' %}"></script>
-
-
-{% endblock %}
+{% endblock content %}

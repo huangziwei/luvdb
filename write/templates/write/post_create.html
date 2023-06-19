@@ -8,33 +8,12 @@
       <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Add Post</button>
+        <button type="submit" class="btn btn-primary mb-3">Add Post</button>
       </form>
     </div>
 
     <div class="col-sm-4">
-      <div class="bg-light text-secondary p-3">
-        <div class='admonition note'>
-          <div class='admonition-title mb-2'><strong>Markdown</strong></div>
-          <p>
-            All main text fields support markdown. If you don't know what that is, you can learn more about it <a href="https://daringfireball.net/projects/markdown/syntax">here</a>.
-          </p>     
-          
-          <div class='admonition-title mb-2'><strong>Special Syntaxes</strong></div>
-
-          <h6>Spoiler</h6>
-          <p><code>[text](/s)</code> or <code>[text](/spoiler)</code> will hide the text until clicked on.</p>
-  
-          <h6>Citation</h6>
-          <p><code>[text](/c)</code> or <code>[text](/citation)</code> will move the text to the left side of the main text.</p>
-        
-        </div>
-
-        <div class='admonition danger mb-1'>
-          <div class='admonition-title mb-2'><strong>Caution</strong></div>
-          <p>There's <strong>no auto-save</strong> on this site. It's recommended to write your post in a dedeciated text editor offline, then copy-paste it here.</p>
-        </div>
-      </div>
+        {% include "write/post_help_text.html" %}  
     </div>
   </div>
 </div>

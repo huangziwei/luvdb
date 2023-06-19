@@ -72,7 +72,7 @@
         <h3>Persons</h3>
         {% for person in person_results %}
             <p>
-                <a href="{% url 'read:person_detail' person.id %}">{{ person.name|truncatechars:50 }}</a>
+                <a href="{% url 'entity:person_detail' person.id %}">{{ person.name|truncatechars:50 }}</a>
             </p>
         {% empty %}
             <p>No person results found.</p>

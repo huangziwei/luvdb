@@ -60,8 +60,10 @@ INSTALLED_APPS = [
     # local apps
     "notify",
     "activity_feed",
+    "entity",
     "write",
     "read",
+    "listen",
 ]
 
 MIDDLEWARE = [

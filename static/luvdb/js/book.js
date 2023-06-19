@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add a button to the end of each row
     formsetRows.forEach(function(row) {
         var buttonDiv = document.createElement('div');
-        buttonDiv.className = 'col-md-1';
+        buttonDiv.className = 'col-md-1 mb-5';
         var innerDiv = document.createElement('div');
         innerDiv.className = 'mb-1';
         var label = document.createElement('label');
@@ -49,7 +49,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     });
-
 });
 
 $(document).ready(function() {

@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         // Create a new 'cite' element
         const cite = document.createElement('cite');
         cite.textContent = a.textContent;
-
+        
         // Replace the 'a' element with the 'cite' element
         a.parentNode.replaceChild(cite, a);
     });

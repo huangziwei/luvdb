@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Initially hide all formset rows except the first one
-    var formsetRows = document.querySelectorAll('#edition-role-formset .row');
+    var formsetRows = document.querySelectorAll('#work-role-formset .row');
     formsetRows.forEach(function(row, index) {
         if (index > 0) {
             row.style.visibility = 'hidden';
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add a button to the end of each row
     formsetRows.forEach(function(row) {
         var buttonDiv = document.createElement('div');
-        buttonDiv.className = 'col-md-1 mb-5';
+        buttonDiv.className = 'col-md-1';
         var innerDiv = document.createElement('div');
         innerDiv.className = 'mb-1';
         var label = document.createElement('label');
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var button = document.createElement('button');
         button.type = 'button';
         button.textContent = '+';
-        button.className = 'btn btn-sm btn-light add-edition-role';
+        button.className = 'btn btn-sm btn-light add-work-role';
 
         innerDiv.appendChild(label);
         innerDiv.appendChild(button);
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // When the button is clicked, reveal the next hidden row and hide the add links
-    document.querySelectorAll('.add-edition-role').forEach(function(addButton) {
+    document.querySelectorAll('.add-work-role').forEach(function(addButton) {
         addButton.addEventListener('click', function() {
             // Define the current row before removing the button
             var currentRow = this.parentElement.parentElement.parentElement;
@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     });
+
 });
 
 $(document).ready(function() {

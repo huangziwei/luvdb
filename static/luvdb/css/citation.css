@@ -6,21 +6,12 @@
 
     cite {
         position: absolute;
-        left: -15%;
+        left: -20%;
         top: 0;
-        width: 15%;
+        width: 20%;
         color: darkgreen;
-        font-style: normal;
         text-align: right;
     }
-}
-
-cite>a:link {
-    color: green;
-}
-
-cite>a:visited {
-    color: darkgreen;
 }
 
 /* Here we offset the right value to align it with the other cites */
@@ -29,5 +20,4 @@ cite>a:visited {
     right: auto;
     color: darkgreen;
     width: 60%;
-}
 }

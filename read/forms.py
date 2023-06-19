@@ -5,20 +5,55 @@ from django import forms
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
-from .models import Book, BookRole, Edition, EditionRole, Person
+from .models import Book, BookRole, Work, WorkRole
 
 
-##########
-# Person #
-##########
-class PersonForm(forms.ModelForm):
+########
+# Work #
+########
+class WorkForm(forms.ModelForm):
     class Meta:
-        model = Person
-        fields = ["name", "romanized_name", "bio", "birth_date", "death_date"]
+        model = Work
+        exclude = ["created_by", "updated_by", "persons"]
+        fields = "__all__"
         help_texts = {
-            "name": "Enter the person's name in their original language. ",
-            "romanized_name": "Enter the romanized version of the person's name.",
+            "title": "Enter the work's title in its original language. ",
+            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields[
+            "language"
+        ].help_text = "Enter the language of the work in its original language. E.g. English, 日本語, etc."
+        self.fields["work_type"].label = "Type"
+        self.fields["work_type"].help_text = "e.g. novel, short story, poem, etc."
+
+
+class WorkRoleForm(forms.ModelForm):
+    class Meta:
+        model = WorkRole
+        fields = ["person", "role"]
+
+
+WorkRoleFormSet = inlineformset_factory(
+    Work,
+    WorkRole,
+    form=WorkRoleForm,
+    extra=20,
+    can_delete=False,
+    widgets={
+        "person": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:person-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+        ),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:role-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:role_create")},
+        ),
+    },
+)
 
 
 ########
@@ -29,16 +64,20 @@ class BookForm(forms.ModelForm):
         model = Book
         exclude = ["created_by", "updated_by", "persons"]
         fields = "__all__"
-        help_texts = {
-            "title": "Enter the book's title in its original language. ",
-            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
+        widgets = {
+            "work": autocomplete.ModelSelect2(
+                url=reverse_lazy("read:work-autocomplete")
+            ),
+            "publisher": autocomplete.ModelSelect2(
+                url=reverse_lazy("read:publisher-autocomplete")
+            ),
         }
 
 
 class BookRoleForm(forms.ModelForm):
     class Meta:
         model = BookRole
-        fields = ["person", "role"]
+        fields = ("person", "role", "name")
 
 
 BookRoleFormSet = inlineformset_factory(
@@ -49,51 +88,8 @@ BookRoleFormSet = inlineformset_factory(
     can_delete=False,
     widgets={
         "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("read:person-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("read:person_create")},
+            url=reverse_lazy("entity:person-autocomplete")
         ),
-        "role": autocomplete.ModelSelect2(
-            url=reverse_lazy("read:role-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("read:role_create")},
-        ),
-    },
-)
-
-
-###########
-# Edition #
-###########
-class EditionForm(forms.ModelForm):
-    class Meta:
-        model = Edition
-        exclude = ["created_by", "updated_by", "persons"]
-        fields = "__all__"
-        widgets = {
-            "book": autocomplete.ModelSelect2(
-                url=reverse_lazy("read:book-autocomplete")
-            ),
-            "publisher": autocomplete.ModelSelect2(
-                url=reverse_lazy("read:publisher-autocomplete")
-            ),
-        }
-
-
-class EditionRoleForm(forms.ModelForm):
-    class Meta:
-        model = EditionRole
-        fields = ("person", "role", "name")
-
-
-EditionRoleFormSet = inlineformset_factory(
-    Edition,
-    EditionRole,
-    form=EditionRoleForm,
-    extra=20,
-    can_delete=False,
-    widgets={
-        "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("read:person-autocomplete")
-        ),
-        "role": autocomplete.ModelSelect2(url=reverse_lazy("read:role-autocomplete")),
+        "role": autocomplete.ModelSelect2(url=reverse_lazy("entity:role-autocomplete")),
     },
 )

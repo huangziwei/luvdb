@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Book, BookRole, Edition, EditionRole, Person, Publisher, Role
+from .models import Book, BookRole, Person, Publisher, Role, Work, WorkRole
 
 
 class PersonAdmin(admin.ModelAdmin):
@@ -13,38 +13,38 @@ class PublisherAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 
-class BookRoleInline(admin.TabularInline):
-    model = BookRole
+class WorkRoleInline(admin.TabularInline):
+    model = WorkRole
     extra = 1
     fields = ("person", "role")
     autocomplete_fields = ["person"]
 
 
-class BookAdmin(admin.ModelAdmin):
+class WorkAdmin(admin.ModelAdmin):
     list_display = ("title", "created_at", "updated_at", "created_by", "updated_by")
     search_fields = ("title",)
-    inlines = [BookRoleInline]
+    inlines = [WorkRoleInline]
 
 
-class EditionRoleInline(admin.TabularInline):
-    model = EditionRole
+class BookRoleInline(admin.TabularInline):
+    model = BookRole
     fields = ("person", "role", "name")
     extra = 1
     autocomplete_fields = ["person"]
 
 
-class EditionAdmin(admin.ModelAdmin):
+class BookAdmin(admin.ModelAdmin):
     list_display = (
-        "edition_title",
-        "book",
+        "book_title",
+        "work",
         "created_at",
         "updated_at",
         "created_by",
         "updated_by",
     )
-    search_fields = ("book__title",)
-    inlines = [EditionRoleInline]
-    autocomplete_fields = ["book", "publisher"]
+    search_fields = ("work__title",)
+    inlines = [BookRoleInline]
+    autocomplete_fields = ["work", "publisher"]
 
 
 class RoleAdmin(admin.ModelAdmin):
@@ -52,22 +52,22 @@ class RoleAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 
-class BookRoleAdmin(admin.ModelAdmin):
-    list_display = ("book", "person", "role")
-    search_fields = ("book__title", "person__name", "role__name")
+class WorkRoleAdmin(admin.ModelAdmin):
+    list_display = ("work", "person", "role")
+    search_fields = ("work__title", "person__name", "role__name")
     list_filter = ("role",)
 
 
-class EditionRoleAdmin(admin.ModelAdmin):
-    list_display = ("edition", "person", "name", "role")
-    list_filter = ("edition", "person", "role")
-    search_fields = ("edition__edition_title", "person__name", "role__name")
+class BookRoleAdmin(admin.ModelAdmin):
+    list_display = ("book", "person", "name", "role")
+    list_filter = ("book", "person", "role")
+    search_fields = ("book__book_title", "person__name", "role__name")
 
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Publisher, PublisherAdmin)
+admin.site.register(Work, WorkAdmin)
 admin.site.register(Book, BookAdmin)
-admin.site.register(Edition, EditionAdmin)
 admin.site.register(Role, RoleAdmin)
+admin.site.register(WorkRole, WorkRoleAdmin)
 admin.site.register(BookRole, BookRoleAdmin)
-admin.site.register(EditionRole, EditionRoleAdmin)

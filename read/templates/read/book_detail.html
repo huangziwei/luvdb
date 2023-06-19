@@ -1,39 +1,91 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ object.book_title }}{% endblock %}
 
 {% block content %}
 <div class="container">
-    <span class='d-flex align-items-start'>
-        <h2>{{ object.title }} ({{ object.publication_date }})</h2>
-        {% if user.is_authenticated %}
-        <a href="{% url 'read:book_update' object.pk %}" class='fs-6 text-secondary'>Edit Book</a>
-        {% endif %}
-    </span>
-    
-    {% for role in object.bookrole_set.all %}
-    <p>
-        <a href="{% url 'read:person_detail' role.person.id %}">{{ role.person.name }}</a> ({{ role.person.romanized_name }}) 
-    </p>
-    {% endfor %}
-
-
-    <h3>Editions</h3>
     <div class="row">
-        {% regroup object.editions.all by language as edition_list %}
-        {% for language in edition_list %}
-            <div class="col-md-4">
-                <h4>{{ language.grouper }}</h4>
-                {% for edition in language.list|dictsort:"publication_date" %}
-                    <p>
-                        <a href="{% url 'read:edition_detail' edition.pk %}">{{ edition.edition_title }}</a>
-                        ({{ edition.publication_date }})
-                    </p>
-                {% empty %}
-                    <p>This language has no editions.</p>
-                {% endfor %}
+        <!--left column-->
+        <div class="col-sm-2">
+            <div class="cover-box">
+                {% if object.cover %}
+                    <img src="{{ object.cover.url }}" alt="{{ object.book_title }} cover" class="cover-image">
+                {% else %}
+                    <p class="no-cover-text">No Cover</p>
+                {% endif %}
             </div>
-        {% empty %}
-            <p>This book has no editions.</p>
-        {% endfor %}
+            <div class='d-flex justify-content-center'>
+            {% if user.is_authenticated %}
+                <a href="{% url 'read:book_update' object.pk %}" class='fs-6 text-secondary'>Edit Edition</a>
+            {% endif %}
+            </div>
+        </div>        
+        <!--right column-->
+        <div class="col-sm-10">
+            <div class="book-detail">
+                <span class='d-flex align-items-start'>
+                    <h2>{{ object.book_title }} </h2>
+                    
+                </span>
+                <div class="book-meta">
+                    {% if object.book.id and object.book_title != object.book.title %}
+                    <p>
+                        <strong>Original Title</strong> 
+                        {% if object.book.pk %}
+                        <a href="{% url 'read:book_detail' object.book.pk %}">{{ object.book.title }}</a>
+                        {% endif %}
+                    </p>
+                    {% endif %}
+                    {% for book_role in object.bookrole_set.all %}
+                        <p>
+                            <strong>{{ book_role.role.name }}</strong> 
+                            <a href="{% url 'entity:person_detail' book_role.person.id %}">{{ book_role.name | default:book_role.person.name }}</a>
+                            
+                        </p>
+                    {% endfor %}
+                    {% if object.publisher %}
+                        <p>
+                            <strong>Publisher </strong>
+                            <a href="{% url 'read:publisher_detail' object.publisher.id %}">
+                                {% if object.publisher.location %}{{ object.publisher.location }}: {% endif %} 
+                                {{ object.publisher.name }}
+                            </a>
+                        </p>
+                    {% endif %}
+                    {% if object.publication_date %}
+                        <p><strong>Date</strong> {{ object.publication_date }}</p>
+                    {% endif %}
+                    {% if object.book_format %}
+                        <p><strong>Format</strong> {{ object.book_format }}</p>
+                    {% endif %}
+                    {% if object.pages %}
+                        <p><strong>Pages</strong> {{ object.pages }}</p>
+                    {% endif %}
+                    {% if object.isbn_10 %}
+                        <p><strong>ISBN-10</strong> {{ object.isbn_10 }}</p>
+                    {% endif %}
+                    {% if object.isbn_13 %}
+                        <p><strong>ISBN-13</strong> {{ object.isbn_13 }}</p>
+                    {% endif %}
+                    {% if object.asin %}
+                        <p><strong>ASIN</strong> {{ object.asin }}</p>
+                    {% endif %}
+
+                </div>
+                {% if object.details %}
+                    <div class="book-details">
+                        <h2>Details</h2>
+                        <p>{{ object.details }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!--right column-->
+        <div class="col-sm-7 left-column">
+            
+        </div>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}

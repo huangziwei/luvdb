@@ -178,11 +178,15 @@ sup {
     display: none;
 }
 
-
-cite,
-cite>a {
-    color: #0c920c;
+cite {
     font-style: normal;
+    font-weight: lighter;
+    font-size: 1em;
+    color: darkgreen;
+}
+
+cite>a {
+    color: darkgreen;
 }
 
 pre {
