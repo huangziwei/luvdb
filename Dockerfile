@@ -16,8 +16,8 @@ RUN set -ex && \
     rm -rf /root/.cache/
 COPY . /code
 
+ENV DJANGO_SETTINGS_MODULE "config.settings.production"
 ENV SECRET_KEY "G04Z03Dt7bH7jURRKLyaC3DbQZmRM8EE9TbF8XGS5zHX1ditoP"
-ENV DJANGO_SETTINGS_MODULE=config.settings.production
 RUN python manage.py collectstatic --noinput
 RUN python manage.py migrate
 

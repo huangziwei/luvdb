@@ -1,0 +1,32 @@
+/* citation */
+@media (min-width: 768px) {
+    body {
+        position: relative;
+    }
+
+    cite {
+        position: absolute;
+        left: 4%;
+        top: auto;
+        width: 10%;
+        color: darkgreen;
+        font-style: normal;
+        text-align: right;
+    }
+
+    cite>a:link {
+        color: green;
+    }
+
+    cite>a:visited {
+        color: darkgreen;
+    }
+
+    /* Here we offset the right value to align it with the other cites */
+    .bg-light.p-3 cite {
+        position: static;
+        right: auto;
+        color: darkgreen;
+        width: 60%;
+    }
+}

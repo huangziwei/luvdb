@@ -109,21 +109,36 @@ blockquote:last-child {
 }
 
 /* spoiler */
-
 a[href$="/spoiler"],
-a[href$="#spoiler"],
-a[href$="/s"],
-a[href$="#s"] {
-    background: #000 !important;
-    color: #000 !important
+a[href$="/s"] {
+    position: relative;
+    display: inline-block;
+    color: inherit;
+    line-height: 1;
 }
 
-a[href$="/spoiler"]:hover,
-a[href$="#spoiler"]:hover,
-a[href$="/s"]:hover,
-a[href$="#s"]:hover {
-    color: #FFF !important
+a[href$="/spoiler"]::after,
+a[href$="/s"]::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 1.05em;
+    background: #000;
 }
+
+a[href$="/spoiler"].revealed::after,
+a[href$="/s"].revealed::after {
+    opacity: 0;
+}
+
+a[href$="/spoiler"].revealed,
+a[href$="/s"].revealed {
+    color: inherit;
+    text-decoration: none;
+}
+
 
 /* popup footnote */
 

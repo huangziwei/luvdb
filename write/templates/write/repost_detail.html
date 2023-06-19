@@ -18,7 +18,7 @@
       {% if repost.content %}
         <p>{{ repost.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200  }}</p>
       {% endif %}
-      <div style="background-color:#f9f9f9; padding: 1em; ">
+      <div class="bg-light p-3 mb-3">
         {% if repost.original_activity %}
         <!-- Display the reposted activity -->
         <p>
@@ -34,10 +34,10 @@
         <p><a href="{{ repost.original_activity.content_object.url }}" >{{ repost.original_activity.content_object.title }}</a> ({{  repost.original_activity.content_object.url | root_url }})</p>
         {% endif %}
         
-        <div style="background-color:#f9f9f9;">
-          <blockquote>
+        <div>
+          <div class="mb-2">
             {{ repost.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}
-          </blockquote>
+          </div>
           <p><a href="{{ repost.original_activity.content_object.get_absolute_url }}" style='color:gray;'>{{ repost.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
         </div>
         {% else %}
@@ -68,5 +68,6 @@
 </div>
 
 <script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/citation.css' %}">
 
 {% endblock %}

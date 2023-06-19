@@ -141,12 +141,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
-
-STATIC_URL = "static/"
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -160,7 +154,7 @@ CRISPY_CLASS_CONVERTERS = {
     "form-select": "",
 }
 
-# TEMPLATE_404 = "404.html"
+
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "activity_feed:activity_feed"
 LOGOUT_REDIRECT_URL = "login"
@@ -170,38 +164,83 @@ LOGOUT_REDIRECT_URL = "login"
 MARKDOWNIFY = {
     "default": {
         "WHITELIST_TAGS": [
-            "a",
             "abbr",
             "acronym",
-            "b",
-            "blockquote",
-            "code",
-            "pre",
-            "div",
-            "em",
-            "i",
-            "li",
-            "ol",
-            "p",
-            "strong",
-            "ul",
+            "h1",
+            "h2",
             "h3",
             "h4",
             "h5",
             "h6",
+            "blockquote",
+            "cite",
+            "code",
+            "dfn",
+            "em",
+            "i",
+            "kbd",
+            "strong",
+            "samp",
+            "var",
+            "b",
+            "i",
+            "ul",
+            "ol",
+            "li",
+            "dl",
+            "dt",
+            "dd",
             "img",
-            "br",
-            "details",
-            "summary",
+            "pre",
+            "div",
+            "span",
             "table",
             "thead",
             "tbody",
+            "tfoot",
+            "tr",
+            "th",
+            "td",
+            "p",
+            "br",
+            "details",
+            "summary",
+            "caption",
+            "col",
+            "colgroup",
+            "fieldset",
+            "legend",
+            "section",
+            "article",
+            "figure",
+            "header",
+            "footer",
+            "aside",
+            "center",
+            "main",
+            "nav",
+            "output",
+            "progress",
+            "meter",
+            "audio",
+            "video",
+            "canvas",
             "ruby",
             "rt",
-            "cite",
-            "span",
+            "rp",
+            "s",
+            "strike",
+            "del",
+            "ins",
+            "a",
+            "small",
+            "sup",
+            "sub",
+            "u",
+            "mark",
+            "time",
         ],
-        "WHITELIST_ATTRS": ["href", "src", "alt", "class"],
+        "WHITELIST_ATTRS": ["src", "alt", "href", "title", "class", "id", "target"],
         "WHITELIST_STYLES": [
             "color",
             "font-weight",
@@ -211,6 +250,7 @@ MARKDOWNIFY = {
             "extra",
             "nl2br",
             "codehilite",
+            "admonition",
         ],
     }
 }

@@ -11,6 +11,10 @@
     <div class="col-sm-7">
       <h2>{{ object.title }}</h2>
       <span class="d-flex">
+        <p class='me-2'>
+          by 
+          <a href="{% url 'accounts:detail' object.author.username %}">{{object.author.display_name|default:object.author.username}}</a>
+        </p>
         <p class='me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
         {% if object.author == request.user %}
         <a href="{% url "write:post_update" object.pk %}" class="me-2">Edit</a>
@@ -36,30 +40,5 @@
 </div>
 
 <script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/popup-footnote.js' %}"></script>
-<style>
-  /* citation */
-  @media (min-width: 768px) {
-      blockquote {
-          position: relative;
-      }
-  
-      cite {
-          position: absolute;
-          left: 102%;
-          top: 0;
-          width: 20%;
-          color: darkgreen;
-          font-style: normal;
-      }
-  
-      cite>a:link {
-          color: green;
-      }
-  
-      cite>a:visited {
-          color: darkgreen;
-      }
-  }
-</style>
+<link rel="stylesheet" href="{% static 'css/citation.css' %}">
 {% endblock %}

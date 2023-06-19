@@ -13,7 +13,7 @@ document.getElementById('text-input').addEventListener('keydown', function(e) {
     }
 
     // Add new shortcut for submitting form with Ctrl+Enter (or Command+Enter on Mac)
-    if ((e.ctrlKey || e.metaKey) && (e.key == 'Enter' || e.keyCode == 13)) {
+    if ((e.ctrlKey || e.metaKey) && (e.key == 'Enter' || e.code == 'Enter')) {
         e.preventDefault();
 
         // Find closest form and submit

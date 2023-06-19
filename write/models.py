@@ -329,3 +329,12 @@ def delete_repost(sender, instance, **kwargs):
     if isinstance(instance.content_object, Repost):
         # Delete the Repost object
         instance.content_object.delete()
+
+
+# delete say when activity is deleted
+@receiver(post_delete, sender=Activity)
+def delete_say(sender, instance, **kwargs):
+    # Check if the associated object is a Repost
+    if isinstance(instance.content_object, Say):
+        # Delete the Repost object
+        instance.content_object.delete()

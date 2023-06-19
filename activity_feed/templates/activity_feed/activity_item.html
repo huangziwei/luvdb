@@ -132,7 +132,7 @@
         {{ activity.activity_type | past_tense}}:
     </p>
     {% if activity.content_object.content %}
-        <p>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:50  }}</p>
+        <p>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30  }}</p>
     {% endif %}
     <div class="bg-light p-3">
         {% if activity.content_object.original_activity %}
@@ -151,7 +151,7 @@
             <p><a href="{{ activity.content_object.original_activity.content_object.url }}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a> ({{  activity.content_object.original_activity.content_object.url | root_url }})</p>
             {% endif %}
             <div class="bg-light">
-                <blockquote>{{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
+                <div class="mb-3">{{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</div>
                 <p><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
             </div>
         {% else %}

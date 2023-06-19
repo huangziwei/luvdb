@@ -11,17 +11,19 @@
 <div class="container">
     <div class="row">
       <div class="col-sm-7">
-        <a href="{% url 'accounts:detail' object.author.username %}">
-          {{ object.author.display_name | default:object.author.username }}
-        </a> pinned:
-        <div style="background-color:#f9f9f9; padding: 1em; margin: 0.5em">
+        <div class='mb-3'>
+          <a href="{% url 'accounts:detail' object.author.username %}">
+            {{ object.author.display_name | default:object.author.username }}
+          </a> pinned:
+        </div>
+        <div class="bg-light p-3 mb-3">
           <p>
             <a href="{{ object.url }}">{{ object.title }}</a> 
             {% comment %} ({{ object.url|root_url }}) {% endcomment %}
             (<a href="{% url 'write:pins_from_url' object.url|root_url %}">{{ pin.url|root_url }}</a>)
           </p>
           {% if object.content %}
-          <blockquote>{{ object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
+          <div>{{ object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</div>
           {% endif %}
         </div>
         <span class="d-flex">
@@ -48,5 +50,5 @@
   </div>
   
   <script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
-
+  <link rel="stylesheet" href="{% static 'css/citation.css' %}">
 {% endblock content %}
