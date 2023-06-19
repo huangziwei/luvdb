@@ -6,6 +6,10 @@
     text-align: left;
 }
 
+.admonition p:last-of-type {
+    margin-bottom: 0;
+}
+
 .admonition.note {
     /* csslint allow: adjoining-classes */
     color: #3a87ad;
@@ -30,8 +34,14 @@
 
 .admonition.hide .admonition-title {
     cursor: pointer;
+    margin-bottom: 0px;
 }
 
 .admonition.hide p:not(.admonition-title) {
     display: none;
+    margin-bottom: 16px;
+}
+
+.admonition.hide p:last-of-type {
+    margin-bottom: 0;
 }
