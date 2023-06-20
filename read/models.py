@@ -265,6 +265,9 @@ class BookWorkRole(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
 
+    publication_date = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # YYYY or YYYY-MM or YYYY-MM-DD
     name = models.CharField(
         max_length=255, blank=True, null=True
     )  # For translated authors' names

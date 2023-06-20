@@ -37,6 +37,51 @@
                 {% endfor %}
                 </ul>
             {% endif %}
+
+            {% if books %}
+                <h3>Publications</h3>
+                {% if books.count > 10 %}
+                    {% regroup books by language as books_grouped %}
+                    {% for language_books in books_grouped %}
+                        <h4>{{ language_books.grouper }}</h4>
+                        <div class="row">
+                        {% for book in language_books.list %}
+                            <div class="col-sm-3">
+                                {% if book.cover %}
+                                    <a href="{% url 'read:book_detail' book.pk %}">
+                                        <img src="{{ book.cover.url }}" alt="{{ book.book_title }}" class="img-fluid">
+                                    </a>
+                                {% else %}
+                                    <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
+                                {% endif %}
+                                {% if book.publication_date %}
+                                    <p class="text-center">({{ book.publication_date }})</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="row">
+                    {% for book in books %}
+                        <div class="col-sm-3">
+                            {% if book.cover %}
+                                <a href="{% url 'read:book_detail' book.pk %}">
+                                    <img src="{{ book.cover.url }}" alt="{{ book.book_title }}" class="img-fluid">
+                                </a>
+                            {% else %}
+                                <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
+                            {% endif %}
+                            {% if book.publication_date %}
+                                <p class="text-center">({{ book.publication_date }})</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        
+        
         </div>
     </div>
 </div>

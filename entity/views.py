@@ -1,6 +1,7 @@
 from dal import autocomplete
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
+from django.db.models import Prefetch
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.html import format_html
@@ -45,6 +46,10 @@ class PersonDetailView(DetailView):
         context["books_as_editor"] = Book.objects.filter(
             bookrole__role__name="Editor", bookrole__person=self.object
         ).order_by("publication_date")
+
+        context["books"] = Book.objects.filter(persons=self.object).order_by(
+            "language", "publication_date"
+        )
 
         return context
 

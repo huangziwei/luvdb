@@ -1,7 +1,7 @@
 from dal import autocomplete
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils.html import format_html
 from django.views.generic.detail import DetailView
@@ -128,43 +128,6 @@ class WorkDetailView(DetailView):
 ########
 
 
-# class BookCreateView(LoginRequiredMixin, CreateView):
-#     model = Book
-#     form_class = BookForm
-#     template_name = "read/book_create.html"
-
-#     def get_success_url(self):
-#         return reverse_lazy("read:book_detail", kwargs={"pk": self.object.pk})
-
-#     def get_context_data(self, **kwargs):
-#         data = super().get_context_data(**kwargs)
-#         if self.request.POST:
-#             data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
-#             data["bookworks"] = BookWorkFormSet(
-#                 self.request.POST, instance=self.object
-#             )  # Added this line
-#         else:
-#             data["bookroles"] = BookRoleFormSet(instance=self.object)
-#             data["bookworks"] = BookWorkFormSet(instance=self.object)  # And this line
-#         return data
-
-#     def form_valid(self, form):
-#         context = self.get_context_data()
-#         bookroles = context["bookroles"]
-#         bookworks = context["bookworks"]  # Added this line
-#         with transaction.atomic():
-#             form.instance.created_by = self.request.user
-#             form.instance.updated_by = self.request.user
-#             self.object = form.save()
-#             if bookroles.is_valid():
-#                 bookroles.instance = self.object
-#                 bookroles.save()
-#             if bookworks.is_valid():  # And these lines
-#                 bookworks.instance = self.object
-#                 bookworks.save()
-#         return super().form_valid(form)
-
-
 class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
     form_class = BookForm
@@ -206,45 +169,16 @@ class BookDetailView(DetailView):
     model = Book
     template_name = "read/book_detail.html"
 
-
-# class BookUpdateView(UpdateView):
-#     model = Book
-#     form_class = BookForm
-#     template_name = "read/book_update.html"
-
-#     def get_success_url(self):
-#         return reverse_lazy("read:book_detail", kwargs={"pk": self.object.pk})
-
-#     def get_context_data(self, **kwargs):
-#         data = super().get_context_data(**kwargs)
-#         if self.request.POST:
-#             data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
-#             data["bookworks"] = BookWorkFormSet(self.request.POST, instance=self.object)
-#         else:
-#             data["bookroles"] = BookRoleFormSet(instance=self.object)
-#             data["bookworks"] = BookWorkFormSet(instance=self.object)
-#         return data
-
-#     def form_valid(self, form):
-#         context = self.get_context_data()
-#         bookroles = context["bookroles"]
-#         bookworks = context["bookworks"]
-#         with transaction.atomic():
-#             form.instance.updated_by = self.request.user
-#             if self.request.method == "POST":
-#                 form = BookForm(
-#                     self.request.POST, self.request.FILES, instance=self.object
-#                 )
-#                 if form.is_valid():
-#                     self.object = form.save()
-#                     if bookroles.is_valid():
-#                         bookroles.instance = self.object
-#                         bookroles.save()
-#                     if bookworks.is_valid():
-#                         bookworks.instance = self.object
-#                         bookworks.save()
-
-#         return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book = get_object_or_404(Book, pk=self.kwargs["pk"])
+        roles = {}
+        for book_role in book.bookrole_set.all():
+            if book_role.role.name not in roles:
+                roles[book_role.role.name] = []
+            roles[book_role.role.name].append(book_role.person)
+        context["roles"] = roles
+        return context
 
 
 class BookUpdateView(UpdateView):
