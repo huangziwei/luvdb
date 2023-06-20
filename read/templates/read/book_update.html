@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
-{% block title %}Update Edition{% endblock %}
+{% block title %}Update Book{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -10,18 +10,34 @@
         <div class="col-sm-7 left-column">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ form.edition_title|as_crispy_field }}
-                {{ form.book|as_crispy_field }}
-                {{ editionroles.management_form|crispy }}
-                <div id="edition-role-formset">
-                    {% for form in editionroles %}
+                {{ form.book_title|as_crispy_field }}
+                {{ bookworks.management_form|crispy }}
+                <div id="book-work-formset">
+                    {% for form in bookworks %} <!-- Iterate over each form in the BookWork formset -->                        
                         <div class="row">
+                            {{ form.id }}
+                            <div class="col-md-7 mb-3">
+                                {{ form.work | as_crispy_field}}
+                                <a href="{% url 'read:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {{ form.order | as_crispy_field}}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {{ bookroles.management_form|crispy }}
+                <div id="book-role-formset">
+                    {% for form in bookroles %}                            
+                        <div class="row">
+                            {{ form.id }}
                             <div class="col-md-3 mb-5">
                                 {{ form.person | as_crispy_field}}
                                 <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary">Add a new person?</a>
                             </div>
                             <div class="col-md-3 mb-5">
                                 {{ form.role | as_crispy_field}}
+                                {{ form.domain | as_crispy_field }}
                                 <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary">Add a new role?</a>
                             </div>
                             <div class="col-md-5 mb-5">
@@ -51,6 +67,6 @@
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 {{ form.media }}
 
-<script type="text/javascript" src="{% static 'js/edition.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/book.js' %}"></script>
 
 {% endblock content %}

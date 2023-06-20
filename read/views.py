@@ -7,8 +7,15 @@ from django.utils.html import format_html
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
-from .forms import BookForm, BookRoleFormSet, WorkForm, WorkRoleFormSet
-from .models import Book, Person, Publisher, Role, Work
+from .forms import (
+    BookForm,
+    BookRoleFormSet,
+    BookWork,
+    BookWorkFormSet,
+    WorkForm,
+    WorkRoleFormSet,
+)
+from .models import Book, Publisher, Role, Work
 
 #############
 # Publisher #
@@ -131,13 +138,18 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
             data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
+            data["bookworks"] = BookWorkFormSet(
+                self.request.POST, instance=self.object
+            )  # Added this line
         else:
             data["bookroles"] = BookRoleFormSet(instance=self.object)
+            data["bookworks"] = BookWorkFormSet(instance=self.object)  # And this line
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         bookroles = context["bookroles"]
+        bookworks = context["bookworks"]  # Added this line
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -145,12 +157,20 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             if bookroles.is_valid():
                 bookroles.instance = self.object
                 bookroles.save()
+            if bookworks.is_valid():  # And these lines
+                bookworks.instance = self.object
+                bookworks.save()
         return super().form_valid(form)
 
 
 class BookDetailView(DetailView):
     model = Book
     template_name = "read/book_detail.html"
+
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class BookUpdateView(UpdateView):
@@ -165,13 +185,16 @@ class BookUpdateView(UpdateView):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
             data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
+            data["bookworks"] = BookWorkFormSet(self.request.POST, instance=self.object)
         else:
             data["bookroles"] = BookRoleFormSet(instance=self.object)
+            data["bookworks"] = BookWorkFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         bookroles = context["bookroles"]
+        bookworks = context["bookworks"]
         with transaction.atomic():
             form.instance.updated_by = self.request.user
             if self.request.method == "POST":
@@ -183,6 +206,14 @@ class BookUpdateView(UpdateView):
                     if bookroles.is_valid():
                         bookroles.instance = self.object
                         bookroles.save()
+                    if bookworks.is_valid():
+                        bookworks.instance = self.object
+                        bookworks.save()
+                    else:
+                        logger.error(
+                            f"BookWorks formset is not valid: {bookworks.errors}"
+                        )
+
         return super().form_valid(form)
 
 

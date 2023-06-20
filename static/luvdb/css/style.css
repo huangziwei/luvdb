@@ -9,6 +9,7 @@
 
 /* https://github.com/yourlabs/django-autocomplete-light/issues/1055#issuecomment-610613743  */
 
+.add-book-work,
 .add-book-role,
 .add-edition-role {
     height: 38px !important;

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Book, BookRole, Person, Publisher, Role, Work, WorkRole
+from .models import Book, BookRole, BookWork, Person, Publisher, Role, Work, WorkRole
 
 
 class PersonAdmin(admin.ModelAdmin):
@@ -33,18 +33,31 @@ class BookRoleInline(admin.TabularInline):
     autocomplete_fields = ["person"]
 
 
+class BookWorkInline(admin.TabularInline):
+    model = BookWork
+    extra = 1
+
+
 class BookAdmin(admin.ModelAdmin):
     list_display = (
         "book_title",
-        "work",
+        "display_works",
         "created_at",
         "updated_at",
         "created_by",
         "updated_by",
     )
-    search_fields = ("work__title",)
-    inlines = [BookRoleInline]
-    autocomplete_fields = ["work", "publisher"]
+
+    def display_works(self, obj):
+        return ", ".join([work.title for work in obj.works.all()])
+
+    display_works.short_description = "Works"
+
+    search_fields = ("book_title",)
+
+    inlines = [BookRoleInline, BookWorkInline]
+
+    autocomplete_fields = ["publisher"]
 
 
 class RoleAdmin(admin.ModelAdmin):

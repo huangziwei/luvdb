@@ -21,12 +21,12 @@
                 <p>{{ object.bio }}</p>
             {% endif %}
 
-            {% if object.books.count != 0 %}
+            {% if object.works.count != 0 %}
                 <h3>Bibliography</h3>
                 <ul>
-                {% for book in books %}
+                {% for work in works %}
                     <li>
-                        <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a> ({{ book.publication_date}})
+                        <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date}})
                     </li>
                 {% empty %}
                     <li>This person has no books.</li>

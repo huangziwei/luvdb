@@ -11,10 +11,25 @@
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.book_title|as_crispy_field }}
-                {{ form.work|as_crispy_field }}
+                {{ bookworks.management_form|crispy }} <!-- Move this line here -->
+                <div id="book-work-formset">
+                    {% for form in bookworks %} <!-- Iterate over each form in the BookWork formset -->
+                        {{ form.id }}
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                {{ form.work | as_crispy_field}}
+                                <a href="{% url 'read:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {{ form.order | as_crispy_field}}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
                 {{ bookroles.management_form|crispy }}
                 <div id="book-role-formset">
-                    {% for form in bookroles %}
+                    {% for form in bookroles %} <!-- Iterate over each form in the BookRole formset -->
+                        {{ form.id }}
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 {{ form.person | as_crispy_field}}
@@ -22,6 +37,7 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 {{ form.role | as_crispy_field}}
+                                {{ form.domain | as_crispy_field }}
                                 <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
                             </div>
                             <div class="col-md-3 mb-3">
@@ -48,6 +64,17 @@
                 
                 <button type="submit" class="btn btn-primary btn-sm">Submit</button>
             </form>
+            {% if form.errors %}
+            <div class="alert alert-danger mt-5">
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ field }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

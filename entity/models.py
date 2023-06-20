@@ -59,17 +59,21 @@ class Person(Entity):
 
 
 class Role(models.Model):
-    """
-    A Role of a Person
-    """
+    DOMAIN_CHOICES = (
+        ("read", "Read"),
+        ("listen", "Listen"),
+        ("watch", "Watch"),
+        ("play", "Play"),
+        # Add more domains as needed
+    )
 
     name = models.CharField(max_length=255, unique=True)
+    domain = models.CharField(max_length=20, choices=DOMAIN_CHOICES)
 
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
-        # captialize letter of each word
         self.name = " ".join([word.capitalize() for word in self.name.split()])
         return super(Role, self).save(*args, **kwargs)
 

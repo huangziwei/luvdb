@@ -103,7 +103,7 @@ class WorkRole(models.Model):  # Renamed from BookRole
     A Role of a Person in a Work
     """
 
-    work = models.ForeignKey(Work, on_delete=models.CASCADE)  # Renamed from book
+    work = models.ForeignKey(Work, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
 
@@ -111,7 +111,7 @@ class WorkRole(models.Model):  # Renamed from BookRole
         return f"{self.work} - {self.person} - {self.role}"
 
 
-class Book(models.Model):  # Renamed from Edition
+class Book(models.Model):
     """
     A Book entity of a Work
     """
@@ -120,9 +120,10 @@ class Book(models.Model):  # Renamed from Edition
     book_title = models.CharField(max_length=255)
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False)
-    work = models.ForeignKey(
-        Work, on_delete=models.SET_NULL, related_name="books", null=True, blank=True
-    )
+    works = models.ManyToManyField(
+        Work, through="BookWork", related_name="books"
+    )  # Updated this field
+
     persons = models.ManyToManyField(Person, through="BookRole", related_name="books")
     publisher = models.ForeignKey(
         Publisher,
@@ -237,6 +238,24 @@ class BookRole(models.Model):
         return f"{self.book} - {self.name or self.person.name} - {self.role}"
 
 
+class BookWork(models.Model):
+    """
+    A mapping model for the order of Works in a Book
+    """
+
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    work = models.ForeignKey(Work, on_delete=models.CASCADE, null=True, blank=True)
+    order = models.PositiveIntegerField(
+        null=True, blank=True, default=1
+    )  # Ordering of the works in a book
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.book} - {self.work} - {self.order}"
+
+
 # class Award(models.Model):
 #     """
 #     An Award entity
@@ -270,12 +289,12 @@ class BookRole(models.Model):
 #         return f"{self.name} ({self.year})"
 
 
-# This receiver handles deletion of the cover file when the Edition instance is deleted
+# This receiver handles deletion of the cover file when the Book instance is deleted
 @receiver(signals.post_delete, sender=Book)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
     Deletes file from filesystem
-    when corresponding `Edition` object is deleted.
+    when corresponding `Book` object is deleted.
     """
     if instance.cover:
         instance.cover.delete(save=False)

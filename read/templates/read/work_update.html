@@ -20,13 +20,15 @@
                             </div>
                             <div class="col-md-5 mb-5">
                                 {{ form.role | as_crispy_field}}
+                                {{ form.domain | as_crispy_field }}
                                 <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
                 {{ form.publication_date|as_crispy_field }}
-                {{ form.description|as_crispy_field }}
+                {{ form.language|as_crispy_field }}
+                {{ form.work_type|as_crispy_field }}
                 <button type="submit" class="btn btn-primary btn-sm">Submit</button>
             </form>
         </div>
@@ -36,7 +38,7 @@
 
 {{ bookroles.media }}
 
-<script type="text/javascript" src="{% static 'js/book.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/work.js' %}"></script>
 
 
 {% endblock %}

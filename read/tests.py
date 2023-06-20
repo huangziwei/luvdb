@@ -1,7 +1,7 @@
 # Create your tests here.
 from django.test import TestCase
 
-from .models import Book, BookRole, Edition, EditionRole, Person, Publisher, Role
+from .models import Book, BookRole, Person, Publisher, Role, Work, WorkRole
 
 
 ##################
@@ -45,10 +45,10 @@ class BookRoleModelTest(TestCase):
         self.assertEqual(str(book_role), "Test Book - Test Person - Test Role")
 
 
-class EditionModelTest(TestCase):
+class WorkModelTest(TestCase):
     def test_create_and_str(self):
-        edition = Edition.objects.create(edition_title="Test Edition")
-        self.assertEqual(str(edition), "Test Edition")
+        edition = Work.objects.create(edition_title="Test Work")
+        self.assertEqual(str(edition), "Test Work")
 
 
 class EditionRoleModelTest(TestCase):

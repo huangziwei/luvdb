@@ -5,7 +5,7 @@ from django import forms
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
-from .models import Book, BookRole, Work, WorkRole
+from .models import Book, BookRole, BookWork, Work, WorkRole
 
 
 ########
@@ -32,16 +32,18 @@ class WorkForm(forms.ModelForm):
 
 
 class WorkRoleForm(forms.ModelForm):
+    domain = forms.CharField(initial="read", widget=forms.HiddenInput())
+
     class Meta:
         model = WorkRole
-        fields = ["person", "role"]
+        fields = ["person", "role", "domain"]
 
 
 WorkRoleFormSet = inlineformset_factory(
     Work,
     WorkRole,
     form=WorkRoleForm,
-    extra=20,
+    extra=1,
     can_delete=False,
     widgets={
         "person": autocomplete.ModelSelect2(
@@ -50,6 +52,7 @@ WorkRoleFormSet = inlineformset_factory(
         ),
         "role": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:role-autocomplete"),
+            forward=["domain"],  # forward the domain field to the RoleAutocomplete view
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
     },
@@ -62,7 +65,7 @@ WorkRoleFormSet = inlineformset_factory(
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
-        exclude = ["created_by", "updated_by", "persons"]
+        exclude = ["created_by", "updated_by", "persons", "works"]
         fields = "__all__"
         widgets = {
             "work": autocomplete.ModelSelect2(
@@ -75,9 +78,11 @@ class BookForm(forms.ModelForm):
 
 
 class BookRoleForm(forms.ModelForm):
+    domain = forms.CharField(initial="read", widget=forms.HiddenInput())
+
     class Meta:
         model = BookRole
-        fields = ("person", "role", "name")
+        fields = ("person", "role", "domain", "name")
 
 
 BookRoleFormSet = inlineformset_factory(
@@ -88,8 +93,38 @@ BookRoleFormSet = inlineformset_factory(
     can_delete=False,
     widgets={
         "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("entity:person-autocomplete")
+            url=reverse_lazy("entity:person-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:person_create")},
         ),
-        "role": autocomplete.ModelSelect2(url=reverse_lazy("entity:role-autocomplete")),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:role-autocomplete"),
+            forward=["domain"],  # forward the domain field to the RoleAutocomplete view
+            attrs={"data-create-url": reverse_lazy("entity:role_create")},
+        ),
+    },
+)
+
+
+class BookWorkForm(forms.ModelForm):
+    class Meta:
+        model = BookWork
+        fields = ["work", "order"]
+
+
+BookWorkFormSet = inlineformset_factory(
+    Book,  # parent model
+    BookWork,  # inline model
+    form=BookWorkForm,  # form to use
+    extra=100,  # number of empty forms
+    can_delete=False,  # allow deletion
+    widgets={
+        "work": autocomplete.ModelSelect2(
+            url=reverse_lazy(
+                "read:work-autocomplete"
+            ),  # change "entity:work-autocomplete" to the correct url name
+            attrs={
+                "data-create-url": reverse_lazy("read:work_create")
+            },  # change "entity:work_create" to the correct url name
+        ),
     },
 )

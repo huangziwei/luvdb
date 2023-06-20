@@ -64,7 +64,7 @@ class PersonUpdateView(LoginRequiredMixin, UpdateView):
 
 class RoleCreateView(LoginRequiredMixin, CreateView):
     model = Role
-    fields = ["name"]
+    fields = ["name", "domain"]
     template_name = "entity/role_create.html"
 
     def form_valid(self, form):
@@ -101,9 +101,16 @@ class PersonAutoComplete(autocomplete.Select2QuerySetView):
 
 class RoleAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Role.objects.none()
+
+        domain = self.forwarded.get("domain", None)
         qs = Role.objects.all()
 
+        if domain:
+            qs = qs.filter(domain=domain)
+
         if self.q:
-            qs = qs.filter(name__istartswith=self.q)
+            qs = qs.filter(name__icontains=self.q)
 
         return qs

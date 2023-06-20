@@ -54,6 +54,7 @@ class Release(models.Model):
     An Release Entity
     """
 
+    # Release meta data
     title = models.CharField(max_length=255)
     persons = models.ManyToManyField(
         Person, through="ReleaseRole", related_name="releases"

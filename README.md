@@ -53,8 +53,8 @@ pip install -r requirements.txt
 touch .env
 python -c 'from django.core.management.utils import get_random_secret_key; print("SECRET_KEY="+get_random_secret_key())' > .env
 echo "DEBUG=True" >> .env
-python manage.py makemigrations
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
+DJANGO_SETTINGS_MODULE=config.settings.development python manage.py makemigrations
+DJANGO_SETTINGS_MODULE=config.settings.development python manage.py migrate
+DJANGO_SETTINGS_MODULE=config.settings.development python manage.py createsuperuser
+DJANGO_SETTINGS_MODULE=config.settings.development python manage.py runserver
 ```

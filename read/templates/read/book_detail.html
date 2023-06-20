@@ -6,29 +6,32 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <!--left column-->
-        <div class="col-sm-2">
-            <div class="cover-box">
-                {% if object.cover %}
-                    <img src="{{ object.cover.url }}" alt="{{ object.book_title }} cover" class="cover-image">
-                {% else %}
-                    <p class="no-cover-text">No Cover</p>
-                {% endif %}
-            </div>
-            <div class='d-flex justify-content-center'>
-            {% if user.is_authenticated %}
-                <a href="{% url 'read:book_update' object.pk %}" class='fs-6 text-secondary'>Edit Edition</a>
-            {% endif %}
-            </div>
-        </div>        
-        <!--right column-->
-        <div class="col-sm-10">
-            <div class="book-detail">
-                <span class='d-flex align-items-start'>
-                    <h2>{{ object.book_title }} </h2>
-                    
-                </span>
-                <div class="book-meta">
+        <div class="col-sm-7">
+            <!-- book-card -->
+            <div class="card justify-content-start">
+                <div class="row">
+                    <!--cover-box-->
+                    <div class="col-md-3 me-2">
+                        <div class="cover-box">
+                            {% if object.cover %}
+                                <img src="{{ object.cover.url }}" alt="{{ object.book_title }} cover" class="cover-image">
+                            {% else %}
+                                <p class="no-cover-text">No Cover</p>
+                            {% endif %}
+                        </div>
+                        <div class='d-flex justify-content-center'>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'read:book_update' object.pk %}" class='fs-6 text-secondary'>Edit Book</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!--book-meta-->
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <span class='d-flex align-items-start'>
+                                <h2>{{ object.book_title }} </h2>
+                            </span>
+                            <div class="book-meta">
                     {% if object.book.id and object.book_title != object.book.title %}
                     <p>
                         <strong>Original Title</strong> 
@@ -71,21 +74,25 @@
                     {% if object.asin %}
                         <p><strong>ASIN</strong> {{ object.asin }}</p>
                     {% endif %}
-
                 </div>
-                {% if object.details %}
-                    <div class="book-details">
-                        <h2>Details</h2>
-                        <p>{{ object.details }}</p>
-                    </div>
-                {% endif %}
             </div>
-        </div>
-
-        <!--right column-->
-        <div class="col-sm-7 left-column">
-            
+            <!-- End of book-card -->
         </div>
     </div>
+    <div class="row mt-4">
+        <!--list all related works by order-->
+        <div class="col-sm-12">
+            <h4>Related Works:</h4>
+            {% for book_work in object.bookwork_set.all %}
+                <div class="related-work"> 
+                    {% comment %} <p><strong>{{ book_work.order }}:</strong> <a href="">{{ book_work.work.title }}</a></p> {% endcomment %}
+                    <p><strong>{{ book_work.order }}:</strong> <a href="{% url 'read:work_detail' book_work.work.id %}">{{ book_work.work.title }}</a></p>
+                </div>
+            {% empty %}
+                <p>No related works found.</p>
+            {% endfor %}
+        </div>
+    </div>
+
 </div>
 {% endblock content %}
