@@ -6,37 +6,14 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-7 left-column">
-            <h2>Update Book entry: {{ object.title }}</h2>
-            <form method="post">
-                {% csrf_token %}
-                {{ form.title|as_crispy_field }}
-                {{ bookroles.management_form|crispy }}
-                <div id="book-role-formset">
-                    {% for form in bookroles %}
-                        <div class="row">
-                            <div class="col-md-5 mb-5">
-                                {{ form.person | as_crispy_field}}
-                                <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>
-                            </div>
-                            <div class="col-md-5 mb-5">
-                                {{ form.role | as_crispy_field}}
-                                {{ form.domain | as_crispy_field }}
-                                <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                {{ form.publication_date|as_crispy_field }}
-                {{ form.language|as_crispy_field }}
-                {{ form.work_type|as_crispy_field }}
-                <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-            </form>
+            <h2>Update this Work entry</h2>
+            {% include "read/work_form.html" %}
         </div>
     </div>
 </div>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 
-{{ bookroles.media }}
+{{ workroles.media }}
 
 <script type="text/javascript" src="{% static 'js/work.js' %}"></script>
 

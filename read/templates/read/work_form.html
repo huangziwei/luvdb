@@ -1,0 +1,38 @@
+{% load crispy_forms_tags %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.title|as_crispy_field }}
+    {{ workroles.management_form|crispy }}
+    <div id="work-role-formset">
+        {% for form in workroles %}
+            <div class="row">
+                {{ form.id }}
+                <div class="col-md-6 mb-3">
+                    {{ form.person | as_crispy_field}}
+                    <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person entry?</a>
+                </div>
+                <div class="col-md-5 mb-3">
+                    {{ form.role | as_crispy_field}}
+                    {{ form.domain | as_crispy_field }}
+                    <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role entry?</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {{ form.publication_date|as_crispy_field }}
+    {{ form.language|as_crispy_field }}
+    {{ form.work_type|as_crispy_field }}
+    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+</form>
+
+{% if form.errors %}
+<div class="alert alert-danger mt-5">
+    <ul>
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <li>{{ field }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

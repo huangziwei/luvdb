@@ -8,59 +8,8 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-7 left-column">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.book_title|as_crispy_field }}
-                {{ bookworks.management_form|crispy }}
-                <div id="book-work-formset">
-                    {% for form in bookworks %} <!-- Iterate over each form in the BookWork formset -->                        
-                        <div class="row">
-                            {{ form.id }}
-                            <div class="col-md-7 mb-3">
-                                {{ form.work | as_crispy_field}}
-                                <a href="{% url 'read:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                {{ form.order | as_crispy_field}}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                {{ bookroles.management_form|crispy }}
-                <div id="book-role-formset">
-                    {% for form in bookroles %}                            
-                        <div class="row">
-                            {{ form.id }}
-                            <div class="col-md-3 mb-5">
-                                {{ form.person | as_crispy_field}}
-                                <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary">Add a new person?</a>
-                            </div>
-                            <div class="col-md-3 mb-5">
-                                {{ form.role | as_crispy_field}}
-                                {{ form.domain | as_crispy_field }}
-                                <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary">Add a new role?</a>
-                            </div>
-                            <div class="col-md-5 mb-5">
-                                {{ form.name | as_crispy_field}}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                {{ form.cover|as_crispy_field}}
-                {{ form.publisher|as_crispy_field }}
-                {{ form.language|as_crispy_field}}
-                {{ form.details|as_crispy_field }}
-                {{ form.publication_date|as_crispy_field }}
-                {{ form.book_format|as_crispy_field }}
-                {{ form.book_type|as_crispy_field}}
-                {{ form.pages|as_crispy_field }}
-                {{ form.price|as_crispy_field }}
-                {{ form.isbn_10|as_crispy_field }}
-                {{ form.isbn_13|as_crispy_field }}
-                {{ form.asin|as_crispy_field }}
-                
-                <button type="submit" class="btn btn-primary btn-sm">Update</button>
-            </form>
+            <h3>Update this Book entry</h3>
+            {% include "read/book_form.html" %}
         </div>
     </div>
 </div>
