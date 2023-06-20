@@ -1,6 +1,16 @@
 from django.contrib import admin
 
-from .models import Book, BookRole, BookWork, Person, Publisher, Role, Work, WorkRole
+from .models import (
+    Book,
+    BookRole,
+    BookWork,
+    BookWorkRole,
+    Person,
+    Publisher,
+    Role,
+    Work,
+    WorkRole,
+)
 
 
 class PersonAdmin(admin.ModelAdmin):
@@ -38,6 +48,11 @@ class BookWorkInline(admin.TabularInline):
     extra = 1
 
 
+class BookWorkRoleInline(admin.TabularInline):
+    model = BookWorkRole
+    extra = 1
+
+
 class BookAdmin(admin.ModelAdmin):
     list_display = (
         "book_title",
@@ -49,13 +64,16 @@ class BookAdmin(admin.ModelAdmin):
     )
 
     def display_works(self, obj):
-        return ", ".join([work.title for work in obj.works.all()])
+        # Access works through BookWorkRole
+        return ", ".join(
+            [work_role.work.title for work_role in obj.bookworkrole_set.all()]
+        )
 
     display_works.short_description = "Works"
 
     search_fields = ("book_title",)
 
-    inlines = [BookRoleInline, BookWorkInline]
+    inlines = [BookRoleInline, BookWorkRoleInline]  # Changed to new inline
 
     autocomplete_fields = ["publisher"]
 
@@ -83,4 +101,11 @@ admin.site.register(Work, WorkAdmin)
 admin.site.register(Book, BookAdmin)
 admin.site.register(Role, RoleAdmin)
 admin.site.register(WorkRole, WorkRoleAdmin)
-admin.site.register(BookRole, BookRoleAdmin)
+# admin.site.register(BookRole, BookRoleAdmin)
+
+
+@admin.register(BookWorkRole)
+class BookWorkRoleAdmin(admin.ModelAdmin):
+    list_display = ("book", "work", "order", "person", "role", "name")
+    list_filter = ("book", "work", "role")
+    search_fields = ("book__title", "work__title", "name", "person__name", "role__name")

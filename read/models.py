@@ -120,11 +120,10 @@ class Book(models.Model):
     book_title = models.CharField(max_length=255)
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False)
-    works = models.ManyToManyField(
-        Work, through="BookWork", related_name="books"
-    )  # Updated this field
-
     persons = models.ManyToManyField(Person, through="BookRole", related_name="books")
+    work_roles = models.ManyToManyField(
+        Work, through="BookWorkRole", related_name="books"
+    )
     publisher = models.ForeignKey(
         Publisher,
         on_delete=models.SET_NULL,
@@ -162,7 +161,7 @@ class Book(models.Model):
     )
 
     BOOK_TYPES = (
-        ("SB", "Stand Alone Book"),
+        ("SB", "Standalone"),
         ("SS", "Short Stories Collection"),
         ("ES", "Essays Collection"),
         # Add other types here as needed
@@ -256,37 +255,31 @@ class BookWork(models.Model):
         return f"{self.book} - {self.work} - {self.order}"
 
 
-# class Award(models.Model):
-#     """
-#     An Award entity
-#     """
+class BookWorkRole(models.Model):
+    """
+    A mapping model for the relationship between a Book, Work, and Role
+    """
 
-#     AWARD_STATUS_CHOICES = [
-#         ("NOMINATED", "Nominated"),
-#         ("SHORTLISTED", "Shortlisted"),
-#         ("WON", "Won"),
-#     ]
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    work = models.ForeignKey(Work, on_delete=models.CASCADE, null=True, blank=True)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
 
-#     name = models.CharField(max_length=255)
-#     year = models.IntegerField()
-#     category = models.CharField(max_length=255)
-#     status = models.CharField(
-#         max_length=11, choices=AWARD_STATUS_CHOICES, default="NOMINATED"
-#     )
-#     work = models.ForeignKey(
-#         Work, related_name="awards", on_delete=models.SET_NULL, null=True
-#     )
-#     person = models.ForeignKey(
-#         Person, related_name="awards", on_delete=models.SET_NULL, null=True
-#     )
+    name = models.CharField(
+        max_length=255, blank=True, null=True
+    )  # For translated authors' names
+    alt_title = models.CharField(
+        max_length=255, blank=True, null=True
+    )  # For alternative (translated) title
+    order = models.PositiveIntegerField(
+        null=True, blank=True, default=1
+    )  # Ordering of the works in a book
 
-#     # You can add more fields as per your requirement like:
-#     # description = models.TextField() for a brief about the award
-#     # image = models.ImageField() for the award's logo or symbol
-#     # country = models.CharField(max_length=255) if the award is country-specific
+    class Meta:
+        ordering = ["order"]
 
-#     def __str__(self):
-#         return f"{self.name} ({self.year})"
+    def __str__(self):
+        return f"{self.book} - {self.work or self.alt_title} - {self.name or self.person.name} - {self.role} - {self.order}"
 
 
 # This receiver handles deletion of the cover file when the Book instance is deleted

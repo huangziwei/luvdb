@@ -26,7 +26,11 @@
                 <ul>
                 {% for work in works %}
                     <li>
-                        <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date}})
+                        {% if work.work_type == 'Novel' %}
+                            <a href="{% url 'read:work_detail' work.pk %}" style="font-weight: bold;">{{ work.title }}</a> ({{ work.publication_date}})
+                        {% else %}
+                            <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date}})
+                        {% endif %}
                     </li>
                 {% empty %}
                     <li>This person has no books.</li>

@@ -32,14 +32,6 @@
                                 <h2>{{ object.book_title }} </h2>
                             </span>
                             <div class="book-meta">
-                    {% if object.book.id and object.book_title != object.book.title %}
-                    <p>
-                        <strong>Original Title</strong> 
-                        {% if object.book.pk %}
-                        <a href="{% url 'read:book_detail' object.book.pk %}">{{ object.book.title }}</a>
-                        {% endif %}
-                    </p>
-                    {% endif %}
                     {% for book_role in object.bookrole_set.all %}
                         <p>
                             <strong>{{ book_role.role.name }}</strong> 
@@ -82,15 +74,18 @@
     <div class="row mt-4">
         <!--list all related works by order-->
         <div class="col-sm-12">
-            <h4>Related Works:</h4>
-            {% for book_work in object.bookwork_set.all %}
+            {% for book_work_role in object.bookworkrole_set.all %}
                 <div class="related-work"> 
-                    {% comment %} <p><strong>{{ book_work.order }}:</strong> <a href="">{{ book_work.work.title }}</a></p> {% endcomment %}
-                    <p><strong>{{ book_work.order }}:</strong> <a href="{% url 'read:work_detail' book_work.work.id %}">{{ book_work.work.title }}</a></p>
+                    <p>
+                        <a href="{% url 'read:work_detail' book_work_role.work.id %}">
+                            {{ book_work_role.alt_title|default:book_work_role.work.title }}
+                        </a> ({% if book_work_role.person.id %}{{ book_work_role.role}}: <a href="{% url 'entity:person_detail' book_work_role.person.id %}">{{book_work_role.person.name }}</a>,{% endif %} {{ book_work_role.work.publication_date }})
+                    </p>
                 </div>
             {% empty %}
                 <p>No related works found.</p>
             {% endfor %}
+            
         </div>
     </div>
 
