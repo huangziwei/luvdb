@@ -31,6 +31,9 @@ class ShareDetailView(DetailView):
         )
         context["comment_form"] = CommentForm()
         context["repost_form"] = RepostForm()
+        context["app_label"] = self.object._meta.app_label
+        context["object_type"] = self.object._meta.model_name.lower()
+
         return context
 
 

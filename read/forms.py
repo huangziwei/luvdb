@@ -1,11 +1,12 @@
+from crispy_forms.bootstrap import Field
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Fieldset, Layout, Submit
+from crispy_forms.layout import Column, Div, Fieldset, Layout, Row, Submit
 from dal import autocomplete
 from django import forms
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
-from .models import Book, BookRole, BookWork, BookWorkRole, Work, WorkRole
+from .models import Book, BookCheckIn, BookRole, BookWork, BookWorkRole, Work, WorkRole
 
 
 ########
@@ -169,3 +170,41 @@ BookWorkRoleFormSet = inlineformset_factory(
         ),
     },
 )
+
+
+class BookCheckInForm(forms.ModelForm):
+    class Meta:
+        model = BookCheckIn
+        fields = ["book", "author", "status", "progress", "share_to_feed", "content"]
+        widgets = {
+            "book": forms.HiddenInput(),
+            "author": forms.HiddenInput(),  # author is now included
+            "status": forms.Select(choices=BookCheckIn.READING_STATUS_CHOICES),
+            "progress": forms.NumberInput(),
+            "share_on_feed": forms.CheckboxInput(),
+            "content": forms.Textarea(attrs={"rows": 4}),
+        }
+
+
+# class BookCheckInForm(forms.ModelForm):
+#     class Meta:
+#         model = BookCheckIn
+#         fields = [
+#             "status",
+#             "progress",
+#             "progress_type",
+#             "content",
+#             "share_on_feed",
+#             "comments_enabled",
+#             "book",
+#             "author",
+#         ]
+#         widgets = {
+#             "status": forms.Select(choices=BookCheckIn.READING_STATUS_CHOICES),
+#             "progress": forms.NumberInput(),
+#             "progress_type": forms.Select(choices=BookCheckIn.PROGRESS_TYPE_CHOICES),
+#             "share_to_feed": forms.CheckboxInput(),
+#             "content": forms.Textarea(attrs={"rows": 4}),
+#             "book": forms.HiddenInput(),  # Hide book field
+#             "author": forms.HiddenInput(),  # Hide author field
+#         }

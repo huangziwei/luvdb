@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% load markdownify %}
+{% load linkify %}
+{% load crispy_forms_tags %}
+
+{% block title %}Check In{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-7 left-column">
+      <div>
+        <p class="d-flex"> 
+          <a href="{% url 'accounts:detail' object.author.username %}" class='me-1'>
+            {{ object.author.display_name | default:object.author.username }}
+          </a> checked in with: <a href="{% url "read:book_detail" object.book.id %}">{{ object.book.book_title }}</a>
+        </p>
+        
+        <p>Status: {{ object.get_status_display }}</p>
+        <p>Progress: {{ object.progress }}</p>
+        <div>{{ object.content| linkify_tags | linkify_mentions | markdownify }}</div>
+        <span class="d-flex mt-2">
+          <p class='me-2 text-secondary mb-2'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
+          {% if object.user == request.user %}
+          <a href="{% url "read:checkin_update" object.pk %}" class="me-2">Edit</a>
+          <a href="{% url "read:checkin_delete" object.pk %}" class="me-2">Delete</a>{% endif %}
+        </span>
+      </div>
+
+      <button id="show-comments" class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
+      <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto toggle-button">Reposts ({{ object.reposts.count }})</button>
+      
+      <hr>
+
+      <div id="comments-section">
+        {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='bookcheckin' %}
+      </div>
+
+      <div id="reposts-section" style="display: none;">
+        {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts %}
+      </div>
+
+    </div>
+  </div>
+</div>
+ 
+<script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
+
+{% endblock content %}

@@ -1,0 +1,61 @@
+
+{% load crispy_forms_tags %}
+<div class="row">
+    <div class="col-sm-8">
+        <h5>Check-In</h5>
+        <form method="post">
+            {% csrf_token %}
+            {{ checkin_form | crispy }}
+            <button type="submit">Add Check-In</button>
+        </form>
+    </div>
+</div>
+
+    {% comment %} <div class="btn-group" role="group" aria-label="Status buttons">
+        <button type="button" class="btn btn-secondary" data-value="to_read">To Read</button>
+        <button type="button" class="btn btn-secondary" data-value="currently_reading">Currently Reading</button>
+        <button type="button" class="btn btn-secondary" data-value="finished_reading">Finished Reading</button>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                More
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" data-value="paused">Paused</a></li>
+                <li><a class="dropdown-item" href="#" data-value="abandoned">Abandoned</a></li>
+                <li><a class="dropdown-item" href="#" data-value="rereading">Rereading</a></li>
+                <li><a class="dropdown-item" href="#" data-value="finishied_rereading">Finished Rereading</a></li>
+            </ul>
+        </div>
+    </div>
+    <input type="hidden" name="status" id="status-field">
+        
+        
+    <div class="d-flex">
+        <div class="col-sm-2 me-3">
+            {{ checkin_form.progress | as_crispy_field }}
+        </div>
+        <div class="col-sm-2">
+            {{ checkin_form.progress_type | as_crispy_field }}
+        </div>
+    </div>
+    <div>{{ checkin_form.content | as_crispy_field}}</div>
+    <div>{{ checkin_form.share_on_feed | as_crispy_field}}</div>
+    <div>{{ checkin_form.comments_enabled | as_crispy_field}}</div>
+    {{checkin_form.status}}
+    {{checkin_form.book}}
+    {{checkin_form.author}}
+        
+    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var buttons = document.querySelectorAll('.btn-group .btn, .dropdown-menu .dropdown-item');
+            buttons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var value = this.getAttribute('data-value');
+                document.querySelector('#id_status').value = value;
+            });
+            });
+        });
+    </script>
+{% endcomment %}

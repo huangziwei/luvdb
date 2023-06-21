@@ -258,6 +258,7 @@ class Pin(models.Model):
 @receiver(post_delete, sender=Say)
 @receiver(post_delete, sender=Pin)
 @receiver(post_delete, sender=Repost)
+@receiver(post_delete, sender="read.BookCheckIn")
 def delete_activity(sender, instance, **kwargs):
     content_type = ContentType.objects.get_for_model(instance)
     Activity.objects.filter(content_type=content_type, object_id=instance.id).delete()
@@ -268,6 +269,7 @@ def delete_activity(sender, instance, **kwargs):
 @receiver(pre_delete, sender=Say)
 @receiver(pre_delete, sender=Pin)
 @receiver(pre_delete, sender=Repost)
+@receiver(pre_delete, sender="read.BookCheckIn")
 def notify_comment_authors(sender, instance, **kwargs):
     # Get all the comments on the object being deleted
     comments = instance.comments.all()

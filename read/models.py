@@ -3,15 +3,20 @@ import uuid
 from io import BytesIO
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.files.base import ContentFile
 from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils.text import slugify
 from PIL import Image
 
+from activity_feed.models import Activity
 from entity.models import Entity, Person, Role
+from write.models import create_mentions_notifications, handle_tags
 
 
 # helpers
@@ -194,6 +199,9 @@ class Book(models.Model):
     def __str__(self):
         return self.book_title
 
+    def get_absolute_url(self):
+        return reverse("read:book_detail", args=[str(self.id)])
+
     def save(self, *args, **kwargs):
         # If the instance already exists in the database
         if self.pk:
@@ -296,3 +304,67 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
     if instance.cover:
         instance.cover.delete(save=False)
+
+
+class BookCheckIn(models.Model):
+    PAGE = "PG"
+    PERCENTAGE = "PC"
+    PROGRESS_TYPE_CHOICES = [
+        (PAGE, "Page"),
+        (PERCENTAGE, "Percentage"),
+    ]
+
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    READING_STATUS_CHOICES = [
+        ("to_read", "To Read"),
+        ("currently_reading", "Currently Reading"),
+        ("finished_reading", "Finished Reading"),
+        ("paused", "Paused"),
+        ("abandoned", "Abandoned"),
+        ("rereading", "Rereading"),
+        ("finishied_rereading", "Finished Rereading"),
+    ]
+    status = models.CharField(max_length=255, choices=READING_STATUS_CHOICES)
+    share_to_feed = models.BooleanField(default=True)
+    content = models.TextField(
+        null=True, blank=True
+    )  # Any thoughts or comments at this check-in.
+    timestamp = models.DateTimeField(auto_now_add=True)
+    progress = models.IntegerField(null=True, blank=True)
+    progress_type = models.CharField(
+        max_length=2,
+        choices=PROGRESS_TYPE_CHOICES,
+        default=PAGE,
+    )
+    comments = GenericRelation("write.Comment")
+    comments_enabled = models.BooleanField(default=True)
+    tags = models.ManyToManyField("write.Tag", blank=True)
+
+    def get_absolute_url(self):
+        return reverse("read:checkin_detail", args=[str(self.id)])
+
+    def get_activity_id(self):
+        try:
+            activity = Activity.objects.get(
+                content_type__model="bookcheckin", object_id=self.id
+            )
+            return activity.id
+        except ObjectDoesNotExist:
+            return None
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new and self.share_to_feed:
+            # Only create activity if share_on_feed is True
+            Activity.objects.create(
+                user=self.author,
+                activity_type="check-in",
+                content_object=self,
+            )
+        else:
+            print("Not creating activity")
+        # Handle tags
+        handle_tags(self, self.content)
+        create_mentions_notifications(self.author, self.content, self)

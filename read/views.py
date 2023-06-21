@@ -1,12 +1,18 @@
 from dal import autocomplete
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.html import format_html
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic.edit import CreateView
+
+from write.forms import CommentForm, RepostForm
+from write.models import Comment
 
 from .forms import (
+    BookCheckInForm,
     BookForm,
     BookRoleFormSet,
     BookWorkRoleForm,
@@ -14,7 +20,7 @@ from .forms import (
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import Book, Person, Publisher, Role, Work
+from .models import Book, BookCheckIn, Person, Publisher, Role, Work
 
 #############
 # Publisher #
@@ -178,7 +184,24 @@ class BookDetailView(DetailView):
                 (book_role.person, alt_name_or_person_name)
             )
         context["roles"] = roles
+        context["checkin_form"] = BookCheckInForm(
+            initial={"book": self.object, "author": self.request.user}
+        )
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = BookCheckInForm(
+            data=request.POST, initial={"book": self.object, "author": request.user}
+        )
+        if form.is_valid():
+            book_check_in = form.save(commit=False)
+            book_check_in.author = request.user  # Set the author manually here
+            book_check_in.save()
+        else:
+            print(form.errors)
+
+        return redirect(self.object.get_absolute_url())
 
 
 class BookUpdateView(UpdateView):
@@ -293,3 +316,44 @@ class ReadListView(ListView):
             "recent_works": recent_works,
             "recent_persons": Person.objects.all().order_by("-created_at")[:10],
         }
+
+
+###########
+# Checkin #
+###########
+
+
+class BookCheckInCreateView(LoginRequiredMixin, CreateView):
+    model = BookCheckIn
+    form_class = BookCheckInForm
+    template_name = "read/checkin_create.html"
+
+    def form_valid(self, form):
+        book = get_object_or_404(
+            Book, pk=self.kwargs.get("book_id")
+        )  # Fetch the book based on URL parameter
+        form.instance.book = book
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("read:checkin_detail", kwargs={"pk": self.object.pk})
+
+
+class BookCheckInDetailView(DetailView):
+    model = BookCheckIn
+    template_name = "read/bookcheckin_detail.html"
+    context_object_name = "checkin"  # This name will be used in your template
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["comments"] = Comment.objects.filter(
+            content_type=ContentType.objects.get_for_model(self.object),
+            object_id=self.object.id,
+        )
+        context["comment_form"] = CommentForm()
+        context["repost_form"] = RepostForm()
+        context["app_label"] = self.object._meta.app_label
+        context["object_type"] = self.object._meta.model_name.lower()
+
+        return context

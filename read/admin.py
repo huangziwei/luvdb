@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (
     Book,
+    BookCheckIn,
     BookRole,
     BookWorkRole,
     Person,
@@ -109,3 +110,10 @@ class BookWorkRoleAdmin(admin.ModelAdmin):
         "person__name",
         "role__name",
     )
+
+
+@admin.register(BookCheckIn)
+class BookCheckInAdmin(admin.ModelAdmin):
+    list_display = ("book", "author", "status", "progress", "content", "timestamp")
+    search_fields = ("book__title", "author__username", "content")
+    list_filter = ("status", "timestamp")
