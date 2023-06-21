@@ -3,13 +3,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.db.models import Prefetch
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.html import format_html
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
 # from listen.models import Release, Track
-from read.models import Book  # , Work
+from read.models import Book, BookRole, BookWorkRole
 
 from .forms import PersonForm
 from .models import Person, Role
@@ -51,6 +51,39 @@ class PersonDetailView(DetailView):
             "language", "publication_date"
         )
 
+        person = self.object
+        book_roles = BookRole.objects.filter(person=person)
+        book_work_roles = BookWorkRole.objects.filter(person=person)
+
+        # group roles by the Role name for display
+        roles = {}
+        for role in book_roles:
+            role_name = str(role.role)
+            if role_name != "Author":
+                if role_name not in roles:
+                    roles[role_name] = []
+                roles[role_name].append(
+                    {
+                        "title": role.book.book_title,
+                        "publication_date": role.book.publication_date,
+                        "url": reverse("read:book_detail", args=[role.book.pk]),
+                    }
+                )
+
+        for role in book_work_roles:
+            role_name = str(role.role)
+            if role_name != "Author":
+                if role_name not in roles:
+                    roles[role_name] = []
+                roles[role_name].append(
+                    {
+                        "title": role.alt_title or role.work.title,
+                        "publication_date": role.publication_date,
+                        "url": reverse("read:work_detail", args=[role.work.pk]),
+                    }
+                )
+
+        context["roles"] = roles
         return context
 
 

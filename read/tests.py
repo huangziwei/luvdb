@@ -51,12 +51,12 @@ class WorkModelTest(TestCase):
         self.assertEqual(str(edition), "Test Work")
 
 
-class EditionRoleModelTest(TestCase):
+class WorkRoleModelTest(TestCase):
     def test_create_and_str(self):
         person = Person.objects.create(name="Test Person")
         role = Role.objects.create(name="Test Role")
-        edition = Edition.objects.create(edition_title="Test Edition")
-        edition_role = EditionRole.objects.create(
+        edition = Work.objects.create(edition_title="Test Work")
+        edition_role = WorkRole.objects.create(
             edition=edition, person=person, role=role
         )
         self.assertEqual(str(edition_role), "Test Edition - Test Person - Test Role")

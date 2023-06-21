@@ -7,6 +7,7 @@ from .views import (
     PublisherAutocomplete,
     PublisherCreateView,
     PublisherDetailView,
+    ReadListView,
     WorkAutocomplete,
     WorkCreateView,
     WorkDetailView,
@@ -15,6 +16,8 @@ from .views import (
 
 app_name = "read"
 urlpatterns = [
+    # read
+    path("recent/", view=ReadListView.as_view(), name="read_list"),
     # work
     path("work/create/", WorkCreateView.as_view(), name="work_create"),
     path("work/<int:pk>/", WorkDetailView.as_view(), name="work_detail"),

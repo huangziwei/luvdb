@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg bg-light p-3">
+    <div>
+        <a class="navbar-brand" href="{% url 'activity_feed:activity_feed' %}">LʌvDB</a>
+    </div>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    {% if user.is_authenticated %}
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center
+    mb-md-0 mr-auto">
+            <li class="nav-item"><a class="nav-link" href="{% url 'read:read_list' %}">Read</a></li>
+            <form class="d-flex" method="GET" action="{% url 'accounts:search' %}">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
+                <button class="btn btn-outline-success btn-sm" type="submit">Search</button>
+            </form>
+        </ul>
+            
+        <div class="me-3">
+            <a href="{% url 'notify:notification_list' %}" class="btn btn-sm btn-light">
+                Notifications {% if new_notifications %}({{ new_notifications }}){% endif %}
+            </a>
+        </div>
+        
+        <div class="dropdown text-end">
+            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ user.display_name | default:user.username }}
+            </a>
+            <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" href="{% url 'accounts:detail' user.username %}">Profile </a></li>
+                <li><a class="dropdown-item" href="{% url 'password_change'%}">Change password</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    {% else %}
+    <a class="navbar-brand" href="{% url 'login' %}">LʌvDB</a>
+    <div class="text-end">
+        <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Log
+            In</a>
+        <a href="{% url 'accounts:signup' %}" class="btn btn-primary">Sign Up</a>
+    </div>
+    {% endif %}
+</nav>

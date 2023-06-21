@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var button = document.createElement('button');
         button.type = 'button';
         button.textContent = '+';
-        button.className = 'btn btn-sm btn-light ' + buttonClass;
+        button.className = 'btn btn-sm btn-outline-secondary ' + buttonClass;
 
         innerDiv.appendChild(label);
         innerDiv.appendChild(button);

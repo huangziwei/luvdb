@@ -15,52 +15,12 @@
   {% endif %}
 </head>
 <body>
+    <header class='mb-3'>
+        {% include "navbar.html" %}
+    </header>
+
     <div class="container">
-        <header class="p-3 mb-3 border-bottom">
-            <div class="container">
-                <nav class="navbar sticky-top">
-                    {% if user.is_authenticated %}
-                    <div>
-                        <a class="navbar-brand" href="{% url 'activity_feed:activity_feed' %}">LʌvDB</a>
-                    </div>
-                    <br>
-                    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center
-            mb-md-0">
-                        <form class="d-flex" method="GET" action="{% url 'accounts:search' %}">
-                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
-                            <button class="btn btn-outline-success btn-sm" type="submit">Search</button>
-                        </form>
-                    </ul>
-                        
-                    <div class="me-3">
-                        <a href="{% url 'notify:notification_list' %}" class="btn btn-sm btn-light">
-                            Notifications {% if new_notifications %}({{ new_notifications }}){% endif %}
-                        </a>
-                    </div>
-                    
-                    <div class="dropdown text-end">
-                        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                                {{ user.display_name | default:user.username }}
-                        </a>
-                        <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                            <li><a class="dropdown-item" href="{% url 'accounts:detail' user.username %}">Profile </a></li>
-                            <li><a class="dropdown-item" href="{% url 'password_change'%}">Change password</a></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
-                            </li>
-                        </ul>
-                    </div>
-                    {% else %}
-                    <a class="navbar-brand" href="{% url 'login' %}">LʌvDB</a>
-                    <div class="text-end">
-                        <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Log
-                            In</a>
-                        <a href="{% url 'accounts:signup' %}" class="btn btn-primary">Sign Up</a>
-                    </div>
-                    {% endif %}
-                </nav>
-            </div>
-        </header>
+        
 
         <main>
             {% block content %}

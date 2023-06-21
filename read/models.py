@@ -71,6 +71,7 @@ class Work(models.Model):  # Renamed from Book
 
     # work meta data
     title = models.CharField(max_length=255)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
     persons = models.ManyToManyField(Person, through="WorkRole", related_name="works")
     publication_date = models.CharField(
         max_length=10, blank=True, null=True
@@ -118,6 +119,7 @@ class Book(models.Model):
 
     # book meta data
     book_title = models.CharField(max_length=255)
+    book_subtitle = models.CharField(max_length=255, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False)
     persons = models.ManyToManyField(Person, through="BookRole", related_name="books")
@@ -231,10 +233,10 @@ class BookRole(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
-    name = models.CharField(max_length=255, blank=True, null=True)
+    alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.book} - {self.name or self.person.name} - {self.role}"
+        return f"{self.book} - {self.alt_name or self.person.name} - {self.role}"
 
 
 class BookWork(models.Model):
@@ -268,7 +270,7 @@ class BookWorkRole(models.Model):
     publication_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
-    name = models.CharField(
+    alt_name = models.CharField(
         max_length=255, blank=True, null=True
     )  # For translated authors' names
     alt_title = models.CharField(

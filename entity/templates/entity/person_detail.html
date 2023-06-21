@@ -80,8 +80,17 @@
                     </div>
                 {% endif %}
             {% endif %}
-        
-        
+
+            {% if roles %}
+                {% for role, entities in roles.items %}
+                    <h4>As {{ role }}</h4>
+                    <ul>
+                    {% for entity in entities %}
+                        <li><a href="{{ entity.url }}">{{ entity.title }} ({{ entity.publication_date }})</a></li>
+                    {% endfor %}
+                    </ul>
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 </div>

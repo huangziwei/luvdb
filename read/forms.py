@@ -82,7 +82,7 @@ class BookRoleForm(forms.ModelForm):
 
     class Meta:
         model = BookRole
-        fields = ("person", "role", "domain", "name")
+        fields = ("person", "role", "domain", "alt_name")
 
 
 BookRoleFormSet = inlineformset_factory(
@@ -141,7 +141,7 @@ class BookWorkRoleForm(forms.ModelForm):
             "person",
             "role",
             "domain",
-            "name",
+            "alt_name",
             "alt_title",
             "publication_date",
         ]

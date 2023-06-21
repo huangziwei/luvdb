@@ -90,7 +90,7 @@ class WorkRoleAdmin(admin.ModelAdmin):
 
 
 class BookRoleAdmin(admin.ModelAdmin):
-    list_display = ("book", "person", "name", "role")
+    list_display = ("book", "person", "alt_name", "role")
     list_filter = ("book", "person", "role")
     search_fields = ("book__book_title", "person__name", "role__name")
 
@@ -106,6 +106,6 @@ admin.site.register(WorkRole, WorkRoleAdmin)
 
 @admin.register(BookWorkRole)
 class BookWorkRoleAdmin(admin.ModelAdmin):
-    list_display = ("book", "work", "order", "person", "role", "name")
+    list_display = ("book", "work", "order", "person", "role", "alt_name")
     list_filter = ("book", "work", "role")
     search_fields = ("book__title", "work__title", "name", "person__name", "role__name")

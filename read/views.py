@@ -4,8 +4,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils.html import format_html
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from .forms import (
     BookForm,
@@ -17,7 +16,7 @@ from .forms import (
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import Book, Publisher, Role, Work
+from .models import Book, Person, Publisher, Role, Work
 
 #############
 # Publisher #
@@ -176,7 +175,10 @@ class BookDetailView(DetailView):
         for book_role in book.bookrole_set.all():
             if book_role.role.name not in roles:
                 roles[book_role.role.name] = []
-            roles[book_role.role.name].append(book_role.person)
+            alt_name_or_person_name = book_role.alt_name or book_role.person.name
+            roles[book_role.role.name].append(
+                (book_role.person, alt_name_or_person_name)
+            )
         context["roles"] = roles
         return context
 
@@ -204,6 +206,7 @@ class BookUpdateView(UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         bookroles = context["bookroles"]
+        print("bookroles: ", bookroles.errors)
         bookworkroles = context["bookworkroles"]
         with transaction.atomic():
             form.instance.updated_by = self.request.user
@@ -271,3 +274,24 @@ class PublisherAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__istartswith=self.q)
 
         return qs
+
+
+########
+# Read #
+########
+
+
+class ReadListView(ListView):
+    template_name = "read/read_list.html"
+    context_object_name = "objects"
+
+    def get_queryset(self):
+        recent_works = Work.objects.all().order_by("-created_at")[:10]
+        for work in recent_works:
+            authors = work.workrole_set.filter(role__name="Author")
+            work.authors = ", ".join(str(author.person) for author in authors)
+        return {
+            "recent_books": Book.objects.all().order_by("-created_at")[:10],
+            "recent_works": recent_works,
+            "recent_persons": Person.objects.all().order_by("-created_at")[:10],
+        }
