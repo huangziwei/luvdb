@@ -9,8 +9,6 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from .forms import (
     BookForm,
     BookRoleFormSet,
-    BookWork,
-    BookWorkFormSet,
     BookWorkRoleForm,
     BookWorkRoleFormSet,
     WorkForm,

@@ -3,7 +3,6 @@ from django.contrib import admin
 from .models import (
     Book,
     BookRole,
-    BookWork,
     BookWorkRole,
     Person,
     Publisher,
@@ -41,11 +40,6 @@ class BookRoleInline(admin.TabularInline):
     fields = ("person", "role", "name")
     extra = 1
     autocomplete_fields = ["person"]
-
-
-class BookWorkInline(admin.TabularInline):
-    model = BookWork
-    extra = 1
 
 
 class BookWorkRoleInline(admin.TabularInline):
@@ -101,7 +95,7 @@ admin.site.register(Work, WorkAdmin)
 admin.site.register(Book, BookAdmin)
 admin.site.register(Role, RoleAdmin)
 admin.site.register(WorkRole, WorkRoleAdmin)
-# admin.site.register(BookRole, BookRoleAdmin)
+admin.site.register(BookRole, BookRoleAdmin)
 
 
 @admin.register(BookWorkRole)

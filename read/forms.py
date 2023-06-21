@@ -43,7 +43,7 @@ WorkRoleFormSet = inlineformset_factory(
     Work,
     WorkRole,
     form=WorkRoleForm,
-    extra=1,
+    extra=15,
     can_delete=True,
     widgets={
         "person": autocomplete.ModelSelect2(
@@ -89,7 +89,7 @@ BookRoleFormSet = inlineformset_factory(
     Book,
     BookRole,
     form=BookRoleForm,
-    extra=10,
+    extra=15,
     can_delete=True,
     widgets={
         "person": autocomplete.ModelSelect2(
@@ -115,7 +115,7 @@ BookWorkFormSet = inlineformset_factory(
     Book,  # parent model
     BookWork,  # inline model
     form=BookWorkForm,  # form to use
-    extra=10,  # number of empty forms
+    extra=15,  # number of empty forms
     can_delete=True,  # allow deletion
     widgets={
         "work": autocomplete.ModelSelect2(
@@ -151,7 +151,7 @@ BookWorkRoleFormSet = inlineformset_factory(
     Book,  # parent model
     BookWorkRole,  # inline model
     form=BookWorkRoleForm,  # form to use
-    extra=10,  # number of empty forms
+    extra=15,  # number of empty forms
     can_delete=True,  # allow deletion
     widgets={
         "work": autocomplete.ModelSelect2(

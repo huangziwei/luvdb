@@ -2,6 +2,7 @@
 <form method="post">
     {% csrf_token %}
     {{ form.title|as_crispy_field }}
+    {{ form.subtitle|as_crispy_field }}
     {{ workroles.management_form|crispy }}
     <div id="work-role-formset">
         {% for form in workroles %}
