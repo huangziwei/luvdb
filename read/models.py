@@ -284,7 +284,7 @@ class BookWorkRole(models.Model):
         ordering = ["order"]
 
     def __str__(self):
-        return f"{self.book} - {self.work or self.alt_title} - {self.name or self.person.name} - {self.role} - {self.order}"
+        return f"{self.book} - {self.work or self.alt_title} - {self.alt_name} - {self.role} - {self.order}"
 
 
 # This receiver handles deletion of the cover file when the Book instance is deleted

@@ -37,7 +37,7 @@ class WorkAdmin(admin.ModelAdmin):
 
 class BookRoleInline(admin.TabularInline):
     model = BookRole
-    fields = ("person", "role", "name")
+    fields = ("person", "role", "alt_name")
     extra = 1
     autocomplete_fields = ["person"]
 
@@ -102,4 +102,10 @@ admin.site.register(BookRole, BookRoleAdmin)
 class BookWorkRoleAdmin(admin.ModelAdmin):
     list_display = ("book", "work", "order", "person", "role", "alt_name")
     list_filter = ("book", "work", "role")
-    search_fields = ("book__title", "work__title", "name", "person__name", "role__name")
+    search_fields = (
+        "book__title",
+        "work__title",
+        "alt_name",
+        "person__name",
+        "role__name",
+    )
