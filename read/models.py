@@ -326,7 +326,7 @@ class BookCheckIn(models.Model):
         ("finishied_rereading", "Finished Rereading"),
     ]
     status = models.CharField(max_length=255, choices=READING_STATUS_CHOICES)
-    share_to_feed = models.BooleanField(default=True)
+    share_to_feed = models.BooleanField(default=False)
     content = models.TextField(
         null=True, blank=True
     )  # Any thoughts or comments at this check-in.
@@ -340,9 +340,10 @@ class BookCheckIn(models.Model):
     comments = GenericRelation("write.Comment")
     comments_enabled = models.BooleanField(default=True)
     tags = models.ManyToManyField("write.Tag", blank=True)
+    reposts = GenericRelation("write.Repost")
 
     def get_absolute_url(self):
-        return reverse("read:checkin_detail", args=[str(self.id)])
+        return reverse("read:book_checkin_detail", args=[str(self.id)])
 
     def get_activity_id(self):
         try:
@@ -351,6 +352,7 @@ class BookCheckIn(models.Model):
             )
             return activity.id
         except ObjectDoesNotExist:
+            print("can't activity found")
             return None
 
     def save(self, *args, **kwargs):

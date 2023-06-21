@@ -182,7 +182,7 @@
             {{ activity.user.display_name | default:activity.user.username }}
             <span class="username">@{{activity.user.username}}</span>
         </a>
-        {{ activity.activity_type | past_tense}} on book:
+        {{ activity.activity_type | past_tense}} on a book
         <a href="{% url 'read:book_detail' activity.content_object.book.id %}" class="text-decoration-none hover-username">
             {{ activity.content_object.book.book_title }}
         </a>
@@ -194,16 +194,16 @@
     </p>
     <div class="d-flex mt-3">
         <p class="me-2">
-            <a href="{% url 'read:bookcheckin_detail' activity.content_object.id %}" class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+            <a href="{% url 'read:book_checkin_detail' activity.content_object.id %}" class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
         </p>
         {% if activity.content_object.comments_enabled %}
             <p class="ms-2 me-2">
-                <a href="{% url 'read:bookcheckin_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a>
+                <a href="{% url 'read:book_checkin_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a>
             </p>
         {% endif %}
         <p class="ms-2 me-2"><a href="{% url 'write:repost_create' activity.id %}" class="text-decoration-none">Repost</a></p>
         {% if activity.user == request.user %}
-            <p class="ms-2 me-2"><a href="{% url 'read:bookcheckin_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p>
+            <p class="ms-2 me-2"><a href="{% url 'read:book_checkin_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p>
             <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
         {% endif %}
     </div>

@@ -13,5 +13,7 @@ def past_tense(value):
         return "pinned"
     elif value == "repost":
         return "reposted"
+    elif value == "check-in":
+        return "checked in"
     else:
         return value

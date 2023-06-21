@@ -2,7 +2,9 @@ from django.urls import path
 
 from .views import (
     BookCheckInCreateView,
+    BookCheckInDeleteView,
     BookCheckInDetailView,
+    BookCheckInUpdateView,
     BookCreateView,
     BookDetailView,
     BookUpdateView,
@@ -24,20 +26,20 @@ urlpatterns = [
     path(
         "book/<int:book_id>/checkin/create/",
         BookCheckInCreateView.as_view(),
-        name="bookcheckin_create",
+        name="book_checkin_create",
     ),
     path(
-        "checkin/<int:pk>/", BookCheckInDetailView.as_view(), name="bookcheckin_detail"
+        "checkin/<int:pk>/", BookCheckInDetailView.as_view(), name="book_checkin_detail"
     ),
     path(
         "checkin/<int:pk>/update/",
-        BookCheckInDetailView.as_view(),
-        name="bookcheckin_update",
+        BookCheckInUpdateView.as_view(),
+        name="book_checkin_update",
     ),
     path(
         "checkin/<int:pk>/delete/",
-        BookCheckInDetailView.as_view(),
-        name="bookcheckin_delete",
+        BookCheckInDeleteView.as_view(),
+        name="book_checkin_delete",
     ),
     # work
     path("work/create/", WorkCreateView.as_view(), name="work_create"),

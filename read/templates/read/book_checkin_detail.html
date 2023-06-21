@@ -22,9 +22,10 @@
         <div>{{ object.content| linkify_tags | linkify_mentions | markdownify }}</div>
         <span class="d-flex mt-2">
           <p class='me-2 text-secondary mb-2'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
-          {% if object.user == request.user %}
-          <a href="{% url "read:checkin_update" object.pk %}" class="me-2">Edit</a>
-          <a href="{% url "read:checkin_delete" object.pk %}" class="me-2">Delete</a>{% endif %}
+          {% if object.author == request.user %}
+          <a href="{% url "read:book_checkin_update" object.pk %}" class="me-2">Edit</a>
+          <a href="{% url "read:book_checkin_delete" object.pk %}" class="me-2">Delete</a>
+          {% endif %}
         </span>
       </div>
 

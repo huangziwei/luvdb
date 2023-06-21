@@ -5,8 +5,13 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.html import format_html
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
-from django.views.generic.edit import CreateView
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+)
 
 from write.forms import CommentForm, RepostForm
 from write.models import Comment
@@ -337,12 +342,12 @@ class BookCheckInCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("read:checkin_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("read:book_checkin_detail", kwargs={"pk": self.object.pk})
 
 
 class BookCheckInDetailView(DetailView):
     model = BookCheckIn
-    template_name = "read/bookcheckin_detail.html"
+    template_name = "read/book_checkin_detail.html"
     context_object_name = "checkin"  # This name will be used in your template
 
     def get_context_data(self, **kwargs):
@@ -357,3 +362,20 @@ class BookCheckInDetailView(DetailView):
         context["object_type"] = self.object._meta.model_name.lower()
 
         return context
+
+
+class BookCheckInUpdateView(LoginRequiredMixin, UpdateView):
+    model = BookCheckIn
+    form_class = BookCheckInForm
+    template_name = "read/book_checkin_update.html"
+
+    def get_success_url(self):
+        return reverse_lazy("read:book_checkin_detail", kwargs={"pk": self.object.pk})
+
+
+class BookCheckInDeleteView(LoginRequiredMixin, DeleteView):
+    model = BookCheckIn
+    template_name = "read/book_checkin_delete.html"
+
+    def get_success_url(self):
+        return reverse_lazy("read:book_detail", kwargs={"pk": self.object.book.pk})
