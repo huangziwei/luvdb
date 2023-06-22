@@ -1,9 +1,11 @@
 from django.urls import path
 
 from .views import (
+    BookCheckInAllListView,
     BookCheckInCreateView,
     BookCheckInDeleteView,
     BookCheckInDetailView,
+    BookCheckInListView,
     BookCheckInUpdateView,
     BookCreateView,
     BookDetailView,
@@ -27,6 +29,16 @@ urlpatterns = [
         "book/<int:book_id>/checkin/create/",
         BookCheckInCreateView.as_view(),
         name="book_checkin_create",
+    ),
+    path(
+        "book/<int:book_id>/checkins/",
+        view=BookCheckInAllListView.as_view(),
+        name="book_checkin_all_list",
+    ),
+    path(
+        "book/<int:book_id>/<str:username>/checkins/",
+        view=BookCheckInListView.as_view(),
+        name="book_checkin_list",
     ),
     path(
         "checkin/<int:pk>/", BookCheckInDetailView.as_view(), name="book_checkin_detail"

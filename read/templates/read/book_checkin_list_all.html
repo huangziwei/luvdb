@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class='col-12'>
+    <div class="row">
+        <div class="col-12">
+            <h4>All Check-Ins of 
+                <a href="{% url 'read:book_detail' book.id %}"> {{ book.book_title }}</a>
+               
+            </h4>
+        </div>
+        {% include "read/book_checkin_in_book_detail.html" %}
+    </div>
+</div>
+
+{% endblock content %}

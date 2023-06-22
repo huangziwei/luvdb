@@ -2,35 +2,45 @@
 
 {% block content %}
     <div class="container">
-        <h2>Recent Books</h2>
         <div class="row">
-            {% for book in objects.recent_books %}
-                <div class="col-md-2 col-sm-6 mb-4">
-                    <a href="{% url 'read:book_detail' book.pk %}">
-                        {% if book.cover %}
-                            <img src="{{ book.cover.url }}" alt="{{ book.book_title }}" class="img-fluid">
-                        {% else %}
-                            <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
-                        {% endif %}
-                    </a>
-                </div>
-            {% empty %}
-                <p>No recent books to display.</p>
+        <div class='col-8'>
+            <h2>Recent Books</h2>
+            <div class="row">
+                {% for book in objects.recent_books %}
+                    <div class="col-md-2 col-sm-6 mb-4">
+                        <a href="{% url 'read:book_detail' book.pk %}">
+                            {% if book.cover %}
+                                <img src="{{ book.cover.url }}" alt="{{ book.book_title }}" class="img-fluid">
+                            {% else %}
+                                <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
+                            {% endif %}
+                        </a>
+                    </div>
+                {% empty %}
+                    <p>No recent books to display.</p>
+                {% endfor %}
+            </div>
+
+            <h2>Recent Works</h2>
+            {% for work in objects.recent_works %}
+                <p>
+                    <a href="{% url 'read:work_detail' work.pk %}">
+                        {{ work.title }} 
+                    </a>({{ work.authors }}, {{ work.publication_date }})
+                </p>
+            {% endfor %}
+
+            <h2>Recent Persons</h2>
+            {% for person in objects.recent_persons %}
+                <p><a href="{% url 'entity:person_detail' person.pk %}">{{ person.name }}</a></p>
             {% endfor %}
         </div>
-
-        <h2>Recent Works</h2>
-        {% for work in objects.recent_works %}
-            <p>
-                <a href="{% url 'read:work_detail' work.pk %}">
-                    {{ work.title }} 
-                </a>({{ work.authors }}, {{ work.publication_date }})
-            </p>
-        {% endfor %}
-
-        <h2>Recent Persons</h2>
-        {% for person in objects.recent_persons %}
-            <p><a href="{% url 'entity:person_detail' person.pk %}">{{ person.name }}</a></p>
-        {% endfor %}
+        <div class='col-4'>
+            <div class="bg-light p-3">
+                <h4>On This Day</h4>
+                
+            </div>
+        </div>
+        </div>
     </div>
 {% endblock %}

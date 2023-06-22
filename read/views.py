@@ -1,7 +1,9 @@
 from dal import autocomplete
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
+from django.db.models import F, Max, OuterRef, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.html import format_html
@@ -26,6 +28,8 @@ from .forms import (
     WorkRoleFormSet,
 )
 from .models import Book, BookCheckIn, Person, Publisher, Role, Work
+
+User = get_user_model()
 
 #############
 # Publisher #
@@ -192,12 +196,32 @@ class BookDetailView(DetailView):
         context["checkin_form"] = BookCheckInForm(
             initial={"book": self.object, "author": self.request.user}
         )
+
+        # Fetch the latest check-in from each user.
+        latest_checkin_subquery = BookCheckIn.objects.filter(
+            book=self.object, author=OuterRef("author")
+        ).order_by("-timestamp")
+        checkins = (
+            BookCheckIn.objects.filter(book=self.object)
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        ).order_by("-timestamp")[:5]
+
+        context["checkins"] = checkins
+
         return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = BookCheckInForm(
-            data=request.POST, initial={"book": self.object, "author": request.user}
+            data=request.POST,
+            initial={
+                "book": self.object,
+                "author": request.user,
+                "comments_enabled": True,
+            },
         )
         if form.is_valid():
             book_check_in = form.save(commit=False)
@@ -379,3 +403,56 @@ class BookCheckInDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy("read:book_detail", kwargs={"pk": self.object.book.pk})
+
+
+class BookCheckInListView(ListView):
+    model = BookCheckIn
+    template_name = "read/book_checkin_list.html"
+    context_object_name = "checkins"
+
+    def get_queryset(self):
+        user = get_object_or_404(
+            User, username=self.kwargs["username"]
+        )  # Get user from url param
+        book_id = self.kwargs["book_id"]  # Get book id from url param
+        return BookCheckIn.objects.filter(author=user, book__id=book_id)
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super().get_context_data(**kwargs)
+        user = get_object_or_404(User, username=self.kwargs["username"])
+        context["user"] = user
+        context["checkins"] = BookCheckIn.objects.filter(
+            author__username=self.kwargs["username"], book__id=self.kwargs["book_id"]
+        ).order_by("-timestamp")
+        return context
+
+
+class BookCheckInAllListView(ListView):
+    model = BookCheckIn
+    template_name = "read/book_checkin_list_all.html"
+    context_object_name = "checkins"
+
+    def get_queryset(self):
+        # Fetch the latest check-in from each user.
+        latest_checkin_subquery = BookCheckIn.objects.filter(
+            book=self.kwargs["book_id"], author=OuterRef("author")
+        ).order_by("-timestamp")
+
+        checkins = (
+            BookCheckIn.objects.filter(book=self.kwargs["book_id"])
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        ).order_by("-timestamp")
+        return checkins
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super().get_context_data(**kwargs)
+
+        # Get the book details
+        context["book"] = get_object_or_404(Book, pk=self.kwargs["book_id"])
+
+        return context

@@ -5,6 +5,7 @@
 
 {% block content %}
 <div class="container">
+    <!--Book Info-->
     <div class="row">
         <div class="col-sm-8">
             <!-- book-card -->
@@ -77,13 +78,15 @@
             <div class="bg-light p-3">
                 <div class='text-muted'>
                     {% if object.bookworkrole_set.count < 2 %}
+                        {% if object.bookworkrole_set.first.work.id %}
                         <p><strong>Related Work:</strong> 
                             <a href="{% url 'read:work_detail' object.bookworkrole_set.first.work.id %}">
                                 {{ object.bookworkrole_set.first.alt_title|default:object.bookworkrole_set.first.work.title }}
                             </a>
                         </p>
+                        {% endif %}
                     {% else %}
-                        <div class="row mt-4">
+                        <div class="row">
                             <h5>Table of Content</h5>
                             <!--list all related works by order-->
                             <div class="col-sm-12">
@@ -117,12 +120,19 @@
             </div>
         </div>
     </div>
+    <!--Book Check-In-->
     <div class="row mt-4">
         <div class="col-sm-8">
             {% include "read/book_checkin_form.html" %}
+
+            <div class="d-flex justify-content-between mt-4 col-11">
+                <h4>Latest Check-Ins</h4>
+                <a class="btn btn-outline-secondary btn-sm" href="{% url 'read:book_checkin_all_list' book.id %}" style="height:30px">All</a>
+            </div>
+        
+            {% include "read/book_checkin_in_book_detail.html" %}
         </div>
     </div>
-
 </div>
 
 

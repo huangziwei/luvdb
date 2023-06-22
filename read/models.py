@@ -239,7 +239,13 @@ class Book(models.Model):
 
 class BookRole(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    person = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_query_name="book_roles",
+    )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=255, blank=True, null=True)
 
@@ -272,7 +278,13 @@ class BookWorkRole(models.Model):
 
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     work = models.ForeignKey(Work, on_delete=models.CASCADE, null=True, blank=True)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    person = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_query_name="book_work_roles",
+    )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
 
     publication_date = models.CharField(
@@ -307,23 +319,16 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 
 
 class BookCheckIn(models.Model):
-    PAGE = "PG"
-    PERCENTAGE = "PC"
-    PROGRESS_TYPE_CHOICES = [
-        (PAGE, "Page"),
-        (PERCENTAGE, "Percentage"),
-    ]
-
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     READING_STATUS_CHOICES = [
         ("to_read", "To Read"),
-        ("currently_reading", "Currently Reading"),
-        ("finished_reading", "Finished Reading"),
+        ("currently_reading", "Reading"),
+        ("finished_reading", "Read"),
         ("paused", "Paused"),
         ("abandoned", "Abandoned"),
         ("rereading", "Rereading"),
-        ("finished_rereading", "Finished Rereading"),
+        ("finished_rereading", "Reread"),
     ]
     status = models.CharField(max_length=255, choices=READING_STATUS_CHOICES)
     share_to_feed = models.BooleanField(default=False)
@@ -332,6 +337,12 @@ class BookCheckIn(models.Model):
     )  # Any thoughts or comments at this check-in.
     timestamp = models.DateTimeField(auto_now_add=True)
     progress = models.IntegerField(null=True, blank=True)
+    PAGE = "PG"
+    PERCENTAGE = "PC"
+    PROGRESS_TYPE_CHOICES = [
+        (PAGE, "Page"),
+        (PERCENTAGE, "Percentage"),
+    ]
     progress_type = models.CharField(
         max_length=2,
         choices=PROGRESS_TYPE_CHOICES,

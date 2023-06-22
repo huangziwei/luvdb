@@ -11,6 +11,9 @@
         width: 20%;
         color: darkgreen;
         text-align: right;
+        font-style: normal;
+        font-weight: lighter;
+        font-size: 1em;
     }
 }
 
