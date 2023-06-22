@@ -121,93 +121,109 @@
     </div>
 </div>
 
-{% elif activity.activity_type == 'repost' %}
-<!--Repost--> 
-<div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
-    <p>
-        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
-            {{ activity.user.display_name | default:activity.user.username }}
-            <span class="username">@{{activity.user.username}}</span>
-        </a> 
-        {{ activity.activity_type | past_tense}}:
-    </p>
-    {% if activity.content_object.content %}
-        <p>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30  }}</p>
-    {% endif %}
-    <div class="bg-light p-3">
-        {% if activity.content_object.original_activity %}
-            <!-- Display the reposted activity -->
-            <p>
-                <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}" class="text-decoration-none hover-username">
-                    {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
-                    <span class="username">@{{activity.content_object.original_activity.user.username}}</span>
-                </a> 
-                {{ activity.content_object.original_activity.activity_type | past_tense }}:
-            </p>
 
-            {% if activity.content_object.original_activity.activity_type == "post" %}
-            <p><a href="{% url 'write:post_detail' activity.content_object.original_activity.content_object.id %}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a></p>
-            {% elif activity.content_object.original_activity.activity_type == "pin" %}
-            <p><a href="{{ activity.content_object.original_activity.content_object.url }}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a> ({{  activity.content_object.original_activity.content_object.url | root_url }})</p>
-            {% endif %}
-            <div class="bg-light">
-                <div class="mb-3">{{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</div>
-                <p><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
-            </div>
-        {% else %}
-            <p>The original content has been deleted.</p>
-        {% endif %}    
-    </div>
-    <div class="d-flex mt-2">
-        <p class="me-2">
-            <a href="{% url 'write:repost_detail' activity.content_object.id %}" class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
-        </p>
-        {% if activity.content_object.content %}
-            <p class="ms-2 me-2"><a href="{% url 'write:repost_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a></p>
-            <p class="ms-2 me-2"><a href="{% url 'write:repost_create' activity.id %}" class="text-decoration-none">Repost</a></p>
-        {% endif %}
-        {% if activity.user == request.user %}
-            <p class="ms-2 me-2"><a href="{% url 'write:repost_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p>
-            <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
-        {% endif %}
-    </div> 
-</div>
-
-
-{% elif activity.activity_type == 'check-in' %}
+{% elif activity.activity_type == 'book-check-in' %}
 <!--Check-in-->
-<div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
-    <p>
-        <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
-            {{ activity.user.display_name | default:activity.user.username }}
-            <span class="username">@{{activity.user.username}}</span>
-        </a>
-        {{ activity.activity_type | past_tense}} on a book
-        <a href="{% url 'read:book_detail' activity.content_object.book.id %}" class="text-decoration-none hover-username">
-            {{ activity.content_object.book.book_title }}
-        </a>
-    </p>
-    <p>
-        Status: {{ activity.content_object.status }}<br>
-        Progress: {{ activity.content_object.progress }}<br>
-        Comments: {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
-    </p>
-    <div class="d-flex mt-3">
-        <p class="me-2">
-            <a href="{% url 'read:book_checkin_detail' activity.content_object.id %}" class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
-        </p>
-        {% if activity.content_object.comments_enabled %}
-            <p class="ms-2 me-2">
-                <a href="{% url 'read:book_checkin_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a>
+<div class="col-sm-12">
+    <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
+        <div class="d-flex align-items-between">
+            <div>
+                <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
+                    {{ activity.user.display_name | default:activity.user.username }}
+                    <span class="username">@{{activity.user.username}}</span>
+                </a> 
+                checked in  
+                <!--badge: checkin status-->
+                {% if activity.content_object.status == "to_read" %}
+                <span class="badge text-bg-info me-2">
+                {% elif activity.content_object.status == "currently_reading" %}
+                <span class="badge text-bg-primary me-2">
+                {% elif activity.content_object.status == "finished_reading" %}
+                <span class="badge text-bg-success me-2">
+                {% elif activity.content_object.status == "paused" %}
+                <span class="badge text-bg-warning me-2">
+                {% elif activity.content_object.status == "abandoned" %}
+                <span class="badge text-bg-danger me-2">
+                {% elif activity.content_object.status == "rereading" %}
+                <span class="badge text-bg-primary me-2">
+                {% elif activity.content_object.status == "finished_rereading" %}
+                <span class="badge text-bg-success me-2">
+                {% endif %}
+                    Status: {{ activity.content_object.get_status_display }}
+                </span>
+                {% if activity.content_object.progress %}
+                <span class="badge text-bg-warning me-2">
+                    Progress: {{ activity.content_object.progress }} 
+                    {% if activity.content_object.progress_type == "PG" %}
+                        Page
+                    {% else %}
+                        %
+                    {% endif %}
+                </span>
+                {% endif %}
+                on book:
+            </div>
+        </div>
+        <div class="mt-2">
+            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+        </div>
+        <div class="bg-light p-3 mt-2">
+            <div class="row justify-content-start">
+                <div class="col-md-3">
+                    {% if activity.content_object.book.cover %}
+                        <img src="{{ activity.content_object.book.cover.url }}" alt="{{ activity.content_object.book.book_title }} cover" style="width: 150px;height: auto;">
+                    {% else %}
+                        <p class="no-cover-text">No Cover</p>
+                    {% endif %}
+                </div>
+                        
+                <div class="col-md-9">
+                    <a href="{% url 'read:book_detail' activity.content_object.book.id %}" class="text-decoration-none hover-username">
+                        <h3>{{ activity.content_object.book.book_title }}</h3>
+                    </a>
+                    
+                    {% regroup activity.content_object.book.bookrole_set.all by role as roles_list %}
+                    {% for role in roles_list %}
+                        <div>
+                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                            {% for book_role in role.list %}
+                                {% if not forloop.first %} / {% endif %}
+                                <a href="{% url 'entity:person_detail' book_role.person.id %}">
+                                    {{ book_role.alt_name | default:book_role.person.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    
+                    <div>
+                        {% if activity.content_object.book.publication_date %}
+                            Publication Date: {{ activity.content_object.book.publication_date|slice:":4" }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        <div class="d-flex mt-3">
+            <p class="me-2">
+                <a href="{% url 'read:book_checkin_detail' activity.content_object.id %}" class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
-        {% endif %}
-        <p class="ms-2 me-2"><a href="{% url 'write:repost_create' activity.id %}" class="text-decoration-none">Repost</a></p>
-        {% if activity.user == request.user %}
-            <p class="ms-2 me-2"><a href="{% url 'read:book_checkin_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p>
-            <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
-        {% endif %}
+            {% if activity.content_object.comments_enabled %}
+                <p class="ms-2 me-2">
+                    <a href="{% url 'read:book_checkin_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a>
+                </p>
+            {% endif %}
+            <p class="ms-2 me-2"><a href="{% url 'write:repost_create' activity.id %}" class="text-decoration-none">Repost</a></p>
+            {% if activity.user == request.user %}
+                <p class="ms-2 me-2"><a href="{% url 'read:book_checkin_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p>
+                <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
+            {% endif %}
+        </div>
     </div>
 </div>
+
 
     <!--Watch-->
     <!--Listen-->

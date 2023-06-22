@@ -373,7 +373,7 @@ class BookCheckIn(models.Model):
             # Only create activity if share_on_feed is True
             Activity.objects.create(
                 user=self.author,
-                activity_type="check-in",
+                activity_type="book-check-in",
                 content_object=self,
             )
         else:

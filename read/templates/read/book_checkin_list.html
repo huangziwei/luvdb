@@ -4,13 +4,18 @@
 
 {% block content %}
 <div class="col-sm-12">
-
+    
     <h4 class='mb-4'>
         Check-ins by 
         <a href="{% url 'accounts:detail' user.username %}">
             {{ user.display_name|default:user.username }}
-        </a>
+        </a> of 
+        <a href="{% url 'read:book_detail' book.id %}"> {{ book.book_title }}</a>
     </h4>
+    <div class="mb-4">
+        <a href="?order=timestamp" class="btn btn-sm btn-outline-secondary">Oldest</a>
+        <a href="?order=-timestamp" class="btn btn-sm btn-outline-secondary">Newest</a>
+    </div>
     {% for checkin in checkins %}
         <div class="checkin mb-4">
             <p class="d-flex align-items-center">

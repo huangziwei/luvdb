@@ -7,9 +7,13 @@
         <div class="col-12">
             <h4>All Check-Ins of 
                 <a href="{% url 'read:book_detail' book.id %}"> {{ book.book_title }}</a>
-               
             </h4>
+            <div>
+                <a href="?order=timestamp" class="btn btn-sm btn-outline-secondary">Oldest</a>
+                <a href="?order=-timestamp" class="btn btn-sm btn-outline-secondary">Newest</a>
+            </div>
         </div>
+        
         {% include "read/book_checkin_in_book_detail.html" %}
     </div>
 </div>

@@ -411,20 +411,26 @@ class BookCheckInListView(ListView):
     context_object_name = "checkins"
 
     def get_queryset(self):
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
         user = get_object_or_404(
             User, username=self.kwargs["username"]
         )  # Get user from url param
         book_id = self.kwargs["book_id"]  # Get book id from url param
-        return BookCheckIn.objects.filter(author=user, book__id=book_id)
+        return BookCheckIn.objects.filter(author=user, book__id=book_id).order_by(order)
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get the context
         context = super().get_context_data(**kwargs)
+
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
         user = get_object_or_404(User, username=self.kwargs["username"])
         context["user"] = user
+        context["order"] = order
         context["checkins"] = BookCheckIn.objects.filter(
             author__username=self.kwargs["username"], book__id=self.kwargs["book_id"]
-        ).order_by("-timestamp")
+        ).order_by(order)
+        # Get the book details
+        context["book"] = get_object_or_404(Book, pk=self.kwargs["book_id"])
         return context
 
 
@@ -445,7 +451,14 @@ class BookCheckInAllListView(ListView):
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
             .filter(timestamp=F("latest_checkin"))
-        ).order_by("-timestamp")
+        )
+
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        if order == "timestamp":
+            checkins = checkins.order_by("timestamp")
+        else:
+            checkins = checkins.order_by("-timestamp")
+
         return checkins
 
     def get_context_data(self, **kwargs):
@@ -454,5 +467,7 @@ class BookCheckInAllListView(ListView):
 
         # Get the book details
         context["book"] = get_object_or_404(Book, pk=self.kwargs["book_id"])
-
+        context["order"] = self.request.GET.get(
+            "order", "-timestamp"
+        )  # Default is '-timestamp'
         return context
