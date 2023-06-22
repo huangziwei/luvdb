@@ -175,15 +175,37 @@ BookWorkRoleFormSet = inlineformset_factory(
 class BookCheckInForm(forms.ModelForm):
     class Meta:
         model = BookCheckIn
-        fields = ["book", "author", "status", "progress", "share_to_feed", "content"]
+        fields = [
+            "book",
+            "author",
+            "status",
+            "progress",
+            "progress_type",
+            "content",
+            "comments_enabled",
+            "share_to_feed",
+        ]
         widgets = {
             "book": forms.HiddenInput(),
             "author": forms.HiddenInput(),  # author is now included
-            "status": forms.Select(choices=BookCheckIn.READING_STATUS_CHOICES),
-            "progress": forms.NumberInput(),
-            "share_on_feed": forms.CheckboxInput(),
-            "content": forms.Textarea(attrs={"rows": 4}),
+            # "status": forms.Select(choices=BookCheckIn.READING_STATUS_CHOICES),
+            # "progress": forms.NumberInput(),
+            # "progress_type": forms.Select(choices=BookCheckIn.PROGRESS_TYPE_CHOICES),
+            # "share_to_feed": forms.CheckboxInput(),
+            "content": forms.Textarea(
+                attrs={
+                    "rows": 3,
+                    "placeholder": "Check in...",
+                    "id": "text-input",
+                }
+            ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(BookCheckInForm, self).__init__(*args, **kwargs)
+        self.fields["content"].label = ""
+        self.fields["content"].required = False
+        # self.fields["comments_enabled"].label = "Enable comments"
 
 
 # class BookCheckInForm(forms.ModelForm):

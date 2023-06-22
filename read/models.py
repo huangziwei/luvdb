@@ -323,7 +323,7 @@ class BookCheckIn(models.Model):
         ("paused", "Paused"),
         ("abandoned", "Abandoned"),
         ("rereading", "Rereading"),
-        ("finishied_rereading", "Finished Rereading"),
+        ("finished_rereading", "Finished Rereading"),
     ]
     status = models.CharField(max_length=255, choices=READING_STATUS_CHOICES)
     share_to_feed = models.BooleanField(default=False)

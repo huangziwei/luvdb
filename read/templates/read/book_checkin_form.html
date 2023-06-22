@@ -1,61 +1,118 @@
-
 {% load crispy_forms_tags %}
-<div class="row">
-    <div class="col-sm-8">
-        <h5>Check-In</h5>
-        <form method="post">
-            {% csrf_token %}
-            {{ checkin_form | crispy }}
-            <button type="submit">Add Check-In</button>
-        </form>
-    </div>
-</div>
-
-    {% comment %} <div class="btn-group" role="group" aria-label="Status buttons">
-        <button type="button" class="btn btn-secondary" data-value="to_read">To Read</button>
-        <button type="button" class="btn btn-secondary" data-value="currently_reading">Currently Reading</button>
-        <button type="button" class="btn btn-secondary" data-value="finished_reading">Finished Reading</button>
-        <div class="btn-group" role="group">
-            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                More
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#" data-value="paused">Paused</a></li>
-                <li><a class="dropdown-item" href="#" data-value="abandoned">Abandoned</a></li>
-                <li><a class="dropdown-item" href="#" data-value="rereading">Rereading</a></li>
-                <li><a class="dropdown-item" href="#" data-value="finishied_rereading">Finished Rereading</a></li>
-            </ul>
-        </div>
-    </div>
-    <input type="hidden" name="status" id="status-field">
-        
-        
-    <div class="d-flex">
-        <div class="col-sm-2 me-3">
-            {{ checkin_form.progress | as_crispy_field }}
-        </div>
-        <div class="col-sm-2">
-            {{ checkin_form.progress_type | as_crispy_field }}
-        </div>
-    </div>
-    <div>{{ checkin_form.content | as_crispy_field}}</div>
-    <div>{{ checkin_form.share_on_feed | as_crispy_field}}</div>
-    <div>{{ checkin_form.comments_enabled | as_crispy_field}}</div>
-    {{checkin_form.status}}
-    {{checkin_form.book}}
-    {{checkin_form.author}}
-        
+<form method="post" id="checkinForm">
+    {% csrf_token %}
+    {{ checkin_form.book }}
+    {{ checkin_form.author }}
     
+    <div class="row ">
+        <div class="col-7">
+            <!--Status-->
+            <div class="btn-group" role="group" aria-label="Status">
+                <button type="button" class="btn btn-sm btn-light status-button" id="status-to-read" onclick="setStatus(event, 'to_read')">To Read</button>
+                <button type="button" class="btn btn-sm btn-light status-button" id="status-reading" onclick="setStatus(event, 'currently_reading')">Reading</button>
+                <button type="button" class="btn btn-sm btn-light status-button" id="status-read" onclick="setStatus(event, 'finished_reading')">Read</button>
+                <div class="btn-group" role="group">
+                    <button id="status-more" type="button" class="btn btn-sm btn-light dropdown-toggle status-button" data-bs-toggle="dropdown" aria-expanded="false">
+                    More
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="status-more">
+                        <li><a class="dropdown-item status-dropdown-item" id="status-paused" href="#" onclick="setStatus(event, 'paused')">Paused</a></li>
+                        <li><a class="dropdown-item status-dropdown-item" id="status-abandoned" href="#" onclick="setStatus(event,'abandoned')">Abandoned</a></li>
+                        <li><a class="dropdown-item status-dropdown-item" id="status-rereading" href="#" onclick="setStatus(event,'rereading')">Rereading</a></li>
+                        <li><a class="dropdown-item status-dropdown-item" id="status-finished_rereading" href="#" onclick="setStatus(event,'finished_rereading')">Finished Rereading</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <!-- Progress and Progress Type -->
+            <div class="input-group input-group-sm mb-3">
+                <input type="number" class="form-control" id="progressInput" name="progress" placeholder="Progress">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="progressTypeBtn">Page</button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#" onclick="setProgressType(event,'PG')">Page</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="setProgressType(event,'PC')">%</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var buttons = document.querySelectorAll('.btn-group .btn, .dropdown-menu .dropdown-item');
-            buttons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                var value = this.getAttribute('data-value');
-                document.querySelector('#id_status').value = value;
-            });
-            });
-        });
-    </script>
-{% endcomment %}
+    <!-- Hidden input fields to hold status and progress_type values -->
+    <input type="hidden" id="statusInput" name="status">
+    <input type="hidden" id="progressTypeInput" name="progress_type">
+
+    <div class="col-11">
+        {{ checkin_form.content | as_crispy_field }}
+    </div>
+    
+    <div class="d-flex justify-content-between col-11 ">
+        <div class="d-flex justify-content-start ">
+            <div class="form-check form-switch me-5 justify-content-start">
+                <input class="form-check-input" type="checkbox" id="commentsEnabledInput" name="comments_enabled">
+                <label class="form-check-label" for="commentsEnabledInput">Enable comments</label>
+            </div>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="shareToFeedInput" name="share_to_feed">
+                <label class="form-check-label" for="shareToFeedInput">Share to feed</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-sm btn-primary">Add Check-In</button>
+    </div>
+</form>
+
+<script>
+    var status_mapping = {
+        "to_read": "status-to-read",
+        "currently_reading": "status-reading",
+        "finished_reading": "status-read",
+        "paused": "status-paused",
+        "abandoned": "status-abandoned",
+        "rereading": "status-rereading",
+        "finished_rereading": "status-finished_rereading",
+    };
+
+    function setStatus(event, status) {
+        event.preventDefault();
+        document.getElementById('statusInput').value = status;
+        updateStatusButton(status);
+    }
+    
+    function setProgressType(event, type) {
+        event.preventDefault();
+        document.getElementById('progressTypeInput').value = type;
+        document.getElementById('progressTypeBtn').textContent = type == 'PG' ? 'Page' : '%';
+    }
+
+    function updateStatusButton(status) {
+        var status_buttons = document.getElementsByClassName('status-button');
+        for (var i = 0; i < status_buttons.length; i++) {
+            status_buttons[i].classList.remove('btn-dark');
+            status_buttons[i].classList.add('btn-light');
+        }
+        var status_dropdown_items = document.getElementsByClassName('status-dropdown-item');
+        for (var i = 0; i < status_dropdown_items.length; i++) {
+            status_dropdown_items[i].classList.remove('active');
+        }
+
+        if (status_mapping[status]) {
+            var button_id = status_mapping[status];
+            var button = document.getElementById(button_id);
+            if (button) {
+                if (button.classList.contains('dropdown-item')) {
+                    button.classList.add('active');
+                    document.getElementById('status-more').classList.remove('btn-light');
+                    document.getElementById('status-more').classList.add('btn-dark');
+                } else {
+                    button.classList.remove('btn-light');
+                    button.classList.add('btn-dark');
+                }
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Set default status and progress type values
+        setStatus(event, 'to_read');
+        setProgressType(event, 'PG');
+    });
+</script>
