@@ -31,7 +31,7 @@
             {% include "activity_feed/activity_filter.html" %}
 
             {% for activity in page_obj %}
-                {% include "activity_feed/activity_item.html" %}
+                {% include "activity_feed/activity_item.html" with width='wide' %}
             {% endfor %}
 
             {% if page_obj.paginator.num_pages > 1 %}

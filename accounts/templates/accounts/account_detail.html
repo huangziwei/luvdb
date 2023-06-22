@@ -132,7 +132,7 @@
             <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:feed' object.username %}">All</a>
         </div>
         {% for activity in recent_activities %}
-            {% include "activity_feed/activity_item.html" %}
+            {% include "activity_feed/activity_item.html" with width='narrow'%}
             <hr>
         {% endfor %}
       </div>

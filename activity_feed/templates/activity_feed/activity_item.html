@@ -169,17 +169,16 @@
         </div>
         <div class="bg-light p-3 mt-2">
             <div class="row justify-content-start">
-                <div class="col-md-3">
+                <div class="{% if width == 'wide' %}col-3{% else %}col-5{% endif %}">
                     {% if activity.content_object.book.cover %}
                         <img src="{{ activity.content_object.book.cover.url }}" alt="{{ activity.content_object.book.book_title }} cover" style="width: 150px;height: auto;">
                     {% else %}
                         <p class="no-cover-text">No Cover</p>
                     {% endif %}
                 </div>
-                        
-                <div class="col-md-9">
+                <div class="{% if width == 'wide' %}col-9{% else %}col-7{% endif %}">
                     <a href="{% url 'read:book_detail' activity.content_object.book.id %}" class="text-decoration-none hover-username">
-                        <h3>{{ activity.content_object.book.book_title }}</h3>
+                        <h5>{{ activity.content_object.book.book_title }}</h5>
                     </a>
                     
                     {% regroup activity.content_object.book.bookrole_set.all by role as roles_list %}
@@ -203,6 +202,7 @@
                 </div>
             </div>
         </div>
+        
         
         
         
