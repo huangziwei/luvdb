@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load markdownify %}
+{% load linkify %}
+
+{% block content %}
+<div class="col-sm-12">
+    
+    <h4 class='mb-4'>
+        Check-ins by 
+        <a href="{% url 'accounts:detail' user.username %}">
+            {{ user.display_name|default:user.username }}
+        </a> for 
+        <a href="{% url 'play:game_detail' game.id %}"> {{ game.title }}</a>
+    </h4>
+    <div class="mb-4">
+        <a href="?order=timestamp" class="btn btn-sm btn-outline-secondary">Oldest</a>
+        <a href="?order=-timestamp" class="btn btn-sm btn-outline-secondary">Newest</a>
+    </div>
+    {% for checkin in checkins %}
+        <div class="checkin mb-4">
+            <p class="d-flex align-items-center">
+                <span class="me-2">
+                    {{ checkin.timestamp|date:"Y.m.d H:i"  }}
+                </span>
+                <!--badge: checkin status-->
+                {% if checkin.status == "to_play" %}
+                <span class="badge text-bg-info me-2">
+                {% elif checkin.status == "playing" %}
+                <span class="badge text-bg-primary me-2">    
+                {% elif checkin.status == "played" %}
+                <span class="badge text-bg-success me-2"> 
+                {% elif checkin.status == "paused" %}
+                <span class="badge text-bg-warning me-2"> 
+                {% elif checkin.status == "abandoned" %}
+                <span class="badge text-bg-danger me-2"> 
+                {% elif checkin.status == "replaying" %}
+                <span class="badge text-bg-primary me-2"> 
+                {% elif checkin.status == "replayed" %}
+                <span class="badge text-bg-success me-2">    
+                {% endif %}
+                    Status: {{ checkin.get_status_display }}
+                </span>
+                {% if checkin.progress %}
+                <span class="badge text-bg-warning me-2">
+                    Played Time: {{ checkin.progress }} 
+                    {% if checkin.progress_type == "TT" %}
+                        Hour{% if checkin.progress != 1 %}s{% endif %}
+                    {% else %}
+                        %
+                    {% endif %}
+                </span>
+                {% endif %}
+            </p>
+            {% if checkin.content %}
+            <p>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No check-ins yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

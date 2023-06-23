@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     var filterButtons = document.querySelectorAll('.activity-filter');
     filterButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent the default action
             // Remove the 'selected' class from all buttons
             filterButtons.forEach(function(btn) {
                 btn.classList.remove('selected');
@@ -18,7 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function filterActivities(filter) {
     var activities = document.querySelectorAll('.activity-item');
     activities.forEach(function(activity) {
-        if (filter === 'all' || activity.getAttribute('data-activity-type') === filter) {
+        var activityType = activity.getAttribute('data-activity-type');
+        if (filter === 'all' || activityType === filter || (filter === 'check-in' && activityType.endsWith('check-in'))) {
             activity.style.display = 'block';
         } else {
             activity.style.display = 'none';

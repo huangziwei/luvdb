@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class='col-12'>
+    <div class="row">
+        <div class="col-12">
+            <h4>All Check-Ins of 
+                <a href="{% url 'play:game_detail' game.id %}"> {{ game.title }}</a>
+            </h4>
+            <div>
+                <a href="?order=timestamp" class="btn btn-sm btn-outline-secondary">Oldest</a>
+                <a href="?order=-timestamp" class="btn btn-sm btn-outline-secondary">Newest</a>
+            </div>
+        </div>
+        
+        {% include "play/game_checkin_in_game_detail.html" %}
+    </div>
+</div>
+
+{% endblock content %}

@@ -5,8 +5,8 @@
 
 {% block content %}
 <div class="container">
-    <!--Book Info-->
     <div class="row">
+        <!--Left columns-->
         <div class="col-sm-8">
             <!-- book-card -->
             <div class="book-card justify-content-start">
@@ -73,10 +73,26 @@
                     </div>
                 </div>       
             </div>
+
+            <!--Book Check-In-->
+            <div class="mt-4">
+                {% include "read/book_checkin_form.html" %}
+
+                <div class="d-flex justify-content-between mt-4 col-11">
+                    <h4>Latest Check-Ins</h4>
+                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'read:book_checkin_all_list' book.id %}" style="height:30px">All</a>
+                </div>
+            
+                {% include "read/book_checkin_in_book_detail.html" %}
+            </div>
         </div>
+
+
+        <!--right columns-->
         <div class="col-sm-4">
+            <!--Related works / Edit -->
             <div class="bg-light p-3">
-                <div class='text-muted'>
+                <div>
                     {% if object.bookworkrole_set.count < 2 %}
                         {% if object.bookworkrole_set.first.work.id %}
                         <p><strong>Related Work:</strong> 
@@ -118,19 +134,14 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
-    </div>
-    <!--Book Check-In-->
-    <div class="row mt-4">
-        <div class="col-sm-8">
-            {% include "read/book_checkin_form.html" %}
 
-            <div class="d-flex justify-content-between mt-4 col-11">
-                <h4>Latest Check-Ins</h4>
-                <a class="btn btn-outline-secondary btn-sm" href="{% url 'read:book_checkin_all_list' book.id %}" style="height:30px">All</a>
+            <!--Book Stats-->
+            <div class="bg-light p-3 mt-3">
+                <h5>Book Statistics</h5>
+                <p><strong>To Read:</strong> {{ to_read_count }}</p>
+                <p><strong>Reading:</strong> {{ reading_count }}</p>
+                <p><strong>Read:</strong> {{ read_count }}</p>
             </div>
-        
-            {% include "read/book_checkin_in_book_detail.html" %}
         </div>
     </div>
 </div>

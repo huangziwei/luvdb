@@ -1,10 +1,23 @@
 {% load static %}
 <div class="activity-filter-buttons">
     <button class="btn btn-light btn-sm activity-filter selected" data-filter="all">All</button>
-    <button class="btn btn-light btn-sm activity-filter" data-filter="check-in">Check-In</button>
-    <button class="btn btn-light btn-sm activity-filter" data-filter="say">Say</button>
-    <button class="btn btn-light btn-sm activity-filter" data-filter="post">Post</button>
-    <button class="btn btn-light btn-sm activity-filter" data-filter="pin">Pin</button>
+    <div class="btn-group">
+        <button class="btn btn-light btn-sm activity-filter" data-filter="check-in">Check-In</button>
+        <button class="btn btn-light btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"></button>
+        <div class="dropdown-menu dropdown-menu-fit-content">
+            <a class="dropdown-item activity-filter" href="#" data-filter="book-check-in">Books</a>
+            <a class="dropdown-item activity-filter" href="#" data-filter="game-check-in">Games</a>
+        </div>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-light btn-sm activity-filter" data-filter="say">Say</button>
+        <button class="btn btn-light btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"></button>
+        <div class="dropdown-menu dropdown-menu-fit-content">
+            {% comment %} <a class="dropdown-item activity-filter" href="#" data-filter="say">Say</a> {% endcomment %}
+            <a class="dropdown-item activity-filter" href="#" data-filter="post">Post</a>
+            <a class="dropdown-item activity-filter" href="#" data-filter="pin">Pin</a>
+        </div>
+    </div>
     <button class="btn btn-light btn-sm activity-filter" data-filter="repost">Repost</button>
     <button class="btn btn-light btn-sm activity-filter" data-filter="follow">Follow</button>
 </div>

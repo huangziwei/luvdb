@@ -123,7 +123,7 @@
 
 
 {% elif activity.activity_type == 'book-check-in' %}
-<!--Check-in-->
+<!--Book-Check-in-->
 <div class="col-sm-12">
     <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
         <div class="d-flex align-items-between">
@@ -169,16 +169,16 @@
         </div>
         <div class="bg-light p-3 mt-2">
             <div class="row justify-content-start">
-                <div class="{% if width == 'wide' %}col-3{% else %}col-5{% endif %}">
+                <div class="{% if width == 'wide' %}col-3{% else %}col-4{% endif %}">
                     {% if activity.content_object.book.cover %}
-                        <img src="{{ activity.content_object.book.cover.url }}" alt="{{ activity.content_object.book.book_title }} cover" style="width: 150px;height: auto;">
+                        <img src="{{ activity.content_object.book.cover.url }}" alt="{{ activity.content_object.book.book_title }} cover" class='checkin-cover'>
                     {% else %}
                         <p class="no-cover-text">No Cover</p>
                     {% endif %}
                 </div>
                 <div class="{% if width == 'wide' %}col-9{% else %}col-7{% endif %}">
                     <a href="{% url 'read:book_detail' activity.content_object.book.id %}" class="text-decoration-none hover-username">
-                        <h5>{{ activity.content_object.book.book_title }}</h5>
+                        <h6>{{ activity.content_object.book.book_title }}</h6>
                     </a>
                     
                     {% regroup activity.content_object.book.bookrole_set.all by role as roles_list %}
@@ -202,10 +202,7 @@
                 </div>
             </div>
         </div>
-        
-        
-        
-        
+
         <div class="d-flex mt-3">
             <p class="me-2">
                 <a href="{% url 'read:book_checkin_detail' activity.content_object.id %}" class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
@@ -228,6 +225,128 @@
     <!--Watch-->
     <!--Listen-->
     <!--Play-->
+
+    {% elif activity.activity_type == 'game-check-in' %}
+    <!--Game-Check-in-->
+    <div class="col-sm-12">
+        <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
+            <div class="d-flex align-items-between">
+                <div>
+                    <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
+                        {{ activity.user.display_name | default:activity.user.username }}
+                        <span class="username">@{{activity.user.username}}</span>
+                    </a> 
+                    checked in  
+                    <!--badge: checkin status-->
+                    {% if activity.content_object.status == "to_play" %}
+                    <span class="badge text-bg-info me-2">
+                    {% elif activity.content_object.status == "currently_playing" %}
+                    <span class="badge text-bg-primary me-2">
+                    {% elif activity.content_object.status == "played" %}
+                    <span class="badge text-bg-success me-2">
+                    {% elif activity.content_object.status == "paused" %}
+                    <span class="badge text-bg-warning me-2">
+                    {% elif activity.content_object.status == "abandoned" %}
+                    <span class="badge text-bg-danger me-2">
+                    {% elif activity.content_object.status == "replaying" %}
+                    <span class="badge text-bg-primary me-2">
+                    {% elif activity.content_object.status == "replayed" %}
+                    <span class="badge text-bg-success me-2">
+                    {% endif %}
+                        Status: {{ activity.content_object.get_status_display }}
+                    </span>
+                    {% if activity.content_object.progress %}
+                    <span class="badge text-bg-warning me-2">
+                        Played Time: {{ activity.content_object.progress }} 
+                        {% if activity.content_object.progress_type == "TT" %}
+                            Hour{% if checkin.progress != 1 %}s{% endif %}
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                    on game:
+                </div>
+            </div>
+            <div class="mt-2">
+                {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+            </div>
+            <div class="bg-light p-3 mt-2">
+                <div class="row justify-content-start">
+                    <div class="{% if width == 'wide' %}col-3{% else %}col-4{% endif %}">
+                        {% if activity.content_object.game.cover %}
+                            <img src="{{ activity.content_object.game.cover.url }}" alt="{{ activity.content_object.game.title }} cover" class='checkin-cover'>
+                        {% else %}
+                            <p class="no-cover-text">No Cover</p>
+                        {% endif %}
+                    </div>
+                    <div class="{% if width == 'wide' %}col-9{% else %}col-8{% endif %}">
+                        <a href="{% url 'play:game_detail' activity.content_object.game.id %}" class="text-decoration-none hover-username">
+                            <h6>{{ activity.content_object.game.title }}</h6>
+                        </a>
+                        
+                        {% regroup activity.content_object.game.gamerole_set.all by role as roles_list %}
+                        {% for role in roles_list %}
+                            <div>
+                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                {% for game_role in role.list %}
+                                    {% if not forloop.first %} / {% endif %}
+                                    <a href="{% url 'entity:person_detail' game_role.person.id %}">
+                                        {{ game_role.alt_name | default:game_role.person.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        <div>
+                            {% if activity.content_object.game.developers %}
+                                Developer{% if activity.content_object.game.developers.list|length > 1 %}s{% endif %}:
+                                {% for developer in activity.content_object.game.developers.all %}
+                                    {% if not forloop.first %}, {% endif %}
+                                    <a href="{% url 'play:developer_detail' developer.id %}">
+                                        {{ developer.name }}
+                                    </a>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            {% if activity.content_object.game.platforms %}
+                                Platform{% if activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:
+                                {% for platform in activity.content_object.game.platforms.all %}
+                                    {% if not forloop.first %}, {% endif %}
+                                    <a href="{% url 'play:platform_detail' platform.id %}">
+                                        {{ platform.name }}
+                                    </a>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        
+                        
+                        <div>
+                            {% if activity.content_object.game.release_date %}
+                                Release Date: {{ activity.content_object.game.release_date|slice:":4" }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="d-flex mt-3">
+                <p class="me-2">
+                    <a href="{% url 'play:game_checkin_detail' activity.content_object.id %}" class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                </p>
+                {% if activity.content_object.comments_enabled %}
+                    <p class="ms-2 me-2">
+                        <a href="{% url 'play:game_checkin_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a>
+                    </p>
+                {% endif %}
+                <p class="ms-2 me-2"><a href="{% url 'write:repost_create' activity.id %}" class="text-decoration-none">Repost</a></p>
+                {% if activity.user == request.user %}
+                    {% comment %} <p class="ms-2 me-2"><a href="{% url 'play:game_checkin_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p> {% endcomment %}
+                    <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
     <!--Visit-->
 
 {% endif %}

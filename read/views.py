@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import F, Max, OuterRef, Subquery
+from django.db.models import Count, F, Max, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.html import format_html
@@ -211,6 +211,53 @@ class BookDetailView(DetailView):
 
         context["checkins"] = checkins
 
+        # Book check-in status counts, considering only latest check-in per user
+        latest_checkin_status_subquery = (
+            BookCheckIn.objects.filter(book=self.object, author=OuterRef("author"))
+            .order_by("-timestamp")
+            .values("status")[:1]
+        )
+        latest_checkins = (
+            BookCheckIn.objects.filter(book=self.object)
+            .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
+            .values("author", "latest_checkin_status")
+            .distinct()
+        )
+
+        to_read_count = sum(
+            1 for item in latest_checkins if item["latest_checkin_status"] == "to_read"
+        )
+        reading_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["currently_reading", "rereading"]
+        )
+        read_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"]
+            in ["finished_reading", "finished_rereading"]
+        )
+
+        # Add status counts to context
+        context.update(
+            {
+                "to_read_count": to_read_count,
+                "reading_count": reading_count,
+                "read_count": read_count,
+            }
+        )
+
+        # Add status counts to context
+        context.update(
+            {
+                "to_read_count": to_read_count,
+                "reading_count": reading_count,
+                "read_count": read_count,
+                "checkins": checkins,
+            }
+        )
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -288,7 +335,14 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         qs = Work.objects.all()
 
         if self.q:
-            qs = qs.filter(title__istartswith=self.q)
+            # get all the authors whose name starts with query
+            authors = Person.objects.filter(name__istartswith=self.q)
+
+            # get the author role
+            author_role = Role.objects.filter(name="Author").first()
+
+            # get all the works which are associated with these authors
+            qs = qs.filter(workrole__role=author_role, workrole__person__in=authors)
 
         return qs
 
