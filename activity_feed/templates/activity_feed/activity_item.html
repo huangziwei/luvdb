@@ -167,42 +167,40 @@
         <div class="mt-2">
             {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
         </div>
-        <div class="bg-light p-3 mt-2">
-            <div class="row justify-content-start">
-                <div class="{% if width == 'wide' %}col-3{% else %}col-4{% endif %}">
-                    {% if activity.content_object.book.cover %}
-                        <img src="{{ activity.content_object.book.cover.url }}" alt="{{ activity.content_object.book.book_title }} cover" class='checkin-cover'>
-                    {% else %}
-                        <p class="no-cover-text">No Cover</p>
-                    {% endif %}
-                </div>
-                <div class="{% if width == 'wide' %}col-9{% else %}col-7{% endif %}">
-                    <a href="{% url 'read:book_detail' activity.content_object.book.id %}" class="text-decoration-none hover-username">
-                        <h6>{{ activity.content_object.book.book_title }}</h6>
-                    </a>
-                    
-                    {% regroup activity.content_object.book.bookrole_set.all by role as roles_list %}
-                    {% for role in roles_list %}
-                        <div>
-                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
-                            {% for book_role in role.list %}
-                                {% if not forloop.first %} / {% endif %}
-                                <a href="{% url 'entity:person_detail' book_role.person.id %}">
-                                    {{ book_role.alt_name | default:book_role.person.name }}
-                                </a>
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-                    
+        <div class="d-flex flex-row bg-light p-3 mt-2">
+            <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                {% if activity.content_object.book.cover %}
+                    <img src="{{ activity.content_object.book.cover.url }}" alt="{{ activity.content_object.book.book_title }} cover" style="width: 100%;">
+                {% else %}
+                    <p class="no-cover-text">No Cover</p>
+                {% endif %}
+            </div>
+            <div class="flex-grow-1 ms-3">
+                <a href="{% url 'read:book_detail' activity.content_object.book.id %}" class="text-decoration-none hover-username">
+                    <h6>{{ activity.content_object.book.book_title }}</h6>
+                </a>
+                
+                {% regroup activity.content_object.book.bookrole_set.all by role as roles_list %}
+                {% for role in roles_list %}
                     <div>
-                        {% if activity.content_object.book.publication_date %}
-                            Publication Date: {{ activity.content_object.book.publication_date|slice:":4" }}
-                        {% endif %}
+                        {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                        {% for book_role in role.list %}
+                            {% if not forloop.first %} / {% endif %}
+                            <a href="{% url 'entity:person_detail' book_role.person.id %}">
+                                {{ book_role.alt_name | default:book_role.person.name }}
+                            </a>
+                        {% endfor %}
                     </div>
+                {% endfor %}
+                
+                <div>
+                    {% if activity.content_object.book.publication_date %}
+                        Publication Date: {{ activity.content_object.book.publication_date|slice:":4" }}
+                    {% endif %}
                 </div>
             </div>
         </div>
-
+        
         <div class="d-flex mt-3">
             <p class="me-2">
                 <a href="{% url 'read:book_checkin_detail' activity.content_object.id %}" class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
@@ -269,65 +267,64 @@
             <div class="mt-2">
                 {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
             </div>
-            <div class="bg-light p-3 mt-2">
-                <div class="row justify-content-start">
-                    <div class="{% if width == 'wide' %}col-3{% else %}col-4{% endif %}">
-                        {% if activity.content_object.game.cover %}
-                            <img src="{{ activity.content_object.game.cover.url }}" alt="{{ activity.content_object.game.title }} cover" class='checkin-cover'>
-                        {% else %}
-                            <p class="no-cover-text">No Cover</p>
+            <div class="d-flex flex-row bg-light p-3 mt-2">
+                <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                    {% if activity.content_object.game.cover %}
+                        <img src="{{ activity.content_object.game.cover.url }}" alt="{{ activity.content_object.game.title }} cover" style="width: 100%;">
+                    {% else %}
+                        <p class="no-cover-text">No Cover</p>
+                    {% endif %}
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <a href="{% url 'play:game_detail' activity.content_object.game.id %}" class="text-decoration-none hover-username">
+                        <h6>{{ activity.content_object.game.title }}</h6>
+                    </a>
+                    
+                    {% regroup activity.content_object.game.gamerole_set.all by role as roles_list %}
+                    {% for role in roles_list %}
+                        <div>
+                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                            {% for game_role in role.list %}
+                                {% if not forloop.first %} / {% endif %}
+                                <a href="{% url 'entity:person_detail' game_role.person.id %}">
+                                    {{ game_role.alt_name | default:game_role.person.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+            
+                    <div>
+                        {% if activity.content_object.game.developers %}
+                            Developer{% if activity.content_object.game.developers.list|length > 1 %}s{% endif %}:
+                            {% for developer in activity.content_object.game.developers.all %}
+                                {% if not forloop.first %}, {% endif %}
+                                <a href="{% url 'play:developer_detail' developer.id %}">
+                                    {{ developer.name }}
+                                </a>
+                            {% endfor %}
                         {% endif %}
                     </div>
-                    <div class="{% if width == 'wide' %}col-9{% else %}col-8{% endif %}">
-                        <a href="{% url 'play:game_detail' activity.content_object.game.id %}" class="text-decoration-none hover-username">
-                            <h6>{{ activity.content_object.game.title }}</h6>
-                        </a>
-                        
-                        {% regroup activity.content_object.game.gamerole_set.all by role as roles_list %}
-                        {% for role in roles_list %}
-                            <div>
-                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
-                                {% for game_role in role.list %}
-                                    {% if not forloop.first %} / {% endif %}
-                                    <a href="{% url 'entity:person_detail' game_role.person.id %}">
-                                        {{ game_role.alt_name | default:game_role.person.name }}
-                                    </a>
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
-                        <div>
-                            {% if activity.content_object.game.developers %}
-                                Developer{% if activity.content_object.game.developers.list|length > 1 %}s{% endif %}:
-                                {% for developer in activity.content_object.game.developers.all %}
-                                    {% if not forloop.first %}, {% endif %}
-                                    <a href="{% url 'play:developer_detail' developer.id %}">
-                                        {{ developer.name }}
-                                    </a>
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                        
-                        <div>
-                            {% if activity.content_object.game.platforms %}
-                                Platform{% if activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:
-                                {% for platform in activity.content_object.game.platforms.all %}
-                                    {% if not forloop.first %}, {% endif %}
-                                    <a href="{% url 'play:platform_detail' platform.id %}">
-                                        {{ platform.name }}
-                                    </a>
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                        
-                        
-                        <div>
-                            {% if activity.content_object.game.release_date %}
-                                Release Date: {{ activity.content_object.game.release_date|slice:":4" }}
-                            {% endif %}
-                        </div>
+                    
+                    <div>
+                        {% if activity.content_object.game.platforms %}
+                            Platform{% if activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:
+                            {% for platform in activity.content_object.game.platforms.all %}
+                                {% if not forloop.first %}, {% endif %}
+                                <a href="{% url 'play:platform_detail' platform.id %}">
+                                    {{ platform.name }}
+                                </a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        {% if activity.content_object.game.release_date %}
+                            Release Date: {{ activity.content_object.game.release_date|slice:":4" }}
+                        {% endif %}
                     </div>
                 </div>
             </div>
+            
     
             <div class="d-flex mt-3">
                 <p class="me-2">
