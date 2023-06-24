@@ -97,7 +97,7 @@ TEMPLATES = [
                 "account_tags": "accounts.templatetags.account_tags",
                 "url_filters": "activity_feed.templatetags.url_filters",
                 "linkify": "write.templatetags.linkify",
-                "past_tense": "activity_feed.templatetags.past_tense",
+                "parse_activity_type": "activity_feed.templatetags.parse_activity_type",
             },
         },
     },

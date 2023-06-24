@@ -19,9 +19,6 @@
     {% for checkin in checkins %}
         <div class="checkin mb-4">
             <p class="d-flex align-items-center">
-                <span class="me-2">
-                    {{ checkin.timestamp|date:"Y.m.d H:i"  }}
-                </span>
                 <!--badge: checkin status-->
                 {% if checkin.status == "to_read" %}
                 <span class="badge text-bg-info me-2">
@@ -54,6 +51,23 @@
             {% if checkin.content %}
             <p>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</p>
             {% endif %}
+            <div class="d-flex mt-3">
+                <p class="me-2">
+                    <a href="{% url 'read:book_checkin_detail' checkin.id %}" class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i"  }}</a>
+                </p>
+                {% if checkin.comments_enabled %}
+                    <p class="ms-2 me-2">
+                        <a href="{% url 'read:book_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
+                    </p>
+                {% endif %}
+                {% if checkin.get_activity_id %}
+                    <p class="ms-2 me-2"><a href="{% url 'write:repost_create' checkin.get_activity_id %}" class="text-decoration-none">Repost</a></p>
+                {% endif %}
+                {% if checkin.author == request.user %}
+                    <p class="ms-2 me-2"><a href="{% url 'read:book_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></p>
+                    <p class="ms-2 me-2"><a href="{% url 'read:book_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></p>
+                {% endif %}
+            </div>
         </div>
     {% empty %}
         <p>No check-ins yet.</p>

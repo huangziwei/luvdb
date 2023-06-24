@@ -3,7 +3,7 @@
 <div class="col-sm-12">
     {% for checkin in checkins %}
         <div class="checkin mb-4">
-            <div class="align-items-center">
+            <div class="d-flex justify-content-start align-items-center">
                 <span class='me-2'>
                     <a href="{% url 'accounts:detail' checkin.user.username %}">
                         {{ checkin.user.display_name|default:checkin.user.username }}

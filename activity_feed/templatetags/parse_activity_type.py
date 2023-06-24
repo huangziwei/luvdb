@@ -4,7 +4,7 @@ register = template.Library()
 
 
 @register.filter
-def past_tense(value):
+def parse_activity_type(value):
     if value == "say":
         return "said"
     elif value == "post":
@@ -13,7 +13,7 @@ def past_tense(value):
         return "pinned"
     elif value == "repost":
         return "reposted"
-    elif value == "check-in":
+    elif "check-in" in value:
         return "checked in"
     else:
         return value

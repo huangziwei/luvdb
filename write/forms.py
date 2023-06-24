@@ -103,3 +103,4 @@ class RepostForm(forms.ModelForm):
         super(RepostForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
         self.fields["comments_enabled"].label = "Enable comments"
+        self.fields["content"].required = False
