@@ -67,9 +67,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Call the function for book-role-formset and book-work-formset
     handleFormset('#book-role-formset', 'add-book-role');
-    handleFormset('#book-work-role-formset', 'add-book-work-role');
+    handleFormset('#book-work-formset', 'add-book-work');
+    handleFormset('#book-edition-formset', 'add-book-edition');
 });
 
+// $(document).ready(function() {
+//     $('select').removeClass('form-select');
+// });
+
 $(document).ready(function() {
-    $('select').removeClass('form-select');
+    $('select').on('select2:open', function (e) {
+        $('span.select2-selection--single').removeClass('form-select');
+    });
 });

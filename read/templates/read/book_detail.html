@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load concat_sets %}
 
-{% block title %}{{ object.book_title }}{% endblock %}
+{% block title %}{{ object.title }}{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -15,7 +16,7 @@
                     <div class="col-md-3 me-4">
                         <div class="cover-box">
                             {% if object.cover %}
-                                <img src="{{ object.cover.url }}" alt="{{ object.book_title }} cover" class="cover-image">
+                                <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image">
                             {% else %}
                                 <p class="no-cover-text">No Cover</p>
                             {% endif %}
@@ -25,11 +26,11 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
-                                <h2>{{ object.book_title }} </h2>
+                                <h2>{{ object.title }} </h2>
                             </span>
                             
                             <div class="book-meta">
-                                {% if object.book_subtitle %}<p class='text-secondary'>{{ object.book_subtitle }}</p>{% endif %}
+                                {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
                                 {% for role_name, person_altname_tuples in roles.items %}
                                     <p>
                                         <strong>{{ role_name }}:</strong> 
@@ -88,16 +89,21 @@
         </div>
 
 
-        <!--right columns-->
         <div class="col-sm-4">
             <!--Related works / Edit -->
             <div class="bg-light p-3">
                 <div>
-                    {% if object.bookworkrole_set.count < 2 %}
-                        {% if object.bookworkrole_set.first.work.id %}
+                    {% if ordered_works_editions|length < 2 %}
+                        {% if ordered_works_editions.0.type == 'work' %}
                         <p><strong>Related Work:</strong> 
-                            <a href="{% url 'read:work_detail' object.bookworkrole_set.first.work.id %}">
-                                {{ object.bookworkrole_set.first.alt_title|default:object.bookworkrole_set.first.work.title }}
+                            <a href="{% url 'read:work_detail' ordered_works_editions.0.work.id %}">
+                                {{ ordered_works_editions.0.work.title }}
+                            </a>
+                        </p>
+                        {% elif ordered_works_editions.0.type == 'edition' %}
+                        <p><strong>Related Edition:</strong> 
+                            <a href="{% url 'read:edition_detail' ordered_works_editions.0.edition.id %}">
+                                {{ ordered_works_editions.0.edition.title }}    
                             </a>
                         </p>
                         {% endif %}
@@ -106,18 +112,19 @@
                             <h5>Table of Content</h5>
                             <!--list all related works by order-->
                             <div class="col-sm-12">
-                                {% for book_work_role in object.bookworkrole_set.all %}
+                                {% for item in ordered_works_editions %}
                                     <div class="related-work"> 
                                         <p>
-                                            <a href="{% url 'read:work_detail' book_work_role.work.id %}">
-                                                {{ book_work_role.alt_title|default:book_work_role.work.title }}
+                                            {% if item.type == 'work' %}
+                                            <a href="{% url 'read:work_detail' item.work.id %}">
+                                                {{ item.work.title }}
                                             </a> 
-                                            ({% if book_work_role.role %}{{ book_work_role.role.name }}: 
-                                                <a href="{% url 'entity:person_detail' book_work_role.person.id %}">
-                                                    {{ book_work_role.name|default:book_work_role.person.name }}
-                                                </a>
-                                                , 
-                                            {% endif %}{{ book_work_role.publication_date|default:book_work_role.work.publication_date }})
+                                            {% elif item.type == 'edition' %}
+                                            <a href="{% url 'read:edition_detail' item.edition.id %}">
+                                                {{ item.edition.title }}
+                                            </a> 
+
+                                            {% endif %} 
                                         </p>
                                     </div>
                                 {% empty %}
@@ -134,6 +141,93 @@
                     {% endif %}
                 </div>
             </div>
+        </div>
+        
+        
+
+    
+        {% comment %} <div class="col-sm-4">
+            <!--Related works / Edit -->
+            <div class="bg-light p-3">
+                <div>
+                    {% if object.bookwork_set.count %}
+                        {% if object.bookwork_set.count < 2 %}
+                            {% if object.bookwork_set.first.work.id %}
+                            <p><strong>Related Work:</strong> 
+                                <a href="{% url 'read:work_detail' object.bookwork_set.first.work.id %}">
+                                    {{ object.bookwork_set.first.alt_title|default:object.bookwork_set.first.work.title }}
+                                </a>
+                            </p>
+                            {% endif %}
+                        {% else %}
+                            <div class="row">
+                                <h5>Table of Content</h5>
+                                <!--list all related works by order-->
+                                <div class="col-sm-12">
+                                    {% for book_work in object.bookwork_set.all %}
+                                        <div class="related-work"> 
+                                            <p>
+                                                <a href="{% url 'read:work_detail' book_work.work.id %}">
+                                                    {{ book_work.alt_title|default:book_work.work.title }}
+                                                </a> 
+                                                ({% if book_work.role %}{{ book_work.role.name }}: 
+                                                    <a href="{% url 'entity:person_detail' book_work.person.id %}">
+                                                        {{ book_work.name|default:book_work.person.name }}
+                                                    </a>
+                                                    , 
+                                                {% endif %}{{ book_work.publication_date|default:book_work.work.publication_date }})
+                                            </p>
+                                        </div>
+                                    {% empty %}
+                                        <p>No related works found.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>   
+                        {% endif %}
+                    {% elif object.bookedition_set.count %}
+                        {% if object.bookedition_set.count < 2 %}
+                            {% if object.bookedition_set.first.edition.id %}
+                            <p><strong>Related Edition:</strong> 
+                                <a href="{% url 'read:edition_detail' object.bookedition_set.first.edition.id %}">
+                                    {{ object.bookedition_set.first.title|default:object.bookedition_set.first.edition.title }}
+                                </a>
+                            </p>
+                            {% endif %}
+                        {% else %}
+                            <div class="row">
+                                <h5>Table of Content</h5>
+                                <!--list all related editions by order-->
+                                <div class="col-sm-12">
+                                    {% for book_edition in object.bookedition_set.all %}
+                                        <div class="related-edition"> 
+                                            <p>
+                                                <a href="{% url 'read:edition_detail' book_edition.edition.id %}">
+                                                    {{ book_edition.alt_title|default:book_edition.edition.title }}
+                                                </a> 
+                                                ({% if book_edition.role %}{{ book_edition.role.name }}: 
+                                                    <a href="{% url 'entity:person_detail' book_edition.person.id %}">
+                                                        {{ book_edition.name|default:book_edition.person.name }}
+                                                    </a>
+                                                    , 
+                                                {% endif %}{{ book_edition.publication_date|default:book_edition.edition.publication_date }})
+                                            </p>
+                                        </div>
+                                    {% empty %}
+                                        <p>No related editions found.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>   
+                        {% endif %}
+                    {% endif %}
+        
+                    {% if user.is_authenticated %}
+                        <div class="mt-3">
+                            <a href="{% url 'read:book_update' object.pk %}" class='fs-6 text-secondary'>Edit book data</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        
 
             <!--Book Stats-->
             <div class="bg-light p-3 mt-3">
@@ -142,7 +236,7 @@
                 <p><strong>Reading:</strong> {{ reading_count }}</p>
                 <p><strong>Read:</strong> {{ read_count }}</p>
             </div>
-        </div>
+        </div> {% endcomment %}
     </div>
 </div>
 

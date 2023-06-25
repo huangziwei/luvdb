@@ -65,14 +65,14 @@
                     <div class="d-flex flex-row bg-white p-3 mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                             {% if activity.content_object.original_activity.content_object.book.cover %}
-                                <img src="{{ activity.content_object.original_activity.content_object.book.cover.url }}" alt="{{ activity.content_object.original_activity.content_object.book.book_title }} cover" style="width: 100%;">
+                                <img src="{{ activity.content_object.original_activity.content_object.book.cover.url }}" alt="{{ activity.content_object.original_activity.content_object.book.title }} cover" style="width: 100%;">
                             {% else %}
                                 <p class="no-cover-text">No Cover</p>
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <a href="{% url 'read:book_detail' activity.content_object.original_activity.content_object.book.id %}" class="text-decoration-none hover-username">
-                                <h6>{{ activity.content_object.original_activity.content_object.book.book_title }}</h6>
+                                <h6>{{ activity.content_object.original_activity.content_object.book.title }}</h6>
                             </a> 
                             
                             {% regroup activity.content_object.original_activity.content_object.book.bookrole_set.all by role as roles_list %}

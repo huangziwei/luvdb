@@ -4,7 +4,6 @@ from django.db import models
 from entity.models import Person, Role
 
 
-# Create your models here.
 class Track(models.Model):
     """
     A Work entity

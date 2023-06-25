@@ -5,6 +5,8 @@ from .models import (
     BookCheckIn,
     BookRole,
     BookWorkRole,
+    Edition,
+    EditionRole,
     Person,
     Publisher,
     Role,
@@ -36,6 +38,19 @@ class WorkAdmin(admin.ModelAdmin):
     inlines = [WorkRoleInline]
 
 
+class EditionRoleInline(admin.TabularInline):
+    model = EditionRole
+    extra = 1
+    fields = ("person", "role")
+    autocomplete_fields = ["person"]
+
+
+class EditionAdmin(admin.ModelAdmin):
+    list_display = ("title",)
+    search_fields = ("title",)
+    inlines = [EditionRoleInline]
+
+
 class BookRoleInline(admin.TabularInline):
     model = BookRole
     fields = ("person", "role", "alt_name")
@@ -50,7 +65,7 @@ class BookWorkRoleInline(admin.TabularInline):
 
 class BookAdmin(admin.ModelAdmin):
     list_display = (
-        "book_title",
+        "title",
         "display_works",
         "created_at",
         "updated_at",
@@ -66,7 +81,7 @@ class BookAdmin(admin.ModelAdmin):
 
     display_works.short_description = "Works"
 
-    search_fields = ("book_title",)
+    search_fields = ("title",)
 
     inlines = [BookRoleInline, BookWorkRoleInline]  # Changed to new inline
 
@@ -84,19 +99,27 @@ class WorkRoleAdmin(admin.ModelAdmin):
     list_filter = ("role",)
 
 
+class EditionRoleAdmin(admin.ModelAdmin):
+    list_display = ("edition", "person", "role")
+    search_fields = ("edition__title", "person__name", "role__name")
+    list_filter = ("role",)
+
+
 class BookRoleAdmin(admin.ModelAdmin):
     list_display = ("book", "person", "alt_name", "role")
     list_filter = ("book", "person", "role")
-    search_fields = ("book__book_title", "person__name", "role__name")
+    search_fields = ("book__title", "person__name", "role__name")
 
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Publisher, PublisherAdmin)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(Book, BookAdmin)
+admin.site.register(Edition, EditionAdmin)
 admin.site.register(Role, RoleAdmin)
 admin.site.register(WorkRole, WorkRoleAdmin)
 admin.site.register(BookRole, BookRoleAdmin)
+admin.site.register(EditionRole, EditionRoleAdmin)
 
 
 @admin.register(BookWorkRole)

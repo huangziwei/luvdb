@@ -20,14 +20,18 @@ from write.models import Comment
 
 from .forms import (
     BookCheckInForm,
+    BookEditionForm,
+    BookEditionFormSet,
     BookForm,
     BookRoleFormSet,
-    BookWorkRoleForm,
-    BookWorkRoleFormSet,
+    BookWork,
+    BookWorkFormSet,
+    EditionForm,
+    EditionRoleFormSet,
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import Book, BookCheckIn, Person, Publisher, Role, Work
+from .models import Book, BookCheckIn, Edition, Person, Publisher, Role, Work
 
 User = get_user_model()
 
@@ -135,6 +139,82 @@ class WorkDetailView(DetailView):
     template_name = "read/work_detail.html"
 
 
+#############
+## Edition ##
+#############
+
+
+class EditionCreateView(LoginRequiredMixin, CreateView):
+    model = Edition
+    form_class = EditionForm
+    template_name = "read/edition_create.html"
+
+    def get_success_url(self):
+        return reverse_lazy("read:edition_detail", kwargs={"pk": self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["editionroles"] = EditionRoleFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["editionroles"] = EditionRoleFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        editionroles = context["editionroles"]
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if editionroles.is_valid():
+                editionroles.instance = self.object
+                editionroles.save()
+            else:
+                print(editionroles.errors)  # print out formset errors
+        return super().form_valid(form)
+
+
+class EditionUpdateView(LoginRequiredMixin, UpdateView):
+    model = Edition
+    form_class = EditionForm
+    template_name = "read/edition_update.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["editionroles"] = EditionRoleFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["editionroles"] = EditionRoleFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        editionroles = context["editionroles"]
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if editionroles.is_valid():
+                editionroles.instance = self.object
+                editionroles.save()
+            else:
+                print(editionroles.errors)  # print out formset errors
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("read:edition_detail", kwargs={"pk": self.object.pk})
+
+
+class EditionDetailView(DetailView):
+    model = Edition
+    template_name = "read/edition_detail.html"
+
+
 ########
 # Book #
 ########
@@ -152,18 +232,21 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
             data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
-            data["bookworkroles"] = BookWorkRoleFormSet(
+            data["bookworks"] = BookWorkFormSet(self.request.POST, instance=self.object)
+            data["bookeditions"] = BookEditionFormSet(
                 self.request.POST, instance=self.object
             )
         else:
             data["bookroles"] = BookRoleFormSet(instance=self.object)
-            data["bookworkroles"] = BookWorkRoleFormSet(instance=self.object)
+            data["bookworks"] = BookWorkFormSet(instance=self.object)
+            data["bookeditions"] = BookEditionFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         bookroles = context["bookroles"]
-        bookworkroles = context["bookworkroles"]
+        bookworks = context["bookworks"]
+        bookeditions = context["bookeditions"]
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -171,9 +254,12 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             if bookroles.is_valid():
                 bookroles.instance = self.object
                 bookroles.save()
-            if bookworkroles.is_valid():
-                bookworkroles.instance = self.object
-                bookworkroles.save()
+            if bookworks.is_valid():
+                bookworks.instance = self.object
+                bookworks.save()
+            if bookeditions.is_valid():
+                bookeditions.instance = self.object
+                bookeditions.save()
         return super().form_valid(form)
 
 
@@ -184,6 +270,24 @@ class BookDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         book = get_object_or_404(Book, pk=self.kwargs["pk"])
+
+        # Assign the type to each object in bookwork_set and bookedition_set
+        works = book.bookwork_set.all()
+        for work in works:
+            work.type = "work"
+
+        editions = book.bookedition_set.all()
+        for edition in editions:
+            edition.type = "edition"
+
+        # Concatenate the two sets
+        ordered_works_editions = list(works) + list(editions)
+
+        # Sort the combined list by order
+        ordered_works_editions.sort(key=lambda x: x.order)
+
+        context["ordered_works_editions"] = ordered_works_editions
+
         roles = {}
         for book_role in book.bookrole_set.all():
             if book_role.role.name not in roles:
@@ -292,19 +396,22 @@ class BookUpdateView(UpdateView):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
             data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
-            data["bookworkroles"] = BookWorkRoleFormSet(
+            data["bookworks"] = BookWorkFormSet(self.request.POST, instance=self.object)
+            data["bookeditions"] = BookEditionFormSet(
                 self.request.POST, instance=self.object
             )
         else:
             data["bookroles"] = BookRoleFormSet(instance=self.object)
-            data["bookworkroles"] = BookWorkRoleFormSet(instance=self.object)
+            data["bookworks"] = BookWorkFormSet(instance=self.object)
+            data["bookeditions"] = BookEditionFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         bookroles = context["bookroles"]
+        bookworks = context["bookworks"]
         print("bookroles: ", bookroles.errors)
-        bookworkroles = context["bookworkroles"]
+        bookeditions = context["bookeditions"]
         with transaction.atomic():
             form.instance.updated_by = self.request.user
             if self.request.method == "POST":
@@ -320,9 +427,12 @@ class BookUpdateView(UpdateView):
                         print(
                             "BookRoles form errors: ", bookroles.errors
                         )  # print form errors
-                    if bookworkroles.is_valid():
-                        bookworkroles.instance = self.object
-                        bookworkroles.save()
+                    if bookworks.is_valid():
+                        bookworks.instance = self.object
+                        bookworks.save()
+                    if bookeditions.is_valid():
+                        bookeditions.instance = self.object
+                        bookeditions.save()
 
         return super().form_valid(form)
 
@@ -354,6 +464,50 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         work_role = item.workrole_set.filter(role=author_role).first()
         author_name = (
             work_role.person.name if work_role and work_role.person else "Unknown"
+        )
+
+        # Get the year from the publication_date
+        publication_year = (
+            item.publication_date[:4] if item.publication_date else "Unknown"
+        )
+
+        # Format the label
+        label = format_html("{} ({}, {})", item.title, author_name, publication_year)
+
+        return label
+
+
+class EditionAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Edition.objects.none()
+
+        qs = Edition.objects.all()
+
+        if self.q:
+            # get all the authors whose name starts with query
+            authors = Person.objects.filter(name__istartswith=self.q)
+
+            # get the author role
+            author_role = Role.objects.filter(name="Author").first()
+
+            # get all the editions which are associated with these authors
+            qs = qs.filter(
+                editionrole__role=author_role, editionrole__person__in=authors
+            )
+
+        return qs
+
+    def get_result_label(self, item):
+        # Get the first person with a role of 'Author' for the book
+        author_role = Role.objects.filter(
+            name="Author"
+        ).first()  # Adjust 'Author' to match your data
+        edition_role = item.editionrole_set.filter(role=author_role).first()
+        author_name = (
+            edition_role.alt_name
+            if edition_role and edition_role.alt_name
+            else edition_role.person.name
         )
 
         # Get the year from the publication_date

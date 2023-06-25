@@ -10,7 +10,7 @@
         <a href="{% url 'accounts:detail' user.username %}">
             {{ user.display_name|default:user.username }}
         </a> of 
-        <a href="{% url 'read:book_detail' book.id %}"> {{ book.book_title }}</a>
+        <a href="{% url 'read:book_detail' book.id %}"> {{ book.title }}</a>
     </h4>
     <div class="mb-4">
         <a href="?order=timestamp" class="btn btn-sm btn-outline-secondary">Oldest</a>

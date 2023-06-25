@@ -181,7 +181,6 @@ class GameCheckIn(models.Model):
             )
             return activity.id
         except ObjectDoesNotExist:
-            print("can't activity found")
             return None
 
     def save(self, *args, **kwargs):

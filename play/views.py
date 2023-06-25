@@ -266,6 +266,23 @@ class GameCheckInDetailView(DetailView):
         return context
 
 
+class GameCheckInUpdateView(LoginRequiredMixin, UpdateView):
+    model = GameCheckIn
+    form_class = GameCheckInForm
+    template_name = "play/game_checkin_update.html"
+
+    def get_success_url(self):
+        return reverse_lazy("play:game_checkin_detail", kwargs={"pk": self.object.pk})
+
+
+class GameCheckInDeleteView(LoginRequiredMixin, DeleteView):
+    model = GameCheckIn
+    template_name = "play/game_checkin_delete.html"
+
+    def get_success_url(self):
+        return reverse_lazy("play:game_detail", kwargs={"pk": self.object.book.pk})
+
+
 class GameCheckInListView(ListView):
     model = GameCheckIn
     template_name = "play/game_checkin_list.html"

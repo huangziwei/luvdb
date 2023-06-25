@@ -64,7 +64,7 @@ class PersonDetailView(DetailView):
                     roles[role_name] = []
                 roles[role_name].append(
                     {
-                        "title": role.book.book_title,
+                        "title": role.book.title,
                         "publication_date": role.book.publication_date,
                         "url": reverse("read:book_detail", args=[role.book.pk]),
                     }

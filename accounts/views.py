@@ -164,7 +164,7 @@ def search_view(request):
         )
         person_results = Person.objects.filter(Q(name__icontains=query))
         book_results = Book.objects.filter(
-            Q(book_title__icontains=query)
+            Q(title__icontains=query)
             | Q(isbn_10__icontains=query)
             | Q(isbn_13__icontains=query)
             | Q(asin__icontains=query)

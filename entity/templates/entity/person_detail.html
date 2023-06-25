@@ -49,7 +49,7 @@
                             <div class="col-sm-3">
                                 {% if book.cover %}
                                     <a href="{% url 'read:book_detail' book.pk %}">
-                                        <img src="{{ book.cover.url }}" alt="{{ book.book_title }}" class="img-fluid">
+                                        <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid">
                                     </a>
                                 {% else %}
                                     <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
@@ -67,7 +67,7 @@
                         <div class="col-sm-3">
                             {% if book.cover %}
                                 <a href="{% url 'read:book_detail' book.pk %}">
-                                    <img src="{{ book.cover.url }}" alt="{{ book.book_title }}" class="img-fluid">
+                                    <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid">
                                 </a>
                             {% else %}
                                 <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>

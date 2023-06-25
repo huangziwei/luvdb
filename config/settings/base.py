@@ -98,6 +98,7 @@ TEMPLATES = [
                 "url_filters": "activity_feed.templatetags.url_filters",
                 "linkify": "write.templatetags.linkify",
                 "parse_activity_type": "activity_feed.templatetags.parse_activity_type",
+                "concat_sets": "read.templatetags.concat_sets",
             },
         },
     },

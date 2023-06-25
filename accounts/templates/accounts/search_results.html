@@ -84,7 +84,7 @@
         <h3>Book</h3>
         {% for book in book_results %}
             <p>
-                <a href="{% url 'read:book_detail' book.id %}">{{ book.book_title|truncatechars:50 }}</a>
+                <a href="{% url 'read:book_detail' book.id %}">{{ book.title|truncatechars:50 }}</a>
             </p>
         {% empty %}
             <p>No Book results found.</p>

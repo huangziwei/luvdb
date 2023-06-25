@@ -14,7 +14,7 @@
         <div class="row justify-content-start">
             <div class="col-md-3">
                 {% if object.book.cover %}
-                    <img src="{{ object.book.cover.url }}" alt="{{ object.book.book_title }} cover" style="width: 150px;height: auto;">
+                    <img src="{{ object.book.cover.url }}" alt="{{ object.book.title }} cover" style="width: 150px;height: auto;">
                 {% else %}
                     <p class="no-cover-text">No Cover</p>
                 {% endif %}
@@ -22,7 +22,7 @@
                     
             <div class="col-md-9">
                 <a href="{% url 'read:book_detail' object.book.id %}" class="text-decoration-none hover-username">
-                    <h5>{{ object.book.book_title }}</h5>
+                    <h5>{{ object.book.title }}</h5>
                 </a>
                 
                 {% regroup object.book.bookrole_set.all by role as roles_list %}

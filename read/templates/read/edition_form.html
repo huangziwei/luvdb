@@ -1,20 +1,31 @@
 {% load crispy_forms_tags %}
 <form method="post">
     {% csrf_token %}
-    {{ form | crispy }}
+    {{ form.title | as_crispy_field }}
+    {{ form.subtitle | as_crispy_field }}
+    {{ form.publication_date | as_crispy_field}}
+    {{ form.language | as_crispy_field }}
 
-    {{ workroles.management_form|crispy }}
-    <div id="work-role-formset" class="bg-light p-2 mb-3">
-        <strong>Persons related to this work</strong>
+    <div class="mb-3">
+        {{ form.work|as_crispy_field }}
+        <a href="{% url 'read:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>                   
+    </div>
+
+    {{ editionroles.management_form|crispy }}
+    <div id="edition-role-formset" class="bg-light p-2 mb-3">
+        <strong>Persons related to this edition</strong>
         <p class='text-muted'>E.g. Authors, Editors, Illustrators, etc.</p>
-        {% for form in workroles %}
+        {% for form in editionroles %}
             <div class="row">
                 {{ form.id }}
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
                     {{ form.person | as_crispy_field}}
                     <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person entry?</a>
                 </div>
-                <div class="col-md-5 mb-3">
+                <div class="col-md-4 mb-3">
+                    {{ form.alt_name | as_crispy_field}}
+                </div>
+                <div class="col-md-3 mb-3">
                     {{ form.role | as_crispy_field}}
                     {{ form.domain | as_crispy_field }}
                     <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role entry?</a>
@@ -22,6 +33,7 @@
             </div>
         {% endfor %}
     </div>
+    
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
 

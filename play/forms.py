@@ -87,4 +87,3 @@ class GameCheckInForm(forms.ModelForm):
         self.fields["content"].label = ""
         self.fields["content"].required = False
         self.fields["comments_enabled"].label = "Enable comments"
-        # self.fields["progress"].label = "Played Time"

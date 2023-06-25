@@ -2,6 +2,7 @@ import os
 import uuid
 from io import BytesIO
 
+import pycountry
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -12,6 +13,7 @@ from django.db.models import signals
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.text import slugify
+from langcodes import Language
 from PIL import Image
 
 from activity_feed.models import Activity
@@ -23,7 +25,9 @@ from write.models import create_mentions_notifications, handle_tags
 def rename_book_cover(instance, filename):
     _, extension = os.path.splitext(filename)
     unique_id = uuid.uuid4()
-    directory_name = f"{slugify(instance.book_title, allow_unicode=True)}-{instance.publication_date}"
+    directory_name = (
+        f"{slugify(instance.title, allow_unicode=True)}-{instance.publication_date}"
+    )
     new_name = f"{unique_id}{extension}"
     return os.path.join("covers", directory_name, new_name)
 
@@ -69,6 +73,52 @@ class Publisher(Entity):
         return self.name
 
 
+class LanguageField(models.CharField):
+    def __init__(self, *args, **kwargs):
+        kwargs["max_length"] = 8
+        kwargs["blank"] = True
+        kwargs["null"] = True
+        kwargs["choices"] = self.get_language_choices()
+        super(LanguageField, self).__init__(*args, **kwargs)
+
+    def get_language_choices(self):
+        ALL_LANGUAGES = [
+            (lang.alpha_2, f"{Language.make(lang.alpha_2).autonym()} ({lang.alpha_2})")
+            for lang in pycountry.languages
+            if hasattr(lang, "alpha_2")
+        ]
+
+        # Add Simplified and Traditional Chinese
+        ALL_LANGUAGES.extend(
+            [
+                ("zh-Hans", f"{Language.make('zh-Hans').autonym()} (zh-Hans)"),
+                ("zh-Hant", f"{Language.make('zh-Hant').autonym()} (zh-Hant)"),
+            ]
+        )
+
+        # Sort languages by their English name
+        ALL_LANGUAGES.sort(key=lambda x: x[1])
+
+        def popular_languages_first(language):
+            POPULAR_LANGUAGES = [
+                "en",
+                "es",
+                "fr",
+                "de",
+                "ja",
+                "ru",
+                "ar",
+                "zh-Hans",
+                "zh-Hant",
+            ]
+            return language[0] not in POPULAR_LANGUAGES
+
+        # Move popular languages to the top
+        ALL_LANGUAGES.sort(key=popular_languages_first)
+
+        return ALL_LANGUAGES
+
+
 class Work(models.Model):  # Renamed from Book
     """
     A Work entity
@@ -81,8 +131,21 @@ class Work(models.Model):  # Renamed from Book
     publication_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
-    language = models.CharField(max_length=255, blank=True, null=True)
-    work_type = models.CharField(max_length=255, blank=True, null=True)  # novel, etc.
+
+    language = LanguageField(max_length=8, blank=True, null=True)
+
+    # novel, novella, short story, poem, etc.
+    WORK_TYPES = (
+        ("NO", "Novel"),
+        ("NV", "Novella"),
+        ("SS", "Short Story"),
+        ("PO", "Poem"),
+        ("ES", "Essay"),
+        ("OT", "Other"),
+    )
+    work_type = models.CharField(
+        max_length=255, choices=WORK_TYPES, blank=True, null=True
+    )  # novel, etc.
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -103,6 +166,27 @@ class Work(models.Model):  # Renamed from Book
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None  # check if object is new or not
+        super().save(*args, **kwargs)
+        if is_new:  # if new object has been created
+            edition = Edition.objects.create(
+                title=self.title,
+                subtitle=self.subtitle,
+                publication_date=self.publication_date,
+                language=self.language,
+                work=self,
+            )
+            # Create corresponding EditionRole instances
+            for work_role in self.workrole_set.all():
+                print(work_role)
+                EditionRole.objects.create(
+                    edition=edition,
+                    person=work_role.person,
+                    role=work_role.role,
+                    alt_name=None,  # Replace with actual value if necessary
+                )
+
 
 class WorkRole(models.Model):  # Renamed from BookRole
     """
@@ -116,6 +200,48 @@ class WorkRole(models.Model):  # Renamed from BookRole
     def __str__(self):
         return f"{self.work} - {self.person} - {self.role}"
 
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None  # check if object is new or not
+        super().save(*args, **kwargs)
+        if is_new:  # if new object has been created
+            # Check if there is an Edition associated with this Work
+            edition = self.work.editions.first()
+            if edition is not None:
+                EditionRole.objects.create(
+                    edition=edition,
+                    person=self.person,
+                    role=self.role,
+                    alt_name=None,  # Replace with actual value if necessary
+                )
+
+
+class Edition(models.Model):
+    title = models.CharField(max_length=255)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
+    persons = models.ManyToManyField(
+        Person, through="EditionRole", related_name="editions"
+    )
+    work = models.ForeignKey(
+        Work, on_delete=models.SET_NULL, null=True, blank=True, related_name="editions"
+    )
+    publication_date = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # YYYY or YYYY-MM or YYYY-MM-DD
+    language = LanguageField(max_length=8, blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+
+
+class EditionRole(models.Model):
+    edition = models.ForeignKey(Edition, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    alt_name = models.CharField(max_length=255, blank=True, null=True)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.edition} - {self.person} - {self.role}"
+
 
 class Book(models.Model):
     """
@@ -123,14 +249,18 @@ class Book(models.Model):
     """
 
     # book meta data
-    book_title = models.CharField(max_length=255)
-    book_subtitle = models.CharField(max_length=255, blank=True, null=True)
+    title = models.CharField(max_length=255)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False)
     persons = models.ManyToManyField(Person, through="BookRole", related_name="books")
-    work_roles = models.ManyToManyField(
-        Work, through="BookWorkRole", related_name="books"
+    works = models.ManyToManyField(Work, through="BookWork", related_name="books")
+    editions = models.ManyToManyField(
+        Edition, through="BookEdition", related_name="books"
     )
+    # work_roles = models.ManyToManyField(
+    #     Work, through="BookWorkRole", related_name="books"
+    # )
     publisher = models.ForeignKey(
         Publisher,
         on_delete=models.SET_NULL,
@@ -138,7 +268,7 @@ class Book(models.Model):
         null=True,
         blank=True,
     )
-    language = models.CharField(max_length=255, blank=True, null=True)
+    language = LanguageField(max_length=8, blank=True, null=True)
     details = models.TextField(blank=True, null=True)
     publication_date = models.CharField(
         max_length=10, blank=True, null=True
@@ -167,19 +297,6 @@ class Book(models.Model):
         validators=[validate_asin],
     )
 
-    BOOK_TYPES = (
-        ("SB", "Standalone"),
-        ("SS", "Short Stories Collection"),
-        ("ES", "Essays Collection"),
-        # Add other types here as needed
-    )
-
-    book_type = models.CharField(
-        max_length=2,
-        choices=BOOK_TYPES,
-        default="SB",
-    )
-
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -197,7 +314,7 @@ class Book(models.Model):
     )
 
     def __str__(self):
-        return self.book_title
+        return self.title
 
     def get_absolute_url(self):
         return reverse("read:book_detail", args=[str(self.id)])
@@ -269,6 +386,22 @@ class BookWork(models.Model):
 
     def __str__(self):
         return f"{self.book} - {self.work} - {self.order}"
+
+
+class BookEdition(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    edition = models.ForeignKey(
+        Edition, on_delete=models.CASCADE, null=True, blank=True
+    )
+    order = models.PositiveIntegerField(
+        null=True, blank=True, default=1
+    )  # Ordering of the works in a book
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.book} - {self.edition} - {self.order}"
 
 
 class BookWorkRole(models.Model):
@@ -363,7 +496,6 @@ class BookCheckIn(models.Model):
             )
             return activity.id
         except ObjectDoesNotExist:
-            print("can't activity found")
             return None
 
     def save(self, *args, **kwargs):

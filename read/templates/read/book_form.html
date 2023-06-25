@@ -1,73 +1,10 @@
 {% load crispy_forms_tags %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.book_title|as_crispy_field }}
-    {{ form.book_subtitle|as_crispy_field }}
-    {{ bookroles.management_form|crispy }}
-    <div id="book-role-formset">
-        {% for form in bookroles %}
-        <div class="form-wrapper">
-            <strong>Persons related to this book</strong>
-            <p class='text-muted'>E.g. Authors, Editors, Designers, etc.</p>
-            <div class="row">
-                {{ form.id }}
-                <div class="col-md-4 mb-3">
-                    {{ form.person | as_crispy_field}}
-                    <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>
-                </div>
-                <div class="col-md-4 mb-3">
-                    {{ form.role | as_crispy_field}}
-                    {{ form.domain | as_crispy_field }}
-                    <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
-                </div>
-                <div class="col-md-3 mb-3">
-                    {{ form.alt_name | as_crispy_field}}
-                </div>
-            </div>
-        </div>  
-        {% endfor %}
-    </div>
+    {{ form.title|as_crispy_field }}
+    {{ form.subtitle|as_crispy_field }}
     
-    {{ bookworkroles.management_form|crispy }} <!-- This line has been changed -->
-    <div id="book-work-role-formset"> <!-- This line has been changed -->
-        {% for form in bookworkroles %} <!-- This line has been changed -->
-        <div class="form-wrapper">  <!-- Added this line -->
-            <strong>Works related to this book</strong>
-            <p class="text-muted">The person field is mainly for extra roles other than the Authors, such as Translators, Editors, etc. </p>
-            <div class="row">
-                {{ form.id }}
-                <div class="col-md-4 mb-3">
-                    {{ form.work|as_crispy_field}}
-                    <a href="{% url 'read:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>
-                </div>
-                <div class="col-md-3 mb-3">
-                    {{ form.alt_title|as_crispy_field}}
-                </div>
-                <div class="col-md-3 mb-3">
-                    {{ form.publication_date|as_crispy_field}}
-                </div>
-                <div class="col-md-2 mb-3">
-                    {{ form.order|as_crispy_field}}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    {{ form.person|as_crispy_field}}
-                    <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>
-                </div>
-                <div class="col-md-3 mb-3">
-                    {{ form.role|as_crispy_field}}
-                    {{ form.domain | as_crispy_field }}
-                    <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
-                </div>
-                <div class="col-md-3 mb-3">
-                    {{ form.alt_name|as_crispy_field}}
-                </div>
-            </div>
-        </div> <!-- Added this line -->
-                
-        {% endfor %}
-    </div>
+    
     {{ form.cover|as_crispy_field}}
     <div class="mb-3">
         {{ form.publisher|as_crispy_field }}
@@ -77,13 +14,77 @@
     {{ form.details|as_crispy_field }}
     {{ form.publication_date|as_crispy_field }}
     {{ form.book_format|as_crispy_field }}
-    {{ form.book_type|as_crispy_field}}
     {{ form.pages|as_crispy_field }}
     {{ form.price|as_crispy_field }}
     {{ form.isbn_10|as_crispy_field }}
     {{ form.isbn_13|as_crispy_field }}
     {{ form.asin|as_crispy_field }}
+
+    {{ bookroles.management_form|crispy }}
+    <div id="book-role-formset" class="bg-light p-3 mb-3">
+        <strong>Persons related to this book</strong>
+        <p class='text-muted'>E.g. Authors, Editors, Designers, etc.</p>
+        {% for form in bookroles %}
+        <div class="form-wrapper">
+            <div class="row">
+                {{ form.id }}
+                <div class="col-md-4">
+                    {{ form.person | as_crispy_field}}
+                    <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>
+                </div>
+                <div class="col-md-4">
+                    {{ form.role | as_crispy_field}}
+                    {{ form.domain | as_crispy_field }}
+                    <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
+                </div>
+                <div class="col-md-3">
+                    {{ form.alt_name | as_crispy_field}}
+                </div>
+            </div>
+        </div>  
+        {% endfor %}
+    </div>
     
+    {{ bookworks.management_form|crispy }}
+    <div id="book-work-formset" class="bg-light p-3 mb-3">
+        <strong>Works related to this book</strong>
+            <p class='text-muted'>A "Work" is the first edition of a literature work, e.g. the original version of a work. If you are relating a revised or a translated version of a work to this book, use the Edition form below.</p>
+        {% for form in bookworks %}
+        <div class="form-wrapper">
+            <div class="row">
+                {{ form.id }}
+                <div class="col-md-9">
+                    {{ form.work | as_crispy_field}}
+                    <a href="{% url 'read:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>
+                </div>
+                <div class="col-md-2">
+                    {{ form.order | as_crispy_field}}
+                </div>
+            </div>
+        </div>  
+        {% endfor %}
+    </div>
+
+    {{ bookeditions.management_form|crispy }}
+    <div id="book-edition-formset" class="bg-light p-3 mb-3">
+        <strong>Editions related to this book</strong>
+        <p class='text-muted'>An "Edition" is any edition of a literature work other than the first edition. E.g. revised version, translation, etc. If you are relating a first version of a work to this book, use the Work form above.</p>
+        {% for form in bookeditions %}
+        <div class="form-wrapper">
+            <div class="row">
+                {{ form.id }}
+                <div class="col-md-9">
+                    {{ form.edition | as_crispy_field}}
+                    <a href="{% url 'read:edition_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new edition?</a>
+                </div>
+                <div class="col-md-2">
+                    {{ form.order | as_crispy_field}}
+                </div>
+            </div>
+        </div>  
+        {% endfor %}
+    </div>
+
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
 {% if form.errors %}

@@ -5,8 +5,10 @@ from .views import (
     DeveloperCreateView,
     DeveloperDetailView,
     GameCheckInAllListView,
+    GameCheckInDeleteView,
     GameCheckInDetailView,
     GameCheckInListView,
+    GameCheckInUpdateView,
     GameCreateView,
     GameDetailView,
     GameUpdateView,
@@ -33,16 +35,16 @@ urlpatterns = [
     path(
         "checkin/<int:pk>/", GameCheckInDetailView.as_view(), name="game_checkin_detail"
     ),
-    # path(
-    #     "checkin/<int:pk>/update/",
-    #     BookCheckInUpdateView.as_view(),
-    #     name="book_checkin_update",
-    # ),
-    # path(
-    #     "checkin/<int:pk>/delete/",
-    #     BookCheckInDeleteView.as_view(),
-    #     name="book_checkin_delete",
-    # ),
+    path(
+        "checkin/<int:pk>/update/",
+        GameCheckInUpdateView.as_view(),
+        name="game_checkin_update",
+    ),
+    path(
+        "checkin/<int:pk>/delete/",
+        GameCheckInDeleteView.as_view(),
+        name="game_checkin_delete",
+    ),
     # autocomplete
     path(
         "developer-autocomplete/",
