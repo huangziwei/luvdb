@@ -16,18 +16,22 @@
     {% endfor %}
 
 
-    <h3>Books</h3>
-    <div class="row">
-        {% for book in object.books.all %}
-        <div class="col-md-4">
-            <p>
-                <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a>
-                ({{ book.publication_date }})
-            </p>
-        </div>
-        {% empty %}
-        <p>This work has no related books.</p>
-        {% endfor %}
-    </div>
+    <h3>Editions</h3>
+    <ul>
+    {% for edition in object.editions.all %}
+        <li>
+            <a href="{% url "read:edition_detail" edition.id %}">{{ edition.title }}</a>
+             ({{ edition.publication_date }});
+             Collected in:
+            {% for book in edition.books.all %}
+            <ul>
+                <li>
+                     <a href="{% url 'read:book_detail' book.id %}">{{ book.title }}</a> ({{ book.publication_date }}) 
+                </li>
+            </ul>
+            {% endfor %} 
+        </li>
+    {% endfor %}
+    </ul>
 </div>
 {% endblock %}

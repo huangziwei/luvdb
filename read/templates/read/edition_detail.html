@@ -11,10 +11,19 @@
     
     {% for role in object.editionrole_set.all %}
     <p>
-        <a href="{% url 'entity:person_detail' role.person.id %}">{{ role.person.name }}</a> ({{ role.person.romanized_name }}) 
+        {{role.role.name }}: <a href="{% url 'entity:person_detail' role.person.id %}"> {{ role.person.name }}</a> 
+        {% if role.person.romanized_name %}
+            ({{ role.person.romanized_name }}) 
+        {% endif %}
     </p>
     {% endfor %}
 
+    <p>
+        Original title: <a href={% url "read:work_detail" object.work.id %}>{{object.work.title}}</a>
+        {% if object.work.publication_date %}
+            ({{object.work.publication_date}})
+        {% endif %}
+    </p>
 
     <h3>Books</h3>
     <div class="row">

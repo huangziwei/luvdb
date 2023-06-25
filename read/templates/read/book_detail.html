@@ -88,98 +88,41 @@
             </div>
         </div>
 
-
+            
         <div class="col-sm-4">
-            <!--Related works / Edit -->
+            <!--Related editions / Edit -->
             <div class="bg-light p-3">
                 <div>
-                    {% if ordered_works_editions|length < 2 %}
-                        {% if ordered_works_editions.0.type == 'work' %}
-                        <p><strong>Related Work:</strong> 
-                            <a href="{% url 'read:work_detail' ordered_works_editions.0.work.id %}">
-                                {{ ordered_works_editions.0.work.title }}
-                            </a>
-                        </p>
-                        {% elif ordered_works_editions.0.type == 'edition' %}
-                        <p><strong>Related Edition:</strong> 
-                            <a href="{% url 'read:edition_detail' ordered_works_editions.0.edition.id %}">
-                                {{ ordered_works_editions.0.edition.title }}    
-                            </a>
-                        </p>
-                        {% endif %}
-                    {% else %}
-                        <div class="row">
-                            <h5>Table of Content</h5>
-                            <!--list all related works by order-->
-                            <div class="col-sm-12">
-                                {% for item in ordered_works_editions %}
-                                    <div class="related-work"> 
-                                        <p>
-                                            {% if item.type == 'work' %}
-                                            <a href="{% url 'read:work_detail' item.work.id %}">
-                                                {{ item.work.title }}
-                                            </a> 
-                                            {% elif item.type == 'edition' %}
-                                            <a href="{% url 'read:edition_detail' item.edition.id %}">
-                                                {{ item.edition.title }}
-                                            </a> 
-
-                                            {% endif %} 
-                                        </p>
-                                    </div>
-                                {% empty %}
-                                    <p>No related works found.</p>
-                                {% endfor %}
-                            </div>
-                        </div>   
-                    {% endif %}  
-                    {% if user.is_authenticated %}
-                        <div class="mt-3">
-                            <a href="{% url 'read:book_update' object.pk %}" class='fs-6 text-secondary'>Edit book data</a>
-                        </div>
-                        
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        
-        
-
-    
-        {% comment %} <div class="col-sm-4">
-            <!--Related works / Edit -->
-            <div class="bg-light p-3">
-                <div>
-                    {% if object.bookwork_set.count %}
-                        {% if object.bookwork_set.count < 2 %}
-                            {% if object.bookwork_set.first.work.id %}
+                    {% if object.bookedition_set.count %}
+                        {% if object.bookedition_set.count < 2 %}
+                            {% if object.bookedition_set.first.edition.id %}
                             <p><strong>Related Work:</strong> 
-                                <a href="{% url 'read:work_detail' object.bookwork_set.first.work.id %}">
-                                    {{ object.bookwork_set.first.alt_title|default:object.bookwork_set.first.work.title }}
+                                <a href="{% url 'read:edition_detail' object.bookedition_set.first.edition.id %}">
+                                    {{ object.bookedition_set.first.alt_title|default:object.bookedition_set.first.edition.title }}
                                 </a>
                             </p>
                             {% endif %}
                         {% else %}
                             <div class="row">
                                 <h5>Table of Content</h5>
-                                <!--list all related works by order-->
+                                <!--list all related editions by order-->
                                 <div class="col-sm-12">
-                                    {% for book_work in object.bookwork_set.all %}
-                                        <div class="related-work"> 
+                                    {% for book_edition in object.bookedition_set.all %}
+                                        <div class="related-edition"> 
                                             <p>
-                                                <a href="{% url 'read:work_detail' book_work.work.id %}">
-                                                    {{ book_work.alt_title|default:book_work.work.title }}
+                                                <a href="{% url 'read:edition_detail' book_edition.edition.id %}">
+                                                    {{ book_edition.alt_title|default:book_edition.edition.title }}
                                                 </a> 
-                                                ({% if book_work.role %}{{ book_work.role.name }}: 
-                                                    <a href="{% url 'entity:person_detail' book_work.person.id %}">
-                                                        {{ book_work.name|default:book_work.person.name }}
+                                                ({% if book_edition.role %}{{ book_edition.role.name }}: 
+                                                    <a href="{% url 'entity:person_detail' book_edition.person.id %}">
+                                                        {{ book_edition.name|default:book_edition.person.name }}
                                                     </a>
                                                     , 
-                                                {% endif %}{{ book_work.publication_date|default:book_work.work.publication_date }})
+                                                {% endif %}{{ book_edition.publication_date|default:book_edition.edition.publication_date }})
                                             </p>
                                         </div>
                                     {% empty %}
-                                        <p>No related works found.</p>
+                                        <p>No related editions found.</p>
                                     {% endfor %}
                                 </div>
                             </div>   
@@ -236,7 +179,7 @@
                 <p><strong>Reading:</strong> {{ reading_count }}</p>
                 <p><strong>Read:</strong> {{ read_count }}</p>
             </div>
-        </div> {% endcomment %}
+        </div>
     </div>
 </div>
 

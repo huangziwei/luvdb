@@ -26,7 +26,7 @@
                 <ul>
                 {% for work in works %}
                     <li>
-                        {% if work.work_type == 'Novel' %}
+                        {% if work.work_type == 'NO' %}
                             <a href="{% url 'read:work_detail' work.pk %}" style="font-weight: bold;">{{ work.title }}</a> ({{ work.publication_date}})
                         {% else %}
                             <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date}})

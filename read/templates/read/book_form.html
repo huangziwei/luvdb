@@ -45,30 +45,10 @@
         {% endfor %}
     </div>
     
-    {{ bookworks.management_form|crispy }}
-    <div id="book-work-formset" class="bg-light p-3 mb-3">
-        <strong>Works related to this book</strong>
-            <p class='text-muted'>A "Work" is the first edition of a literature work, e.g. the original version of a work. If you are relating a revised or a translated version of a work to this book, use the Edition form below.</p>
-        {% for form in bookworks %}
-        <div class="form-wrapper">
-            <div class="row">
-                {{ form.id }}
-                <div class="col-md-9">
-                    {{ form.work | as_crispy_field}}
-                    <a href="{% url 'read:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>
-                </div>
-                <div class="col-md-2">
-                    {{ form.order | as_crispy_field}}
-                </div>
-            </div>
-        </div>  
-        {% endfor %}
-    </div>
-
     {{ bookeditions.management_form|crispy }}
     <div id="book-edition-formset" class="bg-light p-3 mb-3">
         <strong>Editions related to this book</strong>
-        <p class='text-muted'>An "Edition" is any edition of a literature work other than the first edition. E.g. revised version, translation, etc. If you are relating a first version of a work to this book, use the Work form above.</p>
+        <p class='text-muted'>An "Edition" is any edition of a literature work, e.g. the original version, revised version, or translation, etc. </p>
         {% for form in bookeditions %}
         <div class="form-wrapper">
             <div class="row">

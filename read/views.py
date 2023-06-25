@@ -271,23 +271,6 @@ class BookDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         book = get_object_or_404(Book, pk=self.kwargs["pk"])
 
-        # Assign the type to each object in bookwork_set and bookedition_set
-        works = book.bookwork_set.all()
-        for work in works:
-            work.type = "work"
-
-        editions = book.bookedition_set.all()
-        for edition in editions:
-            edition.type = "edition"
-
-        # Concatenate the two sets
-        ordered_works_editions = list(works) + list(editions)
-
-        # Sort the combined list by order
-        ordered_works_editions.sort(key=lambda x: x.order)
-
-        context["ordered_works_editions"] = ordered_works_editions
-
         roles = {}
         for book_role in book.bookrole_set.all():
             if book_role.role.name not in roles:

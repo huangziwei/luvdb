@@ -254,13 +254,9 @@ class Book(models.Model):
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False)
     persons = models.ManyToManyField(Person, through="BookRole", related_name="books")
-    works = models.ManyToManyField(Work, through="BookWork", related_name="books")
     editions = models.ManyToManyField(
         Edition, through="BookEdition", related_name="books"
     )
-    # work_roles = models.ManyToManyField(
-    #     Work, through="BookWorkRole", related_name="books"
-    # )
     publisher = models.ForeignKey(
         Publisher,
         on_delete=models.SET_NULL,
