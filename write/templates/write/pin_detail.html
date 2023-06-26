@@ -20,7 +20,7 @@
           <p>
             <a href="{{ object.url }}">{{ object.title }}</a> 
             {% comment %} ({{ object.url|root_url }}) {% endcomment %}
-            (<a href="{% url 'write:pins_from_url' object.url|root_url %}">{{ pin.url|root_url }}</a>)
+            (<a href="{% url 'write:pins_from_url' object.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
           </p>
           {% if object.content %}
           <div>{{ object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</div>

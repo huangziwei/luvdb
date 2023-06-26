@@ -78,6 +78,7 @@ class LanguageField(models.CharField):
         kwargs["max_length"] = 8
         kwargs["blank"] = True
         kwargs["null"] = True
+        kwargs["default"] = None
         kwargs["choices"] = self.get_language_choices()
         super(LanguageField, self).__init__(*args, **kwargs)
 

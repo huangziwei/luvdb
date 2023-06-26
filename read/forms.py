@@ -24,8 +24,6 @@ from .models import (
 # Work #
 ########
 class WorkForm(forms.ModelForm):
-    language = forms.ChoiceField(choices=Work.language.field.choices)
-
     class Meta:
         model = Work
         exclude = ["created_by", "updated_by", "persons"]
@@ -76,8 +74,6 @@ WorkRoleFormSet = inlineformset_factory(
 # Edition #
 ###########
 class EditionForm(forms.ModelForm):
-    language = forms.ChoiceField(choices=Edition.language.field.choices)
-
     class Meta:
         model = Edition
         exclude = ["created_by", "updated_by", "persons"]
