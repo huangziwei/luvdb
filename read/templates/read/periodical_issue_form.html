@@ -1,0 +1,26 @@
+{% load crispy_forms_tags %}
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+{{ form|crispy }}
+{{ issueeditions.management_form|crispy }}
+<div id="issue-edition-formset" class="bg-light p-3 mb-3">
+    <strong>Editions related to this issue</strong>
+    <p class='text-muted'>An "Edition" is any edition of a literature work, e.g. the original version, revised version, or translation, etc. </p>
+    {% for form in issueeditions %}
+    <div class="form-wrapper">
+        <div class="row">
+            {{ form.id }}
+            <div class="col-md-9">
+                {{ form.edition | as_crispy_field}}
+                <a href="{% url 'read:edition_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new edition?</a>
+            </div>
+            <div class="col-md-2">
+                {{ form.order | as_crispy_field}}
+            </div>
+        </div>
+    </div>  
+    {% endfor %}
+</div>
+<button type="submit" class="btn btn-sm btn-primary">Submit</button>
+</form>

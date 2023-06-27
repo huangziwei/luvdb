@@ -30,6 +30,16 @@
                 </li>
             </ul>
             {% endfor %} 
+
+            {% for issue in edition.issues.all %}
+            <ul>
+                <li>
+                    <a href="{% url 'read:issue_detail' issue.periodical.pk issue.pk %}">{{ issue.title }}</a>
+                    , {{ issue.periodical.title }}
+                    ({{ issue.publication_date }})
+                </li>
+            </ul>
+            {% endfor %}
         </li>
     {% endfor %}
     </ul>

@@ -367,24 +367,6 @@ class BookRole(models.Model):
         return f"{self.book} - {self.alt_name or self.person.name} - {self.role}"
 
 
-class BookWork(models.Model):
-    """
-    A mapping model for the order of Works in a Book
-    """
-
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    work = models.ForeignKey(Work, on_delete=models.CASCADE, null=True, blank=True)
-    order = models.PositiveIntegerField(
-        null=True, blank=True, default=1
-    )  # Ordering of the works in a book
-
-    class Meta:
-        ordering = ["order"]
-
-    def __str__(self):
-        return f"{self.book} - {self.work} - {self.order}"
-
-
 class BookEdition(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     edition = models.ForeignKey(
@@ -519,14 +501,32 @@ class Issue(models.Model):
     periodical = models.ForeignKey(
         Periodical, on_delete=models.CASCADE, related_name="issues"
     )
+    title = models.CharField(max_length=255, blank=True, null=True)
     volume = models.IntegerField(blank=True, null=True)
     number = models.IntegerField(blank=True, null=True)
     publication_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
-    title = models.CharField(max_length=255, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
-    editions = models.ManyToManyField(Edition, related_name="issues")
+    editions = models.ManyToManyField(
+        Edition, through="IssueEdition", related_name="issues"
+    )
 
     def __str__(self):
         return f"{self.periodical.title} - Issue {self.number} - Volume {self.volume}"
+
+
+class IssueEdition(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
+    edition = models.ForeignKey(
+        Edition, on_delete=models.CASCADE, null=True, blank=True
+    )
+    order = models.PositiveIntegerField(
+        null=True, blank=True, default=1
+    )  # Ordering of the works in a book
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.issue} - {self.edition} - {self.order}"

@@ -1,10 +1,20 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
+
+{% block title %}Update Issue{% endblock %}
+
 {% block content %}
-  <h2>Update Issue for "{{ form.initial.periodical.title }}"</h2>
-  <form method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form|crispy }}
-  <button type="submit">Create</button>
-  </form>
+  <div class="container">
+    <div class="row">
+        <div class="col-sm-7 left-column">
+          <h3>Update Issue for "{{ form.initial.periodical.title }}"</h3>
+          {% include "read/periodical_issue_form.html" %}
+        </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+  {{ issueeditions.media }}
+  <script type="text/javascript" src="{% static 'js/issue.js' %}"></script>
 {% endblock %}

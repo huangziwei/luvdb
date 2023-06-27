@@ -3,10 +3,12 @@ from django.contrib import admin
 from .models import (
     Book,
     BookCheckIn,
+    BookEdition,
     BookRole,
     Edition,
     EditionRole,
     Issue,
+    IssueEdition,
     Periodical,
     Person,
     Publisher,
@@ -59,6 +61,12 @@ class BookRoleInline(admin.TabularInline):
     autocomplete_fields = ["person"]
 
 
+class BookEditionInline(admin.TabularInline):
+    model = BookEdition
+    extra = 1
+    autocomplete_fields = ["edition"]
+
+
 class BookAdmin(admin.ModelAdmin):
     list_display = (
         "title",
@@ -70,7 +78,7 @@ class BookAdmin(admin.ModelAdmin):
 
     search_fields = ("title",)
 
-    inlines = [BookRoleInline]  # Changed to new inline
+    inlines = [BookRoleInline, BookEditionInline]  # Changed to new inline
 
     autocomplete_fields = ["publisher"]
 
@@ -80,9 +88,17 @@ class PeriodicalAdmin(admin.ModelAdmin):
     search_fields = ("title",)
 
 
+class IssueEditionInline(admin.TabularInline):
+    model = IssueEdition
+    extra = 1
+    autocomplete_fields = ["edition"]
+
+
 class IssueAdmin(admin.ModelAdmin):
     list_display = ("title",)
     search_fields = ("title",)
+
+    inlines = [IssueEditionInline]  # Changed to new inline
 
 
 class RoleAdmin(admin.ModelAdmin):

@@ -24,10 +24,9 @@ from .forms import (
     BookEditionFormSet,
     BookForm,
     BookRoleFormSet,
-    BookWork,
-    BookWorkFormSet,
     EditionForm,
     EditionRoleFormSet,
+    IssueEditionFormSet,
     IssueForm,
     PeriodicalForm,
     WorkForm,
@@ -245,20 +244,17 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
             data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
-            data["bookworks"] = BookWorkFormSet(self.request.POST, instance=self.object)
             data["bookeditions"] = BookEditionFormSet(
                 self.request.POST, instance=self.object
             )
         else:
             data["bookroles"] = BookRoleFormSet(instance=self.object)
-            data["bookworks"] = BookWorkFormSet(instance=self.object)
             data["bookeditions"] = BookEditionFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         bookroles = context["bookroles"]
-        bookworks = context["bookworks"]
         bookeditions = context["bookeditions"]
         with transaction.atomic():
             form.instance.created_by = self.request.user
@@ -267,9 +263,6 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             if bookroles.is_valid():
                 bookroles.instance = self.object
                 bookroles.save()
-            if bookworks.is_valid():
-                bookworks.instance = self.object
-                bookworks.save()
             if bookeditions.is_valid():
                 bookeditions.instance = self.object
                 bookeditions.save()
@@ -391,21 +384,17 @@ class BookUpdateView(UpdateView):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
             data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
-            data["bookworks"] = BookWorkFormSet(self.request.POST, instance=self.object)
             data["bookeditions"] = BookEditionFormSet(
                 self.request.POST, instance=self.object
             )
         else:
             data["bookroles"] = BookRoleFormSet(instance=self.object)
-            data["bookworks"] = BookWorkFormSet(instance=self.object)
             data["bookeditions"] = BookEditionFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         bookroles = context["bookroles"]
-        bookworks = context["bookworks"]
-        print("bookroles: ", bookroles.errors)
         bookeditions = context["bookeditions"]
         with transaction.atomic():
             form.instance.updated_by = self.request.user
@@ -422,9 +411,6 @@ class BookUpdateView(UpdateView):
                         print(
                             "BookRoles form errors: ", bookroles.errors
                         )  # print form errors
-                    if bookworks.is_valid():
-                        bookworks.instance = self.object
-                        bookworks.save()
                     if bookeditions.is_valid():
                         bookeditions.instance = self.object
                         bookeditions.save()
@@ -482,8 +468,29 @@ class IssueCreateView(CreateView):
         periodical_id = self.kwargs.get("periodical_id")
         return reverse("read:periodical_detail", kwargs={"pk": periodical_id})
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["issueeditions"] = IssueEditionFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["issueeditions"] = IssueEditionFormSet(instance=self.object)
+        return data
+
     def form_valid(self, form):
         form.instance.created_by = self.request.user
+        context = self.get_context_data()
+        issueeditions = context["issueeditions"]
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if issueeditions.is_valid():
+                issueeditions.instance = self.object
+                issueeditions.save()
+            else:
+                print(issueeditions.errors)  # print out formset errors
         return super().form_valid(form)
 
 
@@ -516,8 +523,29 @@ class IssueUpdateView(UpdateView):
         periodical_id = self.object.periodical.pk
         return reverse("read:periodical_detail", kwargs={"pk": periodical_id})
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["issueeditions"] = IssueEditionFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["issueeditions"] = IssueEditionFormSet(instance=self.object)
+        return data
+
     def form_valid(self, form):
-        form.instance.updated_by = self.request.user
+        form.instance.created_by = self.request.user
+        context = self.get_context_data()
+        issueeditions = context["issueeditions"]
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if issueeditions.is_valid():
+                issueeditions.instance = self.object
+                issueeditions.save()
+            else:
+                print(issueeditions.errors)  # print out formset errors
         return super().form_valid(form)
 
 

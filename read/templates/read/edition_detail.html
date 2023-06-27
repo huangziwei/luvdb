@@ -18,12 +18,14 @@
     </p>
     {% endfor %}
 
+    {% if object.work.id %}
     <p>
-        Original title: <a href={% url "read:work_detail" object.work.id %}>{{object.work.title}}</a>
+        Related work: <a href={% url "read:work_detail" object.work.id %}>{{object.work.title}}</a>
         {% if object.work.publication_date %}
             ({{object.work.publication_date}})
         {% endif %}
     </p>
+    {% endif %}
 
     <h3>Books</h3>
     <div class="row">
@@ -36,6 +38,24 @@
         </div>
         {% empty %}
         <p>This edition has no related books.</p>
+        {% endfor %}
+        
+    </div>
+
+    <br>
+
+    <h3>Periodicals</h3>
+    <div class="row">
+        {% for issue in object.issues.all %}
+        <div class="col-md-4">
+            <p>
+                <a href="{% url 'read:issue_detail' issue.periodical.pk issue.pk %}">{{ issue.title }}</a>
+                , {{ issue.periodical.title }}
+                ({{ issue.publication_date }})
+            </p>
+        </div>
+        {% empty %}
+        <p>This edition has no related periodical issues.</p>
         {% endfor %}
     </div>
 </div>

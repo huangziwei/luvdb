@@ -11,10 +11,10 @@ from .models import (
     BookCheckIn,
     BookEdition,
     BookRole,
-    BookWork,
     Edition,
     EditionRole,
     Issue,
+    IssueEdition,
     Periodical,
     Work,
     WorkRole,
@@ -171,7 +171,7 @@ BookRoleFormSet = inlineformset_factory(
     Book,
     BookRole,
     form=BookRoleForm,
-    extra=15,
+    extra=10,
     can_delete=True,
     widgets={
         "person": autocomplete.ModelSelect2(
@@ -187,27 +187,6 @@ BookRoleFormSet = inlineformset_factory(
 )
 
 
-class BookWorkForm(forms.ModelForm):
-    class Meta:
-        model = BookWork
-        fields = ["work", "order"]
-
-
-BookWorkFormSet = inlineformset_factory(
-    Book,
-    BookWork,
-    form=BookWorkForm,
-    extra=15,
-    can_delete=True,
-    widgets={
-        "work": autocomplete.ModelSelect2(
-            url=reverse_lazy("read:work-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("read:work_create")},
-        ),
-    },
-)
-
-
 class BookEditionForm(forms.ModelForm):
     class Meta:
         model = BookEdition
@@ -218,7 +197,7 @@ BookEditionFormSet = inlineformset_factory(
     Book,
     BookEdition,
     form=BookEditionForm,
-    extra=15,
+    extra=100,
     can_delete=True,
     widgets={
         "edition": autocomplete.ModelSelect2(
@@ -242,6 +221,13 @@ class PeriodicalForm(forms.ModelForm):
             "website",
         ]
 
+        widgets = {
+            "publisher": autocomplete.ModelSelect2(
+                url=reverse_lazy("read:publisher-autocomplete")
+            ),
+            "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
+        }
+
 
 class IssueForm(forms.ModelForm):
     class Meta:
@@ -253,6 +239,10 @@ class IssueForm(forms.ModelForm):
             "publication_date",
             "title",
             "cover",
+        ]
+        exclude = [
+            "created_by",
+            "updated_by",
             "editions",
         ]
         widgets = {
@@ -261,9 +251,26 @@ class IssueForm(forms.ModelForm):
             ),
         }
 
-    def __init__(self, *args, **kwargs):
-        super(IssueForm, self).__init__(*args, **kwargs)
-        self.fields["editions"].required = False
+
+class IssueEditionForm(forms.ModelForm):
+    class Meta:
+        model = IssueEdition
+        fields = ["edition", "order"]
+        widgets = {
+            "edition": autocomplete.ModelSelect2(
+                url=reverse_lazy("read:edition-autocomplete"),
+                attrs={"data-create-url": reverse_lazy("read:edition_create")},
+            ),
+        }
+
+
+IssueEditionFormSet = inlineformset_factory(
+    Issue,
+    IssueEdition,
+    form=IssueEditionForm,
+    extra=100,
+    can_delete=True,
+)
 
 
 class BookCheckInForm(forms.ModelForm):
