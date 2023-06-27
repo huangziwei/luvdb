@@ -2,14 +2,14 @@
 <form method="post" id="checkinForm">
     {% csrf_token %}
     {{ checkin_form.book }}
-    {{ checkin_form.author }}
+    {{ checkin_form.user }}
     
     <div class="row">
         <div class="col-md-7 col-sm-12 mb-2">
             <!--Status-->
             <div class="btn-group" role="group" aria-label="Status">
                 <button type="button" class="btn btn-sm btn-light status-button" id="status-to-read" onclick="setStatus(event, 'to_read')">To Read</button>
-                <button type="button" class="btn btn-sm btn-light status-button" id="status-reading" onclick="setStatus(event, 'currently_reading')">Reading</button>
+                <button type="button" class="btn btn-sm btn-light status-button" id="status-reading" onclick="setStatus(event, 'reading')">Reading</button>
                 <button type="button" class="btn btn-sm btn-light status-button" id="status-read" onclick="setStatus(event, 'finished_reading')">Read</button>
                 <div class="btn-group" role="group">
                     <button id="status-more" type="button" class="btn btn-sm btn-light dropdown-toggle status-button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -19,7 +19,7 @@
                         <li><a class="dropdown-item status-dropdown-item" id="status-paused" href="#" onclick="setStatus(event, 'paused')">Paused</a></li>
                         <li><a class="dropdown-item status-dropdown-item" id="status-abandoned" href="#" onclick="setStatus(event,'abandoned')">Abandoned</a></li>
                         <li><a class="dropdown-item status-dropdown-item" id="status-rereading" href="#" onclick="setStatus(event,'rereading')">Rereading</a></li>
-                        <li><a class="dropdown-item status-dropdown-item" id="status-finished_rereading" href="#" onclick="setStatus(event,'finished_rereading')">Reread</a></li>
+                        <li><a class="dropdown-item status-dropdown-item" id="status-reread" href="#" onclick="setStatus(event,'reread')">Reread</a></li>
                     </ul>
                 </div>
             </div>
@@ -65,12 +65,12 @@
 <script>
     var status_mapping = {
         "to_read": "status-to-read",
-        "currently_reading": "status-reading",
+        "reading": "status-reading",
         "finished_reading": "status-read",
         "paused": "status-paused",
         "abandoned": "status-abandoned",
         "rereading": "status-rereading",
-        "finished_rereading": "status-finished_rereading",
+        "reread": "status-reread",
     };
 
     function setStatus(event, status) {

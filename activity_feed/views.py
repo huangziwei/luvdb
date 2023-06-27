@@ -31,7 +31,7 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         form = ActivityFeedSayForm(request.POST)
         if form.is_valid():
             say = form.save(commit=False)
-            say.author = request.user
+            say.user = request.user
             say.save()
         return redirect("activity_feed:activity_feed")
 

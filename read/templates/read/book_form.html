@@ -10,10 +10,10 @@
         {{ form.publisher|as_crispy_field }}
         <a href="{% url 'read:publisher_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new publisher?</a>                   
     </div>
-    {{ form.language|as_crispy_field}}
+    {{ form.language|as_crispy_field }}
     {{ form.details|as_crispy_field }}
     {{ form.publication_date|as_crispy_field }}
-    {{ form.book_format|as_crispy_field }}
+    {{ form.format|as_crispy_field }}
     {{ form.pages|as_crispy_field }}
     {{ form.price|as_crispy_field }}
     {{ form.isbn_10|as_crispy_field }}

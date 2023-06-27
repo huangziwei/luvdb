@@ -8,7 +8,7 @@
   <h3>Says</h3>
   {% for say in says %}
     <div class="item">
-        <p><a href="{{ say.author.username }}"> {{ say.author.display_name | default:say.author.username }} </a>said:</p>
+        <p><a href="{{ say.user.username }}"> {{ say.user.display_name | default:say.user.username }} </a>said:</p>
         <div>{{ say.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</div>
         <p><small>{{ say.timestamp }}</small></p>
     </div>
@@ -20,7 +20,7 @@
     <div class="item">
         <h5><a href="{{ pin.get_absolute_url }}">{{ pin.title }}</a></h5>
         <div>{{ pin.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</div>
-        <p><small>By {{ pin.author }} on {{ pin.timestamp }}</small></p>
+        <p><small>By {{ pin.user }} on {{ pin.timestamp }}</small></p>
     </div>
   {% endfor %}
 
@@ -30,7 +30,7 @@
     <div class="item">
         <h5><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
         <div>{{ post.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</div>
-        <p><small>By {{ post.author }} on {{ post.timestamp }}</small></p>
+        <p><small>By {{ post.user }} on {{ post.timestamp }}</small></p>
     </div>
   {% endfor %}
   

@@ -6,15 +6,15 @@
   {% for comment in comments %}
     <div class="mb-3">
       <span class='d-flex'>
-        <a href="{% url 'accounts:detail' comment.author.username%}" class="me-2">
-          {{ comment.author.display_name | default:comment.author.username }}
+        <a href="{% url 'accounts:detail' comment.user.username%}" class="me-2">
+          {{ comment.user.display_name | default:comment.user.username }}
         </a>
         <p class='me-2 text-secondary'>{{comment.timestamp | date:"Y.m.d H:i"}} </p>
-        <a href="#" class="quote-link me-2" data-comment="{{ comment.content }}" data-author-username="{{ comment.author.username}}" data-author="{{ comment.author.display_name | default:comment.author.username }}" data-timestamp="{{comment.timestamp | date:'Y.m.d H:i'}}">Quote</a>
-        {% if comment.author == request.user %} 
+        <a href="#" class="quote-link me-2" data-comment="{{ comment.content }}" data-user-username="{{ comment.user.username}}" data-user="{{ comment.user.display_name | default:comment.user.username }}" data-timestamp="{{comment.timestamp | date:'Y.m.d H:i'}}">Quote</a>
+        {% if comment.user == request.user %} 
           <a href="{% url "write:comment_update" comment.pk %}" class="me-2">Edit</a>
         {% endif %}
-        {% if object.author == request.user or comment.author == request.user %} 
+        {% if object.user == request.user or comment.user == request.user %} 
           <a href="{% url "write:comment_delete" comment.pk %}" class="me-2">Delete</a>
         {% endif %}
       </span>
@@ -42,12 +42,12 @@
     link.addEventListener('click', function(e) {
       e.preventDefault();
       var comment = this.getAttribute('data-comment');
-      var author = this.getAttribute('data-author');
-      var authorUsername = this.getAttribute('data-author-username');
+      var user = this.getAttribute('data-user');
+      var userUsername = this.getAttribute('data-user-username');
       var timestamp = this.getAttribute('data-timestamp');
       var commentForm = document.getElementById('comment-form');
       var textarea = commentForm.querySelector('textarea');
-      textarea.value = '> ' + author + ' (' + timestamp + ')\n> ' + comment.replace(/\n/g, '\n> ') + '\n\n@' + authorUsername + ' ';
+      textarea.value = '> ' + user + ' (' + timestamp + ')\n> ' + comment.replace(/\n/g, '\n> ') + '\n\n@' + userUsername + ' ';
       textarea.focus();
     });
   });

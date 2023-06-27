@@ -34,7 +34,7 @@ class Tag(models.Model):
 
 class Comment(models.Model):
     content = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
@@ -44,40 +44,38 @@ class Comment(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
 
     def __str__(self):
-        return f"Comment by {self.author} on {self.content_object}"
+        return f"Comment by {self.user} on {self.content_object}"
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
 
-        if is_new and self.author != self.content_object.author:
-            author_url = reverse("accounts:detail", args=[self.author.username])
-            author_name = (
-                self.author.display_name
-                if self.author.display_name
-                else self.author.username
+        if is_new and self.user != self.content_object.user:
+            user_url = reverse("accounts:detail", args=[self.user.username])
+            user_name = (
+                self.user.display_name if self.user.display_name else self.user.username
             )
             content_url = self.content_object.get_absolute_url()
             content_name = self.content_object.__class__.__name__.capitalize()
-            message = f'<a href="{author_url}">@{author_name}</a> commented on your <a href="{content_url}">{content_name}</a>.'
+            message = f'<a href="{user_url}">@{user_name}</a> commented on your <a href="{content_url}">{content_name}</a>.'
 
             Notification.objects.create(
-                recipient=self.content_object.author,
-                sender_content_type=ContentType.objects.get_for_model(self.author),
-                sender_object_id=self.author.id,
+                recipient=self.content_object.user,
+                sender_content_type=ContentType.objects.get_for_model(self.user),
+                sender_object_id=self.user.id,
                 notification_type="comment",
                 message=message,
             )
         # Handle tags
         handle_tags(self, self.content)
-        create_mentions_notifications(self.author, self.content, self)
+        create_mentions_notifications(self.user, self.content, self)
 
 
 class Repost(models.Model):
     original_activity = models.ForeignKey(
         Activity, on_delete=models.SET_NULL, related_name="reposts", null=True
     )
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = GenericRelation(Comment)
@@ -117,38 +115,38 @@ class Repost(models.Model):
         super().save(*args, **kwargs)
         if is_new:
             Activity.objects.create(
-                user=self.author,
+                user=self.user,
                 activity_type="repost",
                 content_object=self,
             )
 
             # Create notification for repost
-            if self.author != self.original_activity.user:
-                author_url = reverse("accounts:detail", args=[self.author.username])
+            if self.user != self.original_activity.user:
+                user_url = reverse("accounts:detail", args=[self.user.username])
                 content_url = self.original_activity.content_object.get_absolute_url()
                 content_name = (
                     self.original_activity.content_object.__class__.__name__.capitalize()
                 )
                 repost_url = self.get_absolute_url()
-                message = f'<a href="{author_url}">@{self.author.username}</a> reposted your <a href="{content_url}">{content_name}</a>. See the <a href="{repost_url}">Repost</a>.'
+                message = f'<a href="{user_url}">@{self.user.username}</a> reposted your <a href="{content_url}">{content_name}</a>. See the <a href="{repost_url}">Repost</a>.'
 
                 Notification.objects.create(
                     recipient=self.original_activity.user,
-                    sender_content_type=ContentType.objects.get_for_model(self.author),
-                    sender_object_id=self.author.id,
+                    sender_content_type=ContentType.objects.get_for_model(self.user),
+                    sender_object_id=self.user.id,
                     notification_type="repost",
                     message=message,
                 )
 
         # Handle tags
         handle_tags(self, self.content)
-        create_mentions_notifications(self.author, self.content, self)
+        create_mentions_notifications(self.user, self.content, self)
 
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = GenericRelation(Comment)
     comments_enabled = models.BooleanField(default=True)
@@ -172,18 +170,18 @@ class Post(models.Model):
         super().save(*args, **kwargs)
         if is_new:
             Activity.objects.create(
-                user=self.author,
+                user=self.user,
                 activity_type="post",
                 content_object=self,
             )
         # Handle tags
         handle_tags(self, self.content)
-        create_mentions_notifications(self.author, self.content, self)
+        create_mentions_notifications(self.user, self.content, self)
 
 
 class Say(models.Model):
     content = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = GenericRelation(Comment)
     comments_enabled = models.BooleanField(default=True)
@@ -207,20 +205,20 @@ class Say(models.Model):
         super().save(*args, **kwargs)
         if is_new:
             Activity.objects.create(
-                user=self.author,
+                user=self.user,
                 activity_type="say",
                 content_object=self,
             )
         # Handle tags
         handle_tags(self, self.content)
-        create_mentions_notifications(self.author, self.content, self)
+        create_mentions_notifications(self.user, self.content, self)
 
 
 class Pin(models.Model):
     title = models.TextField()
     url = models.URLField()
     content = models.TextField(null=True, blank=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     comments = GenericRelation(Comment)
     comments_enabled = models.BooleanField(default=True)
@@ -244,13 +242,13 @@ class Pin(models.Model):
         super().save(*args, **kwargs)
         if is_new:
             Activity.objects.create(
-                user=self.author,
+                user=self.user,
                 activity_type="pin",
                 content_object=self,
             )
         # Handle tags
         handle_tags(self, self.content)
-        create_mentions_notifications(self.author, self.content, self)
+        create_mentions_notifications(self.user, self.content, self)
 
 
 # delete activity when a `write` is deleted
@@ -264,20 +262,20 @@ def delete_activity(sender, instance, **kwargs):
     Activity.objects.filter(content_type=content_type, object_id=instance.id).delete()
 
 
-# notify comment authors when a `write` is deleted
+# notify comment users when a `write` is deleted
 @receiver(pre_delete, sender=Post)
 @receiver(pre_delete, sender=Say)
 @receiver(pre_delete, sender=Pin)
 @receiver(pre_delete, sender=Repost)
 @receiver(pre_delete, sender="read.BookCheckIn")
-def notify_comment_authors(sender, instance, **kwargs):
+def notify_comment_users(sender, instance, **kwargs):
     # Get all the comments on the object being deleted
     comments = instance.comments.all()
 
-    # For each comment, create a notification for the author
+    # For each comment, create a notification for the user
     for comment in comments:
-        # Check if the author of the comment is the same as the author of the object
-        if comment.author == instance.author:
+        # Check if the user of the comment is the same as the user of the object
+        if comment.user == instance.user:
             # If they are the same, return early and do not create a notification
             continue
 
@@ -286,42 +284,42 @@ def notify_comment_authors(sender, instance, **kwargs):
 
         # Create the notification
         Notification.objects.create(
-            recipient=comment.author,
-            sender_content_type=ContentType.objects.get_for_model(instance.author),
-            sender_object_id=instance.author.id,
+            recipient=comment.user,
+            sender_content_type=ContentType.objects.get_for_model(instance.user),
+            sender_object_id=instance.user.id,
             notification_type="comment_on_deleted",
             message=message,
         )
 
 
-# notify comment author when comment is deleted by parent author
+# notify comment user when comment is deleted by parent user
 @receiver(pre_delete, sender=Comment)
-def notify_comment_author_on_deletion(sender, instance, **kwargs):
+def notify_comment_user_on_deletion(sender, instance, **kwargs):
     # Delay the execution of the following code until after the current transaction is committed
-    def _notify_comment_author_on_deletion():
+    def _notify_comment_user_on_deletion():
         # Check if the content_object of the comment is being deleted
         if (
             instance.content_object is not None
             and instance.content_object.pk is not None
         ):
-            # If the content_object is not being deleted, check if the author of the comment is not the same as the author of the object
-            if instance.author != instance.content_object.author:
+            # If the content_object is not being deleted, check if the user of the comment is not the same as the user of the object
+            if instance.user != instance.content_object.user:
                 # Create a message for the notification
                 content_url = instance.content_object.get_absolute_url()
-                message = f"Your comment on a <a href={content_url}>{instance.content_object.__class__.__name__}</a> was deleted by the author: <br><blockquote>{instance.content}</blockquote>"
+                message = f"Your comment on a <a href={content_url}>{instance.content_object.__class__.__name__}</a> was deleted by the user: <br><blockquote>{instance.content}</blockquote>"
 
                 # Create the notification
                 Notification.objects.create(
-                    recipient=instance.author,
+                    recipient=instance.user,
                     sender_content_type=ContentType.objects.get_for_model(
-                        instance.content_object.author
+                        instance.content_object.user
                     ),
-                    sender_object_id=instance.content_object.author.id,
-                    notification_type="comment_deleted_by_author",
+                    sender_object_id=instance.content_object.user.id,
+                    notification_type="comment_deleted_by_user",
                     message=message,
                 )
 
-    transaction.on_commit(_notify_comment_author_on_deletion)
+    transaction.on_commit(_notify_comment_user_on_deletion)
 
 
 # delete repost when activity is deleted

@@ -22,7 +22,7 @@
                 <!--badge: checkin status-->
                 {% if checkin.status == "to_read" %}
                 <span class="badge text-bg-info me-2">
-                {% elif checkin.status == "currently_reading" %}
+                {% elif checkin.status == "reading" %}
                 <span class="badge text-bg-primary me-2">    
                 {% elif checkin.status == "finished_reading" %}
                 <span class="badge text-bg-success me-2"> 
@@ -32,7 +32,7 @@
                 <span class="badge text-bg-danger me-2"> 
                 {% elif checkin.status == "rereading" %}
                 <span class="badge text-bg-primary me-2"> 
-                {% elif checkin.status == "finished_rereading" %}
+                {% elif checkin.status == "reread" %}
                 <span class="badge text-bg-success me-2">    
                 {% endif %}
                     Status: {{ checkin.get_status_display }}

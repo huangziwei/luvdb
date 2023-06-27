@@ -9,7 +9,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
 # from listen.models import Release, Track
-from read.models import Book, BookRole, BookWorkRole
+from read.models import Book, BookRole
 
 from .forms import PersonForm
 from .models import Person, Role
@@ -53,7 +53,6 @@ class PersonDetailView(DetailView):
 
         person = self.object
         book_roles = BookRole.objects.filter(person=person)
-        book_work_roles = BookWorkRole.objects.filter(person=person)
 
         # group roles by the Role name for display
         roles = {}
@@ -67,19 +66,6 @@ class PersonDetailView(DetailView):
                         "title": role.book.title,
                         "publication_date": role.book.publication_date,
                         "url": reverse("read:book_detail", args=[role.book.pk]),
-                    }
-                )
-
-        for role in book_work_roles:
-            role_name = str(role.role)
-            if role_name != "Author":
-                if role_name not in roles:
-                    roles[role_name] = []
-                roles[role_name].append(
-                    {
-                        "title": role.alt_title or role.work.title,
-                        "publication_date": role.publication_date,
-                        "url": reverse("read:work_detail", args=[role.work.pk]),
                     }
                 )
 

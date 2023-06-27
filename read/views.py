@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.html import format_html
 from django.views.generic import (
     CreateView,
@@ -28,10 +28,23 @@ from .forms import (
     BookWorkFormSet,
     EditionForm,
     EditionRoleFormSet,
+    IssueForm,
+    PeriodicalForm,
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import Book, BookCheckIn, Edition, Person, Publisher, Role, Work
+from .models import (
+    Book,
+    BookCheckIn,
+    Edition,
+    Issue,
+    LanguageField,
+    Periodical,
+    Person,
+    Publisher,
+    Role,
+    Work,
+)
 
 User = get_user_model()
 
@@ -281,12 +294,12 @@ class BookDetailView(DetailView):
             )
         context["roles"] = roles
         context["checkin_form"] = BookCheckInForm(
-            initial={"book": self.object, "author": self.request.user}
+            initial={"book": self.object, "user": self.request.user}
         )
 
         # Fetch the latest check-in from each user.
         latest_checkin_subquery = BookCheckIn.objects.filter(
-            book=self.object, author=OuterRef("author")
+            book=self.object, user=OuterRef("user")
         ).order_by("-timestamp")
         checkins = (
             BookCheckIn.objects.filter(book=self.object)
@@ -300,14 +313,14 @@ class BookDetailView(DetailView):
 
         # Book check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
-            BookCheckIn.objects.filter(book=self.object, author=OuterRef("author"))
+            BookCheckIn.objects.filter(book=self.object, user=OuterRef("user"))
             .order_by("-timestamp")
             .values("status")[:1]
         )
         latest_checkins = (
             BookCheckIn.objects.filter(book=self.object)
             .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
-            .values("author", "latest_checkin_status")
+            .values("user", "latest_checkin_status")
             .distinct()
         )
 
@@ -317,13 +330,12 @@ class BookDetailView(DetailView):
         reading_count = sum(
             1
             for item in latest_checkins
-            if item["latest_checkin_status"] in ["currently_reading", "rereading"]
+            if item["latest_checkin_status"] in ["reading", "rereading"]
         )
         read_count = sum(
             1
             for item in latest_checkins
-            if item["latest_checkin_status"]
-            in ["finished_reading", "finished_rereading"]
+            if item["latest_checkin_status"] in ["finished_reading", "reread"]
         )
 
         # Add status counts to context
@@ -353,16 +365,16 @@ class BookDetailView(DetailView):
             data=request.POST,
             initial={
                 "book": self.object,
-                "author": request.user,
+                "user": request.user,
                 "comments_enabled": True,
             },
         )
         if form.is_valid():
             book_check_in = form.save(commit=False)
-            book_check_in.author = request.user  # Set the author manually here
+            book_check_in.user = request.user  # Set the user manually here
             book_check_in.save()
         else:
-            print(form.errors)
+            print("book_checkin_in_detail:", form.errors)
 
         return redirect(self.object.get_absolute_url())
 
@@ -418,6 +430,100 @@ class BookUpdateView(UpdateView):
                         bookeditions.save()
 
         return super().form_valid(form)
+
+
+class PeriodicalCreateView(CreateView):
+    model = Periodical
+    # fields = "__all__"
+    form_class = PeriodicalForm
+    template_name = "read/periodical_create.html"
+
+    def get_success_url(self):
+        return reverse_lazy("read:periodical_detail", kwargs={"pk": self.object.pk})
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+
+class PeriodicalDetailView(DetailView):
+    model = Periodical
+    template_name = "read/periodical_detail.html"
+
+
+class PeriodicalUpdateView(UpdateView):
+    model = Periodical
+    form_class = PeriodicalForm
+    template_name = "periodical_update.html"
+    success_url = reverse_lazy("periodical_list")
+
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+
+
+class IssueCreateView(CreateView):
+    model = Issue
+    form_class = IssueForm
+    template_name = "read/periodical_issue_create.html"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        periodical_id = self.kwargs.get("periodical_id")
+        initial["periodical"] = get_object_or_404(Periodical, pk=periodical_id)
+        return initial
+
+    def get_form(self, form_class=None):
+        form = super(IssueCreateView, self).get_form(form_class)
+        form.fields["periodical"].disabled = True
+        return form
+
+    def get_success_url(self):
+        periodical_id = self.kwargs.get("periodical_id")
+        return reverse("read:periodical_detail", kwargs={"pk": periodical_id})
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+
+class IssueDetailView(DetailView):
+    model = Issue
+    template_name = "read/periodical_issue_detail.html"
+    context_object_name = "issue"
+
+    def get_queryset(self):
+        self.periodical = get_object_or_404(Periodical, pk=self.kwargs["periodical_id"])
+        return self.periodical.issues.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["periodical"] = self.periodical
+        return context
+
+
+class IssueUpdateView(UpdateView):
+    model = Issue
+    form_class = IssueForm
+    template_name = "read/periodical_issue_update.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["periodical"].disabled = True
+        return form
+
+    def get_success_url(self):
+        periodical_id = self.object.periodical.pk
+        return reverse("read:periodical_detail", kwargs={"pk": periodical_id})
+
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+
+
+################
+# AutoComplete #
+################
 
 
 class WorkAutocomplete(autocomplete.Select2QuerySetView):
@@ -517,6 +623,17 @@ class PublisherAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
+class LanguageAutocomplete(autocomplete.Select2ListView):
+    def get_list(self):
+        # Extract the display names from your LanguageField's choices
+        choices = LanguageField().get_language_choices()
+        return choices
+
+    def get_queryset(self):
+        # Return the choices for the languages
+        return self.get_language_choices()
+
+
 ########
 # Read #
 ########
@@ -553,7 +670,7 @@ class BookCheckInCreateView(LoginRequiredMixin, CreateView):
             Book, pk=self.kwargs.get("book_id")
         )  # Fetch the book based on URL parameter
         form.instance.book = book
-        form.instance.author = self.request.user
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -607,7 +724,7 @@ class BookCheckInListView(ListView):
             User, username=self.kwargs["username"]
         )  # Get user from url param
         book_id = self.kwargs["book_id"]  # Get book id from url param
-        return BookCheckIn.objects.filter(author=user, book__id=book_id).order_by(order)
+        return BookCheckIn.objects.filter(user=user, book__id=book_id).order_by(order)
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get the context
@@ -618,7 +735,7 @@ class BookCheckInListView(ListView):
         context["user"] = user
         context["order"] = order
         context["checkins"] = BookCheckIn.objects.filter(
-            author__username=self.kwargs["username"], book__id=self.kwargs["book_id"]
+            user__username=self.kwargs["username"], book__id=self.kwargs["book_id"]
         ).order_by(order)
         # Get the book details
         context["book"] = get_object_or_404(Book, pk=self.kwargs["book_id"])
@@ -633,7 +750,7 @@ class BookCheckInAllListView(ListView):
     def get_queryset(self):
         # Fetch the latest check-in from each user.
         latest_checkin_subquery = BookCheckIn.objects.filter(
-            book=self.kwargs["book_id"], author=OuterRef("author")
+            book=self.kwargs["book_id"], user=OuterRef("user")
         ).order_by("-timestamp")
 
         checkins = (

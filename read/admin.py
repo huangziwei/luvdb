@@ -4,9 +4,10 @@ from .models import (
     Book,
     BookCheckIn,
     BookRole,
-    BookWorkRole,
     Edition,
     EditionRole,
+    Issue,
+    Periodical,
     Person,
     Publisher,
     Role,
@@ -58,34 +59,30 @@ class BookRoleInline(admin.TabularInline):
     autocomplete_fields = ["person"]
 
 
-class BookWorkRoleInline(admin.TabularInline):
-    model = BookWorkRole
-    extra = 1
-
-
 class BookAdmin(admin.ModelAdmin):
     list_display = (
         "title",
-        "display_works",
         "created_at",
         "updated_at",
         "created_by",
         "updated_by",
     )
 
-    def display_works(self, obj):
-        # Access works through BookWorkRole
-        return ", ".join(
-            [work_role.work.title for work_role in obj.bookworkrole_set.all()]
-        )
-
-    display_works.short_description = "Works"
-
     search_fields = ("title",)
 
-    inlines = [BookRoleInline, BookWorkRoleInline]  # Changed to new inline
+    inlines = [BookRoleInline]  # Changed to new inline
 
     autocomplete_fields = ["publisher"]
+
+
+class PeriodicalAdmin(admin.ModelAdmin):
+    list_display = ("title",)
+    search_fields = ("title",)
+
+
+class IssueAdmin(admin.ModelAdmin):
+    list_display = ("title",)
+    search_fields = ("title",)
 
 
 class RoleAdmin(admin.ModelAdmin):
@@ -120,23 +117,12 @@ admin.site.register(Role, RoleAdmin)
 admin.site.register(WorkRole, WorkRoleAdmin)
 admin.site.register(BookRole, BookRoleAdmin)
 admin.site.register(EditionRole, EditionRoleAdmin)
-
-
-@admin.register(BookWorkRole)
-class BookWorkRoleAdmin(admin.ModelAdmin):
-    list_display = ("book", "work", "order", "person", "role", "alt_name")
-    list_filter = ("book", "work", "role")
-    search_fields = (
-        "book__title",
-        "work__title",
-        "alt_name",
-        "person__name",
-        "role__name",
-    )
+admin.site.register(Periodical, PeriodicalAdmin)
+admin.site.register(Issue, IssueAdmin)
 
 
 @admin.register(BookCheckIn)
 class BookCheckInAdmin(admin.ModelAdmin):
-    list_display = ("book", "author", "status", "progress", "content", "timestamp")
-    search_fields = ("book__title", "author__username", "content")
+    list_display = ("book", "user", "status", "progress", "content", "timestamp")
+    search_fields = ("book__title", "user__username", "content")
     list_filter = ("status", "timestamp")

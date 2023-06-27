@@ -4,7 +4,7 @@ from io import BytesIO
 
 import pycountry
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.files.base import ContentFile
@@ -246,7 +246,7 @@ class EditionRole(models.Model):
 
 class Book(models.Model):
     """
-    A Book entity of a Work
+    A Book entity of an Edition
     """
 
     # book meta data
@@ -270,7 +270,7 @@ class Book(models.Model):
     publication_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
-    book_format = models.CharField(
+    format = models.CharField(
         max_length=255, blank=True, null=True
     )  # hardcover, paperback, etc.
     pages = models.IntegerField(blank=True, null=True)
@@ -401,42 +401,6 @@ class BookEdition(models.Model):
         return f"{self.book} - {self.edition} - {self.order}"
 
 
-class BookWorkRole(models.Model):
-    """
-    A mapping model for the relationship between a Book, Work, and Role
-    """
-
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    work = models.ForeignKey(Work, on_delete=models.CASCADE, null=True, blank=True)
-    person = models.ForeignKey(
-        Person,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_query_name="book_work_roles",
-    )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
-
-    publication_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
-    alt_name = models.CharField(
-        max_length=255, blank=True, null=True
-    )  # For translated authors' names
-    alt_title = models.CharField(
-        max_length=255, blank=True, null=True
-    )  # For alternative (translated) title
-    order = models.PositiveIntegerField(
-        null=True, blank=True, default=1
-    )  # Ordering of the works in a book
-
-    class Meta:
-        ordering = ["order"]
-
-    def __str__(self):
-        return f"{self.book} - {self.work or self.alt_title} - {self.alt_name} - {self.role} - {self.order}"
-
-
 # This receiver handles deletion of the cover file when the Book instance is deleted
 @receiver(signals.post_delete, sender=Book)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
@@ -450,15 +414,15 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 
 class BookCheckIn(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     READING_STATUS_CHOICES = [
         ("to_read", "To Read"),
-        ("currently_reading", "Reading"),
+        ("reading", "Reading"),
         ("finished_reading", "Read"),
         ("paused", "Paused"),
         ("abandoned", "Abandoned"),
         ("rereading", "Rereading"),
-        ("finished_rereading", "Reread"),
+        ("reread", "Reread"),
     ]
     status = models.CharField(max_length=255, choices=READING_STATUS_CHOICES)
     share_to_feed = models.BooleanField(default=False)
@@ -501,7 +465,7 @@ class BookCheckIn(models.Model):
         if is_new and self.share_to_feed:
             # Only create activity if share_on_feed is True
             Activity.objects.create(
-                user=self.author,
+                user=self.user,
                 activity_type="book-check-in",
                 content_object=self,
             )
@@ -509,4 +473,60 @@ class BookCheckIn(models.Model):
             print("Not creating activity")
         # Handle tags
         handle_tags(self, self.content)
-        create_mentions_notifications(self.author, self.content, self)
+        create_mentions_notifications(self.user, self.content, self)
+
+
+class Periodical(models.Model):
+    title = models.CharField(max_length=255)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
+    publisher = models.ForeignKey(
+        Publisher,
+        on_delete=models.SET_NULL,
+        related_name="periodicals",
+        null=True,
+        blank=True,
+    )
+    FREQUENCY_CHOICES = (
+        ("D", "Daily"),
+        ("SW", "Semiweekly"),
+        ("W", "Weekly"),
+        ("BW", "Biweekly"),
+        ("SM", "Semimonthly"),
+        ("M", "Monthly"),
+        ("SQ", "Semiquarterly"),
+        ("BM", "Bimonthly"),
+        ("Q", "Quarterly"),
+        ("SA", "Semiannually"),
+        ("A", "Annually"),
+        ("B", "Biennially"),
+        ("T", "Triennially"),
+        ("Q", "Quadrennially"),
+        ("QQ", "Quinquennially"),
+        # Add more frequencies if needed
+    )
+    frequency = models.CharField(
+        max_length=2, choices=FREQUENCY_CHOICES, blank=True, null=True
+    )
+    language = LanguageField(max_length=8, blank=True, null=True)
+    issn = models.CharField(max_length=8, blank=True, null=True)
+    website = models.URLField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+
+
+class Issue(models.Model):
+    periodical = models.ForeignKey(
+        Periodical, on_delete=models.CASCADE, related_name="issues"
+    )
+    volume = models.IntegerField(blank=True, null=True)
+    number = models.IntegerField(blank=True, null=True)
+    publication_date = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # YYYY or YYYY-MM or YYYY-MM-DD
+    title = models.CharField(max_length=255, blank=True, null=True)
+    cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
+    editions = models.ManyToManyField(Edition, related_name="issues")
+
+    def __str__(self):
+        return f"{self.periodical.title} - Issue {self.number} - Volume {self.volume}"

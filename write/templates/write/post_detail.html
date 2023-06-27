@@ -13,10 +13,10 @@
       <span class="d-flex">
         <p class='me-2'>
           by 
-          <a href="{% url 'accounts:detail' object.author.username %}">{{object.author.display_name|default:object.author.username}}</a>
+          <a href="{% url 'accounts:detail' object.user.username %}">{{object.user.display_name|default:object.user.username}}</a>
         </p>
         <p class='me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
-        {% if object.author == request.user %}
+        {% if object.user == request.user %}
         <a href="{% url "write:post_update" object.pk %}" class="me-2">Edit</a>
         <a href="{% url "write:post_delete" object.pk %}" class="me-2">Delete</a>{% endif %}
       </span>

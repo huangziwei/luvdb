@@ -915,7 +915,7 @@
         "model": "admin.logentry",
         "pk": 67,
         "fields": {
-            "action_time": "2023-06-22T07:21:44.000Z",
+            "action_time": "2023-06-22T07:21:44Z",
             "user": 1,
             "content_type": 36,
             "object_id": "31",
@@ -1000,6 +1000,45 @@
             "object_repr": "BookCheckIn object (25)",
             "action_flag": 3,
             "change_message": ""
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 74,
+        "fields": {
+            "action_time": "2023-06-24T13:33:06.185Z",
+            "user": 1,
+            "content_type": 11,
+            "object_id": "33",
+            "object_repr": "Activity object (33)",
+            "action_flag": 2,
+            "change_message": "[{\"changed\": {\"fields\": [\"Activity type\"]}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 75,
+        "fields": {
+            "action_time": "2023-06-25T18:16:42.779Z",
+            "user": 1,
+            "content_type": 38,
+            "object_id": "4",
+            "object_repr": "1973年のピンボール",
+            "action_flag": 2,
+            "change_message": "[{\"added\": {\"name\": \"edition role\", \"object\": \"1973\\u5e74\\u306e\\u30d4\\u30f3\\u30dc\\u30fc\\u30eb - \\u6751\\u4e0a\\u6625\\u6a39 - Author\"}}]"
+        }
+    },
+    {
+        "model": "admin.logentry",
+        "pk": 76,
+        "fields": {
+            "action_time": "2023-06-25T18:16:48.960Z",
+            "user": 1,
+            "content_type": 38,
+            "object_id": "3",
+            "object_repr": "風の歌を聴け",
+            "action_flag": 2,
+            "change_message": "[{\"added\": {\"name\": \"edition role\", \"object\": \"\\u98a8\\u306e\\u6b4c\\u3092\\u8074\\u3051 - \\u6751\\u4e0a\\u6625\\u6a39 - Author\"}}]"
         }
     },
     {
@@ -2299,6 +2338,366 @@
         }
     },
     {
+        "model": "auth.permission",
+        "pk": 145,
+        "fields": {
+            "name": "Can add game check in",
+            "content_type": 37,
+            "codename": "add_gamecheckin"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 146,
+        "fields": {
+            "name": "Can change game check in",
+            "content_type": 37,
+            "codename": "change_gamecheckin"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 147,
+        "fields": {
+            "name": "Can delete game check in",
+            "content_type": 37,
+            "codename": "delete_gamecheckin"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 148,
+        "fields": {
+            "name": "Can view game check in",
+            "content_type": 37,
+            "codename": "view_gamecheckin"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 149,
+        "fields": {
+            "name": "Can add edition",
+            "content_type": 38,
+            "codename": "add_edition"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 150,
+        "fields": {
+            "name": "Can change edition",
+            "content_type": 38,
+            "codename": "change_edition"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 151,
+        "fields": {
+            "name": "Can delete edition",
+            "content_type": 38,
+            "codename": "delete_edition"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 152,
+        "fields": {
+            "name": "Can view edition",
+            "content_type": 38,
+            "codename": "view_edition"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 153,
+        "fields": {
+            "name": "Can add edition role",
+            "content_type": 39,
+            "codename": "add_editionrole"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 154,
+        "fields": {
+            "name": "Can change edition role",
+            "content_type": 39,
+            "codename": "change_editionrole"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 155,
+        "fields": {
+            "name": "Can delete edition role",
+            "content_type": 39,
+            "codename": "delete_editionrole"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 156,
+        "fields": {
+            "name": "Can view edition role",
+            "content_type": 39,
+            "codename": "view_editionrole"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 157,
+        "fields": {
+            "name": "Can add book edition",
+            "content_type": 40,
+            "codename": "add_bookedition"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 158,
+        "fields": {
+            "name": "Can change book edition",
+            "content_type": 40,
+            "codename": "change_bookedition"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 159,
+        "fields": {
+            "name": "Can delete book edition",
+            "content_type": 40,
+            "codename": "delete_bookedition"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 160,
+        "fields": {
+            "name": "Can view book edition",
+            "content_type": 40,
+            "codename": "view_bookedition"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 161,
+        "fields": {
+            "name": "Can add developer",
+            "content_type": 41,
+            "codename": "add_developer"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 162,
+        "fields": {
+            "name": "Can change developer",
+            "content_type": 41,
+            "codename": "change_developer"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 163,
+        "fields": {
+            "name": "Can delete developer",
+            "content_type": 41,
+            "codename": "delete_developer"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 164,
+        "fields": {
+            "name": "Can view developer",
+            "content_type": 41,
+            "codename": "view_developer"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 165,
+        "fields": {
+            "name": "Can add game",
+            "content_type": 42,
+            "codename": "add_game"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 166,
+        "fields": {
+            "name": "Can change game",
+            "content_type": 42,
+            "codename": "change_game"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 167,
+        "fields": {
+            "name": "Can delete game",
+            "content_type": 42,
+            "codename": "delete_game"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 168,
+        "fields": {
+            "name": "Can view game",
+            "content_type": 42,
+            "codename": "view_game"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 169,
+        "fields": {
+            "name": "Can add platform",
+            "content_type": 43,
+            "codename": "add_platform"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 170,
+        "fields": {
+            "name": "Can change platform",
+            "content_type": 43,
+            "codename": "change_platform"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 171,
+        "fields": {
+            "name": "Can delete platform",
+            "content_type": 43,
+            "codename": "delete_platform"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 172,
+        "fields": {
+            "name": "Can view platform",
+            "content_type": 43,
+            "codename": "view_platform"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 173,
+        "fields": {
+            "name": "Can add game role",
+            "content_type": 44,
+            "codename": "add_gamerole"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 174,
+        "fields": {
+            "name": "Can change game role",
+            "content_type": 44,
+            "codename": "change_gamerole"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 175,
+        "fields": {
+            "name": "Can delete game role",
+            "content_type": 44,
+            "codename": "delete_gamerole"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 176,
+        "fields": {
+            "name": "Can view game role",
+            "content_type": 44,
+            "codename": "view_gamerole"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 177,
+        "fields": {
+            "name": "Can add periodical",
+            "content_type": 45,
+            "codename": "add_periodical"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 178,
+        "fields": {
+            "name": "Can change periodical",
+            "content_type": 45,
+            "codename": "change_periodical"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 179,
+        "fields": {
+            "name": "Can delete periodical",
+            "content_type": 45,
+            "codename": "delete_periodical"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 180,
+        "fields": {
+            "name": "Can view periodical",
+            "content_type": 45,
+            "codename": "view_periodical"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 181,
+        "fields": {
+            "name": "Can add issue",
+            "content_type": 46,
+            "codename": "add_issue"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 182,
+        "fields": {
+            "name": "Can change issue",
+            "content_type": 46,
+            "codename": "change_issue"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 183,
+        "fields": {
+            "name": "Can delete issue",
+            "content_type": 46,
+            "codename": "delete_issue"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 184,
+        "fields": {
+            "name": "Can view issue",
+            "content_type": 46,
+            "codename": "view_issue"
+        }
+    },
+    {
         "model": "contenttypes.contenttype",
         "pk": 1,
         "fields": {
@@ -2587,6 +2986,86 @@
         }
     },
     {
+        "model": "contenttypes.contenttype",
+        "pk": 37,
+        "fields": {
+            "app_label": "play",
+            "model": "gamecheckin"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 38,
+        "fields": {
+            "app_label": "read",
+            "model": "edition"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 39,
+        "fields": {
+            "app_label": "read",
+            "model": "editionrole"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 40,
+        "fields": {
+            "app_label": "read",
+            "model": "bookedition"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 41,
+        "fields": {
+            "app_label": "play",
+            "model": "developer"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 42,
+        "fields": {
+            "app_label": "play",
+            "model": "game"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 43,
+        "fields": {
+            "app_label": "play",
+            "model": "platform"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 44,
+        "fields": {
+            "app_label": "play",
+            "model": "gamerole"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 45,
+        "fields": {
+            "app_label": "read",
+            "model": "periodical"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 46,
+        "fields": {
+            "app_label": "read",
+            "model": "issue"
+        }
+    },
+    {
         "model": "sessions.session",
         "pk": "1uikb1aj3hick7cgdw3q2xfnkqtwre8m",
         "fields": {
@@ -2709,7 +3188,7 @@
         "pk": 33,
         "fields": {
             "user": 1,
-            "activity_type": "check-in",
+            "activity_type": "book-check-in",
             "timestamp": "2023-06-22T07:22:49.607Z",
             "content_type": 36,
             "object_id": 44
@@ -2746,6 +3225,127 @@
             "timestamp": "2023-06-22T13:05:53.680Z",
             "content_type": 12,
             "object_id": 2
+        }
+    },
+    {
+        "model": "activity_feed.activity",
+        "pk": 39,
+        "fields": {
+            "user": 2,
+            "activity_type": "follow",
+            "timestamp": "2023-06-24T13:30:46.434Z",
+            "content_type": 12,
+            "object_id": 1
+        }
+    },
+    {
+        "model": "activity_feed.activity",
+        "pk": 40,
+        "fields": {
+            "user": 1,
+            "activity_type": "follow",
+            "timestamp": "2023-06-24T13:30:46.435Z",
+            "content_type": 12,
+            "object_id": 2
+        }
+    },
+    {
+        "model": "activity_feed.activity",
+        "pk": 41,
+        "fields": {
+            "user": 1,
+            "activity_type": "book-check-in",
+            "timestamp": "2023-06-25T19:14:18.411Z",
+            "content_type": 36,
+            "object_id": 63
+        }
+    },
+    {
+        "model": "activity_feed.activity",
+        "pk": 42,
+        "fields": {
+            "user": 1,
+            "activity_type": "repost",
+            "timestamp": "2023-06-25T19:14:24.328Z",
+            "content_type": 19,
+            "object_id": 1
+        }
+    },
+    {
+        "model": "activity_feed.activity",
+        "pk": 43,
+        "fields": {
+            "user": 1,
+            "activity_type": "say",
+            "timestamp": "2023-06-26T09:46:25.642Z",
+            "content_type": 18,
+            "object_id": 1
+        }
+    },
+    {
+        "model": "activity_feed.activity",
+        "pk": 44,
+        "fields": {
+            "user": 1,
+            "activity_type": "repost",
+            "timestamp": "2023-06-26T10:43:17.850Z",
+            "content_type": 19,
+            "object_id": 2
+        }
+    },
+    {
+        "model": "activity_feed.activity",
+        "pk": 45,
+        "fields": {
+            "user": 1,
+            "activity_type": "repost",
+            "timestamp": "2023-06-26T10:43:25.449Z",
+            "content_type": 19,
+            "object_id": 3
+        }
+    },
+    {
+        "model": "activity_feed.activity",
+        "pk": 46,
+        "fields": {
+            "user": 1,
+            "activity_type": "post",
+            "timestamp": "2023-06-26T10:43:29.311Z",
+            "content_type": 20,
+            "object_id": 3
+        }
+    },
+    {
+        "model": "activity_feed.activity",
+        "pk": 47,
+        "fields": {
+            "user": 1,
+            "activity_type": "repost",
+            "timestamp": "2023-06-26T10:43:34.350Z",
+            "content_type": 19,
+            "object_id": 4
+        }
+    },
+    {
+        "model": "activity_feed.activity",
+        "pk": 48,
+        "fields": {
+            "user": 1,
+            "activity_type": "pin",
+            "timestamp": "2023-06-26T10:43:42.081Z",
+            "content_type": 21,
+            "object_id": 1
+        }
+    },
+    {
+        "model": "activity_feed.activity",
+        "pk": 49,
+        "fields": {
+            "user": 1,
+            "activity_type": "repost",
+            "timestamp": "2023-06-26T10:43:45.882Z",
+            "content_type": 19,
+            "object_id": 5
         }
     },
     {
@@ -2916,7 +3516,7 @@
         "pk": 5,
         "fields": {
             "content": "test",
-            "author": 1,
+            "user": 1,
             "timestamp": "2023-06-21T18:10:09.673Z",
             "content_type": 20,
             "object_id": 1,
@@ -2928,9 +3528,127 @@
         "pk": 6,
         "fields": {
             "content": "> jyutgeisi (2023.06.21 20:10)\r\n> test\r\n\r\n@jyutgeisi test",
-            "author": 1,
+            "user": 1,
             "timestamp": "2023-06-21T18:10:13.673Z",
             "content_type": 20,
+            "object_id": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "write.comment",
+        "pk": 7,
+        "fields": {
+            "content": "test",
+            "user": 1,
+            "timestamp": "2023-06-26T10:43:15.098Z",
+            "content_type": 18,
+            "object_id": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "write.comment",
+        "pk": 8,
+        "fields": {
+            "content": "test",
+            "user": 1,
+            "timestamp": "2023-06-26T10:43:21.647Z",
+            "content_type": 19,
+            "object_id": 2,
+            "tags": []
+        }
+    },
+    {
+        "model": "write.comment",
+        "pk": 9,
+        "fields": {
+            "content": "test",
+            "user": 1,
+            "timestamp": "2023-06-26T10:43:31.895Z",
+            "content_type": 20,
+            "object_id": 3,
+            "tags": []
+        }
+    },
+    {
+        "model": "write.comment",
+        "pk": 10,
+        "fields": {
+            "content": "test",
+            "user": 1,
+            "timestamp": "2023-06-26T10:43:43.813Z",
+            "content_type": 21,
+            "object_id": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "write.repost",
+        "pk": 1,
+        "fields": {
+            "original_activity": 41,
+            "user": 1,
+            "content": "test",
+            "timestamp": "2023-06-25T19:14:24.325Z",
+            "comments_enabled": true,
+            "content_type": 36,
+            "object_id": 63,
+            "tags": []
+        }
+    },
+    {
+        "model": "write.repost",
+        "pk": 2,
+        "fields": {
+            "original_activity": 43,
+            "user": 1,
+            "content": "test",
+            "timestamp": "2023-06-26T10:43:17.848Z",
+            "comments_enabled": true,
+            "content_type": 18,
+            "object_id": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "write.repost",
+        "pk": 3,
+        "fields": {
+            "original_activity": 44,
+            "user": 1,
+            "content": "test",
+            "timestamp": "2023-06-26T10:43:25.447Z",
+            "comments_enabled": true,
+            "content_type": 19,
+            "object_id": 2,
+            "tags": []
+        }
+    },
+    {
+        "model": "write.repost",
+        "pk": 4,
+        "fields": {
+            "original_activity": 46,
+            "user": 1,
+            "content": "test",
+            "timestamp": "2023-06-26T10:43:34.348Z",
+            "comments_enabled": true,
+            "content_type": 20,
+            "object_id": 3,
+            "tags": []
+        }
+    },
+    {
+        "model": "write.repost",
+        "pk": 5,
+        "fields": {
+            "original_activity": 48,
+            "user": 1,
+            "content": "test",
+            "timestamp": "2023-06-26T10:43:45.881Z",
+            "comments_enabled": true,
+            "content_type": 21,
             "object_id": 1,
             "tags": []
         }
@@ -2941,7 +3659,7 @@
         "fields": {
             "title": "Test",
             "content": "Test",
-            "author": 1,
+            "user": 1,
             "timestamp": "2023-06-21T18:10:07.096Z",
             "comments_enabled": true,
             "tags": []
@@ -2953,12 +3671,48 @@
         "fields": {
             "title": "Citation and Redaction",
             "content": "Now you can add citation to any kind of `write` like this: `[citation](/c)` or `[citation](/citation)`. It can be used anywhere[^1]. Just add it below a paragraph (but no line break between the paragraph and the citation):\r\n[this is a citation I put to this paragraph](/c)\r\n\r\n```\r\nsometext\r\n[citation](/c)\r\n```\r\n\r\n[^1]: but the effect will not apply to the feed and comment\r\n\r\nBut the best practice is putting the citation within a block quote (`>`), like this:\r\n\r\n```\r\n> this is a block quote\r\n> [citation needed](/c)\r\n```\r\n\r\nand it will look like this:\r\n\r\n> this is a block quote\r\n> [citation needed](/c)\r\n\r\nAlong with citation, I also added redaction, in another word, hiding text for spoiler ( `[text](/s)` or `[text](/spoiler)`):\r\n\r\n```\r\n[text](/s)\r\n```\r\n\r\nIt will look like this and you can click it to reveal it:\r\n\r\n[spoiler alert!](/s)\r\n\r\n#LʌvDB",
-            "author": 1,
+            "user": 1,
             "timestamp": "2023-06-22T12:26:54.406Z",
             "comments_enabled": true,
             "tags": [
                 3
             ]
+        }
+    },
+    {
+        "model": "write.post",
+        "pk": 3,
+        "fields": {
+            "title": "test",
+            "content": "test",
+            "user": 1,
+            "timestamp": "2023-06-26T10:43:29.309Z",
+            "comments_enabled": true,
+            "tags": []
+        }
+    },
+    {
+        "model": "write.say",
+        "pk": 1,
+        "fields": {
+            "content": "test",
+            "user": 1,
+            "timestamp": "2023-06-26T09:46:25.640Z",
+            "comments_enabled": true,
+            "tags": []
+        }
+    },
+    {
+        "model": "write.pin",
+        "pk": 1,
+        "fields": {
+            "title": "test",
+            "url": "https://example.com",
+            "content": "test",
+            "user": 1,
+            "timestamp": "2023-06-26T10:43:42.079Z",
+            "comments_enabled": true,
+            "tags": []
         }
     },
     {
@@ -2968,10 +3722,10 @@
             "title": "1Q84",
             "subtitle": null,
             "publication_date": "2009",
-            "language": null,
-            "work_type": "Novel",
+            "language": "de",
+            "work_type": "NO",
             "created_at": "2023-06-20T18:01:39.857Z",
-            "updated_at": "2023-06-20T21:13:52.462Z",
+            "updated_at": "2023-06-25T19:01:52.152Z",
             "created_by": 1,
             "updated_by": 1
         }
@@ -2983,10 +3737,10 @@
             "title": "ドライブ．マイ．カー",
             "subtitle": null,
             "publication_date": "2013.12",
-            "language": "日本語",
-            "work_type": "Short Story",
+            "language": "ja",
+            "work_type": "SS",
             "created_at": "2023-06-20T19:09:53.940Z",
-            "updated_at": "2023-06-20T20:35:49.979Z",
+            "updated_at": "2023-06-26T09:18:16.987Z",
             "created_by": 1,
             "updated_by": 1
         }
@@ -2998,10 +3752,10 @@
             "title": "木野",
             "subtitle": null,
             "publication_date": "2014.02",
-            "language": "日本語",
-            "work_type": "Short Story",
+            "language": "ja",
+            "work_type": "SS",
             "created_at": "2023-06-20T19:10:16.808Z",
-            "updated_at": "2023-06-20T20:36:08.936Z",
+            "updated_at": "2023-06-26T09:18:51.222Z",
             "created_by": 1,
             "updated_by": 1
         }
@@ -3013,10 +3767,10 @@
             "title": "イエスタディ",
             "subtitle": null,
             "publication_date": "2014.01",
-            "language": "日本語",
-            "work_type": "Short Story",
+            "language": "ja",
+            "work_type": "SS",
             "created_at": "2023-06-20T20:36:48.062Z",
-            "updated_at": "2023-06-20T20:36:48.071Z",
+            "updated_at": "2023-06-25T16:55:02.715Z",
             "created_by": 1,
             "updated_by": 1
         }
@@ -3028,10 +3782,10 @@
             "title": "独立器官",
             "subtitle": null,
             "publication_date": "2014.03",
-            "language": "日本語",
-            "work_type": "Short Story",
+            "language": "ja",
+            "work_type": "SS",
             "created_at": "2023-06-20T20:38:31.606Z",
-            "updated_at": "2023-06-20T20:38:56.371Z",
+            "updated_at": "2023-06-25T16:55:12.847Z",
             "created_by": 1,
             "updated_by": 1
         }
@@ -3043,10 +3797,10 @@
             "title": "シェエラザード",
             "subtitle": null,
             "publication_date": "2014.02.15",
-            "language": "日本語",
-            "work_type": "Short Story",
+            "language": "ja",
+            "work_type": "SS",
             "created_at": "2023-06-20T20:39:43.410Z",
-            "updated_at": "2023-06-20T20:39:43.417Z",
+            "updated_at": "2023-06-25T16:55:23.416Z",
             "created_by": 1,
             "updated_by": 1
         }
@@ -3092,6 +3846,51 @@
             "work_type": "Nonfiction",
             "created_at": "2023-06-21T11:28:16.214Z",
             "updated_at": "2023-06-21T11:28:16.227Z",
+            "created_by": 1,
+            "updated_by": 1
+        }
+    },
+    {
+        "model": "read.work",
+        "pk": 10,
+        "fields": {
+            "title": "風の歌を聴け",
+            "subtitle": null,
+            "publication_date": "1979.07.23",
+            "language": "ja",
+            "work_type": "NO",
+            "created_at": "2023-06-25T17:39:52.498Z",
+            "updated_at": "2023-06-25T19:01:42.125Z",
+            "created_by": 1,
+            "updated_by": 1
+        }
+    },
+    {
+        "model": "read.work",
+        "pk": 11,
+        "fields": {
+            "title": "1973年のピンボール",
+            "subtitle": null,
+            "publication_date": "1980.06.17",
+            "language": "ja",
+            "work_type": "NO",
+            "created_at": "2023-06-25T18:07:30.298Z",
+            "updated_at": "2023-06-25T18:07:30.315Z",
+            "created_by": 1,
+            "updated_by": 1
+        }
+    },
+    {
+        "model": "read.work",
+        "pk": 12,
+        "fields": {
+            "title": "羊をめぐる冒険",
+            "subtitle": null,
+            "publication_date": "1982.10.13",
+            "language": "ja",
+            "work_type": "NO",
+            "created_at": "2023-06-25T18:12:34.635Z",
+            "updated_at": "2023-06-25T18:12:34.652Z",
             "created_by": 1,
             "updated_by": 1
         }
@@ -3187,6 +3986,200 @@
         }
     },
     {
+        "model": "read.workrole",
+        "pk": 11,
+        "fields": {
+            "work": 10,
+            "person": 1,
+            "role": 1
+        }
+    },
+    {
+        "model": "read.workrole",
+        "pk": 12,
+        "fields": {
+            "work": 11,
+            "person": 1,
+            "role": 1
+        }
+    },
+    {
+        "model": "read.workrole",
+        "pk": 13,
+        "fields": {
+            "work": 12,
+            "person": 1,
+            "role": 1
+        }
+    },
+    {
+        "model": "read.edition",
+        "pk": 1,
+        "fields": {
+            "title": "Kino",
+            "subtitle": null,
+            "work": 3,
+            "publication_date": "2015.02.23",
+            "language": "de"
+        }
+    },
+    {
+        "model": "read.edition",
+        "pk": 2,
+        "fields": {
+            "title": "Drive My Car",
+            "subtitle": null,
+            "work": 2,
+            "publication_date": "2015.10.13",
+            "language": "en"
+        }
+    },
+    {
+        "model": "read.edition",
+        "pk": 3,
+        "fields": {
+            "title": "風の歌を聴け",
+            "subtitle": null,
+            "work": 10,
+            "publication_date": "1979.07.23",
+            "language": "ja"
+        }
+    },
+    {
+        "model": "read.edition",
+        "pk": 4,
+        "fields": {
+            "title": "1973年のピンボール",
+            "subtitle": null,
+            "work": 11,
+            "publication_date": "1980.06.17",
+            "language": "ja"
+        }
+    },
+    {
+        "model": "read.edition",
+        "pk": 5,
+        "fields": {
+            "title": "羊をめぐる冒険",
+            "subtitle": null,
+            "work": 12,
+            "publication_date": "1982.10.13",
+            "language": "ja"
+        }
+    },
+    {
+        "model": "read.edition",
+        "pk": 6,
+        "fields": {
+            "title": "ドライブ．マイ．カー",
+            "subtitle": null,
+            "work": 2,
+            "publication_date": "2013.12",
+            "language": "ja"
+        }
+    },
+    {
+        "model": "read.edition",
+        "pk": 7,
+        "fields": {
+            "title": "木野",
+            "subtitle": null,
+            "work": 3,
+            "publication_date": "2014.02",
+            "language": "ja"
+        }
+    },
+    {
+        "model": "read.editionrole",
+        "pk": 1,
+        "fields": {
+            "edition": 1,
+            "person": 1,
+            "alt_name": "Haruki Murakami",
+            "role": 1
+        }
+    },
+    {
+        "model": "read.editionrole",
+        "pk": 2,
+        "fields": {
+            "edition": 1,
+            "person": 3,
+            "alt_name": null,
+            "role": 2
+        }
+    },
+    {
+        "model": "read.editionrole",
+        "pk": 3,
+        "fields": {
+            "edition": 2,
+            "person": 1,
+            "alt_name": "Haruki Murakami",
+            "role": 1
+        }
+    },
+    {
+        "model": "read.editionrole",
+        "pk": 4,
+        "fields": {
+            "edition": 2,
+            "person": 2,
+            "alt_name": null,
+            "role": 2
+        }
+    },
+    {
+        "model": "read.editionrole",
+        "pk": 5,
+        "fields": {
+            "edition": 5,
+            "person": 1,
+            "alt_name": null,
+            "role": 1
+        }
+    },
+    {
+        "model": "read.editionrole",
+        "pk": 6,
+        "fields": {
+            "edition": 4,
+            "person": 1,
+            "alt_name": null,
+            "role": 1
+        }
+    },
+    {
+        "model": "read.editionrole",
+        "pk": 7,
+        "fields": {
+            "edition": 3,
+            "person": 1,
+            "alt_name": null,
+            "role": 1
+        }
+    },
+    {
+        "model": "read.editionrole",
+        "pk": 8,
+        "fields": {
+            "edition": 6,
+            "person": 1,
+            "alt_name": null,
+            "role": 1
+        }
+    },
+    {
+        "model": "read.editionrole",
+        "pk": 9,
+        "fields": {
+            "edition": 7,
+            "person": 1,
+            "alt_name": null,
+            "role": 1
+        }
+    },
+    {
         "model": "read.book",
         "pk": 2,
         "fields": {
@@ -3195,18 +4188,17 @@
             "cover": "covers/女のいない男たち-2014.04.18/e26e8b7c-975c-48d7-b49d-6cec070ef675.jpg",
             "cover_sens": false,
             "publisher": null,
-            "language": "日本語",
+            "language": "ja",
             "details": "",
             "publication_date": "2014.04.18",
-            "book_format": null,
+            "format": null,
             "pages": null,
             "price": null,
             "isbn_10": null,
             "isbn_13": "9784163900742",
             "asin": null,
-            "book_type": "SB",
             "created_at": "2023-06-21T14:13:25.635Z",
-            "updated_at": "2023-06-21T15:45:44.714Z",
+            "updated_at": "2023-06-26T09:19:48.754Z",
             "created_by": 1,
             "updated_by": 1
         }
@@ -3220,18 +4212,17 @@
             "cover": "covers/men-without-women-2017.05.09/8325cf2f-a926-455c-b9f2-54c3814918e0.jpg",
             "cover_sens": false,
             "publisher": null,
-            "language": "English",
+            "language": "en",
             "details": "",
             "publication_date": "2017.05.09",
-            "book_format": null,
+            "format": null,
             "pages": null,
             "price": null,
             "isbn_10": null,
             "isbn_13": "9780451494627",
             "asin": null,
-            "book_type": "SS",
             "created_at": "2023-06-21T14:13:25.624Z",
-            "updated_at": "2023-06-21T15:15:15.957Z",
+            "updated_at": "2023-06-25T19:08:08.393Z",
             "created_by": 1,
             "updated_by": 1
         }
@@ -3248,13 +4239,12 @@
             "language": "English",
             "details": "",
             "publication_date": "2013.10.14",
-            "book_format": null,
+            "format": null,
             "pages": null,
             "price": null,
             "isbn_10": null,
             "isbn_13": "9780714865911",
             "asin": null,
-            "book_type": "SB",
             "created_at": "2023-06-21T14:13:25.614Z",
             "updated_at": "2023-06-22T09:20:51.584Z",
             "created_by": 1,
@@ -3270,18 +4260,41 @@
             "cover": "covers/1q84-None/cc5fbc2d-0787-4b90-b3d4-d0ae9a736e7b.jpg",
             "cover_sens": false,
             "publisher": null,
-            "language": "English",
+            "language": "en",
             "details": "",
             "publication_date": "2011",
-            "book_format": null,
+            "format": null,
             "pages": null,
             "price": null,
             "isbn_10": null,
             "isbn_13": null,
             "asin": null,
-            "book_type": "SB",
             "created_at": "2023-06-21T14:13:17.629Z",
-            "updated_at": "2023-06-22T15:57:08.876Z",
+            "updated_at": "2023-06-25T19:07:55.858Z",
+            "created_by": 1,
+            "updated_by": 1
+        }
+    },
+    {
+        "model": "read.book",
+        "pk": 6,
+        "fields": {
+            "title": "羊をめぐる冒険",
+            "subtitle": null,
+            "cover": "covers/羊をめぐる冒険-None/73def7f5-f5e8-4f5e-ac30-97b5bb571227.jpg",
+            "cover_sens": false,
+            "publisher": null,
+            "language": "ja",
+            "details": "",
+            "publication_date": null,
+            "format": null,
+            "pages": null,
+            "price": null,
+            "isbn_10": null,
+            "isbn_13": null,
+            "asin": null,
+            "created_at": "2023-06-25T18:17:23.560Z",
+            "updated_at": "2023-06-25T19:03:31.514Z",
             "created_by": 1,
             "updated_by": 1
         }
@@ -3347,86 +4360,120 @@
         }
     },
     {
-        "model": "read.bookworkrole",
-        "pk": 33,
+        "model": "read.bookrole",
+        "pk": 23,
         "fields": {
-            "book": 3,
-            "work": 2,
-            "person": 2,
-            "role": 2,
-            "publication_date": null,
-            "alt_name": null,
-            "alt_title": "Drive My Car",
-            "order": 1
+            "book": 6,
+            "person": 1,
+            "role": 1,
+            "alt_name": null
         }
     },
     {
-        "model": "read.bookworkrole",
-        "pk": 34,
-        "fields": {
-            "book": 3,
-            "work": 3,
-            "person": 3,
-            "role": 2,
-            "publication_date": null,
-            "alt_name": null,
-            "alt_title": "Kino",
-            "order": 5
-        }
-    },
-    {
-        "model": "read.bookworkrole",
-        "pk": 35,
-        "fields": {
-            "book": 2,
-            "work": 2,
-            "person": null,
-            "role": null,
-            "publication_date": null,
-            "alt_name": null,
-            "alt_title": null,
-            "order": 1
-        }
-    },
-    {
-        "model": "read.bookworkrole",
-        "pk": 36,
-        "fields": {
-            "book": 2,
-            "work": 3,
-            "person": null,
-            "role": null,
-            "publication_date": null,
-            "alt_name": null,
-            "alt_title": null,
-            "order": 5
-        }
-    },
-    {
-        "model": "read.bookworkrole",
-        "pk": 37,
+        "model": "read.bookwork",
+        "pk": 1,
         "fields": {
             "book": 5,
             "work": 1,
-            "person": null,
-            "role": null,
-            "publication_date": null,
-            "alt_name": null,
-            "alt_title": null,
             "order": 1
         }
     },
     {
-        "model": "read.bookworkrole",
-        "pk": 38,
+        "model": "read.bookwork",
+        "pk": 2,
         "fields": {
-            "book": 4,
-            "work": 9,
-            "person": null,
-            "role": null,
-            "publication_date": null,
-            "alt_name": null,
-            "alt_title": null,
+            "book": 2,
+            "work": 2,
+            "order": 1
+        }
+    },
+    {
+        "model": "read.bookwork",
+        "pk": 3,
+        "fields": {
+            "book": 2,
+            "work": 4,
+            "order": 2
+        }
+    },
+    {
+        "model": "read.bookwork",
+        "pk": 4,
+        "fields": {
+            "book": 2,
+            "work": 3,
+            "order": 5
+        }
+    },
+    {
+        "model": "read.bookwork",
+        "pk": 5,
+        "fields": {
+            "book": 2,
+            "work": 8,
+            "order": 6
+        }
+    },
+    {
+        "model": "read.bookwork",
+        "pk": 6,
+        "fields": {
+            "book": 2,
+            "work": 5,
+            "order": 3
+        }
+    },
+    {
+        "model": "read.bookwork",
+        "pk": 7,
+        "fields": {
+            "book": 2,
+            "work": 6,
+            "order": 4
+        }
+    },
+    {
+        "model": "read.bookedition",
+        "pk": 1,
+        "fields": {
+            "book": 3,
+            "edition": 1,
+            "order": 5
+        }
+    },
+    {
+        "model": "read.bookedition",
+        "pk": 2,
+        "fields": {
+            "book": 3,
+            "edition": 2,
+            "order": 1
+        }
+    },
+    {
+        "model": "read.bookedition",
+        "pk": 3,
+        "fields": {
+            "book": 6,
+            "edition": 5,
+            "order": 1
+        }
+    },
+    {
+        "model": "read.bookedition",
+        "pk": 4,
+        "fields": {
+            "book": 2,
+            "edition": 7,
+            "order": 5
+        }
+    },
+    {
+        "model": "read.bookedition",
+        "pk": 5,
+        "fields": {
+            "book": 2,
+            "edition": 6,
             "order": 1
         }
     },
@@ -3435,7 +4482,7 @@
         "pk": 39,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "to_read",
             "share_to_feed": true,
             "content": "test `to read` button.",
@@ -3451,7 +4498,7 @@
         "pk": 40,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "currently_reading",
             "share_to_feed": true,
             "content": "Test `Reading` button.",
@@ -3467,7 +4514,7 @@
         "pk": 41,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "finished_reading",
             "share_to_feed": true,
             "content": "Test `Read` button.",
@@ -3483,7 +4530,7 @@
         "pk": 42,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "paused",
             "share_to_feed": true,
             "content": "Test `Paused` button.",
@@ -3499,7 +4546,7 @@
         "pk": 43,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "abandoned",
             "share_to_feed": true,
             "content": "Test `Abandoned` button.",
@@ -3515,7 +4562,7 @@
         "pk": 44,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "rereading",
             "share_to_feed": true,
             "content": "Test `Rereading` button.",
@@ -3531,7 +4578,7 @@
         "pk": 45,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "finished_rereading",
             "share_to_feed": true,
             "content": "test `finish rereading` button!",
@@ -3547,7 +4594,7 @@
         "pk": 46,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "rereading",
             "share_to_feed": false,
             "content": "",
@@ -3563,7 +4610,7 @@
         "pk": 47,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "finished_rereading",
             "share_to_feed": false,
             "content": "",
@@ -3579,7 +4626,7 @@
         "pk": 50,
         "fields": {
             "book": 5,
-            "author": 2,
+            "user": 2,
             "status": "finished_reading",
             "share_to_feed": false,
             "content": "I read it many years ago and I still think about it from time to time.",
@@ -3595,7 +4642,7 @@
         "pk": 51,
         "fields": {
             "book": 5,
-            "author": 1,
+            "user": 1,
             "status": "rereading",
             "share_to_feed": false,
             "content": "@jyutgeisi just brought all the good memory of reading this book back to my mind, now I am start rereading it!",
@@ -3611,7 +4658,7 @@
         "pk": 52,
         "fields": {
             "book": 5,
-            "author": 1,
+            "user": 1,
             "status": "to_read",
             "share_to_feed": false,
             "content": "",
@@ -3627,7 +4674,7 @@
         "pk": 53,
         "fields": {
             "book": 5,
-            "author": 1,
+            "user": 1,
             "status": "currently_reading",
             "share_to_feed": false,
             "content": "",
@@ -3643,7 +4690,7 @@
         "pk": 54,
         "fields": {
             "book": 5,
-            "author": 1,
+            "user": 1,
             "status": "finished_reading",
             "share_to_feed": false,
             "content": "",
@@ -3659,7 +4706,7 @@
         "pk": 55,
         "fields": {
             "book": 5,
-            "author": 1,
+            "user": 1,
             "status": "paused",
             "share_to_feed": false,
             "content": "",
@@ -3675,7 +4722,7 @@
         "pk": 56,
         "fields": {
             "book": 5,
-            "author": 1,
+            "user": 1,
             "status": "abandoned",
             "share_to_feed": false,
             "content": "",
@@ -3691,7 +4738,7 @@
         "pk": 57,
         "fields": {
             "book": 5,
-            "author": 1,
+            "user": 1,
             "status": "rereading",
             "share_to_feed": false,
             "content": "",
@@ -3707,7 +4754,7 @@
         "pk": 58,
         "fields": {
             "book": 5,
-            "author": 1,
+            "user": 1,
             "status": "finished_rereading",
             "share_to_feed": false,
             "content": "",
@@ -3723,7 +4770,7 @@
         "pk": 59,
         "fields": {
             "book": 5,
-            "author": 1,
+            "user": 1,
             "status": "to_read",
             "share_to_feed": false,
             "content": "",
@@ -3739,7 +4786,7 @@
         "pk": 60,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "currently_reading",
             "share_to_feed": false,
             "content": "",
@@ -3755,7 +4802,7 @@
         "pk": 61,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "to_read",
             "share_to_feed": false,
             "content": "",
@@ -3771,13 +4818,29 @@
         "pk": 62,
         "fields": {
             "book": 3,
-            "author": 1,
+            "user": 1,
             "status": "currently_reading",
             "share_to_feed": false,
             "content": "",
             "timestamp": "2023-06-22T14:13:13.810Z",
             "progress": 15,
             "progress_type": "PC",
+            "comments_enabled": true,
+            "tags": []
+        }
+    },
+    {
+        "model": "read.bookcheckin",
+        "pk": 63,
+        "fields": {
+            "book": 2,
+            "user": 1,
+            "status": "to_read",
+            "share_to_feed": true,
+            "content": "test",
+            "timestamp": "2023-06-25T19:14:18.407Z",
+            "progress": null,
+            "progress_type": "PG",
             "comments_enabled": true,
             "tags": []
         }

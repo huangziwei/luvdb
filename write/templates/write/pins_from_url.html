@@ -14,8 +14,8 @@
             <!--Pin-->
             <div class="activity-item mb-3">
                 <p>
-                    <a href="{% url 'accounts:detail' pin.author.username %}">
-                        {{ pin.author.display_name | default:pin.author.username }}
+                    <a href="{% url 'accounts:detail' pin.user.username %}">
+                        {{ pin.user.display_name | default:pin.user.username }}
                     </a> pinned:
                 </p>
                 <div style="background-color:#f9f9f9; padding: 1em;">
@@ -35,10 +35,10 @@
                     {% if pin.get_activity_id is not None %}
                     <p style='margin: 0 0.5em'><a href="{% url 'write:repost_create' pin.get_activity_id %}">Repost</a></p>
                     {% endif %}
-                    {% if pin.author != request.user %}
+                    {% if pin.user != request.user %}
                         <p style='margin: 0 0.5em'><a href="{% url 'write:pin_copy' pin.id %}">Copy</a></p>
                     {% endif %}
-                    {% if pin.author == request.user %}
+                    {% if pin.user == request.user %}
                         <p style='margin: 0 0.5em'><a href="{% url 'write:pin_update' pin.id %}">Edit</a></p>
                         <p style='margin: 0 0.5em'><a href="{% url 'write:pin_delete' pin.id %}">Delete</a></p>
                     {% endif %}

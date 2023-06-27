@@ -50,14 +50,14 @@
 
       <div class='mt-4'>
         <div class="d-flex align-items-center"> 
-          <a href="{% url 'accounts:detail' object.author.username %}" class='me-1'>
-            {{ object.author.display_name | default:object.author.username }}
+          <a href="{% url 'accounts:detail' object.user.username %}" class='me-1'>
+            {{ object.user.display_name | default:object.user.username }}
           </a> 
            <span class="me-2">checked in </span>
             <!--badge: checkin status-->
             {% if object.status == "to_read" %}
             <span class="badge text-bg-info me-2">
-            {% elif object.status == "currently_reading" %}
+            {% elif object.status == "reading" %}
             <span class="badge text-bg-primary me-2">
             {% elif object.status == "finished_reading" %}
             <span class="badge text-bg-success me-2">
@@ -67,7 +67,7 @@
             <span class="badge text-bg-danger me-2">
             {% elif object.status == "rereading" %}
             <span class="badge text-bg-primary me-2">
-            {% elif object.status == "finished_rereading" %}
+            {% elif object.status == "reread" %}
             <span class="badge text-bg-success me-2">
             {% endif %}
                 Status: {{ object.get_status_display }}
@@ -88,7 +88,7 @@
         </div>
         <span class="d-flex mt-2">
           <p class='me-2 text-secondary mb-2'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
-          {% if object.author == request.user %}
+          {% if object.user == request.user %}
           <a href="{% url "read:book_checkin_update" object.pk %}" class="me-2">Edit</a>
           <a href="{% url "read:book_checkin_delete" object.pk %}" class="me-2">Delete</a>
           {% endif %}

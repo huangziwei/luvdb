@@ -70,12 +70,37 @@ document.addEventListener("DOMContentLoaded", function() {
     handleFormset('#book-edition-formset', 'add-book-edition');
 });
 
+$(document).ready(function() {
+    $('select').removeClass('form-select');
+});
+
 // $(document).ready(function() {
-//     $('select').removeClass('form-select');
+//     $('select').on('select2:open', function (e) {
+//         $('span.select2-selection--single').removeClass('form-select');
+//     });
 // });
 
-$(document).ready(function() {
-    $('select').on('select2:open', function (e) {
-        $('span.select2-selection--single').removeClass('form-select');
-    });
-});
+// $(document).ready(function() {
+//     // Select the node that will be observed for mutations
+//     var targetNodes = document.querySelectorAll('span.select2-selection--single');
+
+//     // Options for the observer (which mutations to observe)
+//     var config = { attributes: true, attributeFilter: ['class'] };
+
+//     // Callback function to execute when mutations are observed
+//     var callback = function(mutationsList, observer) {
+//         for(var mutation of mutationsList) {
+//             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+//                 $(mutation.target).removeClass('form-select');
+//             }
+//         }
+//     };
+
+//     // Create an observer instance linked to the callback function
+//     var observer = new MutationObserver(callback);
+
+//     // Start observing the target node for configured mutations
+//     targetNodes.forEach(function(targetNode) {
+//         observer.observe(targetNode, config);
+//     });
+// });

@@ -34,7 +34,7 @@
     {% if say_results %}
         <h3>Says</h3>
         {% for say in say_results %}
-            <p>{{ say.author.display_name | default:say.author.username }} said: </p>
+            <p>{{ say.user.display_name | default:say.user.username }} said: </p>
             <p>
                 <a href="{% url 'write:say_detail' say.id %}">{{ say.content|truncatechars:50 }}</a>
             </p>

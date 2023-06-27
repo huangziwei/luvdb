@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ issue.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!--Left columns-->
+        <div class="col-sm-8">
+            <!-- issue-card -->
+            <div class="issue-card justify-content-start">
+                <div class="row">
+                    <!--cover-box-->
+                    <div class="col-md-3 me-4">
+                        <div class="cover-box">
+                            {% if issue.cover %}
+                                <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="cover-image">
+                            {% else %}
+                                <p class="no-cover-text">No Cover</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!--issue-meta-->
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <span class='d-flex align-items-start'>
+                                <h2>{{ issue.title }} </h2>
+                            </span>
+                            
+                            <div class="issue-meta">
+                                {% if issue.number %}
+                                    <p><strong>Number:</strong> {{ issue.number }}</p>
+                                {% endif %}
+                                {% if issue.volume %}
+                                    <p><strong>Volume:</strong> {{ issue.volume }}</p>
+                                {% endif %}
+                                {% if issue.publication_date %}
+                                    <p><strong>Date:</strong> {{ issue.publication_date }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- End of issue-card -->
+                    </div>
+                </div>       
+            </div>
+
+            <!-- Check-In if you have it -->
+            <!-- ... -->
+        </div>
+            
+        <div class="col-sm-4">
+            <!--Related editions / Edit -->
+            <div class="bg-light p-3">
+                <!-- Related editions or issues etc. -->
+                <!-- ... -->
+
+                {% if user.is_authenticated %}
+                    <div class="mt-3">
+                        Edit issue data
+                        <a href="{% url 'read:issue_update' issue.periodical.id issue.pk %}" class='fs-6 text-secondary'>Edit issue data</a>
+                    </div>
+                {% endif %}
+            </div>
+        
+            <!--Issue Stats if you have them-->
+            <!-- ... -->
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Periodical Detail: {{ periodical.title }}</h2>
+  <p>Subtitle: {{ periodical.subtitle }}</p>
+  <p>Publisher: {{ periodical.publisher.name }}</p>
+  <p>Frequency: {{ periodical.get_frequency_display }}</p>
+  <p>Language: {{ periodical.language }}</p>
+  <p>ISSN: {{ periodical.issn }}</p>
+  <p>Website: <a href="{{ periodical.website }}">{{ periodical.website }}</a></p>
+
+  <h3>Issues:</h3>
+  <ul>
+  {% for issue in periodical.issues.all %}
+    <li><a href="{% url 'read:issue_detail' periodical.id issue.id %}">{{ issue.title }}</a></li>
+  {% empty %}
+    <li>No issues available.</li>
+  {% endfor %}
+  </ul>
+
+  <p>
+    <a href="{% url "read:issue_create" periodical.id %}">Add an Issue?</a>
+  </p>
+{% endblock %}

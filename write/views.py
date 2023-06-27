@@ -43,7 +43,7 @@ class PostListView(ListView):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs["username"])
-        return Post.objects.filter(author=self.user).order_by("-timestamp")
+        return Post.objects.filter(user=self.user).order_by("-timestamp")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -62,7 +62,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     template_name = "write/post_create.html"
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -92,7 +92,7 @@ class SayListView(ListView):
         self.user = get_object_or_404(
             get_user_model(), username=self.kwargs["username"]
         )
-        return Say.objects.filter(author=self.user).order_by("-timestamp")
+        return Say.objects.filter(user=self.user).order_by("-timestamp")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -112,7 +112,7 @@ class SayCreateView(LoginRequiredMixin, CreateView):
     template_name = "write/say_create.html"
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -142,7 +142,7 @@ class PinListView(ListView):
         self.user = get_object_or_404(
             get_user_model(), username=self.kwargs["username"]
         )
-        return Pin.objects.filter(author=self.user).order_by("-timestamp")
+        return Pin.objects.filter(user=self.user).order_by("-timestamp")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -170,7 +170,7 @@ class PinCreateView(LoginRequiredMixin, CreateView):
         return initial
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -221,7 +221,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
     template_name = "write/comment_create.html"
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.user = self.request.user
         form.instance.content_type = ContentType.objects.get(
             app_label=self.kwargs["app_label"], model=self.kwargs["model_name"].lower()
         )
@@ -278,7 +278,7 @@ class RepostCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         original_activity = get_object_or_404(Activity, id=self.kwargs["activity_id"])
         repost = form.save(commit=False)
-        repost.author = self.request.user
+        repost.user = self.request.user
         repost.original_activity = original_activity
         repost.content_object = original_activity.content_object
         repost.save()
@@ -310,9 +310,9 @@ class RepostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = RepostForm
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
     def test_func(self):
         repost = self.get_object()
-        return self.request.user == repost.author
+        return self.request.user == repost.user

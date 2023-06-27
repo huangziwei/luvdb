@@ -11,8 +11,8 @@
   <div class="row">
     <div class="col-sm-7 left-column">
       <p>
-        <a href="{% url 'accounts:detail' repost.author.username %}">
-          {{ repost.author.display_name | default:repost.author.username }}
+        <a href="{% url 'accounts:detail' repost.user.username %}">
+          {{ repost.user.display_name | default:repost.user.username }}
         </a> reposted:
       </p>
       {% if repost.content %}
@@ -36,7 +36,7 @@
                         <!--badge: checkin status-->
                         {% if repost.original_activity.content_object.status == "to_read" %}
                         <span class="badge text-bg-info me-1">
-                        {% elif repost.original_activity.content_object.status == "currently_reading" %}
+                        {% elif repost.original_activity.content_object.status == "reading" %}
                         <span class="badge text-bg-primary me-1">
                         {% elif repost.original_activity.content_object.status == "finished_reading" %}
                         <span class="badge text-bg-success me-1">
@@ -46,7 +46,7 @@
                         <span class="badge text-bg-danger me-1">
                         {% elif repost.original_activity.content_object.status == "rereading" %}
                         <span class="badge text-bg-primary me-1">
-                        {% elif repost.original_activity.content_object.status == "finished_rereading" %}
+                        {% elif repost.original_activity.content_object.status == "reread" %}
                         <span class="badge text-bg-success me-1">
                         {% endif %}
                             Status: {{ repost.original_activity.content_object.get_status_display }}
@@ -227,7 +227,7 @@
 
       <span class="d-flex">
         <p class='me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
-        {% if object.author == request.user %}
+        {% if object.user == request.user %}
         <a href="{% url "write:repost_update" object.pk %}" class="me-2">Edit</a>
         <a href="{% url "write:repost_delete" object.pk %}" class="me-2">Delete</a>{% endif %}
       </span>

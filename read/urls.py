@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import (
+from .views import (  # IssueDetailView,
     BookCheckInAllListView,
     BookCheckInCreateView,
     BookCheckInDeleteView,
@@ -14,6 +14,13 @@ from .views import (
     EditionCreateView,
     EditionDetailView,
     EditionUpdateView,
+    IssueCreateView,
+    IssueDetailView,
+    IssueUpdateView,
+    LanguageAutocomplete,
+    PeriodicalCreateView,
+    PeriodicalDetailView,
+    PeriodicalUpdateView,
     PublisherAutocomplete,
     PublisherCreateView,
     PublisherDetailView,
@@ -71,6 +78,34 @@ urlpatterns = [
     path("book/create/", BookCreateView.as_view(), name="book_create"),
     path("book/<int:pk>/", BookDetailView.as_view(), name="book_detail"),
     path("book/<int:pk>/update/", BookUpdateView.as_view(), name="book_update"),
+    # periodical
+    path(
+        "periodical/create/", PeriodicalCreateView.as_view(), name="periodical_create"
+    ),
+    path(
+        "periodical/<int:pk>/", PeriodicalDetailView.as_view(), name="periodical_detail"
+    ),
+    path(
+        "periodical/<int:pk>/update/",
+        PeriodicalUpdateView.as_view(),
+        name="periodical_update",
+    ),
+    # issue of a periodical
+    path(
+        "periodical/<int:periodical_id>/issue/create/",
+        IssueCreateView.as_view(),
+        name="issue_create",
+    ),
+    path(
+        "periodical/<int:periodical_id>/issue/<int:pk>/",
+        IssueDetailView.as_view(),
+        name="issue_detail",
+    ),
+    path(
+        "periodical/<int:periodical_id>/issue/<int:pk>/update/",
+        IssueUpdateView.as_view(),
+        name="issue_update",
+    ),
     # publisher
     path("publisher/create/", PublisherCreateView.as_view(), name="publisher_create"),
     path("publisher/<int:pk>/", PublisherDetailView.as_view(), name="publisher_detail"),
@@ -85,5 +120,10 @@ urlpatterns = [
         "publisher-autocomplete/",
         PublisherAutocomplete.as_view(),
         name="publisher-autocomplete",
+    ),
+    path(
+        "language-autocomplete/",
+        LanguageAutocomplete.as_view(),
+        name="language-autocomplete",
     ),
 ]

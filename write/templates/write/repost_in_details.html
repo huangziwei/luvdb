@@ -6,14 +6,14 @@
     {% for repost in reposts.all %}
     <div>
       <span class='d-flex'>
-        <a href="{% url 'accounts:detail' repost.author.username%}" class="me-2">
-          {{ repost.author.display_name | default:repost.author.username }}
+        <a href="{% url 'accounts:detail' repost.user.username%}" class="me-2">
+          {{ repost.user.display_name | default:repost.user.username }}
         </a>
         <p class='me-2 text-secondary'><a href="{{repost.get_absolute_url}}" class="text-secondary">{{repost.timestamp | date:"Y.m.d H:i"}}</a></p>
-        {% if repost.author == request.user %} 
+        {% if repost.user == request.user %} 
           <a href="{% url "write:repost_update" repost.pk %}" class="me-2">Edit</a>
         {% endif %}
-        {% if object.author == request.user or repost.author == request.user %} 
+        {% if object.user == request.user or repost.user == request.user %} 
           <a href="{% url "write:repost_delete" repost.pk %}" class="me-2">Delete</a>
         {% endif %}
       </span>

@@ -67,7 +67,5 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 $(document).ready(function() {
-    $('select').on('select2:open', function (e) {
-        $('span.select2-selection--single').removeClass('form-select');
-    });
+    $('select').removeClass('form-select');
 });

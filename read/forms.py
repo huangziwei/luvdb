@@ -12,9 +12,10 @@ from .models import (
     BookEdition,
     BookRole,
     BookWork,
-    BookWorkRole,
     Edition,
     EditionRole,
+    Issue,
+    Periodical,
     Work,
     WorkRole,
 )
@@ -31,6 +32,9 @@ class WorkForm(forms.ModelForm):
         help_texts = {
             "title": "Enter the work's title in its original language. ",
             "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
+        }
+        widgets = {
+            "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
         }
 
     def __init__(self, *args, **kwargs):
@@ -86,6 +90,7 @@ class EditionForm(forms.ModelForm):
             "work": autocomplete.ModelSelect2(
                 url=reverse_lazy("read:work-autocomplete")
             ),
+            "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
         }
 
     def __init__(self, *args, **kwargs):
@@ -147,6 +152,10 @@ class BookForm(forms.ModelForm):
             "publisher": autocomplete.ModelSelect2(
                 url=reverse_lazy("read:publisher-autocomplete")
             ),
+            "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
+        }
+        help_texts = {
+            "format": "e.g. paperback, hardcover, ebook, etc.",
         }
 
 
@@ -220,45 +229,41 @@ BookEditionFormSet = inlineformset_factory(
 )
 
 
-class BookWorkRoleForm(forms.ModelForm):
-    domain = forms.CharField(initial="read", widget=forms.HiddenInput())
-
+class PeriodicalForm(forms.ModelForm):
     class Meta:
-        model = BookWorkRole
+        model = Periodical
         fields = [
-            "work",
-            "order",
-            "person",
-            "role",
-            "domain",
-            "alt_name",
-            "alt_title",
-            "publication_date",
+            "title",
+            "subtitle",
+            "publisher",
+            "frequency",
+            "language",
+            "issn",
+            "website",
         ]
 
 
-BookWorkRoleFormSet = inlineformset_factory(
-    Book,  # parent model
-    BookWorkRole,  # inline model
-    form=BookWorkRoleForm,  # form to use
-    extra=15,  # number of empty forms
-    can_delete=True,  # allow deletion
-    widgets={
-        "work": autocomplete.ModelSelect2(
-            url=reverse_lazy("read:work-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("read:work_create")},
-        ),
-        "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("entity:person-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("entity:person_create")},
-        ),
-        "role": autocomplete.ModelSelect2(
-            url=reverse_lazy("entity:role-autocomplete"),
-            forward=["domain"],
-            attrs={"data-create-url": reverse_lazy("entity:role_create")},
-        ),
-    },
-)
+class IssueForm(forms.ModelForm):
+    class Meta:
+        model = Issue
+        fields = [
+            "periodical",
+            "number",
+            "volume",
+            "publication_date",
+            "title",
+            "cover",
+            "editions",
+        ]
+        widgets = {
+            "editions": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:edition-autocomplete")
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(IssueForm, self).__init__(*args, **kwargs)
+        self.fields["editions"].required = False
 
 
 class BookCheckInForm(forms.ModelForm):
@@ -266,7 +271,7 @@ class BookCheckInForm(forms.ModelForm):
         model = BookCheckIn
         fields = [
             "book",
-            "author",
+            "user",
             "status",
             "progress",
             "progress_type",
@@ -276,11 +281,7 @@ class BookCheckInForm(forms.ModelForm):
         ]
         widgets = {
             "book": forms.HiddenInput(),
-            "author": forms.HiddenInput(),  # author is now included
-            # "status": forms.Select(choices=BookCheckIn.READING_STATUS_CHOICES),
-            # "progress": forms.NumberInput(),
-            # "progress_type": forms.Select(choices=BookCheckIn.PROGRESS_TYPE_CHOICES),
-            # "share_to_feed": forms.CheckboxInput(),
+            "user": forms.HiddenInput(),  # user is now included
             "content": forms.Textarea(
                 attrs={
                     "rows": 3,
@@ -294,4 +295,3 @@ class BookCheckInForm(forms.ModelForm):
         super(BookCheckInForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
         self.fields["content"].required = False
-        # self.fields["comments_enabled"].label = "Enable comments"

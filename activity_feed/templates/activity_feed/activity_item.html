@@ -137,7 +137,7 @@
                     <!--badge: checkin status-->
                     {% if activity.content_object.status == "to_read" %}
                     <span class="badge text-bg-info me-1">
-                    {% elif activity.content_object.status == "currently_reading" %}
+                    {% elif activity.content_object.status == "reading" %}
                     <span class="badge text-bg-primary me-1">
                     {% elif activity.content_object.status == "finished_reading" %}
                     <span class="badge text-bg-success me-1">
@@ -147,7 +147,7 @@
                     <span class="badge text-bg-danger me-1">
                     {% elif activity.content_object.status == "rereading" %}
                     <span class="badge text-bg-primary me-1">
-                    {% elif activity.content_object.status == "finished_rereading" %}
+                    {% elif activity.content_object.status == "reread" %}
                     <span class="badge text-bg-success me-1">
                     {% endif %}
                         Status: {{ activity.content_object.get_status_display }}
