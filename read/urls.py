@@ -10,10 +10,10 @@ from .views import (  # IssueDetailView,
     BookCreateView,
     BookDetailView,
     BookUpdateView,
-    EditionAutocomplete,
-    EditionCreateView,
-    EditionDetailView,
-    EditionUpdateView,
+    InstanceAutocomplete,
+    InstanceCreateView,
+    InstanceDetailView,
+    InstanceUpdateView,
     IssueCreateView,
     IssueDetailView,
     IssueUpdateView,
@@ -64,11 +64,13 @@ urlpatterns = [
         BookCheckInDeleteView.as_view(),
         name="book_checkin_delete",
     ),
-    # edition
-    path("edition/create/", EditionCreateView.as_view(), name="edition_create"),
-    path("edition/<int:pk>/", EditionDetailView.as_view(), name="edition_detail"),
+    # instance
+    path("instance/create/", InstanceCreateView.as_view(), name="instance_create"),
+    path("instance/<int:pk>/", InstanceDetailView.as_view(), name="instance_detail"),
     path(
-        "edition/<int:pk>/update/", EditionUpdateView.as_view(), name="edition_update"
+        "instance/<int:pk>/update/",
+        InstanceUpdateView.as_view(),
+        name="instance_update",
     ),
     # work
     path("work/create/", WorkCreateView.as_view(), name="work_create"),
@@ -111,9 +113,9 @@ urlpatterns = [
     path("publisher/<int:pk>/", PublisherDetailView.as_view(), name="publisher_detail"),
     # autocomplete views
     path(
-        "edition-autocomplete/",
-        EditionAutocomplete.as_view(),
-        name="edition-autocomplete",
+        "instance-autocomplete/",
+        InstanceAutocomplete.as_view(),
+        name="instance-autocomplete",
     ),
     path("work-autocomplete/", WorkAutocomplete.as_view(), name="work-autocomplete"),
     path(

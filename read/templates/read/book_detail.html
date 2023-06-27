@@ -90,38 +90,38 @@
 
             
         <div class="col-sm-4">
-            <!--Related editions / Edit -->
+            <!--Related instances / Edit -->
             <div class="bg-light p-3">
                 <div>
-                    {% if object.bookedition_set.count < 2 %}
-                        {% if object.bookedition_set.first.edition.id %}
-                        <p><strong>Related Edition:</strong> 
-                            <a href="{% url 'read:edition_detail' object.bookedition_set.first.edition.id %}">
-                                {{ object.bookedition_set.first.alt_title|default:object.bookedition_set.first.edition.title }}
+                    {% if object.bookinstance_set.count < 2 %}
+                        {% if object.bookinstance_set.first.instance.id %}
+                        <p><strong>Related Instance:</strong> 
+                            <a href="{% url 'read:instance_detail' object.bookinstance_set.first.instance.id %}">
+                                {{ object.bookinstance_set.first.alt_title|default:object.bookinstance_set.first.instance.title }}
                             </a>
                         </p>
                         {% endif %}
                     {% else %}
                         <div class="row">
                             <h5>Table of Content</h5>
-                            <!--list all related editions by order-->
+                            <!--list all related instances by order-->
                             <div class="col-sm-12">
-                                {% for book_edition in object.bookedition_set.all %}
-                                    <div class="related-edition"> 
+                                {% for book_instance in object.bookinstance_set.all %}
+                                    <div class="related-instance"> 
                                         <p>
-                                            <a href="{% url 'read:edition_detail' book_edition.edition.id %}">
-                                                {{ book_edition.alt_title|default:book_edition.edition.title }}
+                                            <a href="{% url 'read:instance_detail' book_instance.instance.id %}">
+                                                {{ book_instance.alt_title|default:book_instance.instance.title }}
                                             </a> 
-                                            ({% if book_edition.role %}{{ book_edition.role.name }}: 
-                                                <a href="{% url 'entity:person_detail' book_edition.person.id %}">
-                                                    {{ book_edition.name|default:book_edition.person.name }}
+                                            ({% if book_instance.role %}{{ book_instance.role.name }}: 
+                                                <a href="{% url 'entity:person_detail' book_instance.person.id %}">
+                                                    {{ book_instance.name|default:book_instance.person.name }}
                                                 </a>
                                                 , 
-                                            {% endif %}{{ book_edition.publication_date|default:book_edition.edition.publication_date }})
+                                            {% endif %}{{ book_instance.publication_date|default:book_instance.instance.publication_date }})
                                         </p>
                                     </div>
                                 {% empty %}
-                                    <p>No related editions found.</p>
+                                    <p>No related instances found.</p>
                                 {% endfor %}
                             </div>
                         </div>   

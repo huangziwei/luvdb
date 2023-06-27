@@ -45,17 +45,17 @@
         {% endfor %}
     </div>
     
-    {{ bookeditions.management_form|crispy }}
-    <div id="book-edition-formset" class="bg-light p-3 mb-3">
-        <strong>Editions related to this book</strong>
-        <p class='text-muted'>An "Edition" is any edition of a literature work, e.g. the original version, revised version, or translation, etc. </p>
-        {% for form in bookeditions %}
+    {{ bookinstances.management_form|crispy }}
+    <div id="book-instance-formset" class="bg-light p-3 mb-3">
+        <strong>Instances related to this book</strong>
+        <p class='text-muted'>An "Instance" is any representation of a literature work, e.g. the original version, revised version, or translation, etc. </p>
+        {% for form in bookinstances %}
         <div class="form-wrapper">
             <div class="row">
                 {{ form.id }}
                 <div class="col-md-9">
-                    {{ form.edition | as_crispy_field}}
-                    <a href="{% url 'read:edition_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new edition?</a>
+                    {{ form.instance | as_crispy_field}}
+                    <a href="{% url 'read:instance_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new instance?</a>
                 </div>
                 <div class="col-md-2">
                     {{ form.order | as_crispy_field}}

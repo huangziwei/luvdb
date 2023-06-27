@@ -167,27 +167,6 @@ class Work(models.Model):  # Renamed from Book
     def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
-        is_new = self.pk is None  # check if object is new or not
-        super().save(*args, **kwargs)
-        if is_new:  # if new object has been created
-            edition = Edition.objects.create(
-                title=self.title,
-                subtitle=self.subtitle,
-                publication_date=self.publication_date,
-                language=self.language,
-                work=self,
-            )
-            # Create corresponding EditionRole instances
-            for work_role in self.workrole_set.all():
-                print(work_role)
-                EditionRole.objects.create(
-                    edition=edition,
-                    person=work_role.person,
-                    role=work_role.role,
-                    alt_name=None,  # Replace with actual value if necessary
-                )
-
 
 class WorkRole(models.Model):  # Renamed from BookRole
     """
@@ -201,29 +180,15 @@ class WorkRole(models.Model):  # Renamed from BookRole
     def __str__(self):
         return f"{self.work} - {self.person} - {self.role}"
 
-    def save(self, *args, **kwargs):
-        is_new = self.pk is None  # check if object is new or not
-        super().save(*args, **kwargs)
-        if is_new:  # if new object has been created
-            # Check if there is an Edition associated with this Work
-            edition = self.work.editions.first()
-            if edition is not None:
-                EditionRole.objects.create(
-                    edition=edition,
-                    person=self.person,
-                    role=self.role,
-                    alt_name=None,  # Replace with actual value if necessary
-                )
 
-
-class Edition(models.Model):
+class Instance(models.Model):
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     persons = models.ManyToManyField(
-        Person, through="EditionRole", related_name="editions"
+        Person, through="InstanceRole", related_name="instances"
     )
     work = models.ForeignKey(
-        Work, on_delete=models.SET_NULL, null=True, blank=True, related_name="editions"
+        Work, on_delete=models.SET_NULL, null=True, blank=True, related_name="instances"
     )
     publication_date = models.CharField(
         max_length=10, blank=True, null=True
@@ -234,19 +199,19 @@ class Edition(models.Model):
         return self.title
 
 
-class EditionRole(models.Model):
-    edition = models.ForeignKey(Edition, on_delete=models.CASCADE)
+class InstanceRole(models.Model):
+    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=255, blank=True, null=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.edition} - {self.person} - {self.role}"
+        return f"{self.instance} - {self.person} - {self.role}"
 
 
 class Book(models.Model):
     """
-    A Book entity of an Edition
+    A Book entity of an Instance
     """
 
     # book meta data
@@ -255,8 +220,8 @@ class Book(models.Model):
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False)
     persons = models.ManyToManyField(Person, through="BookRole", related_name="books")
-    editions = models.ManyToManyField(
-        Edition, through="BookEdition", related_name="books"
+    instances = models.ManyToManyField(
+        Instance, through="BookInstance", related_name="books"
     )
     publisher = models.ForeignKey(
         Publisher,
@@ -367,10 +332,10 @@ class BookRole(models.Model):
         return f"{self.book} - {self.alt_name or self.person.name} - {self.role}"
 
 
-class BookEdition(models.Model):
+class BookInstance(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    edition = models.ForeignKey(
-        Edition, on_delete=models.CASCADE, null=True, blank=True
+    instance = models.ForeignKey(
+        Instance, on_delete=models.CASCADE, null=True, blank=True
     )
     order = models.PositiveIntegerField(
         null=True, blank=True, default=1
@@ -380,7 +345,7 @@ class BookEdition(models.Model):
         ordering = ["order"]
 
     def __str__(self):
-        return f"{self.book} - {self.edition} - {self.order}"
+        return f"{self.book} - {self.instance} - {self.order}"
 
 
 # This receiver handles deletion of the cover file when the Book instance is deleted
@@ -508,18 +473,18 @@ class Issue(models.Model):
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
-    editions = models.ManyToManyField(
-        Edition, through="IssueEdition", related_name="issues"
+    instances = models.ManyToManyField(
+        Instance, through="IssueInstance", related_name="issues"
     )
 
     def __str__(self):
         return f"{self.periodical.title} - Issue {self.number} - Volume {self.volume}"
 
 
-class IssueEdition(models.Model):
+class IssueInstance(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
-    edition = models.ForeignKey(
-        Edition, on_delete=models.CASCADE, null=True, blank=True
+    instance = models.ForeignKey(
+        Instance, on_delete=models.CASCADE, null=True, blank=True
     )
     order = models.PositiveIntegerField(
         null=True, blank=True, default=1
@@ -529,4 +494,4 @@ class IssueEdition(models.Model):
         ordering = ["order"]
 
     def __str__(self):
-        return f"{self.issue} - {self.edition} - {self.order}"
+        return f"{self.issue} - {self.instance} - {self.order}"

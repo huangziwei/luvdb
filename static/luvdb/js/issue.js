@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Call the function for work-role-formset
-    handleFormset('#issue-edition-formset', 'add-issue-edition');
+    handleFormset('#issue-instance-formset', 'add-issue-instance');
 });
 
 $(document).ready(function() {

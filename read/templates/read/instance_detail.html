@@ -5,11 +5,11 @@
     <span class='d-flex align-items-start'>
         <h2>{{ object.title }} ({{ object.publication_date }})</h2>
         {% if user.is_authenticated %}
-        <a href="{% url 'read:edition_update' object.pk %}" class='fs-6 text-secondary'>Edit Edition</a>
+        <a href="{% url 'read:instance_update' object.pk %}" class='fs-6 text-secondary'>Edit Instance</a>
         {% endif %}
     </span>
     
-    {% for role in object.editionrole_set.all %}
+    {% for role in object.instancerole_set.all %}
     <p>
         {{role.role.name }}: <a href="{% url 'entity:person_detail' role.person.id %}"> {{ role.person.name }}</a> 
         {% if role.person.romanized_name %}
@@ -37,7 +37,7 @@
             </p>
         </div>
         {% empty %}
-        <p>This edition has no related books.</p>
+        <p>This instance has no related books.</p>
         {% endfor %}
         
     </div>
@@ -55,7 +55,7 @@
             </p>
         </div>
         {% empty %}
-        <p>This edition has no related periodical issues.</p>
+        <p>This instance has no related periodical issues.</p>
         {% endfor %}
     </div>
 </div>

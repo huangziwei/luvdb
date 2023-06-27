@@ -3,12 +3,12 @@ from django.contrib import admin
 from .models import (
     Book,
     BookCheckIn,
-    BookEdition,
+    BookInstance,
     BookRole,
-    Edition,
-    EditionRole,
+    Instance,
+    InstanceRole,
     Issue,
-    IssueEdition,
+    IssueInstance,
     Periodical,
     Person,
     Publisher,
@@ -41,17 +41,17 @@ class WorkAdmin(admin.ModelAdmin):
     inlines = [WorkRoleInline]
 
 
-class EditionRoleInline(admin.TabularInline):
-    model = EditionRole
+class InstanceRoleInline(admin.TabularInline):
+    model = InstanceRole
     extra = 1
     fields = ("person", "role")
     autocomplete_fields = ["person"]
 
 
-class EditionAdmin(admin.ModelAdmin):
+class InstanceAdmin(admin.ModelAdmin):
     list_display = ("title",)
     search_fields = ("title",)
-    inlines = [EditionRoleInline]
+    inlines = [InstanceRoleInline]
 
 
 class BookRoleInline(admin.TabularInline):
@@ -61,10 +61,10 @@ class BookRoleInline(admin.TabularInline):
     autocomplete_fields = ["person"]
 
 
-class BookEditionInline(admin.TabularInline):
-    model = BookEdition
+class BookInstanceInline(admin.TabularInline):
+    model = BookInstance
     extra = 1
-    autocomplete_fields = ["edition"]
+    autocomplete_fields = ["instance"]
 
 
 class BookAdmin(admin.ModelAdmin):
@@ -78,7 +78,7 @@ class BookAdmin(admin.ModelAdmin):
 
     search_fields = ("title",)
 
-    inlines = [BookRoleInline, BookEditionInline]  # Changed to new inline
+    inlines = [BookRoleInline, BookInstanceInline]  # Changed to new inline
 
     autocomplete_fields = ["publisher"]
 
@@ -88,17 +88,17 @@ class PeriodicalAdmin(admin.ModelAdmin):
     search_fields = ("title",)
 
 
-class IssueEditionInline(admin.TabularInline):
-    model = IssueEdition
+class IssueInstanceInline(admin.TabularInline):
+    model = IssueInstance
     extra = 1
-    autocomplete_fields = ["edition"]
+    autocomplete_fields = ["instance"]
 
 
 class IssueAdmin(admin.ModelAdmin):
     list_display = ("title",)
     search_fields = ("title",)
 
-    inlines = [IssueEditionInline]  # Changed to new inline
+    inlines = [IssueInstanceInline]  # Changed to new inline
 
 
 class RoleAdmin(admin.ModelAdmin):
@@ -112,9 +112,9 @@ class WorkRoleAdmin(admin.ModelAdmin):
     list_filter = ("role",)
 
 
-class EditionRoleAdmin(admin.ModelAdmin):
-    list_display = ("edition", "person", "role")
-    search_fields = ("edition__title", "person__name", "role__name")
+class InstanceRoleAdmin(admin.ModelAdmin):
+    list_display = ("instance", "person", "role")
+    search_fields = ("instance__title", "person__name", "role__name")
     list_filter = ("role",)
 
 
@@ -128,11 +128,11 @@ admin.site.register(Person, PersonAdmin)
 admin.site.register(Publisher, PublisherAdmin)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(Book, BookAdmin)
-admin.site.register(Edition, EditionAdmin)
+admin.site.register(Instance, InstanceAdmin)
 admin.site.register(Role, RoleAdmin)
 admin.site.register(WorkRole, WorkRoleAdmin)
 admin.site.register(BookRole, BookRoleAdmin)
-admin.site.register(EditionRole, EditionRoleAdmin)
+admin.site.register(InstanceRole, InstanceRoleAdmin)
 admin.site.register(Periodical, PeriodicalAdmin)
 admin.site.register(Issue, IssueAdmin)
 

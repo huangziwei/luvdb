@@ -61,9 +61,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Call the function for edition-role-formset
-    handleFormset('#edition-role-formset', 'add-edition-role');
-    handleFormset('#edition-work-formset', 'add-edition-work');
+    // Call the function for instance-role-formset
+    handleFormset('#instance-role-formset', 'add-instance-role');
+    handleFormset('#instance-work-formset', 'add-instance-work');
 });
 
 $(document).ready(function() {

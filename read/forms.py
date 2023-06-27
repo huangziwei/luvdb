@@ -9,12 +9,12 @@ from django.urls import reverse_lazy
 from .models import (
     Book,
     BookCheckIn,
-    BookEdition,
+    BookInstance,
     BookRole,
-    Edition,
-    EditionRole,
+    Instance,
+    InstanceRole,
     Issue,
-    IssueEdition,
+    IssueInstance,
     Periodical,
     Work,
     WorkRole,
@@ -75,15 +75,15 @@ WorkRoleFormSet = inlineformset_factory(
 
 
 ###########
-# Edition #
+# Instance #
 ###########
-class EditionForm(forms.ModelForm):
+class InstanceForm(forms.ModelForm):
     class Meta:
-        model = Edition
+        model = Instance
         exclude = ["created_by", "updated_by", "persons"]
         fields = "__all__"
         help_texts = {
-            "title": "Enter the edition's title. ",
+            "title": "Enter the instance's title. ",
             "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
         }
         widgets = {
@@ -100,18 +100,18 @@ class EditionForm(forms.ModelForm):
         self.fields["language"].label = "Original Language"
 
 
-class EditionRoleForm(forms.ModelForm):
+class InstanceRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="read", widget=forms.HiddenInput())
 
     class Meta:
-        model = EditionRole
+        model = InstanceRole
         fields = ["person", "alt_name", "role", "domain"]
 
 
-EditionRoleFormSet = inlineformset_factory(
-    Edition,
-    EditionRole,
-    form=EditionRoleForm,
+InstanceRoleFormSet = inlineformset_factory(
+    Instance,
+    InstanceRole,
+    form=InstanceRoleForm,
     extra=15,
     can_delete=True,
     widgets={
@@ -138,7 +138,7 @@ class BookForm(forms.ModelForm):
             "created_by",
             "updated_by",
             "works",
-            "editions",
+            "instances",
             "persons",
         ]
         fields = "__all__"
@@ -146,8 +146,8 @@ class BookForm(forms.ModelForm):
             "work": autocomplete.ModelSelect2(
                 url=reverse_lazy("read:work-autocomplete")
             ),
-            "edition": autocomplete.ModelSelect2(
-                url=reverse_lazy("read:edition-autocomplete")
+            "instance": autocomplete.ModelSelect2(
+                url=reverse_lazy("read:instance-autocomplete")
             ),
             "publisher": autocomplete.ModelSelect2(
                 url=reverse_lazy("read:publisher-autocomplete")
@@ -187,22 +187,22 @@ BookRoleFormSet = inlineformset_factory(
 )
 
 
-class BookEditionForm(forms.ModelForm):
+class BookInstanceForm(forms.ModelForm):
     class Meta:
-        model = BookEdition
-        fields = ["edition", "order"]
+        model = BookInstance
+        fields = ["instance", "order"]
 
 
-BookEditionFormSet = inlineformset_factory(
+BookInstanceFormSet = inlineformset_factory(
     Book,
-    BookEdition,
-    form=BookEditionForm,
+    BookInstance,
+    form=BookInstanceForm,
     extra=100,
     can_delete=True,
     widgets={
-        "edition": autocomplete.ModelSelect2(
-            url=reverse_lazy("read:edition-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("read:edition_create")},
+        "instance": autocomplete.ModelSelect2(
+            url=reverse_lazy("read:instance-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("read:instance_create")},
         ),
     },
 )
@@ -243,31 +243,31 @@ class IssueForm(forms.ModelForm):
         exclude = [
             "created_by",
             "updated_by",
-            "editions",
+            "instances",
         ]
         widgets = {
-            "editions": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("read:edition-autocomplete")
+            "instances": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:instance-autocomplete")
             ),
         }
 
 
-class IssueEditionForm(forms.ModelForm):
+class IssueInstanceForm(forms.ModelForm):
     class Meta:
-        model = IssueEdition
-        fields = ["edition", "order"]
+        model = IssueInstance
+        fields = ["instance", "order"]
         widgets = {
-            "edition": autocomplete.ModelSelect2(
-                url=reverse_lazy("read:edition-autocomplete"),
-                attrs={"data-create-url": reverse_lazy("read:edition_create")},
+            "instance": autocomplete.ModelSelect2(
+                url=reverse_lazy("read:instance-autocomplete"),
+                attrs={"data-create-url": reverse_lazy("read:instance_create")},
             ),
         }
 
 
-IssueEditionFormSet = inlineformset_factory(
+IssueInstanceFormSet = inlineformset_factory(
     Issue,
-    IssueEdition,
-    form=IssueEditionForm,
+    IssueInstance,
+    form=IssueInstanceForm,
     extra=100,
     can_delete=True,
 )

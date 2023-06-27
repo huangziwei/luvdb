@@ -11,11 +11,11 @@
         <a href="{% url 'read:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>                   
     </div>
 
-    {{ editionroles.management_form|crispy }}
-    <div id="edition-role-formset" class="bg-light p-2 mb-3">
-        <strong>Persons related to this edition</strong>
+    {{ instanceroles.management_form|crispy }}
+    <div id="instance-role-formset" class="bg-light p-2 mb-3">
+        <strong>Persons related to this instance</strong>
         <p class='text-muted'>E.g. Authors, Editors, Illustrators, etc.</p>
-        {% for form in editionroles %}
+        {% for form in instanceroles %}
             <div class="row">
                 {{ form.id }}
                 <div class="col-md-4 mb-3">

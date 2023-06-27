@@ -8,37 +8,45 @@
         <a href="{% url 'read:work_update' object.pk %}" class='fs-6 text-secondary'>Edit Work</a>
         {% endif %}
     </span>
-    
+
     {% for role in object.workrole_set.all %}
     <p>
-        <a href="{% url 'entity:person_detail' role.person.id %}">{{ role.person.name }}</a> ({{ role.person.romanized_name }}) 
+        <a href="{% url 'entity:person_detail' role.person.id %}">{{ role.person.name }}</a> ({{ role.person.romanized_name }})
     </p>
     {% endfor %}
 
-
-    <h3>Editions</h3>
+    <h3>Instances</h3>
     <ul>
-    {% for edition in object.editions.all %}
+    {% for instance in instances %}
         <li>
-            <a href="{% url "read:edition_detail" edition.id %}">{{ edition.title }}</a>
-             ({{ edition.publication_date }});
+            <a href="{% url "read:instance_detail" instance.instance.id %}">{{ instance.instance.title }}</a>
+             ({{ instance.instance.publication_date }});
              Collected in:
-            {% for book in edition.books.all %}
+            {% for item in instance.items %}
             <ul>
                 <li>
-                     <a href="{% url 'read:book_detail' book.id %}">{{ book.title }}</a> ({{ book.publication_date }}) 
+                    {% if item.type == 'book' %}
+                         <a href="{% url 'read:book_detail' item.id %}">{{ item.title }}</a>
+                         {% if item.publication_date %}
+                         ({% if item.publisher %}
+                            {{ item.publisher.name }},
+                         {% endif %}
+                            {{ item.publication_date }}
+                         )
+                         {% endif %}
+                    {% elif item.type == 'issue' %}
+                        <a href="{% url 'read:issue_detail' item.periodical.id item.id %}">{{ item.title }}</a>
+                        , <a href="{% url 'read:periodical_detail' item.periodical.id %}">{{ item.periodical.title }}</a>
+                        {% if item.publication_date %}
+                         ({% if item.periodical.publisher %}
+                            {{ item.periodical.publisher.name }},
+                         {% endif %}
+                            {{ item.publication_date }}
+                         )
+                         {% endif %}
+                    {% endif %}
                 </li>
-            </ul>
-            {% endfor %} 
-
-            {% for issue in edition.issues.all %}
-            <ul>
-                <li>
-                    <a href="{% url 'read:issue_detail' issue.periodical.pk issue.pk %}">{{ issue.title }}</a>
-                    , {{ issue.periodical.title }}
-                    ({{ issue.publication_date }})
-                </li>
-            </ul>
+            </ul> 
             {% endfor %}
         </li>
     {% endfor %}

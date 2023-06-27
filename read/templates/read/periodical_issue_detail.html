@@ -25,7 +25,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
-                                <h2>{{ issue.title }} </h2>
+                                <h3>{{ issue.periodical.title }}: {{ issue.title }} </h3>
                             </span>
                             
                             <div class="issue-meta">
@@ -50,14 +50,13 @@
         </div>
             
         <div class="col-sm-4">
-            <!--Related editions / Edit -->
+            <!--Related instances / Edit -->
             <div class="bg-light p-3">
-                <!-- Related editions or issues etc. -->
+                <!-- Related instances or issues etc. -->
                 <!-- ... -->
 
                 {% if user.is_authenticated %}
                     <div class="mt-3">
-                        Edit issue data
                         <a href="{% url 'read:issue_update' issue.periodical.id issue.pk %}" class='fs-6 text-secondary'>Edit issue data</a>
                     </div>
                 {% endif %}

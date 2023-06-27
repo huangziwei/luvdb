@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Call the function for book-role-formset and book-work-formset
     handleFormset('#book-role-formset', 'add-book-role');
-    handleFormset('#book-edition-formset', 'add-book-edition');
+    handleFormset('#book-instance-formset', 'add-book-instance');
 });
 
 $(document).ready(function() {

@@ -6,15 +6,15 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-7 left-column">
-            <h2>Update this Edition entry</h2>
-            {% include "read/edition_form.html" %}
+            <h2>Create a new Instance entry</h2>
+            {% include "read/instance_form.html" %}
         </div>
     </div>
 </div>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 
-{{ editionroles.media }}
+{{ instanceroles.media }}
 
-<script type="text/javascript" src="{% static 'js/edition.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/instance.js' %}"></script>
 
 {% endblock %}
