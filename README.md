@@ -1,48 +1,45 @@
 # LʌvDB
 
-Built with Django and Bootstrap.
+A [Douban](https://www.douban.com/) with Love. Built with Django and Bootstrap.
 
 ## Features / Roadmap (subject to change)
 
 - [x] User Profile
 - [x] Activity Feed
     - [x] Follow/Unfollow
+- [x] Entity
+    - [x] Person
 - [x] Write
-    - [x] Say (Twitter-like)
-    - [x] Pin (Hacker News / Pinboard-like)
-    - [x] Post (Blog-like)
-    - [x] Repost (Retweet-like)
+    - [x] Say
+    - [x] Pin 
+    - [x] Post
+    - [x] Repost 
     - [x] Comment 
-    - [ ] Review
-    - [ ] Thought
-    - [ ] Quote
-- [ ] Play
-    - [ ] Game
-        - [ ] Edition (Remake / DLC)
-        - [ ] Publisher
-        - [ ] Series
-    - [ ] Person (Developer / Publisher)
-- [ ] Read
-    - [ ] Book
-        - [ ] Edition (Reprint / Translation / Audiobook)
-        - [ ] Publisher
-        - [ ] Series
-    - [ ] Article
-        - [ ] Journal
-        - [ ] Magazine
-    - [ ] Person (Author / Translator / Editor / Designer / Narrator)
+    - [x] Check-In
+- [x] Play
+    - [x] Game
+    - [ ] Cast
+- [x] Read
+    - [x] Work
+    - [x] Instance
+    - [x] Book
+    - [x] Periodical
+        - [x] Issue
+    - [x] Publisher
+    - [ ] Series
+- [ ] Listen
+    - [ ] Track
+    - [ ] Cover
+    - [ ] Release
+    - [ ] Podcast
+        - [ ] Episode
 - [ ] Watch
     - [ ] Movie
     - [ ] Series
         - [ ] Season
             - [ ] Episode
-    - [ ] Person (Actor / Director / Producer / Writer)
-- [ ] Listen
-    - [ ] Album
-        - [ ] Song
-    - [ ] Podcast
-        - [ ] Episode
-    - [ ] Person (Composer / Lyricist / Musician / Singer / Designer)
+    - [ ] Cast
+
 
 ## Installation
 
