@@ -52,20 +52,20 @@
             <p>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</p>
             {% endif %}
             <div class="d-flex mt-3">
-                <p class="me-2">
+                <span class="me-2">
                     <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i"  }}</a>
-                </p>
+                </span>
                 {% if checkin.comments_enabled %}
-                    <p class="ms-2 me-2">
+                    <span class="ms-2 me-2">
                         <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
-                    </p>
+                    </span>
                 {% endif %}
                 {% if checkin.get_activity_id %}
-                    <p class="ms-2 me-2"><a href="{% url 'write:repost_create' checkin.get_activity_id %}" class="text-decoration-none">Repost</a></p>
+                    <span class="ms-2 me-2"><a href="{% url 'write:repost_create' checkin.get_activity_id %}" class="text-decoration-none">Repost</a></span>
                 {% endif %}
                 {% if checkin.author == request.user %}
-                    <p class="ms-2 me-2"><a href="{% url 'read:read_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></p>
-                    <p class="ms-2 me-2"><a href="{% url 'read:read_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></p>
+                    <span class="ms-2 me-2"><a href="{% url 'read:read_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
+                    <span class="ms-2 me-2"><a href="{% url 'read:read_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
                 {% endif %}
             </div>
         </div>

@@ -61,7 +61,6 @@
                             {% endif %}
                         </span>
                         {% endif %}
-                        on:
                     </div>
                     <div class="mt-2">
                         {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
