@@ -302,16 +302,26 @@ class BookDetailView(DetailView):
                 (book_role.person, alt_name_or_person_name)
             )
         context["roles"] = roles
+
+        content_type = ContentType.objects.get_for_model(Book)
         context["checkin_form"] = BookCheckInForm(
-            initial={"book": self.object, "user": self.request.user}
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": self.request.user.id,
+            }
         )
 
         # Fetch the latest check-in from each user.
         latest_checkin_subquery = BookCheckIn.objects.filter(
-            book=self.object, user=OuterRef("user")
+            content_type=content_type.id,
+            object_id=self.object.id,
+            user=OuterRef("user"),
         ).order_by("-timestamp")
         checkins = (
-            BookCheckIn.objects.filter(book=self.object)
+            BookCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
@@ -322,12 +332,18 @@ class BookDetailView(DetailView):
 
         # Book check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
-            BookCheckIn.objects.filter(book=self.object, user=OuterRef("user"))
+            BookCheckIn.objects.filter(
+                content_type=content_type.id,
+                object_id=self.object.id,
+                user=OuterRef("user"),
+            )
             .order_by("-timestamp")
             .values("status")[:1]
         )
         latest_checkins = (
-            BookCheckIn.objects.filter(book=self.object)
+            BookCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
             .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
             .values("user", "latest_checkin_status")
             .distinct()
@@ -370,11 +386,13 @@ class BookDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        content_type = ContentType.objects.get_for_model(Book)
         form = BookCheckInForm(
             data=request.POST,
             initial={
-                "book": self.object,
-                "user": request.user,
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": request.user.id,
                 "comments_enabled": True,
             },
         )
@@ -524,7 +542,56 @@ class IssueDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["periodical"] = self.periodical
+
+        content_type = ContentType.objects.get_for_model(Issue)
+        context["checkin_form"] = BookCheckInForm(
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": self.request.user.id,
+            }
+        )
+
+        # Fetch the latest check-in from each user.
+        latest_checkin_subquery = BookCheckIn.objects.filter(
+            content_type=content_type.id,
+            object_id=self.object.id,
+            user=OuterRef("user"),
+        ).order_by("-timestamp")
+        checkins = (
+            BookCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        ).order_by("-timestamp")[:5]
+
+        context["checkins"] = checkins
+
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        content_type = ContentType.objects.get_for_model(Issue)
+        form = BookCheckInForm(
+            data=request.POST,
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": request.user.id,
+                "comments_enabled": True,
+            },
+        )
+        if form.is_valid():
+            book_check_in = form.save(commit=False)
+            book_check_in.user = request.user  # Set the user manually here
+            book_check_in.save()
+        else:
+            print("book_checkin_in_detail:", form.errors)
+
+        return redirect(self.object.get_absolute_url())
 
 
 class IssueUpdateView(UpdateView):
@@ -824,4 +891,116 @@ class BookCheckInAllListView(ListView):
         context["order"] = self.request.GET.get(
             "order", "-timestamp"
         )  # Default is '-timestamp'
+        return context
+
+
+class GenericCheckInListView(ListView):
+    model = BookCheckIn
+    template_name = "read/book_checkin_list.html"
+    context_object_name = "checkins"
+
+    def get_model(self):
+        if self.kwargs["model_name"] == "book":
+            return Book
+        elif self.kwargs["model_name"] == "issue":
+            return Issue
+        else:
+            return None
+
+    def get_queryset(self):
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        user = get_object_or_404(
+            User, username=self.kwargs["username"]
+        )  # Get user from url param
+        model = self.get_model()
+        if model is None:
+            return BookCheckIn.objects.none()
+        content_type = ContentType.objects.get_for_model(model)
+        object_id = self.kwargs["object_id"]  # Get object id from url param
+        return BookCheckIn.objects.filter(
+            user=user, content_type=content_type, object_id=object_id
+        ).order_by(order)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        user = get_object_or_404(User, username=self.kwargs["username"])
+        context["user"] = user
+        context["order"] = order
+
+        model = self.get_model()
+        if model is None:
+            context["checkins"] = BookCheckIn.objects.none()
+            context["object"] = None
+        else:
+            content_type = ContentType.objects.get_for_model(model)
+            object_id = self.kwargs["object_id"]  # Get object id from url param
+            context["checkins"] = BookCheckIn.objects.filter(
+                user=user, content_type=content_type, object_id=object_id
+            ).order_by(order)
+            context["object"] = model.objects.get(
+                pk=object_id
+            )  # Get the object details
+
+        context["model_name"] = self.kwargs.get("model_name", "book")
+
+        return context
+
+
+class GenericCheckInAllListView(ListView):
+    model = BookCheckIn
+    template_name = "read/book_checkin_list_all.html"
+    context_object_name = "checkins"
+
+    def get_model(self):
+        if self.kwargs["model_name"] == "book":
+            return Book
+        elif self.kwargs["model_name"] == "issue":
+            return Issue
+        else:
+            return None
+
+    def get_queryset(self):
+        model = self.get_model()
+        if model is None:
+            return BookCheckIn.objects.none()
+
+        content_type = ContentType.objects.get_for_model(model)
+        object_id = self.kwargs["object_id"]  # Get object id from url param
+
+        latest_checkin_subquery = BookCheckIn.objects.filter(
+            content_type=content_type, object_id=object_id, user=OuterRef("user")
+        ).order_by("-timestamp")
+
+        checkins = (
+            BookCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        )
+
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        if order == "timestamp":
+            checkins = checkins.order_by("timestamp")
+        else:
+            checkins = checkins.order_by("-timestamp")
+
+        return checkins
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        model = self.get_model()
+        if model is not None:
+            context["object"] = model.objects.get(
+                pk=self.kwargs["object_id"]
+            )  # Get the object details
+
+        context["order"] = self.request.GET.get(
+            "order", "-timestamp"
+        )  # Default is '-timestamp'
+
+        context["model_name"] = self.kwargs.get("model_name", "book")
         return context

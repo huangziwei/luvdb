@@ -277,7 +277,8 @@ class BookCheckInForm(forms.ModelForm):
     class Meta:
         model = BookCheckIn
         fields = [
-            "book",
+            "content_type",
+            "object_id",
             "user",
             "status",
             "progress",
@@ -287,7 +288,8 @@ class BookCheckInForm(forms.ModelForm):
             "share_to_feed",
         ]
         widgets = {
-            "book": forms.HiddenInput(),
+            "content_type": forms.HiddenInput(),
+            "object_id": forms.HiddenInput(),
             "user": forms.HiddenInput(),  # user is now included
             "content": forms.Textarea(
                 attrs={

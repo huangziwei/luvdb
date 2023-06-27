@@ -13,30 +13,39 @@
       <div class="bg-light p-3 mt-2">
         <div class="row justify-content-start">
             <div class="col-md-3">
-                {% if object.book.cover %}
-                    <img src="{{ object.book.cover.url }}" alt="{{ object.book.title }} cover" style="width: 150px;height: auto;">
+                {% if object.content_object.cover %}
+                    <img src="{{ object.content_object.cover.url }}" alt="{{ object.content_object.title }} cover" style="width: 150px;height: auto;">
                 {% else %}
                     <p class="no-cover-text">No Cover</p>
                 {% endif %}
             </div>
                     
             <div class="col-md-9">
-                <a href="{% url 'read:book_detail' object.book.id %}" class="text-decoration-none hover-username">
-                    <h5>{{ object.book.title }}</h5>
+                {% if object.content_type.model == 'book' %}
+                <a href="{% url 'read:book_detail' object.content_object.id %}" class="text-decoration-none hover-username">
+                    <h5>{{ object.content_object.title }}</h5>
                 </a>
-                
-                {% regroup object.book.bookrole_set.all by role as roles_list %}
-                {% for role in roles_list %}
-                    <div>
-                        {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
-                        {% for book_role in role.list %}
-                            {% if not forloop.first %} / {% endif %}
-                            <a href="{% url 'entity:person_detail' book_role.person.id %}">
-                                {{ book_role.alt_name | default:book_role.person.name }}
-                            </a>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
+                {% elif object.content_type.model == 'issue' %}
+                <h4>{{ object.content_object.periodical.title }}</h4>
+                <a href="{% url 'read:issue_detail' object.content_object.periodical.id object.content_object.id %}" class="text-decoration-none hover-username">
+                  <h5>{{ object.content_object.title }}</h5>
+                </a>
+                {% endif %}
+
+                {% if object.content_type.model == 'book' %}
+                        {% regroup object.content_object.bookrole_set.all by role as roles_list %}
+                        {% for role in roles_list %}
+                            <div>
+                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                {% for book_role in role.list %}
+                                    {% if not forloop.first %} / {% endif %}
+                                    <a href="{% url 'entity:person_detail' book_role.person.id %}">
+                                        {{ book_role.alt_name | default:book_role.person.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}                        
+                    {% endif %}
                 
                 <div>
                     {% if object.book.publication_date %}

@@ -139,6 +139,12 @@ admin.site.register(Issue, IssueAdmin)
 
 @admin.register(BookCheckIn)
 class BookCheckInAdmin(admin.ModelAdmin):
-    list_display = ("book", "user", "status", "progress", "content", "timestamp")
-    search_fields = ("book__title", "user__username", "content")
+    list_display = (
+        "user",
+        "status",
+        "progress",
+        "content",
+        "timestamp",
+    )
+    search_fields = ("user__username", "content")
     list_filter = ("status", "timestamp")

@@ -38,7 +38,7 @@
                 </span>
                 {% endif %}
                 <span>
-                    <a class="text-secondary" href="{% url 'read:book_checkin_list' object.id checkin.user.username %}">
+                    <a class="text-secondary" href="{% url 'read:issue_checkin_list' issue.periodical.id issue.id checkin.user.username %}">
                         {{ checkin.timestamp|date:"Y.m.d H:i"  }}
                     </a>
                 </span>

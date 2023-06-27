@@ -6,11 +6,7 @@
     <div class="row">
         <div class="col-12">
             <h4>All Check-Ins of 
-                {% if model_name == "book" %}
-                    <a href="{% url 'read:book_detail' object.id %}"> {{ object.title }}</a>
-                {% elif  model_name == "issue" %}
-                    <a href="{% url 'read:issue_detail' object.periodical.id object.id %}"> {{ object.title }}</a>
-                {% endif %}
+                <a href="{% url 'read:book_detail' book.id %}"> {{ book.title }}</a>
             </h4>
             <div>
                 <a href="?order=timestamp" class="btn btn-sm btn-outline-secondary">Oldest</a>

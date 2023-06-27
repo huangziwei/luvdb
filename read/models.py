@@ -360,7 +360,9 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 
 
 class BookCheckIn(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+    object_id = models.PositiveIntegerField(null=True)
+    content_object = GenericForeignKey("content_type", "object_id")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     READING_STATUS_CHOICES = [
         ("to_read", "To Read"),
@@ -479,6 +481,11 @@ class Issue(models.Model):
 
     def __str__(self):
         return f"{self.periodical.title} - Issue {self.number} - Volume {self.volume}"
+
+    def get_absolute_url(self):
+        return reverse(
+            "read:issue_detail", args=[str(self.periodical.id), str(self.id)]
+        )
 
 
 class IssueInstance(models.Model):

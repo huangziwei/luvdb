@@ -45,8 +45,17 @@
                 </div>       
             </div>
 
-            <!-- Check-In if you have it -->
-            <!-- ... -->
+            <!--Book Check-In-->
+            <div class="mt-4">
+                {% include "read/book_checkin_form.html" %}
+
+                <div class="d-flex justify-content-between mt-4 col-11">
+                    <h4>Latest Check-Ins</h4>
+                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}" style="height:30px">All</a>
+                </div>
+            
+                {% include "read/book_checkin_in_issue_detail.html" %}
+            </div>
         </div>
             
         <div class="col-sm-4">

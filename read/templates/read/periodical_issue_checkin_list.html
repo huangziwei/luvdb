@@ -10,11 +10,7 @@
         <a href="{% url 'accounts:detail' user.username %}">
             {{ user.display_name|default:user.username }}
         </a> of 
-        {% if model_name == "book" %}
-            <a href="{% url 'read:book_detail' object.id %}"> {{ object.title }}</a>
-        {% elif  model_name == "issue" %}
-            <a href="{% url 'read:issue_detail' object.periodical.id object.id %}"> {{ object.title }}</a>
-        {% endif %}
+        <a href="{% url 'read:periodical_issue_detail' issue.periodical.id issue.id %}"> {{ issue.title }}</a>
     </h4>
     <div class="mb-4">
         <a href="?order=timestamp" class="btn btn-sm btn-outline-secondary">Oldest</a>
