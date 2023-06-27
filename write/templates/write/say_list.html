@@ -26,7 +26,7 @@
                       </p>
                   {% endif %}
                   {% if say.get_activity_id is not None %}
-                    <p style='margin: 0 0.5em'><a href="{% url 'write:repost_create' say.get_activity_id %}">Repost</a></p>
+                    <p style='margin: 0 0.5em'><a href="{% url 'write:say_detail' say.id %}?repost=true">Repost</a></p>
                     {% endif %}
                   {% if object == request.user %}
                       <p class="ms-2 me-2"><a href="{% url 'write:say_update' say.id %}">Edit</a></p>

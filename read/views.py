@@ -19,7 +19,6 @@ from write.forms import CommentForm, RepostForm
 from write.models import Comment
 
 from .forms import (
-    BookCheckInForm,
     BookForm,
     BookInstanceForm,
     BookInstanceFormSet,
@@ -29,18 +28,19 @@ from .forms import (
     IssueForm,
     IssueInstanceFormSet,
     PeriodicalForm,
+    ReadCheckInForm,
     WorkForm,
     WorkRoleFormSet,
 )
 from .models import (
     Book,
-    BookCheckIn,
     Instance,
     Issue,
     LanguageField,
     Periodical,
     Person,
     Publisher,
+    ReadCheckIn,
     Role,
     Work,
 )
@@ -304,7 +304,7 @@ class BookDetailView(DetailView):
         context["roles"] = roles
 
         content_type = ContentType.objects.get_for_model(Book)
-        context["checkin_form"] = BookCheckInForm(
+        context["checkin_form"] = ReadCheckInForm(
             initial={
                 "content_type": content_type.id,
                 "object_id": self.object.id,
@@ -313,13 +313,13 @@ class BookDetailView(DetailView):
         )
 
         # Fetch the latest check-in from each user.
-        latest_checkin_subquery = BookCheckIn.objects.filter(
+        latest_checkin_subquery = ReadCheckIn.objects.filter(
             content_type=content_type.id,
             object_id=self.object.id,
             user=OuterRef("user"),
         ).order_by("-timestamp")
         checkins = (
-            BookCheckIn.objects.filter(
+            ReadCheckIn.objects.filter(
                 content_type=content_type.id, object_id=self.object.id
             )
             .annotate(
@@ -332,7 +332,7 @@ class BookDetailView(DetailView):
 
         # Book check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
-            BookCheckIn.objects.filter(
+            ReadCheckIn.objects.filter(
                 content_type=content_type.id,
                 object_id=self.object.id,
                 user=OuterRef("user"),
@@ -341,7 +341,7 @@ class BookDetailView(DetailView):
             .values("status")[:1]
         )
         latest_checkins = (
-            BookCheckIn.objects.filter(
+            ReadCheckIn.objects.filter(
                 content_type=content_type.id, object_id=self.object.id
             )
             .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
@@ -387,7 +387,7 @@ class BookDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         content_type = ContentType.objects.get_for_model(Book)
-        form = BookCheckInForm(
+        form = ReadCheckInForm(
             data=request.POST,
             initial={
                 "content_type": content_type.id,
@@ -401,7 +401,7 @@ class BookDetailView(DetailView):
             book_check_in.user = request.user  # Set the user manually here
             book_check_in.save()
         else:
-            print("book_checkin_in_detail:", form.errors)
+            print("read_checkin_in_detail:", form.errors)
 
         return redirect(self.object.get_absolute_url())
 
@@ -544,7 +544,7 @@ class IssueDetailView(DetailView):
         context["periodical"] = self.periodical
 
         content_type = ContentType.objects.get_for_model(Issue)
-        context["checkin_form"] = BookCheckInForm(
+        context["checkin_form"] = ReadCheckInForm(
             initial={
                 "content_type": content_type.id,
                 "object_id": self.object.id,
@@ -553,13 +553,13 @@ class IssueDetailView(DetailView):
         )
 
         # Fetch the latest check-in from each user.
-        latest_checkin_subquery = BookCheckIn.objects.filter(
+        latest_checkin_subquery = ReadCheckIn.objects.filter(
             content_type=content_type.id,
             object_id=self.object.id,
             user=OuterRef("user"),
         ).order_by("-timestamp")
         checkins = (
-            BookCheckIn.objects.filter(
+            ReadCheckIn.objects.filter(
                 content_type=content_type.id, object_id=self.object.id
             )
             .annotate(
@@ -575,7 +575,7 @@ class IssueDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         content_type = ContentType.objects.get_for_model(Issue)
-        form = BookCheckInForm(
+        form = ReadCheckInForm(
             data=request.POST,
             initial={
                 "content_type": content_type.id,
@@ -589,7 +589,7 @@ class IssueDetailView(DetailView):
             book_check_in.user = request.user  # Set the user manually here
             book_check_in.save()
         else:
-            print("book_checkin_in_detail:", form.errors)
+            print("read_checkin_in_detail:", form.errors)
 
         return redirect(self.object.get_absolute_url())
 
@@ -773,9 +773,9 @@ class ReadListView(ListView):
 ###########
 
 
-class BookCheckInCreateView(LoginRequiredMixin, CreateView):
-    model = BookCheckIn
-    form_class = BookCheckInForm
+class ReadCheckInCreateView(LoginRequiredMixin, CreateView):
+    model = ReadCheckIn
+    form_class = ReadCheckInForm
     template_name = "read/checkin_create.html"
 
     def form_valid(self, form):
@@ -787,12 +787,12 @@ class BookCheckInCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("read:book_checkin_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("read:read_checkin_detail", kwargs={"pk": self.object.pk})
 
 
-class BookCheckInDetailView(DetailView):
-    model = BookCheckIn
-    template_name = "read/book_checkin_detail.html"
+class ReadCheckInDetailView(DetailView):
+    model = ReadCheckIn
+    template_name = "read/read_checkin_detail.html"
     context_object_name = "checkin"  # This name will be used in your template
 
     def get_context_data(self, **kwargs):
@@ -809,26 +809,26 @@ class BookCheckInDetailView(DetailView):
         return context
 
 
-class BookCheckInUpdateView(LoginRequiredMixin, UpdateView):
-    model = BookCheckIn
-    form_class = BookCheckInForm
-    template_name = "read/book_checkin_update.html"
+class ReadCheckInUpdateView(LoginRequiredMixin, UpdateView):
+    model = ReadCheckIn
+    form_class = ReadCheckInForm
+    template_name = "read/read_checkin_update.html"
 
     def get_success_url(self):
-        return reverse_lazy("read:book_checkin_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("read:read_checkin_detail", kwargs={"pk": self.object.pk})
 
 
-class BookCheckInDeleteView(LoginRequiredMixin, DeleteView):
-    model = BookCheckIn
-    template_name = "read/book_checkin_delete.html"
+class ReadCheckInDeleteView(LoginRequiredMixin, DeleteView):
+    model = ReadCheckIn
+    template_name = "read/read_checkin_delete.html"
 
     def get_success_url(self):
         return reverse_lazy("read:book_detail", kwargs={"pk": self.object.book.pk})
 
 
-class BookCheckInListView(ListView):
-    model = BookCheckIn
-    template_name = "read/book_checkin_list.html"
+class ReadCheckInListView(ListView):
+    model = ReadCheckIn
+    template_name = "read/read_checkin_list.html"
     context_object_name = "checkins"
 
     def get_queryset(self):
@@ -837,7 +837,7 @@ class BookCheckInListView(ListView):
             User, username=self.kwargs["username"]
         )  # Get user from url param
         book_id = self.kwargs["book_id"]  # Get book id from url param
-        return BookCheckIn.objects.filter(user=user, book__id=book_id).order_by(order)
+        return ReadCheckIn.objects.filter(user=user, book__id=book_id).order_by(order)
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get the context
@@ -847,7 +847,7 @@ class BookCheckInListView(ListView):
         user = get_object_or_404(User, username=self.kwargs["username"])
         context["user"] = user
         context["order"] = order
-        context["checkins"] = BookCheckIn.objects.filter(
+        context["checkins"] = ReadCheckIn.objects.filter(
             user__username=self.kwargs["username"], book__id=self.kwargs["book_id"]
         ).order_by(order)
         # Get the book details
@@ -855,19 +855,19 @@ class BookCheckInListView(ListView):
         return context
 
 
-class BookCheckInAllListView(ListView):
-    model = BookCheckIn
-    template_name = "read/book_checkin_list_all.html"
+class ReadCheckInAllListView(ListView):
+    model = ReadCheckIn
+    template_name = "read/read_checkin_list_all.html"
     context_object_name = "checkins"
 
     def get_queryset(self):
         # Fetch the latest check-in from each user.
-        latest_checkin_subquery = BookCheckIn.objects.filter(
+        latest_checkin_subquery = ReadCheckIn.objects.filter(
             book=self.kwargs["book_id"], user=OuterRef("user")
         ).order_by("-timestamp")
 
         checkins = (
-            BookCheckIn.objects.filter(book=self.kwargs["book_id"])
+            ReadCheckIn.objects.filter(book=self.kwargs["book_id"])
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
@@ -895,8 +895,8 @@ class BookCheckInAllListView(ListView):
 
 
 class GenericCheckInListView(ListView):
-    model = BookCheckIn
-    template_name = "read/book_checkin_list.html"
+    model = ReadCheckIn
+    template_name = "read/read_checkin_list.html"
     context_object_name = "checkins"
 
     def get_model(self):
@@ -914,10 +914,10 @@ class GenericCheckInListView(ListView):
         )  # Get user from url param
         model = self.get_model()
         if model is None:
-            return BookCheckIn.objects.none()
+            return ReadCheckIn.objects.none()
         content_type = ContentType.objects.get_for_model(model)
         object_id = self.kwargs["object_id"]  # Get object id from url param
-        return BookCheckIn.objects.filter(
+        return ReadCheckIn.objects.filter(
             user=user, content_type=content_type, object_id=object_id
         ).order_by(order)
 
@@ -931,12 +931,12 @@ class GenericCheckInListView(ListView):
 
         model = self.get_model()
         if model is None:
-            context["checkins"] = BookCheckIn.objects.none()
+            context["checkins"] = ReadCheckIn.objects.none()
             context["object"] = None
         else:
             content_type = ContentType.objects.get_for_model(model)
             object_id = self.kwargs["object_id"]  # Get object id from url param
-            context["checkins"] = BookCheckIn.objects.filter(
+            context["checkins"] = ReadCheckIn.objects.filter(
                 user=user, content_type=content_type, object_id=object_id
             ).order_by(order)
             context["object"] = model.objects.get(
@@ -949,8 +949,8 @@ class GenericCheckInListView(ListView):
 
 
 class GenericCheckInAllListView(ListView):
-    model = BookCheckIn
-    template_name = "read/book_checkin_list_all.html"
+    model = ReadCheckIn
+    template_name = "read/read_checkin_list_all.html"
     context_object_name = "checkins"
 
     def get_model(self):
@@ -964,17 +964,17 @@ class GenericCheckInAllListView(ListView):
     def get_queryset(self):
         model = self.get_model()
         if model is None:
-            return BookCheckIn.objects.none()
+            return ReadCheckIn.objects.none()
 
         content_type = ContentType.objects.get_for_model(model)
         object_id = self.kwargs["object_id"]  # Get object id from url param
 
-        latest_checkin_subquery = BookCheckIn.objects.filter(
+        latest_checkin_subquery = ReadCheckIn.objects.filter(
             content_type=content_type, object_id=object_id, user=OuterRef("user")
         ).order_by("-timestamp")
 
         checkins = (
-            BookCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            ReadCheckIn.objects.filter(content_type=content_type, object_id=object_id)
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )

@@ -32,7 +32,7 @@
                         <p style='margin: 0 0.5em'><a href="{% url 'write:pin_detail' pin.id %}">Reply</a></p>
                     {% endif %}
                     {% if pin.get_activity_id is not None %}
-                    <p style='margin: 0 0.5em'><a href="{% url 'write:repost_create' pin.get_activity_id %}">Repost</a></p>
+                    <p style='margin: 0 0.5em'><a href="{% url 'write:pin_detail' pin.id %}?repost=true">Repost</a></p>
                     {% endif %}
                     {% if pin.user != request.user %}
                         <p style='margin: 0 0.5em'><a href="{% url 'write:pin_copy' pin.id %}">Copy</a></p>

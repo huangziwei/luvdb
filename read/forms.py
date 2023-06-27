@@ -8,7 +8,6 @@ from django.urls import reverse_lazy
 
 from .models import (
     Book,
-    BookCheckIn,
     BookInstance,
     BookRole,
     Instance,
@@ -16,6 +15,7 @@ from .models import (
     Issue,
     IssueInstance,
     Periodical,
+    ReadCheckIn,
     Work,
     WorkRole,
 )
@@ -273,9 +273,9 @@ IssueInstanceFormSet = inlineformset_factory(
 )
 
 
-class BookCheckInForm(forms.ModelForm):
+class ReadCheckInForm(forms.ModelForm):
     class Meta:
-        model = BookCheckIn
+        model = ReadCheckIn
         fields = [
             "content_type",
             "object_id",
@@ -301,6 +301,6 @@ class BookCheckInForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(BookCheckInForm, self).__init__(*args, **kwargs)
+        super(ReadCheckInForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
         self.fields["content"].required = False

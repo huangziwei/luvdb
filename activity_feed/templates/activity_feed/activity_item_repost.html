@@ -21,7 +21,7 @@
             {% if activity.content_object.original_activity %}
             <!-- Display the reposted activity -->
 
-                {% if activity.content_object.original_activity.activity_type == "book-check-in" %}
+                {% if activity.content_object.original_activity.activity_type == "read-check-in" %}
 
                     <div class="d-flex justify-content-start align-items-center">
                         <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username me-1">
@@ -57,7 +57,7 @@
                             {% endif %}
                         </span>
                         {% endif %}
-                        on book:
+                        on:
                     </div>
                     <div class="mt-2">
                         {{ activity.content_object.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
@@ -71,26 +71,37 @@
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <a href="{% url 'read:book_detail' activity.content_object.original_activity.content_object.content_object.id %}" class="text-decoration-none hover-username">
-                                <h5>{{ activity.content_object.original_activity.content_object.content_object.title }}</h5>
-                            </a> 
                             
-                            {% regroup activity.content_object.original_activity.content_object.book.bookrole_set.all by role as roles_list %}
-                            {% for role in roles_list %}
-                                <div>
-                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
-                                    {% for book_role in role.list %}
-                                        {% if not forloop.first %} / {% endif %}
-                                        <a href="{% url 'entity:person_detail' book_role.person.id %}">
-                                            {{ book_role.alt_name | default:book_role.person.name }}
-                                        </a>
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
+                            {% if activity.content_object.original_activity.content_object.content_type.model == 'book' %}
+                                <a href=" {% url 'read:book_detail' activity.content_object.original_activity.content_object.content_object.id %} " class="text-decoration-none hover-username">
+                                    <h5>{{ activity.content_object.original_activity.content_object.content_object.title }}</h5>
+                                </a>
+                            {% elif activity.content_object.original_activity.content_object.content_type.model == 'issue' %}
+                                <h5>{{ activity.content_object.original_activity.content_object.content_object.periodical.title }}</h5>
+                                <a href=" {% url 'read:issue_detail' activity.content_object.original_activity.content_object.content_object.periodical.id activity.content_object.original_activity.content_object.content_object.id %} " class="text-decoration-none hover-username">
+                                    <h6>{{ activity.content_object.original_activity.content_object.content_object.title }}</h6>
+                                </a>
+                            {% endif %}
+
+                            {% if activity.content_object.original_activity.content_object.content_type.model == 'book' %}
+                                {% regroup activity.content_object.original_activity.content_object.content_object.bookrole_set.all by role as roles_list %}
+                                {% for role in roles_list %}
+                                    <div>
+                                        {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                        {% for book_role in role.list %}
+                                            {% if not forloop.first %} / {% endif %}
+                                            <a href="{% url 'entity:person_detail' book_role.person.id %}">
+                                                {{ book_role.alt_name | default:book_role.person.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}  
+                                                  
+                            {% endif %}
                             
                             <div>
-                                {% if activity.content_object.original_activity.content_object.book.publication_date %}
-                                    Publication Date: {{ activity.content_object.original_activity.content_object.book.publication_date|slice:":4" }}
+                                {% if activity.content_object.original_activity.content_object.content_object.publication_date %}
+                                    Year: {{ activity.content_object.original_activity.content_object.content_object.publication_date|slice:":4" }}
                                 {% endif %}
                             </div>
                         </div>
@@ -231,7 +242,7 @@
 
         {% if activity.content_object.content %}
             <p class="ms-2 me-2"><a href="{% url 'write:repost_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a></p>
-            <p class="ms-2 me-2"><a href="{% url 'write:repost_create' activity.id %}" class="text-decoration-none">Repost</a></p>
+            <p class="ms-2 me-2"><a href="{% url 'write:repost_detail' activity.content_object.id %}?repost=true" class="text-decoration-none">Repost</a></p>
         {% endif %}
 
         {% if activity.user == request.user %}

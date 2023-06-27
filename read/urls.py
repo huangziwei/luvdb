@@ -1,12 +1,6 @@
 from django.urls import path
 
 from .views import (  # IssueDetailView,
-    BookCheckInAllListView,
-    BookCheckInCreateView,
-    BookCheckInDeleteView,
-    BookCheckInDetailView,
-    BookCheckInListView,
-    BookCheckInUpdateView,
     BookCreateView,
     BookDetailView,
     BookUpdateView,
@@ -26,6 +20,12 @@ from .views import (  # IssueDetailView,
     PublisherAutocomplete,
     PublisherCreateView,
     PublisherDetailView,
+    ReadCheckInAllListView,
+    ReadCheckInCreateView,
+    ReadCheckInDeleteView,
+    ReadCheckInDetailView,
+    ReadCheckInListView,
+    ReadCheckInUpdateView,
     ReadListView,
     WorkAutocomplete,
     WorkCreateView,
@@ -40,20 +40,20 @@ urlpatterns = [
     # checkin
     path(
         "book/<int:book_id>/checkin/create/",
-        BookCheckInCreateView.as_view(),
-        name="book_checkin_create",
+        ReadCheckInCreateView.as_view(),
+        name="read_checkin_create",
     ),
     path(
         "book/<int:object_id>/checkins/",
         view=GenericCheckInAllListView.as_view(),
         kwargs={"model_name": "book"},
-        name="book_checkin_all_list",
+        name="read_checkin_all_list",
     ),
     path(
         "book/<int:object_id>/<str:username>/checkins/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "book"},
-        name="book_checkin_list",
+        name="read_checkin_list",
     ),
     path(
         "periodical/<int:periodical_id>/issue/<int:object_id>/checkins/",
@@ -68,17 +68,17 @@ urlpatterns = [
         name="issue_checkin_list",
     ),
     path(
-        "checkin/<int:pk>/", BookCheckInDetailView.as_view(), name="book_checkin_detail"
+        "checkin/<int:pk>/", ReadCheckInDetailView.as_view(), name="read_checkin_detail"
     ),
     path(
         "checkin/<int:pk>/update/",
-        BookCheckInUpdateView.as_view(),
-        name="book_checkin_update",
+        ReadCheckInUpdateView.as_view(),
+        name="read_checkin_update",
     ),
     path(
         "checkin/<int:pk>/delete/",
-        BookCheckInDeleteView.as_view(),
-        name="book_checkin_delete",
+        ReadCheckInDeleteView.as_view(),
+        name="read_checkin_delete",
     ),
     # instance
     path("instance/create/", InstanceCreateView.as_view(), name="instance_create"),

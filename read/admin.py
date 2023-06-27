@@ -2,7 +2,6 @@ from django.contrib import admin
 
 from .models import (
     Book,
-    BookCheckIn,
     BookInstance,
     BookRole,
     Instance,
@@ -12,6 +11,7 @@ from .models import (
     Periodical,
     Person,
     Publisher,
+    ReadCheckIn,
     Role,
     Work,
     WorkRole,
@@ -137,8 +137,8 @@ admin.site.register(Periodical, PeriodicalAdmin)
 admin.site.register(Issue, IssueAdmin)
 
 
-@admin.register(BookCheckIn)
-class BookCheckInAdmin(admin.ModelAdmin):
+@admin.register(ReadCheckIn)
+class ReadCheckInAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "status",

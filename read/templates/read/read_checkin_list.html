@@ -57,19 +57,19 @@
             {% endif %}
             <div class="d-flex mt-3">
                 <p class="me-2">
-                    <a href="{% url 'read:book_checkin_detail' checkin.id %}" class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i"  }}</a>
+                    <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i"  }}</a>
                 </p>
                 {% if checkin.comments_enabled %}
                     <p class="ms-2 me-2">
-                        <a href="{% url 'read:book_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
+                        <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
                     </p>
                 {% endif %}
                 {% if checkin.get_activity_id %}
-                    <p class="ms-2 me-2"><a href="{% url 'write:repost_create' checkin.get_activity_id %}" class="text-decoration-none">Repost</a></p>
+                    <p class="ms-2 me-2"><a href="{% url 'read:read_checkin_detail' checkin.id %}?repost=true" class="text-decoration-none">Repost</a></p>
                 {% endif %}
                 {% if checkin.author == request.user %}
-                    <p class="ms-2 me-2"><a href="{% url 'read:book_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></p>
-                    <p class="ms-2 me-2"><a href="{% url 'read:book_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></p>
+                    <p class="ms-2 me-2"><a href="{% url 'read:read_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></p>
+                    <p class="ms-2 me-2"><a href="{% url 'read:read_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></p>
                 {% endif %}
             </div>
         </div>

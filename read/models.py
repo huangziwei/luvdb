@@ -359,7 +359,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         instance.cover.delete(save=False)
 
 
-class BookCheckIn(models.Model):
+class ReadCheckIn(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey("content_type", "object_id")
@@ -397,12 +397,12 @@ class BookCheckIn(models.Model):
     reposts = GenericRelation("write.Repost")
 
     def get_absolute_url(self):
-        return reverse("read:book_checkin_detail", args=[str(self.id)])
+        return reverse("read:read_checkin_detail", args=[str(self.id)])
 
     def get_activity_id(self):
         try:
             activity = Activity.objects.get(
-                content_type__model="bookcheckin", object_id=self.id
+                content_type__model="readcheckin", object_id=self.id
             )
             return activity.id
         except ObjectDoesNotExist:
@@ -415,7 +415,7 @@ class BookCheckIn(models.Model):
             # Only create activity if share_on_feed is True
             Activity.objects.create(
                 user=self.user,
-                activity_type="book-check-in",
+                activity_type="read-check-in",
                 content_object=self,
             )
         else:

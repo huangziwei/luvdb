@@ -17,8 +17,8 @@
                 <p class="ms-2 me-2"><a href="{% url 'write:post_detail' post.id %}">Reply</a></p>
                 {% endif %}
                 {% if post.get_activity_id is not None %}
-                    <p style='margin: 0 0.5em'><a href="{% url 'write:repost_create' post.get_activity_id %}">Repost</a></p>
-                    {% endif %}
+                    <p style='margin: 0 0.5em'><a href="{% url 'write:post_detail' post.id %}?repost=true">Repost</a></p>
+                {% endif %}
                 {% if object == request.user %}
                 <p class="ms-2 me-2"><a href="{% url 'write:post_update' post.id %}">Edit</a></p>
                 <p class="ms-2 me-2"><a href="{% url 'write:post_delete' post.id %}">Delete</a></p>

@@ -26,7 +26,7 @@
                     <a href="{% url 'write:say_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a>
                 </p>
             {% endif %}
-            <p class="ms-2 me-2"><a href="{% url 'write:repost_create' activity.id %}" class="text-decoration-none">Repost</a></p>
+            <p class="ms-2 me-2"><a href="{% url 'write:say_detail' activity.content_object.id %}?repost=true" class="text-decoration-none">Repost</a></p>
             {% if activity.user == request.user %}
                 <p class="ms-2 me-2"><a href="{% url 'write:say_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p>
                 <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
@@ -56,7 +56,7 @@
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2"><a href="{% url 'write:post_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a></p>
             {% endif %}
-            <p class="ms-2 me-2"><a href="{% url 'write:repost_create' activity.id %}" class="text-decoration-none">Repost</a></p>
+            <p class="ms-2 me-2"><a href="{% url 'write:post_detail' activity.content_object.id %}?repost=true" class="text-decoration-none">Repost</a></p>
             {% if activity.user == request.user %}
                 <p class="ms-2 me-2"><a href="{% url 'write:post_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p>
                 <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
@@ -88,7 +88,7 @@
             {% if activity.content_object.comments_enabled %}   
                 <p class="ms-2 me-2"><a href="{% url 'write:pin_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a></p>
             {% endif %}
-                <p class="ms-2 me-2"><a href="{% url 'write:repost_create' activity.id %}" class="text-decoration-none">Repost</a></p>
+                <p class="ms-2 me-2"><a href="{% url 'write:pin_detail' activity.content_object.id %}?repost=true" class="text-decoration-none">Repost</a></p>
             {% if activity.user != request.user %}
                 <p class="ms-2 me-2"><a href="{% url 'write:pin_copy' activity.content_object.id %}" class="text-decoration-none">Copy</a></p>
             {% endif %}
@@ -124,8 +124,8 @@
     {% elif activity.activity_type == 'repost' %}
     {% include "activity_feed/activity_item_repost.html" %}
 
-    {% elif activity.activity_type == 'book-check-in' %}
-    <!--Book-Check-in-->
+    {% elif activity.activity_type == 'read-check-in' %}
+    <!--Read-Check-in-->
     <div class="col-sm-12">
         <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
             <div class="d-flex justify-content-start align-items-center">
@@ -162,7 +162,7 @@
                         {% endif %}
                     </span>
                     {% endif %}
-                    on book:
+                    on:
             </div>
             <div class="mt-2">
                 {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
@@ -204,8 +204,8 @@
                     {% endif %}
                     
                     <div>
-                        {% if activity.content_object.book.publication_date %}
-                            Publication Date: {{ activity.content_object.book.publication_date|slice:":4" }}
+                        {% if activity.content_object.content_object.publication_date %}
+                            Year: {{ activity.content_object.content_object.publication_date|slice:":4" }}
                         {% endif %}
                     </div>
                 </div>
@@ -213,16 +213,16 @@
             
             <div class="d-flex mt-3">
                 <p class="me-2">
-                    <a href="{% url 'read:book_checkin_detail' activity.content_object.id %}" class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                    <a href="{% url 'read:read_checkin_detail' activity.content_object.id %}" class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
                 </p>
                 {% if activity.content_object.comments_enabled %}
                     <p class="ms-2 me-2">
-                        <a href="{% url 'read:book_checkin_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a>
+                        <a href="{% url 'read:read_checkin_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a>
                     </p>
                 {% endif %}
-                <p class="ms-2 me-2"><a href="{% url 'write:repost_create' activity.id %}" class="text-decoration-none">Repost</a></p>
+                <p class="ms-2 me-2"><a href="{% url 'read:read_checkin_detail' activity.content_object.id %}?repost=true" class="text-decoration-none">Repost</a></p>
                 {% if activity.user == request.user %}
-                    <p class="ms-2 me-2"><a href="{% url 'read:book_checkin_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p>
+                    <p class="ms-2 me-2"><a href="{% url 'read:read_checkin_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p>
                     <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
                 {% endif %}
             </div>
@@ -343,7 +343,7 @@
                         <a href="{% url 'play:game_checkin_detail' activity.content_object.id %}" class="text-decoration-none">Reply</a>
                     </p>
                 {% endif %}
-                <p class="ms-2 me-2"><a href="{% url 'write:repost_create' activity.id %}" class="text-decoration-none">Repost</a></p>
+                <p class="ms-2 me-2"><a href="{% url 'play:game_checkin_detail' activity.content_object.id %}?repost=true" class="text-decoration-none">Repost</a></p>
                 {% if activity.user == request.user %}
                     <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
                 {% endif %}

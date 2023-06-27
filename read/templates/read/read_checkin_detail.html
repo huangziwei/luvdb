@@ -98,8 +98,8 @@
         <span class="d-flex mt-2">
           <p class='me-2 text-secondary mb-2'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
           {% if object.user == request.user %}
-          <a href="{% url "read:book_checkin_update" object.pk %}" class="me-2">Edit</a>
-          <a href="{% url "read:book_checkin_delete" object.pk %}" class="me-2">Delete</a>
+          <a href="{% url "read:read_checkin_update" object.pk %}" class="me-2">Edit</a>
+          <a href="{% url "read:read_checkin_delete" object.pk %}" class="me-2">Delete</a>
           {% endif %}
         </span>
       </div>
@@ -110,7 +110,7 @@
       <hr>
 
       <div id="comments-section">
-        {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='bookcheckin' %}
+        {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='readcheckin' %}
       </div>
 
       <div id="reposts-section" style="display: none;">
