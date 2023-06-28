@@ -2,9 +2,9 @@
 
 {% block content %}
 
-<div class='col-7'>
+<div class='col-sm-7'>
     <div class="row">
-        <div class="col-12">
+        <div class="col-sm-12">
             <h4>All Check-Ins of 
                 {% if model_name == "book" %}
                     <a href="{% url 'read:book_detail' object.id %}"> {{ object.title }}</a>
@@ -12,13 +12,24 @@
                     <a href="{% url 'read:issue_detail' object.periodical.id object.id %}"> {{ object.title }}</a>
                 {% endif %}
             </h4>
-            <div>
-                <a href="?order=timestamp" class="btn btn-sm btn-outline-secondary">Oldest</a>
-                <a href="?order=-timestamp" class="btn btn-sm btn-outline-secondary">Newest</a>
-            </div>
+            <span class='d-flex'>
+                <div class="me-3">
+                    <a href="?order=timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+                    <a href="?order=-timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                </div>
+                <div class="me-3">|</div>
+                <div class="me-3">
+                    <a href="?status=&order={{order}}" class="btn btn-sm btn-outline-dark mb-1">All</a>
+                    <a href="?status=to_read&order={{order}}" class="btn btn-sm btn-info mb-1">To Read</a>
+                    <a href="?status=reading_rereading&order={{order}}" class="btn btn-sm btn-primary mb-1">Reading/Rereading</a>
+                    <a href="?status=read_reread&order={{order}}" class="btn btn-sm btn-success mb-1">Read/Reread</a>
+                    <a href="?status=paused&order={{order}}" class="btn btn-sm btn-warning mb-1">Paused</a>
+                    <a href="?status=abandoned&order={{order}}" class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                </div>
+            </span>
         </div>
         
-        {% include "read/read_checkin_in_book_detail.html" %}
+        {% include "read/read_checkin_in_entry_detail.html" %}
     </div>
 </div>
 

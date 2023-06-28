@@ -23,11 +23,14 @@
             (<a href="{% url 'write:pins_from_url' object.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
           </p>
           {% if object.content %}
-          <div>{{ object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</div>
+          <div>{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify | truncatewords:200 }}</div>
           {% endif %}
         </div>
         <span class="d-flex">
-          <p class='me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
+          <p class='me-2 text-secondary'>
+            <a href="{% url 'write:pin_list' object.user.username %}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+            
+          </p>
           {% if object.user == request.user %}
           <a href="{% url "write:pin_update" object.pk %}" class="me-2">Edit</a>
           <a href="{% url "write:pin_delete" object.pk %}" class="me-2">Delete</a>{% endif %}

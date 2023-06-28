@@ -13,9 +13,9 @@
           {% for say in say_list %}
           <!--Say-->
           <div class="activity-item mb-3">
-              <p>
+              <div>
                   {{ say.content | linkify_tags | linkify_mentions | markdownify }}
-              </p>
+              </div>
               <span class="d-flex mt-3">
                   <p class="me-2">
                       <a href="{% url 'write:say_detail' say.id %}" class="link-secondary">{{ say.timestamp |date:"Y.m.d H:i" }}</a>

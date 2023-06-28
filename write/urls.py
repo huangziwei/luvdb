@@ -25,6 +25,7 @@ from .views import (
     SayListView,
     SayUpdateView,
     TagListView,
+    TagUserListView,
 )
 
 app_name = "write"
@@ -65,7 +66,7 @@ urlpatterns = [
     path(
         "comment/<int:pk>/delete/", CommentDeleteView.as_view(), name="comment_delete"
     ),
-    path("tag/<str:tag>/", TagListView.as_view(), name="tag_list"),
+    # repost
     path(
         "repost/new/<int:activity_id>/",
         RepostCreateView.as_view(),
@@ -74,4 +75,11 @@ urlpatterns = [
     path("repost/<int:pk>/", RepostDetailView.as_view(), name="repost_detail"),
     path("repost/<int:pk>/delete/", RepostDeleteView.as_view(), name="repost_delete"),
     path("repost/<int:pk>/update/", RepostUpdateView.as_view(), name="repost_update"),
+    # tag
+    path("tag/<str:tag>/", TagListView.as_view(), name="tag_list"),
+    path(
+        "u/<str:username>/tag/<str:tag>/",
+        TagUserListView.as_view(),
+        name="tag_user_list",
+    ),
 ]

@@ -9,7 +9,7 @@ register = template.Library()
 
 
 @register.filter
-def linkify_tags(value):
+def linkify_tags(value, user=None):
     # Split the content by triple backticks to distinguish code blocks
     split_by_backticks = value.split("```")
 
@@ -20,8 +20,11 @@ def linkify_tags(value):
 
             def replace(match):
                 tag = match.group(1)
-                url = reverse("write:tag_list", args=[tag])
-                return f'<a href="{url}">#{tag}</a>'
+                if user is not None:
+                    url = reverse("write:tag_user_list", args=[user.username, tag])
+                else:
+                    url = reverse("write:tag_list", args=[tag])
+                return f'<a href="{url}" class="text-success">#{tag}</a>'
 
             split_by_backticks[i] = re.sub(r"#(\w+)", replace, split_by_backticks[i])
 

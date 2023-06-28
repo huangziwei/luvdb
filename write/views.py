@@ -147,6 +147,13 @@ class PinListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["object"] = self.user
+
+        # Get all tags for this user's pins
+        all_tags = set()
+        for pin in Pin.objects.filter(user=self.user):
+            for tag in pin.tags.all():
+                all_tags.add(tag)
+        context["all_tags"] = all_tags
         return context
 
 
@@ -263,10 +270,47 @@ class TagListView(ListView):
         context = super().get_context_data(**kwargs)
         tag = self.kwargs["tag"]
         context["tag"] = tag
-        context["posts"] = Post.objects.filter(tags__name=tag)
-        context["says"] = Say.objects.filter(tags__name=tag)
-        context["pins"] = Pin.objects.filter(tags__name=tag)
-        context["users"] = User.objects.filter(bio__icontains=tag)
+        context["posts"] = posts = Post.objects.filter(tags__name=tag)
+        context["says"] = says = Say.objects.filter(tags__name=tag)
+        context["pins"] = pins = Pin.objects.filter(tags__name=tag)
+        context["users"] = User.objects.filter(
+            bio__icontains=tag
+        )  # these are the users with this tag in their bio
+        all_tags = set()
+        for obj in chain(posts, says, pins):
+            for t in obj.tags.all():
+                all_tags.add(t)
+        context["all_tags"] = all_tags
+        return context
+
+
+class TagUserListView(ListView):
+    template_name = "write/tag_user_list.html"
+
+    def get_queryset(self):
+        tag = self.kwargs["tag"]
+        username = self.kwargs["username"]
+        user = User.objects.get(username=username)
+        posts = Post.objects.filter(tags__name=tag, user=user)
+        says = Say.objects.filter(tags__name=tag, user=user)
+        pins = Pin.objects.filter(tags__name=tag, user=user)
+        return list(chain(posts, says, pins))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag = self.kwargs["tag"]
+        username = self.kwargs["username"]
+        user = User.objects.get(username=username)
+        context["tag"] = tag
+        context["user"] = user  # the user whose tags we are viewing
+        context["posts"] = posts = Post.objects.filter(tags__name=tag, user=user)
+        context["says"] = says = Say.objects.filter(tags__name=tag, user=user)
+        context["pins"] = pins = Pin.objects.filter(tags__name=tag, user=user)
+        all_tags = set()
+        for obj in chain(posts, says, pins):
+            for t in obj.tags.all():
+                all_tags.add(t)
+        context["all_tags"] = all_tags
         return context
 
 

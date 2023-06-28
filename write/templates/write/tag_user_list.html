@@ -2,11 +2,15 @@
 {% load markdownify %}
 {% load linkify %}
 {% block content %}
+
 <div class="container">
     <div class="row">
         <div class="col-sm-7 left-column">
             <h2>
                 Entries with tag "{{ tag }}" 
+                {% if user %}
+                by <a href="{% url 'accounts:detail' user.username %}">{{ user.display_name | default:user.username }}</a>
+                {% endif %}
             </h2>
 
             {% if says %}
@@ -14,7 +18,7 @@
                 {% for say in says %}
                     <div class="item mb-3">
                         <p><a href="{% url 'accounts:detail' say.user.username %}"> {{ say.user.display_name | default:say.user.username }} </a>said:</p>
-                        <p>{{ say.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</p>
+                        <p>{{ say.content | linkify_tags:say.user | linkify_mentions | markdownify | truncatewords:30 }}</p>
                         <p>
                         <small>
                             <a href="{% url 'write:say_detail' say.id %}" class='text-muted'>{{ say.timestamp }}</a>
@@ -30,7 +34,7 @@
                 {% for pin in pins %}
                     <div class="item mb-3">
                         <h5><a href="{{ pin.get_absolute_url }}">{{ pin.title }}</a></h5>
-                        <div>{{ pin.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</div>
+                        <div>{{ pin.content | linkify_tags:pin.user | linkify_mentions | markdownify | truncatewords:30 }}</div>
                         <p>
                         <small>
                             By <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.display_name | default:pin.user.username }}</a> on 
@@ -47,7 +51,7 @@
                 {% for post in posts %}
                     <div class="item mb-3">
                         <h5><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
-                        <div>{{ post.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</div>
+                        <div>{{ post.content | linkify_tags:post.user | linkify_mentions | markdownify | truncatewords:30 }}</div>
                         <p><small>By {{ post.user }} on <span class='text-muted'>{{ post.timestamp }}</span></small></p>
                     </div>
                 {% endfor %}
@@ -70,7 +74,7 @@
             <div class="bg-light p-3">
                 <span>
                 {% for tag in all_tags %}
-                    <a href="{% url 'write:tag_list' tag.name %}" class="text-success me-2">#{{ tag.name }}</a>
+                    <a href="{% url 'write:tag_user_list' user.username tag.name %}" class="text-success me-2">#{{ tag.name }}</a>
                 {% endfor %}
                 </span>
             </div>

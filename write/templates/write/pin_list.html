@@ -21,7 +21,7 @@
                     <a href="{{ pin.url }}">{{ pin.title }}</a> 
                     (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
                     {% if pin.content %}
-                    <blockquote>{{ pin.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
+                    <blockquote>{{ pin.content | linkify_tags:pin.user | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
                     {% endif %}
                 </div>
                 <span class="d-flex mt-2">
@@ -46,6 +46,17 @@
         {% empty %}
             <p>Nothing.</p>
         {% endfor %}
+        </div>
+
+        <div class="col-sm-5 right-column">
+            <!--All tags on the page-->
+            <div class="bg-light p-3">
+                <span>
+                {% for tag in all_tags %}
+                    <a href="{% url 'write:tag_user_list' user.username tag.name %}" class="text-success me-2">#{{ tag.name }}</a>
+                {% endfor %}
+                </span>
+            </div>
         </div>
     </div>
 </div>

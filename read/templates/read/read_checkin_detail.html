@@ -96,10 +96,13 @@
 
       <div class='mt-4'>
         <span class="d-flex mt-2">
-          <p class='me-2 text-secondary mb-2'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
+          <p class='me-2 text-secondary mb-2'>
+            <a href="{% url 'read:read_checkin_list' object.content_object.id object.user.username%}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+            
+          </p>
           {% if object.user == request.user %}
-          <a href="{% url "read:read_checkin_update" object.pk %}" class="me-2">Edit</a>
-          <a href="{% url "read:read_checkin_delete" object.pk %}" class="me-2">Delete</a>
+          <a href="{% url "read:read_checkin_update" object.id %}" class="me-2">Edit</a>
+          <a href="{% url "read:read_checkin_delete" object.id %}" class="me-2">Delete</a>
           {% endif %}
         </span>
       </div>

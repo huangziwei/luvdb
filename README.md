@@ -1,12 +1,14 @@
 # LʌvDB
 
-A [Douban](https://www.douban.com/) with Love. Built with Django and Bootstrap.
+A [Douban](https://www.douban.com/) clone with LOVE. Built with Django and Bootstrap.
 
 ## Features / Roadmap (subject to change)
 
-- [x] User Profile
+- [x] User Account
+    - [ ] Delete Account
 - [x] Activity Feed
     - [x] Follow/Unfollow
+    - [ ] Block
 - [x] Entity
     - [x] Person
 - [x] Write
@@ -15,10 +17,10 @@ A [Douban](https://www.douban.com/) with Love. Built with Django and Bootstrap.
     - [x] Post
     - [x] Repost 
     - [x] Comment 
-    - [x] Check-In
 - [x] Play
     - [x] Game
     - [ ] Cast
+    - [x] Check-In
 - [x] Read
     - [x] Work
     - [x] Instance
@@ -27,18 +29,24 @@ A [Douban](https://www.douban.com/) with Love. Built with Django and Bootstrap.
         - [x] Issue
     - [x] Publisher
     - [ ] Series
+    - [x] Check-In
 - [ ] Listen
     - [ ] Track
     - [ ] Cover
     - [ ] Release
     - [ ] Podcast
         - [ ] Episode
+    - [ ] Check-In
 - [ ] Watch
     - [ ] Movie
     - [ ] Series
         - [ ] Season
             - [ ] Episode
     - [ ] Cast
+    - [ ] Check-In
+- [ ] Visit
+    - [ ] Location
+    - [ ] Check-In
 
 
 ## Installation

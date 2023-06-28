@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import F, OuterRef, Prefetch, Subquery
+from django.db.models import F, OuterRef, Prefetch, Q, Subquery
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -290,23 +290,45 @@ class GameCheckInListView(ListView):
 
     def get_queryset(self):
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        status = self.request.GET.get("status")  # Get status from query params
         user = get_object_or_404(
             User, username=self.kwargs["username"]
         )  # Get user from url param
         game_id = self.kwargs["game_id"]  # Get game id from url param
-        return GameCheckIn.objects.filter(user=user, game__id=game_id).order_by(order)
+
+        queryset = GameCheckIn.objects.filter(user=user, game__id=game_id)
+
+        # if status is specified, filter by status
+        if status:
+            queryset = queryset.filter(status=status)
+
+        return queryset.order_by(order)
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get the context
         context = super().get_context_data(**kwargs)
 
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        status = self.request.GET.get("status")  # Get status from query params
         user = get_object_or_404(User, username=self.kwargs["username"])
         context["user"] = user
         context["order"] = order
-        context["checkins"] = GameCheckIn.objects.filter(
+        context["status"] = status  # pass the status to the context
+        checkins = GameCheckIn.objects.filter(
             user__username=self.kwargs["username"], game__id=self.kwargs["game_id"]
-        ).order_by(order)
+        )
+
+        # if status is specified, filter by status
+        if status:
+            if status == "played_replayed":
+                checkins = checkins.filter(Q(status="played") | Q(status="replayed"))
+            elif status == "playing_replaying":
+                checkins = checkins.filter(Q(status="playing") | Q(status="replaying"))
+            else:
+                checkins = checkins.filter(status=status)
+
+        context["checkins"] = checkins.order_by(order)
+
         # Get the game details
         context["game"] = get_object_or_404(Game, pk=self.kwargs["game_id"])
         return context
@@ -336,6 +358,15 @@ class GameCheckInAllListView(ListView):
             checkins = checkins.order_by("timestamp")
         else:
             checkins = checkins.order_by("-timestamp")
+
+        status = self.request.GET.get("status")
+        if status:
+            if status == "played_replayed":
+                checkins = checkins.filter(Q(status="played") | Q(status="replayed"))
+            elif status == "playing_replaying":
+                checkins = checkins.filter(Q(status="playing") | Q(status="replaying"))
+            else:
+                checkins = checkins.filter(status=status)
 
         return checkins
 

@@ -4,7 +4,8 @@
     <div class="container">
         <div class="row">
         <div class='col-8'>
-            <h2>Recent Books</h2>
+            <h2>Recently added</h2>
+            <h4>Books</h4>
             <div class="row">
                 {% for book in objects.recent_books %}
                     <div class="col-md-2 col-sm-6 mb-4">
@@ -21,7 +22,7 @@
                 {% endfor %}
             </div>
 
-            <h2>Recent Works</h2>
+            <h4>Works</h4>
             {% for work in objects.recent_works %}
                 <p>
                     <a href="{% url 'read:work_detail' work.pk %}">
@@ -30,7 +31,7 @@
                 </p>
             {% endfor %}
 
-            <h2>Recent Persons</h2>
+            <h4>Persons</h4>
             {% for person in objects.recent_persons %}
                 <p><a href="{% url 'entity:person_detail' person.pk %}">{{ person.name }}</a></p>
             {% endfor %}
