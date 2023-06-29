@@ -16,6 +16,16 @@
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 {{ form.media }}
 
-<script type="text/javascript" src="{% static 'js/game.js' %}"></script>
-
+<script type="text/javascript" src="{% static 'js/generalFormSetHandler.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    
+        // Call the function for game-role-formset
+        window.handleFormset('#game-role-formset', 'add-game-role');
+    });
+    
+    $(document).ready(function() {
+        $('select').removeClass('form-select');
+    });
+</script>
 {% endblock content %}

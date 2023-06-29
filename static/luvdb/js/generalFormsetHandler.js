@@ -1,7 +1,8 @@
+// generalFormsetHandler.js
 document.addEventListener("DOMContentLoaded", function() {
 
     function handleFormset(formsetId, buttonClass) {
-        var formsetRows = document.querySelectorAll(formsetId + ' .row');
+        var formsetRows = document.querySelectorAll(formsetId + ' .form-wrapper');
         var lastVisibleRow = null;
 
         formsetRows.forEach(function(row, index) {
@@ -13,9 +14,12 @@ document.addEventListener("DOMContentLoaded", function() {
             if (index > 0 && !hasSelectedOption) {
                 row.style.visibility = 'hidden';
                 row.style.height = '0';
+                row.classList.add('bg-light');
             } else {
                 lastVisibleRow = row;
+                row.classList.add('bg-light', 'p-2', 'mb-3');
             }
+            
         });
 
         // Add the "+" button to the last visible row only
@@ -29,23 +33,24 @@ document.addEventListener("DOMContentLoaded", function() {
         var button = document.createElement('button');
         button.type = 'button';
         button.textContent = '+';
-        button.className = 'btn btn-sm btn-light ' + buttonClass;
+        button.className = 'btn btn-sm btn-outline-secondary ' + buttonClass;
 
         innerDiv.appendChild(label);
         innerDiv.appendChild(button);
         buttonDiv.appendChild(innerDiv);
-        lastVisibleRow.appendChild(buttonDiv);
+        lastVisibleRow.lastElementChild.appendChild(buttonDiv);  // Change this line
 
         document.querySelector('.' + buttonClass).addEventListener('click', function() {
-            var currentRow = this.parentElement.parentElement.parentElement;
-            var nextHiddenRow = this.parentElement.parentElement.parentElement.nextElementSibling;
+            var currentRow = this.parentElement.parentElement.parentElement.parentElement;  // Change this line
+            var nextHiddenRow = this.parentElement.parentElement.parentElement.parentElement.nextElementSibling;  // Change this line
             if (nextHiddenRow) {
                 nextHiddenRow.style.visibility = 'visible';
                 nextHiddenRow.style.height = 'auto';
+                nextHiddenRow.classList.add('mb-3', 'p-2');
 
                 // Add the "+" button to the next row
                 var buttonDivClone = buttonDiv.cloneNode(true);
-                nextHiddenRow.appendChild(buttonDivClone);
+                nextHiddenRow.lastElementChild.appendChild(buttonDivClone);  // Change this line
                 var addButton = buttonDivClone.querySelector('button');
                 addButton.addEventListener('click', arguments.callee);
             }
@@ -61,16 +66,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Call the function for work-role-formset
-    handleFormset('#work-role-formset', 'add-work-role');
+    // Export the function for usage in other files
+    window.handleFormset = handleFormset;
 });
-
-$(document).ready(function() {
-    $('select:not([name="work_type"])').removeClass('form-select');
-});
-
-// $(document).ready(function() {
-//     $('select').on('select2:open', function (e) {
-//         $('span.select2-selection--single').removeClass('form-select');
-//     });
-// });

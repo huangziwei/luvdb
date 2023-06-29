@@ -15,7 +15,11 @@
                     <div class="col-md-3 me-4">
                         <div class="cover-box">
                             {% if issue.cover %}
-                                <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="cover-image">
+                                {% if issue.cover_sens %}
+                                    <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                {% else %}
+                                    <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="cover-image">
+                                {% endif %}
                             {% else %}
                                 <p class="no-cover-text">No Cover</p>
                             {% endif %}

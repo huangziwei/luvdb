@@ -16,6 +16,18 @@
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 {{ form.media }}
 
-<script type="text/javascript" src="{% static 'js/book.js' %}"></script>
-
+<script type="text/javascript" src="{% static 'js/generalFormSetHandler.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    
+        // Call the function for book-role-formset and book-work-formset
+        window.handleFormset('#book-role-formset', 'add-book-role');
+        window.handleFormset('#book-instance-formset', 'add-book-instance');
+    });
+    
+    $(document).ready(function() {
+        $('select').removeClass('form-select');
+    });
+    
+</script>
 {% endblock content %}

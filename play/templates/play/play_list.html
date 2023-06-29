@@ -10,7 +10,11 @@
                         <div class="col-md-2 col-sm-6 mb-4">
                             <a href="{% url 'play:game_detail' game.pk %}">
                                 {% if game.cover %}
-                                    <img src="{{ game.cover.url }}" alt="{{ game.title }}" class="img-fluid">
+                                    {% if game.cover_sens %}
+                                        <img src="{{ game.cover.url }}" alt="{{ game.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ game.cover.url }}" alt="{{ game.title }}" class="img-fluid">
+                                    {% endif %}
                                 {% else %}
                                     <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
                                 {% endif %}

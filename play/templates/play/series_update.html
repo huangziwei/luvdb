@@ -1,0 +1,12 @@
+{% extends "base.html" %} <!-- You should have a base template for your website layout -->
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class='col-7'>
+            <h2>Update Series</h2>
+            {% include "play/series_form.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -15,6 +15,17 @@
 
 {{ instanceroles.media }}
 
-<script type="text/javascript" src="{% static 'js/instance.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/generalFormSetHandler.js' %}"></script>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
 
+        // Call the function for instance-role-formset
+        window.handleFormset('#instance-role-formset', 'add-instance-role');
+        window.handleFormset('#instance-work-formset', 'add-instance-work');
+    });
+    
+    $(document).ready(function() {
+        $('select').removeClass('form-select');
+    });
+</script>
 {% endblock %}

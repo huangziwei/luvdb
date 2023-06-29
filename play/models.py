@@ -63,6 +63,7 @@ class Game(models.Model):
     description = models.TextField(blank=True, null=True)
     website = models.CharField(max_length=100, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_game_cover, null=True, blank=True)
+    cover_sens = models.BooleanField(default=False, null=True, blank=True)
     price = models.CharField(max_length=20, blank=True, null=True)
     platforms = models.ManyToManyField(Platform, related_name="games")
 
@@ -198,3 +199,41 @@ class GameCheckIn(models.Model):
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
+
+
+class GameSeries(models.Model):
+    # data
+    title = models.CharField(max_length=100)
+    games = models.ManyToManyField(Game, through="GameInSeries", related_name="series")
+
+    # meta
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="series_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="series_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("play:series_detail", args=[str(self.id)])
+
+
+class GameInSeries(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    series = models.ForeignKey(GameSeries, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.series.title}: {self.game.title}"

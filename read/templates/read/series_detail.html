@@ -1,0 +1,18 @@
+{% extends "base.html" %} <!-- You should have a base template for your website layout -->
+
+{% block content %}
+    <h2>{{ object.title }}</h2> <!-- 'object' is the default context variable name for the model instance -->
+    <p>{{ object.description }}</p>
+
+    <h3>Books in series</h3>
+    <ul>
+        {% for book_in_series in object.bookinseries_set.all %}
+            <li>
+                <a href="{% url 'read:book_detail' book_in_series.book.pk %}">{{ book_in_series.book.title }}</a>
+                <span>Order: {{ book_in_series.order }}</span>
+            </li>
+        {% empty %}
+            <p>No books in this series yet.</p>
+        {% endfor %}
+    </ul>
+{% endblock %}

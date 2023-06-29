@@ -15,6 +15,16 @@
 
 {{ workroles.media }}
 
-<script type="text/javascript" src="{% static 'js/work.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/generalFormSetHandler.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
 
+        // Call the function for work-role-formset
+        window.handleFormset('#work-role-formset', 'add-work-role');
+    });
+    
+    $(document).ready(function() {
+        $('select:not([name="work_type"])').removeClass('form-select');
+    });
+</script>
 {% endblock %}

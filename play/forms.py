@@ -1,12 +1,15 @@
+import re
+
 from crispy_forms.bootstrap import Field
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Column, Div, Fieldset, Layout, Row, Submit
 from dal import autocomplete
 from django import forms
+from django.conf import settings
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
-from .models import Game, GameCheckIn, GameRole
+from .models import Game, GameCheckIn, GameInSeries, GameRole, GameSeries
 
 
 class GameForm(forms.ModelForm):
@@ -87,3 +90,54 @@ class GameCheckInForm(forms.ModelForm):
         self.fields["content"].label = ""
         self.fields["content"].required = False
         self.fields["comments_enabled"].label = "Enable comments"
+
+
+class GameSeriesForm(forms.ModelForm):
+    class Meta:
+        model = GameSeries
+        fields = ["title"]
+
+
+class GameInSeriesForm(forms.ModelForm):
+    game_url = forms.URLField()
+
+    class Meta:
+        model = GameInSeries
+        fields = ["game_url", "order"]
+        exclude = ["series"]
+
+    def clean_game_url(self):
+        game_url = self.cleaned_data.get("game_url")
+        if not game_url:  # if the field is empty, just return it
+            return game_url
+        game_id = re.findall(r"game/(\d+)", game_url)
+        if not game_id:
+            raise forms.ValidationError("Invalid Game URL")
+        try:
+            game = Game.objects.get(pk=game_id[0])
+        except Game.DoesNotExist:
+            raise forms.ValidationError("Game does not exist")
+        self.instance.game = game  # save the game instance directly
+        return game_url
+
+    def clean(self):
+        cleaned_data = super().clean()
+        game_url = cleaned_data.get("game_url")
+        if not game_url:  # if the game_url field is empty
+            self.cleaned_data["DELETE"] = True  # mark the form for deletion
+        return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(GameInSeriesForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk and self.instance.game:
+            self.fields[
+                "game_url"
+            ].initial = f"{settings.ROOT_URL}/game/{self.instance.game.pk}"
+        self.fields["game_url"].required = False
+        self.fields["game_url"].label = "URL"
+        self.fields["order"].required = False
+
+
+GameInSeriesFormSet = forms.inlineformset_factory(
+    GameSeries, GameInSeries, form=GameInSeriesForm, extra=2, can_delete=True
+)

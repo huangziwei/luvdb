@@ -11,7 +11,11 @@
                     <div class="col-md-2 col-sm-6 mb-4">
                         <a href="{% url 'read:book_detail' book.pk %}">
                             {% if book.cover %}
-                                <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid">
+                                {% if book.cover_sens %}
+                                    <img src="{{ book.cover.url }}" alt="{{ book.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                {% else %}
+                                    <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid">
+                                {% endif %}
                             {% else %}
                                 <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
                             {% endif %}

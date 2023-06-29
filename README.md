@@ -19,6 +19,7 @@ A [Douban](https://www.douban.com/) clone with LOVE. Built with Django and Boots
     - [x] Comment 
 - [x] Play
     - [x] Game
+    - [x] Series
     - [ ] Cast
     - [x] Check-In
 - [x] Read
@@ -28,7 +29,7 @@ A [Douban](https://www.douban.com/) clone with LOVE. Built with Django and Boots
     - [x] Periodical
         - [x] Issue
     - [x] Publisher
-    - [ ] Series
+    - [x] Series
     - [x] Check-In
 - [ ] Listen
     - [ ] Track

@@ -1,7 +1,54 @@
+import os
+import uuid
+
 from django.conf import settings
 from django.db import models
+from django.utils.text import slugify
 
 from entity.models import Person, Role
+
+
+# helpers
+def rename_release_cover(instance, filename):
+    _, extension = os.path.splitext(filename)
+    unique_id = uuid.uuid4()
+    directory_name = (
+        f"{slugify(instance.title, allow_unicode=True)}-{instance.release_date}"
+    )
+    new_name = f"{unique_id}{extension}"
+    return os.path.join("covers", directory_name, new_name)
+
+
+class Work(models.Model):
+    title = models.CharField(max_length=200)
+    genre = models.CharField(max_length=100)
+    persons = models.ManyToManyField(
+        Person, through="WorkRole", related_name="listen_works"
+    )
+
+    def __str__(self):
+        return self.title
+
+
+class WorkRole(models.Model):
+    work = models.ForeignKey(Work, on_delete=models.CASCADE)
+    person = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="listen_workrole_set",
+    )
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="listen_workrole_set",
+    )
+
+    def __str__(self):
+        return f"{self.role} of {self.work} by {self.person}"
 
 
 class Track(models.Model):
@@ -11,6 +58,7 @@ class Track(models.Model):
 
     # track meta data
     title = models.CharField(max_length=255)
+    romanized_title = models.CharField(max_length=255, blank=True, null=True)
     persons = models.ManyToManyField(Person, through="TrackRole", related_name="tracks")
     relase_date = models.CharField(
         max_length=10, blank=True, null=True
@@ -41,10 +89,10 @@ class TrackRole(models.Model):
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
-    name = models.CharField(max_length=255, blank=True, null=True)
+    alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.track} - {self.name or self.person.name} - {self.role}"
+        return f"{self.track} - {self.alt_name or self.person.name} - {self.role}"
 
 
 # Release
@@ -53,11 +101,18 @@ class Release(models.Model):
     An Release Entity
     """
 
+    cover = models.ImageField(upload_to=rename_release_cover, null=True, blank=True)
+    cover_sens = models.BooleanField(default=False, null=True, blank=True)
+
     # Release meta data
     title = models.CharField(max_length=255)
     persons = models.ManyToManyField(
         Person, through="ReleaseRole", related_name="releases"
     )
+    tracks = models.ManyToManyField(
+        Track, through="TrackInRelease", related_name="releases"
+    )
+
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
@@ -105,3 +160,15 @@ class ReleaseRole(models.Model):
 
     def __str__(self):
         return f"{self.role} in {self.release.title} by {self.person.name}"
+
+
+class TrackInRelease(models.Model):
+    release = models.ForeignKey(Release, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    track_order = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ["track_order"]
+
+    def __str__(self):
+        return f"{self.release.title}, {self.track.title}"

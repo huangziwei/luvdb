@@ -4,11 +4,11 @@
     {{ form.title|as_crispy_field }}
     {{ form.romanized_title|as_crispy_field }}
     {{ gameroles.management_form|crispy }}
-    <div id="game-role-formset">
+    <div id="game-role-formset" class="bg-light p-3 mb-3">
+        <strong>Persons related to this Game</strong>
+        <p class='text-muted'>E.g. Directors, Writers, Designers, etc.</p>
         {% for form in gameroles %}
         <div class="form-wrapper">
-            <strong>Persons related to this Game</strong>
-            <p class='text-muted'>E.g. Directors, Writers, Designers, etc.</p>
             <div class="row">
                 {{ form.id }}
                 <div class="col-md-4 mb-3">

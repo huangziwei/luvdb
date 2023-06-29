@@ -1,7 +1,15 @@
 # Register your models here.
 from django.contrib import admin
 
-from .models import Developer, Game, GameCheckIn, GameRole, Platform
+from .models import (
+    Developer,
+    Game,
+    GameCheckIn,
+    GameInSeries,
+    GameRole,
+    GameSeries,
+    Platform,
+)
 
 
 class GameAdmin(admin.ModelAdmin):
@@ -30,8 +38,21 @@ class PlatformAdmin(admin.ModelAdmin):
     search_fields = ("name", "release_date")
 
 
+class GameInSeriesInline(admin.TabularInline):
+    model = GameInSeries
+    extra = 1
+
+
+class SeriesAdmin(admin.ModelAdmin):
+    list_display = ["id", "title"]
+    search_fields = ["title"]
+
+    inlines = [GameInSeriesInline]
+
+
 admin.site.register(Game, GameAdmin)
 admin.site.register(GameRole, GameRoleAdmin)
 admin.site.register(GameCheckIn, GameCheckInAdmin)
 admin.site.register(Developer, DeveloperAdmin)
 admin.site.register(Platform, PlatformAdmin)
+admin.site.register(GameSeries, SeriesAdmin)

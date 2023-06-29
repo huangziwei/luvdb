@@ -14,7 +14,11 @@
         <div class="row justify-content-start">
             <div class="col-md-3">
                 {% if object.game.cover %}
-                    <img src="{{ object.game.cover.url }}" alt="{{ object.game.title }} cover" style="width: 150px;height: auto;">
+                    {% if object.game.cover_sens %}
+                        <img src="{{ object.game.cover.url }}" alt="{{ object.game.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                    {% else %}
+                        <img src="{{ object.game.cover.url }}" alt="{{ object.game.title }} cover" style="width: 150px;height: auto;">
+                    {% endif %}    
                 {% else %}
                     <p class="no-cover-text">No Cover</p>
                 {% endif %}

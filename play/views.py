@@ -19,8 +19,15 @@ from django.views.generic import (
 from write.forms import CommentForm, RepostForm
 from write.models import Comment
 
-from .forms import GameCheckInForm, GameForm, GameRoleForm, GameRoleFormSet
-from .models import Developer, Game, GameCheckIn, GameRole, Platform
+from .forms import (
+    GameCheckInForm,
+    GameForm,
+    GameInSeriesFormSet,
+    GameRoleForm,
+    GameRoleFormSet,
+    GameSeriesForm,
+)
+from .models import Developer, Game, GameCheckIn, GameRole, GameSeries, Platform
 
 User = get_user_model()
 
@@ -396,3 +403,62 @@ class PlayListView(ListView):
             )
         )
         return queryset
+
+
+class GameSeriesCreateView(CreateView):
+    model = GameSeries
+    form_class = GameSeriesForm
+    template_name = "play/series_create.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["games"] = GameInSeriesFormSet(self.request.POST)
+        else:
+            data["games"] = GameInSeriesFormSet()
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        games = context["games"]
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            self.object = form.save()
+            if games.is_valid():
+                games.instance = self.object
+                games.save()
+        return super().form_valid(form)
+
+
+class GameSeriesDetailView(DetailView):
+    model = GameSeries
+    template_name = "play/series_detail.html"  # Update this
+
+
+class GameSeriesUpdateView(UpdateView):
+    model = GameSeries
+    form_class = GameSeriesForm
+    template_name = "play/series_update.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["games"] = GameInSeriesFormSet(self.request.POST, instance=self.object)
+        else:
+            data["games"] = GameInSeriesFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        games = context["games"]
+        print("Formset data:", self.request.POST)  # Print out the formset POST data.
+        if games.is_valid():
+            self.object = form.save()
+            games.instance = self.object
+            games.save()
+        else:
+            print("Formset errors:", games.errors)  # Print out the formset errors.
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("play:series_detail", kwargs={"pk": self.object.pk})

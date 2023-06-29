@@ -11,7 +11,11 @@
 
 .add-book-work,
 .add-book-role,
-.add-book-edition {
+.add-book-instance,
+.add-work-role,
+.add-issue-instance,
+.add-instance-work,
+.add-game-role {
     height: 38px !important;
     /* Adjust this value to your liking */
     width: 100% !important;
@@ -208,4 +212,8 @@ pre {
     .checkin-cover {
         width: 150px;
     }
+}
+
+.blur {
+    filter: blur(5px);
 }

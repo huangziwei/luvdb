@@ -128,7 +128,9 @@ class Work(models.Model):  # Renamed from Book
     # work meta data
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
-    persons = models.ManyToManyField(Person, through="WorkRole", related_name="works")
+    persons = models.ManyToManyField(
+        Person, through="WorkRole", related_name="read_works"
+    )
     publication_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
@@ -174,8 +176,20 @@ class WorkRole(models.Model):  # Renamed from BookRole
     """
 
     work = models.ForeignKey(Work, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    person = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="read_workrole_set",
+    )
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="read_workrole_set",
+    )
 
     def __str__(self):
         return f"{self.work} - {self.person} - {self.role}"
@@ -218,7 +232,7 @@ class Book(models.Model):
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
-    cover_sens = models.BooleanField(default=False)
+    cover_sens = models.BooleanField(default=False, null=True, blank=True)
     persons = models.ManyToManyField(Person, through="BookRole", related_name="books")
     instances = models.ManyToManyField(
         Instance, through="BookInstance", related_name="books"
@@ -502,3 +516,39 @@ class IssueInstance(models.Model):
 
     def __str__(self):
         return f"{self.issue} - {self.instance} - {self.order}"
+
+
+class BookSeries(models.Model):
+    title = models.CharField(max_length=100)
+    books = models.ManyToManyField(Book, through="BookInSeries", related_name="series")
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="bookseries_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="bookseries_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("read:series_detail", args=[str(self.id)])
+
+
+class BookInSeries(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    series = models.ForeignKey(BookSeries, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.series.title}: {self.book.title}"

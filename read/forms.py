@@ -1,15 +1,20 @@
+import re
+
 from crispy_forms.bootstrap import Field
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Column, Div, Fieldset, Layout, Row, Submit
 from dal import autocomplete
 from django import forms
+from django.conf import settings
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
 from .models import (
     Book,
+    BookInSeries,
     BookInstance,
     BookRole,
+    BookSeries,
     Instance,
     InstanceRole,
     Issue,
@@ -158,6 +163,10 @@ class BookForm(forms.ModelForm):
             "format": "e.g. paperback, hardcover, ebook, etc.",
         }
 
+    def __init__(self, *args, **kwargs):
+        super(BookForm, self).__init__(*args, **kwargs)
+        self.fields["cover_sens"].label = "Is the cover sensitive or explicit?"
+
 
 class BookRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="read", widget=forms.HiddenInput())
@@ -304,3 +313,54 @@ class ReadCheckInForm(forms.ModelForm):
         super(ReadCheckInForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
         self.fields["content"].required = False
+
+
+class BookSeriesForm(forms.ModelForm):
+    class Meta:
+        model = BookSeries
+        fields = ["title"]
+
+
+class BookInSeriesForm(forms.ModelForm):
+    book_url = forms.URLField()
+
+    class Meta:
+        model = BookInSeries
+        fields = ["book_url", "order"]
+        exclude = ["series"]
+
+    def clean_book_url(self):
+        book_url = self.cleaned_data.get("book_url")
+        if not book_url:  # if the field is empty, just return it
+            return book_url
+        book_id = re.findall(r"book/(\d+)", book_url)
+        if not book_id:
+            raise forms.ValidationError("Invalid Book URL")
+        try:
+            book = Book.objects.get(pk=book_id[0])
+        except Book.DoesNotExist:
+            raise forms.ValidationError("Book does not exist")
+        self.instance.book = book  # save the book instance directly
+        return book_url
+
+    def clean(self):
+        cleaned_data = super().clean()
+        book_url = cleaned_data.get("book_url")
+        if not book_url:  # if the book_url field is empty
+            self.cleaned_data["DELETE"] = True  # mark the form for deletion
+        return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(BookInSeriesForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk and self.instance.book:
+            self.fields[
+                "book_url"
+            ].initial = f"{settings.ROOT_URL}/book/{self.instance.book.pk}"
+        self.fields["book_url"].required = False
+        self.fields["book_url"].label = "URL"
+        self.fields["order"].required = False
+
+
+BookInSeriesFormSet = forms.inlineformset_factory(
+    BookSeries, BookInSeries, form=BookInSeriesForm, extra=2, can_delete=True
+)

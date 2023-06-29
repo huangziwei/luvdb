@@ -48,9 +48,15 @@
                         {% for book in language_books.list %}
                             <div class="col-sm-3">
                                 {% if book.cover %}
-                                    <a href="{% url 'read:book_detail' book.pk %}">
-                                        <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid">
-                                    </a>
+                                    {% if book.cover_sens %}
+                                        <a href="{% url 'read:book_detail' book.pk %}">
+                                            <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid blur">
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'read:book_detail' book.pk %}">
+                                            <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid">
+                                        </a>
+                                    {% endif %}
                                 {% else %}
                                     <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
                                 {% endif %}
@@ -66,9 +72,15 @@
                     {% for book in books %}
                         <div class="col-sm-3">
                             {% if book.cover %}
-                                <a href="{% url 'read:book_detail' book.pk %}">
-                                    <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid">
-                                </a>
+                                {% if book.cover_sens %}
+                                    <a href="{% url 'read:book_detail' book.pk %}">
+                                        <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid blur">
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'read:book_detail' book.pk %}">
+                                        <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid">
+                                    </a>
+                                {% endif %}
                             {% else %}
                                 <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
                             {% endif %}

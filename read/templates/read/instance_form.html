@@ -16,6 +16,7 @@
         <strong>Persons related to this instance</strong>
         <p class='text-muted'>E.g. Authors, Editors, Illustrators, etc.</p>
         {% for form in instanceroles %}
+        <div class="form-wrapper">
             <div class="row">
                 {{ form.id }}
                 <div class="col-md-4 mb-3">
@@ -31,6 +32,7 @@
                     <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role entry?</a>
                 </div>
             </div>
+        </div>
         {% endfor %}
     </div>
     

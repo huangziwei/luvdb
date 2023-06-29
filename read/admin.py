@@ -2,8 +2,10 @@ from django.contrib import admin
 
 from .models import (
     Book,
+    BookInSeries,
     BookInstance,
     BookRole,
+    BookSeries,
     Instance,
     InstanceRole,
     Issue,
@@ -124,6 +126,18 @@ class BookRoleAdmin(admin.ModelAdmin):
     search_fields = ("book__title", "person__name", "role__name")
 
 
+class BookInSeriesInline(admin.TabularInline):
+    model = BookInSeries
+    extra = 1
+
+
+class SeriesAdmin(admin.ModelAdmin):
+    list_display = ["id", "title"]
+    search_fields = ["title"]
+
+    inlines = [BookInSeriesInline]
+
+
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Publisher, PublisherAdmin)
 admin.site.register(Work, WorkAdmin)
@@ -135,6 +149,7 @@ admin.site.register(BookRole, BookRoleAdmin)
 admin.site.register(InstanceRole, InstanceRoleAdmin)
 admin.site.register(Periodical, PeriodicalAdmin)
 admin.site.register(Issue, IssueAdmin)
+admin.site.register(BookSeries, SeriesAdmin)
 
 
 @admin.register(ReadCheckIn)

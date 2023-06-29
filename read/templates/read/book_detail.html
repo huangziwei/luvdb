@@ -16,7 +16,11 @@
                     <div class="col-md-3 me-4">
                         <div class="cover-box">
                             {% if object.cover %}
-                                <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image">
+                                {% if object.cover_sens %}
+                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                {% else %}
+                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image">
+                                {% endif %}
                             {% else %}
                                 <p class="no-cover-text">No Cover</p>
                             {% endif %}
@@ -66,6 +70,17 @@
                                 {% endif %}
                                 {% if object.asin %}
                                     <p><strong>ASIN:</strong> {{ object.asin }}</p>
+                                {% endif %}
+
+                                <!--add series here-->
+                                {% if object.bookinseries_set.all %}
+                                    <p>
+                                        <strong>Series:</strong> 
+                                        {% for bookinseries in object.bookinseries_set.all %}
+                                            <a href="{% url 'read:series_detail' bookinseries.series.id %}">{{ bookinseries.series.title }}</a>
+                                            {% if not forloop.last %} / {% endif %}
+                                        {% endfor %}
+                                    </p>
                                 {% endif %}
                                 
                             </div>

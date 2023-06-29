@@ -68,7 +68,11 @@
                     <div class="d-flex flex-row bg-white p-3 mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                             {% if repost.original_activity.content_object.content_object.cover %}
-                                <img src="{{ repost.original_activity.content_object.content_object.cover.url }}" alt="{{ repost.original_activity.content_object.content_object.title }} cover" style="width: 100%;">
+                                {% if repost.original_activity.content_object.content_object.cover_sens %}
+                                    <img src="{{ repost.original_activity.content_object.content_object.cover.url }}" alt="{{ repost.original_activity.content_object.content_object.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                {% else %}
+                                    <img src="{{ repost.original_activity.content_object.content_object.cover.url }}" alt="{{ repost.original_activity.content_object.content_object.title }} cover" style="width: 100%;">
+                                {% endif %}
                             {% else %}
                                 <p class="no-cover-text">No Cover</p>
                             {% endif %}

@@ -58,7 +58,11 @@
                         <div class="d-flex flex-row bg-white p-3 mt-2">
                             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                 {% if original_activity.content_object.book.cover %}
-                                    <img src="{{ original_activity.content_object.book.cover.url }}" alt="{{ original_activity.content_object.book.title }} cover" style="width: 100%;">
+                                    {% if original_activity.content_object.book.cover_sens %}
+                                        <img src="{{ original_activity.content_object.book.cover.url }}" alt="{{ original_activity.content_object.book.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ original_activity.content_object.book.cover.url }}" alt="{{ original_activity.content_object.book.title }} cover" style="width: 100%;">
+                                    {% endif %}
                                 {% else %}
                                     <p class="no-cover-text">No Cover</p>
                                 {% endif %}
@@ -131,7 +135,11 @@
                         <div class="d-flex flex-row bg-white p-3 mt-2">
                             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                 {% if original_activity.content_object.game.cover %}
-                                    <img src="{{ original_activity.content_object.game.cover.url }}" alt="{{ original_activity.content_object.game.title }} cover" style="width: 100%;">
+                                    {% if original_activity.content_object.game.cover_sens %}
+                                        <img src="{{ original_activity.content_object.game.cover.url }}" alt="{{ original_activity.content_object.game.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ original_activity.content_object.game.cover.url }}" alt="{{ original_activity.content_object.game.title }} cover" style="width: 100%;">
+                                    {% endif %}
                                 {% else %}
                                     <p class="no-cover-text">No Cover</p>
                                 {% endif %}

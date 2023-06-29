@@ -20,9 +20,11 @@ from write.models import Comment
 
 from .forms import (
     BookForm,
+    BookInSeriesFormSet,
     BookInstanceForm,
     BookInstanceFormSet,
     BookRoleFormSet,
+    BookSeriesForm,
     InstanceForm,
     InstanceRoleFormSet,
     IssueForm,
@@ -34,6 +36,7 @@ from .forms import (
 )
 from .models import (
     Book,
+    BookSeries,
     Instance,
     Issue,
     LanguageField,
@@ -966,3 +969,61 @@ class GenericCheckInAllListView(ListView):
         context["status"] = self.request.GET.get("status", "")
         context["model_name"] = self.kwargs.get("model_name", "book")
         return context
+
+
+class BookSeriesCreateView(LoginRequiredMixin, CreateView):
+    model = BookSeries
+    form_class = BookSeriesForm
+    template_name = "read/series_create.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["books"] = BookInSeriesFormSet(self.request.POST)
+        else:
+            data["books"] = BookInSeriesFormSet()
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        books = context["books"]
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            self.object = form.save()
+            if books.is_valid():
+                books.instance = self.object
+                books.save()
+        return super().form_valid(form)
+
+
+class BookSeriesDetailView(DetailView):
+    model = BookSeries
+    template_name = "read/series_detail.html"  # Update this
+
+
+class BookSeriesUpdateView(LoginRequiredMixin, UpdateView):
+    model = BookSeries
+    form_class = BookSeriesForm
+    template_name = "read/series_update.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["books"] = BookInSeriesFormSet(self.request.POST, instance=self.object)
+        else:
+            data["books"] = BookInSeriesFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        books = context["books"]
+        if books.is_valid():
+            self.object = form.save()
+            books.instance = self.object
+            books.save()
+        else:
+            print("Formset errors:", books.errors)  # Print out the formset errors.
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("read:series_detail", kwargs={"pk": self.object.pk})

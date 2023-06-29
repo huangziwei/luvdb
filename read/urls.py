@@ -1,8 +1,11 @@
 from django.urls import path
 
-from .views import (  # IssueDetailView,
+from .views import (
     BookCreateView,
     BookDetailView,
+    BookSeriesCreateView,
+    BookSeriesDetailView,
+    BookSeriesUpdateView,
     BookUpdateView,
     GenericCheckInAllListView,
     GenericCheckInListView,
@@ -141,5 +144,11 @@ urlpatterns = [
         "language-autocomplete/",
         LanguageAutocomplete.as_view(),
         name="language-autocomplete",
+    ),
+    # series
+    path("series/create/", BookSeriesCreateView.as_view(), name="series_create"),
+    path("series/<int:pk>/", BookSeriesDetailView.as_view(), name="series_detail"),
+    path(
+        "series/<int:pk>/update/", BookSeriesUpdateView.as_view(), name="series_update"
     ),
 ]

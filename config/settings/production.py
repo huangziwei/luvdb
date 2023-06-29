@@ -33,3 +33,5 @@ SECURE_HSTS_PRELOAD = True
 SESSION_COOKIE_SECURE = True
 
 TEMPLATE_404 = "404.html"
+
+ROOT_URL = "https://luvdb.com"
