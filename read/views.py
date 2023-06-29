@@ -657,7 +657,11 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
             author_role = Role.objects.filter(name="Author").first()
 
             # get all the works which are associated with these authors
-            qs = qs.filter(workrole__role=author_role, workrole__person__in=authors)
+            qs = qs.filter(
+                Q(workrole__role=author_role, workrole__person__in=authors)
+                | Q(title__icontains=self.q)
+                | Q(publication_date__icontains=self.q)
+            )
 
         return qs
 
@@ -698,7 +702,9 @@ class InstanceAutocomplete(autocomplete.Select2QuerySetView):
 
             # get all the instances which are associated with these authors
             qs = qs.filter(
-                instancerole__role=author_role, instancerole__person__in=authors
+                Q(instancerole__role=author_role, instancerole__person__in=authors)
+                | Q(title__icontains=self.q)
+                | Q(publication_date__icontains=self.q)
             )
 
         return qs

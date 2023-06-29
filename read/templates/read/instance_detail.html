@@ -44,13 +44,16 @@
 
     <br>
 
+    {% if object.issues.all %}
     <h3>Periodicals</h3>
     <div class="row">
         {% for issue in object.issues.all %}
         <div class="col-md-4">
             <p>
                 <a href="{% url 'read:issue_detail' issue.periodical.pk issue.pk %}">{{ issue.title }}</a>
-                , {{ issue.periodical.title }}
+                , 
+                <a href="{% url 'read:periodical_detail' issue.periodical.pk %}">{{ issue.periodical.title }}</a>
+                
                 ({{ issue.publication_date }})
             </p>
         </div>
@@ -58,5 +61,6 @@
         <p>This instance has no related periodical issues.</p>
         {% endfor %}
     </div>
+    {% endif %}
 </div>
 {% endblock %}
