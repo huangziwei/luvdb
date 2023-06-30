@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <span class='d-flex align-items-start'>
+        <h2>{{ object.title }} ({{ object.release_date }})</h2>
+        {% if user.is_authenticated %}
+        <a href="{% url 'listen:track_update' object.pk %}" class='fs-6 text-secondary'>Edit Track</a>
+        {% endif %}
+    </span>
+    
+    {% for role in object.trackrole_set.all %}
+    <p>
+        {{role.role.name }}: <a href="{% url 'entity:person_detail' role.person.id %}"> {{ role.person.name }}</a> 
+        {% if role.person.romanized_name %}
+            ({{ role.person.romanized_name }}) 
+        {% endif %}
+    </p>
+    {% endfor %}
+
+    {% if object.work.id %}
+    <p>
+        Related work: <a href={% url "listen:work_detail" object.work.id %}>{{object.work.title}}</a>
+        {% if object.work.release_date %}
+            ({{object.work.release_date}})
+        {% endif %}
+    </p>
+    {% endif %}
+
+    <h3>Releases</h3>
+    <div class="row">
+        {% for release in object.releases.all %}
+        <div class="col-md-4">
+            <p>
+                <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a>
+                ({{ release.release_date }})
+            </p>
+        </div>
+        {% empty %}
+        <p>This track has no related releases.</p>
+        {% endfor %}
+        
+    </div>
+
+</div>
+{% endblock %}

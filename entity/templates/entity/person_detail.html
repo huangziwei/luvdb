@@ -109,7 +109,7 @@
                 <ul>
                 {% for work in listen_works %}
                     <li>
-                        <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date}})
+                        <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
                     </li>
                 {% empty %}
                     <li>This person has no books.</li>

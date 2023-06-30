@@ -25,25 +25,13 @@
             {% for item in track.items %}
             <ul>
                 <li>
-                    {% if item.type == 'book' %}
-                         <a href="{% url 'listen:book_detail' item.id %}">{{ item.title }}</a>
-                         {% if item.release_date %}
-                         ({% if item.publisher %}
-                            {{ item.publisher.name }},
-                         {% endif %}
-                            {{ item.release_date }}
-                         )
-                         {% endif %}
-                    {% elif item.type == 'issue' %}
-                        <a href="{% url 'listen:issue_detail' item.periodical.id item.id %}">{{ item.title }}</a>
-                        , <a href="{% url 'listen:periodical_detail' item.periodical.id %}">{{ item.periodical.title }}</a>
-                        {% if item.release_date %}
-                         ({% if item.periodical.publisher %}
-                            {{ item.periodical.publisher.name }},
-                         {% endif %}
-                            {{ item.release_date }}
-                         )
-                         {% endif %}
+                    <a href="{% url 'listen:release_detail' item.id %}">{{ item.title }}</a>
+                    {% if item.release_date %}
+                    ({% if item.publisher %}
+                    {{ item.publisher.name }},
+                    {% endif %}
+                    {{ item.release_date }}
+                    )
                     {% endif %}
                 </li>
             </ul> 

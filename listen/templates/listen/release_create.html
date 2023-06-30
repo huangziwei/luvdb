@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}New Release{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-7 left-column">
+            <h3>Create a new Release entry</h3>
+            {% include "listen/release_form.html" %}
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+{{ form.media }}
+
+<script type="text/javascript" src="{% static 'js/generalFormSetHandler.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    
+        // Call the function for release-role-formset and release-work-formset
+        window.handleFormset('#release-role-formset', 'add-release-role');
+        window.handleFormset('#release-track-formset', 'add-release-track');
+    });
+    
+    $(document).ready(function() {
+        $('select').removeClass('form-select');
+    });
+    
+</script>
+
+{% endblock content %}

@@ -15,7 +15,8 @@
 .add-work-role,
 .add-issue-instance,
 .add-instance-work,
-.add-game-role {
+.add-game-role,
+.add-release-track {
     height: 38px !important;
     /* Adjust this value to your liking */
     width: 100% !important;
@@ -48,6 +49,19 @@ blockquote:last-child {
     width: 200px;
     /* adjust as needed */
     height: 300px;
+    /* adjust as needed */
+    background-color: #f0f0f0;
+    /* light gray */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.listen-cover-box {
+    width: 200px;
+    /* adjust as needed */
+    height: 200px;
     /* adjust as needed */
     background-color: #f0f0f0;
     /* light gray */

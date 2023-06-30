@@ -35,19 +35,6 @@ urlpatterns = [
     # platform
     path("platform/create/", PlatformCreateView.as_view(), name="platform_create"),
     path("platform/<int:pk>/", PlatformDetailView.as_view(), name="platform_detail"),
-    path(
-        "checkin/<int:pk>/", GameCheckInDetailView.as_view(), name="game_checkin_detail"
-    ),
-    path(
-        "checkin/<int:pk>/update/",
-        GameCheckInUpdateView.as_view(),
-        name="game_checkin_update",
-    ),
-    path(
-        "checkin/<int:pk>/delete/",
-        GameCheckInDeleteView.as_view(),
-        name="game_checkin_delete",
-    ),
     # autocomplete
     path(
         "developer-autocomplete/",
@@ -69,6 +56,19 @@ urlpatterns = [
         "game/<int:game_id>/<str:username>/checkins/",
         view=GameCheckInListView.as_view(),
         name="game_checkin_list",
+    ),
+    path(
+        "checkin/<int:pk>/", GameCheckInDetailView.as_view(), name="game_checkin_detail"
+    ),
+    path(
+        "checkin/<int:pk>/update/",
+        GameCheckInUpdateView.as_view(),
+        name="game_checkin_update",
+    ),
+    path(
+        "checkin/<int:pk>/delete/",
+        GameCheckInDeleteView.as_view(),
+        name="game_checkin_delete",
     ),
     # series
     path("series/create/", GameSeriesCreateView.as_view(), name="series_create"),

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load markdownify %}
+{% load linkify %}
+
+{% block content %}
+<div class="col-sm-7">
+    
+    <h4 class='mb-4'>
+        Check-ins by 
+        <a href="{% url 'accounts:detail' user.username %}">
+            {{ user.display_name|default:user.username }}
+        </a> of 
+        <a href="{% url 'listen:release_detail' object.id %}"> {{ object.title }}</a>
+    </h4>
+    <span class='d-flex mb-3'>
+        <div class="me-3">
+            <a href="?order=timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+            <a href="?order=-timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+        </div>
+        <div class="me-3">|</div>
+        <div class="me-3">
+            <a href="?status=&order={{order}}" class="btn btn-sm btn-outline-dark mb-1">All</a>
+            <a href="?status=to_listen&order={{order}}" class="btn btn-sm btn-info mb-1">To Listen</a>
+            <a href="?status=listening&order={{order}}" class="btn btn-sm btn-primary mb-1">Listening</a>
+            <a href="?status=listened&order={{order}}" class="btn btn-sm btn-success mb-1">Listened</a>
+            {% comment %} <a href="?status=paused&order={{order}}" class="btn btn-sm btn-warning mb-1">Paused</a>
+            <a href="?status=abandoned&order={{order}}" class="btn btn-sm btn-danger mb-1">Abandoned</a> {% endcomment %}
+        </div>
+    </span>
+    {% for checkin in checkins %}
+        <div class="checkin bg-light p-3 mb-3">
+            <p class="d-flex align-items-center">
+                <!--badge: checkin status-->
+                {% if checkin.status == "to_listen" %}
+                <span class="badge text-bg-info me-2">
+                {% elif checkin.status == "listening" %}
+                <span class="badge text-bg-primary me-2">    
+                {% elif checkin.status == "listened" %}
+                <span class="badge text-bg-success me-2"> 
+                {% elif checkin.status == "paused" %}
+                <span class="badge text-bg-warning me-2"> 
+                {% elif checkin.status == "abandoned" %}
+                <span class="badge text-bg-danger me-2"> 
+                {% endif %}
+                    Status: {{ checkin.get_status_display }}
+                </span>
+                {% if checkin.progress %}
+                <span class="badge text-bg-warning me-2">
+                    Loop: {{ checkin.progress }} 
+                    {% if checkin.progress_type == "TT" %}
+                        Minutes
+                    {% else %}
+                        Times
+                    {% endif %}
+                </span>
+                {% endif %}
+            </p>
+            {% if checkin.content %}
+            <p>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</p>
+            {% endif %}
+            <div class="d-flex mt-3">
+                <span class="me-2">
+                    <a href="{% url 'listen:listen_checkin_detail' checkin.id %}" class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i"  }}</a>
+                </span>
+                {% if checkin.comments_enabled %}
+                    <span class="ms-2 me-2">
+                        <a href="{% url 'listen:listen_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
+                    </span>
+                {% endif %}
+                {% if checkin.get_activity_id %}
+                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_detail' checkin.id %}?repost=true" class="text-decoration-none">Repost</a></span>
+                {% endif %}
+
+                {% if checkin.user == request.user %}
+                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
+                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p>No check-ins yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}
