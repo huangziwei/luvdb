@@ -32,8 +32,8 @@ A [Douban](https://www.douban.com/) clone with LOVE. Built with Django and Boots
     - [x] Series
     - [x] Check-In
 - [ ] Listen
+    - [ ] Work
     - [ ] Track
-    - [ ] Cover
     - [ ] Release
     - [ ] Podcast
         - [ ] Episode

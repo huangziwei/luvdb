@@ -663,7 +663,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
                 | Q(publication_date__icontains=self.q)
             )
 
-        return qs
+        return qs[:10]
 
     def get_result_label(self, item):
         # Get the first person with a role of 'Author' for the book
@@ -707,7 +707,7 @@ class InstanceAutocomplete(autocomplete.Select2QuerySetView):
                 | Q(publication_date__icontains=self.q)
             )
 
-        return qs
+        return qs[:10]
 
     def get_result_label(self, item):
         # Get the first person with a role of 'Author' for the book

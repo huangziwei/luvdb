@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 
-from entity.models import Person, Role
+from entity.models import Entity, Person, Role
 
 
 # helpers
@@ -19,12 +19,37 @@ def rename_release_cover(instance, filename):
     return os.path.join("covers", directory_name, new_name)
 
 
+class Label(Entity):
+    """
+    A Publisher entity
+    """
+
+    # publisher meta data
+    history = models.TextField(blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    founded_date = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # YYYY or YYYY-MM or YYYY-MM-DD
+    closed_date = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # YYYY or YYYY-MM or YYYY-MM-DD
+
+    def __str__(self):
+        if self.location:
+            return f"{self.location}: {self.name}"
+        return self.name
+
+
 class Work(models.Model):
     title = models.CharField(max_length=200)
-    genre = models.CharField(max_length=100)
+    genre = models.CharField(max_length=100, blank=True, null=True)  # rock, pop, etc.
     persons = models.ManyToManyField(
         Person, through="WorkRole", related_name="listen_works"
     )
+    release_date = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # YYYY or YYYY-MM or YYYY-MM-DD
 
     def __str__(self):
         return self.title
@@ -63,7 +88,8 @@ class Track(models.Model):
     relase_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
-    language = models.CharField(max_length=255, blank=True, null=True)
+    length = models.CharField(max_length=10, blank=True, null=True)  # HH:MM:SS
+    genre = models.CharField(max_length=255, blank=True, null=True)  # rock, pop, etc.
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -106,13 +132,16 @@ class Release(models.Model):
 
     # Release meta data
     title = models.CharField(max_length=255)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
     persons = models.ManyToManyField(
         Person, through="ReleaseRole", related_name="releases"
     )
     tracks = models.ManyToManyField(
         Track, through="TrackInRelease", related_name="releases"
     )
+    label = models.ManyToManyField(Label, related_name="releases")
 
+    genre = models.CharField(max_length=255, blank=True, null=True)  # rock, pop, etc.
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD

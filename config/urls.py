@@ -13,6 +13,7 @@ urlpatterns = [
     path("write/", include("write.urls")),
     path("read/", include("read.urls")),
     path("play/", include("play.urls")),
+    path("listen/", include("listen.urls")),
     path("feed/", include("activity_feed.urls")),
     path("", include("notify.urls")),
     path("", include("django.contrib.auth.urls")),  # Moved to the end

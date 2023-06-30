@@ -1,8 +1,5 @@
 import re
 
-from crispy_forms.bootstrap import Field
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Column, Div, Fieldset, Layout, Row, Submit
 from dal import autocomplete
 from django import forms
 from django.conf import settings
@@ -148,9 +145,6 @@ class BookForm(forms.ModelForm):
         ]
         fields = "__all__"
         widgets = {
-            "work": autocomplete.ModelSelect2(
-                url=reverse_lazy("read:work-autocomplete")
-            ),
             "instance": autocomplete.ModelSelect2(
                 url=reverse_lazy("read:instance-autocomplete")
             ),
@@ -185,7 +179,10 @@ BookRoleFormSet = inlineformset_factory(
     widgets={
         "person": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:person-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+            attrs={
+                "data-create-url": reverse_lazy("entity:person_create"),
+                "data-placeholder": "Type to search",
+            },
         ),
         "role": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:role-autocomplete"),
@@ -211,7 +208,10 @@ BookInstanceFormSet = inlineformset_factory(
     widgets={
         "instance": autocomplete.ModelSelect2(
             url=reverse_lazy("read:instance-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("read:instance_create")},
+            attrs={
+                "data-create-url": reverse_lazy("read:instance_create"),
+                "data-placeholder": "Type to search",
+            },
         ),
     },
 )

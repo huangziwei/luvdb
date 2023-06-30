@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-7 left-column">
+            <h2>Update a new Work entry</h2>
+            {% include "listen/work_form.html" %}
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ workroles.media }}
+
+<script type="text/javascript" src="{% static 'js/generalFormSetHandler.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        // Call the function for work-role-formset
+        window.handleFormset('#work-role-formset', 'add-work-role');
+    });
+    
+    $(document).ready(function() {
+        $('select:not([name="work_type"])').removeClass('form-select');
+    });
+</script>
+{% endblock %}

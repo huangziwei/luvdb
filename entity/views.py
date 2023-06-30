@@ -36,7 +36,12 @@ class PersonDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["works"] = self.object.read_works.all().order_by("publication_date")
+        context["read_works"] = self.object.read_works.all().order_by(
+            "publication_date"
+        )
+        context["listen_works"] = self.object.listen_works.all().order_by(
+            "release_date"
+        )
         context["books_as_author"] = Book.objects.filter(
             bookrole__role__name="Author", bookrole__person=self.object
         ).order_by("publication_date")

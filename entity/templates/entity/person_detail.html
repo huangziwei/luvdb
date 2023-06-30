@@ -21,10 +21,10 @@
                 <p>{{ object.bio }}</p>
             {% endif %}
 
-            {% if object.works.count != 0 %}
+            {% if object.read_works.count != 0 %}
                 <h3>Bibliography</h3>
                 <ul>
-                {% for work in works %}
+                {% for work in read_works %}
                     <li>
                         {% if work.work_type == 'NO' %}
                             <a href="{% url 'read:work_detail' work.pk %}" style="font-weight: bold;">{{ work.title }}</a> ({{ work.publication_date}})
@@ -102,6 +102,19 @@
                     {% endfor %}
                     </ul>
                 {% endfor %}
+            {% endif %}
+
+            {% if object.listen_works.count != 0 %}
+                <h3>Discography</h3>
+                <ul>
+                {% for work in listen_works %}
+                    <li>
+                        <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date}})
+                    </li>
+                {% empty %}
+                    <li>This person has no books.</li>
+                {% endfor %}
+                </ul>
             {% endif %}
         </div>
     </div>

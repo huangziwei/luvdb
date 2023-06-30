@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-7 left-column">
+    
+            <span class='d-flex align-items-start'>
+                <h2>
+                    {{ object.name }}
+                    {% if object.romanized_name %} / {{ object.romanized_name }} {% endif %}
+                </h2> 
+                {% if user.is_authenticated %}
+                <a href="{% url 'entity:person_update' object.pk %}" class='fs-6 text-secondary'>Edit Person</a>
+                {% endif %}
+            </span>
+            <span class="text-secondary">
+                {% if object.birth_date %}{{ object.birth_date }}-{% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %}
+            </span>
+            {% if object.bio %}
+                <p>{{ object.bio }}</p>
+            {% endif %}
+
+            {% if object.releases.count != 0 %}
+                <h3>Releases</h3>
+                <ul>
+                {% for release in releases %}
+                    <li>
+                        <a href="{% url 'read:release_detail' release.pk %}">{{ release.title }}</a> ({{ release.publication_date}})
+                    </li>
+                {% empty %}
+                    <li>This Label has no releases.</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
