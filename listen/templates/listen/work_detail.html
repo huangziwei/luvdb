@@ -27,8 +27,8 @@
                 <li>
                     <a href="{% url 'listen:release_detail' item.id %}">{{ item.title }}</a>
                     {% if item.release_date %}
-                    ({% if item.publisher %}
-                    {{ item.publisher.name }},
+                    ({% if item.release_type %}
+                    {{ item.release_type }},
                     {% endif %}
                     {{ item.release_date }}
                     )

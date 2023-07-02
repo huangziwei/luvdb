@@ -13,7 +13,10 @@ from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from activity_feed.models import Activity, Follow
-from read.models import Book, Person
+from entity.models import Person
+from listen.models import Release, Track, Work
+from play.models import Game
+from read.models import Book, Periodical
 from write.models import Pin, Post, Say
 
 from .forms import CustomUserCreationForm
@@ -147,37 +150,67 @@ def home(request, *args, **kwargs):
 
 def search_view(request):
     query = request.GET.get("q")
+    model = request.GET.get("model", "all")
+
+    # Initialize all results as empty
+    user_results = []
+    post_results = []
+    say_results = []
+    pin_results = []
+    person_results = []
+    book_results = []
+    periodical_results = []
+    game_results = []
+    work_results = []
+    track_results = []
+    release_results = []
+
     if query:
-        user_results = User.objects.filter(
-            Q(username__icontains=query)
-            | Q(display_name__icontains=query)
-            | Q(bio__icontains=query)
-        )
-        post_results = Post.objects.filter(
-            Q(title__icontains=query) | Q(content__icontains=query)
-        )
-        say_results = Say.objects.filter(content__icontains=query)
-        pin_results = Pin.objects.filter(
-            Q(title__icontains=query)
-            | Q(content__icontains=query)
-            | Q(url__icontains=query)
-        )
-        person_results = Person.objects.filter(Q(name__icontains=query))
-        book_results = Book.objects.filter(
-            Q(title__icontains=query)
-            | Q(isbn_10__icontains=query)
-            | Q(isbn_13__icontains=query)
-            | Q(asin__icontains=query)
-            | Q(bookrole__person__name__icontains=query)
-            | Q(bookrole__alt_name__icontains=query)
-        )
-    else:
-        user_results = []
-        post_results = []
-        say_results = []
-        pin_results = []
-        person_results = []
-        book_results = []
+        if model in ["all", "write"]:
+            user_results = User.objects.filter(
+                Q(username__icontains=query)
+                | Q(display_name__icontains=query)
+                | Q(bio__icontains=query)
+            )
+            post_results = Post.objects.filter(
+                Q(title__icontains=query) | Q(content__icontains=query)
+            )
+            say_results = Say.objects.filter(content__icontains=query)
+            pin_results = Pin.objects.filter(
+                Q(title__icontains=query)
+                | Q(content__icontains=query)
+                | Q(url__icontains=query)
+            )
+
+        if model in ["all", "read"]:
+            person_results = Person.objects.filter(Q(name__icontains=query))
+            book_results = Book.objects.filter(
+                Q(title__icontains=query)
+                | Q(isbn_10__icontains=query)
+                | Q(isbn_13__icontains=query)
+                | Q(asin__icontains=query)
+                | Q(bookrole__person__name__icontains=query)
+                | Q(bookrole__alt_name__icontains=query)
+            )
+            periodical_results = Periodical.objects.filter(
+                title__icontains=query
+            )  # Update with your real query
+
+        if model in ["all", "listen"]:
+            work_results = Work.objects.filter(
+                title__icontains=query
+            )  # Update with your real query
+            track_results = Track.objects.filter(
+                title__icontains=query
+            )  # Update with your real query
+            release_results = Release.objects.filter(
+                title__icontains=query
+            )  # Update with your real query
+
+        if model in ["all", "play"]:
+            game_results = Game.objects.filter(
+                title__icontains=query
+            )  # Update with your real query
 
     return render(
         request,
@@ -190,6 +223,11 @@ def search_view(request):
             "pin_results": pin_results,
             "person_results": person_results,
             "book_results": book_results,
+            "periodical_results": periodical_results,
+            "game_results": game_results,
+            "work_results": work_results,
+            "track_results": track_results,
+            "release_results": release_results,
         },
     )
 

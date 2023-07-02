@@ -61,7 +61,8 @@
                                 {% if object.description %}
                                     <p><strong>Description:</strong> {{ object.description }}</p>
                                 {% endif %}
-
+                                
+                                <p><strong>Cast:</strong> <a href="{% url 'play:game_cast_detail' object.id %}">View Cast</a></p>
                                 <!--add series here-->
                                 {% if object.gameinseries_set.all %}
                                     <p>

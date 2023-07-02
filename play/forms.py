@@ -15,7 +15,7 @@ from .models import Game, GameCast, GameCheckIn, GameInSeries, GameRole, GameSer
 class GameForm(forms.ModelForm):
     class Meta:
         model = Game
-        exclude = ["created_by", "updated_by", "persons"]
+        exclude = ["created_by", "updated_by", "persons", "casts"]
         fields = "__all__"
         widgets = {
             "developers": autocomplete.ModelSelect2Multiple(

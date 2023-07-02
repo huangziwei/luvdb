@@ -33,7 +33,7 @@
         <div class="col-md-4">
             <p>
                 <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a>
-                ({{ release.release_date }})
+                ({{ release.release_type }}, {{ release.release_date }})
             </p>
         </div>
         {% empty %}

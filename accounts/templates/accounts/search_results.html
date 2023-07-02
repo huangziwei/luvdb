@@ -92,6 +92,66 @@
         <hr>
     {% endif %}
 
+    {% if periodical_results %}
+    <h3>Periodicals</h3>
+    {% for periodical in periodical_results %}
+        <p>
+            <a href="{% url 'read:periodical_detail' periodical.id %}">{{ periodical.title|truncatechars:50 }}</a>
+        </p>
+    {% empty %}
+        <p>No periodical results found.</p>
+    {% endfor %}
+    <hr>
+{% endif %}
+
+{% if game_results %}
+    <h3>Games</h3>
+    {% for game in game_results %}
+        <p>
+            <a href="{% url 'play:game_detail' game.id %}">{{ game.title|truncatechars:50 }}</a>
+        </p>
+    {% empty %}
+        <p>No game results found.</p>
+    {% endfor %}
+    <hr>
+{% endif %}
+
+{% if work_results %}
+    <h3>Works</h3>
+    {% for work in work_results %}
+        <p>
+            <a href="{% url 'listen:work_detail' work.id %}">{{ work.title|truncatechars:50 }}</a>
+        </p>
+    {% empty %}
+        <p>No work results found.</p>
+    {% endfor %}
+    <hr>
+{% endif %}
+
+{% if track_results %}
+    <h3>Tracks</h3>
+    {% for track in track_results %}
+        <p>
+            <a href="{% url 'listen:track_detail' track.id %}">{{ track.title|truncatechars:50 }}</a>
+        </p>
+    {% empty %}
+        <p>No track results found.</p>
+    {% endfor %}
+    <hr>
+{% endif %}
+
+{% if release_results %}
+    <h3>Releases</h3>
+    {% for release in release_results %}
+        <p>
+            <a href="{% url 'listen:release_detail' release.id %}">{{ release.title|truncatechars:50 }}</a>
+        </p>
+    {% empty %}
+        <p>No release results found.</p>
+    {% endfor %}
+    <hr>
+{% endif %}
+
 
 </div>
 </div>

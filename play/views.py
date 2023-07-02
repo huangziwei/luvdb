@@ -163,20 +163,39 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
             data["gameroles"] = GameRoleFormSet(self.request.POST, instance=self.object)
+            data["gamecasts"] = GameCastFormSet(self.request.POST, instance=self.object)
         else:
             data["gameroles"] = GameRoleFormSet(instance=self.object)
+            data["gamecasts"] = GameCastFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         gamerole = context["gameroles"]
+        gamecast = context["gamecasts"]
         with transaction.atomic():
             form.instance.updated_by = self.request.user
             self.object = form.save()
             if gamerole.is_valid():
                 gamerole.instance = self.object
                 gamerole.save()
+            if gamecast.is_valid():
+                gamecast.instance = self.object
+                gamecast.save()
         return super().form_valid(form)
+
+
+class GameCastDetailView(DetailView):
+    model = Game
+    context_object_name = "game"
+    template_name = "play/game_cast_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context[
+            "gamecasts"
+        ] = self.object.gamecasts.all()  # Update with your correct related name
+        return context
 
 
 class DeveloperCreateView(LoginRequiredMixin, CreateView):

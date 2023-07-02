@@ -4,6 +4,7 @@ from .views import (
     DeveloperAutocomplete,
     DeveloperCreateView,
     DeveloperDetailView,
+    GameCastDetailView,
     GameCheckInAllListView,
     GameCheckInDeleteView,
     GameCheckInDetailView,
@@ -76,4 +77,6 @@ urlpatterns = [
     path(
         "series/<int:pk>/update/", GameSeriesUpdateView.as_view(), name="series_update"
     ),
+    # cast
+    path("game/<int:pk>/cast/", GameCastDetailView.as_view(), name="game_cast_detail"),
 ]
