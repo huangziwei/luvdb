@@ -1,6 +1,6 @@
 # LʌvDB
 
-A [Douban](https://www.douban.com/) clone with LOVE. Built with Django and Bootstrap.
+A opinionated [Douban](https://www.douban.com/) clone.
 
 ## Features / Roadmap (subject to change)
 
@@ -20,7 +20,7 @@ A [Douban](https://www.douban.com/) clone with LOVE. Built with Django and Boots
 - [x] Play
     - [x] Game
     - [x] Series
-    - [ ] Cast
+    - [x] Cast
     - [x] Check-In
 - [x] Read
     - [x] Work
@@ -31,18 +31,19 @@ A [Douban](https://www.douban.com/) clone with LOVE. Built with Django and Boots
     - [x] Publisher
     - [x] Series
     - [x] Check-In
-- [ ] Listen
-    - [ ] Work
-    - [ ] Track
-    - [ ] Release
+- [x] Listen
+    - [x] Work
+    - [x] Track
+        - [ ] Lyrics
+        - [ ] Guitar Tabs
+    - [x] Release
     - [ ] Podcast
         - [ ] Episode
-    - [ ] Check-In
+    - [x] Check-In
 - [ ] Watch
     - [ ] Movie
     - [ ] Series
-        - [ ] Season
-            - [ ] Episode
+        - [ ] Episode
     - [ ] Cast
     - [ ] Check-In
 - [ ] Visit

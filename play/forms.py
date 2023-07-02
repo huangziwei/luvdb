@@ -9,7 +9,7 @@ from django.conf import settings
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
-from .models import Game, GameCheckIn, GameInSeries, GameRole, GameSeries
+from .models import Game, GameCast, GameCheckIn, GameInSeries, GameRole, GameSeries
 
 
 class GameForm(forms.ModelForm):
@@ -44,6 +44,34 @@ GameRoleFormSet = inlineformset_factory(
     Game,
     GameRole,
     form=GameRoleForm,
+    extra=15,
+    can_delete=True,
+    widgets={
+        "person": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:person-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+        ),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:role-autocomplete"),
+            forward=["domain"],
+            attrs={"data-create-url": reverse_lazy("entity:role_create")},
+        ),
+    },
+)
+
+
+class GameCastForm(forms.ModelForm):
+    domain = forms.CharField(initial="play", widget=forms.HiddenInput())
+
+    class Meta:
+        model = GameCast
+        fields = ("person", "role", "domain", "character_name")
+
+
+GameCastFormSet = inlineformset_factory(
+    Game,
+    GameCast,
+    form=GameCastForm,
     extra=15,
     can_delete=True,
     widgets={

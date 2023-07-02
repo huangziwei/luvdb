@@ -28,6 +28,31 @@
         {% endfor %}
     </div>
     
+    {{ gamecasts.management_form|crispy }}
+    <div id="game-cast-formset" class="bg-light p-3 mb-3">
+        <strong>Casts related to this Game</strong>
+        <p class='text-muted'>E.g. Actors, Actresses, Charactor Voices, etc.</p>
+        {% for form in gamecasts %}
+        <div class="form-wrapper">
+            <div class="row">
+                {{ form.id }}
+                <div class="col-md-4 mb-3">
+                    {{ form.person | as_crispy_field}}
+                    <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form.role | as_crispy_field}}
+                    {{ form.domain | as_crispy_field }}
+                    <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    {{ form.character_name | as_crispy_field}}
+                </div>
+            </div>
+        </div>  
+        {% endfor %}
+    </div> 
+
     {{ form.cover|as_crispy_field}}
     <div class="mb-3">
         {{ form.developers|as_crispy_field }}

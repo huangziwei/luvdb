@@ -57,6 +57,9 @@ class Game(models.Model):
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
     developers = models.ManyToManyField(Developer, related_name="games")
     persons = models.ManyToManyField(Person, through="GameRole", related_name="games")
+    casts = models.ManyToManyField(
+        Person, through="GameCast", related_name="games_casts"
+    )
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
@@ -133,6 +136,20 @@ class GameRole(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.game} - {self.person} - {self.role}"
+
+
+class GameCast(models.Model):
+    """
+    A Cast in a Game
+    """
+
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="gamecasts")
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    character_name = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return f"{self.game} - {self.person} - {self.role}"

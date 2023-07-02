@@ -20,10 +20,10 @@ from write.forms import CommentForm, RepostForm
 from write.models import Comment
 
 from .forms import (
+    GameCastFormSet,
     GameCheckInForm,
     GameForm,
     GameInSeriesFormSet,
-    GameRoleForm,
     GameRoleFormSet,
     GameSeriesForm,
 )
@@ -44,13 +44,17 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
             data["gameroles"] = GameRoleFormSet(self.request.POST, instance=self.object)
+            data["gamecasts"] = GameCastFormSet(self.request.POST, instance=self.object)
         else:
             data["gameroles"] = GameRoleFormSet(instance=self.object)
+            data["gamecasts"] = GameCastFormSet(instance=self.object)
+
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         gamerole = context["gameroles"]
+        gamecast = context["gamecasts"]
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -58,6 +62,9 @@ class GameCreateView(LoginRequiredMixin, CreateView):
             if gamerole.is_valid():
                 gamerole.instance = self.object
                 gamerole.save()
+            if gamecast.is_valid():
+                gamecast.instance = self.object
+                gamecast.save()
         return super().form_valid(form)
 
 
