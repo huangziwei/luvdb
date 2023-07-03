@@ -17,6 +17,7 @@ from entity.models import Person
 from listen.models import Release, Track, Work
 from play.models import Game
 from read.models import Book, Periodical
+from watch.models import Movie
 from write.models import Pin, Post, Say
 
 from .forms import CustomUserCreationForm
@@ -212,6 +213,11 @@ def search_view(request):
                 title__icontains=query
             )  # Update with your real query
 
+        if model in ["all", "watch"]:
+            movie_results = Movie.objects.filter(
+                title__icontains=query
+            )
+
     return render(
         request,
         "accounts/search_results.html",
@@ -228,6 +234,7 @@ def search_view(request):
             "work_results": work_results,
             "track_results": track_results,
             "release_results": release_results,
+            "movie_results": movie_results,
         },
     )
 

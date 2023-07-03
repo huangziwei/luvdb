@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!--Left columns-->
+        <div class="col-sm-8">
+            <!-- movie-card -->
+            <div class="movie-card justify-content-start">
+                <div class="row">
+                    <!--poster-box-->
+                    <div class="col-md-3 me-4">
+                        <div class="cover-box">
+                            {% if object.poster %}
+                                {% if object.poster_sens %}
+                                    <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                {% else %}
+                                    <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="cover-image">
+                                {% endif %}    
+                            {% else %}
+                                <p class="no-poster-text">No Poster</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!--movie-meta-->
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <span class='d-flex align-items-start'>
+                                <h4>{{ object.title }} </h4>
+                            </span>
+                            {% if object.romanized_title %}
+                            <p class='text-muted'>{{ object.romanized_title }} </p>
+                            {% endif %}
+                            <div class="movie-meta">
+                                <p>
+                                    <strong>Studio:</strong> 
+                                    {% for studio in object.studios.all %}
+                                        <a href="{% url 'watch:studio_detail' studio.id %}">{{ studio.name }}</a>
+                                        {% if not forloop.last %} / {% endif %}
+                                    {% endfor %}
+                                </p>
+                                {% if object.release_date %}
+                                    <p><strong>Release Date:</strong> {{ object.release_date }}</p>
+                                {% endif %}
+                                {% if object.website %}
+                                    <p><strong>Website:</strong> <a href="{{ object.website }}">{{ object.website }}</a></p>
+                                {% endif %}
+                                
+                                <p><strong>Cast:</strong> <a href="{% url 'watch:movie_cast_detail' object.id %}">View Cast</a></p>
+                                <!--add series here-->
+                                {% if object.movieinseries_set.all %}
+                                    <p>
+                                        <strong>Series:</strong> 
+                                        {% for movieinseries in object.movieinseries_set.all %}
+                                            <a href="{% url 'watch:series_detail' movieinseries.series.id %}">{{ movieinseries.series.title }}</a>
+                                            {% if not forloop.last %} / {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- End of movie-card -->
+                    </div>
+                </div>       
+            </div>
+            {% comment %} <!--Movie Check-In-->
+            <div class="mt-4">
+                {% include "watch/movie_checkin_form.html" %}
+
+                <div class="d-flex justify-content-between mt-4 col-11">
+                    <h4>Latest Check-Ins</h4>
+                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'watch:movie_checkin_all_list' movie.id %}" style="height:30px">All</a>
+                </div>
+            
+                {% include "watch/movie_checkin_in_movie_detail.html" %}
+            </div> {% endcomment %}
+        </div>
+
+
+        <!--right columns-->
+        <div class="col-sm-4">
+            <!--Related works / Edit -->
+            <div class="bg-light p-3">
+                {% if user.is_authenticated %}
+                    <div class="mt-3">
+                        <a href="{% url 'watch:movie_update' object.pk %}" class='fs-6 text-secondary'>Edit movie data</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

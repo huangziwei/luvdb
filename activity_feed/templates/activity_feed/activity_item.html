@@ -150,11 +150,11 @@
                     {% elif activity.content_object.status == "reread" %}
                     <span class="badge text-bg-success me-1">
                     {% endif %}
-                        {{ activity.content_object.get_status_display }}
+                        Status: {{ activity.content_object.get_status_display }}
                     </span>
                     {% if activity.content_object.progress %}
                     <span class="badge text-bg-warning me-1">
-                        {{ activity.content_object.progress }} 
+                        Progress: {{ activity.content_object.progress }} 
                         {% if activity.content_object.progress_type == "PG" %}
                             Page
                         {% else %}
@@ -258,7 +258,7 @@
                 {% elif activity.content_object.status == "abandoned" %}
                 <span class="badge text-bg-danger me-1">
                 {% endif %}
-                    {{ activity.content_object.get_status_display }}
+                    Status: {{ activity.content_object.get_status_display }}
                 </span>
                 {% if activity.content_object.progress %}
                 <span class="badge text-bg-warning me-1">
@@ -288,7 +288,7 @@
                 </div>
                 <div class="flex-grow-1 ms-3">
                     <a href="{% url 'listen:release_detail' activity.content_object.content_object.id %}" class="text-decoration-none hover-username">
-                        <h6>{{ activity.content_object.content_object.title }}</h6>
+                        <h5>{{ activity.content_object.content_object.title }}</h5>
                     </a>
                     
                     {% regroup activity.content_object.content_object.releaserole_set.all by role as roles_list %}

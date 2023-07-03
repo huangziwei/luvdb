@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "read",
     "listen",
     "play",
+    "watch",
 ]
 
 MIDDLEWARE = [

@@ -154,13 +154,16 @@ class WorkDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         work = get_object_or_404(Work, pk=self.kwargs.get("pk"))
         tracks = work.tracks.all().order_by("release_date")
+
         context["tracks"] = []
+
         for track in tracks:
             releases = track.releases.all()
             for release in releases:
                 release.type = "release"
             items = sorted(list(releases), key=lambda x: x.release_date)
-        context["tracks"].append({"track": track, "items": items})
+            context["tracks"].append({"track": track, "items": items})
+
         return context
 
 

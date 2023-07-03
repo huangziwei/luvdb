@@ -108,6 +108,7 @@
                                 {% for release_track in object.releasetrack_set.all %}
                                     <div class="related-track"> 
                                         <div>
+                                            <strong>{{ release_track.order }}.</strong>
                                             <a href="{% url 'listen:track_detail' release_track.track.id %}">
                                                 {{ release_track.alt_title|default:release_track.track.title }}
                                             </a> 
@@ -116,7 +117,7 @@
                                                     {{ release_track.name|default:release_track.person.name }}
                                                 </a>
                                                 , 
-                                            {% endif %}{{ release_track.publication_date|default:release_track.track.publication_date }})
+                                            {% endif %}{{ release_track.release_date|default:release_track.track.release_date }})
                                         </div>
                                     </div>
                                 {% empty %}

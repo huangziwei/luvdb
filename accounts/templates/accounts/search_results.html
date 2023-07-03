@@ -152,6 +152,17 @@
     <hr>
 {% endif %}
 
+{% if movie_results %}
+    <h3>Movies</h3>
+    {% for movie in movie_results %}
+        <p>
+            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title|truncatechars:50 }}</a>
+        </p>
+    {% empty %}
+        <p>No movie results found.</p>
+    {% endfor %}
+    <hr>
+{% endif %}
 
 </div>
 </div>

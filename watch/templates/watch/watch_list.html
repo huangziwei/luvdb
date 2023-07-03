@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class='col-8'>
+                <h2>Recent Movies</h2>
+                <div class="row">
+                    {% for movie in movies %}
+                        <div class="col-md-2 col-sm-6 mb-4">
+                            <a href="{% url 'watch:movie_detail' movie.pk %}">
+                                {% if movie.poster %}
+                                    {% if movie.poster_sens %}
+                                        <img src="{{ movie.poster.url }}" alt="{{ movie.title }} poster" class="poster-image blur" onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="img-fluid">
+                                    {% endif %}
+                                {% else %}
+                                    <div class="poster-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
+                                {% endif %}
+                            </a>
+                        </div>
+                    {% empty %}
+                        <p>No recent movies to display.</p>
+                    {% endfor %}
+                </div>
+                <h2>Recent Series</h2>
+                <div class="row">
+                    {% for serie in series %}
+                        <div class="col-md-2 col-sm-6 mb-4">
+                            <a href="{% url 'watch:series_detail' serie.pk %}">
+                                {% if serie.poster %}
+                                    {% if serie.poster_sens %}
+                                        <img src="{{ serie.poster.url }}" alt="{{ serie.title }} poster" class="poster-image blur" onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ serie.poster.url }}" alt="{{ serie.title }}" class="img-fluid">
+                                    {% endif %}
+                                {% else %}
+                                    <div class="poster-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
+                                {% endif %}
+                            </a>
+                        </div>
+                    {% empty %}
+                        <p>No recent series to display.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class='col-4'>
+                <div class="bg-light p-3">
+                    <h4>On This Day</h4>
+                    <!-- You can add some "On This Day" related content here -->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

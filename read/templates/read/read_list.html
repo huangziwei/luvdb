@@ -35,10 +35,10 @@
                 </p>
             {% endfor %}
 
-            <h4>Persons</h4>
+            {% comment %} <h4>Persons</h4>
             {% for person in objects.recent_persons %}
                 <p><a href="{% url 'entity:person_detail' person.pk %}">{{ person.name }}</a></p>
-            {% endfor %}
+            {% endfor %} {% endcomment %}
         </div>
         <div class='col-4'>
             <div class="bg-light p-3">

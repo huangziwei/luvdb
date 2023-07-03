@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ series.title }} Cast</h1>
+    <ul>
+        {% for seriescast in seriescasts %}
+
+        <li>
+            <a href="{% url 'entity:person_detail' seriescast.person.id %}">{{ seriescast.person.name }} </a>
+            as 
+            {{ seriescast.character_name }}</li>
+        {% empty %}
+        <li>No cast for this series yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,3 +1,4 @@
+from collections import Counter
 from itertools import chain
 
 from django.contrib.auth import get_user_model
@@ -48,6 +49,14 @@ class PostListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["object"] = self.user
+
+        # Get all tags for this user's pins
+        all_tags = set()
+        for post in Post.objects.filter(user=self.user):
+            for tag in post.tags.all():
+                all_tags.add(tag)
+        context["all_tags"] = all_tags
+
         return context
 
 
@@ -149,11 +158,27 @@ class PinListView(ListView):
         context["object"] = self.user
 
         # Get all tags for this user's pins
-        all_tags = set()
+        all_tags = []
         for pin in Pin.objects.filter(user=self.user):
             for tag in pin.tags.all():
-                all_tags.add(tag)
-        context["all_tags"] = all_tags
+                all_tags.append(tag)
+
+        # Count the frequency of each tag
+        tag_counter = Counter(all_tags)
+
+        # Calculate max size limit for tags (200% in this case)
+        max_size = 200
+        min_size = 100
+        max_count = max(tag_counter.values(), default=1)
+        scaling_factor = (max_size - min_size) / max_count
+
+        # Scale the counts so that the maximum count corresponds to the maximum size
+        tag_sizes = {}
+        for tag in tag_counter:
+            tag_sizes[tag] = min_size + scaling_factor * tag_counter[tag]
+
+        context["all_tags"] = tag_sizes
+
         return context
 
 

@@ -2,14 +2,14 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
-{% block title %}New Release{% endblock %}
+{% block title %}Update Movie{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-sm-7 left-column">
-            <h3>Create a new Release entry</h3>
-            {% include "listen/release_form.html" %}
+            <h3>Update this Movie entry</h3>
+            {% include "watch/movie_form.html" %}
         </div>
     </div>
 </div>
@@ -20,15 +20,13 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
     
-        // Call the function for release-role-formset and release-work-formset
-        window.handleFormset('#release-role-formset', 'add-release-role');
-        window.handleFormset('#release-track-formset', 'add-release-track');
+        // Call the function for movie-role-formset
+        window.handleFormset('#movie-role-formset', 'add-movie-role');
+        window.handleFormset('#movie-cast-formset', 'add-movie-cast');
     });
     
     $(document).ready(function() {
-        $('select:not([name="cover_sens"], [name="model"])').removeClass('form-select');
+        $('select:not([name="model"])').removeClass('form-select');
     });
-    
 </script>
-
 {% endblock content %}

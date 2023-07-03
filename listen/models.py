@@ -213,10 +213,11 @@ class ReleaseRole(models.Model):
 class ReleaseTrack(models.Model):
     release = models.ForeignKey(Release, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    disk = models.PositiveIntegerField(default=1)
     order = models.PositiveIntegerField()
 
     class Meta:
-        ordering = ["order"]
+        ordering = ["disk", "order"]
 
     def __str__(self):
         return f"{self.release.title}, {self.track.title}"

@@ -58,7 +58,7 @@ class Game(models.Model):
     developers = models.ManyToManyField(Developer, related_name="games")
     persons = models.ManyToManyField(Person, through="GameRole", related_name="games")
     casts = models.ManyToManyField(
-        Person, through="GameCast", related_name="games_casts"
+        Person, through="GameCast", related_name="games_cast"
     )
     release_date = models.CharField(
         max_length=10, blank=True, null=True

@@ -34,7 +34,7 @@ class ReleaseRoleInline(admin.TabularInline):
 class ReleaseTrackInline(admin.TabularInline):
     model = ReleaseTrack
     extra = 1
-    fields = ("track", "order")
+    fields = ("track", "order", "disk")
     autocomplete_fields = ["track"]
 
 
