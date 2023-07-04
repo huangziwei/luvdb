@@ -155,6 +155,8 @@ class BookForm(forms.ModelForm):
         }
         help_texts = {
             "format": "e.g. paperback, hardcover, ebook, etc.",
+            "length": "e.g. 300 pages, 10:20:33, etc.",
+            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
         }
 
     def __init__(self, *args, **kwargs):

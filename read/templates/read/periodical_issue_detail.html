@@ -13,7 +13,7 @@
                 <div class="row">
                     <!--cover-box-->
                     <div class="col-md-3 me-4">
-                        <div class="cover-box">
+                        <div class="read-cover-box">
                             {% if issue.cover %}
                                 {% if issue.cover_sens %}
                                     <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
@@ -66,7 +66,39 @@
             <!--Related instances / Edit -->
             <div class="bg-light p-3">
                 <!-- Related instances or issues etc. -->
-                <!-- ... -->
+                {% if object.issueinstance_set.count < 2 %}
+                        {% if object.issueinstance_set.first.instance.id %}
+                        <p><strong>Related Instance:</strong> 
+                            <a href="{% url 'read:instance_detail' object.issueinstance_set.first.instance.id %}">
+                                {{ object.issueinstance_set.first.alt_title|default:object.issueinstance_set.first.instance.title }}
+                            </a>
+                        </p>
+                        {% endif %}
+                    {% else %}
+                        <div class="row">
+                            <h5>Table of Content</h5>
+                            <!--list all related instances by order-->
+                            <div class="col-sm-12">
+                                {% for book_instance in object.issueinstance_set.all %}
+                                    <div class="related-instance"> 
+                                        <p>
+                                            <a href="{% url 'read:instance_detail' book_instance.instance.id %}">
+                                                {{ book_instance.alt_title|default:book_instance.instance.title }}
+                                            </a> 
+                                            ({% if book_instance.role %}{{ book_instance.role.name }}: 
+                                                <a href="{% url 'entity:person_detail' book_instance.person.id %}">
+                                                    {{ book_instance.name|default:book_instance.person.name }}
+                                                </a>
+                                                , 
+                                            {% endif %}{{ book_instance.publication_date|default:book_instance.instance.publication_date }})
+                                        </p>
+                                    </div>
+                                {% empty %}
+                                    <p>No related instances found.</p>
+                                {% endfor %}
+                            </div>
+                        </div>   
+                    {% endif %}
 
                 {% if user.is_authenticated %}
                     <div class="mt-3">

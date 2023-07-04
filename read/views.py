@@ -757,16 +757,9 @@ class ReadListView(ListView):
     context_object_name = "objects"
 
     def get_queryset(self):
-        recent_works = Work.objects.all().order_by("-created_at")[:10]
-
-        for work in recent_works:
-            authors = work.workrole_set.filter(role__name="Author")
-            work.authors = ", ".join(str(author.person) for author in authors)
-
         return {
             "recent_books": Book.objects.all().order_by("-created_at")[:10],
-            "recent_works": recent_works,
-            "recent_persons": Person.objects.all().order_by("-created_at")[:10],
+            "recent_issues": Issue.objects.all().order_by("-created_at")[:10],
         }
 
 

@@ -26,14 +26,35 @@
                 {% endfor %}
             </div>
 
-            <h4>Works</h4>
+            <h4>Periodicals / Issues</h4>
+            <div class="row">
+                {% for issue in objects.recent_issues %}
+                    <div class="col-md-2 col-sm-6 mb-4">
+                        <a href="{% url 'read:issue_detail' issue.periodical.id issue.id %}">
+                            {% if issue.cover %}
+                                {% if issue.cover_sens %}
+                                    <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                {% else %}
+                                    <img src="{{ issue.cover.url }}" alt="{{ issue.title }}" class="img-fluid">
+                                {% endif %}
+                            {% else %}
+                                <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
+                            {% endif %}
+                        </a>
+                    </div>
+                {% empty %}
+                    <p>No recent books to display.</p>
+                {% endfor %}
+            </div>
+
+            {% comment %} <h4>Works</h4>
             {% for work in objects.recent_works %}
                 <p>
                     <a href="{% url 'read:work_detail' work.pk %}">
                         {{ work.title }} 
                     </a>({{ work.authors }}, {{ work.publication_date }})
                 </p>
-            {% endfor %}
+            {% endfor %} {% endcomment %}
 
             {% comment %} <h4>Persons</h4>
             {% for person in objects.recent_persons %}

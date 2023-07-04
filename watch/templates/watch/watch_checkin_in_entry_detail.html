@@ -46,7 +46,7 @@
                 <a href="{% url 'watch:movie_checkin_list' checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary">
                     {{ checkin.timestamp|date:"Y.m.d H:i"  }}
                 </a>
-                {% else %}
+                {% elif model_name == "series" %}
                 <a href="{% url 'watch:series_checkin_list' checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary">
                     {{ checkin.timestamp|date:"Y.m.d H:i"  }}
                 </a>                

@@ -127,6 +127,9 @@ class Repost(models.Model):
                 content_name = (
                     self.original_activity.content_object.__class__.__name__.capitalize()
                 )
+                if "checkin" in content_name:
+                    content_name = "Check-in"
+
                 repost_url = self.get_absolute_url()
                 message = f'<a href="{user_url}">@{self.user.username}</a> reposted your <a href="{content_url}">{content_name}</a>. See the <a href="{repost_url}">Repost</a>.'
 

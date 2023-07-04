@@ -5,14 +5,14 @@
     <p>{{ object.description }}</p>
 
     <h3>Books in series</h3>
-    <ul>
+    <ol>
         {% for book_in_series in object.bookinseries_set.all %}
             <li>
                 <a href="{% url 'read:book_detail' book_in_series.book.pk %}">{{ book_in_series.book.title }}</a>
-                <span>Order: {{ book_in_series.order }}</span>
+                <span>({{ book_in_series.book.publication_date }})</span>
             </li>
         {% empty %}
             <p>No books in this series yet.</p>
         {% endfor %}
-    </ul>
+    </ol>
 {% endblock %}

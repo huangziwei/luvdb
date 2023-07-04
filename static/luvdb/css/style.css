@@ -45,7 +45,9 @@ blockquote:last-child {
     min-width: 10em !important;
 }
 
-.cover-box {
+.read-cover-box,
+.watch-cover-box,
+.game-cover-box {
     width: 200px;
     /* adjust as needed */
     height: 300px;

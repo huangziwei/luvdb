@@ -48,6 +48,21 @@ def validate_asin(value):
         raise ValidationError("This field requires exactly 10 characters.")
 
 
+class ISBNField(models.CharField):
+    def to_python(self, value):
+        value = super().to_python(value)  # Call CharField's to_python method.
+        if value is not None:
+            value = value.replace("-", "")  # Remove hyphens.
+        return value
+
+    def validate(self, value, model_instance):
+        super().validate(value, model_instance)  # Call CharField's validate method.
+        if len(value) != 10 and len(value) != 13:  # Check ISBN length.
+            raise ValidationError(
+                f"Invalid ISBN length: {len(value)}. An ISBN should be either 10 or 13 characters long."
+            )
+
+
 # models
 
 
@@ -108,7 +123,6 @@ class LanguageField(models.CharField):
                 "de",
                 "ja",
                 "ru",
-                "ar",
                 "zh-Hans",
                 "zh-Hant",
             ]
@@ -196,6 +210,11 @@ class WorkRole(models.Model):  # Renamed from BookRole
 
 
 class Instance(models.Model):
+    """
+    An Instance is a manifestation of a Work,
+    that is, a specific edition, a translation, an installment of a serialization, etc.
+    """
+
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     persons = models.ManyToManyField(
@@ -249,22 +268,25 @@ class Book(models.Model):
     publication_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
+    # novel, novella, short story, poem, etc.
     format = models.CharField(
         max_length=255, blank=True, null=True
     )  # hardcover, paperback, etc.
-    pages = models.IntegerField(blank=True, null=True)
-    price = models.CharField(max_length=20, blank=True, null=True)
-    isbn_10 = models.CharField(
-        max_length=10,
+    length = models.CharField(
+        max_length=255, blank=True, null=True
+    )  # e.g. 300 pages, 10:00:00, etc.
+    price = models.CharField(
+        max_length=20, blank=True, null=True
+    )  # e.g. 1,000 JPY, $10.00 USD, etc.
+    isbn_10 = ISBNField(
+        max_length=20,
         blank=True,
         null=True,
-        validators=[validate_isbn_10],
     )
-    isbn_13 = models.CharField(
-        max_length=13,
+    isbn_13 = ISBNField(
+        max_length=20,
         blank=True,
         null=True,
-        validators=[validate_isbn_13],
     )
     asin = models.CharField(
         max_length=10,
@@ -491,6 +513,22 @@ class Issue(models.Model):
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
     instances = models.ManyToManyField(
         Instance, through="IssueInstance", related_name="issues"
+    )
+
+    # entry meta data
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="issues_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="issues_updated",
+        on_delete=models.SET_NULL,
+        null=True,
     )
 
     def __str__(self):
