@@ -101,8 +101,12 @@
       <div class='mt-4'>
         <span class="d-flex mt-2">
           <p class='me-2 text-secondary mb-2'>
-            <a href="{% url 'read:read_checkin_list' object.content_object.id object.user.username%}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
-            
+
+            {% if object.content_type.model == 'book' %}
+                <a href="{% url 'read:book_checkin_list' object.content_object.id object.user.username%}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+            {% elif object.content_type.model == 'issue' %}
+                <a href="{% url 'read:issue_checkin_list' object.content_object.periodical.id object.content_object.id object.user.username%}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+            {% endif %}
           </p>
           {% if object.user == request.user %}
           <a href="{% url "read:read_checkin_update" object.id %}" class="me-2">Edit</a>

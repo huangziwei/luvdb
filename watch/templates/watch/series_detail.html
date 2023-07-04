@@ -49,34 +49,24 @@
                                     <p><strong>Website:</strong> <a href="{{ object.website }}">{{ object.website }}</a></p>
                                 {% endif %}
                                 
-                                <p><strong>Cast:</strong> <a href="{% url 'watch:movie_cast_detail' object.id %}">View Cast</a></p>
-                                <!--add series here-->
-                                {% if object.movieinseries_set.all %}
-                                    <p>
-                                        <strong>Series:</strong> 
-                                        {% for movieinseries in object.movieinseries_set.all %}
-                                            <a href="{% url 'watch:series_detail' movieinseries.series.id %}">{{ movieinseries.series.title }}</a>
-                                            {% if not forloop.last %} / {% endif %}
-                                        {% endfor %}
-                                    </p>
-                                {% endif %}
+                                {% comment %} <p><strong>Cast:</strong> <a href="{% url 'watch:movie_cast_detail' object.id %}">View Cast</a></p> {% endcomment %}
                             </div>
                         </div>
                         <!-- End of movie-card -->
                     </div>
                 </div>       
             </div>
-            {% comment %} <!--Movie Check-In-->
+            <!--Movie Check-In-->
             <div class="mt-4">
-                {% include "watch/movie_checkin_form.html" %}
+                {% include "watch/watch_checkin_form.html" %}
 
                 <div class="d-flex justify-content-between mt-4 col-11">
                     <h4>Latest Check-Ins</h4>
-                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'watch:movie_checkin_all_list' movie.id %}" style="height:30px">All</a>
+                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'watch:series_checkin_all_list' series.id %}" style="height:30px">All</a>
                 </div>
             
-                {% include "watch/movie_checkin_in_movie_detail.html" %}
-            </div> {% endcomment %}
+                {% include "watch/watch_checkin_in_entry_detail.html" %}
+            </div> 
         </div>
 
 
@@ -84,11 +74,19 @@
         <div class="col-sm-4">
             <!--Related works / Edit -->
             <div class="bg-light p-3">
-                {% if user.is_authenticated %}
+                <h5>Episode List</h5>
+                {% for episode in episodes %}
                     <div class="mt-3">
-                        <a href="{% url 'watch:series_update' object.pk %}" class='fs-6 text-secondary'>Edit series data</a>
+                        S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}
+                        <a href="{% url 'watch:episode_detail' object.id episode.id %}" class='fs-6'>{{ episode.title }}</a>
                     </div>
-                {% endif %}
+                {% endfor %}
+                <hr>
+                {% if user.is_authenticated %}
+                <div class="mt-3">
+                    <a href="{% url 'watch:series_update' object.id %}" class='fs-6 text-secondary'>Edit series data</a>
+                </div>
+            {% endif %}
             </div>
         </div>
     </div>

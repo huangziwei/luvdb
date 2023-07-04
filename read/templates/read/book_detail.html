@@ -96,7 +96,7 @@
 
                 <div class="d-flex justify-content-between mt-4 col-11">
                     <h4>Latest Check-Ins</h4>
-                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'read:read_checkin_all_list' book.id %}" style="height:30px">All</a>
+                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'read:book_checkin_all_list' book.id %}" style="height:30px">All</a>
                 </div>
             
                 {% include "read/read_checkin_in_entry_detail.html" %}

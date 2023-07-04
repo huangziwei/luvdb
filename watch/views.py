@@ -7,7 +7,7 @@ from django.db import transaction
 from django.db.models import F, OuterRef, Prefetch, Q, Subquery
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -21,13 +21,17 @@ from write.forms import CommentForm, RepostForm
 from write.models import Comment
 
 from .forms import (
+    EpisodeCastFormSet,
+    EpisodeForm,
+    EpisodeRoleFormSet,
     MovieCastFormSet,
     MovieForm,
     MovieRoleFormSet,
     SeriesForm,
     SeriesRoleFormSet,
+    WatchCheckInForm,
 )
-from .models import Movie, MovieRole, Series, SeriesRole, Studio
+from .models import Episode, Movie, MovieRole, Series, SeriesRole, Studio, WatchCheckIn
 
 User = get_user_model()
 
@@ -80,79 +84,98 @@ class MovieDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         movie = get_object_or_404(Movie, pk=self.kwargs["pk"])
 
-        # context["checkin_form"] = MovieCheckInForm(
-        #     initial={"movie": self.object, "user": self.request.user}
-        # )
+        content_type = ContentType.objects.get_for_model(Movie)
+        context["checkin_form"] = WatchCheckInForm(
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": self.request.user.id,
+            }
+        )
 
-        # # Fetch the latest check-in from each user.
-        # latest_checkin_subquery = MovieCheckIn.objects.filter(
-        #     movie=self.object, user=OuterRef("user")
-        # ).order_by("-timestamp")
-        # checkins = (
-        #     MovieCheckIn.objects.filter(movie=self.object)
-        #     .annotate(
-        #         latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
-        #     )
-        #     .filter(timestamp=F("latest_checkin"))
-        # ).order_by("-timestamp")[:5]
+        # Fetch the latest check-in from each user.
+        latest_checkin_subquery = WatchCheckIn.objects.filter(
+            content_type=content_type.id,
+            object_id=self.object.id,
+            user=OuterRef("user"),
+        ).order_by("-timestamp")
+        checkins = (
+            WatchCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        ).order_by("-timestamp")[:5]
 
-        # context["checkins"] = checkins
+        context["checkins"] = checkins
 
-        # # Movie check-in status counts, considering only latest check-in per user
-        # latest_checkin_status_subquery = (
-        #     MovieCheckIn.objects.filter(movie=self.object, user=OuterRef("user"))
-        #     .order_by("-timestamp")
-        #     .values("status")[:1]
-        # )
-        # latest_checkins = (
-        #     MovieCheckIn.objects.filter(movie=self.object)
-        #     .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
-        #     .values("user", "latest_checkin_status")
-        #     .distinct()
-        # )
+        # Watch check-in status counts, considering only latest check-in per user
+        latest_checkin_status_subquery = (
+            WatchCheckIn.objects.filter(
+                content_type=content_type.id,
+                object_id=self.object.id,
+                user=OuterRef("user"),
+            )
+            .order_by("-timestamp")
+            .values("status")[:1]
+        )
+        latest_checkins = (
+            WatchCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
+            .values("user", "latest_checkin_status")
+            .distinct()
+        )
 
-        # not_started_count = sum(
-        #     1
-        #     for item in latest_checkins
-        #     if item["latest_checkin_status"] == "not_started"
-        # )
-        # watching_count = sum(
-        #     1 for item in latest_checkins if item["latest_checkin_status"] == "watching"
-        # )
-        # finished_count = sum(
-        #     1 for item in latest_checkins if item["latest_checkin_status"] == "finished"
-        # )
+        not_started_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] == "not_started"
+        )
+        watching_count = sum(
+            1 for item in latest_checkins if item["latest_checkin_status"] == "watching"
+        )
+        finished_count = sum(
+            1 for item in latest_checkins if item["latest_checkin_status"] == "finished"
+        )
 
-        # # Add status counts to context
-        # context.update(
-        #     {
-        #         "not_started_count": not_started_count,
-        #         "watching_count": watching_count,
-        #         "finished_count": finished_count,
-        #         "checkins": checkins,
-        #     }
-        # )
+        # Add status counts to context
+        context.update(
+            {
+                "not_started_count": not_started_count,
+                "watching_count": watching_count,
+                "finished_count": finished_count,
+                "checkins": checkins,
+            }
+        )
+
+        context["model_name"] = "movie"
 
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     form = MovieCheckInForm(
-    #         data=request.POST,
-    #         initial={
-    #             "movie": self.object,
-    #             "user": request.user,
-    #             "comments_enabled": True,
-    #         },
-    #     )
-    #     if form.is_valid():
-    #         movie_check_in = form.save(commit=False)
-    #         movie_check_in.user = request.user  # Set the user manually here
-    #         movie_check_in.save()
-    #     else:
-    #         print(form.errors)
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        content_type = ContentType.objects.get_for_model(Movie)
+        form = WatchCheckInForm(
+            data=request.POST,
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": request.user.id,
+                "comments_enabled": True,
+            },
+        )
+        if form.is_valid():
+            movie_check_in = form.save(commit=False)
+            movie_check_in.user = request.user  # Set the user manually here
+            movie_check_in.save()
+        else:
+            print(form.errors)
 
-    #     return redirect(self.object.get_absolute_url())
+        return redirect(self.object.get_absolute_url())
 
 
 class MovieUpdateView(LoginRequiredMixin, UpdateView):
@@ -297,81 +320,101 @@ class SeriesDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        content_type = ContentType.objects.get_for_model(Series)
+        context["checkin_form"] = WatchCheckInForm(
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": self.request.user.id,
+            }
+        )
+
+        # Fetch the latest check-in from each user.
+        latest_checkin_subquery = WatchCheckIn.objects.filter(
+            content_type=content_type.id,
+            object_id=self.object.id,
+            user=OuterRef("user"),
+        ).order_by("-timestamp")
+        checkins = (
+            WatchCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        ).order_by("-timestamp")[:5]
+
+        context["checkins"] = checkins
+
+        # Watch check-in status counts, considering only latest check-in per user
+        latest_checkin_status_subquery = (
+            WatchCheckIn.objects.filter(
+                content_type=content_type.id,
+                object_id=self.object.id,
+                user=OuterRef("user"),
+            )
+            .order_by("-timestamp")
+            .values("status")[:1]
+        )
+        latest_checkins = (
+            WatchCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
+            .values("user", "latest_checkin_status")
+            .distinct()
+        )
+
+        not_started_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] == "not_started"
+        )
+        watching_count = sum(
+            1 for item in latest_checkins if item["latest_checkin_status"] == "watching"
+        )
+        finished_count = sum(
+            1 for item in latest_checkins if item["latest_checkin_status"] == "finished"
+        )
+
+        # Add status counts to context
+        context.update(
+            {
+                "not_started_count": not_started_count,
+                "watching_count": watching_count,
+                "finished_count": finished_count,
+                "checkins": checkins,
+            }
+        )
+
+        context["model_name"] = "series"
         series = get_object_or_404(Series, pk=self.kwargs["pk"])
-
-        # context["checkin_form"] = MovieCheckInForm(
-        #     initial={"movie": self.object, "user": self.request.user}
-        # )
-
-        # # Fetch the latest check-in from each user.
-        # latest_checkin_subquery = MovieCheckIn.objects.filter(
-        #     movie=self.object, user=OuterRef("user")
-        # ).order_by("-timestamp")
-        # checkins = (
-        #     MovieCheckIn.objects.filter(movie=self.object)
-        #     .annotate(
-        #         latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
-        #     )
-        #     .filter(timestamp=F("latest_checkin"))
-        # ).order_by("-timestamp")[:5]
-
-        # context["checkins"] = checkins
-
-        # # Movie check-in status counts, considering only latest check-in per user
-        # latest_checkin_status_subquery = (
-        #     MovieCheckIn.objects.filter(movie=self.object, user=OuterRef("user"))
-        #     .order_by("-timestamp")
-        #     .values("status")[:1]
-        # )
-        # latest_checkins = (
-        #     MovieCheckIn.objects.filter(movie=self.object)
-        #     .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
-        #     .values("user", "latest_checkin_status")
-        #     .distinct()
-        # )
-
-        # not_started_count = sum(
-        #     1
-        #     for item in latest_checkins
-        #     if item["latest_checkin_status"] == "not_started"
-        # )
-        # watching_count = sum(
-        #     1 for item in latest_checkins if item["latest_checkin_status"] == "watching"
-        # )
-        # finished_count = sum(
-        #     1 for item in latest_checkins if item["latest_checkin_status"] == "finished"
-        # )
-
-        # # Add status counts to context
-        # context.update(
-        #     {
-        #         "not_started_count": not_started_count,
-        #         "watching_count": watching_count,
-        #         "finished_count": finished_count,
-        #         "checkins": checkins,
-        #     }
-        # )
+        context["episodes"] = series.episodes.all().order_by("season", "episode")
 
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     form = MovieCheckInForm(
-    #         data=request.POST,
-    #         initial={
-    #             "movie": self.object,
-    #             "user": request.user,
-    #             "comments_enabled": True,
-    #         },
-    #     )
-    #     if form.is_valid():
-    #         movie_check_in = form.save(commit=False)
-    #         movie_check_in.user = request.user  # Set the user manually here
-    #         movie_check_in.save()
-    #     else:
-    #         print(form.errors)
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        content_type = ContentType.objects.get_for_model(Series)
+        form = WatchCheckInForm(
+            data=request.POST,
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": request.user.id,
+                "comments_enabled": True,
+            },
+        )
+        if form.is_valid():
+            series_check_in = form.save(commit=False)
+            series_check_in.user = request.user  # Set the user manually here
+            series_check_in.save()
+        else:
+            print(form.errors)
 
-    #     return redirect(self.object.get_absolute_url())
+        return redirect(self.object.get_absolute_url())
 
 
 class SeriesUpdateView(LoginRequiredMixin, UpdateView):
@@ -403,3 +446,335 @@ class SeriesUpdateView(LoginRequiredMixin, UpdateView):
                 seriesrole.save()
 
         return super().form_valid(form)
+
+
+class EpisodeCreateView(CreateView):
+    model = Episode
+    form_class = EpisodeForm
+    template_name = "watch/episode_create.html"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        series_id = self.kwargs.get("series_id")
+        initial["series"] = get_object_or_404(Series, pk=series_id)
+        return initial
+
+    def get_form(self, form_class=None):
+        form = super(EpisodeCreateView, self).get_form(form_class)
+        form.fields["series"].disabled = True
+        return form
+
+    def get_success_url(self):
+        series_id = self.kwargs.get("series_id")
+        return reverse("watch:series_detail", kwargs={"pk": series_id})
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["episoderoles"] = EpisodeRoleFormSet(
+                self.request.POST, instance=self.object
+            )
+            data["episodecasts"] = EpisodeCastFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["episoderoles"] = EpisodeRoleFormSet(instance=self.object)
+            data["episodecasts"] = EpisodeCastFormSet(instance=self.object)
+
+        return data
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        context = self.get_context_data()
+        episoderoles = context["episoderoles"]
+        episodecasts = context["episodecasts"]
+
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if episoderoles.is_valid():
+                episoderoles.instance = self.object
+                episoderoles.save()
+            else:
+                print(episoderoles.errors)  # print out formset errors
+            if episodecasts.is_valid():
+                episodecasts.instance = self.object
+                episodecasts.save()
+            else:
+                print(episodecasts.errors)  # print out formset errors
+        return super().form_valid(form)
+
+
+class EpisodeDetailView(DetailView):
+    model = Episode
+    template_name = "watch/episode_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        episode = get_object_or_404(Episode, pk=self.kwargs["pk"])
+
+        return context
+
+
+class EpisodeUpdateView(LoginRequiredMixin, UpdateView):
+    model = Episode
+    form_class = EpisodeForm
+    template_name = "watch/episode_update.html"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        series_id = self.kwargs.get("series_id")
+        initial["series"] = get_object_or_404(Series, pk=series_id)
+        return initial
+
+    def get_form(self, form_class=None):
+        form = super(EpisodeUpdateView, self).get_form(form_class)
+        form.fields["series"].disabled = True
+        return form
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "watch:episode_detail",
+            kwargs={"pk": self.object.pk, "series_id": self.object.series.pk},
+        )
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["episoderoles"] = EpisodeRoleFormSet(
+                self.request.POST, instance=self.object
+            )
+            data["episodecasts"] = EpisodeCastFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["episoderoles"] = EpisodeRoleFormSet(instance=self.object)
+            data["episodecasts"] = EpisodeCastFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        episoderoles = context["episoderoles"]
+        episodecasts = context["episodecasts"]
+        with transaction.atomic():
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if episoderoles.is_valid():
+                episoderoles.instance = self.object
+                episoderoles.save()
+            if episodecasts.is_valid():
+                episodecasts.instance = self.object
+                episodecasts.save()
+        return super().form_valid(form)
+
+
+class EpisodeCastDetailView(DetailView):
+    model = Episode
+    context_object_name = "episode"
+    template_name = "watch/episode_cast_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context[
+            "episodecasts"
+        ] = self.object.episodecasts.all()  # Update with your correct related name
+        return context
+
+
+###########
+# Checkin #
+###########
+
+
+class WatchCheckInCreateView(LoginRequiredMixin, CreateView):
+    model = WatchCheckIn
+    form_class = WatchCheckInForm
+    template_name = "watch/checkin_create.html"
+
+    def form_valid(self, form):
+        movie = get_object_or_404(
+            movie, pk=self.kwargs.get("movie_id")
+        )  # Fetch the movie based on URL parameter
+        form.instance.movie = movie
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("watch:watch_checkin_detail", kwargs={"pk": self.object.pk})
+
+
+class WatchCheckInDetailView(DetailView):
+    model = WatchCheckIn
+    template_name = "watch/watch_checkin_detail.html"
+    context_object_name = "checkin"  # This name will be used in your template
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["comments"] = Comment.objects.filter(
+            content_type=ContentType.objects.get_for_model(self.object),
+            object_id=self.object.id,
+        )
+        context["comment_form"] = CommentForm()
+        context["repost_form"] = RepostForm()
+        context["app_label"] = self.object._meta.app_label
+        context["object_type"] = self.object._meta.model_name.lower()
+
+        return context
+
+
+class WatchCheckInUpdateView(LoginRequiredMixin, UpdateView):
+    model = WatchCheckIn
+    form_class = WatchCheckInForm
+    template_name = "watch/watch_checkin_update.html"
+
+    def get_success_url(self):
+        return reverse_lazy("watch:watch_checkin_detail", kwargs={"pk": self.object.pk})
+
+
+class WatchCheckInDeleteView(LoginRequiredMixin, DeleteView):
+    model = WatchCheckIn
+    template_name = "watch/watch_checkin_delete.html"
+
+    def get_success_url(self):
+        return reverse_lazy("watch:movie_detail", kwargs={"pk": self.object.movie.pk})
+
+
+class GenericCheckInListView(ListView):
+    model = WatchCheckIn
+    template_name = "watch/watch_checkin_list.html"
+    context_object_name = "checkins"
+
+    def get_model(self):
+        if self.kwargs["model_name"] == "movie":
+            return Movie
+        elif self.kwargs["model_name"] == "series":
+            return Series
+        else:
+            return None
+
+    def get_queryset(self):
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        status = self.request.GET.get("status")
+        user = get_object_or_404(
+            User, username=self.kwargs["username"]
+        )  # Get user from url param
+        model = self.get_model()
+        if model is None:
+            checkins = WatchCheckIn.objects.none()
+        else:
+            content_type = ContentType.objects.get_for_model(model)
+            object_id = self.kwargs["object_id"]  # Get object id from url param
+            checkins = WatchCheckIn.objects.filter(
+                user=user, content_type=content_type, object_id=object_id
+            )
+
+        if status:
+            if status == "watched_rewatched":
+                checkins = checkins.filter(Q(status="watched") | Q(status="rewatched"))
+            elif status == "watching_rewatching":
+                checkins = checkins.filter(
+                    Q(status="watching") | Q(status="rewatching")
+                )
+            else:
+                checkins = checkins.filter(status=status)
+
+        return checkins.order_by(order)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        status = self.request.GET.get("status")  # Added status
+        user = get_object_or_404(User, username=self.kwargs["username"])
+        context["user"] = user
+        context["order"] = order
+        context["status"] = status  # Add status to context
+
+        model = self.get_model()
+        if model is None:
+            context["checkins"] = WatchCheckIn.objects.none()
+            context["object"] = None
+        else:
+            content_type = ContentType.objects.get_for_model(model)
+            object_id = self.kwargs["object_id"]  # Get object id from url param
+            context[
+                "checkins"
+            ] = self.get_queryset()  # Use the queryset method to handle status filter
+            context["object"] = model.objects.get(
+                pk=object_id
+            )  # Get the object details
+
+        context["model_name"] = self.kwargs.get("model_name", "movie")
+
+        return context
+
+
+class GenericCheckInAllListView(ListView):
+    model = WatchCheckIn
+    template_name = "watch/watch_checkin_list_all.html"
+    context_object_name = "checkins"
+
+    def get_model(self):
+        if self.kwargs["model_name"] == "movie":
+            return Movie
+        elif self.kwargs["model_name"] == "series":
+            return Series
+        else:
+            return None
+
+    def get_queryset(self):
+        model = self.get_model()
+        if model is None:
+            return WatchCheckIn.objects.none()
+
+        content_type = ContentType.objects.get_for_model(model)
+        object_id = self.kwargs["object_id"]  # Get object id from url param
+
+        latest_checkin_subquery = WatchCheckIn.objects.filter(
+            content_type=content_type, object_id=object_id, user=OuterRef("user")
+        ).order_by("-timestamp")
+
+        checkins = (
+            WatchCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        )
+
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        if order == "timestamp":
+            checkins = checkins.order_by("timestamp")
+        else:
+            checkins = checkins.order_by("-timestamp")
+
+        status = self.request.GET.get("status")
+        if status:
+            if status == "watched_rewatched":
+                checkins = checkins.filter(Q(status="watched") | Q(status="rewatched"))
+            elif status == "watching_rewatching":
+                checkins = checkins.filter(
+                    Q(status="watching") | Q(status="rewatching")
+                )
+            else:
+                checkins = checkins.filter(status=status)
+
+        return checkins
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        model = self.get_model()
+        if model is not None:
+            context["object"] = model.objects.get(
+                pk=self.kwargs["object_id"]
+            )  # Get the object details
+
+        context["order"] = self.request.GET.get(
+            "order", "-timestamp"
+        )  # Default is '-timestamp'
+
+        context["status"] = self.request.GET.get("status", "")
+        context["model_name"] = self.kwargs.get("model_name", "movie")
+        return context

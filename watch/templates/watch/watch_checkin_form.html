@@ -1,0 +1,121 @@
+{% load crispy_forms_tags %}
+<form method="post" id="checkinForm">
+    {% csrf_token %}
+    {{ checkin_form.content_type }}
+    {{ checkin_form.object_id }}
+    {{ checkin_form.user }}
+    
+    <div class="row">
+        <div class="col-md-7 col-sm-12 mb-2">
+            <!--Status-->
+            <div class="btn-group" role="group" aria-label="Status">
+                <button type="button" class="btn btn-sm btn-light status-button" id="status-to-watch" onclick="setStatus(event, 'to_watch')">To Watch</button>
+                <button type="button" class="btn btn-sm btn-light status-button" id="status-watching" onclick="setStatus(event, 'watching')">Watching</button>
+                <button type="button" class="btn btn-sm btn-light status-button" id="status-watched" onclick="setStatus(event, 'watched')">Watched</button>
+                <div class="btn-group" role="group">
+                    <button id="status-more" type="button" class="btn btn-sm btn-light dropdown-toggle status-button" data-bs-toggle="dropdown" aria-expanded="false">
+                    More
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="status-more">
+                        <li><a class="dropdown-item status-dropdown-item" id="status-paused" href="#" onclick="setStatus(event, 'paused')">Paused</a></li>
+                        <li><a class="dropdown-item status-dropdown-item" id="status-abandoned" href="#" onclick="setStatus(event,'abandoned')">Abandoned</a></li>
+                        <li><a class="dropdown-item status-dropdown-item" id="status-rewatching" href="#" onclick="setStatus(event,'rewatching')">Rewatching</a></li>
+                        <li><a class="dropdown-item status-dropdown-item" id="status-rewatched" href="#" onclick="setStatus(event,'rewatched')">Rewatched</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <!-- Progress and Progress Type -->
+            <div class="input-group input-group-sm mb-3">
+                <input type="text" class="form-control" id="progressInput" name="progress" placeholder="Progress">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="progressTypeBtn">Page</button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#" onclick="setProgressType(event,'TM')">Times</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="setProgressType(event,'EP')">Episode</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden input fields to hold status and progress_type values -->
+    <input type="hidden" id="statusInput" name="status">
+    <input type="hidden" id="progressTypeInput" name="progress_type">
+
+    <div class="col-md-11 col-sm-12">
+        {{ checkin_form.content | as_crispy_field }}
+    </div>
+    
+    <div class="d-flex justify-content-between align-items-center col-11">
+        <button type="submit" class="btn btn-sm btn-primary me-2 mb-2 mb-md-0" id="submitButton">Add Check-In</button>
+        <div class="d-flex justify-content-start flex-wrap">
+            <div class="form-check form-switch me-5 me-md-0 mb-2 mb-md-0">
+                <input class="form-check-input" type="checkbox" id="shareToFeedInput" name="share_to_feed">
+                <label class="form-check-label small" for="shareToFeedInput">Share to feed</label>
+            </div>
+            <div class="form-check form-switch ms-md-3">
+                <input class="form-check-input" type="checkbox" id="commentsEnabledInput" name="comments_enabled" checked>
+                <label class="form-check-label small" for="commentsEnabledInput">Enable comments</label>
+            </div>
+        </div>
+    </div>
+    
+</form>
+
+
+<script>
+    var status_mapping = {
+        "to_watch": "status-to-watch",
+        "watching": "status-watching",
+        "watched": "status-watched",
+        "paused": "status-paused",
+        "abandoned": "status-abandoned",
+        "rewatching": "status-rewatching",
+        "rewatched": "status-rewatched",
+    };
+
+    function setStatus(event, status) {
+        event.preventDefault();
+        document.getElementById('statusInput').value = status;
+        updateStatusButton(status);
+    }
+    
+    function setProgressType(event, type) {
+        event.preventDefault();
+        document.getElementById('progressTypeInput').value = type;
+        document.getElementById('progressTypeBtn').textContent = type == 'TM' ? 'Times' : 'EP';
+    }
+
+    function updateStatusButton(status) {
+        var status_buttons = document.getElementsByClassName('status-button');
+        for (var i = 0; i < status_buttons.length; i++) {
+            status_buttons[i].classList.remove('btn-dark');
+            status_buttons[i].classList.add('btn-light');
+        }
+        var status_dropdown_items = document.getElementsByClassName('status-dropdown-item');
+        for (var i = 0; i < status_dropdown_items.length; i++) {
+            status_dropdown_items[i].classList.remove('active');
+        }
+
+        if (status_mapping[status]) {
+            var button_id = status_mapping[status];
+            var button = document.getElementById(button_id);
+            if (button) {
+                if (button.classList.contains('dropdown-item')) {
+                    button.classList.add('active');
+                    document.getElementById('status-more').classList.remove('btn-light');
+                    document.getElementById('status-more').classList.add('btn-dark');
+                } else {
+                    button.classList.remove('btn-light');
+                    button.classList.add('btn-dark');
+                }
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Set default status and progress type values
+        setStatus(event, 'to_watch');
+        setProgressType(event, 'TM');
+    });
+</script>

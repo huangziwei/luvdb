@@ -25,6 +25,7 @@
             {% if repost.original_activity %}
             <!-- Display the reposted activity -->
 
+                <!--Read Check In-->
                 {% if repost.original_activity.activity_type == "read-check-in" %}
 
                     <div class="d-flex justify-content-start align-items-center">
@@ -109,7 +110,179 @@
                             </div>
                         </div>
                     </div>
+                    <div class="mt-2">
+                        <p><a href="{{ repost.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ repost.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
+                    </div>
+
+                <!--Watch Check In-->
+                {% elif repost.original_activity.activity_type == "watch-check-in" %}
+
+                    <div class="d-flex justify-content-start align-items-center">
+                        <a href="{% url 'accounts:detail' repost.original_activity.user.username %}" class="text-decoration-none hover-username me-1">
+                            {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
+                            <span class="username">@{{repost.original_activity.user.username}}</span>
+                        </a> 
+                        <span class="me-1">checked in</span>
+                        <!--badge: checkin status-->
+                        {% if repost.original_activity.content_object.status == "to_watch" %}
+                        <span class="badge text-bg-info me-1">
+                        {% elif repost.original_activity.content_object.status == "watching" %}
+                        <span class="badge text-bg-primary me-1">
+                        {% elif repost.original_activity.content_object.status == "watched" %}
+                        <span class="badge text-bg-success me-1">
+                        {% elif repost.original_activity.content_object.status == "paused" %}
+                        <span class="badge text-bg-warning me-1">
+                        {% elif repost.original_activity.content_object.status == "abandoned" %}
+                        <span class="badge text-bg-danger me-1">
+                        {% elif repost.original_activity.content_object.status == "rewatching" %}
+                        <span class="badge text-bg-primary me-1">
+                        {% elif repost.original_activity.content_object.status == "rewatched" %}
+                        <span class="badge text-bg-success me-1">
+                        {% endif %}
+                            Status: {{ repost.original_activity.content_object.get_status_display }}
+                        </span>
+                        {% if repost.original_activity.content_object.progress %}
+                        <span class="badge text-bg-warning me-1">
+                            Progress: {{ repost.original_activity.content_object.progress }} 
+                            {% if repost.original_activity.content_object.progress_type == "TM" %}
+                                Time
+                            {% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="mt-2">
+                        {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                    </div>
+                    <div class="d-flex flex-row bg-white p-3 mt-2">
+                        <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                            {% if repost.original_activity.content_object.content_object.poster %}
+                                {% if repost.original_activity.content_object.content_object.poster_sens %}
+                                    <img src="{{ repost.original_activity.content_object.content_object.poster.url }}" alt="{{ repost.original_activity.content_object.content_object.title }} poster" style="width: 100%;" class="poster-image blur" onclick="this.classList.toggle('blur')">
+                                {% else %}
+                                    <img src="{{ repost.original_activity.content_object.content_object.poster.url }}" alt="{{ repost.original_activity.content_object.content_object.title }} poster" style="width: 100%;">
+                                {% endif %}
+                            {% else %}
+                                <p class="no-cover-text">No Poster</p>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            
+                            {% if repost.original_activity.content_object.content_type.model == 'movie' %}
+                                <a href=" {% url 'watch:movie_detail' repost.original_activity.content_object.content_object.id %} " class="text-decoration-none hover-username">
+                                    <h5>{{ repost.original_activity.content_object.content_object.title }}</h5>
+                                </a>
+                            {% elif repost.original_activity.content_object.content_type.model == 'series' %}
+                                <a href=" {% url 'watch:series_detail' repost.original_activity.content_object.content_object.id %} " class="text-decoration-none hover-username">
+                                    <h5>{{ repost.original_activity.content_object.content_object.title }}</h5>
+                                </a>
+                            {% endif %}
+    
+                            {% if repost.original_activity.content_object.content_type.model == 'book' %}
+                                {% regroup repost.original_activity.content_object.content_object.bookrole_set.all by role as roles_list %}
+                                {% for role in roles_list %}
+                                    <div>
+                                        {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                        {% for book_role in role.list %}
+                                            {% if not forloop.first %} / {% endif %}
+                                            <a href="{% url 'entity:person_detail' book_role.person.id %}">
+                                                {{ book_role.alt_name | default:book_role.person.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}  
+                                                    
+                            {% endif %}
+                            
+                            <div>
+                                {% if repost.original_activity.content_object.content_object.release_date %}
+                                    Year: {{ repost.original_activity.content_object.content_object.release_date|slice:":4" }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <p><a href="{{ repost.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ repost.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
+                    </div>   
+
+                <!--Listen Check In-->
+                {% elif repost.original_activity.activity_type == "listen-check-in" %}
+
+                    <div class="d-flex justify-content-start align-items-center">
+                        <a href="{% url 'accounts:detail' repost.original_activity.user.username %}" class="text-decoration-none hover-username me-1">
+                            {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
+                            <span class="username">@{{repost.original_activity.user.username}}</span>
+                        </a> 
+                        <span class="me-1">checked in</span>
+                        <!--badge: checkin status-->
+                        {% if repost.original_activity.content_object.status == "to_listen" %}
+                        <span class="badge text-bg-info me-1">
+                        {% elif repost.original_activity.content_object.status == "listening" %}
+                        <span class="badge text-bg-primary me-1">
+                        {% elif repost.original_activity.content_object.status == "listened" %}
+                        <span class="badge text-bg-success me-1">
+                        {% elif repost.original_activity.content_object.status == "paused" %}
+                        <span class="badge text-bg-warning me-1">
+                        {% elif repost.original_activity.content_object.status == "abandoned" %}
+                        <span class="badge text-bg-danger me-1">
+                        {% endif %}
+                            Status: {{ repost.original_activity.content_object.get_status_display }}
+                        </span>
+                        {% if repost.original_activity.content_object.progress %}
+                        <span class="badge text-bg-warning me-1">
+                            Loop: {{ repost.original_activity.content_object.progress }} 
+                            {% if repost.original_activity.content_object.progress_type == "TT" %}
+                                Minute{% if checkin.progress != 1 %}s{% endif %}
+                            {% else %}
+                                Time{% if checkin.progress != 1 %}s{% endif %}
+                            {% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="mt-2">
+                        {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                    </div>
+                    <div class="d-flex flex-row bg-white p-3 mt-2">
+                        <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                            {% if repost.original_activity.content_object.content_object.cover %}
+                                {% if repost.original_activity.content_object.content_object.cover_sens %}
+                                    <img src="{{ repost.original_activity.content_object.content_object.cover.url }}" alt="{{ repost.original_activity.content_object.content_object.title }} cover" style="width: 100%;" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                {% else %}
+                                    <img src="{{ repost.original_activity.content_object.content_object.cover.url }}" alt="{{ repost.original_activity.content_object.content_object.title }} cover" style="width: 100%;">
+                                {% endif %}
+                            {% else %}
+                                <p class="no-cover-text">No Cover</p>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <a href="{% url 'listen:release_detail' repost.original_activity.content_object.content_object.id %}" class="text-decoration-none hover-username">
+                                <h6>{{ repost.original_activity.content_object.content_object.title }}</h6>
+                            </a>
+                            
+                            {% regroup repost.original_activity.content_object.content_object.releaserole_set.all by role as roles_list %}
+                            {% for role in roles_list %}
+                                <div>
+                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                    {% for release_role in role.list %}
+                                        {% if not forloop.first %} / {% endif %}
+                                        <a href="{% url 'entity:person_detail' release_role.person.id %}">
+                                            {{ release_role.alt_name | default:release_role.person.name }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                            
+                            <div>
+                                {% if repost.original_activity.content_object.game.release_date %}
+                                    Release Date: {{ repost.original_activity.content_object.game.release_date|slice:":4" }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <p><a href="{{ repost.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ repost.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
+                    </div>
                 
+                <!--Game Check In-->
                 {% elif repost.original_activity.activity_type == "game-check-in" %}
 
                     <div class="d-flex justify-content-start align-items-center">
@@ -206,6 +379,9 @@
                             </div>
                         </div>
                     </div>
+                    <div class="mt-2">
+                        <p><a href="{{ repost.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ repost.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
+                    </div>
     
                 {% else %}
                     <p>
@@ -235,7 +411,7 @@
             
         </div>
 
-      <span class="d-flex">
+      <span class="d-flex mt-2">
         <p class='me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
         {% if object.user == request.user %}
         <a href="{% url "write:repost_update" object.pk %}" class="me-2">Edit</a>

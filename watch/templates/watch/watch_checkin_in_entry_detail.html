@@ -9,19 +9,19 @@
                 </a>
             </span>
             <!--badge: checkin status-->
-            {% if checkin.status == "to_read" %}
+            {% if checkin.status == "to_watch" %}
             <span class="badge text-bg-info me-2">
-            {% elif checkin.status == "reading" %}
+            {% elif checkin.status == "watching" %}
             <span class="badge text-bg-primary me-2">    
-            {% elif checkin.status == "finished_reading" %}
+            {% elif checkin.status == "watched" %}
             <span class="badge text-bg-success me-2"> 
             {% elif checkin.status == "paused" %}
             <span class="badge text-bg-warning me-2"> 
             {% elif checkin.status == "abandoned" %}
             <span class="badge text-bg-danger me-2"> 
-            {% elif checkin.status == "rereading" %}
+            {% elif checkin.status == "rewatching" %}
             <span class="badge text-bg-primary me-2"> 
-            {% elif checkin.status == "reread" %}
+            {% elif checkin.status == "rewatched" %}
             <span class="badge text-bg-success me-2">    
             {% endif %}
                 Status: {{ checkin.get_status_display }}
@@ -29,10 +29,8 @@
             {% if checkin.progress %}
             <span class="badge text-bg-warning me-2">
                 Progress: {{ checkin.progress }} 
-                {% if checkin.progress_type == "PG" %}
-                    Page
-                {% else %}
-                    %
+                {% if checkin.progress_type == "TM" %}
+                    Times
                 {% endif %}
             </span>
             {% endif %}
@@ -44,28 +42,28 @@
         {% endif %}
         <div class="d-flex mb-4">
             <span class="me-2">
-                {% if checkin.content_type.model == 'book' %}
-                <a href="{% url 'read:book_checkin_list' checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary">
+                {% if model_name == "movie" %}
+                <a href="{% url 'watch:movie_checkin_list' checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary">
                     {{ checkin.timestamp|date:"Y.m.d H:i"  }}
                 </a>
-                {% elif checkin.content_type.model == 'issue' %}
-                <a href="{% url 'read:issue_checkin_list' checkin.content_object.periodical.id checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary">
+                {% else %}
+                <a href="{% url 'watch:series_checkin_list' checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary">
                     {{ checkin.timestamp|date:"Y.m.d H:i"  }}
-                </a>
+                </a>                
                 {% endif %}
             </span>
             {% if checkin.comments_enabled %}
                 <span class="ms-2 me-2">
-                    <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
+                    <a href="{% url 'watch:watch_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
                 </span>
             {% endif %}
             {% if checkin.get_activity_id %}
-                <span class="ms-2 me-2"><a href="{% url 'read:read_checkin_detail' checkin.id %}?repost=true" class="text-decoration-none">Repost</a></span>
+                <span class="ms-2 me-2"><a href="{% url 'watch:watch_checkin_detail' checkin.id %}?repost=true" class="text-decoration-none">Repost</a></span>
             {% endif %}
 
             {% if checkin.user == request.user %}
-                <span class="ms-2 me-2"><a href="{% url 'read:read_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
-                <span class="ms-2 me-2"><a href="{% url 'read:read_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
+                <span class="ms-2 me-2"><a href="{% url 'watch:watch_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
+                <span class="ms-2 me-2"><a href="{% url 'watch:watch_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
             {% endif %}
         </div>
     {% empty %}

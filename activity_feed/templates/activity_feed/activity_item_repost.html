@@ -21,6 +21,7 @@
             {% if activity.content_object.original_activity %}
             <!-- Display the reposted activity -->
 
+                <!--Read Check In-->
                 {% if activity.content_object.original_activity.activity_type == "read-check-in" %}
 
                     <div class="d-flex justify-content-start align-items-center">
@@ -109,7 +110,101 @@
                             </div>
                         </div>
                     </div>
+                    <div class="mt-2">
+                        <p><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
+                    </div>
+
+                <!--Watch Check In-->
+                {% elif activity.content_object.original_activity.activity_type == "watch-check-in" %}
+
+                <div class="d-flex justify-content-start align-items-center">
+                    <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username me-1">
+                        {{ activity.user.display_name | default:activity.user.username }}
+                        <span class="username">@{{activity.user.username}}</span>
+                    </a> 
+                    <span class="me-1">checked in</span>
+                    <!--badge: checkin status-->
+                    {% if activity.content_object.original_activity.content_object.status == "to_watch" %}
+                    <span class="badge text-bg-info me-1">
+                    {% elif activity.content_object.original_activity.content_object.status == "watching" %}
+                    <span class="badge text-bg-primary me-1">
+                    {% elif activity.content_object.original_activity.content_object.status == "watched" %}
+                    <span class="badge text-bg-success me-1">
+                    {% elif activity.content_object.original_activity.content_object.status == "paused" %}
+                    <span class="badge text-bg-warning me-1">
+                    {% elif activity.content_object.original_activity.content_object.status == "abandoned" %}
+                    <span class="badge text-bg-danger me-1">
+                    {% elif activity.content_object.original_activity.content_object.status == "rewatching" %}
+                    <span class="badge text-bg-primary me-1">
+                    {% elif activity.content_object.original_activity.content_object.status == "rewatched" %}
+                    <span class="badge text-bg-success me-1">
+                    {% endif %}
+                        Status: {{ activity.content_object.original_activity.content_object.get_status_display }}
+                    </span>
+                    {% if activity.content_object.original_activity.content_object.progress %}
+                    <span class="badge text-bg-warning me-1">
+                        Progress: {{ activity.content_object.original_activity.content_object.progress }} 
+                        {% if activity.content_object.original_activity.content_object.progress_type == "TM" %}
+                            Time
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="mt-2">
+                    {{ activity.content_object.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                </div>
+                <div class="d-flex flex-row bg-white p-3 mt-2">
+                    <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                        {% if activity.content_object.original_activity.content_object.content_object.poster %}
+                            {% if activity.content_object.original_activity.content_object.content_object.poster_sens %}
+                                <img src="{{ activity.content_object.original_activity.content_object.content_object.poster.url }}" alt="{{ activity.content_object.original_activity.content_object.content_object.title }} poster" style="width: 100%;" class="poster-image blur" onclick="this.classList.toggle('blur')">
+                            {% else %}
+                                <img src="{{ activity.content_object.original_activity.content_object.content_object.poster.url }}" alt="{{ activity.content_object.original_activity.content_object.content_object.title }} poster" style="width: 100%;">
+                            {% endif %}
+                        {% else %}
+                            <p class="no-cover-text">No Poster</p>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        
+                        {% if activity.content_object.original_activity.content_object.content_type.model == 'movie' %}
+                            <a href=" {% url 'watch:movie_detail' activity.content_object.original_activity.content_object.content_object.id %} " class="text-decoration-none hover-username">
+                                <h5>{{ activity.content_object.original_activity.content_object.content_object.title }}</h5>
+                            </a>
+                        {% elif activity.content_object.original_activity.content_object.content_type.model == 'series' %}
+                            <a href=" {% url 'watch:series_detail' activity.content_object.original_activity.content_object.content_object.id %} " class="text-decoration-none hover-username">
+                                <h5>{{ activity.content_object.original_activity.content_object.content_object.title }}</h5>
+                            </a>
+                        {% endif %}
+
+                        {% if activity.content_object.original_activity.content_object.content_type.model == 'book' %}
+                            {% regroup activity.content_object.original_activity.content_object.content_object.bookrole_set.all by role as roles_list %}
+                            {% for role in roles_list %}
+                                <div>
+                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                    {% for book_role in role.list %}
+                                        {% if not forloop.first %} / {% endif %}
+                                        <a href="{% url 'entity:person_detail' book_role.person.id %}">
+                                            {{ book_role.alt_name | default:book_role.person.name }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}  
+                                              
+                        {% endif %}
+                        
+                        <div>
+                            {% if activity.content_object.original_activity.content_object.content_object.release_date %}
+                                Year: {{ activity.content_object.original_activity.content_object.content_object.release_date|slice:":4" }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>     
+                <div class="mt-2">
+                    <p><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
+                </div>           
                 
+                <!--Game Check In-->
                 {% elif activity.content_object.original_activity.activity_type == "game-check-in" %}
 
                     <div class="d-flex justify-content-start align-items-center">
@@ -210,8 +305,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="mt-2">
+                        <p><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
+                    </div>
                 
-                    {% elif activity.content_object.original_activity.activity_type == "listen-check-in" %}
+                <!--Listen Check In-->
+                {% elif activity.content_object.original_activity.activity_type == "listen-check-in" %}
 
                     <div class="d-flex justify-content-start align-items-center">
                         <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username me-1">
@@ -276,30 +375,6 @@
                                     {% endfor %}
                                 </div>
                             {% endfor %}
-                    
-                            <div>
-                                {% if activity.content_object.original_activity.content_object.game.developers %}
-                                    Developer{% if activity.content_object.original_activity.content_object.game.developers.list|length > 1 %}s{% endif %}:
-                                    {% for developer in activity.content_object.original_activity.content_object.game.developers.all %}
-                                        {% if not forloop.first %}, {% endif %}
-                                        <a href="{% url 'play:developer_detail' developer.id %}">
-                                            {{ developer.name }}
-                                        </a>
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-                            
-                            <div>
-                                {% if activity.content_object.original_activity.content_object.game.platforms %}
-                                    Platform{% if activity.content_object.original_activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:
-                                    {% for platform in activity.content_object.original_activity.content_object.game.platforms.all %}
-                                        {% if not forloop.first %}, {% endif %}
-                                        <a href="{% url 'play:platform_detail' platform.id %}">
-                                            {{ platform.name }}
-                                        </a>
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
                             
                             <div>
                                 {% if activity.content_object.original_activity.content_object.game.release_date %}
@@ -307,6 +382,9 @@
                                 {% endif %}
                             </div>
                         </div>
+                    </div>
+                    <div class="mt-2">
+                        <p><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
                     </div>
        
                 {% else %}

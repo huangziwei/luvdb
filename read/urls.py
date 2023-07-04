@@ -48,13 +48,13 @@ urlpatterns = [
         "book/<int:object_id>/checkins/",
         view=GenericCheckInAllListView.as_view(),
         kwargs={"model_name": "book"},
-        name="read_checkin_all_list",
+        name="book_checkin_all_list",
     ),
     path(
         "book/<int:object_id>/<str:username>/checkins/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "book"},
-        name="read_checkin_list",
+        name="book_checkin_list",
     ),
     path(
         "periodical/<int:periodical_id>/issue/<int:object_id>/checkins/",

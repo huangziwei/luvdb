@@ -3,7 +3,7 @@ import uuid
 from io import BytesIO
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.files.base import ContentFile
@@ -242,3 +242,128 @@ class SeriesRole(models.Model):
 
     def __str__(self):
         return f"{self.series} - {self.person} - {self.role}"
+
+
+class Episode(models.Model):
+    series = models.ForeignKey(
+        Series, on_delete=models.CASCADE, related_name="episodes"
+    )
+    title = models.CharField(max_length=255, blank=True, null=True)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
+    romanized_title = models.CharField(max_length=255, blank=True, null=True)
+    season = models.IntegerField(blank=True, null=True)
+    episode = models.IntegerField(blank=True, null=True)
+    release_date = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # YYYY or YYYY-MM or YYYY-MM-DD
+    persons = models.ManyToManyField(
+        Person, through="EpisodeRole", related_name="episodes_role"
+    )
+    casts = models.ManyToManyField(
+        Person, through="EpisodeCast", related_name="episodes_cast"
+    )
+
+    def __str__(self):
+        return f"{self.series.title} - Season {self.season} - Episode {self.episode}"
+
+    def get_absolute_url(self):
+        return reverse("watch:episode_detail", args=[str(self.series.id), str(self.id)])
+
+
+class EpisodeRole(models.Model):
+    """
+    A Role of a Person in a Movie
+    """
+
+    episode = models.ForeignKey(
+        Episode, on_delete=models.CASCADE, related_name="episodesroles"
+    )
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    alt_name = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.episode} - {self.person} - {self.role}"
+
+
+class EpisodeCast(models.Model):
+    """
+    A Cast in a Game
+    """
+
+    episode = models.ForeignKey(
+        Episode, on_delete=models.CASCADE, related_name="episodecasts"
+    )
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    character_name = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.episode} - {self.person} - {self.role}"
+
+
+class WatchCheckIn(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+    object_id = models.PositiveIntegerField(null=True)
+    content_object = GenericForeignKey("content_type", "object_id")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    WATCHING_STATUS_CHOICES = [
+        ("to_watch", "To Watch"),
+        ("watching", "Watching"),
+        ("watched", "Watched"),
+        ("paused", "Paused"),
+        ("abandoned", "Abandoned"),
+        ("rewatched", "Rewatched"),
+        ("re-watching", "Re-watching"),
+        ("re-watched", "Re-watched"),
+    ]
+    status = models.CharField(max_length=255, choices=WATCHING_STATUS_CHOICES)
+    share_to_feed = models.BooleanField(default=False)
+    content = models.TextField(
+        null=True, blank=True
+    )  # Any thoughts or comments at this check-in.
+    timestamp = models.DateTimeField(auto_now_add=True)
+    progress = models.CharField(max_length=20, null=True, blank=True)
+    TIME = "TM"
+    EPISODE = "EP"
+    PROGRESS_TYPE_CHOICES = [
+        (TIME, "Time(s)"),
+        (EPISODE, "Episode"),
+    ]
+    progress_type = models.CharField(
+        max_length=2,
+        choices=PROGRESS_TYPE_CHOICES,
+        default=TIME,
+    )
+    comments = GenericRelation("write.Comment")
+    comments_enabled = models.BooleanField(default=True)
+    tags = models.ManyToManyField("write.Tag", blank=True)
+    reposts = GenericRelation("write.Repost")
+
+    def get_absolute_url(self):
+        return reverse("watch:watch_checkin_detail", args=[str(self.id)])
+
+    def get_activity_id(self):
+        try:
+            activity = Activity.objects.get(
+                content_type__model="watchcheckin", object_id=self.id
+            )
+            return activity.id
+        except ObjectDoesNotExist:
+            return None
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new and self.share_to_feed:
+            # Only create activity if share_on_feed is True
+            Activity.objects.create(
+                user=self.user,
+                activity_type="watch-check-in",
+                content_object=self,
+            )
+        else:
+            print("Not creating activity")
+        # Handle tags
+        handle_tags(self, self.content)
+        create_mentions_notifications(self.user, self.content, self)

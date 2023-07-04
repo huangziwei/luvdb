@@ -23,7 +23,7 @@
                 </form>
                 <hr>
             {% elif feed_type == "personal"%}
-                <h3>{{  user.display_name | default:user.username }}'s Feed</h3>
+                <h3>{{  feed_user.display_name | default:feed_user.username }}'s Feed</h3>
                 <hr>
             {% endif %}
 

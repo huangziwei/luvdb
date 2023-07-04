@@ -9,7 +9,17 @@ from django.conf import settings
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
-from .models import Movie, MovieCast, MovieRole, Series, SeriesRole
+from .models import (
+    Episode,
+    EpisodeCast,
+    EpisodeRole,
+    Movie,
+    MovieCast,
+    MovieRole,
+    Series,
+    SeriesRole,
+    WatchCheckIn,
+)
 
 
 class MovieForm(forms.ModelForm):
@@ -126,3 +136,99 @@ SeriesRoleFormSet = inlineformset_factory(
         ),
     },
 )
+
+
+class EpisodeForm(forms.ModelForm):
+    class Meta:
+        model = Episode
+        exclude = ["created_by", "updated_by", "persons", "casts"]
+        fields = "__all__"
+
+
+class EpisodeRoleForm(forms.ModelForm):
+    domain = forms.CharField(initial="watch", widget=forms.HiddenInput())
+
+    class Meta:
+        model = EpisodeRole
+        fields = ("person", "role", "domain", "alt_name")
+
+
+EpisodeRoleFormSet = inlineformset_factory(
+    Episode,
+    EpisodeRole,
+    form=EpisodeRoleForm,
+    extra=15,
+    can_delete=True,
+    widgets={
+        "person": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:person-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+        ),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:role-autocomplete"),
+            forward=["domain"],
+            attrs={"data-create-url": reverse_lazy("entity:role_create")},
+        ),
+    },
+)
+
+
+class EpisodeCastForm(forms.ModelForm):
+    domain = forms.CharField(initial="watch", widget=forms.HiddenInput())
+
+    class Meta:
+        model = EpisodeCast
+        fields = ("person", "role", "domain", "character_name")
+
+
+EpisodeCastFormSet = inlineformset_factory(
+    Episode,
+    EpisodeCast,
+    form=EpisodeCastForm,
+    extra=15,
+    can_delete=True,
+    widgets={
+        "person": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:person-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+        ),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:role-autocomplete"),
+            forward=["domain"],
+            attrs={"data-create-url": reverse_lazy("entity:role_create")},
+        ),
+    },
+)
+
+
+class WatchCheckInForm(forms.ModelForm):
+    class Meta:
+        model = WatchCheckIn
+        fields = [
+            "content_type",
+            "object_id",
+            "user",
+            "status",
+            "progress",
+            "progress_type",
+            "content",
+            "comments_enabled",
+            "share_to_feed",
+        ]
+        widgets = {
+            "content_type": forms.HiddenInput(),
+            "object_id": forms.HiddenInput(),
+            "user": forms.HiddenInput(),  # user is now included
+            "content": forms.Textarea(
+                attrs={
+                    "rows": 3,
+                    "placeholder": "Check in...",
+                    "id": "text-input",
+                }
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(WatchCheckInForm, self).__init__(*args, **kwargs)
+        self.fields["content"].label = ""
+        self.fields["content"].required = False

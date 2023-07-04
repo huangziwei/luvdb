@@ -40,15 +40,12 @@ A opinionated [Douban](https://www.douban.com/) clone.
     - [ ] Podcast
         - [ ] Episode
     - [x] Check-In
-- [ ] Watch
-    - [ ] Movie
-    - [ ] Series
-        - [ ] Episode
+- [x] Watch
+    - [x] Movie
+    - [x] Series
+        - [x] Episode
     - [ ] Cast
-    - [ ] Check-In
-- [ ] Visit
-    - [ ] Location
-    - [ ] Check-In
+    - [x] Check-In
 
 
 ## Installation

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class='col-sm-7'>
+    <div class="row">
+        <div class="col-sm-12">
+            <h4>All Check-Ins of 
+                {% if model_name == "movie" %}
+                    <a href="{% url 'watch:movie_detail' object.id %}"> {{ object.title }}</a>
+                {% elif  model_name == "series" %}
+                    <a href="{% url 'watch:series_detail' object.id %}"> {{ object.title }}</a>
+                {% endif %}
+            </h4>
+            <span class='d-flex'>
+                <div class="me-3">
+                    <a href="?order=timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+                    <a href="?order=-timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                </div>
+                <div class="me-3">|</div>
+                <div class="me-3">
+                    <a href="?status=&order={{order}}" class="btn btn-sm btn-outline-dark mb-1">All</a>
+                    <a href="?status=to_watch&order={{order}}" class="btn btn-sm btn-info mb-1">To Watch</a>
+                    <a href="?status=watching_rewatching&order={{order}}" class="btn btn-sm btn-primary mb-1">Watching/Rewatching</a>
+                    <a href="?status=watched_rewatched&order={{order}}" class="btn btn-sm btn-success mb-1">Watched/Rewatched</a>
+                    <a href="?status=paused&order={{order}}" class="btn btn-sm btn-warning mb-1">Paused</a>
+                    <a href="?status=abandoned&order={{order}}" class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                </div>
+            </span>
+        </div>
+        
+        {% include "watch/watch_checkin_in_entry_detail.html" %}
+    </div>
+</div>
+
+{% endblock content %}

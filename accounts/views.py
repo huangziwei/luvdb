@@ -17,7 +17,7 @@ from entity.models import Person
 from listen.models import Release, Track, Work
 from play.models import Game
 from read.models import Book, Periodical
-from watch.models import Movie
+from watch.models import Movie, Series
 from write.models import Pin, Post, Say
 
 from .forms import CustomUserCreationForm
@@ -214,9 +214,8 @@ def search_view(request):
             )  # Update with your real query
 
         if model in ["all", "watch"]:
-            movie_results = Movie.objects.filter(
-                title__icontains=query
-            )
+            movie_results = Movie.objects.filter(title__icontains=query)
+            series_results = Series.objects.filter(title__icontains=query)
 
     return render(
         request,
@@ -235,6 +234,7 @@ def search_view(request):
             "track_results": track_results,
             "release_results": release_results,
             "movie_results": movie_results,
+            "series_results": series_results,
         },
     )
 
@@ -248,6 +248,8 @@ class PersonalActivityFeedView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["feed_type"] = "personal"
         context["no_citation_css"] = True
+        username = self.kwargs["username"]
+        context["feed_user"] = User.objects.get(username=username)
         return context
 
     def get_queryset(self):

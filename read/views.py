@@ -372,15 +372,6 @@ class BookDetailView(DetailView):
                 "to_read_count": to_read_count,
                 "reading_count": reading_count,
                 "read_count": read_count,
-            }
-        )
-
-        # Add status counts to context
-        context.update(
-            {
-                "to_read_count": to_read_count,
-                "reading_count": reading_count,
-                "read_count": read_count,
                 "checkins": checkins,
             }
         )

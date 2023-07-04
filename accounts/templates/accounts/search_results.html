@@ -164,6 +164,18 @@
     <hr>
 {% endif %}
 
+{% if series_results %}
+    <h3>Series</h3>
+    {% for serie in series_results %}
+        <p>
+            <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title|truncatechars:50 }}</a>
+        </p>
+    {% empty %}
+        <p>No series results found.</p>
+    {% endfor %}
+    <hr>
+{% endif %}
+
 </div>
 </div>
 </div>
