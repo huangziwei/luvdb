@@ -13,6 +13,7 @@
         <a href="{% url 'listen:label_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new label?</a>                   
     </div>
     {{ form.release_date|as_crispy_field }}
+    {{ form.release_length|as_crispy_field }}
     {{ form.release_type|as_crispy_field }}
     {{ form.release_format|as_crispy_field }}
     {{ form.release_region|as_crispy_field }}
@@ -64,6 +65,9 @@
         </div>  
         {% endfor %}
     </div>
+
+    {{form.spotify_url | as_crispy_field}}
+    {{form.apple_music_url | as_crispy_field}}
 
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>

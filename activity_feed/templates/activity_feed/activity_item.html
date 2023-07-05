@@ -32,7 +32,10 @@
                 <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
             {% endif %}
         </div>
+        
     </div>
+    
+    
 
 
     {% elif activity.activity_type == 'post' %}
@@ -62,7 +65,9 @@
                 <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
             {% endif %}
         </div>
+        
     </div>
+    
 
     {% elif activity.activity_type == 'pin' %}
     <!--Pin-->
@@ -97,7 +102,9 @@
                 <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
             {% endif %}
         </div>
+        
     </div>
+    
 
     {% elif activity.activity_type == 'follow' %}
     <!--Follow-->
@@ -120,9 +127,12 @@
             {% endif %}
         </div>
     </div>
+    
 
     {% elif activity.activity_type == 'repost' %}
-    {% include "activity_feed/activity_item_repost.html" %}
+        
+        {% include "activity_feed/activity_item_repost.html" %}
+        
 
     {% elif activity.activity_type == 'read-check-in' %}
     <!--Read-Check-in-->
@@ -230,7 +240,9 @@
                 {% endif %}
             </div>
         </div>
+        
     </div> 
+    
 
 
     <!--Watch-->
@@ -337,11 +349,12 @@
                 {% endif %}
             </div>
         </div>
+        
     </div> 
+    
 
     <!--Listen-->
     {% elif activity.activity_type == 'listen-check-in' %}
-    <!--Game-Check-in-->
     <div class="col-sm-12">
         <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
             <div class="d-flex justify-content-start align-items-center">
@@ -445,7 +458,9 @@
                 {% endif %}
             </div> 
         </div>
+        
     </div>
+    
     <!--Play-->
 
     {% elif activity.activity_type == 'game-check-in' %}
@@ -567,7 +582,9 @@
                 {% endif %}
             </div>
         </div>
+        
     </div>
+    
     <!--Visit-->
 
 {% endif %}

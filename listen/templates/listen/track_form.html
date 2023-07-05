@@ -10,6 +10,9 @@
         <a href="{% url 'listen:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>                   
     </div>
 
+    {{ form.genre | as_crispy_field }}
+    {{ form.length | as_crispy_field }}
+
     {{ trackroles.management_form|crispy }}
     <div id="track-role-formset" class="bg-light p-2 mb-3">
         <strong>Persons related to this track</strong>
@@ -34,6 +37,8 @@
         </div>
         {% endfor %}
     </div>
+
+
     
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>

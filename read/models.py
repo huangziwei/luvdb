@@ -228,6 +228,22 @@ class Instance(models.Model):
     )  # YYYY or YYYY-MM or YYYY-MM-DD
     language = LanguageField(max_length=8, blank=True, null=True)
 
+    # entry meta data
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="instances_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="instances_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
     def __str__(self):
         return self.title
 
@@ -495,6 +511,22 @@ class Periodical(models.Model):
     language = LanguageField(max_length=8, blank=True, null=True)
     issn = models.CharField(max_length=8, blank=True, null=True)
     website = models.URLField(max_length=200, blank=True, null=True)
+
+    # entry meta data
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="periodicals_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="periodicals_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
 
     def __str__(self):
         return self.title

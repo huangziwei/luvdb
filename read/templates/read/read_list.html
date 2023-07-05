@@ -62,9 +62,27 @@
             {% endfor %} {% endcomment %}
         </div>
         <div class='col-4'>
-            <div class="bg-light p-3">
+            {% comment %} <div class="bg-light p-3">
                 <h4>On This Day</h4>
                 
+            </div> {% endcomment %}
+            <div class="bg-light p-3">
+                <h5>Add New</h5>
+                <div>
+                    <a href="{% url "read:work_create" %}" class="text-muted">Work</a>
+                </div>
+                <div>
+                    <a href="{% url "read:instance_create" %}" class="text-muted">Instance</a>
+                </div>
+                <div>
+                    <a href="{% url "read:book_create" %}" class="text-muted">Book</a>
+                </div>
+                <div>
+                    <a href="{% url "read:periodical_create" %}" class="text-muted">Periodical</a>
+                </div>
+                <div>
+                    <a href="{% url "read:series_create" %}" class="text-muted">Series</a>
+                </div>
             </div>
         </div>
         </div>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load markdownify %}
 {% load concat_sets %}
 
 {% block title %}{{ object.title }}{% endblock %}
@@ -71,7 +72,7 @@
                                 {% if object.asin %}
                                     <p><strong>ASIN:</strong> {{ object.asin }}</p>
                                 {% endif %}
-
+                                
                                 <!--add series here-->
                                 {% if object.bookinseries_set.all %}
                                     <p>
@@ -83,7 +84,22 @@
                                     </p>
                                 {% endif %}
                                 
-                            </div>
+                                
+                                <div class="my-3">
+                                    <p class="text-muted" type="button" data-bs-toggle="collapse" data-bs-target="#detailsCollapse" aria-expanded="false" aria-controls="detailsCollapse">
+                                        <strong>More Metadata</strong>
+                                    </p>
+                                    <div class="collapse" id="detailsCollapse">
+                                        {% if object.details %}
+                                        <strong>Details:</strong> 
+                                        <div class="card card-body">
+                                            {{ object.details|markdownify }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                </div>
                         </div>
                         <!-- End of book-card -->
                     </div>

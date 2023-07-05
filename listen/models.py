@@ -58,6 +58,7 @@ class Work(models.Model):
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
+    note = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -102,6 +103,7 @@ class Track(models.Model):
     )  # YYYY or YYYY-MM or YYYY-MM-DD
     length = models.CharField(max_length=10, blank=True, null=True)  # HH:MM:SS
     genre = models.CharField(max_length=255, blank=True, null=True)  # rock, pop, etc.
+    note = models.TextField(blank=True, null=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -167,9 +169,13 @@ class Release(models.Model):
     release_region = models.CharField(
         max_length=255, blank=True, null=True
     )  # Japan, USA, etc.
+    release_length = models.CharField(max_length=10, blank=True, null=True)  # HH:MM:SS
     isrc = models.CharField(
         max_length=255, blank=True, null=True
     )  # International Standard Recording Code
+    spotify_url = models.URLField(blank=True, null=True)
+    apple_music_url = models.URLField(blank=True, null=True)
+    note = models.TextField(blank=True, null=True)
 
     # Entry metadata
     created_at = models.DateTimeField(auto_now_add=True)

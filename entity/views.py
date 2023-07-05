@@ -8,8 +8,10 @@ from django.utils.html import format_html
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
-# from listen.models import Release, Track
+from listen.models import Release, Track
+from listen.models import Work as MusicWork
 from read.models import Book, BookRole
+from read.models import Work as LitWork
 
 from .forms import PersonForm
 from .models import Person, Role
@@ -36,11 +38,9 @@ class PersonDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # read
         context["read_works"] = self.object.read_works.all().order_by(
             "publication_date"
-        )
-        context["listen_works"] = self.object.listen_works.all().order_by(
-            "release_date"
         )
         context["books_as_author"] = Book.objects.filter(
             bookrole__role__name="Author", bookrole__person=self.object
@@ -56,25 +56,45 @@ class PersonDetailView(DetailView):
             "language", "publication_date"
         )
 
-        person = self.object
-        book_roles = BookRole.objects.filter(person=person)
+        # listen
+        context["listen_works"] = self.object.listen_works.all().order_by(
+            "release_date"
+        )
+        context["works_as_singer"] = MusicWork.objects.filter(
+            workrole__role__name="Singer", workrole__person=self.object
+        ).order_by("release_date")
+        context["works_as_composer"] = MusicWork.objects.filter(
+            workrole__role__name="Composer", workrole__person=self.object
+        ).order_by("release_date")
+        context["works_as_lyricist"] = MusicWork.objects.filter(
+            workrole__role__name="Lyricist", workrole__person=self.object
+        ).order_by("release_date")
+        context["works_as_producer"] = MusicWork.objects.filter(
+            workrole__role__name="Producer", workrole__person=self.object
+        ).order_by("release_date")
+        context["works_as_arranger"] = MusicWork.objects.filter(
+            workrole__role__name="Arranger", workrole__person=self.object
+        ).order_by("release_date")
 
-        # group roles by the Role name for display
-        roles = {}
-        for role in book_roles:
-            role_name = str(role.role)
-            if role_name != "Author":
-                if role_name not in roles:
-                    roles[role_name] = []
-                roles[role_name].append(
-                    {
-                        "title": role.book.title,
-                        "publication_date": role.book.publication_date,
-                        "url": reverse("read:book_detail", args=[role.book.pk]),
-                    }
-                )
+        # person = self.object
+        # book_roles = BookRole.objects.filter(person=person)
 
-        context["roles"] = roles
+        # # group roles by the Role name for display
+        # roles = {}
+        # for role in book_roles:
+        #     role_name = str(role.role)
+        #     if role_name != "Author":
+        #         if role_name not in roles:
+        #             roles[role_name] = []
+        #         roles[role_name].append(
+        #             {
+        #                 "title": role.book.title,
+        #                 "publication_date": role.book.publication_date,
+        #                 "url": reverse("read:book_detail", args=[role.book.pk]),
+        #             }
+        #         )
+
+        # context["roles"] = roles
         return context
 
 

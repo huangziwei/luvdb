@@ -27,8 +27,16 @@
             </div>
             <div class='col-4'>
                 <div class="bg-light p-3">
-                    <h4>On This Day</h4>
-                    <!-- You can add some "On This Day" related content here -->
+                    <h5>Add New</h5>
+                    <div>
+                        <a href="{% url "listen:work_create" %}" class="text-muted">Work</a>
+                    </div>
+                    <div>
+                        <a href="{% url "listen:track_create" %}" class="text-muted">Track</a>
+                    </div>
+                    <div>
+                        <a href="{% url "listen:release_create" %}" class="text-muted">Release</a>
+                    </div>
                 </div>
             </div>
         </div>

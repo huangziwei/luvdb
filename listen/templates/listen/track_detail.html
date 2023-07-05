@@ -9,18 +9,19 @@
         {% endif %}
     </span>
     
-    {% for role in object.trackrole_set.all %}
-    <p>
-        {{role.role.name }}: <a href="{% url 'entity:person_detail' role.person.id %}"> {{ role.person.name }}</a> 
-        {% if role.person.romanized_name %}
-            ({{ role.person.romanized_name }}) 
-        {% endif %}
-    </p>
+    {% for role, persons in grouped_roles.items %}
+        <p>
+            <span class="text-muted">{{ role }}: </span>
+            {% for person in persons %}
+                <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
+                {% if not forloop.last %}/ {% endif %}
+            {% endfor %}
+        </p>
     {% endfor %}
 
     {% if object.work.id %}
     <p>
-        Related work: <a href={% url "listen:work_detail" object.work.id %}>{{object.work.title}}</a>
+        <span class="text-muted">Related work: </span> <a href={% url "listen:work_detail" object.work.id %}>{{object.work.title}}</a>
         {% if object.work.release_date %}
             ({{object.work.release_date}})
         {% endif %}

@@ -18,13 +18,13 @@
                 <form method="POST">
                     {% csrf_token %}
                     {{ say_form.content|as_crispy_field }}
-                    {{ say_form.comments_enabled|as_crispy_field }}
-                    <button type="submit" class="btn btn-primary btn-sm ">Add Say</button>
+                    <span class="d-flex justify-content-between mb-0">
+                        <button type="submit" class="btn btn-primary btn-sm " style='height: 30px'>Add Say</button>
+                        <div class="mb-0">{{ say_form.comments_enabled|as_crispy_field }}</div>
+                    </span>
                 </form>
-                <hr>
             {% elif feed_type == "personal"%}
                 <h3>{{  feed_user.display_name | default:feed_user.username }}'s Feed</h3>
-                <hr>
             {% endif %}
 
             {% include "activity_feed/activity_filter.html" %}

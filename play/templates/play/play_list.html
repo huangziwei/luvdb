@@ -25,12 +25,17 @@
                     {% endfor %}
                 </div>
             </div>
-            <div class='col-4'>
-                <div class="bg-light p-3">
-                    <h4>On This Day</h4>
-                    <!-- You can add some "On This Day" related content here -->
+                <div class='col-4'>
+                    <div class="bg-light p-3">
+                        <h5>Add New</h5>
+                        <div>
+                            <a href="{% url "play:game_create" %}" class="text-muted">Game</a>
+                        </div>
+                        <div>
+                            <a href="{% url "play:series_create" %}" class="text-muted">Series</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
         </div>
     </div>
 {% endblock %}

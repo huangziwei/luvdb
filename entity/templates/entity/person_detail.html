@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-sm-7 left-column">
+        <div class="col-sm-12 left-column">
     
             <span class='d-flex align-items-start'>
                 <h2>
@@ -17,10 +17,8 @@
             <span class="text-secondary">
                 {% if object.birth_date %}{{ object.birth_date }}-{% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %}
             </span>
-            {% if object.bio %}
-                <p>{{ object.bio }}</p>
-            {% endif %}
-
+            
+            <!--Read-->
             {% if object.read_works.count != 0 %}
                 <h3>Bibliography</h3>
                 <ul>
@@ -38,7 +36,7 @@
                 </ul>
             {% endif %}
 
-            {% if books %}
+            {% comment %} {% if books %}
                 <h3>Publications</h3>
                 {% if books.count > 10 %}
                     {% regroup books by get_language_display as books_grouped %}
@@ -102,9 +100,10 @@
                     {% endfor %}
                     </ul>
                 {% endfor %}
-            {% endif %}
+            {% endif %} {% endcomment %}
 
-            {% if object.listen_works.count != 0 %}
+            <!--Listen-->
+            {% comment %} {% if object.listen_works.count != 0 %}
                 <h3>Discography</h3>
                 <ul>
                 {% for work in listen_works %}
@@ -115,7 +114,93 @@
                     <li>This person has no books.</li>
                 {% endfor %}
                 </ul>
-            {% endif %}
+            {% endif %} {% endcomment %}
+            <div class="row">
+            
+                {% if works_as_singer.count != 0 %}
+                <div class="col-md-3">
+                    <h4>As Singer</h4>
+                    <ul>
+                    {% for work in works_as_singer %}
+                        <li>
+                            <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
+                        </li>
+                    {% empty %}
+                        <li>This person has no books.</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+
+                
+                {% if works_as_lyricist.count != 0 %}
+                <div class="col-md-3">
+                    <h4>As Lyricist</h4>
+                    <ul>
+                    {% for work in works_as_lyricist %}
+                        <li>
+                            <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
+                        </li>
+                    {% empty %}
+                        <li>This person has no books.</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+               
+
+                
+                {% if works_as_composer.count != 0 %}
+                <div class="col-md-3">
+                    <h4>As Composer</h4>
+                    <ul>
+                    {% for work in works_as_composer %}
+                        <li>
+                            <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
+                        </li>
+                    {% empty %}
+                        <li>This person has no books.</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+            {% comment %} </div>
+            <div class="row"> {% endcomment %}
+                
+                {% if works_as_arranger.count != 0 %}
+                <div class="col-md-3">
+                    <h4>As Arranger</h4>
+                    <ul>
+                    {% for work in works_as_arranger %}
+                        <li>
+                            <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
+                        </li>
+                    {% empty %}
+                        <li>This person has no books.</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                
+                {% if works_as_producer.count != 0 %}
+                <div class="col-md-3">
+                    <h4>As Producer</h4>
+                    <ul>
+                    {% for work in works_as_producer %}
+                        <li>
+                            <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
+                        </li>
+                    {% empty %}
+                        <li>This person has no books.</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+            </div>
         </div>
     </div>
 </div>

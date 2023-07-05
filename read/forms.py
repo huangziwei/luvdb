@@ -98,8 +98,8 @@ class InstanceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["publication_date"].label = "First Publication Date"
-        self.fields["language"].label = "Original Language"
+        self.fields["publication_date"].label = "Publication Date"
+        self.fields["language"].label = "Language"
 
 
 class InstanceRoleForm(forms.ModelForm):

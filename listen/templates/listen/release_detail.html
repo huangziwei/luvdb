@@ -36,8 +36,8 @@
                             <div class="release-meta">
                                 {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</div>{% endif %}
                                 {% for role_name, person_altname_tuples in roles.items %}
-                                    <div>
-                                        <strong>{{ role_name }}:</strong> 
+                                    <div class="mb-1">
+                                        <span class="text-muted">{{ role_name }}:</span> 
                                         {% for person, alt_name in person_altname_tuples %}
                                             <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
                                             {% if not forloop.last %} / {% endif %}
@@ -45,8 +45,8 @@
                                     </div>
                                 {% endfor %}
                                 {% if object.label %}
-                                    <div>
-                                        <strong>Label:</strong>
+                                    <div class="mb-1">
+                                        <span class="text-muted">Label:</span>
                                         {% for label in object.label.all %}
                                         <a href="{% url 'listen:label_detail' label.id %}">
                                             {{ label.name }} {% if not forloop.last %} / {% endif %}
@@ -55,18 +55,30 @@
                                     </div>
                                 {% endif %}
                                 {% if object.release_date %}
-                                    <div><strong>Date:</strong> {{ object.release_date }}</div>
-                                {% endif %}
-                                {% if object.release_type %}
-                                    <div><strong>Type:</strong> {{ object.release_type }}</div>
-                                {% endif %}
-                                {% if object.release_format %}
-                                    <div><strong>Format:</strong> {{ object.release_format }}</div>
-                                {% endif %}
-                                {% if object.release_region %}
-                                    <div><strong>Region:</strong> {{ object.release_region }}</div>
+                                    <div class="mb-1"><span class="text-muted">Date:</span> {{ object.release_date }}</div>
                                 {% endif %}
                                 
+                                
+                                <div class="my-3">
+                                    <div class="text-muted mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#detailsCollapse" aria-expanded="false" aria-controls="detailsCollapse">
+                                        <span class="text-muted">More Metadata</span>
+                                    </div>
+                                    <div class="collapse" id="detailsCollapse">
+                                        {% if object.release_type %}
+                                            <div class="mb-1"><span class="text-muted">Type:</span> {{ object.release_type }}</div>
+                                        {% endif %}
+                                        {% if object.release_format %}
+                                            <div class="mb-1"><span class="text-muted">Format:</span> {{ object.release_format }}</div>
+                                        {% endif %}
+                                        {% if object.release_region %}
+                                            <div class="mb-1"><span class="text-muted">Region:</span> {{ object.release_region }}</div>
+                                        {% endif %}
+                                        {% if object.release_length %}
+                                            <div class="mb-1"><span class="text-muted">Length:</span> {{ object.release_length }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         <!-- End of release-card -->
@@ -112,12 +124,9 @@
                                             <a href="{% url 'listen:track_detail' release_track.track.id %}">
                                                 {{ release_track.alt_title|default:release_track.track.title }}
                                             </a> 
-                                            ({% if release_track.role %}{{ release_track.role.name }}: 
-                                                <a href="{% url 'entity:person_detail' release_track.person.id %}">
-                                                    {{ release_track.name|default:release_track.person.name }}
-                                                </a>
-                                                , 
-                                            {% endif %}{{ release_track.release_date|default:release_track.track.release_date }})
+                                            {% if release_track.track.length %}
+                                            ({{ release_track.track.length }})
+                                            {% endif %}
                                         </div>
                                     </div>
                                 {% empty %}
@@ -134,7 +143,21 @@
                     {% endif %}
                 </div>
             </div>
-        
+
+            <!--Listen on-->
+            <div class="bg-light p-3 mt-3">
+                <h5>Listen this release on </h5>
+                {% if object.spotify_url %}
+                <div>
+                    <a href="{{ object.apple_music_url }}">Apple Music</a>
+                </div>
+                {% endif %}
+                {% if object.spotify_url %}
+                <div>
+                    <a href="{{ object.spotify_url }}">Spotify</a>
+                </div>
+                {% endif %}
+            </div>
 
             <!--Release Stats-->
             <div class="bg-light p-3 mt-3">

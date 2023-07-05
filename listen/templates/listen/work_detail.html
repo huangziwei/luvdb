@@ -9,10 +9,15 @@
         {% endif %}
     </span>
 
-    {% for role in object.workrole_set.all %}
-    <p>
-        <a href="{% url 'entity:person_detail' role.person.id %}">{{ role.person.name }}</a> ({{ role.person.romanized_name }})
-    </p>
+
+    {% for role, persons in grouped_roles.items %}
+        <p>
+            <strong>{{ role }}: </strong>
+            {% for person in persons %}
+                <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
+                {% if not forloop.last %}/ {% endif %}
+            {% endfor %}
+        </p>
     {% endfor %}
 
     <h3>Tracks</h3>

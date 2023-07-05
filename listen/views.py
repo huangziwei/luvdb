@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from dal import autocomplete
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -153,10 +155,17 @@ class WorkDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         work = get_object_or_404(Work, pk=self.kwargs.get("pk"))
+        # roles
+        grouped_roles = defaultdict(list)
+
+        for role in work.workrole_set.all():
+            grouped_roles[role.role.name].append(role.person)
+
+        context["grouped_roles"] = dict(grouped_roles)
+
+        # tracks
         tracks = work.tracks.all().order_by("release_date")
-
         context["tracks"] = []
-
         for track in tracks:
             releases = track.releases.all()
             for release in releases:
@@ -283,6 +292,18 @@ class TrackUpdateView(LoginRequiredMixin, UpdateView):
 class TrackDetailView(DetailView):
     model = Track
     template_name = "listen/track_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        track = get_object_or_404(Track, pk=self.kwargs.get("pk"))
+        # roles
+        grouped_roles = defaultdict(list)
+
+        for role in track.trackrole_set.all():
+            grouped_roles[role.role.name].append(role.person)
+
+        context["grouped_roles"] = dict(grouped_roles)
+        return context
 
 
 class TrackAutocomplete(autocomplete.Select2QuerySetView):
