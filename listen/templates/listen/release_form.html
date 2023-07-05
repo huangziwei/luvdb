@@ -51,9 +51,12 @@
         <div class="form-wrapper">
             <div class="row">
                 {{ form.id }}
-                <div class="col-md-7">
+                <div class="col-md-4">
                     {{ form.track | as_crispy_field}}
                     <a href="{% url 'listen:track_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new track?</a>
+                </div>
+                <div class="col-md-3">
+                    {{ form.alt_title | as_crispy_field}}
                 </div>
                 <div class="col-md-2">
                     {{ form.order | as_crispy_field}}

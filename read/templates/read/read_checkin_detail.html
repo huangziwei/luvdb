@@ -48,20 +48,20 @@
         {{ object.content | linkify_tags | linkify_mentions | markdownify }}
       </div>
       <div class="bg-light p-3 mt-2">
-        <div class="row justify-content-start">
-            <div class="col-md-3">
+        <div class="d-flex flex-row bg-light mt-2">
+          <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {% if object.content_object.cover %}
                     {% if object.content_object.cover_sens %}
-                      <img src="{{ object.content_object.cover.url }}" alt="{{ object.content_object.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                      <img src="{{ object.content_object.cover.url }}" alt="{{ object.content_object.title }} cover" style="width: 100%;" class="cover-image blur" onclick="this.classList.toggle('blur')">
                     {% else %}
-                      <img src="{{ object.content_object.cover.url }}" alt="{{ object.content_object.title }} cover" style="width: 150px;height: auto;">
+                      <img src="{{ object.content_object.cover.url }}" alt="{{ object.content_object.title }} cover" style="width: 100%;">
                     {% endif %}
                 {% else %}
                     <p class="no-cover-text">No Cover</p>
                 {% endif %}
             </div>
                     
-            <div class="col-md-9">
+            <div class="flex-grow-1 ms-3">
                 {% if object.content_type.model == 'book' %}
                 <a href="{% url 'read:book_detail' object.content_object.id %}" class="text-decoration-none hover-username">
                     <h5>{{ object.content_object.title }}</h5>

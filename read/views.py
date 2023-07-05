@@ -818,7 +818,9 @@ class ReadCheckInDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "read/read_checkin_delete.html"
 
     def get_success_url(self):
-        return reverse_lazy("read:book_detail", kwargs={"pk": self.object.book.pk})
+        return reverse_lazy(
+            "read:book_detail", kwargs={"pk": self.object.content_object.pk}
+        )
 
 
 class GenericCheckInListView(ListView):

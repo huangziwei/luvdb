@@ -55,8 +55,8 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
     template_name = "listen/label_create.html"
 
     def form_valid(self, form):
-        form.track.created_by = self.request.user
-        form.track.updated_by = self.request.user
+        form.instance.created_by = self.request.user
+        form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):

@@ -11,20 +11,20 @@
   <div class="row">
     <div class="col-sm-7 left-column">
       <div class="bg-light p-3 mt-2">
-        <div class="row justify-content-start">
-            <div class="col-md-3">
+        <div class="d-flex flex-row bg-light mt-2">
+            <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {% if object.game.cover %}
                     {% if object.game.cover_sens %}
-                        <img src="{{ object.game.cover.url }}" alt="{{ object.game.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                        <img src="{{ object.game.cover.url }}" alt="{{ object.game.title }} cover" style="width: 100%;" class="cover-image blur" onclick="this.classList.toggle('blur')">
                     {% else %}
-                        <img src="{{ object.game.cover.url }}" alt="{{ object.game.title }} cover" style="width: 150px;height: auto;">
+                        <img src="{{ object.game.cover.url }}" alt="{{ object.game.title }} cover" style="width: 100%;">
                     {% endif %}    
                 {% else %}
                     <p class="no-cover-text">No Cover</p>
                 {% endif %}
             </div>
                     
-            <div class="col-md-9">
+            <div class="flex-grow-1 ms-3">
                 <a href="{% url 'play:game_detail' object.game.id %}" class="text-decoration-none hover-username">
                     <h5>{{ object.game.title }}</h5>
                 </a>

@@ -50,7 +50,7 @@
         </p>
         <div class="bg-light p-3">
             <a href="{% url 'write:post_detail' activity.content_object.id %}" class="text-decoration-none">{{activity.content_object.title}}</a>
-            <div>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</div>
+            <div>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:50 }}</div>
         </div>
         <div class="d-flex mt-2">
             <p class="me-2">
@@ -138,7 +138,7 @@
     <!--Read-Check-in-->
     <div class="col-sm-12">
         <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
-            <div class="d-flex justify-content-start align-items-center">
+            <div class="d-flex flex-wrap align-items-center">
                     <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username me-1">
                         {{ activity.user.display_name | default:activity.user.username }}
                         <span class="username">@{{activity.user.username}}</span>
@@ -174,7 +174,7 @@
                     {% endif %}
             </div>
             <div class="mt-2">
-                {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:50 }}
             </div>
             <div class="d-flex flex-row bg-light p-3 mt-2">
                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -247,33 +247,35 @@
 
     <!--Watch-->
     {% elif activity.activity_type == 'watch-check-in' %}
-    <!--Read-Check-in-->
+    <!--Watch-Check-in-->
     <div class="col-sm-12">
         <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
-            <div class="d-flex justify-content-start align-items-center">
+            <div class="d-flex flex-wrap align-items-center">
                     <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username me-1">
                         {{ activity.user.display_name | default:activity.user.username }}
                         <span class="username">@{{activity.user.username}}</span>
                     </a> 
                     <span class="me-1">checked in</span>
                     <!--badge: checkin status-->
-                    {% if activity.content_object.status == "to_watch" %}
-                    <span class="badge text-bg-info me-1">
-                    {% elif activity.content_object.status == "watching" %}
-                    <span class="badge text-bg-primary me-1">
-                    {% elif activity.content_object.status == "watched" %}
-                    <span class="badge text-bg-success me-1">
-                    {% elif activity.content_object.status == "paused" %}
-                    <span class="badge text-bg-warning me-1">
-                    {% elif activity.content_object.status == "abandoned" %}
-                    <span class="badge text-bg-danger me-1">
-                    {% elif activity.content_object.status == "rewatching" %}
-                    <span class="badge text-bg-primary me-1">
-                    {% elif activity.content_object.status == "rewatched" %}
-                    <span class="badge text-bg-success me-1">
-                    {% endif %}
-                        Status: {{ activity.content_object.get_status_display }}
-                    </span>
+                    <div class="d-flex align-items-center me-1">
+                        {% if activity.content_object.status == "to_watch" %}
+                        <span class="badge text-bg-info me-1">
+                        {% elif activity.content_object.status == "watching" %}
+                        <span class="badge text-bg-primary me-1">
+                        {% elif activity.content_object.status == "watched" %}
+                        <span class="badge text-bg-success me-1">
+                        {% elif activity.content_object.status == "paused" %}
+                        <span class="badge text-bg-warning me-1">
+                        {% elif activity.content_object.status == "abandoned" %}
+                        <span class="badge text-bg-danger me-1">
+                        {% elif activity.content_object.status == "rewatching" %}
+                        <span class="badge text-bg-primary me-1">
+                        {% elif activity.content_object.status == "rewatched" %}
+                        <span class="badge text-bg-success me-1">
+                        {% endif %}
+                            Status: {{ activity.content_object.get_status_display }}
+                        </span>
+                    </div>
                     {% if activity.content_object.progress %}
                     <span class="badge text-bg-warning me-1">
                         Progress: {{ activity.content_object.progress }} 
@@ -284,7 +286,7 @@
                     {% endif %}
             </div>
             <div class="mt-2">
-                {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:50 }}
             </div>
             <div class="d-flex flex-row bg-light p-3 mt-2">
                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -357,26 +359,29 @@
     {% elif activity.activity_type == 'listen-check-in' %}
     <div class="col-sm-12">
         <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
-            <div class="d-flex justify-content-start align-items-center">
+            <div class="d-flex flex-wrap align-items-center">
                 <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username me-1">
                     {{ activity.user.display_name | default:activity.user.username }}
                     <span class="username">@{{activity.user.username}}</span>
                 </a> 
                 <span class="me-1">checked in</span>
+                    
                 <!--badge: checkin status-->
-                {% if activity.content_object.status == "to_listen" %}
-                <span class="badge text-bg-info me-1">
-                {% elif activity.content_object.status == "listening" %}
-                <span class="badge text-bg-primary me-1">
-                {% elif activity.content_object.status == "listened" %}
-                <span class="badge text-bg-success me-1">
-                {% elif activity.content_object.status == "paused" %}
-                <span class="badge text-bg-warning me-1">
-                {% elif activity.content_object.status == "abandoned" %}
-                <span class="badge text-bg-danger me-1">
-                {% endif %}
-                    Status: {{ activity.content_object.get_status_display }}
-                </span>
+                <div class="d-flex align-items-center me-1">
+                    {% if activity.content_object.status == "to_listen" %}
+                    <span class="badge text-bg-info me-1">
+                    {% elif activity.content_object.status == "listening" %}
+                    <span class="badge text-bg-primary me-1">
+                    {% elif activity.content_object.status == "listened" %}
+                    <span class="badge text-bg-success me-1">
+                    {% elif activity.content_object.status == "paused" %}
+                    <span class="badge text-bg-warning me-1">
+                    {% elif activity.content_object.status == "abandoned" %}
+                    <span class="badge text-bg-danger me-1">
+                    {% endif %}
+                        Status: {{ activity.content_object.get_status_display }}
+                    </span>
+                </div>
                 {% if activity.content_object.progress %}
                 <span class="badge text-bg-warning me-1">
                     Loop: {{ activity.content_object.progress }} 
@@ -389,7 +394,7 @@
                 {% endif %}
             </div>
             <div class="mt-2">
-                {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:50 }}
             </div>
             <div class="d-flex flex-row bg-light p-3 mt-2">
                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -467,30 +472,32 @@
     <!--Game-Check-in-->
     <div class="col-sm-12">
         <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
-            <div class="d-flex justify-content-start align-items-center">
+            <div class="d-flex flex-wrap align-items-center">
                 <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username me-1">
                     {{ activity.user.display_name | default:activity.user.username }}
                     <span class="username">@{{activity.user.username}}</span>
                 </a> 
                 <span class="me-1">checked in</span>
                 <!--badge: checkin status-->
-                {% if activity.content_object.status == "to_play" %}
-                <span class="badge text-bg-info me-1">
-                {% elif activity.content_object.status == "currently_playing" %}
-                <span class="badge text-bg-primary me-1">
-                {% elif activity.content_object.status == "played" %}
-                <span class="badge text-bg-success me-1">
-                {% elif activity.content_object.status == "paused" %}
-                <span class="badge text-bg-warning me-1">
-                {% elif activity.content_object.status == "abandoned" %}
-                <span class="badge text-bg-danger me-1">
-                {% elif activity.content_object.status == "replaying" %}
-                <span class="badge text-bg-primary me-1">
-                {% elif activity.content_object.status == "replayed" %}
-                <span class="badge text-bg-success me-1">
-                {% endif %}
-                    {{ activity.content_object.get_status_display }}
-                </span>
+                <div class="d-flex align-items-center me-1">
+                    {% if activity.content_object.status == "to_play" %}
+                    <span class="badge text-bg-info me-1">
+                    {% elif activity.content_object.status == "currently_playing" %}
+                    <span class="badge text-bg-primary me-1">
+                    {% elif activity.content_object.status == "played" %}
+                    <span class="badge text-bg-success me-1">
+                    {% elif activity.content_object.status == "paused" %}
+                    <span class="badge text-bg-warning me-1">
+                    {% elif activity.content_object.status == "abandoned" %}
+                    <span class="badge text-bg-danger me-1">
+                    {% elif activity.content_object.status == "replaying" %}
+                    <span class="badge text-bg-primary me-1">
+                    {% elif activity.content_object.status == "replayed" %}
+                    <span class="badge text-bg-success me-1">
+                    {% endif %}
+                        {{ activity.content_object.get_status_display }}
+                    </span>
+                </div>
                 {% if activity.content_object.progress %}
                 <span class="badge text-bg-warning me-1">
                     Played Time: {{ activity.content_object.progress }} 
@@ -502,7 +509,7 @@
                 on game:
             </div>
             <div class="mt-2">
-                {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:50 }}
             </div>
             <div class="d-flex flex-row bg-light p-3 mt-2">
                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">

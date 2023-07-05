@@ -24,13 +24,14 @@
                 <!--Read Check In-->
                 {% if activity.content_object.original_activity.activity_type == "read-check-in" %}
 
-                    <div class="d-flex justify-content-start align-items-center">
+                    <div class="d-flex flex-wrap align-items-center">
                         <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username me-1">
                             {{ activity.user.display_name | default:activity.user.username }}
                             <span class="username">@{{activity.user.username}}</span>
                         </a> 
                         <span class="me-1">checked in</span>
                         <!--badge: checkin status-->
+                        <div class="d-flex align-items-center me-1">
                         {% if activity.content_object.original_activity.content_object.status == "to_read" %}
                         <span class="badge text-bg-info me-1">
                         {% elif activity.content_object.original_activity.content_object.status == "reading" %}
@@ -48,6 +49,7 @@
                         {% endif %}
                             Status: {{ activity.content_object.original_activity.content_object.get_status_display }}
                         </span>
+                        </div>
                         {% if activity.content_object.original_activity.content_object.progress %}
                         <span class="badge text-bg-warning me-1">
                             Progress: {{ activity.content_object.original_activity.content_object.progress }} 
@@ -117,13 +119,14 @@
                 <!--Watch Check In-->
                 {% elif activity.content_object.original_activity.activity_type == "watch-check-in" %}
 
-                <div class="d-flex justify-content-start align-items-center">
+                <div class="d-flex flex-wrap align-items-center">
                     <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username me-1">
                         {{ activity.user.display_name | default:activity.user.username }}
                         <span class="username">@{{activity.user.username}}</span>
                     </a> 
                     <span class="me-1">checked in</span>
                     <!--badge: checkin status-->
+                    <div class="d-flex align-items-center me-1">
                     {% if activity.content_object.original_activity.content_object.status == "to_watch" %}
                     <span class="badge text-bg-info me-1">
                     {% elif activity.content_object.original_activity.content_object.status == "watching" %}
@@ -141,6 +144,7 @@
                     {% endif %}
                         Status: {{ activity.content_object.original_activity.content_object.get_status_display }}
                     </span>
+                    </div>
                     {% if activity.content_object.original_activity.content_object.progress %}
                     <span class="badge text-bg-warning me-1">
                         Progress: {{ activity.content_object.original_activity.content_object.progress }} 
@@ -207,13 +211,14 @@
                 <!--Game Check In-->
                 {% elif activity.content_object.original_activity.activity_type == "game-check-in" %}
 
-                    <div class="d-flex justify-content-start align-items-center">
+                    <div class="d-flex flex-wrap align-items-center">
                         <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username me-1">
                             {{ activity.user.display_name | default:activity.user.username }}
                             <span class="username">@{{activity.user.username}}</span>
                         </a> 
                         <span class="me-1">checked in</span>
                         <!--badge: checkin status-->
+                        <div class="d-flex align-items-center me-1">
                         {% if activity.content_object.original_activity.content_object.status == "to_play" %}
                         <span class="badge text-bg-info me-1">
                         {% elif activity.content_object.original_activity.content_object.status == "currently_playing" %}
@@ -231,6 +236,7 @@
                         {% endif %}
                             Status: {{ activity.content_object.original_activity.content_object.get_status_display }}
                         </span>
+                        </div>
                         {% if activity.content_object.original_activity.content_object.progress %}
                         <span class="badge text-bg-warning me-1">
                             Played Time: {{ activity.content_object.original_activity.content_object.progress }} 
@@ -312,13 +318,14 @@
                 <!--Listen Check In-->
                 {% elif activity.content_object.original_activity.activity_type == "listen-check-in" %}
 
-                    <div class="d-flex justify-content-start align-items-center">
+                    <div class="d-flex flex-wrap align-items-center">
                         <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username me-1">
                             {{ activity.user.display_name | default:activity.user.username }}
                             <span class="username">@{{activity.user.username}}</span>
                         </a> 
                         <span class="me-1">checked in</span>
                         <!--badge: checkin status-->
+                        <div class="d-flex align-items-center me-1">
                         {% if activity.content_object.original_activity.content_object.status == "to_listen" %}
                         <span class="badge text-bg-info me-1">
                         {% elif activity.content_object.original_activity.content_object.status == "listening" %}
@@ -332,6 +339,7 @@
                         {% endif %}
                             Status: {{ activity.content_object.original_activity.content_object.get_status_display }}
                         </span>
+                        </div>
                         {% if activity.content_object.original_activity.content_object.progress %}
                         <span class="badge text-bg-warning me-1">
                             Loop: {{ activity.content_object.original_activity.content_object.progress }} 

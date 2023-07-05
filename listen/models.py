@@ -218,9 +218,10 @@ class ReleaseRole(models.Model):
 
 class ReleaseTrack(models.Model):
     release = models.ForeignKey(Release, on_delete=models.CASCADE)
-    track = models.ForeignKey(Track, on_delete=models.CASCADE)
-    disk = models.PositiveIntegerField(default=1)
-    order = models.PositiveIntegerField()
+    track = models.ForeignKey(Track, on_delete=models.CASCADE, null=True, blank=True)
+    alt_title = models.CharField(max_length=255, blank=True, null=True)
+    disk = models.PositiveIntegerField(default=1, null=True, blank=True)
+    order = models.PositiveIntegerField(default=1, null=True, blank=True)
 
     class Meta:
         ordering = ["disk", "order"]

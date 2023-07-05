@@ -181,7 +181,7 @@ ReleaseRoleFormSet = inlineformset_factory(
 class ReleaseTrackForm(forms.ModelForm):
     class Meta:
         model = ReleaseTrack
-        fields = ["track", "order", "disk"]
+        fields = ["track", "alt_title", "order", "disk"]
 
 
 ReleaseTrackFormSet = inlineformset_factory(

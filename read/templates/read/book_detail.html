@@ -57,21 +57,7 @@
                                 {% if object.publication_date %}
                                     <p><strong>Date:</strong> {{ object.publication_date }}</p>
                                 {% endif %}
-                                {% if object.format %}
-                                    <p><strong>Format:</strong> {{ object.format }}</p>
-                                {% endif %}
-                                {% if object.pages %}
-                                    <p><strong>Pages:</strong> {{ object.pages }}</p>
-                                {% endif %}
-                                {% if object.isbn_10 %}
-                                    <p><strong>ISBN-10:</strong> {{ object.isbn_10 }}</p>
-                                {% endif %}
-                                {% if object.isbn_13 %}
-                                    <p><strong>ISBN-13:</strong> {{ object.isbn_13 }}</p>
-                                {% endif %}
-                                {% if object.asin %}
-                                    <p><strong>ASIN:</strong> {{ object.asin }}</p>
-                                {% endif %}
+                                
                                 
                                 <!--add series here-->
                                 {% if object.bookinseries_set.all %}
@@ -90,6 +76,21 @@
                                         <strong>More Metadata</strong>
                                     </p>
                                     <div class="collapse" id="detailsCollapse">
+                                        {% if object.format %}
+                                            <p><strong>Format:</strong> {{ object.format }}</p>
+                                        {% endif %}
+                                        {% if object.pages %}
+                                            <p><strong>Pages:</strong> {{ object.pages }}</p>
+                                        {% endif %}
+                                        {% if object.isbn_10 %}
+                                            <p><strong>ISBN-10:</strong> {{ object.isbn_10 }}</p>
+                                        {% endif %}
+                                        {% if object.isbn_13 %}
+                                            <p><strong>ISBN-13:</strong> {{ object.isbn_13 }}</p>
+                                        {% endif %}
+                                        {% if object.asin %}
+                                            <p><strong>ASIN:</strong> {{ object.asin }}</p>
+                                        {% endif %}
                                         {% if object.details %}
                                         <strong>Details:</strong> 
                                         <div class="card card-body">
