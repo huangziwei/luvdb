@@ -65,7 +65,7 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
 
 class LabelDetailView(DetailView):
     model = Label
-    template_name = "listen/Label_detail.html"
+    template_name = "listen/label_detail.html"
 
 
 class LabelAutocomplete(autocomplete.Select2QuerySetView):
@@ -466,7 +466,7 @@ class ReleaseDetailView(DetailView):
         listening_count = sum(
             1
             for item in latest_checkins
-            if item["latest_checkin_status"] in ["listening", "relistening"]
+            if item["latest_checkin_status"] in ["looping", "relistening"]
         )
         listened_count = sum(
             1
@@ -590,7 +590,9 @@ class ListenCheckInDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "listen/listen_checkin_delete.html"
 
     def get_success_url(self):
-        return reverse_lazy("listen:listen_detail", kwargs={"pk": self.object.book.pk})
+        return reverse_lazy(
+            "listen:release_detail", kwargs={"pk": self.object.content_object.pk}
+        )
 
 
 class ListenCheckInListView(ListView):

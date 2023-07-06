@@ -10,7 +10,7 @@
             <!--Status-->
             <div class="btn-group" role="group" aria-label="Status">
                 <button type="button" class="btn btn-sm btn-light status-button" id="status-to-listen" onclick="setStatus(event, 'to_listen')">To Listen</button>
-                <button type="button" class="btn btn-sm btn-light status-button" id="status-listening" onclick="setStatus(event, 'listening')">Listening</button>
+                <button type="button" class="btn btn-sm btn-light status-button" id="status-looping" onclick="setStatus(event, 'looping')">Looping</button>
                 <button type="button" class="btn btn-sm btn-light status-button" id="status-listened" onclick="setStatus(event, 'listened')">Listened</button>
                 {% comment %} <div class="btn-group" role="group">
                     <button id="status-more" type="button" class="btn btn-sm btn-light dropdown-toggle status-button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -64,7 +64,7 @@
 <script>
     var status_mapping = {
         "to_listen": "status-to-listen",
-        "listening": "status-listening",
+        "looping": "status-looping",
         "listened": "status-listened",
         "paused": "status-paused",
         "abandoned": "status-abandoned",

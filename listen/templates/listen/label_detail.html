@@ -11,9 +11,6 @@
                     {% if object.romanized_name %} / {{ object.romanized_name }} {% endif %}
                 </h2> 
             </span>
-            <span class="text-secondary">
-                {% if object.founded_date %}{{ object.founded_date }}-{% endif %}{% if object.closed_date %}{{ object.closed_date }}{% endif %}
-            </span>
 
             {% if object.releases.count != 0 %}
                 <h3>Release</h3>
@@ -26,7 +23,7 @@
                     <li>This publisher has no releases.</li>
                 {% endfor %}
                 </ul>
-            {% endif %}
+            {% endif %} 
         </div>
     </div>
 </div>

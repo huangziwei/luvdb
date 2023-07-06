@@ -237,7 +237,7 @@ class ListenCheckIn(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     READING_STATUS_CHOICES = [
         ("to_listen", "To Listen"),
-        ("listening", "Listening"),
+        ("looping", "Looping"),
         ("listened", "Listened"),
         ("paused", "Paused"),
         ("abandoned", "Abandoned"),
