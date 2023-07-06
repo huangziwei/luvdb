@@ -14,194 +14,6 @@
     <!-- Left column -->
     <div class="col-sm-8 order-2 order-sm-1">
       
-      {% if does_read_exist %}
-      <div class="row">
-        <h4>Read</h4>
-        <div class="col-sm-4">
-          <h5>Reading</h5>
-            {% for item in reading %}
-                <!-- display item information here -->
-                <p>
-                  {% if item.content_type.model == 'book' %}
-                    <a href="{% url 'read:book_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
-                  {% elif item.content_type.model == 'issue' %}
-                    <a href="{% url 'read:issue_detail' item.content_object.periodical.id item.content_object.id %}">
-                      {{ item.content_object.periodical.title }}: {{ item.content_object.title }}
-                    </a>
-                  {% endif %}
-                </p>
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-    
-        <div class="col-sm-4">
-            <h5>Read</h5>
-            {% for item in read %}
-              <p>
-                {% if item.content_type.model == 'book' %}
-                  <a href="{% url 'read:book_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
-                {% elif item.content_type.model == 'issue' %}
-                  <a href="{% url 'read:issue_detail' item.content_object.periodical.id item.content_object.id %}">
-                    {{ item.content_object.periodical.title }}: {{ item.content_object.title }}
-                  </a>                
-                {% endif %}
-              </p>
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-    
-        <div class="col-sm-4">
-            <h5>To Read</h5>
-            {% for item in to_read %}
-              <p>
-                {% if item.content_type.model == 'book' %}
-                  <a href="{% url 'read:book_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
-                {% elif item.content_type.model == 'issue' %}
-                  <a href="{% url 'read:issue_detail' item.content_object.periodical.id item.content_object.id %}">
-                    {{ item.content_object.periodical.title }}: {{ item.content_object.title }}
-                  </a>
-                {% endif %}
-              </p>
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-      </div>
-      {% endif %}
-
-      {% if does_watch_exist %}
-      <div class="row">
-        <h4 class="mt-4">Watch</h4>
-        <div class="col-sm-4">
-          <h5>Watching</h5>
-            {% for item in watching %}
-                <!-- display item information here -->
-                {% if item.content_type.model == 'movie' %}
-                  <a href="{% url 'watch:movie_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
-                {% elif item.content_type.model == 'episode' %}
-                  <a href="{% url 'watch:episode_detail' item.content_object.series.id item.content_object.id %}">
-                    {{ item.content_object.series.title }}: {{ item.content_object.title }}
-                  </a>
-                {% endif %}
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-    
-        <div class="col-sm-4">
-            <h5>Watched</h5>
-            {% for item in watched %}
-                {% if item.content_type.model == 'movie' %}
-                  <a href="{% url 'watch:movie_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
-                {% elif item.content_type.model == 'episode' %}
-                  <a href="{% url 'watch:episode_detail' item.content_object.series.id item.content_object.id %}">
-                    {{ item.content_object.series.title }}: {{ item.content_object.title }}
-                  </a>
-                {% endif %}
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-    
-        <div class="col-sm-4">
-            <h5>To Watch</h5>
-            {% for item in to_watch %}
-              {% if item.content_type.model == 'movie' %}
-                <a href="{% url 'watch:movie_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
-              {% elif item.content_type.model == 'episode' %}
-                <a href="{% url 'watch:episode_detail' item.content_object.series.id item.content_object.id %}">
-                  {{ item.content_object.series.title }}: {{ item.content_object.title }}
-                </a>
-              {% endif %}
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-      </div>
-      {% endif %}
-
-      {% if does_listen_exist %}
-      <div class="row">
-        <h4 class="mt-4">Listen</h4>
-        <div class="col-sm-4">
-          <h5>Looping</h5>
-            {% for item in looping %}
-                <!-- display item information here -->
-                <p>
-                  <a href="{% url 'listen:release_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
-                </p>
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-    
-        <div class="col-sm-4">
-            <h5>Listened</h5>
-            {% for item in listened %}
-            <p>
-              <a href="{% url 'listen:release_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
-            </p>
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-    
-        <div class="col-sm-4">
-            <h5>To Listen</h5>
-            {% for item in to_listen %}
-            <p>
-              <a href="{% url 'listen:release_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
-            </p>
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-      </div>
-      {% endif %}
-
-      {% if does_play_exist %}
-      <div class="row">
-        <h4 class="mt-4">Play</h4>
-        <div class="col-sm-4">
-          <h5>Playing</h5>
-            {% for item in playing %}
-                <!-- display item information here -->
-                <p>
-                  <a href="{% url 'play:game_detail' item.game.id %}">{{ item.game.title }}</a>
-                </p>
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-    
-        <div class="col-sm-4">
-            <h5>Played</h5>
-            {% for item in played %}
-            <p>
-              <a href="{% url 'play:game_detail' item.game.id %}">{{ item.game.title }}</a>
-            </p>
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-    
-        <div class="col-sm-4">
-            <h5>To Play</h5>
-            {% for item in to_play %}
-            <p>
-              <a href="{% url 'play:game_detail' item.game.id %}">{{ item.game.title }}</a>
-            </p>
-            {% empty %}
-                <p>No items.</p>
-            {% endfor %}
-        </div>
-      </div>
-      {% endif %}
-
-      <hr>
-
       <!--Pins-->
       <div class="d-flex justify-content-between align-items-center mt-2">
         <h4>Pins</h4>
@@ -235,8 +47,6 @@
       {% endfor %}
       <br/>
 
-      <hr>
-
       <!--Posts-->
       <div class="d-flex justify-content-between align-items-center">
         <h4>Posts</h4>
@@ -265,6 +75,94 @@
             </span>
         </div>
       {% endfor %}
+
+      {% if does_read_exist %}
+      <div class="row">
+        <h4>Read</h4>    
+        <div class="col-sm-4">
+          <div class="me-3">
+            {% for item in read %}
+              <p>
+                {% if item.content_type.model == 'book' %}
+                  <a href="{% url 'read:book_detail' item.content_object.id %}">
+                    <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                  </a>
+                {% elif item.content_type.model == 'issue' %}
+                  <a href="{% url 'read:issue_detail' item.content_object.periodical.id item.content_object.id %}">
+                    <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                  </a>                
+                {% endif %}
+              </p>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+          </div>
+        </div>
+    
+      </div>
+      {% endif %}
+
+      {% if does_watch_exist %}
+      <div class="row">
+        <h4 class="mt-4">Watched</h4>    
+        <div class="col-sm-4">
+            {% for item in watched %}
+            <div class="me-3">
+                {% if item.content_type.model == 'movie' %}
+                  <a href="{% url 'watch:movie_detail' item.content_object.id %}">
+                    <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                  </a>
+                {% elif item.content_type.model == 'series' %}
+                  <a href="{% url 'watch:series_detail' item.content_object.id %}">
+                    <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
+                  </a>
+                {% endif %}
+            </div>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+    
+      </div>
+      {% endif %}
+
+      {% if does_listen_exist %}
+      <div class="row">
+        <h4 class="mt-4">Listened</h4>    
+        <div class="col-sm-12 d-flex">
+            {% for item in listened %}
+            <div class="me-3">
+              <a href="{% url 'listen:release_detail' item.content_object.id %}">
+                <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
+              </a>
+            </div>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if does_play_exist %}
+      <div class="row">
+        <h4 class="mt-4">Played</h4>    
+        <div class="col-sm-12 d-flex">
+            {% for item in played %}
+            <div class='me-3'>
+              <a href="{% url 'play:game_detail' item.game.id %}">
+                <img src="{{ item.game.cover.url }}" alt="{{ item.game.title }} cover" style="width: 120px;" class="cover-image">
+              </a>
+            </div>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <hr>
+
+
     </div>
 
 

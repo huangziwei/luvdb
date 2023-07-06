@@ -117,7 +117,7 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
         context["reading"] = reading
         context["read"] = read
         context["to_read"] = to_read
-        context["does_read_exist"] = latest_read_checkins.exists()
+        context["does_read_exist"] = read.exists()
 
         latest_listen_checkins = ListenCheckIn.objects.filter(
             user=self.object,
@@ -140,7 +140,7 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
         context["looping"] = looping
         context["listened"] = listened
         context["to_listen"] = to_listen
-        context["does_listen_exist"] = latest_listen_checkins.exists()
+        context["does_listen_exist"] = listened.exists()
 
         # First, get the latest check-in for each show
         latest_watch_checkins = WatchCheckIn.objects.filter(
@@ -157,18 +157,18 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
         )
 
         # Then, filter the latest check-ins for each category and limit the results
-        watching_shows = latest_watch_checkins.filter(
-            status__in=["watching", "re-watching"]
-        )[:5]
-        watched_shows = latest_watch_checkins.filter(
+        watching = latest_watch_checkins.filter(status__in=["watching", "re-watching"])[
+            :5
+        ]
+        watched = latest_watch_checkins.filter(
             status__in=["watched", "rewatched", "re-watched"]
         )[:5]
-        to_watch_shows = latest_watch_checkins.filter(status="to_watch")[:5]
+        to_watch = latest_watch_checkins.filter(status="to_watch")[:5]
 
-        context["watching"] = watching_shows
-        context["watched"] = watched_shows
-        context["to_watch"] = to_watch_shows
-        context["does_watch_exist"] = latest_watch_checkins.exists()
+        context["watching"] = watching
+        context["watched"] = watched
+        context["to_watch"] = to_watch
+        context["does_watch_exist"] = watched.exists()
 
         # First, get the latest check-in for each game
         latest_play_checkins = GameCheckIn.objects.filter(
@@ -188,7 +188,7 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
         context["playing"] = playing
         context["played"] = played
         context["to_play"] = to_play
-        context["does_play_exist"] = latest_play_checkins.exists()
+        context["does_play_exist"] = played.exists()
 
         return context
 
