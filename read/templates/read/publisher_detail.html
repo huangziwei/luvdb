@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-7 left-column">
+    
+            <span class='d-flex align-items-start'>
+                <h2>
+                    {{ object.name }}
+                    {% if object.romanized_name %} / {{ object.romanized_name }} {% endif %}
+                </h2> 
+            </span>
+            <span class="text-secondary">
+                {% if object.founded_date %}{{ object.founded_date }}-{% endif %}{% if object.closed_date %}{{ object.closed_date }}{% endif %}
+            </span>
+
+            {% if object.books.count != 0 %}
+                <h3>Books</h3>
+                <ul>
+                {% for book in object.books.all %}
+                    <li>
+                        <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a> ({{book.format}}, {{ book.publication_date}})
+                    </li>
+                {% empty %}
+                    <li>This publisher has no books.</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

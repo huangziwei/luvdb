@@ -357,7 +357,7 @@ class BookInSeriesForm(forms.ModelForm):
         if self.instance and self.instance.pk and self.instance.book:
             self.fields[
                 "book_url"
-            ].initial = f"{settings.ROOT_URL}/book/{self.instance.book.pk}"
+            ].initial = f"{settings.ROOT_URL}/read/book/{self.instance.book.pk}"
         self.fields["book_url"].required = False
         self.fields["book_url"].label = "URL"
         self.fields["order"].required = False

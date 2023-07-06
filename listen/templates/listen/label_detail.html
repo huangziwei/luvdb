@@ -10,26 +10,20 @@
                     {{ object.name }}
                     {% if object.romanized_name %} / {{ object.romanized_name }} {% endif %}
                 </h2> 
-                {% if user.is_authenticated %}
-                <a href="{% url 'entity:person_update' object.pk %}" class='fs-6 text-secondary'>Edit Person</a>
-                {% endif %}
             </span>
             <span class="text-secondary">
-                {% if object.birth_date %}{{ object.birth_date }}-{% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %}
+                {% if object.founded_date %}{{ object.founded_date }}-{% endif %}{% if object.closed_date %}{{ object.closed_date }}{% endif %}
             </span>
-            {% if object.bio %}
-                <p>{{ object.bio }}</p>
-            {% endif %}
 
             {% if object.releases.count != 0 %}
-                <h3>Releases</h3>
+                <h3>Release</h3>
                 <ul>
-                {% for release in releases %}
+                {% for release in object.releases.all %}
                     <li>
-                        <a href="{% url 'read:release_detail' release.pk %}">{{ release.title }}</a> ({{ release.publication_date}})
+                        <a href="{% url 'listen:release_detail' release.id %}">{{ release.title }}</a> ({{release.release_type}}, {{release.release_format}}, {{ release.release_date}})
                     </li>
                 {% empty %}
-                    <li>This Label has no releases.</li>
+                    <li>This publisher has no releases.</li>
                 {% endfor %}
                 </ul>
             {% endif %}

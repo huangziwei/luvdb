@@ -12,15 +12,15 @@
         <div class="col-sm-8">
             <!-- book-card -->
             <div class="book-card justify-content-start">
-                <div class="row">
+                <div class="d-flex flex-row mt-2">
                     <!--cover-box-->
-                    <div class="col-md-3 me-4">
+                    <div>
                         <div class="read-cover-box">
                             {% if object.cover %}
                                 {% if object.cover_sens %}
                                     <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
                                 {% else %}
-                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image">
+                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid">
                                 {% endif %}
                             {% else %}
                                 <p class="no-cover-text">No Cover</p>
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <!--book-meta-->
-                    <div class="col-md-8">
+                    <div class="flex-grow-1 ms-3">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
                                 <h2>{{ object.title }} </h2>
@@ -54,6 +54,9 @@
                                         </a>
                                     </p>
                                 {% endif %}
+                                {% if object.format %}
+                                            <p><strong>Format:</strong> {{ object.format }}</p>
+                                        {% endif %}
                                 {% if object.publication_date %}
                                     <p><strong>Date:</strong> {{ object.publication_date }}</p>
                                 {% endif %}
@@ -76,9 +79,7 @@
                                         <strong>More Metadata</strong>
                                     </p>
                                     <div class="collapse" id="detailsCollapse">
-                                        {% if object.format %}
-                                            <p><strong>Format:</strong> {{ object.format }}</p>
-                                        {% endif %}
+                                        
                                         {% if object.pages %}
                                             <p><strong>Pages:</strong> {{ object.pages }}</p>
                                         {% endif %}

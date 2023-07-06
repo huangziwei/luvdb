@@ -227,6 +227,7 @@ class Instance(models.Model):
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
     language = LanguageField(max_length=8, blank=True, null=True)
+    edition = models.CharField(max_length=255, blank=True, null=True) # 1st ed., revised ed., etc.
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)

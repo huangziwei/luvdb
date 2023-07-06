@@ -10,15 +10,15 @@
         <div class="col-sm-8">
             <!-- movie-card -->
             <div class="movie-card justify-content-start">
-                <div class="row">
+                <div class="d-flex flex-row mt-2">
                     <!--poster-box-->
-                    <div class="col-md-3 me-4">
+                    <div>
                         <div class="watch-cover-box">
                             {% if object.poster %}
                                 {% if object.poster_sens %}
                                     <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="cover-image blur" onclick="this.classList.toggle('blur')">
                                 {% else %}
-                                    <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="cover-image">
+                                    <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="img-fluid">
                                 {% endif %}    
                             {% else %}
                                 <p class="no-poster-text">No Poster</p>
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <!--movie-meta-->
-                    <div class="col-md-8">
+                    <div class="flex-grow-1 ms-3">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
                                 <h4>{{ object.title }} </h4>

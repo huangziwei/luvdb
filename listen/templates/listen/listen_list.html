@@ -3,11 +3,11 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class='col-8'>
+            <div class='col-sm-8'>
                 <h2>Recent Releases</h2>
                 <div class="row">
                     {% for release in objects.recent_releases %}
-                        <div class="col-md-2 col-sm-6 mb-4">
+                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
                             <a href="{% url 'listen:release_detail' release.pk %}">
                                 {% if release.cover %}
                                     {% if release.cover_sens %}
@@ -25,7 +25,7 @@
                     {% endfor %}
                 </div>
             </div>
-            <div class='col-4'>
+            <div class='col-sm-4'>
                 <div class="bg-light p-3">
                     <h5>Add New</h5>
                     <div>

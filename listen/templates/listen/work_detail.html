@@ -2,47 +2,64 @@
 
 {% block content %}
 <div class="container">
-    <span class='d-flex align-items-start'>
-        <h2>{{ object.title }} ({{ object.release_date }})</h2>
-        {% if user.is_authenticated %}
-        <a href="{% url 'listen:work_update' object.pk %}" class='fs-6 text-secondary'>Edit Work</a>
-        {% endif %}
-    </span>
+    <div class="row">
+        <!--Left columns-->
+        <div class="col-sm-8">
+            <span class='d-flex align-items-start'>
+                <h2>{{ object.title }} ({{ object.release_date }})</h2>
+            </span>
 
 
-    {% for role, persons in grouped_roles.items %}
-        <p>
-            <strong>{{ role }}: </strong>
-            {% for person in persons %}
-                <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
-                {% if not forloop.last %}/ {% endif %}
+            {% for role, persons in grouped_roles.items %}
+                <p>
+                    <strong>{{ role }}: </strong>
+                    {% for person in persons %}
+                        <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
+                        {% if not forloop.last %}/ {% endif %}
+                    {% endfor %}
+                </p>
             {% endfor %}
-        </p>
-    {% endfor %}
 
-    <h3>Tracks</h3>
-    <ul>
-    {% for track in tracks %}
-        <li>
-            <a href="{% url "listen:track_detail" track.track.id %}">{{ track.track.title }}</a>
-             ({{ track.track.release_date }});
-             Collected in:
-            {% for item in track.items %}
+            <h3>Tracks</h3>
             <ul>
+            {% for track in tracks %}
                 <li>
-                    <a href="{% url 'listen:release_detail' item.id %}">{{ item.title }}</a>
-                    {% if item.release_date %}
-                    ({% if item.release_type %}
-                    {{ item.release_type }},
-                    {% endif %}
-                    {{ item.release_date }}
-                    )
-                    {% endif %}
+                    <a href="{% url "listen:track_detail" track.track.id %}">{{ track.track.title }}</a>
+                    ({{ track.track.release_date }});
+                    Collected in:
+                    {% for item in track.items %}
+                    <ul>
+                        <li>
+                            <a href="{% url 'listen:release_detail' item.id %}">{{ item.title }}</a>
+                            {% if item.release_date %}
+                            ({% if item.release_type %}
+                            {{ item.release_type }},
+                            {% endif %}
+                            {{ item.release_date }}
+                            )
+                            {% endif %}
+                        </li>
+                    </ul> 
+                    {% endfor %}
                 </li>
-            </ul> 
             {% endfor %}
-        </li>
-    {% endfor %}
-    </ul>
+            </ul>
+        </div>
+
+        <!--Right columns-->
+        <div class="col-sm-4">
+            <!--Related tracks / Edit -->
+            <div class="bg-light p-3">
+                {% if user.is_authenticated %}
+                <div>
+                    <a href="{% url 'listen:work_update' object.pk %}" class='fs-6 text-secondary'>Edit Work</a>
+                </div>
+                <div>
+                    <a href="{% url 'listen:track_create'%}" class='fs-6 text-secondary'>Add Track</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

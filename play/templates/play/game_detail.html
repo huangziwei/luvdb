@@ -10,15 +10,15 @@
         <div class="col-sm-8">
             <!-- game-card -->
             <div class="game-card justify-content-start">
-                <div class="row">
+                <div class="d-flex flex-row mt-2">
                     <!--cover-box-->
-                    <div class="col-md-3 me-4">
+                    <div>
                         <div class="game-cover-box">
                             {% if object.cover %}
                                 {% if object.cover_sens %}
-                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid blur" onclick="this.classList.toggle('blur')">
                                 {% else %}
-                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image">
+                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid">
                                 {% endif %}    
                             {% else %}
                                 <p class="no-cover-text">No Cover</p>
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <!--game-meta-->
-                    <div class="col-md-8">
+                    <div class="flex-grow-1 ms-3">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
                                 <h4>{{ object.title }} </h4>

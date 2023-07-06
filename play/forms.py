@@ -160,7 +160,7 @@ class GameInSeriesForm(forms.ModelForm):
         if self.instance and self.instance.pk and self.instance.game:
             self.fields[
                 "game_url"
-            ].initial = f"{settings.ROOT_URL}/game/{self.instance.game.pk}"
+            ].initial = f"{settings.ROOT_URL}/play/game/{self.instance.game.pk}"
         self.fields["game_url"].required = False
         self.fields["game_url"].label = "URL"
         self.fields["order"].required = False

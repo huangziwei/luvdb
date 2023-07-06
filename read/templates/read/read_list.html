@@ -3,12 +3,12 @@
 {% block content %}
     <div class="container">
         <div class="row">
-        <div class='col-8'>
+        <div class='col-sm-8'>
             <h2>Recently added</h2>
             <h4>Books</h4>
             <div class="row">
                 {% for book in objects.recent_books %}
-                    <div class="col-md-2 col-sm-6 mb-4">
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
                         <a href="{% url 'read:book_detail' book.pk %}">
                             {% if book.cover %}
                                 {% if book.cover_sens %}
@@ -29,7 +29,7 @@
             <h4>Periodicals / Issues</h4>
             <div class="row">
                 {% for issue in objects.recent_issues %}
-                    <div class="col-md-2 col-sm-6 mb-4">
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
                         <a href="{% url 'read:issue_detail' issue.periodical.id issue.id %}">
                             {% if issue.cover %}
                                 {% if issue.cover_sens %}

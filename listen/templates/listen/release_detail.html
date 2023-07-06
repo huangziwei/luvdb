@@ -11,15 +11,15 @@
         <div class="col-sm-8">
             <!-- release-card -->
             <div class="release-card justify-content-start">
-                <div class="row">
+                <div class="d-flex flex-row mt-2">
                     <!--cover-box-->
-                    <div class="col-md-3 me-4">
+                    <div>
                         <div class="listen-cover-box">
                             {% if object.cover %}
                                 {% if object.cover_sens %}
                                     <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
                                 {% else %}
-                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image">
+                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid">
                                 {% endif %}
                             {% else %}
                                 <p class="no-cover-text">No Cover</div>
@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <!--release-meta-->
-                    <div class="col-md-8">
+                    <div class="flex-grow-1 ms-3">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
                                 <h2>{{ object.title }} </h2>
@@ -138,7 +138,7 @@
         
                     {% if user.is_authenticated %}
                         <div class="mt-3">
-                            <a href="{% url 'listen:release_update' object.pk %}" class='fs-6 text-secondary'>Edit release data</a>
+                            <a href="{% url 'listen:release_update' object.pk %}" class='fs-6 text-secondary'>Edit Release</a>
                         </div>
                     {% endif %}
                 </div>

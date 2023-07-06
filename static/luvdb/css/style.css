@@ -78,6 +78,15 @@ blockquote:last-child {
     height: auto;
 }
 
+@media screen and (max-width: 768px) {
+
+    /* adjust '768px' according to your requirement */
+    .cover-image {
+        width: 75%;
+        /* or any size you want on mobile */
+    }
+}
+
 .no-cover-text {
     color: #888;
     /* dark gray */
