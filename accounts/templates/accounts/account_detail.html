@@ -13,80 +13,281 @@
   <div class="row justify-content-start">
     <!-- Left column -->
     <div class="col-sm-8 order-2 order-sm-1">
+      
+      {% if does_read_exist %}
+      <div class="row">
+        <h4>Read</h4>
+        <div class="col-sm-4">
+          <h5>Reading</h5>
+            {% for item in reading %}
+                <!-- display item information here -->
+                <p>
+                  {% if item.content_type.model == 'book' %}
+                    <a href="{% url 'read:book_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
+                  {% elif item.content_type.model == 'issue' %}
+                    <a href="{% url 'read:issue_detail' item.content_object.periodical.id item.content_object.id %}">
+                      {{ item.content_object.periodical.title }}: {{ item.content_object.title }}
+                    </a>
+                  {% endif %}
+                </p>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+    
+        <div class="col-sm-4">
+            <h5>Read</h5>
+            {% for item in read %}
+              <p>
+                {% if item.content_type.model == 'book' %}
+                  <a href="{% url 'read:book_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
+                {% elif item.content_type.model == 'issue' %}
+                  <a href="{% url 'read:issue_detail' item.content_object.periodical.id item.content_object.id %}">
+                    {{ item.content_object.periodical.title }}: {{ item.content_object.title }}
+                  </a>                
+                {% endif %}
+              </p>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+    
+        <div class="col-sm-4">
+            <h5>To Read</h5>
+            {% for item in to_read %}
+              <p>
+                {% if item.content_type.model == 'book' %}
+                  <a href="{% url 'read:book_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
+                {% elif item.content_type.model == 'issue' %}
+                  <a href="{% url 'read:issue_detail' item.content_object.periodical.id item.content_object.id %}">
+                    {{ item.content_object.periodical.title }}: {{ item.content_object.title }}
+                  </a>
+                {% endif %}
+              </p>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+      </div>
+      {% endif %}
 
-    <!--Pins-->
-    <div class="d-flex justify-content-between align-items-center mt-2">
-      <h4>Pins</h4>
-      <div>
-          <a class="btn btn-outline-secondary btn-sm" href="{% url 'write:pin_list' object.username %}">All</a>
-          {% if object == request.user %}
-          <a class="btn btn-primary btn-sm" href="{% url 'write:pin_create' %}">New</a>
-          {% endif %}
+      {% if does_watch_exist %}
+      <div class="row">
+        <h4 class="mt-4">Watch</h4>
+        <div class="col-sm-4">
+          <h5>Watching</h5>
+            {% for item in watching %}
+                <!-- display item information here -->
+                {% if item.content_type.model == 'movie' %}
+                  <a href="{% url 'watch:movie_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
+                {% elif item.content_type.model == 'episode' %}
+                  <a href="{% url 'watch:episode_detail' item.content_object.series.id item.content_object.id %}">
+                    {{ item.content_object.series.title }}: {{ item.content_object.title }}
+                  </a>
+                {% endif %}
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+    
+        <div class="col-sm-4">
+            <h5>Watched</h5>
+            {% for item in watched %}
+                {% if item.content_type.model == 'movie' %}
+                  <a href="{% url 'watch:movie_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
+                {% elif item.content_type.model == 'episode' %}
+                  <a href="{% url 'watch:episode_detail' item.content_object.series.id item.content_object.id %}">
+                    {{ item.content_object.series.title }}: {{ item.content_object.title }}
+                  </a>
+                {% endif %}
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+    
+        <div class="col-sm-4">
+            <h5>To Watch</h5>
+            {% for item in to_watch %}
+              {% if item.content_type.model == 'movie' %}
+                <a href="{% url 'watch:movie_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
+              {% elif item.content_type.model == 'episode' %}
+                <a href="{% url 'watch:episode_detail' item.content_object.series.id item.content_object.id %}">
+                  {{ item.content_object.series.title }}: {{ item.content_object.title }}
+                </a>
+              {% endif %}
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
       </div>
+      {% endif %}
+
+      {% if does_listen_exist %}
+      <div class="row">
+        <h4 class="mt-4">Listen</h4>
+        <div class="col-sm-4">
+          <h5>Looping</h5>
+            {% for item in looping %}
+                <!-- display item information here -->
+                <p>
+                  <a href="{% url 'listen:release_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
+                </p>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+    
+        <div class="col-sm-4">
+            <h5>Listened</h5>
+            {% for item in listened %}
+            <p>
+              <a href="{% url 'listen:release_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
+            </p>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+    
+        <div class="col-sm-4">
+            <h5>To Listen</h5>
+            {% for item in to_listen %}
+            <p>
+              <a href="{% url 'listen:release_detail' item.content_object.id %}">{{ item.content_object.title }}</a>
+            </p>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if does_play_exist %}
+      <div class="row">
+        <h4 class="mt-4">Play</h4>
+        <div class="col-sm-4">
+          <h5>Playing</h5>
+            {% for item in playing %}
+                <!-- display item information here -->
+                <p>
+                  <a href="{% url 'play:game_detail' item.game.id %}">{{ item.game.title }}</a>
+                </p>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+    
+        <div class="col-sm-4">
+            <h5>Played</h5>
+            {% for item in played %}
+            <p>
+              <a href="{% url 'play:game_detail' item.game.id %}">{{ item.game.title }}</a>
+            </p>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+    
+        <div class="col-sm-4">
+            <h5>To Play</h5>
+            {% for item in to_play %}
+            <p>
+              <a href="{% url 'play:game_detail' item.game.id %}">{{ item.game.title }}</a>
+            </p>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <hr>
+
+      <!--Pins-->
+      <div class="d-flex justify-content-between align-items-center mt-2">
+        <h4>Pins</h4>
+        <div>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'write:pin_list' object.username %}">All</a>
+            {% if object == request.user %}
+            <a class="btn btn-primary btn-sm" href="{% url 'write:pin_create' %}">New</a>
+            {% endif %}
+        </div>
+      </div>
+      {% for pin in pins|slice:":3" %}
+        <div>
+            <div>
+                <a href="{{pin.url}}">{{ pin.title }}</a> 
+                (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
+            </div> 
+            <span class="d-flex">
+                <p class="me-2">{{ pin.timestamp |date:"Y.m.d H:i" }}</p>
+                {% if pin.comments_enabled %}
+                <p class="ms-2 me-2"><a href="{% url 'write:pin_detail' pin.id %}">Reply</a></p>
+                {% endif %}
+                {% if pin.get_activity_id is not None %}
+                <p class="ms-2 me-2"><a href="{% url 'write:pin_detail' pin.id %}?repost=true">Repost</a></p>
+                {% endif %}
+                {% if object == request.user %}
+                <p class="ms-2 me-2"><a href="{% url 'write:pin_update' pin.id %}">Edit</a></p>
+                <p class="ms-2 me-2"><a href="{% url 'write:pin_delete' pin.id %}">Delete</a></p>
+                {% endif %}
+            </span>
+        </div>
+      {% endfor %}
+      <br/>
+
+      <hr>
+
+      <!--Posts-->
+      <div class="d-flex justify-content-between align-items-center">
+        <h4>Posts</h4>
+        <div>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'write:post_list' object.username %}">All</a>
+            {% if object == request.user %}
+            <a class="btn btn-primary btn-sm" href="{% url 'write:post_create' %}">New</a>
+            {% endif %}
+        </div>
+      </div>
+      {% for post in posts|slice:":3" %}
+        <div>
+            <div><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></div>
+            <span class="d-flex">
+                <p class="me-2">{{ post.timestamp |date:"Y.m.d H:i" }}</p>
+                {% if post.comments_enabled %}
+                <p class="ms-2 me-2"><a href="{% url 'write:post_detail' post.id %}">Reply</a></p>
+                {% endif %}
+                {% if post.get_activity_id is not None %}
+                <p class="ms-2 me-2"><a href="{% url 'write:repost_create' post.get_activity_id %}">Repost</a></p>
+                {% endif %}
+                {% if object == request.user %}
+                <p class="ms-2 me-2"><a href="{% url 'write:post_update' post.id %}">Edit</a></p>
+                <p class="ms-2 me-2"><a href="{% url 'write:post_delete' post.id %}">Delete</a></p>
+                {% endif %}
+            </span>
+        </div>
+      {% endfor %}
     </div>
-    {% for pin in pins|slice:":3" %}
-      <div>
-          <div>
-              <a href="{{pin.url}}">{{ pin.title }}</a> 
-              (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
-          </div> 
-          <span class="d-flex">
-              <p class="me-2">{{ pin.timestamp |date:"Y.m.d H:i" }}</p>
-              {% if pin.comments_enabled %}
-              <p class="ms-2 me-2"><a href="{% url 'write:pin_detail' pin.id %}">Reply</a></p>
-              {% endif %}
-              {% if pin.get_activity_id is not None %}
-              <p class="ms-2 me-2"><a href="{% url 'write:pin_detail' pin.id %}?repost=true">Repost</a></p>
-              {% endif %}
-              {% if object == request.user %}
-              <p class="ms-2 me-2"><a href="{% url 'write:pin_update' pin.id %}">Edit</a></p>
-              <p class="ms-2 me-2"><a href="{% url 'write:pin_delete' pin.id %}">Delete</a></p>
-              {% endif %}
-          </span>
-      </div>
-    {% endfor %}
-    <br/>
 
 
-    <!--Posts-->
-    <div class="d-flex justify-content-between align-items-center">
-      <h4>Posts</h4>
-      <div>
-          <a class="btn btn-outline-secondary btn-sm" href="{% url 'write:post_list' object.username %}">All</a>
-          {% if object == request.user %}
-          <a class="btn btn-primary btn-sm" href="{% url 'write:post_create' %}">New</a>
-          {% endif %}
-      </div>
-    </div>
-    {% for post in posts|slice:":3" %}
-      <div>
-          <div><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></div>
-          {% comment %} <div class='mt-2 mb-2 me-5 justify-content-between'>{{post.content | truncatewords:35}}</div> {% endcomment %}
-          <span class="d-flex">
-              <p class="me-2">{{ post.timestamp |date:"Y.m.d H:i" }}</p>
-              {% if post.comments_enabled %}
-              <p class="ms-2 me-2"><a href="{% url 'write:post_detail' post.id %}">Reply</a></p>
-              {% endif %}
-              {% if post.get_activity_id is not None %}
-              <p class="ms-2 me-2"><a href="{% url 'write:repost_create' post.get_activity_id %}">Repost</a></p>
-              {% endif %}
-              {% if object == request.user %}
-              <p class="ms-2 me-2"><a href="{% url 'write:post_update' post.id %}">Edit</a></p>
-              <p class="ms-2 me-2"><a href="{% url 'write:post_delete' post.id %}">Delete</a></p>
-              {% endif %}
-          </span>
-      </div>
-    {% endfor %}
-    </div>
+
 
     <!-- Right column -->
     <div class="col-sm-4 order-1 order-sm-2">
 
       <div class="p-3" style="background-color:#fff6ed;">
-        {% if object.display_name %}
-          <h4 style=''>{{ object.display_name }}</h4>
-        {% endif %}
-        <p>@{{ object.username }}</p>
+        
+        
+        <div class="d-flex align-items-end">
+          {% if object.display_name %}
+              <h4 class="mb-0">{{ object.display_name }}</h4>
+          {% endif %}
+          <div>@{{ object.username }}</div>
+      </div>
+        
+
+        <p>
+          
+          <span class="text-muted">  Since {{object.date_joined|date:"Y.m.d"}}</span>
+        </p>
         
         {% if object.bio %}
         <div style="color:#666;">{{ object.bio | linkify_tags | linkify_mentions | markdownify }}</div>

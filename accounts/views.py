@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.db.models import F, Max, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -14,10 +14,10 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from activity_feed.models import Activity, Follow
 from entity.models import Person
-from listen.models import Release, Track, Work
-from play.models import Game
-from read.models import Book, Periodical
-from watch.models import Movie, Series
+from listen.models import ListenCheckIn, Release, Track, Work
+from play.models import Game, GameCheckIn
+from read.models import Book, Periodical, ReadCheckIn
+from watch.models import Movie, Series, WatchCheckIn
 from write.models import Pin, Post, Say
 
 from .forms import CustomUserCreationForm
@@ -92,6 +92,103 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
 
         context["no_citation_css"] = True
         context["no_text_input"] = True
+
+        # First, get the latest check-in for each book
+        latest_read_checkins = ReadCheckIn.objects.filter(
+            user=self.object,
+            timestamp=Subquery(
+                ReadCheckIn.objects.filter(
+                    user=self.object,
+                    content_type=OuterRef("content_type"),
+                    object_id=OuterRef("object_id"),
+                )
+                .order_by("-timestamp")
+                .values("timestamp")[:1]
+            ),
+        )
+
+        # Then, filter the latest check-ins for each category
+        reading = latest_read_checkins.filter(status__in=["reading", "rereading"])[:5]
+        read = latest_read_checkins.filter(status__in=["finished_reading", "reread"])[
+            :5
+        ]
+        to_read = latest_read_checkins.filter(status="to_read")[:5]
+
+        context["reading"] = reading
+        context["read"] = read
+        context["to_read"] = to_read
+        context["does_read_exist"] = latest_read_checkins.exists()
+
+        latest_listen_checkins = ListenCheckIn.objects.filter(
+            user=self.object,
+            timestamp=Subquery(
+                ListenCheckIn.objects.filter(
+                    user=self.object,
+                    content_type=OuterRef("content_type"),
+                    object_id=OuterRef("object_id"),
+                )
+                .order_by("-timestamp")
+                .values("timestamp")[:1]
+            ),
+        )
+
+        # Then, filter the latest check-ins for each category and limit the results
+        looping = latest_listen_checkins.filter(status="looping")[:5]
+        listened = latest_listen_checkins.filter(status="listened")[:5]
+        to_listen = latest_listen_checkins.filter(status="to_listen")[:5]
+
+        context["looping"] = looping
+        context["listened"] = listened
+        context["to_listen"] = to_listen
+        context["does_listen_exist"] = latest_listen_checkins.exists()
+
+        # First, get the latest check-in for each show
+        latest_watch_checkins = WatchCheckIn.objects.filter(
+            user=self.object,
+            timestamp=Subquery(
+                WatchCheckIn.objects.filter(
+                    user=self.object,
+                    content_type=OuterRef("content_type"),
+                    object_id=OuterRef("object_id"),
+                )
+                .order_by("-timestamp")
+                .values("timestamp")[:1]
+            ),
+        )
+
+        # Then, filter the latest check-ins for each category and limit the results
+        watching_shows = latest_watch_checkins.filter(
+            status__in=["watching", "re-watching"]
+        )[:5]
+        watched_shows = latest_watch_checkins.filter(
+            status__in=["watched", "rewatched", "re-watched"]
+        )[:5]
+        to_watch_shows = latest_watch_checkins.filter(status="to_watch")[:5]
+
+        context["watching"] = watching_shows
+        context["watched"] = watched_shows
+        context["to_watch"] = to_watch_shows
+        context["does_watch_exist"] = latest_watch_checkins.exists()
+
+        # First, get the latest check-in for each game
+        latest_play_checkins = GameCheckIn.objects.filter(
+            user=self.object,
+            timestamp=Subquery(
+                GameCheckIn.objects.filter(user=self.object, game=OuterRef("game"))
+                .order_by("-timestamp")
+                .values("timestamp")[:1]
+            ),
+        )
+
+        # Then, filter the latest check-ins for each category and limit the results
+        playing = latest_play_checkins.filter(status__in=["playing", "replaying"])[:5]
+        played = latest_play_checkins.filter(status__in=["played", "replayed"])[:5]
+        to_play = latest_play_checkins.filter(status="to_play")[:5]
+
+        context["playing"] = playing
+        context["played"] = played
+        context["to_play"] = to_play
+        context["does_play_exist"] = latest_play_checkins.exists()
 
         return context
 
