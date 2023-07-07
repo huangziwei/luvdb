@@ -185,35 +185,41 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            authors = Person.objects.filter(name__istartswith=self.q)
+            persons = Person.objects.filter(name__istartswith=self.q)
 
             # get the author role
-            author_role = Role.objects.filter(name="Author").first()
+            singer_role = Role.objects.filter(name="Singer").first()
 
             # get all the works which are associated with these authors
             qs = qs.filter(
-                Q(workrole__role=author_role, workrole__person__in=authors)
+                Q(workrole__role=singer_role, workrole__person__in=persons)
                 | Q(title__icontains=self.q)
                 | Q(release_date__icontains=self.q)
-            )
+            ).distinct()
 
-        return qs[:10]
+        return qs[:5]
 
     def get_result_label(self, item):
         # Get the first person with a role of 'Singer' for the release
         singer_role = Role.objects.filter(
             name="Singer"
         ).first()  # Adjust 'Singer' to match your data
-        work_role = item.workrole_set.filter(role=singer_role).first()
-        author_name = (
-            work_role.person.name if work_role and work_role.person else "Unknown"
-        )
+        composer_role = Role.objects.filter(name="Composer").first()
+
+        singer_work_role = item.workrole_set.filter(role=singer_role).first()
+        composer_work_role = item.workrole_set.filter(role=composer_role).first()
+        if singer_work_role:
+            person_name = singer_work_role.person.name
+        elif composer_work_role:
+            person_name = composer_work_role.person.name
+        else:
+            person_name = "Unknown"
 
         # Get the year from the release_date
         publication_year = item.release_date[:4] if item.release_date else "Unknown"
 
         # Format the label
-        label = format_html("{} ({}, {})", item.title, author_name, publication_year)
+        label = format_html("{} ({}, {})", item.title, person_name, publication_year)
 
         return label
 
@@ -315,37 +321,51 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            authors = Person.objects.filter(name__istartswith=self.q)
+            persons = Person.objects.filter(name__istartswith=self.q)
 
             # get the author role
-            author_role = Role.objects.filter(name="Singer").first()
+            singer_role = Role.objects.filter(name="Singer").first()
 
             # get all the instances which are associated with these authors
             qs = qs.filter(
-                Q(instancerole__role=author_role, instancerole__person__in=authors)
+                Q(trackrole__role=singer_role, trackrole__person__in=persons)
                 | Q(title__icontains=self.q)
-                | Q(publication_date__icontains=self.q)
-            )
+                | Q(release_date__icontains=self.q)
+            ).distinct()
 
         return qs[:10]
 
     def get_result_label(self, item):
-        # Get the first person with a role of 'Singer' for the book
-        singer_role = Role.objects.filter(
-            name="Singer"
-        ).first()  # Adjust 'Author' to match your data
-        track_role = item.trackrole_set.filter(role=singer_role).first()
-        singer_name = (
-            track_role.alt_name
-            if track_role and track_role.alt_name
-            else track_role.person.name
-        )
+        # Get the role objects for 'Singer' and 'Composer'
+        singer_role = Role.objects.filter(name="Singer").first()
+        composer_role = Role.objects.filter(name="Composer").first()
+
+        # Fetch the track_role for 'Singer' and 'Composer'
+        singer_track_role = item.trackrole_set.filter(role=singer_role).first()
+        composer_track_role = item.trackrole_set.filter(role=composer_role).first()
+
+        # Check if singer_track_role exists and a person is associated
+        if singer_track_role:
+            person_name = (
+                singer_track_role.alt_name
+                if singer_track_role.alt_name
+                else singer_track_role.person.name
+            )
+        # If no singer, use composer
+        elif composer_track_role:
+            person_name = (
+                composer_track_role.alt_name
+                if composer_track_role.alt_name
+                else composer_track_role.person.name
+            )
+        else:
+            person_name = "Unknown"
 
         # Get the year from the release_date
         release_year = item.release_date[:4] if item.release_date else "Unknown"
 
         # Format the label
-        label = format_html("{} ({}, {})", item.title, singer_name, release_year)
+        label = format_html("{} ({}, {})", item.title, person_name, release_year)
 
         return label
 

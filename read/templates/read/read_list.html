@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
         <div class='col-sm-8'>
-            <h2>Recently added</h2>
+            <h2>Recently Added</h2>
             <h4>Books</h4>
             <div class="row">
                 {% for book in objects.recent_books %}
@@ -61,7 +61,7 @@
                 <p><a href="{% url 'entity:person_detail' person.pk %}">{{ person.name }}</a></p>
             {% endfor %} {% endcomment %}
         </div>
-        <div class='col-4'>
+        <div class='col-sm-4'>
             {% comment %} <div class="bg-light p-3">
                 <h4>On This Day</h4>
                 

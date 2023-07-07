@@ -652,7 +652,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
                 Q(workrole__role=author_role, workrole__person__in=authors)
                 | Q(title__icontains=self.q)
                 | Q(publication_date__icontains=self.q)
-            )
+            ).distinct()
 
         return qs[:10]
 
@@ -696,7 +696,7 @@ class InstanceAutocomplete(autocomplete.Select2QuerySetView):
                 Q(instancerole__role=author_role, instancerole__person__in=authors)
                 | Q(title__icontains=self.q)
                 | Q(publication_date__icontains=self.q)
-            )
+            ).distinct()
 
         return qs[:10]
 

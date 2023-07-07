@@ -25,7 +25,7 @@
     });
     
     $(document).ready(function() {
-        $('select').removeClass('form-select');
+        $('select:not([name="model"])').removeClass('form-select');
     });
 </script>
 {{ form.media }}
