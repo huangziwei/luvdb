@@ -86,7 +86,30 @@
           </div>  
         </div>
         <div class="col-sm-4">
-          <div class="me-3 d-flex">
+          {% if reading %}
+          <div class="mt-3 me-3 d-flex">
+            <div class="rotate text-muted">Reading</div>
+            {% for item in reading %}
+              <div class="me-3">
+                {% if item.content_type.model == 'book' %}
+                  <a href="{% url 'read:book_detail' item.content_object.id %}">
+                    <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                  </a>
+                {% elif item.content_type.model == 'issue' %}
+                  <a href="{% url 'read:issue_detail' item.content_object.periodical.id item.content_object.id %}">
+                    <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                  </a>                
+                {% endif %}
+              </div>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          {% if read %}
+          <div class="mt-3 me-3 d-flex">
+            <div class="rotate text-muted">Read</div>
             {% for item in read %}
               <div class="me-3">
                 {% if item.content_type.model == 'book' %}
@@ -103,6 +126,8 @@
                 <p>No items.</p>
             {% endfor %}
           </div>
+          {% endif %}
+
         </div>
     
       </div>
@@ -111,12 +136,35 @@
       {% if does_watch_exist %}
       <div class="row">
         <div class="d-flex justify-content-between align-items-center mt-2">
-          <h4 class="mt-4">Watched</h4>
+          <h4 class="mt-4">Watch</h4>
           <div>
             <a class="btn btn-outline-secondary btn-sm" href="{% url 'watch:watch_checkin_user_list' object.username %}">All</a>
           </div>  
         </div>
-        <div class="col-sm-4 d-flex">
+        <div class="col-sm-4">
+          {% if watching %}
+          <div class="mt-3 me-3 d-flex">
+            <div class="rotate text-muted">Watching</div>
+            {% for item in watching %}
+            <div class="me-3">
+                {% if item.content_type.model == 'movie' %}
+                  <a href="{% url 'watch:movie_detail' item.content_object.id %}">
+                    <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                  </a>
+                {% elif item.content_type.model == 'series' %}
+                  <a href="{% url 'watch:series_detail' item.content_object.id %}">
+                    <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
+                  </a>
+                {% endif %}
+            </div>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+          </div>
+          {% endif %}
+          {% if watched %}
+          <div class="mt-3 me-3 d-flex">
+            <div class="rotate text-muted">Watched</div>
             {% for item in watched %}
             <div class="me-3">
                 {% if item.content_type.model == 'movie' %}
@@ -132,6 +180,8 @@
             {% empty %}
                 <p>No items.</p>
             {% endfor %}
+          </div>
+          {% endif %}
         </div>
     
       </div>
@@ -140,12 +190,30 @@
       {% if does_listen_exist %}
       <div class="row">
         <div class="d-flex justify-content-between align-items-center mt-2">
-          <h4 class="mt-4">Listened</h4>
+          <h4 class="mt-4">Listen</h4>
           <div>
             <a class="btn btn-outline-secondary btn-sm" href="{% url 'listen:listen_checkin_user_list' object.username %}">All</a>
           </div>  
         </div>
-        <div class="col-sm-12 d-flex">
+        <div class="col-sm-4">
+          {% if listening %}
+          <div class="mt-3 me-3 d-flex">
+            <div class="rotate text-muted">Looping</div>
+            {% for item in listening %}
+            <div class="me-3">
+              <a href="{% url 'listen:release_detail' item.content_object.id %}">
+                <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
+              </a>
+            </div>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          {% if listened %}
+          <div class="mt-3 me-3 d-flex">
+            <div class="rotate text-muted">Listend</div>
             {% for item in listened %}
             <div class="me-3">
               <a href="{% url 'listen:release_detail' item.content_object.id %}">
@@ -155,6 +223,8 @@
             {% empty %}
                 <p>No items.</p>
             {% endfor %}
+          </div>
+          {% endif %}
         </div>
       </div>
       {% endif %}
@@ -162,12 +232,30 @@
       {% if does_play_exist %}
       <div class="row">
         <div class="d-flex justify-content-between align-items-center mt-2">
-          <h4 class="mt-4">Played</h4> 
+          <h4 class="mt-4">Play</h4> 
           <div>
             <a class="btn btn-outline-secondary btn-sm" href="{% url 'play:game_checkin_user_list' object.username %}">All</a>
           </div>  
         </div>   
-        <div class="col-sm-12 d-flex">
+        <div class="col-sm-4">
+
+          {% if playing %}
+          <div class="mt-3 me-3 d-flex">
+            <div class="rotate text-muted">Playing</div>
+            {% for item in playing %}
+            <div class='me-3'>
+              <a href="{% url 'play:game_detail' item.game.id %}">
+                <img src="{{ item.game.cover.url }}" alt="{{ item.game.title }} cover" style="width: 120px;" class="cover-image">
+              </a>
+            </div>
+            {% empty %}
+                <p>No items.</p>
+            {% endfor %}
+          </div>
+          {% endif %}
+          {% if played %}
+          <div class="mt-3 me-3 d-flex">
+            <div class="rotate text-muted">Played</div>
             {% for item in played %}
             <div class='me-3'>
               <a href="{% url 'play:game_detail' item.game.id %}">
@@ -177,6 +265,8 @@
             {% empty %}
                 <p>No items.</p>
             {% endfor %}
+          </div>
+          {% endif %}
         </div>
       </div>
       {% endif %}
@@ -284,4 +374,16 @@
     </div>
   </div>
 </div>
+
+<style>
+  .rotate {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    margin-top: 0; 
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0.25em;
+}
+</style>
 {% endblock content %}
