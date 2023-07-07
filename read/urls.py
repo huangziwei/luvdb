@@ -9,6 +9,7 @@ from .views import (
     BookUpdateView,
     GenericCheckInAllListView,
     GenericCheckInListView,
+    GenericCheckInUserListView,
     InstanceAutocomplete,
     InstanceCreateView,
     InstanceDetailView,
@@ -80,6 +81,11 @@ urlpatterns = [
         "checkin/<int:pk>/delete/",
         ReadCheckInDeleteView.as_view(),
         name="read_checkin_delete",
+    ),
+    path(
+        "<str:username>/checkins/",
+        view=GenericCheckInUserListView.as_view(),
+        name="read_checkin_user_list",
     ),
     # instance
     path("instance/create/", InstanceCreateView.as_view(), name="instance_create"),

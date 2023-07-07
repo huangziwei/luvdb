@@ -9,6 +9,7 @@ from .views import (
     ListenCheckInDetailView,
     ListenCheckInListView,
     ListenCheckInUpdateView,
+    ListenCheckInUserListView,
     ListenListView,
     ReleaseCreateView,
     ReleaseDetailView,
@@ -75,6 +76,11 @@ urlpatterns = [
         "checkin/<int:pk>/delete/",
         ListenCheckInDeleteView.as_view(),
         name="listen_checkin_delete",
+    ),
+    path(
+        "<str:username>/checkins/",
+        ListenCheckInUserListView.as_view(),
+        name="listen_checkin_user_list",
     ),
     # recent
     path("recent/", ListenListView.as_view(), name="listen_list"),

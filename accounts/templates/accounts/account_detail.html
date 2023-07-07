@@ -18,9 +18,9 @@
       <div class="d-flex justify-content-between align-items-center mt-2">
         <h4>Pins</h4>
         <div>
+            <a class="btn btn-primary btn-sm" href="{% url 'write:pin_create' %}">New</a>
             <a class="btn btn-outline-secondary btn-sm" href="{% url 'write:pin_list' object.username %}">All</a>
             {% if object == request.user %}
-            <a class="btn btn-primary btn-sm" href="{% url 'write:pin_create' %}">New</a>
             {% endif %}
         </div>
       </div>
@@ -51,10 +51,11 @@
       <div class="d-flex justify-content-between align-items-center">
         <h4>Posts</h4>
         <div>
-            <a class="btn btn-outline-secondary btn-sm" href="{% url 'write:post_list' object.username %}">All</a>
             {% if object == request.user %}
             <a class="btn btn-primary btn-sm" href="{% url 'write:post_create' %}">New</a>
             {% endif %}
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'write:post_list' object.username %}">All</a>
+
         </div>
       </div>
       {% for post in posts|slice:":3" %}
@@ -78,11 +79,16 @@
 
       {% if does_read_exist %}
       <div class="row">
-        <h4>Read</h4>    
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <h4>Read</h4>  
+          <div>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'read:read_checkin_user_list' object.username %}">All</a>
+          </div>  
+        </div>
         <div class="col-sm-4">
-          <div class="me-3">
+          <div class="me-3 d-flex">
             {% for item in read %}
-              <p>
+              <div class="me-3">
                 {% if item.content_type.model == 'book' %}
                   <a href="{% url 'read:book_detail' item.content_object.id %}">
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
@@ -92,7 +98,7 @@
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                   </a>                
                 {% endif %}
-              </p>
+              </div>
             {% empty %}
                 <p>No items.</p>
             {% endfor %}
@@ -104,8 +110,13 @@
 
       {% if does_watch_exist %}
       <div class="row">
-        <h4 class="mt-4">Watched</h4>    
-        <div class="col-sm-4">
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <h4 class="mt-4">Watched</h4>
+          <div>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'watch:watch_checkin_user_list' object.username %}">All</a>
+          </div>  
+        </div>
+        <div class="col-sm-4 d-flex">
             {% for item in watched %}
             <div class="me-3">
                 {% if item.content_type.model == 'movie' %}
@@ -128,7 +139,12 @@
 
       {% if does_listen_exist %}
       <div class="row">
-        <h4 class="mt-4">Listened</h4>    
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <h4 class="mt-4">Listened</h4>
+          <div>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'listen:listen_checkin_user_list' object.username %}">All</a>
+          </div>  
+        </div>
         <div class="col-sm-12 d-flex">
             {% for item in listened %}
             <div class="me-3">
@@ -145,7 +161,12 @@
 
       {% if does_play_exist %}
       <div class="row">
-        <h4 class="mt-4">Played</h4>    
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <h4 class="mt-4">Played</h4> 
+          <div>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'play:game_checkin_user_list' object.username %}">All</a>
+          </div>  
+        </div>   
         <div class="col-sm-12 d-flex">
             {% for item in played %}
             <div class='me-3'>

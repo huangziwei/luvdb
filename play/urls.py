@@ -10,6 +10,7 @@ from .views import (
     GameCheckInDetailView,
     GameCheckInListView,
     GameCheckInUpdateView,
+    GameCheckInUserListView,
     GameCreateView,
     GameDetailView,
     GameSeriesCreateView,
@@ -70,6 +71,11 @@ urlpatterns = [
         "checkin/<int:pk>/delete/",
         GameCheckInDeleteView.as_view(),
         name="game_checkin_delete",
+    ),
+    path(
+        "<str:username>/checkins/",
+        GameCheckInUserListView.as_view(),
+        name="game_checkin_user_list",
     ),
     # series
     path("series/create/", GameSeriesCreateView.as_view(), name="series_create"),

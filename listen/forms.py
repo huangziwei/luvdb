@@ -140,11 +140,13 @@ class ReleaseForm(forms.ModelForm):
         }
         help_texts = {
             "release_format": "e.g. CD, digital, etc.",
+            "release_type": "e.g. Single, EP, LP, etc.",
         }
 
     def __init__(self, *args, **kwargs):
         super(ReleaseForm, self).__init__(*args, **kwargs)
         self.fields["cover_sens"].label = "Is the cover sensitive or explicit?"
+        self.fields["label"].required = False
 
 
 class ReleaseRoleForm(forms.ModelForm):

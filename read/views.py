@@ -758,8 +758,8 @@ class ReadListView(ListView):
 
     def get_queryset(self):
         return {
-            "recent_books": Book.objects.all().order_by("-created_at")[:10],
-            "recent_issues": Issue.objects.all().order_by("-created_at")[:10],
+            "recent_books": Book.objects.all().order_by("-created_at")[:12],
+            "recent_issues": Issue.objects.all().order_by("-created_at")[:12],
         }
 
 
@@ -824,6 +824,11 @@ class ReadCheckInDeleteView(LoginRequiredMixin, DeleteView):
 
 
 class GenericCheckInListView(ListView):
+
+    """
+    All check-ins from a given user for a book or an issue.
+    """
+
     model = ReadCheckIn
     template_name = "read/read_checkin_list.html"
     context_object_name = "checkins"
@@ -894,6 +899,10 @@ class GenericCheckInListView(ListView):
 
 
 class GenericCheckInAllListView(ListView):
+    """
+    All latest check-ins from all users of a book or an issue.
+    """
+
     model = ReadCheckIn
     template_name = "read/read_checkin_list_all.html"
     context_object_name = "checkins"
@@ -960,6 +969,66 @@ class GenericCheckInAllListView(ListView):
 
         context["status"] = self.request.GET.get("status", "")
         context["model_name"] = self.kwargs.get("model_name", "book")
+        return context
+
+
+class GenericCheckInUserListView(ListView):
+    """
+    All latest check-ins from a given user of all books and issues.
+    """
+
+    model = ReadCheckIn
+    template_name = "read/read_checkin_list_user.html"
+    context_object_name = "checkins"
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs["username"])
+
+        latest_checkin_subquery = ReadCheckIn.objects.filter(
+            user=user,
+            content_type=OuterRef("content_type"),
+            object_id=OuterRef("object_id"),
+        ).order_by("-timestamp")
+
+        checkins = (
+            ReadCheckIn.objects.filter(user=user)
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        )
+
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        if order == "timestamp":
+            checkins = checkins.order_by("timestamp")
+        else:
+            checkins = checkins.order_by("-timestamp")
+
+        status = self.request.GET.get("status")
+        if status:
+            if status == "read_reread":
+                checkins = checkins.filter(
+                    Q(status="finished_reading") | Q(status="reread")
+                )
+            elif status == "reading_rereading":
+                checkins = checkins.filter(Q(status="reading") | Q(status="rereading"))
+            else:
+                checkins = checkins.filter(status=status)
+
+        return checkins
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = get_object_or_404(User, username=self.kwargs["username"])
+        context["user"] = user
+
+        context["order"] = self.request.GET.get(
+            "order", "-timestamp"
+        )  # Default is '-timestamp'
+
+        context["status"] = self.request.GET.get("status", "")
+
         return context
 
 

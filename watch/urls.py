@@ -7,6 +7,7 @@ from .views import (
     EpisodeUpdateView,
     GenericCheckInAllListView,
     GenericCheckInListView,
+    GenericCheckInUserListView,
     MovieCastDetailView,
     MovieCreateView,
     MovieDetailView,
@@ -115,6 +116,11 @@ urlpatterns = [
         "checkin/<int:pk>/delete/",
         WatchCheckInDeleteView.as_view(),
         name="watch_checkin_delete",
+    ),
+    path(
+        "<str:username>/checkins/",
+        GenericCheckInUserListView.as_view(),
+        name="watch_checkin_user_list",
     ),
     # cast
     path(

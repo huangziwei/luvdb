@@ -415,6 +415,62 @@ class GameCheckInAllListView(ListView):
         return context
 
 
+class GameCheckInUserListView(ListView):
+    """
+    All latest check-ins from a given user of all movies and series.
+    """
+
+    model = GameCheckIn
+    template_name = "play/game_checkin_list_user.html"
+    context_object_name = "checkins"
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs["username"])
+
+        latest_checkin_subquery = GameCheckIn.objects.filter(
+            user=OuterRef("user"), game=OuterRef("game")
+        ).order_by("-timestamp")
+
+        checkins = (
+            GameCheckIn.objects.filter(user=user)
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        )
+
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        if order == "timestamp":
+            checkins = checkins.order_by("timestamp")
+        else:
+            checkins = checkins.order_by("-timestamp")
+
+        status = self.request.GET.get("status")
+        if status:
+            if status == "played_replayed":
+                checkins = checkins.filter(Q(status="played") | Q(status="replayed"))
+            elif status == "playing_replaying":
+                checkins = checkins.filter(Q(status="playing") | Q(status="replaying"))
+            else:
+                checkins = checkins.filter(status=status)
+
+        return checkins
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = get_object_or_404(User, username=self.kwargs["username"])
+        context["user"] = user
+
+        context["order"] = self.request.GET.get(
+            "order", "-timestamp"
+        )  # Default is '-timestamp'
+
+        context["status"] = self.request.GET.get("status", "")
+
+        return context
+
+
 class PlayListView(ListView):
     model = Game
     template_name = "play/play_list.html"
@@ -428,7 +484,7 @@ class PlayListView(ListView):
                 "gameroles", queryset=GameRole.objects.select_related("person", "role")
             )
         )
-        return queryset
+        return queryset[:12]
 
 
 class GameSeriesCreateView(CreateView):

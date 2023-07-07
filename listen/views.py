@@ -707,7 +707,7 @@ class ListenCheckInAllListView(ListView):
         )  # Default is '-timestamp'
 
         context["status"] = self.request.GET.get("status", "")
-        context["model_name"] = self.kwargs.get("model_name", "book")
+        context["model_name"] = self.kwargs.get("model_name", "release")
         return context
 
 
@@ -716,6 +716,59 @@ class ListenListView(ListView):
     context_object_name = "objects"
 
     def get_queryset(self):
-        recent_releases = Release.objects.all().order_by("-created_at")[:10]
+        recent_releases = Release.objects.all().order_by("-created_at")[:12]
 
         return {"recent_releases": recent_releases}
+
+
+class ListenCheckInUserListView(ListView):
+    """
+    All latest check-ins from a given user of all books and issues.
+    """
+
+    model = ListenCheckIn
+    template_name = "listen/listen_checkin_list_user.html"
+    context_object_name = "checkins"
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs["username"])
+
+        latest_checkin_subquery = ListenCheckIn.objects.filter(
+            user=user,
+            content_type=OuterRef("content_type"),
+            object_id=OuterRef("object_id"),
+        ).order_by("-timestamp")
+
+        checkins = (
+            ListenCheckIn.objects.filter(user=user)
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        )
+
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        if order == "timestamp":
+            checkins = checkins.order_by("timestamp")
+        else:
+            checkins = checkins.order_by("-timestamp")
+
+        status = self.request.GET.get("status")
+        if status:
+            checkins = checkins.filter(status=status)
+
+        return checkins
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = get_object_or_404(User, username=self.kwargs["username"])
+        context["user"] = user
+
+        context["order"] = self.request.GET.get(
+            "order", "-timestamp"
+        )  # Default is '-timestamp'
+
+        context["status"] = self.request.GET.get("status", "")
+
+        return context

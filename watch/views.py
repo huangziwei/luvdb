@@ -277,8 +277,8 @@ class WatchListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["movies"] = Movie.objects.all().order_by("-created_at")
-        context["series"] = Series.objects.all().order_by("-created_at")
+        context["movies"] = Movie.objects.all().order_by("-created_at")[:12]
+        context["series"] = Series.objects.all().order_by("-created_at")[:12]
         return context
 
 
@@ -777,4 +777,64 @@ class GenericCheckInAllListView(ListView):
 
         context["status"] = self.request.GET.get("status", "")
         context["model_name"] = self.kwargs.get("model_name", "movie")
+        return context
+
+
+class GenericCheckInUserListView(ListView):
+    """
+    All latest check-ins from a given user of all movies and series.
+    """
+
+    model = WatchCheckIn
+    template_name = "watch/watch_checkin_list_user.html"
+    context_object_name = "checkins"
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs["username"])
+
+        latest_checkin_subquery = WatchCheckIn.objects.filter(
+            user=user,
+            content_type=OuterRef("content_type"),
+            object_id=OuterRef("object_id"),
+        ).order_by("-timestamp")
+
+        checkins = (
+            WatchCheckIn.objects.filter(user=user)
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        )
+
+        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
+        if order == "timestamp":
+            checkins = checkins.order_by("timestamp")
+        else:
+            checkins = checkins.order_by("-timestamp")
+
+        status = self.request.GET.get("status")
+        if status:
+            if status == "watched_rewatched":
+                checkins = checkins.filter(Q(status="watched") | Q(status="rewatched"))
+            elif status == "watching_rewatching":
+                checkins = checkins.filter(
+                    Q(status="watching") | Q(status="rewatching")
+                )
+            else:
+                checkins = checkins.filter(status=status)
+
+        return checkins
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = get_object_or_404(User, username=self.kwargs["username"])
+        context["user"] = user
+
+        context["order"] = self.request.GET.get(
+            "order", "-timestamp"
+        )  # Default is '-timestamp'
+
+        context["status"] = self.request.GET.get("status", "")
+
         return context
