@@ -168,10 +168,10 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
 
         # Then, filter the latest check-ins for each category and limit the results
         watching = latest_watch_checkins.filter(
-            status__in=["watching", "re-watching"]
+            status__in=["watching", "rewatching"]
         ).order_by("-timestamp")[:5]
         watched = latest_watch_checkins.filter(
-            status__in=["watched", "rewatched", "re-watched"]
+            status__in=["watched", "rewatched"]
         ).order_by("-timestamp")[:5]
         to_watch = latest_watch_checkins.filter(status="to_watch").order_by(
             "-timestamp"

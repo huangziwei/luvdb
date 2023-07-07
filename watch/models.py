@@ -313,9 +313,8 @@ class WatchCheckIn(models.Model):
         ("watched", "Watched"),
         ("paused", "Paused"),
         ("abandoned", "Abandoned"),
+        ("rewatching", "Rewatching"),
         ("rewatched", "Rewatched"),
-        ("re-watching", "Re-watching"),
-        ("re-watched", "Re-watched"),
     ]
     status = models.CharField(max_length=255, choices=WATCHING_STATUS_CHOICES)
     share_to_feed = models.BooleanField(default=False)

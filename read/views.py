@@ -562,6 +562,49 @@ class IssueDetailView(DetailView):
             .filter(timestamp=F("latest_checkin"))
         ).order_by("-timestamp")[:5]
 
+        # Issue check-in status counts, considering only latest check-in per user
+        latest_checkin_status_subquery = (
+            ReadCheckIn.objects.filter(
+                content_type=content_type.id,
+                object_id=self.object.id,
+                user=OuterRef("user"),
+            )
+            .order_by("-timestamp")
+            .values("status")[:1]
+        )
+        latest_checkins = (
+            ReadCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
+            .values("user", "latest_checkin_status")
+            .distinct()
+        )
+
+        to_read_count = sum(
+            1 for item in latest_checkins if item["latest_checkin_status"] == "to_read"
+        )
+        reading_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["reading", "rereading"]
+        )
+        read_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["finished_reading", "reread"]
+        )
+
+        # Add status counts to context
+        context.update(
+            {
+                "to_read_count": to_read_count,
+                "reading_count": reading_count,
+                "read_count": read_count,
+                "checkins": checkins,
+            }
+        )
+
         context["checkins"] = checkins
 
         return context

@@ -9,7 +9,7 @@
                 {% if model_name == "book" %}
                     <a href="{% url 'read:book_detail' object.id %}"> {{ object.title }}</a>
                 {% elif  model_name == "issue" %}
-                    <a href="{% url 'read:issue_detail' object.periodical.id object.id %}"> {{ object.title }}</a>
+                    {{ object.periodical.title }} <a href="{% url 'read:issue_detail' object.periodical.id object.id %}"> {{ object.title }}</a>
                 {% endif %}
             </h4>
             <span class='d-flex'>

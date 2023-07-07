@@ -107,24 +107,26 @@ class GameDetailView(DetailView):
             .distinct()
         )
 
-        not_started_count = sum(
-            1
-            for item in latest_checkins
-            if item["latest_checkin_status"] == "not_started"
+        to_play_count = sum(
+            1 for item in latest_checkins if item["latest_checkin_status"] == "to_play"
         )
         playing_count = sum(
-            1 for item in latest_checkins if item["latest_checkin_status"] == "playing"
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["playing", "replaying"]
         )
-        finished_count = sum(
-            1 for item in latest_checkins if item["latest_checkin_status"] == "finished"
+        played_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["played", "replayed"]
         )
 
         # Add status counts to context
         context.update(
             {
-                "not_started_count": not_started_count,
+                "to_play_count": to_play_count,
                 "playing_count": playing_count,
-                "finished_count": finished_count,
+                "played_count": played_count,
                 "checkins": checkins,
             }
         )

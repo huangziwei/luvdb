@@ -162,9 +162,9 @@
             <!--Release Stats-->
             <div class="bg-light p-3 mt-3">
                 <h5>Release Statistics</h5>
-                <div><strong>To Listen:</strong> {{ to_listen_count }}</div>
-                <div><strong>Looping:</strong> {{ listening_count }}</div>
-                <div><strong>Listened:</strong> {{ listened_count }}</div>
+                <div><strong>To Listen:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a></div>
+                <div><strong>Looping:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=listening">{{ listening_count }}</a></div>
+                <div><strong>Listened:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a></div>
             </div>
         </div>
     </div>

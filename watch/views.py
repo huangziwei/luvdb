@@ -130,24 +130,26 @@ class MovieDetailView(DetailView):
             .distinct()
         )
 
-        not_started_count = sum(
-            1
-            for item in latest_checkins
-            if item["latest_checkin_status"] == "not_started"
+        to_watch_count = sum(
+            1 for item in latest_checkins if item["latest_checkin_status"] == "to_watch"
         )
         watching_count = sum(
-            1 for item in latest_checkins if item["latest_checkin_status"] == "watching"
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["watching", "rewatching"]
         )
-        finished_count = sum(
-            1 for item in latest_checkins if item["latest_checkin_status"] == "finished"
+        watched_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["watched", "rewatched"]
         )
 
         # Add status counts to context
         context.update(
             {
-                "not_started_count": not_started_count,
+                "to_watch_count": to_watch_count,
                 "watching_count": watching_count,
-                "finished_count": finished_count,
+                "watched_count": watched_count,
                 "checkins": checkins,
             }
         )
@@ -367,24 +369,24 @@ class SeriesDetailView(DetailView):
             .distinct()
         )
 
-        not_started_count = sum(
+        to_watch_count = sum(
             1
             for item in latest_checkins
-            if item["latest_checkin_status"] == "not_started"
+            if item["latest_checkin_status"] == "to_watch"
         )
         watching_count = sum(
-            1 for item in latest_checkins if item["latest_checkin_status"] == "watching"
+            1 for item in latest_checkins if item["latest_checkin_status"] in ["watching", "rewatching"]
         )
-        finished_count = sum(
-            1 for item in latest_checkins if item["latest_checkin_status"] == "finished"
+        watched_count = sum(
+            1 for item in latest_checkins if item["latest_checkin_status"] in ["watched", "rewatched"]
         )
 
         # Add status counts to context
         context.update(
             {
-                "not_started_count": not_started_count,
+                "to_watch_count": to_watch_count,
                 "watching_count": watching_count,
-                "finished_count": finished_count,
+                "watched_count": watched_count,
                 "checkins": checkins,
             }
         )

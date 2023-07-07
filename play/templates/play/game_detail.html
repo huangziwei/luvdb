@@ -103,6 +103,14 @@
                     </div>
                 {% endif %}
             </div>
+
+            <!--stats-->
+            <div class="bg-light p-3 mt-3">
+                <h5>Statistics</h5>
+                <p><strong>To Play:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=to_play">{{ to_play_count }}</a></p>
+                <p><strong>Playing:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=playing_replaying">{{ playing_count }}</a></p>
+                <p><strong>Played:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=played_replayed">{{ played_count }}</a></p>
+            </div>
         </div>
     </div>
 </div>
