@@ -121,7 +121,7 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
         context["reading"] = reading
         context["read"] = read
         context["to_read"] = to_read
-        context["does_read_exist"] = read.exists()
+        context["does_read_exist"] = read.exists() or reading.exists()
 
         latest_listen_checkins = ListenCheckIn.objects.filter(
             user=self.object,
@@ -150,7 +150,7 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
         context["looping"] = looping
         context["listened"] = listened
         context["to_listen"] = to_listen
-        context["does_listen_exist"] = listened.exists()
+        context["does_listen_exist"] = listened.exists() or looping.exists()
 
         # First, get the latest check-in for each show
         latest_watch_checkins = WatchCheckIn.objects.filter(
@@ -180,7 +180,7 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
         context["watching"] = watching
         context["watched"] = watched
         context["to_watch"] = to_watch
-        context["does_watch_exist"] = watched.exists()
+        context["does_watch_exist"] = watched.exists() or watching.exists()
 
         # First, get the latest check-in for each game
         latest_play_checkins = GameCheckIn.objects.filter(
@@ -206,7 +206,7 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
         context["playing"] = playing
         context["played"] = played
         context["to_play"] = to_play
-        context["does_play_exist"] = played.exists()
+        context["does_play_exist"] = played.exists() or playing.exists()
 
         return context
 
