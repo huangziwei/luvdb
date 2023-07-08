@@ -1,6 +1,13 @@
 from django.urls import path
 
-from .views import ActivityFeedDeleteView, ActivityFeedView, follow, unfollow
+from .views import (
+    ActivityFeedDeleteView,
+    ActivityFeedView,
+    block_view,
+    follow,
+    unblock_view,
+    unfollow,
+)
 
 app_name = "activity_feed"
 urlpatterns = [
@@ -12,4 +19,6 @@ urlpatterns = [
     ),
     path("follow/<int:user_id>/", follow, name="follow"),
     path("unfollow/<int:user_id>/", unfollow, name="unfollow"),
+    path("block/<int:user_id>/", block_view, name="block"),
+    path("unblock/<int:user_id>/", unblock_view, name="unblock"),
 ]

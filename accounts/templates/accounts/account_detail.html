@@ -75,9 +75,6 @@
             </span>
         </div>
       {% endfor %}
-      <br/>
-
-
 
       {% if does_read_exist %}
       <div class="row">
@@ -272,10 +269,6 @@
         </div>
       </div>
       {% endif %}
-
-      <hr>
-
-
     </div>
 
 
@@ -323,18 +316,45 @@
         {% endif %}
 
         {% if object != request.user %}
-            {% if request.user|is_following:object %}
-                <form method="POST" action="{% url 'activity_feed:unfollow' object.id %}">
-                    {% csrf_token %}
-                    <button class="btn btn-primary btn-sm mt-3" type="submit">Unfollow</button>
-                </form>
-            {% else %}
-                <form method="POST" action="{% url 'activity_feed:follow' object.id %}">
-                    {% csrf_token %}
-                    <button class="btn btn-primary btn-sm mt-3" type="submit">Follow</button>
-                </form>
+        <div class='d-flex'>
+            {% if not request.user|is_blocking:object %}
+              {% if request.user|is_following:object %}
+              <form method="POST" action="{% url 'activity_feed:unfollow' object.id %}">
+                  {% csrf_token %}
+                  <button class="btn btn-primary btn-sm mt-3 me-1" type="submit">Unfollow</button>
+              </form>
+              {% else %}
+              <form method="POST" action="{% url 'activity_feed:follow' object.id %}">
+                  {% csrf_token %}
+                  <button class="btn btn-primary btn-sm mt-3 me-1" type="submit">Follow</button>
+              </form>
+              {% endif %}
             {% endif %}
+            <div class="dropdown mt-3">
+                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="actionMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    Action
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                    {% if request.user|is_blocking:object %}
+                    <li>
+                        <form method="POST" action="{% url 'activity_feed:unblock' object.id %}">
+                            {% csrf_token %}
+                            <button class="dropdown-item" type="submit">Unblock</button>
+                        </form>
+                    </li>
+                    {% else %}
+                    <li>
+                        <form method="POST" action="{% url 'activity_feed:block' object.id %}">
+                            {% csrf_token %}
+                            <button class="dropdown-item" type="submit">Block</button>
+                        </form>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
         {% endif %}
+        
       </div>
       <hr>
 

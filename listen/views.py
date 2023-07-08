@@ -527,7 +527,7 @@ class ReleaseDetailView(DetailView):
         return redirect(self.object.get_absolute_url())
 
 
-class ReleaseUpdateView(UpdateView):
+class ReleaseUpdateView(LoginRequiredMixin, UpdateView):
     model = Release
     form_class = ReleaseForm
     template_name = "listen/release_update.html"

@@ -489,7 +489,7 @@ class PlayListView(ListView):
         return queryset[:12]
 
 
-class GameSeriesCreateView(CreateView):
+class GameSeriesCreateView(LoginRequiredMixin, CreateView):
     model = GameSeries
     form_class = GameSeriesForm
     template_name = "play/series_create.html"
@@ -519,7 +519,7 @@ class GameSeriesDetailView(DetailView):
     template_name = "play/series_detail.html"  # Update this
 
 
-class GameSeriesUpdateView(UpdateView):
+class GameSeriesUpdateView(LoginRequiredMixin, UpdateView):
     model = GameSeries
     form_class = GameSeriesForm
     template_name = "play/series_update.html"

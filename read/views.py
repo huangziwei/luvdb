@@ -400,7 +400,7 @@ class BookDetailView(DetailView):
         return redirect(self.object.get_absolute_url())
 
 
-class BookUpdateView(UpdateView):
+class BookUpdateView(LoginRequiredMixin, UpdateView):
     model = Book
     form_class = BookForm
     template_name = "read/book_update.html"
@@ -446,7 +446,7 @@ class BookUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class PeriodicalCreateView(CreateView):
+class PeriodicalCreateView(LoginRequiredMixin, CreateView):
     model = Periodical
     # fields = "__all__"
     form_class = PeriodicalForm
@@ -465,7 +465,7 @@ class PeriodicalDetailView(DetailView):
     template_name = "read/periodical_detail.html"
 
 
-class PeriodicalUpdateView(UpdateView):
+class PeriodicalUpdateView(LoginRequiredMixin, UpdateView):
     model = Periodical
     form_class = PeriodicalForm
     template_name = "read/periodical_update.html"
@@ -478,7 +478,7 @@ class PeriodicalUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class IssueCreateView(CreateView):
+class IssueCreateView(LoginRequiredMixin, CreateView):
     model = Issue
     form_class = IssueForm
     template_name = "read/periodical_issue_create.html"
@@ -631,7 +631,7 @@ class IssueDetailView(DetailView):
         return redirect(self.object.get_absolute_url())
 
 
-class IssueUpdateView(UpdateView):
+class IssueUpdateView(LoginRequiredMixin, UpdateView):
     model = Issue
     form_class = IssueForm
     template_name = "read/periodical_issue_update.html"

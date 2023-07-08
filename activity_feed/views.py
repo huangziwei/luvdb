@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,7 +11,7 @@ from django.views.generic import DeleteView, ListView
 
 from write.forms import ActivityFeedSayForm
 
-from .models import Activity, Follow
+from .models import Activity, Block, Follow
 
 User = get_user_model()
 
@@ -46,7 +47,7 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         )
 
 
-class ActivityFeedDeleteView(DeleteView):
+class ActivityFeedDeleteView(LoginRequiredMixin, DeleteView):
     model = Activity
     template_name = "activity_feed/activity_confirm_delete.html"
 
@@ -57,6 +58,19 @@ class ActivityFeedDeleteView(DeleteView):
 @login_required
 def follow(request, user_id):
     user_to_follow = get_object_or_404(User, id=user_id)
+
+    # check if the logged-in user is blocked by the user they're trying to follow
+    if Block.objects.filter(blocker=user_to_follow, blocked=request.user).exists():
+        messages.error(
+            request, "You have been blocked by this user and cannot follow them."
+        )
+        return redirect("accounts:detail", username=user_to_follow.username)
+
+    # check if the logged-in user has blocked the user they're trying to follow
+    if Block.objects.filter(blocker=request.user, blocked=user_to_follow).exists():
+        messages.error(request, "You have blocked this user. Unblock them to follow.")
+        return redirect("accounts:detail", username=user_to_follow.username)
+
     Follow.objects.get_or_create(follower=request.user, followed=user_to_follow)
     return redirect("accounts:detail", username=user_to_follow.username)
 
@@ -92,3 +106,37 @@ def unfollow(request, user_id):
 
     # Redirect to the unfollowed user's profile page
     return redirect("accounts:detail", username=user_to_unfollow.username)
+
+
+@login_required
+def block_view(request, user_id):
+    user_to_block = get_object_or_404(User, id=user_id)
+    if request.method == "POST":
+        Block.objects.create(blocker=request.user, blocked=user_to_block)
+
+        # If the blocker is following the blocked user, remove that follow relationship
+        Follow.objects.filter(follower=request.user, followed=user_to_block).delete()
+
+        # If the blocked user is following the blocker, remove that follow relationship
+        Follow.objects.filter(follower=user_to_block, followed=request.user).delete()
+
+        # You might also want to remove any activities related to the blocked user.
+        content_type = ContentType.objects.get_for_model(User)
+        Activity.objects.filter(
+            user=request.user,
+            content_type=content_type,
+            object_id=user_to_block.id,
+        ).delete()
+
+        return redirect("accounts:detail", username=user_to_block.username)
+
+
+@login_required
+def unblock_view(request, user_id):
+    user_to_unblock = get_object_or_404(User, id=user_id)
+    if request.method == "POST":
+        Block.objects.filter(blocker=request.user, blocked=user_to_unblock).delete()
+
+        # Depending on your requirements, you may want to re-establish follow relationships here.
+
+        return redirect("accounts:detail", username=user_to_unblock.username)

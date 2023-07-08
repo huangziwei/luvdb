@@ -56,3 +56,20 @@ class Follow(models.Model):
                 notification_type="follow",
                 message=message,
             )
+
+
+class Block(models.Model):
+    blocker = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="blocking",
+        on_delete=models.CASCADE,
+    )
+    blocked = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="blocked_by",
+        on_delete=models.CASCADE,
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("blocker", "blocked")

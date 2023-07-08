@@ -263,6 +263,7 @@ class Pin(models.Model):
 @receiver(post_delete, sender="listen.ListenCheckIn")
 @receiver(post_delete, sender="watch.WatchCheckIn")
 @receiver(post_delete, sender="play.GameCheckIn")
+@receiver(post_delete, sender="activity_feed.Follow")
 def delete_activity(sender, instance, **kwargs):
     content_type = ContentType.objects.get_for_model(instance)
     Activity.objects.filter(content_type=content_type, object_id=instance.id).delete()

@@ -370,15 +370,17 @@ class SeriesDetailView(DetailView):
         )
 
         to_watch_count = sum(
-            1
-            for item in latest_checkins
-            if item["latest_checkin_status"] == "to_watch"
+            1 for item in latest_checkins if item["latest_checkin_status"] == "to_watch"
         )
         watching_count = sum(
-            1 for item in latest_checkins if item["latest_checkin_status"] in ["watching", "rewatching"]
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["watching", "rewatching"]
         )
         watched_count = sum(
-            1 for item in latest_checkins if item["latest_checkin_status"] in ["watched", "rewatched"]
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["watched", "rewatched"]
         )
 
         # Add status counts to context
@@ -450,7 +452,7 @@ class SeriesUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class EpisodeCreateView(CreateView):
+class EpisodeCreateView(LoginRequiredMixin, CreateView):
     model = Episode
     form_class = EpisodeForm
     template_name = "watch/episode_create.html"

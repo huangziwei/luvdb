@@ -78,7 +78,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return reverse("write:post_detail", args=[str(self.object.id)])
 
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     template_name = "write/post_update.html"
     form_class = PostForm
@@ -87,7 +87,7 @@ class PostUpdateView(UpdateView):
         return reverse_lazy("write:post_detail", kwargs={"pk": self.object.id})
 
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = "write/post_confirm_delete.html"
     success_url = reverse_lazy("activity_feed:activity_feed")
@@ -128,7 +128,7 @@ class SayCreateView(LoginRequiredMixin, CreateView):
         return reverse("write:say_detail", args=[str(self.object.id)])
 
 
-class SayUpdateView(UpdateView):
+class SayUpdateView(LoginRequiredMixin, UpdateView):
     model = Say
     template_name = "write/say_update.html"
     form_class = SayForm
@@ -137,7 +137,7 @@ class SayUpdateView(UpdateView):
         return reverse_lazy("write:say_detail", kwargs={"pk": self.object.id})
 
 
-class SayDeleteView(DeleteView):
+class SayDeleteView(LoginRequiredMixin, DeleteView):
     model = Say
     template_name = "write/say_confirm_delete.html"
     success_url = reverse_lazy("activity_feed:activity_feed")
@@ -209,7 +209,7 @@ class PinCreateView(LoginRequiredMixin, CreateView):
         return reverse("write:pin_detail", args=[str(self.object.id)])
 
 
-class PinUpdateView(UpdateView):
+class PinUpdateView(LoginRequiredMixin, UpdateView):
     model = Pin
     template_name = "write/pin_update.html"
     form_class = PinForm
@@ -218,7 +218,7 @@ class PinUpdateView(UpdateView):
         return reverse_lazy("write:pin_detail", kwargs={"pk": self.object.id})
 
 
-class PinDeleteView(DeleteView):
+class PinDeleteView(LoginRequiredMixin, DeleteView):
     model = Pin
     template_name = "write/pin_confirm_delete.html"
     success_url = reverse_lazy("activity_feed:activity_feed")
@@ -264,7 +264,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         return self.object.content_object.get_absolute_url()
 
 
-class CommentUpdateView(UpdateView):
+class CommentUpdateView(LoginRequiredMixin, UpdateView):
     model = Comment
     form_class = CommentForm
     template_name = "write/comment_update.html"
@@ -273,7 +273,7 @@ class CommentUpdateView(UpdateView):
         return self.object.content_object.get_absolute_url()
 
 
-class CommentDeleteView(DeleteView):
+class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
     template_name = "write/comment_confirm_delete.html"
 
