@@ -38,7 +38,7 @@
                             {% elif original_activity.content_object.status == "reread" %}
                             <span class="badge text-bg-success me-1">
                             {% endif %}
-                                Status: {{ original_activity.content_object.get_status_display }}
+                                 {{ original_activity.content_object.get_status_display }}
                             </span>
                             {% if original_activity.content_object.progress %}
                             <span class="badge text-bg-warning me-1">
@@ -117,7 +117,7 @@
                             {% elif original_activity.content_object.status == "replayed" %}
                             <span class="badge text-bg-success me-1">
                             {% endif %}
-                                Status: {{ original_activity.content_object.get_status_display }}
+                                 {{ original_activity.content_object.get_status_display }}
                             </span>
                             {% if original_activity.content_object.progress %}
                             <span class="badge text-bg-warning me-1">

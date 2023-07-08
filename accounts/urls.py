@@ -8,6 +8,7 @@ from .views import (
     GenerateInvitationCodeView,
     PersonalActivityFeedView,
     SignUpView,
+    export_user_data,
     redirect_to_profile,
     search_view,
 )
@@ -39,4 +40,5 @@ urlpatterns = [
         name="follower_list",
     ),
     path("profile", view=redirect_to_profile, name="profile"),
+    path("exportdata/", export_user_data, name="export_user_data"),
 ]

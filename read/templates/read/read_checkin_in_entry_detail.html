@@ -24,7 +24,7 @@
             {% elif checkin.status == "reread" %}
             <span class="badge text-bg-success me-2">    
             {% endif %}
-                Status: {{ checkin.get_status_display }}
+                 {{ checkin.get_status_display }}
             </span>
             {% if checkin.progress %}
             <span class="badge text-bg-warning me-2">

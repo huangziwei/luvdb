@@ -298,12 +298,13 @@
         {% endif %}
         
         {% if object == request.user %}
+        <div class='d-flex '>
             <!-- Action buttons -->
-            <a class="btn btn-primary btn-sm mt-3" href="{% url 'accounts:update' %}" role="button">Update Profile</a>
+            <a class="btn btn-primary btn-sm mt-3 me-1" href="{% url 'accounts:update' %}" role="button">Update Profile</a>
             {% if can_generate_code %}
               <form class="d-inline-block" method="post" action="{% url 'accounts:generate_invitation_code' %}">
                   {% csrf_token %}
-                  <button class="btn btn-primary btn-sm mt-3" type="submit">Invite</button>
+                  <button class="btn btn-primary btn-sm mt-3 me-1" type="submit">Invite</button>
               </form>
             {% endif %}
             {% if messages %}
@@ -313,6 +314,8 @@
                 {% endfor %}
             </div>
             {% endif %}
+            <a class="btn btn-primary btn-sm mt-3 me-1" href="{% url 'accounts:export_user_data' %}" role="button">Export Data</a>
+        </div>
         {% endif %}
 
         {% if object != request.user %}

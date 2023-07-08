@@ -160,7 +160,7 @@
                     {% elif activity.content_object.status == "reread" %}
                     <span class="badge text-bg-success me-1">
                     {% endif %}
-                        Status: {{ activity.content_object.get_status_display }}
+                        {{ activity.content_object.get_status_display }}
                     </span>
                     {% if activity.content_object.progress %}
                     <span class="badge text-bg-warning me-1">
@@ -273,7 +273,7 @@
                         {% elif activity.content_object.status == "rewatched" %}
                         <span class="badge text-bg-success me-1">
                         {% endif %}
-                            Status: {{ activity.content_object.get_status_display }}
+                            {{ activity.content_object.get_status_display }}
                         </span>
                     </div>
                     {% if activity.content_object.progress %}
@@ -379,7 +379,7 @@
                     {% elif activity.content_object.status == "abandoned" %}
                     <span class="badge text-bg-danger me-1">
                     {% endif %}
-                        Status: {{ activity.content_object.get_status_display }}
+                        {{ activity.content_object.get_status_display }}
                     </span>
                 </div>
                 {% if activity.content_object.progress %}

@@ -47,7 +47,7 @@
                         {% elif activity.content_object.original_activity.content_object.status == "reread" %}
                         <span class="badge text-bg-success me-1">
                         {% endif %}
-                            Status: {{ activity.content_object.original_activity.content_object.get_status_display }}
+                            {{ activity.content_object.original_activity.content_object.get_status_display }}
                         </span>
                         </div>
                         {% if activity.content_object.original_activity.content_object.progress %}
@@ -142,7 +142,7 @@
                     {% elif activity.content_object.original_activity.content_object.status == "rewatched" %}
                     <span class="badge text-bg-success me-1">
                     {% endif %}
-                        Status: {{ activity.content_object.original_activity.content_object.get_status_display }}
+                        {{ activity.content_object.original_activity.content_object.get_status_display }}
                     </span>
                     </div>
                     {% if activity.content_object.original_activity.content_object.progress %}
@@ -234,7 +234,7 @@
                         {% elif activity.content_object.original_activity.content_object.status == "replayed" %}
                         <span class="badge text-bg-success me-1">
                         {% endif %}
-                            Status: {{ activity.content_object.original_activity.content_object.get_status_display }}
+                            {{ activity.content_object.original_activity.content_object.get_status_display }}
                         </span>
                         </div>
                         {% if activity.content_object.original_activity.content_object.progress %}
@@ -337,7 +337,7 @@
                         {% elif activity.content_object.original_activity.content_object.status == "abandoned" %}
                         <span class="badge text-bg-danger me-1">
                         {% endif %}
-                            Status: {{ activity.content_object.original_activity.content_object.get_status_display }}
+                            {{ activity.content_object.original_activity.content_object.get_status_display }}
                         </span>
                         </div>
                         {% if activity.content_object.original_activity.content_object.progress %}

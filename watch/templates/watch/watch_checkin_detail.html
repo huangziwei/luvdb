@@ -31,7 +31,7 @@
           {% elif object.status == "rewatched" %}
           <span class="badge text-bg-success me-2">
           {% endif %}
-              Status: {{ object.get_status_display }}
+               {{ object.get_status_display }}
           </span>
           {% if object.progress %}
           <span class="badge text-bg-warning me-2">

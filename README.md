@@ -6,6 +6,7 @@ A opinionated [Douban](https://www.douban.com/) clone.
 
 - [x] User Account
     - [ ] Delete Account
+    - [ ] Export Data
 - [x] Activity Feed
     - [x] Follow/Unfollow
     - [ ] Block

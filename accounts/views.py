@@ -4,7 +4,9 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core import serializers
 from django.db.models import F, Max, OuterRef, Q, Subquery
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -405,3 +407,34 @@ class FollowerListView(ListView):
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs["username"])
         return user.followers.all()
+
+
+@login_required
+def export_user_data(request):
+    from django.apps import apps
+
+    User = get_user_model()
+    user = User.objects.filter(pk=request.user.pk)
+
+    # Use Django's built-in serialization
+    data = serializers.serialize("json", user)
+
+    # Get all models in your app
+    models = apps.get_models()
+
+    for model in models:
+        # Check if the model has a foreign key to User
+        if any(f for f in model._meta.fields if f.related_model == User):
+            try:
+                related_data = model.objects.filter(user=request.user.pk)
+                data += serializers.serialize("json", related_data)
+            except:
+                continue
+
+    # Create a HttpResponse with a 'Content-Disposition' header to suggest a filename
+    response = HttpResponse(data, content_type="application/json")
+    response[
+        "Content-Disposition"
+    ] = f'attachment; filename="{request.user.username}_data.json"'
+
+    return response

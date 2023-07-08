@@ -27,7 +27,7 @@
           {% elif object.status == "abandoned" %}
           <span class="badge text-bg-danger me-2">
           {% endif %}
-              Status: {{ object.get_status_display }}
+               {{ object.get_status_display }}
           </span>
           {% if object.progress %}
           <span class="badge text-bg-warning me-2">
