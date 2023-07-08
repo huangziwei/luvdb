@@ -227,7 +227,9 @@ class Instance(models.Model):
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
     language = LanguageField(max_length=8, blank=True, null=True)
-    edition = models.CharField(max_length=255, blank=True, null=True) # 1st ed., revised ed., etc.
+    edition = models.CharField(
+        max_length=255, blank=True, null=True
+    )  # 1st ed., revised ed., etc.
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -311,6 +313,7 @@ class Book(models.Model):
         null=True,
         validators=[validate_asin],
     )
+    readcheckin = GenericRelation("ReadCheckIn")
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -333,6 +336,12 @@ class Book(models.Model):
 
     def get_absolute_url(self):
         return reverse("read:book_detail", args=[str(self.id)])
+
+    @property
+    def checkin_count(self):
+        return (
+            self.readcheckin_set.count()
+        )  # adjust this if your related name is different
 
     def save(self, *args, **kwargs):
         # If the instance already exists in the database
@@ -563,6 +572,7 @@ class Issue(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    readcheckin = GenericRelation("ReadCheckIn")
 
     def __str__(self):
         return f"{self.periodical.title} - Issue {self.number} - Volume {self.volume}"
@@ -571,6 +581,12 @@ class Issue(models.Model):
         return reverse(
             "read:issue_detail", args=[str(self.periodical.id), str(self.id)]
         )
+
+    @property
+    def checkin_count(self):
+        return (
+            self.readcheckin_set.count()
+        )  # adjust this if your related name is different
 
 
 class IssueInstance(models.Model):

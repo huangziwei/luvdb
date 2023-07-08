@@ -525,7 +525,7 @@
                 </div>
                 <div class="flex-grow-1 ms-3">
                     <a href="{% url 'play:game_detail' activity.content_object.game.id %}" class="text-decoration-none hover-username">
-                        <h6>{{ activity.content_object.game.title }}</h6>
+                        <h5>{{ activity.content_object.game.title }}</h5>
                     </a>
                     
                     {% regroup activity.content_object.game.gamerole_set.all by role as roles_list %}

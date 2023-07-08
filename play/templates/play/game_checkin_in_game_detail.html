@@ -42,13 +42,11 @@
                 </a>  
             </span>
         </div>
+        {% if checkin.content %}
         <div class="checkin bg-light p-3 mb-3">
-            
-            {% if checkin.content %}
-            <div>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
-            {% endif %}
-            
+            <div>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>        
         </div>
+        {% endif %}
         <div class="d-flex mb-4">
             <span class="me-2">
                 <a href="{% url 'play:game_checkin_list' checkin.game.id checkin.user.username %}" class="text-decoration-none text-secondary">
@@ -68,6 +66,12 @@
                 <span class="ms-2 me-2"><a href="{% url 'play:game_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
                 <span class="ms-2 me-2"><a href="{% url 'play:game_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
             {% endif %}
+
+            <span class="ms-2 me-2">
+                <a href="{% url 'play:game_checkin_list' checkin.game.id checkin.user.username %}" class="text-decoration-none text-secondary">
+                    Others
+                </a>
+            </span>
         </div>
     {% empty %}
         <p>No check-ins yet.</p>

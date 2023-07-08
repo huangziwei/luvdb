@@ -57,6 +57,12 @@
                 <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
                 <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
             {% endif %}
+
+            <span class="ms-2 me-2">
+                <a href="{% url 'listen:listen_checkin_list' checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary">
+                    Others
+                </a>
+            </span>
         </div>
     {% empty %}
         <p>No check-ins yet.</p>

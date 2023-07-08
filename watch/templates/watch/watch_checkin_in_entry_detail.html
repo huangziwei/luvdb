@@ -65,6 +65,18 @@
                 <span class="ms-2 me-2"><a href="{% url 'watch:watch_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
                 <span class="ms-2 me-2"><a href="{% url 'watch:watch_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
             {% endif %}
+
+            <span class="ms-2 me-2">
+                {% if model_name == "movie" %}
+                <a href="{% url 'watch:movie_checkin_list' checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary">
+                    Others
+                </a>
+                {% elif model_name == "series" %}
+                <a href="{% url 'watch:series_checkin_list' checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary">
+                    Others
+                </a>                
+                {% endif %}
+            </span>
         </div>
     {% empty %}
         <p>No check-ins yet.</p>

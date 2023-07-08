@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import F, OuterRef, Q, Subquery
+from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.html import format_html
@@ -800,9 +800,38 @@ class ReadListView(ListView):
     context_object_name = "objects"
 
     def get_queryset(self):
+        book_content_type = ContentType.objects.get_for_model(Book)
+        issue_content_type = ContentType.objects.get_for_model(Issue)
+
+        trending_books = (
+            Book.objects.annotate(
+                checkins=Count(
+                    "readcheckin",
+                    filter=Q(readcheckin__content_type=book_content_type),
+                    distinct=True,
+                )
+            )
+            .exclude(checkins=0)
+            .order_by("-checkins")[:12]
+        )
+
+        trending_issues = (
+            Issue.objects.annotate(
+                checkins=Count(
+                    "readcheckin",
+                    filter=Q(readcheckin__content_type=issue_content_type),
+                    distinct=True,
+                )
+            )
+            .exclude(checkins=0)
+            .order_by("-checkins")[:12]
+        )
+
         return {
             "recent_books": Book.objects.all().order_by("-created_at")[:12],
             "recent_issues": Issue.objects.all().order_by("-created_at")[:12],
+            "trending_books": trending_books,
+            "trending_issues": trending_issues,
         }
 
 
@@ -861,9 +890,22 @@ class ReadCheckInDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "read/read_checkin_delete.html"
 
     def get_success_url(self):
-        return reverse_lazy(
-            "read:book_detail", kwargs={"pk": self.object.content_object.pk}
-        )
+        content_object = self.object.content_object
+
+        if isinstance(content_object, Book):
+            return reverse_lazy(
+                "read:book_detail", kwargs={"pk": self.object.content_object.pk}
+            )
+        elif isinstance(content_object, Issue):
+            return reverse_lazy(
+                "read:issue_detail",
+                kwargs={
+                    "pk": self.object.content_object.pk,
+                    "periodical_id": self.object.content_object.periodical.pk,
+                },
+            )
+        else:
+            return reverse_lazy("home")
 
 
 class GenericCheckInListView(ListView):
