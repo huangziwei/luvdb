@@ -17,7 +17,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from activity_feed.models import Activity, Follow
 from entity.models import Person
 from listen.models import ListenCheckIn, Release, Track, Work
-from play.models import Game, GameCheckIn
+from play.models import Game, GameCast, GameCheckIn, GameRole, Platform
 from read.models import Book, Periodical, ReadCheckIn
 from watch.models import Movie, Series, WatchCheckIn
 from write.models import Pin, Post, Say
@@ -436,5 +436,38 @@ def export_user_data(request):
     response[
         "Content-Disposition"
     ] = f'attachment; filename="{request.user.username}_data.json"'
+
+    return response
+
+
+@login_required
+def export_game_data(request):
+    User = get_user_model()
+
+    # filter Games created by this user
+    games = Game.objects.filter(created_by=request.user)
+
+    # Use Django's built-in serialization
+    data = serializers.serialize("json", games)
+
+    # get all related data for each game
+    for game in games:
+        developers = game.developers.all()
+        data += serializers.serialize("json", developers)
+
+        persons_as_gamerole = GameRole.objects.filter(game=game)
+        data += serializers.serialize("json", persons_as_gamerole)
+
+        persons_as_gamecast = GameCast.objects.filter(game=game)
+        data += serializers.serialize("json", persons_as_gamecast)
+
+        platforms = game.platforms.all()
+        data += serializers.serialize("json", platforms)
+
+    # Create a HttpResponse with a 'Content-Disposition' header to suggest a filename
+    response = HttpResponse(data, content_type="application/json")
+    response[
+        "Content-Disposition"
+    ] = f'attachment; filename="{request.user.username}_games_data.json"'
 
     return response
