@@ -7,9 +7,6 @@
         <div class="col-sm-8">
             <span class='d-flex align-items-start'>
                 <h2>{{ object.title }} ({{ object.publication_date }})</h2>
-                {% if user.is_authenticated %}
-                <a href="{% url 'read:work_update' object.pk %}" class='fs-6 text-secondary'>Edit Work</a>
-                {% endif %}
             </span>
 
             {% for role in object.workrole_set.all %}
