@@ -42,5 +42,5 @@ urlpatterns = [
     ),
     path("profile", view=redirect_to_profile, name="profile"),
     path("exportdata/", export_user_data, name="export_user_data"),
-    path("exportgamedata/", export_game_data, name="export_game_data"),
+    # path("exportgamedata/", export_game_data, name="export_game_data"),
 ]

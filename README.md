@@ -20,6 +20,7 @@ A opinionated [Douban](https://www.douban.com/) clone.
     - [x] Comment 
 - [x] Play
     - [x] Game
+        - [ ] Edition
     - [x] Series
     - [x] Cast
     - [x] Check-In
@@ -35,8 +36,6 @@ A opinionated [Douban](https://www.douban.com/) clone.
 - [x] Listen
     - [x] Work
     - [x] Track
-        - [ ] Lyrics
-        - [ ] Guitar Tabs
     - [x] Release
     - [ ] Podcast
         - [ ] Episode

@@ -301,22 +301,33 @@
         <div class='d-flex '>
             <!-- Action buttons -->
             <a class="btn btn-primary btn-sm mt-3 me-1" href="{% url 'accounts:update' %}" role="button">Update Profile</a>
-            {% if can_generate_code %}
-              <form class="d-inline-block" method="post" action="{% url 'accounts:generate_invitation_code' %}">
-                  {% csrf_token %}
-                  <button class="btn btn-primary btn-sm mt-3 me-1" type="submit">Invite</button>
-              </form>
-            {% endif %}
-            {% if messages %}
-            <div class="messages" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f0f0f0; margin-top: 1em;">
-                {% for message in messages %}
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="margin: 0;">{{ message|safe }}</p>
-                {% endfor %}
+            
+            <div class="dropdown mt-3">
+              <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="actionMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                  More
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                {% if can_generate_code %}
+                <li>
+                  <form method="post" action="{% url 'accounts:generate_invitation_code' %}">
+                      {% csrf_token %}
+                      <button class="dropdown-item" type="submit">Invite</button>
+                  </form>
+                </li>
+                {% endif %}
+                <li>
+                  <a class="dropdown-item" href="{% url 'accounts:export_user_data' %}" role="button">Export User Data</a>
+                </li>
+              </ul>
             </div>
-            {% endif %}
-            <a class="btn btn-primary btn-sm mt-3 me-1" href="{% url 'accounts:export_user_data' %}" role="button">Export User Data</a>
-            <a class="btn btn-primary btn-sm mt-3 me-1" href="{% url 'accounts:export_game_data' %}" role="button">Export Game Data</a>
         </div>
+        {% if messages %}
+        <div class="messages" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f0f0f0; margin-top: 1em;">
+            {% for message in messages %}
+                <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="margin: 0;">{{ message|safe }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
         {% endif %}
 
         {% if object != request.user %}
@@ -335,8 +346,8 @@
               {% endif %}
             {% endif %}
             <div class="dropdown mt-3">
-                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="actionMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                    Action
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="actionMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    More
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="actionMenu">
                     {% if request.user|is_blocking:object %}
