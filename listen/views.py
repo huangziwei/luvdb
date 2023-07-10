@@ -664,11 +664,22 @@ class ListenCheckInListView(ListView):
             context[
                 "checkins"
             ] = self.get_queryset()  # Use the queryset method to handle status filter
-            context["object"] = model.objects.get(
-                pk=object_id
-            )  # Get the object details
+            release = model.objects.get(pk=object_id)  # Get the object details
+            context["object"] = release
 
-        context["model_name"] = self.kwargs.get("model_name", "book")
+            roles = {}
+            for release_role in release.releaserole_set.all():
+                if release_role.role.name not in roles:
+                    roles[release_role.role.name] = []
+                alt_name_or_person_name = (
+                    release_role.alt_name or release_role.person.name
+                )
+                roles[release_role.role.name].append(
+                    (release_role.person, alt_name_or_person_name)
+                )
+            context["roles"] = roles
+
+        context["model_name"] = self.kwargs.get("model_name", "release")
 
         return context
 
@@ -715,12 +726,24 @@ class ListenCheckInAllListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        object_id = self.kwargs["release_id"]
 
         model = self.get_model()
         if model is not None:
-            context["object"] = model.objects.get(
-                pk=self.kwargs["release_id"]
-            )  # Get the object details
+            release = model.objects.get(pk=object_id)  # Get the object details
+            context["object"] = release
+
+            roles = {}
+            for release_role in release.releaserole_set.all():
+                if release_role.role.name not in roles:
+                    roles[release_role.role.name] = []
+                alt_name_or_person_name = (
+                    release_role.alt_name or release_role.person.name
+                )
+                roles[release_role.role.name].append(
+                    (release_role.person, alt_name_or_person_name)
+                )
+            context["roles"] = roles
 
         context["order"] = self.request.GET.get(
             "order", "-timestamp"
@@ -728,6 +751,7 @@ class ListenCheckInAllListView(ListView):
 
         context["status"] = self.request.GET.get("status", "")
         context["model_name"] = self.kwargs.get("model_name", "release")
+
         return context
 
 

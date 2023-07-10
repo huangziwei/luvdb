@@ -1,36 +1,140 @@
 {% extends 'base.html' %}
-
+{% load markdownify %}
 {% block content %}
 
-<div class='col-sm-7'>
-    <div class="row">
-        <div class="col-sm-12">
-            <h4>All Check-Ins of 
-                {% if model_name == "book" %}
-                    <a href="{% url 'read:book_detail' object.id %}"> {{ object.title }}</a>
-                {% elif  model_name == "issue" %}
-                    {{ object.periodical.title }} <a href="{% url 'read:issue_detail' object.periodical.id object.id %}"> {{ object.title }}</a>
-                {% endif %}
-            </h4>
-            <span class='d-flex'>
-                <div class="me-3">
-                    <a href="?order=timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
-                    <a href="?order=-timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+<div class="row">
+    <!--left column-->
+    <div class="col-12 col-md-8">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4>All Check-Ins of 
+                        {% if model_name == "book" %}
+                            <a href="{% url 'read:book_detail' object.id %}"> {{ object.title }}</a>
+                        {% elif  model_name == "issue" %}
+                            {{ object.periodical.title }} <a href="{% url 'read:issue_detail' object.periodical.id object.id %}"> {{ object.title }}</a>
+                        {% endif %}
+                    </h4>
+                    <span class='d-flex'>
+                        <div class="me-3">
+                            <a href="?order=timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+                            <a href="?order=-timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                        </div>
+                        <div class="me-3">|</div>
+                        <div class="me-3">
+                            <a href="?status=&order={{order}}" class="btn btn-sm btn-outline-dark mb-1">All</a>
+                            <a href="?status=to_read&order={{order}}" class="btn btn-sm btn-info mb-1">To Read</a>
+                            <a href="?status=reading_rereading&order={{order}}" class="btn btn-sm btn-primary mb-1">(Re)Reading</a>
+                            <a href="?status=read_reread&order={{order}}" class="btn btn-sm btn-success mb-1">(Re)Read</a>
+                            <a href="?status=paused&order={{order}}" class="btn btn-sm btn-warning mb-1">Paused</a>
+                            <a href="?status=abandoned&order={{order}}" class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                        </div>
+                    </span>
                 </div>
-                <div class="me-3">|</div>
-                <div class="me-3">
-                    <a href="?status=&order={{order}}" class="btn btn-sm btn-outline-dark mb-1">All</a>
-                    <a href="?status=to_read&order={{order}}" class="btn btn-sm btn-info mb-1">To Read</a>
-                    <a href="?status=reading_rereading&order={{order}}" class="btn btn-sm btn-primary mb-1">(Re)Reading</a>
-                    <a href="?status=read_reread&order={{order}}" class="btn btn-sm btn-success mb-1">(Re)Read</a>
-                    <a href="?status=paused&order={{order}}" class="btn btn-sm btn-warning mb-1">Paused</a>
-                    <a href="?status=abandoned&order={{order}}" class="btn btn-sm btn-danger mb-1">Abandoned</a>
-                </div>
-            </span>
-        </div>
-        
-        {% include "read/read_checkin_in_entry_detail.html" %}
+                
+                {% include "read/read_checkin_in_entry_detail.html" %}
+            </div>
     </div>
+
+    <!--right column-->
+    <div class="col-12 col-md-4">
+        <!-- release-card -->
+        <div class="release-card justify-content-start">
+            <div class="d-flex flex-column mt-2">
+                <!--cover-box-->
+                <div class="col-12 mb-3">
+                    <div style='width:50%'>
+                        {% if object.cover %}
+                            {% if object.cover_sens %}
+                                <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="blur img-fluid" onclick="this.classList.toggle('blur')">
+                            {% else %}
+                                <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid">
+                            {% endif %}
+                        {% else %}
+                            <p class="no-cover-text">No Cover</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <!--release-meta-->
+                <div class="col flex-grow-1">
+                    <div class="card-body">
+                        <span class='d-flex align-items-start'>
+                            <h2>{{ object.title }} </h2>
+                        </span>
+                        
+                        <div class="book-meta">
+                            {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
+                            {% for role_name, person_altname_tuples in roles.items %}
+                                <p>
+                                    <strong>{{ role_name }}:</strong> 
+                                    {% for person, alt_name in person_altname_tuples %}
+                                        <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
+                                        {% if not forloop.last %} / {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endfor %}
+                            {% if object.publisher %}
+                                <p>
+                                    <strong>Publisher:</strong>
+                                    <a href="{% url 'read:publisher_detail' object.publisher.id %}">
+                                        {% if object.publisher.location %}{{ object.publisher.location }}: {% endif %} 
+                                        {{ object.publisher.name }}
+                                    </a>
+                                </p>
+                            {% endif %}
+                            {% if object.format %}
+                                        <p><strong>Format:</strong> {{ object.format }}</p>
+                                    {% endif %}
+                            {% if object.publication_date %}
+                                <p><strong>Date:</strong> {{ object.publication_date }}</p>
+                            {% endif %}
+                            
+                            
+                            <!--add series here-->
+                            {% if object.bookinseries_set.all %}
+                                <p>
+                                    <strong>Series:</strong> 
+                                    {% for bookinseries in object.bookinseries_set.all %}
+                                        <a href="{% url 'read:series_detail' bookinseries.series.id %}">{{ bookinseries.series.title }}</a>
+                                        {% if not forloop.last %} / {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                            
+                            
+                            <div class="my-3">
+                                <p class="text-muted" type="button" data-bs-toggle="collapse" data-bs-target="#detailsCollapse" aria-expanded="false" aria-controls="detailsCollapse">
+                                    <strong>More Metadata</strong>
+                                </p>
+                                <div class="collapse" id="detailsCollapse">
+                                    
+                                    {% if object.pages %}
+                                        <p><strong>Pages:</strong> {{ object.pages }}</p>
+                                    {% endif %}
+                                    {% if object.isbn_10 %}
+                                        <p><strong>ISBN-10:</strong> {{ object.isbn_10 }}</p>
+                                    {% endif %}
+                                    {% if object.isbn_13 %}
+                                        <p><strong>ISBN-13:</strong> {{ object.isbn_13 }}</p>
+                                    {% endif %}
+                                    {% if object.asin %}
+                                        <p><strong>ASIN:</strong> {{ object.asin }}</p>
+                                    {% endif %}
+                                    {% if object.details %}
+                                    <strong>Details:</strong> 
+                                    <div class="card card-body">
+                                        {{ object.details|markdownify }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 {% endblock content %}

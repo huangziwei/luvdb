@@ -1000,6 +1000,20 @@ class GenericCheckInListView(ListView):
                 pk=object_id
             )  # Get the object details
 
+            if content_type.model == "book":
+                book = get_object_or_404(Book, pk=object_id)
+                roles = {}
+                for book_role in book.bookrole_set.all():
+                    if book_role.role.name not in roles:
+                        roles[book_role.role.name] = []
+                    alt_name_or_person_name = (
+                        book_role.alt_name or book_role.person.name
+                    )
+                    roles[book_role.role.name].append(
+                        (book_role.person, alt_name_or_person_name)
+                    )
+                context["roles"] = roles
+
         context["model_name"] = self.kwargs.get("model_name", "book")
 
         return context
@@ -1065,10 +1079,25 @@ class GenericCheckInAllListView(ListView):
         context = super().get_context_data(**kwargs)
 
         model = self.get_model()
+        content_type = ContentType.objects.get_for_model(model)
         if model is not None:
             context["object"] = model.objects.get(
                 pk=self.kwargs["object_id"]
             )  # Get the object details
+
+            if content_type.model == "book":
+                book = get_object_or_404(Book, pk=self.kwargs["object_id"])
+                roles = {}
+                for book_role in book.bookrole_set.all():
+                    if book_role.role.name not in roles:
+                        roles[book_role.role.name] = []
+                    alt_name_or_person_name = (
+                        book_role.alt_name or book_role.person.name
+                    )
+                    roles[book_role.role.name].append(
+                        (book_role.person, alt_name_or_person_name)
+                    )
+                context["roles"] = roles
 
         context["order"] = self.request.GET.get(
             "order", "-timestamp"
@@ -1076,6 +1105,7 @@ class GenericCheckInAllListView(ListView):
 
         context["status"] = self.request.GET.get("status", "")
         context["model_name"] = self.kwargs.get("model_name", "book")
+
         return context
 
 

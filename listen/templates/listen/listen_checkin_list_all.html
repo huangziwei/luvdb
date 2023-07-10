@@ -2,30 +2,112 @@
 
 {% block content %}
 
-<div class='col-sm-7'>
-    <div class="row">
-        <div class="col-sm-12">
-            <h4>All Check-Ins of 
-                <a href="{% url 'listen:release_detail' object.id %}"> {{ object.title }}</a>
-            </h4>
-            <span class='d-flex'>
-                <div class="me-3">
-                    <a href="?order=timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
-                    <a href="?order=-timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
-                </div>
-                <div class="me-3">|</div>
-                <div class="me-3">
-                    <a href="?status=&order={{order}}" class="btn btn-sm btn-outline-dark mb-1">All</a>
-                    <a href="?status=to_listen&order={{order}}" class="btn btn-sm btn-info mb-1">To Listen</a>
-                    <a href="?status=looping&order={{order}}" class="btn btn-sm btn-primary mb-1">Looping</a>
-                    <a href="?status=listened&order={{order}}" class="btn btn-sm btn-success mb-1">Listened</a>
-                    {% comment %} <a href="?status=paused&order={{order}}" class="btn btn-sm btn-warning mb-1">Paused</a>
-                    <a href="?status=abandoned&order={{order}}" class="btn btn-sm btn-danger mb-1">Abandoned</a> {% endcomment %}
-                </div>
-            </span>
+<div class="row">
+    <!--left column-->
+    <div class="col-12 col-md-8">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4>All Check-Ins of 
+                    <a href="{% url 'listen:release_detail' object.id %}"> {{ object.title }}</a>
+                </h4>
+                <span class='d-flex'>
+                    <div class="me-3">
+                        <a href="?order=timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+                        <a href="?order=-timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                    </div>
+                    <div class="me-3">|</div>
+                    <div class="me-3">
+                        <a href="?status=&order={{order}}" class="btn btn-sm btn-outline-dark mb-1">All</a>
+                        <a href="?status=to_listen&order={{order}}" class="btn btn-sm btn-info mb-1">To Listen</a>
+                        <a href="?status=looping&order={{order}}" class="btn btn-sm btn-primary mb-1">Looping</a>
+                        <a href="?status=listened&order={{order}}" class="btn btn-sm btn-success mb-1">Listened</a>
+                        {% comment %} <a href="?status=paused&order={{order}}" class="btn btn-sm btn-warning mb-1">Paused</a>
+                        <a href="?status=abandoned&order={{order}}" class="btn btn-sm btn-danger mb-1">Abandoned</a> {% endcomment %}
+                    </div>
+                </span>
+            </div>
+            
+            {% include "listen/listen_checkin_in_release_detail.html" %}
         </div>
-        
-        {% include "listen/listen_checkin_in_release_detail.html" %}
+    </div>
+
+    <!--right column-->
+    <div class="col-12 col-md-4">
+        <!-- release-card -->
+        <div class="release-card justify-content-start">
+            <div class="d-flex flex-column mt-2">
+                <!--cover-box-->
+                <div class="col-12 mb-3">
+                    <div class="listen-cover-box">
+                        {% if object.cover %}
+                            {% if object.cover_sens %}
+                                <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image blur img-fluid" onclick="this.classList.toggle('blur')">
+                            {% else %}
+                                <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid">
+                            {% endif %}
+                        {% else %}
+                            <p class="no-cover-text">No Cover</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <!--release-meta-->
+                <div class="col flex-grow-1">
+                    <div class="card-body">
+                        <span class='d-flex align-items-start'>
+                            <h2>{{ object.title }} </h2>
+                        </span>
+                        
+                        <div class="release-meta">
+                            {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</div>{% endif %}
+                            {% for role_name, person_altname_tuples in roles.items %}
+                                <div class="mb-1">
+                                    <span class="text-muted">{{ role_name }}:</span> 
+                                    {% for person, alt_name in person_altname_tuples %}
+                                        <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
+                                        {% if not forloop.last %} / {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                            {% if object.label %}
+                                <div class="mb-1">
+                                    <span class="text-muted">Label:</span>
+                                    {% for label in object.label.all %}
+                                    <a href="{% url 'listen:label_detail' label.id %}">
+                                        {{ label.name }} {% if not forloop.last %} / {% endif %}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if object.release_date %}
+                                <div class="mb-1"><span class="text-muted">Date:</span> {{ object.release_date }}</div>
+                            {% endif %}
+                            
+                            
+                            <div class="my-3">
+                                <div class="text-muted mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#detailsCollapse" aria-expanded="false" aria-controls="detailsCollapse">
+                                    <span class="text-muted">More Metadata</span>
+                                </div>
+                                <div class="collapse" id="detailsCollapse">
+                                    {% if object.release_type %}
+                                        <div class="mb-1"><span class="text-muted">Type:</span> {{ object.release_type }}</div>
+                                    {% endif %}
+                                    {% if object.release_format %}
+                                        <div class="mb-1"><span class="text-muted">Format:</span> {{ object.release_format }}</div>
+                                    {% endif %}
+                                    {% if object.release_region %}
+                                        <div class="mb-1"><span class="text-muted">Region:</span> {{ object.release_region }}</div>
+                                    {% endif %}
+                                    {% if object.release_length %}
+                                        <div class="mb-1"><span class="text-muted">Length:</span> {{ object.release_length }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
