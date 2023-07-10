@@ -11,7 +11,7 @@
                             <a href="{% url 'listen:release_detail' release.pk %}">
                                 {% if release.cover %}
                                     {% if release.cover_sens %}
-                                        <img src="{{ release.cover.url }}" alt="{{ release.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                        <img src="{{ release.cover.url }}" alt="{{ release.title }} cover" class="img-fluid blur" onclick="this.classList.toggle('blur')">
                                     {% else %}
                                         <img src="{{ release.cover.url }}" alt="{{ release.title }}" class="img-fluid">
                                     {% endif %}

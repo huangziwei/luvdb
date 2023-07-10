@@ -82,6 +82,28 @@ class PublisherDetailView(DetailView):
     template_name = "read/publisher_detail.html"
 
 
+class PublisherUpdateView(LoginRequiredMixin, UpdateView):
+    model = Publisher
+    fields = [
+        "name",
+        "romanized_name",
+        "history",
+        "location",
+        "website",
+        "founded_date",
+        "closed_date",
+    ]
+    template_name = "read/publisher_update.html"
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("read:publisher_detail", kwargs={"pk": self.object.pk})
+
+
 ##########
 ## Work ##
 ##########

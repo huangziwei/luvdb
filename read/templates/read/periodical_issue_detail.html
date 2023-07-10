@@ -10,15 +10,15 @@
         <div class="col-sm-8">
             <!-- issue-card -->
             <div class="issue-card justify-content-start">
-                <div class="row">
+                <div class="d-flex flex-column flex-lg-row mt-2">
                     <!--cover-box-->
-                    <div class="col-md-3 me-4">
+                    <div class="col-12 col-lg-auto mb-3 mb-lg-0">
                         <div class="read-cover-box">
                             {% if issue.cover %}
                                 {% if issue.cover_sens %}
-                                    <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                    <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="img-fluid blur" onclick="this.classList.toggle('blur')">
                                 {% else %}
-                                    <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="cover-image">
+                                    <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="img-fluid">
                                 {% endif %}
                             {% else %}
                                 <p class="no-cover-text">No Cover</p>
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <!--issue-meta-->
-                    <div class="col-md-8">
+                    <div class="col flex-grow-1 ms-lg-3">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
                                 <h3>{{ issue.periodical.title }}: {{ issue.title }} </h3>

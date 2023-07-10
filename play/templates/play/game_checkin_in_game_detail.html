@@ -67,11 +67,11 @@
                 <span class="ms-2 me-2"><a href="{% url 'play:game_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
             {% endif %}
 
-            <span class="ms-2 me-2">
+            {% comment %} <span class="ms-2 me-2">
                 <a href="{% url 'play:game_checkin_list' checkin.game.id checkin.user.username %}" class="text-decoration-none text-secondary">
                     Others
                 </a>
-            </span>
+            </span> {% endcomment %}
         </div>
     {% empty %}
         <p>No check-ins yet.</p>

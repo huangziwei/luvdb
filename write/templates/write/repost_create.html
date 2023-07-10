@@ -59,7 +59,7 @@
                             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                 {% if original_activity.content_object.book.cover %}
                                     {% if original_activity.content_object.book.cover_sens %}
-                                        <img src="{{ original_activity.content_object.book.cover.url }}" alt="{{ original_activity.content_object.book.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                        <img src="{{ original_activity.content_object.book.cover.url }}" alt="{{ original_activity.content_object.book.title }} cover" class="img-fluid blur" onclick="this.classList.toggle('blur')">
                                     {% else %}
                                         <img src="{{ original_activity.content_object.book.cover.url }}" alt="{{ original_activity.content_object.book.title }} cover" style="width: 100%;">
                                     {% endif %}
@@ -136,7 +136,7 @@
                             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                 {% if original_activity.content_object.game.cover %}
                                     {% if original_activity.content_object.game.cover_sens %}
-                                        <img src="{{ original_activity.content_object.game.cover.url }}" alt="{{ original_activity.content_object.game.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                        <img src="{{ original_activity.content_object.game.cover.url }}" alt="{{ original_activity.content_object.game.title }} cover" class="img-fluid blur" onclick="this.classList.toggle('blur')">
                                     {% else %}
                                         <img src="{{ original_activity.content_object.game.cover.url }}" alt="{{ original_activity.content_object.game.title }} cover" style="width: 100%;">
                                     {% endif %}

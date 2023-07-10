@@ -13,6 +13,7 @@ class Entity(models.Model):
     # entity meta data
     name = models.CharField(max_length=255)
     romanized_name = models.CharField(max_length=255, blank=True, null=True)
+    note = models.TextField(blank=True, null=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)

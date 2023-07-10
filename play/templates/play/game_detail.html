@@ -7,12 +7,12 @@
 <div class="container">
     <div class="row">
         <!--Left columns-->
-        <div class="col-sm-8">
+        <div class="col-lg-8 col-md-8 col-sm-12">
             <!-- game-card -->
             <div class="game-card justify-content-start">
-                <div class="d-flex flex-row mt-2">
+                <div class="d-flex flex-column flex-lg-row mt-2">
                     <!--cover-box-->
-                    <div>
+                    <div class="col-12 col-lg-auto mb-3 mb-lg-0">
                         <div class="game-cover-box">
                             {% if object.cover %}
                                 {% if object.cover_sens %}
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <!--game-meta-->
-                    <div class="flex-grow-1 ms-3">
+                    <div class="col flex-grow-1 ms-lg-3">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
                                 <h4>{{ object.title }} </h4>

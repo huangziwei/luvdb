@@ -8,16 +8,16 @@
 <div class="container">
     <div class="row">
         <!--Left columns-->
-        <div class="col-sm-8">
+        <div class="col-lg-8 col-md-8 col-sm-12">
             <!-- release-card -->
             <div class="release-card justify-content-start">
-                <div class="d-flex flex-row mt-2">
+                <div class="d-flex flex-column flex-lg-row mt-2">
                     <!--cover-box-->
-                    <div>
+                    <div class="col-12 col-lg-auto mb-3 mb-lg-0">
                         <div class="listen-cover-box">
                             {% if object.cover %}
                                 {% if object.cover_sens %}
-                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image blur img-fluid" onclick="this.classList.toggle('blur')">
                                 {% else %}
                                     <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid">
                                 {% endif %}
@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <!--release-meta-->
-                    <div class="flex-grow-1 ms-3">
+                    <div class="col flex-grow-1 ms-lg-3">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
                                 <h2>{{ object.title }} </h2>

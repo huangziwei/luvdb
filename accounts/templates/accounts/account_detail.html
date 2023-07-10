@@ -91,11 +91,11 @@
             {% for item in reading %}
               <div class="me-3">
                 {% if item.content_type.model == 'book' %}
-                  <a href="{% url 'read:book_detail' item.content_object.id %}">
+                  <a href="{% url 'read:book_checkin_list' item.content_object.id item.user.username %}">
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                   </a>
                 {% elif item.content_type.model == 'issue' %}
-                  <a href="{% url 'read:issue_detail' item.content_object.periodical.id item.content_object.id %}">
+                  <a href="{% url 'read:issue_checkin_list' item.content_object.periodical.id item.content_object.id item.user.username %}">
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                   </a>                
                 {% endif %}
@@ -112,11 +112,11 @@
             {% for item in read %}
               <div class="me-3">
                 {% if item.content_type.model == 'book' %}
-                  <a href="{% url 'read:book_detail' item.content_object.id %}">
+                  <a href="{% url 'read:book_checkin_list' item.content_object.id item.user.username %}">
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                   </a>
                 {% elif item.content_type.model == 'issue' %}
-                  <a href="{% url 'read:issue_detail' item.content_object.periodical.id item.content_object.id %}">
+                  <a href="{% url 'read:issue_checkin_list' item.content_object.periodical.id item.content_object.id item.user.username %}">
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                   </a>                
                 {% endif %}
@@ -147,11 +147,11 @@
             {% for item in watching %}
             <div class="me-3">
                 {% if item.content_type.model == 'movie' %}
-                  <a href="{% url 'watch:movie_detail' item.content_object.id %}">
+                  <a href="{% url 'watch:movie_checkin_list' item.content_object.id item.user.username %}">
                     <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                   </a>
                 {% elif item.content_type.model == 'series' %}
-                  <a href="{% url 'watch:series_detail' item.content_object.id %}">
+                  <a href="{% url 'watch:series_checkin_list' item.content_object.id item.user.username %}">
                     <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
                   </a>
                 {% endif %}
@@ -167,11 +167,11 @@
             {% for item in watched %}
             <div class="me-3">
                 {% if item.content_type.model == 'movie' %}
-                  <a href="{% url 'watch:movie_detail' item.content_object.id %}">
+                  <a href="{% url 'watch:movie_checkin_list' item.content_object.id item.user.username %}">
                     <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                   </a>
                 {% elif item.content_type.model == 'series' %}
-                  <a href="{% url 'watch:series_detail' item.content_object.id %}">
+                  <a href="{% url 'watch:series_checkin_list' item.content_object.id item.user.username %}">
                     <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
                   </a>
                 {% endif %}
@@ -200,7 +200,7 @@
             <div class="rotate text-muted">Looping</div>
             {% for item in looping %}
             <div class="me-3">
-              <a href="{% url 'listen:release_detail' item.content_object.id %}">
+              <a href="{% url 'listen:listen_checkin_list' item.content_object.id item.user.username %}">
                 <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
               </a>
             </div>
@@ -215,7 +215,7 @@
             <div class="rotate text-muted">Listend</div>
             {% for item in listened %}
             <div class="me-3">
-              <a href="{% url 'listen:release_detail' item.content_object.id %}">
+              <a href="{% url 'listen:listen_checkin_list' item.content_object.id item.user.username %}">
                 <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
               </a>
             </div>
@@ -243,7 +243,7 @@
             <div class="rotate text-muted">Playing</div>
             {% for item in playing %}
             <div class='me-3'>
-              <a href="{% url 'play:game_detail' item.game.id %}">
+              <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
                 <img src="{{ item.game.cover.url }}" alt="{{ item.game.title }} cover" style="width: 120px;" class="cover-image">
               </a>
             </div>
@@ -257,7 +257,7 @@
             <div class="rotate text-muted">Played</div>
             {% for item in played %}
             <div class='me-3'>
-              <a href="{% url 'play:game_detail' item.game.id %}">
+              <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
                 <img src="{{ item.game.cover.url }}" alt="{{ item.game.title }} cover" style="width: 120px;" class="cover-image">
               </a>
             </div>

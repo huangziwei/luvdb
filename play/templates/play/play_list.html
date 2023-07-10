@@ -11,7 +11,7 @@
                             <a href="{% url 'play:game_detail' game.pk %}">
                                 {% if game.cover %}
                                     {% if game.cover_sens %}
-                                        <img src="{{ game.cover.url }}" alt="{{ game.title }} cover" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                        <img src="{{ game.cover.url }}" alt="{{ game.title }} cover" class="img-fluid blur" onclick="this.classList.toggle('blur')">
                                     {% else %}
                                         <img src="{{ game.cover.url }}" alt="{{ game.title }}" class="img-fluid">
                                     {% endif %}

@@ -73,7 +73,7 @@
                     <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                         {% if checkin.content_object.cover %}
                             {% if checkin.content_object.cover_sens %}
-                                <img src="{{ checkin.content_object.cover.url }}" alt="{{ checkin.content_object.title }} cover" style="width: 100%;" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                <img src="{{ checkin.content_object.cover.url }}" alt="{{ checkin.content_object.title }} cover" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
                             {% else %}
                                 <img src="{{ checkin.content_object.cover.url }}" alt="{{ checkin.content_object.title }} cover" style="width: 100%;">
                             {% endif %}

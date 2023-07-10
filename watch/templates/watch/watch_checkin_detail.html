@@ -52,7 +52,7 @@
           <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {% if object.content_object.poster %}
                     {% if object.content_object.poster_sens %}
-                      <img src="{{ object.content_object.poster.url }}" alt="{{ object.content_object.title }} poster" style="width: 100%;" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                      <img src="{{ object.content_object.poster.url }}" alt="{{ object.content_object.title }} poster" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
                     {% else %}
                       <img src="{{ object.content_object.poster.url }}" alt="{{ object.content_object.title }} poster" style="width: 100%;">
                     {% endif %}

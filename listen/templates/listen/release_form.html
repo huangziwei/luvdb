@@ -30,13 +30,13 @@
                     {{ form.person | as_crispy_field}}
                     <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>
                 </div>
-                <div class="col-md-3">
-                    {{ form.alt_name | as_crispy_field}}
-                </div>
                 <div class="col-md-4">
                     {{ form.role | as_crispy_field}}
                     {{ form.domain | as_crispy_field }}
                     <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
+                </div>
+                <div class="col-md-3">
+                    {{ form.alt_name | as_crispy_field}}
                 </div>
             </div>
         </div>  

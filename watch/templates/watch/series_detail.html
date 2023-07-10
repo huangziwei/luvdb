@@ -7,16 +7,16 @@
 <div class="container">
     <div class="row">
         <!--Left columns-->
-        <div class="col-sm-8">
+        <div class="col-lg-8 col-md-8 col-sm-12">
             <!-- movie-card -->
             <div class="movie-card justify-content-start">
-                <div class="d-flex flex-row mt-2">
+                <div class="d-flex flex-column flex-lg-row mt-2">
                     <!--poster-box-->
-                    <div>
+                    <div class="col-12 col-lg-auto mb-3 mb-lg-0">
                         <div class="watch-cover-box">
                             {% if object.poster %}
                                 {% if object.poster_sens %}
-                                    <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                    <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="img-fluid blur" onclick="this.classList.toggle('blur')">
                                 {% else %}
                                     <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="img-fluid">
                                 {% endif %}    
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <!--movie-meta-->
-                    <div class="flex-grow-1 ms-3">
+                    <div class="col flex-grow-1 ms-lg-3">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
                                 <h4>{{ object.title }} </h4>

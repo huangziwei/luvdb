@@ -74,7 +74,7 @@
                     <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                         {% if checkin.game.cover %}
                             {% if checkin.game.cover_sens %}
-                                <img src="{{ checkin.game.cover.url }}" alt="{{ checkin.game.title }} cover" style="width: 100%;" class="cover-image blur" onclick="this.classList.toggle('blur')">
+                                <img src="{{ checkin.game.cover.url }}" alt="{{ checkin.game.title }} cover" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
                             {% else %}
                                 <img src="{{ checkin.game.cover.url }}" alt="{{ checkin.game.title }} cover" style="width: 100%;">
                             {% endif %}
