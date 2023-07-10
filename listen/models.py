@@ -192,6 +192,7 @@ class Release(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    listencheckin = GenericRelation("ListenCheckIn")
 
     def __str__(self):
         return self.title

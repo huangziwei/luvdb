@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import F, OuterRef, Q, Subquery
+from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.html import format_html
@@ -762,7 +762,23 @@ class ListenListView(ListView):
     def get_queryset(self):
         recent_releases = Release.objects.all().order_by("-created_at")[:12]
 
-        return {"recent_releases": recent_releases}
+        release_content_type = ContentType.objects.get_for_model(Release)
+        trending_releases = (
+            Release.objects.annotate(
+                checkins=Count(
+                    "listencheckin",
+                    filter=Q(listencheckin__content_type=release_content_type),
+                    distinct=True,
+                )
+            )
+            .exclude(checkins=0)
+            .order_by("-checkins")[:12]
+        )
+
+        return {
+            "recent_releases": recent_releases,
+            "trending_releases": trending_releases,
+        }
 
 
 class ListenCheckInUserListView(ListView):
