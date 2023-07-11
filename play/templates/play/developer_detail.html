@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-7 left-column">
+    
+            <span class='d-flex align-items-start'>
+                <h2>
+                    {{ object.name }}
+                    {% if object.romanized_name %} / {{ object.romanized_name }} {% endif %}
+                </h2> 
+            </span>
+
+            {% if object.games.count != 0 %}
+                <h3>Game releases</h3>
+                <ul>
+                {% for game in object.games.all %}
+                    <li>
+                        <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a> 
+                        ({% for platform in game.platforms.all %}
+                            {{platform}} {% if not forloop.last %} / {% endif %}
+                        {% endfor %}, 
+                        {{ game.release_date}})
+                    </li>
+                {% empty %}
+                    <li>This publisher has no game releases.</li>
+                {% endfor %}
+                </ul>
+            {% endif %} 
+        </div>
+    </div>
+</div>
+
+{% endblock %}

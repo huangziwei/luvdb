@@ -161,6 +161,8 @@ class Work(models.Model):  # Renamed from Book
         ("PL", "Play"),
         ("SC", "Screenplay"),
         ("ME", "Memoir"),
+        ("AU", "Autobiography"),
+        ("NF", "Nonfiction"),
         ("OT", "Other"),
     )
     work_type = models.CharField(

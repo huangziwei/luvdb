@@ -14,13 +14,28 @@
                 <a href="{% url 'entity:person_update' object.pk %}" class='fs-6 text-secondary'>Edit Person</a>
                 {% endif %}
             </span>
+            <!--meta-->
             <span class="text-secondary">
                 {% if object.birth_date %}{{ object.birth_date }}-{% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %}
             </span>
+
+            {% if object.wikipedia %}
+            <div>
+                <strong>Wikpedia:</strong>
+                <a href="{{ object.wikipedia }}" target="_blank">{{ object.wikipedia }}</a>
+            </div>
+            {% endif %}
+            {% if object.website %}
+            <div>
+                <strong>Website:</strong>
+                <a href="{{ object.website }}" target="_blank">{{ object.website }}</a>
+            </div>
+            {% endif %}
+            
             
             <!--Read-->
             {% if object.read_works.count != 0 %}
-                <h3>Bibliography</h3>
+                <h3 class="mt-3">Bibliography</h3>
                 <ul>
                 {% for work in read_works %}
                     <li>

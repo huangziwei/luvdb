@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-7 left-column">
+    
+            <span class='d-flex align-items-start'>
+                <h2>
+                    {{ object.name }}
+                    {% if object.romanized_name %} / {{ object.romanized_name }} {% endif %}
+                </h2> 
+            </span>
+
+            {% if object.movies.count != 0 %}
+                <h3>Movies</h3>
+                <ul>
+                {% for movie in object.movies.all %}
+                    <li>
+                        <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> 
+                        ({{ movie.release_date}})
+                    </li>
+                {% empty %}
+                    <li>This Studio has no movies.</li>
+                {% endfor %}
+                </ul>
+            {% endif %} 
+
+
+            {% if object.series.count != 0 %}
+                <h3>Series</h3>
+                <ul>
+                {% for serie in object.series.all %}
+                    <li>
+                        <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> 
+                        ({{ serie.release_date}})
+                    </li>
+                {% empty %}
+                    <li>This Studio has no series.</li>
+                {% endfor %}
+                </ul>
+            {% endif %} 
+        </div>
+    </div>
+</div>
+
+{% endblock %}

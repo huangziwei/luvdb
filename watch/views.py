@@ -257,7 +257,7 @@ class StudioCreateView(LoginRequiredMixin, CreateView):
 class StudioDetailView(DetailView):
     model = Studio
     template_name = "watch/studio_detail.html"
-    context_object_name = "studio"  # Default is "object"
+    context_object_name = "studio"
 
 
 class StudioAutocomplete(autocomplete.Select2QuerySetView):
