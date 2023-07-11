@@ -9,7 +9,60 @@ from django.conf import settings
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
-from .models import Game, GameCast, GameCheckIn, GameInSeries, GameRole, GameSeries
+from .models import (
+    Game,
+    GameCast,
+    GameCheckIn,
+    GameInSeries,
+    GameRole,
+    GameSeries,
+    Work,
+    WorkRole,
+)
+
+
+class WorkForm(forms.ModelForm):
+    class Meta:
+        model = Work
+        exclude = ["created_by", "updated_by", "persons", "casts"]
+        fields = "__all__"
+        widgets = {
+            "developers": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("play:developer-autocomplete")
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(WorkForm, self).__init__(*args, **kwargs)
+        self.fields["developers"].required = False
+
+
+class WorkRoleForm(forms.ModelForm):
+    domain = forms.CharField(initial="play", widget=forms.HiddenInput())
+
+    class Meta:
+        model = WorkRole
+        fields = ("person", "role", "domain", "alt_name")
+
+
+WorkRoleFormSet = inlineformset_factory(
+    Work,
+    WorkRole,
+    form=WorkRoleForm,
+    extra=15,
+    can_delete=True,
+    widgets={
+        "person": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:person-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+        ),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:role-autocomplete"),
+            forward=["domain"],
+            attrs={"data-create-url": reverse_lazy("entity:role_create")},
+        ),
+    },
+)
 
 
 class GameForm(forms.ModelForm):
@@ -18,6 +71,9 @@ class GameForm(forms.ModelForm):
         exclude = ["created_by", "updated_by", "persons", "casts"]
         fields = "__all__"
         widgets = {
+            "work": autocomplete.ModelSelect2(
+                url=reverse_lazy("play:work-autocomplete")
+            ),
             "developers": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("play:developer-autocomplete")
             ),

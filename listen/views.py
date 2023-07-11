@@ -625,7 +625,7 @@ class ListenCheckInListView(ListView):
 
     def get_queryset(self):
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
-        status = self.request.GET.get("status")
+        status = self.request.GET.get("status", "")
         user = get_object_or_404(
             User, username=self.kwargs["username"]
         )  # Get user from url param
@@ -648,7 +648,7 @@ class ListenCheckInListView(ListView):
         context = super().get_context_data(**kwargs)
 
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
-        status = self.request.GET.get("status")  # Added status
+        status = self.request.GET.get("status", "")  # Added status
         user = get_object_or_404(User, username=self.kwargs["username"])
         context["user"] = user
         context["order"] = order
@@ -718,7 +718,7 @@ class ListenCheckInAllListView(ListView):
         else:
             checkins = checkins.order_by("-timestamp")
 
-        status = self.request.GET.get("status")
+        status = self.request.GET.get("status", "")
         if status:
             checkins = checkins.filter(status=status)
 
@@ -813,7 +813,7 @@ class ListenCheckInUserListView(ListView):
         else:
             checkins = checkins.order_by("-timestamp")
 
-        status = self.request.GET.get("status")
+        status = self.request.GET.get("status", "")
         if status:
             checkins = checkins.filter(status=status)
 

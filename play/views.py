@@ -26,10 +26,91 @@ from .forms import (
     GameInSeriesFormSet,
     GameRoleFormSet,
     GameSeriesForm,
+    WorkForm,
+    WorkRoleFormSet,
 )
-from .models import Developer, Game, GameCheckIn, GameRole, GameSeries, Platform
+from .models import (
+    Developer,
+    Game,
+    GameCheckIn,
+    GameRole,
+    GameSeries,
+    Platform,
+    Work,
+    WorkRole,
+)
 
 User = get_user_model()
+
+
+class WorkCreateView(LoginRequiredMixin, CreateView):
+    model = Work
+    form_class = WorkForm
+    template_name = "play/work_create.html"
+
+    def get_success_url(self):
+        return reverse_lazy("play:work_detail", kwargs={"pk": self.object.pk})
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        workrole = context["workroles"]
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if workrole.is_valid():
+                workrole.instance = self.object
+                workrole.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["workroles"] = WorkRoleFormSet(self.request.POST, instance=self.object)
+        else:
+            data["workroles"] = WorkRoleFormSet(instance=self.object)
+        return data
+
+
+class WorkDetailView(DetailView):
+    model = Work
+    template_name = "play/work_detail.html"
+    context_object_name = "work"  # Default is "object"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        work = get_object_or_404(Work, pk=self.kwargs.get("pk"))
+        context["games"] = work.games.all().order_by("release_date")
+        return context
+
+
+class WorkUpdateView(LoginRequiredMixin, UpdateView):
+    model = Work
+    form_class = WorkForm
+    template_name = "play/work_update.html"
+
+    def get_success_url(self):
+        return reverse_lazy("play:work_detail", kwargs={"pk": self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["workroles"] = WorkRoleFormSet(self.request.POST, instance=self.object)
+        else:
+            data["workroles"] = WorkRoleFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        workrole = context["workroles"]
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if workrole.is_valid():
+                workrole.instance = self.object
+                workrole.save()
+        return super().form_valid(form)
 
 
 class GameCreateView(LoginRequiredMixin, CreateView):
@@ -278,6 +359,19 @@ class PlatformAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
+
+        return qs
+
+
+class WorkAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Work.objects.none()
+
+        qs = Work.objects.all()
+
+        if self.q:
+            qs = qs.filter(title__istartswith=self.q)
 
         return qs
 

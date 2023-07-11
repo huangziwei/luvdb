@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!--Left columns-->
+        <div class="col-sm-8">
+            <span class='d-flex align-items-start'>
+                <h2>{{ object.title }} ({{ object.first_release_date }})</h2>
+            </span>
+
+            {% for role in object.workrole_set.all %}
+            <p>
+                <a href="{% url 'entity:person_detail' role.person.id %}">{{ role.person.name }}</a> ({{ role.person.romanized_name }})
+            </p>
+            {% endfor %}
+
+            <h3>Releases</h3>
+            <ul>
+            {% for game in games %}
+                <li>
+                    <a href="{% url "play:game_detail" game.id %}">{{ game.title }}</a>
+                    ({% if game.platforms%}
+                    {% for platfrom in  game.platforms.all %}
+                        {{ platfrom.name }}{% if not forloop.last %} / {% endif %}
+                    {% endfor %}
+                        
+                    {% endif %}
+                        , {{ game.release_date }}
+                        )
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+
+        <!--Right columns-->
+        <div class="col-sm-4">
+            <!--Related Work / Edit -->
+            <div class="bg-light p-3">
+                {% if user.is_authenticated %}
+                <div>
+                    <a href="{% url 'play:work_update' object.pk %}" class='fs-6 text-secondary'>Edit Work</a>
+                </div>
+                <div>
+                    <a href="{% url 'play:game_create'%}" class='fs-6 text-secondary'>Add Game Release</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

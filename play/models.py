@@ -52,10 +52,101 @@ class Platform(Entity):
         return self.name
 
 
+class Work(models.Model):  # Renamed from Book
+    """
+    A Work entity
+    """
+
+    # work meta data
+    title = models.CharField(max_length=255)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
+    persons = models.ManyToManyField(
+        Person, through="WorkRole", related_name="play_works"
+    )
+    developers = models.ManyToManyField(Developer, related_name="play_works")
+
+    first_release_date = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # YYYY or YYYY-MM or YYYY-MM-DD
+
+    # novel, novella, short story, poem, etc.
+    WORK_TYPES = (
+        ("visual_novel", "Visual Novel"),
+        ("rpg", "RPG"),
+        ("action", "Action"),
+        ("adventure", "Adventure"),
+        ("platformer", "Platformer"),
+        ("puzzle", "Puzzle"),
+        ("racing", "Racing"),
+        ("fps", "FPS"),
+        ("tbs", "TBS"),
+        ("rts", "RTS"),
+        ("sports", "Sports"),
+        ("simulation", "Simulation"),
+        ("strategy", "Strategy"),
+        ("mmorpg", "MMORPG"),
+        ("sandbox", "Sandbox"),
+        ("other", "Other"),
+    )
+    work_type = models.CharField(
+        max_length=255, choices=WORK_TYPES, blank=True, null=True
+    )  # novel, etc.
+
+    # entry meta data
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="play_works_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="play_works_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.title
+
+
+class WorkRole(models.Model):  # Renamed from BookRole
+    """
+    A Role of a Person in a Work
+    """
+
+    work = models.ForeignKey(Work, on_delete=models.CASCADE)
+    person = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="play_workrole_set",
+    )
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="play_workrole_set",
+    )
+    alt_name = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.work} - {self.person} - {self.role}"
+
+
 class Game(models.Model):
     title = models.CharField(max_length=100)
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
+    work = models.ForeignKey(
+        Work, on_delete=models.CASCADE, null=True, blank=True, related_name="games"
+    )
+
     developers = models.ManyToManyField(Developer, related_name="games")
+
     persons = models.ManyToManyField(Person, through="GameRole", related_name="games")
     casts = models.ManyToManyField(
         Person, through="GameCast", related_name="games_cast"

@@ -3,6 +3,12 @@
     {% csrf_token %}
     {{ form.title|as_crispy_field }}
     {{ form.romanized_title|as_crispy_field }}
+
+    <div class="mb-3">
+        {{ form.work|as_crispy_field }}
+        <a href="{% url 'play:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>                   
+    </div>
+
     {{ gameroles.management_form|crispy }}
     <div id="game-role-formset" class="bg-light p-3 mb-3">
         <strong>Persons related to this Game</strong>

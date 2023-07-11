@@ -21,12 +21,20 @@ from .views import (
     PlatformCreateView,
     PlatformDetailView,
     PlayListView,
+    WorkAutocomplete,
+    WorkCreateView,
+    WorkDetailView,
+    WorkUpdateView,
 )
 
 app_name = "play"
 urlpatterns = [
     # play
     path("recent/", PlayListView.as_view(), name="play_list"),
+    # work
+    path("work/create/", WorkCreateView.as_view(), name="work_create"),
+    path("work/<int:pk>/", WorkDetailView.as_view(), name="work_detail"),
+    path("work/<int:pk>/update/", WorkUpdateView.as_view(), name="work_update"),
     # game
     path("game/create/", GameCreateView.as_view(), name="game_create"),
     path("game/<int:pk>/", GameDetailView.as_view(), name="game_detail"),
@@ -48,6 +56,7 @@ urlpatterns = [
         PlatformAutocomplete.as_view(),
         name="platform-autocomplete",
     ),
+    path("work-autocomplete/", WorkAutocomplete.as_view(), name="work-autocomplete"),
     # checkin
     path(
         "game/<int:game_id>/checkins/",
@@ -59,6 +68,9 @@ urlpatterns = [
         view=GameCheckInListView.as_view(),
         name="game_checkin_list",
     ),
+    # cast
+    path("game/<int:pk>/cast/", GameCastDetailView.as_view(), name="game_cast_detail"),
+    # checkin
     path(
         "checkin/<int:pk>/", GameCheckInDetailView.as_view(), name="game_checkin_detail"
     ),
@@ -83,6 +95,4 @@ urlpatterns = [
     path(
         "series/<int:pk>/update/", GameSeriesUpdateView.as_view(), name="series_update"
     ),
-    # cast
-    path("game/<int:pk>/cast/", GameCastDetailView.as_view(), name="game_cast_detail"),
 ]
