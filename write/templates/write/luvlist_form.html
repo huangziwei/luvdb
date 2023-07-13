@@ -1,0 +1,51 @@
+{% load crispy_forms_tags %}
+<form method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-12">
+            {{ form.title|as_crispy_field }} 
+        </div>
+    </div>
+    <h2>Contents in List</h2>
+    {{ contents.management_form }}
+    <div id="contentInListDiv">
+    {% for form in contents %}
+        {{ form.id }}
+        <div class="row{% if forloop.last %} empty-form{% endif %}" {% if forloop.last %}style="display: none;"{% endif %}>
+            <div class="col-md-8">
+                {{ form.content_url|as_crispy_field }}
+            </div>
+            <div class="col-md-4">
+                {{ form.order|as_crispy_field }}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    <div class="d-flex justify-content-between">
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <button id="addMore" type="button" class="btn btn-outline-dark">Add More</button>
+    </div>
+
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let formsetNum = {{ contents|length }};
+        let emptyForm = document.querySelector('.empty-form').cloneNode(true);
+    
+        document.querySelector('#addMore').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            let newForm = emptyForm.cloneNode(true);
+            newForm.classList.remove('empty-form');
+            newForm.style.display = '';
+    
+            newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formsetNum);
+    
+            document.querySelector('#contentInListDiv').appendChild(newForm);
+            
+            formsetNum++;
+            document.querySelector('#id_contentinlist_set-TOTAL_FORMS').value = formsetNum;
+        });
+    });
+</script>

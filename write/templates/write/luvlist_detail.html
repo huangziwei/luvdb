@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class='col-7'>
+            <h2>{{ object.title }}</h2>
+            <p>Created by: {{ object.user }}</p>
+            <h3>Items:</h3>
+            {% for content in contents %}
+            <li>
+                <a href="{{ content.content_object.get_absolute_url }}">{{ content.content_object }}</a>
+                (Order: {{ content.order }})
+            </li>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

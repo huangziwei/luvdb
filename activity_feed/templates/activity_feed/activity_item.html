@@ -220,7 +220,7 @@
                     
                     <div>
                         {% if activity.content_object.content_object.publication_date %}
-                            Year: {{ activity.content_object.content_object.publication_date|slice:":4" }}
+                            Date: {{ activity.content_object.content_object.publication_date }}
                         {% endif %}
                     </div>
                 </div>
@@ -331,7 +331,7 @@
                     
                     <div>
                         {% if activity.content_object.content_object.release_date %}
-                            Year: {{ activity.content_object.content_object.release_date|slice:":4" }}
+                            Date: {{ activity.content_object.content_object.release_date }}
                         {% endif %}
                     </div>
                 </div>
@@ -443,7 +443,7 @@
                     
                     <div>
                         {% if activity.content_object.content_object.release_date %}
-                            Release Date: {{ activity.content_object.content_object.release_date|slice:":4" }}
+                            Release Date: {{ activity.content_object.content_object.release_date }}
                         {% endif %}
                     </div>
                 </div>
@@ -569,7 +569,7 @@
                     
                     <div>
                         {% if activity.content_object.game.release_date %}
-                            Release Date: {{ activity.content_object.game.release_date|slice:":4" }}
+                            Release Date: {{ activity.content_object.game.release_date }}
                         {% endif %}
                     </div>
                 </div>

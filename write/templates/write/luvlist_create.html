@@ -1,0 +1,12 @@
+{% extends "base.html" %} 
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class='col-7'>
+            <h2>New LuvList</h2>
+            {% include "write/luvlist_form.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

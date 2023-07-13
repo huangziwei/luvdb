@@ -348,3 +348,37 @@ def delete_say(sender, instance, **kwargs):
     if isinstance(instance.content_object, Say):
         # Delete the Repost object
         instance.content_object.delete()
+
+
+class LuvList(models.Model):
+    title = models.CharField(max_length=100)
+
+    user = models.ForeignKey(
+        User,
+        related_name="luvlists_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("read:luvlist_detail", args=[str(self.id)])
+
+
+class ContentInList(models.Model):
+    luv_list = models.ForeignKey(
+        LuvList, related_name="contents", on_delete=models.CASCADE
+    )
+    order = models.PositiveIntegerField(null=True, blank=True)
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.luv_list.title}: {self.content_object}"

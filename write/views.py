@@ -1,9 +1,13 @@
 from collections import Counter
 from itertools import chain
+from urllib.parse import urlparse
 
+from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
@@ -17,8 +21,16 @@ from django.views.generic.edit import FormView
 
 from activity_feed.models import Activity
 
-from .forms import CommentForm, PinForm, PostForm, RepostForm, SayForm
-from .models import Comment, Pin, Post, Repost, Say
+from .forms import (
+    CommentForm,
+    ContentInListFormSet,
+    LuvListForm,
+    PinForm,
+    PostForm,
+    RepostForm,
+    SayForm,
+)
+from .models import Comment, LuvList, Pin, Post, Repost, Say
 
 User = get_user_model()
 
@@ -51,11 +63,26 @@ class PostListView(ListView):
         context["object"] = self.user
 
         # Get all tags for this user's pins
-        all_tags = set()
+        all_tags = []
         for post in Post.objects.filter(user=self.user):
             for tag in post.tags.all():
-                all_tags.add(tag)
-        context["all_tags"] = all_tags
+                all_tags.append(tag)
+
+        # Count the frequency of each tag
+        tag_counter = Counter(all_tags)
+
+        # Calculate max size limit for tags (200% in this case)
+        max_size = 200
+        min_size = 100
+        max_count = max(tag_counter.values(), default=1)
+        scaling_factor = (max_size - min_size) / max_count
+
+        # Scale the counts so that the maximum count corresponds to the maximum size
+        tag_sizes = {}
+        for tag in tag_counter:
+            tag_sizes[tag] = min_size + scaling_factor * tag_counter[tag]
+
+        context["all_tags"] = tag_sizes
 
         return context
 
@@ -106,6 +133,29 @@ class SayListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["object"] = self.user
+
+        # Get all tags for this user's pins
+        all_tags = []
+        for say in Say.objects.filter(user=self.user):
+            for tag in say.tags.all():
+                all_tags.append(tag)
+
+        # Count the frequency of each tag
+        tag_counter = Counter(all_tags)
+
+        # Calculate max size limit for tags (200% in this case)
+        max_size = 200
+        min_size = 100
+        max_count = max(tag_counter.values(), default=1)
+        scaling_factor = (max_size - min_size) / max_count
+
+        # Scale the counts so that the maximum count corresponds to the maximum size
+        tag_sizes = {}
+        for tag in tag_counter:
+            tag_sizes[tag] = min_size + scaling_factor * tag_counter[tag]
+
+        context["all_tags"] = tag_sizes
+
         return context
 
 
@@ -385,3 +435,71 @@ class RepostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         repost = self.get_object()
         return self.request.user == repost.user
+
+
+class LuvListCreateView(CreateView):
+    model = LuvList
+    form_class = LuvListForm
+    template_name = "write/luvlist_create.html"  # Assuming 'luvlist_form.html' is the template for the create view
+
+    def get_context_data(self, **kwargs):
+        data = super(LuvListCreateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data["contents"] = ContentInListFormSet(self.request.POST)
+        else:
+            data["contents"] = ContentInListFormSet()
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        contents = context["contents"]
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        if contents.is_valid():
+            contents.instance = self.object
+            contents.save()
+        return super(LuvListCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse("write:luvlist_detail", args=[str(self.object.id)])
+
+
+class LuvListDetailView(DetailView):
+    model = LuvList
+    template_name = "write/luvlist_detail.html"  # Assuming 'luvlist_detail.html' is the template for the detail view
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context[
+            "contents"
+        ] = self.object.contents.all()  # get all the contents related to this LuvList
+        return context
+
+
+class LuvListUpdateView(UpdateView):
+    model = LuvList
+    form_class = LuvListForm
+    template_name = "write/luvlist_update.html"  # Assuming 'luvlist_form.html' is the template for the update view
+
+    def get_context_data(self, **kwargs):
+        data = super(LuvListUpdateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data["contents"] = ContentInListFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["contents"] = ContentInListFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        contents = context["contents"]
+        self.object = form.save()
+        if contents.is_valid():
+            contents.instance = self.object
+            contents.save()
+        return super(LuvListUpdateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse("write:luvlist_detail", args=[str(self.object.id)])

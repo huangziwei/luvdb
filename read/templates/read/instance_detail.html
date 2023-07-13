@@ -6,9 +6,8 @@
     <div class="row">
         <!--Left columns-->
         <div class="col-sm-8">
-            <span class='d-flex align-items-start'>
-                <h2>{{ object.title }} ({{ object.publication_date }})</h2>
-            </span>
+            <h2>{{ object.title }} ({{ object.publication_date }})</h2>
+            {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
             
             {% for role in object.instancerole_set.all %}
             <p>

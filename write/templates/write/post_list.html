@@ -6,9 +6,9 @@
     <div class="row">
         <div class="col-sm-7 left-column">
             <h5>
-            <a href="{% url 'accounts:detail' object.username %}">
-                {{object.display_name | default:object.username}} 
-            </a> posted
+                <a href="{% url 'accounts:detail' object.username %}">
+                    {{object.display_name | default:object.username}} 
+                </a> posted
             </h5>
             {% for post in post_list %}
                 <div>

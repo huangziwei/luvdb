@@ -4,6 +4,9 @@ from .views import (
     CommentCreateView,
     CommentDeleteView,
     CommentUpdateView,
+    LuvListCreateView,
+    LuvListDetailView,
+    LuvListUpdateView,
     PinCreateView,
     PinDeleteView,
     PinDetailView,
@@ -81,5 +84,11 @@ urlpatterns = [
         "u/<str:username>/tag/<str:tag>/",
         TagUserListView.as_view(),
         name="tag_user_list",
+    ),
+    # luvlist
+    path("luvlist/create/", LuvListCreateView.as_view(), name="luvlist_create"),
+    path("luvlist/<int:pk>/", LuvListDetailView.as_view(), name="luvlist_detail"),
+    path(
+        "luvlist/<int:pk>/update/", LuvListUpdateView.as_view(), name="luvlist_update"
     ),
 ]
