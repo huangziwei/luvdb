@@ -503,3 +503,33 @@ class LuvListUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse("write:luvlist_detail", args=[str(self.object.id)])
+
+
+class LuvListDeleteView(LoginRequiredMixin, DeleteView):
+    model = LuvList
+    template_name = "write/luvlist_confirm_delete.html"  # Assuming 'luvlist_confirm_delete.html' is the template for the delete confirmation
+    success_url = reverse_lazy(
+        "write:luvlist_list"
+    )  # Assuming 'luvlist_list' is the URL where you list all the LuvLists
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Ensure only the owner can delete the LuvList
+        return queryset.filter(user=self.request.user)
+
+
+class LuvListUserListView(LoginRequiredMixin, ListView):
+    model = LuvList
+    template_name = "write/luvlist_list.html"  # Assuming 'luvlist_user_list.html' is the template for the user-specific list view
+
+    def get_queryset(self):
+        self.user = get_object_or_404(
+            get_user_model(), username=self.kwargs["username"]
+        )
+        return LuvList.objects.filter(user=self.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["object"] = self.user
+
+        return context

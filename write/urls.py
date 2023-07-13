@@ -5,8 +5,10 @@ from .views import (
     CommentDeleteView,
     CommentUpdateView,
     LuvListCreateView,
+    LuvListDeleteView,
     LuvListDetailView,
     LuvListUpdateView,
+    LuvListUserListView,
     PinCreateView,
     PinDeleteView,
     PinDetailView,
@@ -90,5 +92,11 @@ urlpatterns = [
     path("luvlist/<int:pk>/", LuvListDetailView.as_view(), name="luvlist_detail"),
     path(
         "luvlist/<int:pk>/update/", LuvListUpdateView.as_view(), name="luvlist_update"
+    ),
+    path(
+        "luvlist/<int:pk>/delete/", LuvListDeleteView.as_view(), name="luvlist_delete"
+    ),
+    path(
+        "luvlists/<str:username>/", LuvListUserListView.as_view(), name="luvlist_list"
     ),
 ]

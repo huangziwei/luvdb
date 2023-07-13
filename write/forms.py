@@ -121,10 +121,19 @@ class LuvListForm(forms.ModelForm):
 
 class ContentInListForm(forms.ModelForm):
     content_url = forms.URLField()
+    comment = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                "rows": 3,
+                "placeholder": "What do you say about it?",
+                "id": "text-input",
+            }
+        )
+    )
 
     class Meta:
         model = ContentInList
-        fields = ["content_url", "order"]
+        fields = ["content_url", "order", "comment"]
         exclude = ["luv_list"]
 
     def clean_content_url(self):
@@ -168,7 +177,9 @@ class ContentInListForm(forms.ModelForm):
         else:
             self.fields["content_url"].required = False  # Add this line
 
-        self.fields["order"].required = False  # Move this line outside if/else block
+        self.fields["order"].required = False
+        self.fields["comment"].required = False
+        self.fields["content_url"].label = "URL"
 
 
 ContentInListFormSet = forms.inlineformset_factory(

@@ -359,6 +359,8 @@ class LuvList(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
@@ -376,6 +378,8 @@ class ContentInList(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
+
+    comment = models.TextField(blank=True, null=True)
 
     class Meta:
         ordering = ["order"]
