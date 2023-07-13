@@ -11,6 +11,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from listen.models import Release, Track
 from listen.models import Work as MusicWork
 from read.models import Book, BookRole
+from read.models import Instance as LitInstance
 from read.models import Work as LitWork
 
 from .forms import PersonForm
@@ -42,19 +43,13 @@ class PersonDetailView(DetailView):
         context["read_works"] = self.object.read_works.all().order_by(
             "publication_date"
         )
-        context["books_as_author"] = Book.objects.filter(
-            bookrole__role__name="Author", bookrole__person=self.object
-        ).order_by("publication_date")
-        context["books_as_translator"] = Book.objects.filter(
-            bookrole__role__name="Translator", bookrole__person=self.object
-        ).order_by("publication_date")
-        context["books_as_editor"] = Book.objects.filter(
-            bookrole__role__name="Editor", bookrole__person=self.object
-        ).order_by("publication_date")
 
-        context["books"] = Book.objects.filter(persons=self.object).order_by(
-            "language", "publication_date"
-        )
+        as_translator = LitInstance.objects.filter(
+            instancerole__role__name="Translator", instancerole__person=self.object
+        ).order_by("publication_date")
+        print(f"as_translator count: {as_translator.count()}")  # Debugging
+
+        context["as_translator"] = as_translator
 
         # listen
         context["listen_works"] = self.object.listen_works.all().order_by(
@@ -76,25 +71,6 @@ class PersonDetailView(DetailView):
             workrole__role__name="Arranger", workrole__person=self.object
         ).order_by("release_date")
 
-        # person = self.object
-        # book_roles = BookRole.objects.filter(person=person)
-
-        # # group roles by the Role name for display
-        # roles = {}
-        # for role in book_roles:
-        #     role_name = str(role.role)
-        #     if role_name != "Author":
-        #         if role_name not in roles:
-        #             roles[role_name] = []
-        #         roles[role_name].append(
-        #             {
-        #                 "title": role.book.title,
-        #                 "publication_date": role.book.publication_date,
-        #                 "url": reverse("read:book_detail", args=[role.book.pk]),
-        #             }
-        #         )
-
-        # context["roles"] = roles
         return context
 
 

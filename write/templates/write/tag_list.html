@@ -14,7 +14,7 @@
                 {% for say in says %}
                     <div class="item mb-3">
                         <p><a href="{% url 'accounts:detail' say.user.username %}"> {{ say.user.display_name | default:say.user.username }} </a>said:</p>
-                        <p>{{ say.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</p>
+                        <p>{{ say.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</p>
                         <p>
                         <small>
                             <a href="{% url 'write:say_detail' say.id %}" class='text-muted'>{{ say.timestamp }}</a>
@@ -30,7 +30,7 @@
                 {% for pin in pins %}
                     <div class="item mb-3">
                         <h5><a href="{{ pin.get_absolute_url }}">{{ pin.title }}</a></h5>
-                        <div>{{ pin.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</div>
+                        <div>{{ pin.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
                         <p>
                         <small>
                             By <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.display_name | default:pin.user.username }}</a> on 
@@ -47,7 +47,7 @@
                 {% for post in posts %}
                     <div class="item mb-3">
                         <h5><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
-                        <div>{{ post.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}</div>
+                        <div>{{ post.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
                         <p><small>By {{ post.user }} on <span class='text-muted'>{{ post.timestamp }}</span></small></p>
                     </div>
                 {% endfor %}

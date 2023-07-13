@@ -5,18 +5,18 @@
 <!--Repost--> 
 <div>
     <div class="activity-item mb-3" data-activity-type="{{ activity.activity_type }}">
-        <p>
+        <div>
             <a href="{% url 'accounts:detail' activity.user.username %}" class="text-decoration-none hover-username">
                 {{ activity.user.display_name | default:activity.user.username }}
                 <span class="username">@{{activity.user.username}}</span>
             </a> 
-             {{ activity.activity_type | parse_activity_type}}:
-        </p>
+             <span class="text-muted">{{ activity.activity_type | parse_activity_type}}:</span>
+        </div>
 
         {% if activity.content_object.content %}
-            <p>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:50  }}</p>
+            <div class="mt-2">{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300  }}</div>
         {% endif %}
-        <div class="bg-light p-3">
+        <div class="bg-light mt-2 p-3">
 
             {% if activity.content_object.original_activity %}
             <!-- Display the reposted activity -->
@@ -29,7 +29,7 @@
                             {{ activity.user.display_name | default:activity.user.username }}
                             <span class="username">@{{activity.user.username}}</span>
                         </a> 
-                        <span class="me-1">checked in</span>
+                        <span class="me-1 text-muted">checked in</span>
                         <!--badge: checkin status-->
                         <div class="d-flex align-items-center me-1">
                         {% if activity.content_object.original_activity.content_object.status == "to_read" %}
@@ -62,7 +62,7 @@
                         {% endif %}
                     </div>
                     <div class="mt-2">
-                        {{ activity.content_object.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                        {{ activity.content_object.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
                     </div>
                     <div class="d-flex flex-row bg-white p-3 mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -124,7 +124,7 @@
                         {{ activity.user.display_name | default:activity.user.username }}
                         <span class="username">@{{activity.user.username}}</span>
                     </a> 
-                    <span class="me-1">checked in</span>
+                    <span class="me-1 text-muted">checked in</span>
                     <!--badge: checkin status-->
                     <div class="d-flex align-items-center me-1">
                     {% if activity.content_object.original_activity.content_object.status == "to_watch" %}
@@ -155,7 +155,7 @@
                     {% endif %}
                 </div>
                 <div class="mt-2">
-                    {{ activity.content_object.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                    {{ activity.content_object.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
                 </div>
                 <div class="d-flex flex-row bg-white p-3 mt-2">
                     <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -216,7 +216,7 @@
                             {{ activity.user.display_name | default:activity.user.username }}
                             <span class="username">@{{activity.user.username}}</span>
                         </a> 
-                        <span class="me-1">checked in</span>
+                        <span class="me-1 text-muted">checked in</span>
                         <!--badge: checkin status-->
                         <div class="d-flex align-items-center me-1">
                         {% if activity.content_object.original_activity.content_object.status == "to_play" %}
@@ -245,10 +245,10 @@
                             {% endif %}
                         </span>
                         {% endif %}
-                        on game:
+                        
                     </div>
                     <div class="mt-2">
-                        {{ activity.content_object.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                        {{ activity.content_object.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
                     </div>
                     <div class="d-flex flex-row bg-white p-3 mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -323,7 +323,7 @@
                             {{ activity.user.display_name | default:activity.user.username }}
                             <span class="username">@{{activity.user.username}}</span>
                         </a> 
-                        <span class="me-1">checked in</span>
+                        <span class="me-1 text-muted">checked in</span>
                         <!--badge: checkin status-->
                         <div class="d-flex align-items-center me-1">
                         {% if activity.content_object.original_activity.content_object.status == "to_listen" %}
@@ -352,7 +352,7 @@
                         {% endif %}
                     </div>
                     <div class="mt-2">
-                        {{ activity.content_object.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                        {{ activity.content_object.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
                     </div>
                     <div class="d-flex flex-row bg-white p-3 mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -396,24 +396,21 @@
                     </div>
        
                 {% else %}
-                    <p>
+                    <div>
                         <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}" class="text-decoration-none hover-username">
                             {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
                             <span class="username">@{{activity.content_object.original_activity.user.username}}</span>
                         </a> 
                         {{ activity.content_object.original_activity.activity_type | parse_activity_type }}:
-                    </p>
+                    </div>
                     {% if activity.content_object.original_activity.activity_type == "post" %}
                         <p><a href="{% url 'write:post_detail' activity.content_object.original_activity.content_object.id %}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a></p>
-                    
                     {% elif activity.content_object.original_activity.activity_type == "pin" %}
-                        <p><a href="{{ activity.content_object.original_activity.content_object.url }}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a> ({{  activity.content_object.original_activity.content_object.url | root_url }})</p>
-
-                    
+                        <p><a href="{{ activity.content_object.original_activity.content_object.url }}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a> ({{  activity.content_object.original_activity.content_object.url | root_url }})</p>                    
                     {% endif %}
-                    <div class="bg-light">
-                        <blockquote>{{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
-                        <p><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
+                    <div>
+                        <div class="mt-2">{{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                        <div class="mt-2"><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></div>
                     </div>
 
                 {% endif %}

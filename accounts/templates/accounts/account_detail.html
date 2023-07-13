@@ -14,7 +14,24 @@
     <!-- Left column -->
     <div class="col-sm-8 order-2 order-sm-1">
 
-      <!--Posts-->
+      <!--navbar-->
+      <div class="row">
+        <div class="d-flex">
+          <span class="me-3">
+            <a href="{% url 'write:say_list' object.username %}">Says</a>
+          </span>
+
+          <span class="me-3">
+            <a href="{% url 'write:post_list' object.username %}">Posts</a>
+          </span>
+
+          <span class="me-3">
+            <a href="{% url 'write:pin_list' object.username %}">Pins</a>
+          </span>    
+        </div>    
+      </div>
+      <hr>
+      {% comment %} <!--Posts-->
       <div class="d-flex justify-content-between align-items-center">
         <h4>Posts</h4>
         <div>
@@ -74,7 +91,7 @@
                 {% endif %}
             </span>
         </div>
-      {% endfor %}
+      {% endfor %} {% endcomment %}
 
       {% if does_read_exist %}
       <div class="row">

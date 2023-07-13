@@ -23,7 +23,7 @@
             (<a href="{% url 'write:pins_from_url' object.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
           </p>
           {% if object.content %}
-          <div>{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify | truncatewords:200 }}</div>
+          <div>{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify }}</div>
           {% endif %}
         </div>
         <span class="d-flex">

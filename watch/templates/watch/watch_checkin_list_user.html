@@ -36,7 +36,7 @@
                         {{ checkin.user.display_name | default:checkin.user.username }}
                         <span class="username">@{{checkin.user.username}}</span>
                     </a> 
-                    <span class="me-1">checked in</span>
+                    <span class="me-1 text-muted">checked in</span>
                     <!--badge: checkin status-->
                     {% if checkin.status == "to_watch" %}
                     <span class="badge text-bg-info me-1">
@@ -65,7 +65,7 @@
                     {% endif %}
                 </div>
                 <div class="mt-2">
-                    {{ checkin.content | linkify_tags | linkify_mentions | markdownify | truncatewords:50 }}
+                    {{ checkin.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
                 </div>
                 <div class="d-flex flex-row bg-light p-3 mt-2">
                     <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">

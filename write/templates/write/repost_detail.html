@@ -10,13 +10,13 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-7 left-column">
-      <p>
+      <div>
         <a href="{% url 'accounts:detail' repost.user.username %}">
           {{ repost.user.display_name | default:repost.user.username }}
         </a> reposted:
-      </p>
+      </div>
       {% if repost.content %}
-        <p>{{ repost.content | linkify_tags | linkify_mentions | markdownify | truncatewords:200  }}</p>
+        <div class="mt-2">{{ repost.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300  }}</div>
       {% endif %}
 
 
@@ -33,7 +33,7 @@
                             {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
                             <span class="username">@{{repost.original_activity.user.username}}</span>
                         </a> 
-                        <span class="me-1">checked in</span>
+                        <span class="me-1 text-muted">checked in</span>
                         <!--badge: checkin status-->
                         {% if repost.original_activity.content_object.status == "to_read" %}
                         <span class="badge text-bg-info me-1">
@@ -64,7 +64,7 @@
                         {% endif %}
                     </div>
                     <div class="mt-2">
-                        {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                        {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
                     </div>
                     <div class="d-flex flex-row bg-white p-3 mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -122,7 +122,7 @@
                             {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
                             <span class="username">@{{repost.original_activity.user.username}}</span>
                         </a> 
-                        <span class="me-1">checked in</span>
+                        <span class="me-1 text-muted">checked in</span>
                         <!--badge: checkin status-->
                         {% if repost.original_activity.content_object.status == "to_watch" %}
                         <span class="badge text-bg-info me-1">
@@ -151,7 +151,7 @@
                         {% endif %}
                     </div>
                     <div class="mt-2">
-                        {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                        {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
                     </div>
                     <div class="d-flex flex-row bg-white p-3 mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -212,7 +212,7 @@
                             {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
                             <span class="username">@{{repost.original_activity.user.username}}</span>
                         </a> 
-                        <span class="me-1">checked in</span>
+                        <span class="me-1 text-muted">checked in</span>
                         <!--badge: checkin status-->
                         {% if repost.original_activity.content_object.status == "to_listen" %}
                         <span class="badge text-bg-info me-1">
@@ -239,7 +239,7 @@
                         {% endif %}
                     </div>
                     <div class="mt-2">
-                        {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                        {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
                     </div>
                     <div class="d-flex flex-row bg-white p-3 mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -290,7 +290,7 @@
                             {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
                             <span class="username">@{{repost.original_activity.user.username}}</span>
                         </a> 
-                        <span class="me-1">checked in</span>
+                        <span class="me-1 text-muted">checked in</span>
                         <!--badge: checkin status-->
                         {% if repost.original_activity.content_object.status == "to_play" %}
                         <span class="badge text-bg-info me-1">
@@ -317,10 +317,10 @@
                             {% endif %}
                         </span>
                         {% endif %}
-                        on game:
+                        
                     </div>
                     <div class="mt-2">
-                        {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatewords:30 }}
+                        {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
                     </div>
                     <div class="d-flex flex-row bg-white p-3 mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -400,7 +400,7 @@
                     
                     {% endif %}
                     <div class="bg-light">
-                        <blockquote>{{ repost.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatewords:200 }}</blockquote>
+                        <blockquote>{{ repost.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</blockquote>
                         <p><a href="{{ repost.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ repost.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
                     </div>
 

@@ -3,137 +3,62 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-sm-12 left-column">
-    
+        <!--meta-->
+        <div class="col-sm-8">
             <span class='d-flex align-items-start'>
                 <h2>
                     {{ object.name }}
                     {% if object.romanized_name %} / {{ object.romanized_name }} {% endif %}
                 </h2> 
-                {% if user.is_authenticated %}
-                <a href="{% url 'entity:person_update' object.pk %}" class='fs-6 text-secondary'>Edit Person</a>
-                {% endif %}
             </span>
-            <!--meta-->
             <span class="text-secondary">
                 {% if object.birth_date %}{{ object.birth_date }}-{% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %}
             </span>
 
-            {% if object.wikipedia %}
-            <div>
-                <strong>Wikpedia:</strong>
-                <a href="{{ object.wikipedia }}" target="_blank">{{ object.wikipedia }}</a>
-            </div>
-            {% endif %}
-            {% if object.website %}
-            <div>
-                <strong>Website:</strong>
-                <a href="{{ object.website }}" target="_blank">{{ object.website }}</a>
-            </div>
-            {% endif %}
-            
-            
             <!--Read-->
-            {% if object.read_works.count != 0 %}
-                <h3 class="mt-3">Bibliography</h3>
-                <ul>
-                {% for work in read_works %}
-                    <li>
-                        {% if work.work_type == 'NO' %}
-                            <a href="{% url 'read:work_detail' work.pk %}" style="font-weight: bold;">{{ work.title }}</a> ({{ work.publication_date}})
-                        {% else %}
-                            <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date}})
-                        {% endif %}
-                    </li>
-                {% empty %}
-                    <li>This person has no books.</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-
-            {% comment %} {% if books %}
-                <h3>Publications</h3>
-                {% if books.count > 10 %}
-                    {% regroup books by get_language_display as books_grouped %}
-                    {% for language_books in books_grouped %}
-                        <h4>{{ language_books.grouper }}</h4>
-                        <div class="row">
-                        {% for book in language_books.list %}
-                            <div class="col-sm-3">
-                                {% if book.cover %}
-                                    {% if book.cover_sens %}
-                                        <a href="{% url 'read:book_detail' book.pk %}">
-                                            <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid blur">
-                                        </a>
-                                    {% else %}
-                                        <a href="{% url 'read:book_detail' book.pk %}">
-                                            <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid">
-                                        </a>
-                                    {% endif %}
-                                {% else %}
-                                    <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
-                                {% endif %}
-                                {% if book.publication_date %}
-                                    <p class="text-center">({{ book.publication_date }})</p>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="row">
-                    {% for book in books %}
-                        <div class="col-sm-3">
-                            {% if book.cover %}
-                                {% if book.cover_sens %}
-                                    <a href="{% url 'read:book_detail' book.pk %}">
-                                        <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid blur">
-                                    </a>
-                                {% else %}
-                                    <a href="{% url 'read:book_detail' book.pk %}">
-                                        <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid">
-                                    </a>
-                                {% endif %}
-                            {% else %}
-                                <div class="cover-placeholder" style="background: grey; width: 100%; padding-top: 100%;"></div>
-                            {% endif %}
-                            {% if book.publication_date %}
-                                <p class="text-center">({{ book.publication_date }})</p>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                    </div>
-                {% endif %}
-            {% endif %}
-
-            {% if roles %}
-                {% for role, entities in roles.items %}
-                    <h4>As {{ role }}</h4>
+            <div class="row">
+                {% if object.read_works.count != 0 %}
+                <div class="col-md-6">
+                    <h3 class="mt-3">Bibliography</h3>
                     <ul>
-                    {% for entity in entities %}
-                        <li><a href="{{ entity.url }}">{{ entity.title }} ({{ entity.publication_date }})</a></li>
+                    {% for work in read_works %}
+                        <li>
+                            {% if work.work_type == 'NO' %}
+                                <a href="{% url 'read:work_detail' work.pk %}" style="font-weight: bold;">{{ work.title }}</a> ({{ work.publication_date}})
+                            {% else %}
+                                <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date}})
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li>This person has no books.</li>
                     {% endfor %}
                     </ul>
-                {% endfor %}
-            {% endif %} {% endcomment %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="row">
+                {% if as_translator.count != 0 %}
+                <div class="col-md-6">
+                    <h3 class="mt-3">As Translator</h3>
+                    <ul>
+                    {% for instance in as_translator.all %}
+                        <li>
+                            <a href="{% url 'read:instance_detail' instance.pk %}">{{ instance.title }}</a> ({{ instance.publication_date}})
+                        </li>
+                    {% empty %}
+                        <li>This person has no translation works.</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
 
             <!--Listen-->
-            {% comment %} {% if object.listen_works.count != 0 %}
-                <h3>Discography</h3>
-                <ul>
-                {% for work in listen_works %}
-                    <li>
-                        <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
-                    </li>
-                {% empty %}
-                    <li>This person has no books.</li>
-                {% endfor %}
-                </ul>
-            {% endif %} {% endcomment %}
             <div class="row">
             
                 {% if works_as_singer.count != 0 %}
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <h4>As Singer</h4>
                     <ul>
                     {% for work in works_as_singer %}
@@ -150,7 +75,7 @@
 
                 
                 {% if works_as_lyricist.count != 0 %}
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <h4>As Lyricist</h4>
                     <ul>
                     {% for work in works_as_lyricist %}
@@ -167,7 +92,7 @@
 
                 
                 {% if works_as_composer.count != 0 %}
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <h4>As Composer</h4>
                     <ul>
                     {% for work in works_as_composer %}
@@ -180,12 +105,11 @@
                     </ul>
                 </div>
                 {% endif %}
-                
-            {% comment %} </div>
-            <div class="row"> {% endcomment %}
-                
+            </div>
+            <div class="row">
+
                 {% if works_as_arranger.count != 0 %}
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <h4>As Arranger</h4>
                     <ul>
                     {% for work in works_as_arranger %}
@@ -199,9 +123,8 @@
                 </div>
                 {% endif %}
                 
-                
                 {% if works_as_producer.count != 0 %}
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <h4>As Producer</h4>
                     <ul>
                     {% for work in works_as_producer %}
@@ -215,6 +138,28 @@
                 </div>
                 {% endif %}
                 
+            </div>
+        </div>
+
+        <!--manage entry-->
+        <div class="col-sm-4">
+            <div class="bg-light p-3">
+                {% if user.is_authenticated %}
+                <a href="{% url 'entity:person_update' object.pk %}" class='fs-6 text-secondary'>Edit Person</a>
+                {% endif %}
+
+                <h5 class="mt-3">Link</h5>
+                {% if object.wikipedia %}
+                <div>
+                    <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>
+                </div>
+                {% endif %}
+
+                {% if object.website %}
+                    <div>
+                        <a href="{{ object.website }}" target="_blank">Official Website</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
