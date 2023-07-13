@@ -46,6 +46,13 @@ class WorkRoleForm(forms.ModelForm):
         model = WorkRole
         fields = ["person", "role", "domain"]
 
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()
+        return cleaned_data
+
 
 WorkRoleFormSet = inlineformset_factory(
     Work,
@@ -94,6 +101,13 @@ class TrackRoleForm(forms.ModelForm):
     class Meta:
         model = TrackRole
         fields = ["person", "alt_name", "role", "domain"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()
+        return cleaned_data
 
 
 TrackRoleFormSet = inlineformset_factory(
@@ -156,6 +170,13 @@ class ReleaseRoleForm(forms.ModelForm):
         model = ReleaseRole
         fields = ("person", "role", "domain", "alt_name")
 
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()
+        return cleaned_data
+
 
 ReleaseRoleFormSet = inlineformset_factory(
     Release,
@@ -184,6 +205,13 @@ class ReleaseTrackForm(forms.ModelForm):
     class Meta:
         model = ReleaseTrack
         fields = ["track", "alt_title", "order", "disk"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        instance = cleaned_data.get("track")
+        if self.instance and not instance:  # if the instance field is empty
+            self.instance.delete()  # delete the BookInstance instance
+        return cleaned_data
 
 
 ReleaseTrackFormSet = inlineformset_factory(

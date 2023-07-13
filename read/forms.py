@@ -55,6 +55,13 @@ class WorkRoleForm(forms.ModelForm):
         model = WorkRole
         fields = ["person", "role", "domain"]
 
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()  # delete the BookRole instance
+        return cleaned_data
+
 
 WorkRoleFormSet = inlineformset_factory(
     Work,
@@ -108,6 +115,13 @@ class InstanceRoleForm(forms.ModelForm):
     class Meta:
         model = InstanceRole
         fields = ["person", "alt_name", "role", "domain"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()  # delete the BookRole instance
+        return cleaned_data
 
 
 InstanceRoleFormSet = inlineformset_factory(
@@ -171,6 +185,13 @@ class BookRoleForm(forms.ModelForm):
         model = BookRole
         fields = ("person", "role", "domain", "alt_name")
 
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()  # delete the BookRole instance
+        return cleaned_data
+
 
 BookRoleFormSet = inlineformset_factory(
     Book,
@@ -199,6 +220,13 @@ class BookInstanceForm(forms.ModelForm):
     class Meta:
         model = BookInstance
         fields = ["instance", "order"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        instance = cleaned_data.get("instance")
+        if self.instance and not instance:  # if the instance field is empty
+            self.instance.delete()  # delete the BookInstance instance
+        return cleaned_data
 
 
 BookInstanceFormSet = inlineformset_factory(

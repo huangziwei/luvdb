@@ -44,6 +44,13 @@ class WorkRoleForm(forms.ModelForm):
         model = WorkRole
         fields = ("person", "role", "domain", "alt_name")
 
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()
+        return cleaned_data
+
 
 WorkRoleFormSet = inlineformset_factory(
     Work,
@@ -95,6 +102,13 @@ class GameRoleForm(forms.ModelForm):
         model = GameRole
         fields = ("person", "role", "domain", "alt_name")
 
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()
+        return cleaned_data
+
 
 GameRoleFormSet = inlineformset_factory(
     Game,
@@ -122,6 +136,13 @@ class GameCastForm(forms.ModelForm):
     class Meta:
         model = GameCast
         fields = ("person", "role", "domain", "character_name")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()
+        return cleaned_data
 
 
 GameCastFormSet = inlineformset_factory(

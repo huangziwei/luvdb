@@ -45,6 +45,13 @@ class MovieRoleForm(forms.ModelForm):
         model = MovieRole
         fields = ("person", "role", "domain", "alt_name")
 
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()
+        return cleaned_data
+
 
 MovieRoleFormSet = inlineformset_factory(
     Movie,
@@ -72,6 +79,13 @@ class MovieCastForm(forms.ModelForm):
     class Meta:
         model = MovieCast
         fields = ("person", "role", "domain", "character_name")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()
+        return cleaned_data
 
 
 MovieCastFormSet = inlineformset_factory(
@@ -117,6 +131,13 @@ class SeriesRoleForm(forms.ModelForm):
         model = SeriesRole
         fields = ("person", "role", "domain", "alt_name")
 
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()
+        return cleaned_data
+
 
 SeriesRoleFormSet = inlineformset_factory(
     Series,
@@ -152,6 +173,13 @@ class EpisodeRoleForm(forms.ModelForm):
         model = EpisodeRole
         fields = ("person", "role", "domain", "alt_name")
 
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()
+        return cleaned_data
+
 
 EpisodeRoleFormSet = inlineformset_factory(
     Episode,
@@ -179,6 +207,13 @@ class EpisodeCastForm(forms.ModelForm):
     class Meta:
         model = EpisodeCast
         fields = ("person", "role", "domain", "character_name")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        if self.instance and not person:  # if the person field is empty
+            self.instance.delete()
+        return cleaned_data
 
 
 EpisodeCastFormSet = inlineformset_factory(
