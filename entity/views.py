@@ -10,9 +10,12 @@ from django.views.generic.edit import CreateView, UpdateView
 
 from listen.models import Release, Track
 from listen.models import Work as MusicWork
+from play.models import Game
+from play.models import Work as GameWork
 from read.models import Book, BookRole
 from read.models import Instance as LitInstance
 from read.models import Work as LitWork
+from watch.models import Movie, Series
 
 from .forms import PersonForm
 from .models import Person, Role
@@ -39,37 +42,53 @@ class PersonDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        person = self.object
         # read
-        context["read_works"] = self.object.read_works.all().order_by(
-            "publication_date"
-        )
+        context["read_works"] = person.read_works.all().order_by("publication_date")
 
         as_translator = LitInstance.objects.filter(
-            instancerole__role__name="Translator", instancerole__person=self.object
+            instancerole__role__name="Translator", instancerole__person=person
         ).order_by("publication_date")
-        print(f"as_translator count: {as_translator.count()}")  # Debugging
-
         context["as_translator"] = as_translator
 
         # listen
-        context["listen_works"] = self.object.listen_works.all().order_by(
-            "release_date"
-        )
+        context["listen_works"] = person.listen_works.all().order_by("release_date")
         context["works_as_singer"] = MusicWork.objects.filter(
-            workrole__role__name="Singer", workrole__person=self.object
+            workrole__role__name="Singer", workrole__person=person
         ).order_by("release_date")
         context["works_as_composer"] = MusicWork.objects.filter(
-            workrole__role__name="Composer", workrole__person=self.object
+            workrole__role__name="Composer", workrole__person=person
         ).order_by("release_date")
         context["works_as_lyricist"] = MusicWork.objects.filter(
-            workrole__role__name="Lyricist", workrole__person=self.object
+            workrole__role__name="Lyricist", workrole__person=person
         ).order_by("release_date")
         context["works_as_producer"] = MusicWork.objects.filter(
-            workrole__role__name="Producer", workrole__person=self.object
+            workrole__role__name="Producer", workrole__person=person
         ).order_by("release_date")
         context["works_as_arranger"] = MusicWork.objects.filter(
-            workrole__role__name="Arranger", workrole__person=self.object
+            workrole__role__name="Arranger", workrole__person=person
         ).order_by("release_date")
+
+        # watch
+        context["movies"] = (
+            Movie.objects.filter(moviecasts__person=person)
+            .distinct()
+            .order_by("release_date")
+        )
+        context["series"] = (
+            Series.objects.filter(episodes__episodecasts__person=person)
+            .distinct()
+            .order_by("release_date")
+        )
+
+        # play
+        context["gameworks"] = (
+            GameWork.objects.filter(
+                workrole__role__name="Writer", workrole__person=person
+            )
+            .distinct()
+            .order_by("first_release_date")
+        )
 
         return context
 
@@ -138,4 +157,4 @@ class RoleAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
-        return qs
+        return qs[:5]

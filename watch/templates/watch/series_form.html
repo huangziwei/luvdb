@@ -2,7 +2,16 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.title|as_crispy_field }}
-    {{ form.romanized_title|as_crispy_field }}
+    {{ form.romanized_title|as_crispy_field }}    
+    {{ form.poster|as_crispy_field}}
+    <div class="mb-3">
+        {{ form.studios|as_crispy_field }}
+        <a href="{% url 'watch:studio_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new studio?</a>                   
+    </div>
+
+    {{ form.description|as_crispy_field }}
+    {{ form.release_date|as_crispy_field }}
+
     {{ seriesroles.management_form|crispy }}
     <div id="series-role-formset" class="bg-light p-3 mb-3">
         <strong>Persons related to this Series</strong>
@@ -27,15 +36,6 @@
         </div>  
         {% endfor %}
     </div>
-    
-    {{ form.poster|as_crispy_field}}
-    <div class="mb-3">
-        {{ form.studios|as_crispy_field }}
-        <a href="{% url 'watch:studio_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new studio?</a>                   
-    </div>
-
-    {{ form.description|as_crispy_field }}
-    {{ form.release_date|as_crispy_field }}
 
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>

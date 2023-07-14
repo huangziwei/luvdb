@@ -31,10 +31,12 @@
                             <span class='d-flex align-items-start'>
                                 <h4>{{ object.title }} </h4>
                             </span>
+                            {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
                             {% if object.romanized_title %}
                             <p class='text-muted'>{{ object.romanized_title }} </p>
                             {% endif %}
                             <div class="game-meta">
+                                {% if object.developers.count != 0 %}
                                 <p>
                                     <strong>Developers:</strong> 
                                     {% for developer in object.developers.all %}
@@ -42,6 +44,17 @@
                                         {% if not forloop.last %} / {% endif %}
                                     {% endfor %}
                                 </p>
+                                {% endif %}
+                                {% if object.publishers.count != 0 %}
+                                <p>
+                                    <strong>Publishers:</strong> 
+                                    {% for publisher in object.publishers.all %}
+                                        <a href="{% url 'play:publisher_detail' publisher.id %}">{{ publisher.name }}</a>
+                                        {% if not forloop.last %} / {% endif %}
+                                    {% endfor %}
+                                </p>
+                                {% endif %}
+                                {% if object.platforms.count != 0 %}
                                 <p>
                                     <strong>Platforms:</strong> 
                                     {% for platform in object.platforms.all %}
@@ -49,6 +62,7 @@
                                         {% if not forloop.last %} / {% endif %}
                                     {% endfor %}
                                 </p>
+                                {% endif %}
                                 {% if object.release_date %}
                                     <p><strong>Release Date:</strong> {{ object.release_date }}</p>
                                 {% endif %}

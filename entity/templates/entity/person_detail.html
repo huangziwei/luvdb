@@ -65,8 +65,6 @@
                         <li>
                             <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
                         </li>
-                    {% empty %}
-                        <li>This person has no books.</li>
                     {% endfor %}
                     </ul>
                 </div>
@@ -82,8 +80,6 @@
                         <li>
                             <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
                         </li>
-                    {% empty %}
-                        <li>This person has no books.</li>
                     {% endfor %}
                     </ul>
                 </div>
@@ -99,8 +95,6 @@
                         <li>
                             <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
                         </li>
-                    {% empty %}
-                        <li>This person has no books.</li>
                     {% endfor %}
                     </ul>
                 </div>
@@ -116,8 +110,6 @@
                         <li>
                             <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
                         </li>
-                    {% empty %}
-                        <li>This person has no books.</li>
                     {% endfor %}
                     </ul>
                 </div>
@@ -131,14 +123,61 @@
                         <li>
                             <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
                         </li>
-                    {% empty %}
-                        <li>This person has no books.</li>
                     {% endfor %}
                     </ul>
                 </div>
                 {% endif %}
                 
             </div>
+
+            <!--Watch-->
+            {% if movies.count != 0 or series.count != 0 %}
+            <div class="row">
+                <h3>Filmography</h3>
+                {% if movies.count != 0 %}
+                <div class="col-md-6">
+                    <h4>Movies</h4>
+                    <ul>
+                    {% for movie in movies %}
+                        <li>
+                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if series.count != 0 %}
+                <div class="col-md-6">
+                    <h4>Series</h4>
+                    <ul>
+                    {% for serie in series %}
+                        <li>
+                            <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.release_date }})
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!--Play-->
+            {% if gameworks.count != 0 %}
+            <div class="row">
+                <h3>Gameography</h3>
+                <div class="col-sm-4">
+                    <h4>As Writer</h4>
+                    <ul>
+                    {% for work in gameworks %}
+                        <li>
+                            <a href="{% url 'play:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.first_release_date }})
+                        </li>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
         </div>
 
         <!--manage entry-->

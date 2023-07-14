@@ -19,10 +19,9 @@ from .models import (
     WorkRole,
 )
 
-
-class PersonAdmin(admin.ModelAdmin):
-    list_display = ("name", "created_at", "updated_at", "created_by", "updated_by")
-    search_fields = ("name",)
+# class PersonAdmin(admin.ModelAdmin):
+#     list_display = ("name", "created_at", "updated_at", "created_by", "updated_by")
+#     search_fields = ("name",)
 
 
 class PublisherAdmin(admin.ModelAdmin):
@@ -103,11 +102,6 @@ class IssueAdmin(admin.ModelAdmin):
     inlines = [IssueInstanceInline]  # Changed to new inline
 
 
-class RoleAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    search_fields = ("name",)
-
-
 class WorkRoleAdmin(admin.ModelAdmin):
     list_display = ("work", "person", "role")
     search_fields = ("work__title", "person__name", "role__name")
@@ -138,12 +132,10 @@ class SeriesAdmin(admin.ModelAdmin):
     inlines = [BookInSeriesInline]
 
 
-admin.site.register(Person, PersonAdmin)
 admin.site.register(Publisher, PublisherAdmin)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(Book, BookAdmin)
 admin.site.register(Instance, InstanceAdmin)
-admin.site.register(Role, RoleAdmin)
 admin.site.register(WorkRole, WorkRoleAdmin)
 admin.site.register(BookRole, BookRoleAdmin)
 admin.site.register(InstanceRole, InstanceRoleAdmin)

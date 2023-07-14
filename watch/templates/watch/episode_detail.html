@@ -15,9 +15,13 @@
                     <!--movie-meta-->
                     <div class="col-md-8">
                         <div class="card-body">
-                            <span class='d-flex align-items-start'>
-                                <h4>{{ object.title }} </h4>
-                            </span>
+                            <div>
+                                <h4> {{ object.title }} </h4>
+                                <div class="text-muted">
+                                    <a href="{% url "watch:series_detail" episode.series.id %}">{{episode.series.title}} </a>
+                                    S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}</div>
+                            </div>
+
                             {% if object.romanized_title %}
                             <p class='text-muted'>{{ object.romanized_title }} </p>
                             {% endif %}
@@ -25,28 +29,23 @@
                                 {% if object.release_date %}
                                     <p><strong>Release Date:</strong> {{ object.release_date }}</p>
                                 {% endif %}
-                                {% if object.website %}
-                                    <p><strong>Website:</strong> <a href="{{ object.website }}">{{ object.website }}</a></p>
-                                {% endif %}
-                                
-                                <p><strong>Cast:</strong> <a href="{% url 'watch:episode_cast_detail' object.series.id object.id %}">View Cast</a></p>
+                            </div>
+                            <div class="row mt-3">
+                                <h4>Cast</h4>
+                                {% for episodecast in episodecasts %}
+                                    <li>
+                                        <a href="{% url 'entity:person_detail' episodecast.person.id %}">{{ episodecast.person.name }} </a>
+                                        as 
+                                        {{ episodecast.character_name }}</li>
+                                    {% empty %}
+                                    <li>No cast for this episode yet.</li>
+                                {% endfor %}
                             </div>
                         </div>
                         <!-- End of movie-card -->
                     </div>
                 </div>       
             </div>
-            {% comment %} <!--Movie Check-In-->
-            <div class="mt-4">
-                {% include "watch/movie_checkin_form.html" %}
-
-                <div class="d-flex justify-content-between mt-4 col-11">
-                    <h4>Latest Check-Ins</h4>
-                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'watch:movie_checkin_all_list' movie.id %}" style="height:30px">All</a>
-                </div>
-            
-                {% include "watch/movie_checkin_in_movie_detail.html" %}
-            </div> {% endcomment %}
         </div>
 
 
@@ -55,8 +54,8 @@
             <!--Related works / Edit -->
             <div class="bg-light p-3">
                 {% if user.is_authenticated %}
-                    <div class="mt-3">
-                        {% comment %} <a href="{% url 'watch:episode_update' object.pk %}" class='fs-6 text-secondary'>Edit movie data</a> {% endcomment %}
+                    <div>
+                        <a href="{% url 'watch:episode_update' object.series.id object.id%}" class='fs-6 text-secondary'>Edit episode data</a>
                     </div>
                 {% endif %}
             </div>

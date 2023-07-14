@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-sm-7 left-column">
             <h2>Update this Work entry</h2>
-            {% include "read/work_form.html" %}
+            {% include "play/work_form.html" %}
         </div>
     </div>
 </div>
@@ -24,7 +24,7 @@
     });
     
     $(document).ready(function() {
-        $('select:not([name="work_type"])').removeClass('form-select');
+        $('select:not([name="work_type"], [name="model"])').removeClass('form-select');
     });
 </script>
 {% endblock %}

@@ -6,6 +6,7 @@
     {{ form.romanized_title|as_crispy_field }}
     {{ form.season | as_crispy_field }}
     {{ form.episode | as_crispy_field }}
+    {{ form.release_date|as_crispy_field }}
     {{ episoderoles.management_form|crispy }}
     <div id="episode-role-formset" class="bg-light p-3 mb-3">
         <strong>Persons related to this Episode</strong>
@@ -55,9 +56,6 @@
         </div>  
         {% endfor %}
     </div> 
-
-    {% comment %} {{ form.description|as_crispy_field }} {% endcomment %}
-    {{ form.release_date|as_crispy_field }}
 
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>

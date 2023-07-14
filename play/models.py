@@ -42,6 +42,19 @@ class Developer(Entity):
         return self.name
 
 
+class GamePublisher(Entity):
+    history = models.TextField(blank=True, null=True)
+    location = models.CharField(max_length=100, blank=True, null=True)
+    website = models.CharField(max_length=100, blank=True, null=True)
+    founded_date = models.DateField(blank=True, null=True)
+    closed_date = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        if self.location:
+            return f"{self.location}: {self.name}"
+        return self.name
+
+
 class Platform(Entity):
     history = models.TextField(blank=True, null=True)
     website = models.CharField(max_length=100, blank=True, null=True)
@@ -60,6 +73,7 @@ class Work(models.Model):  # Renamed from Book
     # work meta data
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
+    romanized_title = models.CharField(max_length=100, blank=True, null=True)
     persons = models.ManyToManyField(
         Person, through="WorkRole", related_name="play_works"
     )
@@ -140,12 +154,14 @@ class WorkRole(models.Model):  # Renamed from BookRole
 
 class Game(models.Model):
     title = models.CharField(max_length=100)
+    subtitle = models.CharField(max_length=100, blank=True, null=True)
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
     work = models.ForeignKey(
         Work, on_delete=models.CASCADE, null=True, blank=True, related_name="games"
     )
 
     developers = models.ManyToManyField(Developer, related_name="games")
+    publishers = models.ManyToManyField(GamePublisher, related_name="games")
 
     persons = models.ManyToManyField(Person, through="GameRole", related_name="games")
     casts = models.ManyToManyField(

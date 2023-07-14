@@ -68,8 +68,11 @@ class Role(models.Model):
         # Add more domains as needed
     )
 
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
     domain = models.CharField(max_length=20, choices=DOMAIN_CHOICES)
+
+    class Meta:
+        unique_together = ("name", "domain")
 
     def __str__(self):
         return self.name

@@ -1,12 +1,19 @@
 {% load crispy_forms_tags %}
 <form method="post">
     {% csrf_token %}
-    {{ form | crispy }}
+    {{ form.title|as_crispy_field }}
+    {{ form.subtitle|as_crispy_field}}
+    {{ form.romanized_title|as_crispy_field}}
+    {{ form.first_release_date|as_crispy_field}}
+    <div class="mb-3">
+        {{ form.developers|as_crispy_field }}
+        <a href="{% url 'play:developer_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new developer?</a>                   
+    </div>
 
     {{ workroles.management_form|crispy }}
     <div id="work-role-formset" class="bg-light p-2 mb-3">
         <strong>Persons related to this work</strong>
-        <p class='text-muted'>E.g. Authors, Editors, Illustrators, etc.</p>
+        <p class='text-muted'>E.g. Directors, Writers, Illustrators, etc.</p>
         {% for form in workroles %}
         <div class="form-wrapper">
             <div class="row">

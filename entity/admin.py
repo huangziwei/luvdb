@@ -1,3 +1,35 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Person, Role
+
+
+@admin.register(Person)
+class PersonAdmin(admin.ModelAdmin):
+    list_display = [
+        "name",
+        "romanized_name",
+        "birth_date",
+        "death_date",
+        "birth_place",
+        "death_place",
+        "wikipedia",
+        "website",
+    ]
+    search_fields = [
+        "name",
+        "romanized_name",
+        "birth_date",
+        "death_date",
+        "birth_place",
+        "death_place",
+        "wikipedia",
+        "website",
+    ]
+    list_filter = ["birth_date", "death_date"]
+
+
+@admin.register(Role)
+class RoleAdmin(admin.ModelAdmin):
+    list_display = ["name", "domain"]
+    search_fields = ["name", "domain"]
+    list_filter = ["domain"]

@@ -2,16 +2,16 @@
 
 {% block content %}
 <div class="container">
-    <h1>{{ movie.title }} Cast</h1>
+    <h1>{{ episode.title }} Cast</h1>
     <ul>
-        {% for moviecast in moviecasts %}
+        {% for episodecast in episodecasts %}
 
         <li>
-            <a href="{% url 'entity:person_detail' moviecast.person.id %}">{{ moviecast.person.name }} </a>
+            <a href="{% url 'entity:person_detail' episodecast.person.id %}">{{ episodecast.person.name }} </a>
             as 
-            {{ moviecast.character_name }}</li>
+            {{ episodecast.character_name }}</li>
         {% empty %}
-        <li>No cast for this movie yet.</li>
+        <li>No cast for this episode yet.</li>
         {% endfor %}
     </ul>
 </div>

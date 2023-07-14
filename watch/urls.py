@@ -12,6 +12,7 @@ from .views import (
     MovieCreateView,
     MovieDetailView,
     MovieUpdateView,
+    SeriesCastDetailView,
     SeriesCreateView,
     SeriesDetailView,
     SeriesUpdateView,
@@ -131,5 +132,11 @@ urlpatterns = [
         "series/<int:series_id>/episode/<int:pk>/cast/",
         EpisodeCastDetailView.as_view(),
         name="episode_cast_detail",
+    ),
+    # series cast
+    path(
+        "series/<int:pk>/cast/",
+        SeriesCastDetailView.as_view(),
+        name="series_cast_detail",
     ),
 ]

@@ -87,12 +87,16 @@ class GameForm(forms.ModelForm):
             "platforms": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("play:platform-autocomplete")
             ),
+            "publishers": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("play:publisher-autocomplete")
+            ),
         }
 
     def __init__(self, *args, **kwargs):
         super(GameForm, self).__init__(*args, **kwargs)
         self.fields["developers"].required = False
         self.fields["platforms"].required = False
+        self.fields["publishers"].required = False
 
 
 class GameRoleForm(forms.ModelForm):

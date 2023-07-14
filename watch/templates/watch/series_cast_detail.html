@@ -2,16 +2,32 @@
 
 {% block content %}
 <div class="container">
-    <h1>{{ series.title }} Cast</h1>
+    <h4>
+        <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }} </a>
+        Cast
+    </h4>
     <ul>
-        {% for seriescast in seriescasts %}
-
-        <li>
-            <a href="{% url 'entity:person_detail' seriescast.person.id %}">{{ seriescast.person.name }} </a>
-            as 
-            {{ seriescast.character_name }}</li>
-        {% empty %}
-        <li>No cast for this series yet.</li>
+        {% for person, roles in series_casts.items %}
+            <li>
+                <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }} </a>
+                as  
+                {% regroup roles by character_name as character_roles %}
+                {% for character_role in character_roles %}
+                    {% if not forloop.first %} / {% endif %}
+                    {{ character_role.grouper }}
+                {% endfor %}
+                <a href="#" class="text-muted" data-bs-toggle="collapse" data-bs-target="#episodeList{{ forloop.counter }}">
+                    ({{ roles|length }} episodes)
+                </a>
+            </li>
+            <ul id="episodeList{{ forloop.counter }}" class="collapse">
+            {% for role in roles %}
+                <li>
+                    <a href="{% url 'watch:episode_detail' series.id role.episode_id %}">{{ role.episode_title }} </a>
+                    ({{ role.release_date }}) {{ role.character_name }}
+                </li>
+            {% endfor %}
+            </ul>            
         {% endfor %}
     </ul>
 </div>

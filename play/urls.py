@@ -4,6 +4,7 @@ from .views import (
     DeveloperAutocomplete,
     DeveloperCreateView,
     DeveloperDetailView,
+    DeveloperUpdateView,
     GameCastDetailView,
     GameCheckInAllListView,
     GameCheckInDeleteView,
@@ -13,6 +14,10 @@ from .views import (
     GameCheckInUserListView,
     GameCreateView,
     GameDetailView,
+    GamePublisherAutocomplete,
+    GamePublisherCreateView,
+    GamePublisherDetailView,
+    GamePublisherUpdateView,
     GameSeriesCreateView,
     GameSeriesDetailView,
     GameSeriesUpdateView,
@@ -42,6 +47,25 @@ urlpatterns = [
     # developer
     path("developer/create/", DeveloperCreateView.as_view(), name="developer_create"),
     path("developer/<int:pk>/", DeveloperDetailView.as_view(), name="developer_detail"),
+    path(
+        "developer/<int:pk>/update/",
+        DeveloperUpdateView.as_view(),
+        name="developer_update",
+    ),
+    # publisher
+    path(
+        "publisher/create/", GamePublisherCreateView.as_view(), name="publisher_create"
+    ),
+    path(
+        "publisher/<int:pk>/",
+        GamePublisherDetailView.as_view(),
+        name="publisher_detail",
+    ),
+    path(
+        "publisher/<int:pk>/update/",
+        GamePublisherUpdateView.as_view(),
+        name="publisher_update",
+    ),
     # platform
     path("platform/create/", PlatformCreateView.as_view(), name="platform_create"),
     path("platform/<int:pk>/", PlatformDetailView.as_view(), name="platform_detail"),
@@ -55,6 +79,11 @@ urlpatterns = [
         "platform-autocomplete/",
         PlatformAutocomplete.as_view(),
         name="platform-autocomplete",
+    ),
+    path(
+        "publisher-autocomplete/",
+        GamePublisherAutocomplete.as_view(),
+        name="publisher-autocomplete",
     ),
     path("work-autocomplete/", WorkAutocomplete.as_view(), name="work-autocomplete"),
     # checkin

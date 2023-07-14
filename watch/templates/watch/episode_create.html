@@ -24,7 +24,7 @@
     });
     
     $(document).ready(function() {
-        $('select:not([name="model"])').removeClass('form-select');
+        $('select:not([name="model"], [id="id_series"])').removeClass('form-select');
     });
 </script>
 {{ episoderoles.media }}

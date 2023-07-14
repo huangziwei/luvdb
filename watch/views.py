@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from dal import autocomplete
 from django import forms
 from django.contrib.auth import get_user_model
@@ -31,7 +33,16 @@ from .forms import (
     SeriesRoleFormSet,
     WatchCheckInForm,
 )
-from .models import Episode, Movie, MovieRole, Series, SeriesRole, Studio, WatchCheckIn
+from .models import (
+    Episode,
+    EpisodeCast,
+    Movie,
+    MovieRole,
+    Series,
+    SeriesRole,
+    Studio,
+    WatchCheckIn,
+)
 
 User = get_user_model()
 
@@ -452,6 +463,39 @@ class SeriesUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
+class SeriesCastDetailView(DetailView):
+    model = Series
+    context_object_name = "series"
+    template_name = "watch/series_cast_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Find all episodes of the series
+        episodes = Episode.objects.filter(series=self.object)
+
+        # Extract all casts from those episodes
+        casts = EpisodeCast.objects.filter(episode__in=episodes).prefetch_related(
+            "person", "role"
+        )
+
+        # Prepare data structure for the HTML
+        series_casts = defaultdict(list)
+        for cast in casts:
+            series_casts[cast.person].append(
+                {
+                    "character_name": cast.character_name,
+                    "role": cast.role,
+                    "episode_title": cast.episode.title,
+                    "episode_id": cast.episode.id,
+                    "release_date": cast.episode.release_date,
+                }
+            )
+
+        context["series_casts"] = dict(series_casts)
+        return context
+
+
 class EpisodeCreateView(LoginRequiredMixin, CreateView):
     model = Episode
     form_class = EpisodeForm
@@ -517,6 +561,7 @@ class EpisodeDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         episode = get_object_or_404(Episode, pk=self.kwargs["pk"])
+        context["episodecasts"] = episode.episodecasts.all()
 
         return context
 

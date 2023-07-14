@@ -11,6 +11,7 @@
 
             {% for role in object.workrole_set.all %}
             <p>
+                <strong>{{role.role.name}}:</strong>
                 <a href="{% url 'entity:person_detail' role.person.id %}">{{ role.person.name }}</a> ({{ role.person.romanized_name }})
             </p>
             {% endfor %}
