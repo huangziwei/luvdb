@@ -12,7 +12,7 @@
 <div class="container">
   <div class="row justify-content-start">
     <!-- Left column -->
-    <div class="col-sm-8 order-2 order-sm-1">
+    <div class="col-md-8 col-sm-12 order-2 order-sm-2 order-md-1">
 
       <!--navbar-->
       <div class="row mt-3">
@@ -43,9 +43,9 @@
             <a class="btn btn-outline-secondary btn-sm" href="{% url 'read:read_checkin_user_list' object.username %}">All</a>
           </div>  
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-12">
           {% if reading %}
-          <div class="mt-3 me-3 d-flex">
+          <div class="mt-3 me-3 d-flex overflow-auto">
             <div class="rotate text-muted">Reading</div>
             {% for item in reading %}
               <div class="me-3">
@@ -66,7 +66,7 @@
           {% endif %}
 
           {% if read %}
-          <div class="mt-3 me-3 d-flex">
+          <div class="mt-3 me-3 d-flex overflow-auto">
             <div class="rotate text-muted">Read</div>
             {% for item in read %}
               <div class="me-3">
@@ -85,11 +85,10 @@
             {% endfor %}
           </div>
           {% endif %}
-
         </div>
-    
       </div>
       {% endif %}
+
 
       {% if does_watch_exist %}
       <div class="row">
@@ -99,9 +98,9 @@
             <a class="btn btn-outline-secondary btn-sm" href="{% url 'watch:watch_checkin_user_list' object.username %}">All</a>
           </div>  
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-12">
           {% if watching %}
-          <div class="mt-3 me-3 d-flex">
+          <div class="mt-3 me-3 d-flex overflow-auto">
             <div class="rotate text-muted">Watching</div>
             {% for item in watching %}
             <div class="me-3">
@@ -121,7 +120,7 @@
           </div>
           {% endif %}
           {% if watched %}
-          <div class="mt-3 me-3 d-flex">
+          <div class="mt-3 me-3 d-flex overflow-auto">
             <div class="rotate text-muted">Watched</div>
             {% for item in watched %}
             <div class="me-3">
@@ -153,9 +152,9 @@
             <a class="btn btn-outline-secondary btn-sm" href="{% url 'listen:listen_checkin_user_list' object.username %}">All</a>
           </div>  
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-12">
           {% if looping %}
-          <div class="mt-3 me-3 d-flex">
+          <div class="mt-3 me-3 d-flex overflow-auto">
             <div class="rotate text-muted">Looping</div>
             {% for item in looping %}
             <div class="me-3">
@@ -170,7 +169,7 @@
           {% endif %}
 
           {% if listened %}
-          <div class="mt-3 me-3 d-flex">
+          <div class="mt-3 me-3 d-flex overflow-auto">
             <div class="rotate text-muted">Listend</div>
             {% for item in listened %}
             <div class="me-3">
@@ -198,7 +197,7 @@
         <div class="col-sm-4">
 
           {% if playing %}
-          <div class="mt-3 me-3 d-flex">
+          <div class="mt-3 me-3 d-flex overflow-auto">
             <div class="rotate text-muted">Playing</div>
             {% for item in playing %}
             <div class='me-3'>
@@ -212,7 +211,7 @@
           </div>
           {% endif %}
           {% if played %}
-          <div class="mt-3 me-3 d-flex">
+          <div class="mt-3 me-3 d-flex overflow-auto">
             <div class="rotate text-muted">Played</div>
             {% for item in played %}
             <div class='me-3'>
@@ -234,21 +233,17 @@
 
 
     <!-- Right column -->
-    <div class="col-sm-4 order-1 order-sm-2">
+    <div class="col-md-4 col-sm-12 order-1 order-sm-1 order-md-2">
 
-      <div class="p-3" style="background-color:#fff6ed;">
+        <div class="p-3" style="background-color:#fff6ed;">
+            <div class="d-flex align-items-end">
+            {% if object.display_name %}
+                <h4 class="mb-0">{{ object.display_name }}</h4>
+            {% endif %}
+            <div>@{{ object.username }}</div>
+        </div>
         
-        
-        <div class="d-flex align-items-end">
-          {% if object.display_name %}
-              <h4 class="mb-0">{{ object.display_name }}</h4>
-          {% endif %}
-          <div>@{{ object.username }}</div>
-      </div>
-        
-
         <p>
-          
           <span class="text-muted">  Since {{object.date_joined|date:"Y.m.d"}}</span>
         </p>
         
@@ -343,32 +338,36 @@
         {% endfor %}
       </div>
 
-      <div> <!--following-->
-        <div class="d-flex justify-content-between align-items-center">
-          <h5>Following</h5>
-          <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:following_list' object.username %}">All</a>
-        </div>
+      <!-- Following and Followers -->
+      <div class="col-12 order-3 order-md-2"> <!-- For mobile screens, this block will be after the left column. For desktop screens, it will be in the right column. -->
+        <div> <!--following-->
+          <div class="d-flex justify-content-between align-items-center">
+            <h5>Following</h5>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:following_list' object.username %}">All</a>
+          </div>
           {% for follow in recent_following %}
-            <span><a href="{% url 'accounts:detail' username=follow.followed.username %}">{{ follow.followed.display_name|default:follow.followed.username }}</a></span>
+              <span><a href="{% url 'accounts:detail' username=follow.followed.username %}">{{ follow.followed.display_name|default:follow.followed.username }}</a></span>
           {% empty %}
               <p>This user is not following anyone.</p>
           {% endfor %}
-      </div>
-      <br>
-      <div> <!--followers-->
-        <div class="d-flex justify-content-between align-items-center"> <!-- Most recent activity -->
-          <h5>Followers</h5>
-          <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:follower_list' object.username %}">All</a>
         </div>
+        <br>
+        <div> <!--followers-->
+          <div class="d-flex justify-content-between align-items-center">
+            <h5>Followers</h5>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:follower_list' object.username %}">All</a>
+          </div>
           {% for follow in recent_followers %}
               <span><a href="{% url 'accounts:detail' username=follow.follower.username %}">{{ follow.follower.display_name|default:follow.follower.username }}</a></span>
           {% empty %}
               <p>This user has no followers.</p>
           {% endfor %}
-          <hr>
+        </div>
+        <hr>
       </div>
     
     </div>
+    
   </div>
 </div>
 
