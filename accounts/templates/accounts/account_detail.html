@@ -15,7 +15,7 @@
     <div class="col-sm-8 order-2 order-sm-1">
 
       <!--navbar-->
-      <div class="row">
+      <div class="row mt-3">
         <div class="d-flex">
           <span class="me-3">
             <a href="{% url 'write:say_list' object.username %}">Says</a>
@@ -35,68 +35,6 @@
         </div>    
       </div>
       <hr>
-      {% comment %} <!--Posts-->
-      <div class="d-flex justify-content-between align-items-center">
-        <h4>Posts</h4>
-        <div>
-            {% if object == request.user %}
-            <a class="btn btn-primary btn-sm" href="{% url 'write:post_create' %}">New</a>
-            {% endif %}
-            <a class="btn btn-outline-secondary btn-sm" href="{% url 'write:post_list' object.username %}">All</a>
-
-        </div>
-      </div>
-      {% for post in posts|slice:":3" %}
-        <div>
-            <div><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></div>
-            <span class="d-flex">
-                <p class="me-2">{{ post.timestamp |date:"Y.m.d H:i" }}</p>
-                {% if post.comments_enabled %}
-                <p class="ms-2 me-2"><a href="{% url 'write:post_detail' post.id %}">Reply</a></p>
-                {% endif %}
-                {% if post.get_activity_id is not None %}
-                <p class="ms-2 me-2"><a href="{% url 'write:repost_create' post.get_activity_id %}">Repost</a></p>
-                {% endif %}
-                {% if object == request.user %}
-                <p class="ms-2 me-2"><a href="{% url 'write:post_update' post.id %}">Edit</a></p>
-                <p class="ms-2 me-2"><a href="{% url 'write:post_delete' post.id %}">Delete</a></p>
-                {% endif %}
-            </span>
-        </div>
-      {% endfor %}
-      
-      <!--Pins-->
-      <div class="d-flex justify-content-between align-items-center mt-2">
-        <h4>Pins</h4>
-        <div>
-            <a class="btn btn-primary btn-sm" href="{% url 'write:pin_create' %}">New</a>
-            <a class="btn btn-outline-secondary btn-sm" href="{% url 'write:pin_list' object.username %}">All</a>
-            {% if object == request.user %}
-            {% endif %}
-        </div>
-      </div>
-      {% for pin in pins|slice:":3" %}
-        <div>
-            <div>
-                <a href="{{pin.url}}">{{ pin.title }}</a> 
-                (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
-            </div> 
-            <span class="d-flex">
-                <p class="me-2">{{ pin.timestamp |date:"Y.m.d H:i" }}</p>
-                {% if pin.comments_enabled %}
-                <p class="ms-2 me-2"><a href="{% url 'write:pin_detail' pin.id %}">Reply</a></p>
-                {% endif %}
-                {% if pin.get_activity_id is not None %}
-                <p class="ms-2 me-2"><a href="{% url 'write:pin_detail' pin.id %}?repost=true">Repost</a></p>
-                {% endif %}
-                {% if object == request.user %}
-                <p class="ms-2 me-2"><a href="{% url 'write:pin_update' pin.id %}">Edit</a></p>
-                <p class="ms-2 me-2"><a href="{% url 'write:pin_delete' pin.id %}">Delete</a></p>
-                {% endif %}
-            </span>
-        </div>
-      {% endfor %} {% endcomment %}
-
       {% if does_read_exist %}
       <div class="row">
         <div class="d-flex justify-content-between align-items-center mt-2">
@@ -427,6 +365,7 @@
           {% empty %}
               <p>This user has no followers.</p>
           {% endfor %}
+          <hr>
       </div>
     
     </div>
