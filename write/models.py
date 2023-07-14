@@ -352,6 +352,7 @@ def delete_say(sender, instance, **kwargs):
 
 class LuvList(models.Model):
     title = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
 
     user = models.ForeignKey(
         User,
@@ -366,7 +367,7 @@ class LuvList(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("read:luvlist_detail", args=[str(self.id)])
+        return reverse("write:luvlist_detail", args=[str(self.id)])
 
 
 class ContentInList(models.Model):
@@ -380,6 +381,7 @@ class ContentInList(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
 
     comment = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["order"]

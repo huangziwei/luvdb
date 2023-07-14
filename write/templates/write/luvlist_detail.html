@@ -1,17 +1,60 @@
 {% extends "base.html" %}
+{% load static %}
+{% load markdownify %}
+{% load linkify %}
+{% load crispy_forms_tags %}
 {% block content %}
 <div class="container">
     <div class="row">
         <div class='col-7'>
             <h2>{{ object.title }}</h2>
-            <p>Created by: {{ object.user }}</p>
-            <h3>Items:</h3>
+            <p>By <a href="{% url 'accounts:detail' object.user.username %}">{{ object.user.display_name | default:object.user.username }}</a></p>
+
+            <div class="text-muted mb-3">
+                {{ object.description | markdownify }}
+            </div>
+
             {% for content in contents %}
-            <li>
-                <a href="{{ content.content_object.get_absolute_url }}">{{ content.content_object }}</a>
-                (Order: {{ content.order }})
-            </li>
+
+                {% if content.content_type.model == 'luvlist' %}
+                <div class="bg-light p-3 mb-3">
+
+                    {{ content.order }}: <a href="{% url 'write:luvlist_detail' content.content_object.id %}">{{ content.content_object }}</a>
+                </div>
+
+                {% elif content.content_type.model == 'say' %}
+                <div class="bg-light p-3 mb-3">
+                    <p class="d-flex"> 
+                        <a href="{% url 'accounts:detail' content.content_object.user.username %}" class='me-1'>
+                          {{ content.content_object.user.display_name | default:content.content_object.user.username }}
+                        </a> said:
+                      </p>
+                    <div>{{ content.content_object.content| linkify_tags:content.content_object.user | linkify_mentions | markdownify }}</div>
+                    <span class="d-flex mt-2">
+                      <p class='me-2 text-secondary mb-2'>
+                        <a href="{% url "write:say_list" object.user.username %}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                      </p>
+                    </span>               
+                </div>
+                <div class="text-muted">Added on {{content.timestamp|date:"Y.m.d H:i" }} </div>
+
+                {% else %}
+                <div>
+
+                    <a href="">{{ content.content_object }}</a>
+                    (Order: {{ content.order }})
+                </div>
+                {% endif %}
+
+                <hr>
             {% endfor %}
+        </div>
+
+        <div class="col-5">
+            <!--All tags on the page-->
+            <div class="bg-light p-3">
+                <a class="text-muted" href="{% url 'write:luvlist_update' object.id %}">Edit List</a>
+            </div>
         </div>
     </div>
 </div>

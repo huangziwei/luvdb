@@ -116,7 +116,7 @@ class RepostForm(forms.ModelForm):
 class LuvListForm(forms.ModelForm):
     class Meta:
         model = LuvList
-        fields = ["title"]
+        fields = ["title", "description"]
 
 
 class ContentInListForm(forms.ModelForm):

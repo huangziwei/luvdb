@@ -194,7 +194,7 @@ class Series(models.Model):
         # If the instance already exists in the database
         if self.pk:
             # Get the existing instance from the database
-            old_instance = Movie.objects.get(pk=self.pk)
+            old_instance = Series.objects.get(pk=self.pk)
             # If the poster has been updated
             if old_instance.poster != self.poster:
                 # Delete the old poster
