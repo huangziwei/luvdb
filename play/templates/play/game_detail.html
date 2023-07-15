@@ -133,6 +133,24 @@
                 <p><strong>Playing:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=playing_replaying">{{ playing_count }}</a></p>
                 <p><strong>Played:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=played_replayed">{{ played_count }}</a></p>
             </div>
+
+            {% if lists_containing_game.count != 0 %}
+            <!--LuvLists that included this game-->
+            <div class="bg-light p-3 mt-3">
+                <h5>Lists</h5>
+                <ul>
+                {% for content_in_list in lists_containing_game %}
+                    <li>
+                        <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">
+                            {{ content_in_list.luv_list.title }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <p>This game is not included in any LuvLists.</p>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

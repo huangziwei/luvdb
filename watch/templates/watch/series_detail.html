@@ -100,6 +100,24 @@
                 <p><strong>Watching:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=watching_rewatching">{{ watching_count }}</a></p>
                 <p><strong>Watched:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a></p>
             </div>
+
+            {% if lists_containing_series.count != 0 %}
+            <!--LuvLists that included this series-->
+            <div class="bg-light p-3 mt-3">
+                <h5>Lists</h5>
+                <ul>
+                {% for content_in_list in lists_containing_series %}
+                    <li>
+                        <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">
+                            {{ content_in_list.luv_list.title }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <p>This series is not included in any LuvLists.</p>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

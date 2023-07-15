@@ -21,7 +21,7 @@ from django.views.generic import (
 
 from entity.models import Person, Role
 from write.forms import CommentForm, RepostForm
-from write.models import Comment
+from write.models import Comment, ContentInList
 
 from .forms import (
     ListenCheckInForm,
@@ -502,6 +502,16 @@ class ReleaseDetailView(DetailView):
                 "listened_count": listened_count,
             }
         )
+
+        # Get the ContentType for the Issue model
+        release_content_type = ContentType.objects.get_for_model(Release)
+
+        # Query ContentInList instances that have the release as their content_object
+        lists_containing_release = ContentInList.objects.filter(
+            content_type=release_content_type, object_id=self.object.id
+        )
+
+        context["lists_containing_release"] = lists_containing_release
 
         return context
 

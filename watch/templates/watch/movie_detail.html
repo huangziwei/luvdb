@@ -73,13 +73,13 @@
         <!--right columns-->
         <div class="col-sm-4">
             <!--Related works / Edit -->
+            {% if user.is_authenticated %}
             <div class="bg-light p-3">
-                {% if user.is_authenticated %}
-                    <div class="mt-0">
-                        <a href="{% url 'watch:movie_update' object.pk %}" class='fs-6 text-secondary'>Edit movie data</a>
-                    </div>
-                {% endif %}
+                <div class="mt-0">
+                    <a href="{% url 'watch:movie_update' object.pk %}" class='fs-6 text-secondary'>Edit movie data</a>
+                </div>
             </div>
+            {% endif %}
 
             <!--stats-->
             <div class="bg-light p-3 mt-3">
@@ -88,6 +88,25 @@
                 <p><strong>Watching:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=watching_rewatching">{{ watching_count }}</a></p>
                 <p><strong>Watched:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a></p>
             </div>
+
+
+            {% if lists_containing_movie.count != 0 %}
+            <!--LuvLists that included this movie-->
+            <div class="bg-light p-3 mt-3">
+                <h5>Lists</h5>
+                <ul>
+                {% for content_in_list in lists_containing_movie %}
+                    <li>
+                        <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">
+                            {{ content_in_list.luv_list.title }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <p>This movie is not included in any LuvLists.</p>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

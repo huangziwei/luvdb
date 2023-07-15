@@ -171,6 +171,24 @@
                 <div><strong>Looping:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=listening">{{ listening_count }}</a></div>
                 <div><strong>Listened:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a></div>
             </div>
+
+            {% if lists_containing_release.count != 0 %}
+            <!--LuvLists that included this release-->
+            <div class="bg-light p-3 mt-3">
+                <h5>Lists</h5>
+                <ul>
+                {% for content_in_list in lists_containing_release %}
+                    <li>
+                        <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">
+                            {{ content_in_list.luv_list.title }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <p>This release is not included in any LuvLists.</p>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

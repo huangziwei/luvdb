@@ -16,7 +16,7 @@ from django.views.generic import (
 )
 
 from write.forms import CommentForm, RepostForm
-from write.models import Comment
+from write.models import Comment, ContentInList
 
 from .forms import (
     BookForm,
@@ -398,6 +398,16 @@ class BookDetailView(DetailView):
             }
         )
 
+        # Get the ContentType for the Book model
+        book_content_type = ContentType.objects.get_for_model(Book)
+
+        # Query ContentInList instances that have the book as their content_object
+        lists_containing_book = ContentInList.objects.filter(
+            content_type=book_content_type, object_id=book.id
+        )
+
+        context["lists_containing_book"] = lists_containing_book
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -627,7 +637,15 @@ class IssueDetailView(DetailView):
             }
         )
 
-        context["checkins"] = checkins
+        # Get the ContentType for the Issue model
+        issue_content_type = ContentType.objects.get_for_model(Issue)
+
+        # Query ContentInList instances that have the issue as their content_object
+        lists_containing_issue = ContentInList.objects.filter(
+            content_type=issue_content_type, object_id=self.object.id
+        )
+
+        context["lists_containing_issue"] = lists_containing_issue
 
         return context
 

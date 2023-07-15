@@ -20,7 +20,7 @@ from django.views.generic import (
 )
 
 from write.forms import CommentForm, RepostForm
-from write.models import Comment
+from write.models import Comment, ContentInList
 
 from .forms import (
     EpisodeCastFormSet,
@@ -166,6 +166,16 @@ class MovieDetailView(DetailView):
         )
 
         context["model_name"] = "movie"
+
+        # Get the ContentType for the Issue model
+        movie_content_type = ContentType.objects.get_for_model(Movie)
+
+        # Query ContentInList instances that have the movie as their content_object
+        lists_containing_movie = ContentInList.objects.filter(
+            content_type=movie_content_type, object_id=self.object.id
+        )
+
+        context["lists_containing_movie"] = lists_containing_movie
 
         return context
 
@@ -407,6 +417,16 @@ class SeriesDetailView(DetailView):
         context["model_name"] = "series"
         series = get_object_or_404(Series, pk=self.kwargs["pk"])
         context["episodes"] = series.episodes.all().order_by("season", "episode")
+
+        # Get the ContentType for the Issue model
+        series_content_type = ContentType.objects.get_for_model(Series)
+
+        # Query ContentInList instances that have the series as their content_object
+        lists_containing_series = ContentInList.objects.filter(
+            content_type=series_content_type, object_id=self.object.id
+        )
+
+        context["lists_containing_series"] = lists_containing_series
 
         return context
 

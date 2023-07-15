@@ -114,6 +114,24 @@
                 <p><strong>Reading:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=reading_rereading">{{ reading_count }}</a></p>
                 <p><strong>Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=read_reread">{{ read_count }}</a></p>
             </div>
+
+            {% if lists_containing_issue.count != 0 %}
+            <!--LuvLists that included this issue-->
+            <div class="bg-light p-3 mt-3">
+                <h5>Lists</h5>
+                <ul class='mb-0'>
+                {% for content_in_list in lists_containing_issue %}
+                    <li>
+                        <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">
+                            {{ content_in_list.luv_list.title }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <p>This issue is not included in any LuvLists.</p>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

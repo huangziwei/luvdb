@@ -17,7 +17,7 @@ from django.views.generic import (
 )
 
 from write.forms import CommentForm, RepostForm
-from write.models import Comment
+from write.models import Comment, ContentInList
 
 from .forms import (
     GameCastFormSet,
@@ -211,6 +211,16 @@ class GameDetailView(DetailView):
                 "checkins": checkins,
             }
         )
+
+        # Get the ContentType for the Issue model
+        game_content_type = ContentType.objects.get_for_model(Game)
+
+        # Query ContentInList instances that have the game as their content_object
+        lists_containing_game = ContentInList.objects.filter(
+            content_type=game_content_type, object_id=self.object.id
+        )
+
+        context["lists_containing_game"] = lists_containing_game
 
         return context
 

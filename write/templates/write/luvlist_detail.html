@@ -29,11 +29,11 @@
                     </div>
                 
                     {% if content.comment %}   
-                        <div class="mt-3 mb-3">
+                        <div class="mt-3">
                             {{content.comment}}
                         </div>         
                     {% endif %} 
-                    <div class="text-muted">Added on {{content.timestamp|date:"Y.m.d H:i" }} | List</div>
+                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | List</div>
                 </div>
 
                 {% elif content.content_type.model == 'say' %}
@@ -58,11 +58,11 @@
                         </span>   
                     </div>
                     {% if content.comment %}   
-                        <div class="mt-3 mb-3">
+                        <div class="mt-3">
                             {{content.comment}}
                         </div>         
                     {% endif %}
-                    <div class="text-muted">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Say</div>
+                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Say</div>
                 </div>
 
                 {% elif content.content_type.model == 'pin' %}
@@ -91,11 +91,11 @@
                         </span>     
                     </div>
                     {% if content.comment %}   
-                    <div class="mt-3 mb-3">
+                    <div class="mt-3">
                         {{content.comment}}
                     </div>         
                     {% endif %} 
-                    <div class="text-muted">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Pin</div>
+                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Pin</div>
                 </div>
 
                 {% elif content.content_type.model == 'post' %}
@@ -121,11 +121,11 @@
                     </div>
 
                     {% if content.comment %}   
-                    <div class="mt-3 mb-3">
+                    <div class="mt-3">
                         {{content.comment}}
                     </div>         
                     {% endif %} 
-                    <div class="text-muted">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Post</div>
+                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Post</div>
                 </div>
 
                 {% elif content.content_type.model == 'book' or content.content_type.model == 'issue' %}
@@ -183,11 +183,11 @@
                     </div>
 
                     {% if content.comment %}   
-                    <div class="mt-3 mb-3">
+                    <div class="mt-3">
                         {{content.comment}}
                     </div>         
                     {% endif %} 
-                    <div class="text-muted">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Book</div>
+                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Book</div>
                 </div>
 
                 {% elif content.content_type.model == 'movie' or content.content_type.model == 'series' %}
@@ -243,11 +243,11 @@
                     </div>
 
                     {% if content.comment %}   
-                        <div class="mt-3 mb-3">
+                        <div class="mt-3">
                             {{content.comment}}
                         </div>         
                     {% endif %} 
-                    <div class="text-muted">Added on {{content.timestamp|date:"Y.m.d H:i" }} | {% if content.content_type.model == 'movie' %}Movie{% elif content.content_type.model == 'series' %}Series{% endif %}</div>
+                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | {% if content.content_type.model == 'movie' %}Movie{% elif content.content_type.model == 'series' %}Series{% endif %}</div>
                 </div>
 
                 {% elif content.content_type.model == 'release' %}
@@ -297,7 +297,6 @@
                                 {% endif %}
                             </div>
                             
-                            
                             <div>
                                 {% if content.content_object.release_date %}
                                     Release Date: {{ content.content_object.release_date }}
@@ -307,11 +306,11 @@
                     </div>
                 
                     {% if content.comment %}   
-                        <div class="mt-3 mb-3">
+                        <div class="mt-3">
                             {{content.comment}}
                         </div>         
                     {% endif %} 
-                    <div class="text-muted">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Music</div>
+                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Music</div>
                 </div>
                 
                 {% elif content.content_type.model == 'game' %}
@@ -382,11 +381,11 @@
                     </div>
                 
                     {% if content.comment %}   
-                        <div class="mt-3 mb-3">
+                        <div class="mt-3">
                             {{content.comment}}
                         </div>         
                     {% endif %} 
-                    <div class="text-muted">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Game</div>
+                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Game</div>
                 </div>
                 
                 {% else %}
