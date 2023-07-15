@@ -526,7 +526,7 @@ class LuvListUserListView(LoginRequiredMixin, ListView):
         self.user = get_object_or_404(
             get_user_model(), username=self.kwargs["username"]
         )
-        return LuvList.objects.filter(user=self.user)
+        return LuvList.objects.filter(user=self.user).order_by("-updated_at")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
