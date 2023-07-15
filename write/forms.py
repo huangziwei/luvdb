@@ -144,9 +144,13 @@ class ContentInListForm(forms.ModelForm):
         path = urlparse(content_url).path
         # Split the path based on "/"
         content_parts = path.strip("/").split("/")
-        if len(content_parts) < 3:
+        if len(content_parts) == 3:
+            app_label, model_name, object_id = content_parts
+        elif len(content_parts) == 5:
+            app_label, _, _, model_name, object_id = content_parts
+        else:
             raise forms.ValidationError("Invalid Content URL")
-        app_label, model_name, object_id = content_parts
+
         try:
             content_type = ContentType.objects.get(
                 app_label=app_label, model=model_name
@@ -154,6 +158,7 @@ class ContentInListForm(forms.ModelForm):
             content_object = content_type.get_object_for_this_type(pk=object_id)
         except (ContentType.DoesNotExist, ObjectDoesNotExist):
             raise forms.ValidationError("Content does not exist")
+
         self.instance.content_object = (
             content_object  # save the content instance directly
         )
