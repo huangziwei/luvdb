@@ -9,7 +9,7 @@ class ReleaseSiteMap(Sitemap):
     priority = 0.9
 
     def items(self):
-        return Release.objects.all().order_by("-updated_at")
+        return Release.objects.all().order_by("-updated_at", "id")
 
     def lastmod(self, obj):
         return obj.updated_at

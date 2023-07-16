@@ -9,7 +9,7 @@ class MovieSiteMap(Sitemap):
     priority = 0.9
 
     def items(self):
-        return Movie.objects.all().order_by("-updated_at")
+        return Movie.objects.all().order_by("-updated_at", "id")
 
     def lastmod(self, obj):
         return obj.updated_at
@@ -23,7 +23,7 @@ class SeriesSiteMap(Sitemap):
     priority = 0.9
 
     def items(self):
-        return Series.objects.all().order_by("-updated_at")
+        return Series.objects.all().order_by("-updated_at", "id")
 
     def lastmod(self, obj):
         return obj.updated_at

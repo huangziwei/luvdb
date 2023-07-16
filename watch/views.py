@@ -249,6 +249,8 @@ class MovieCastDetailView(DetailView):
         context[
             "moviecasts"
         ] = self.object.moviecasts.all()  # Update with your correct related name
+        context["moviestaffs"] = self.object.movieroles.all()
+
         return context
 
 
@@ -513,6 +515,8 @@ class SeriesCastDetailView(DetailView):
             )
 
         context["series_casts"] = dict(series_casts)
+
+        context["series_staffs"] = self.object.seriesroles.all()
         return context
 
 

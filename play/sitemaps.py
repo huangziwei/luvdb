@@ -9,7 +9,7 @@ class GameSiteMap(Sitemap):
     priority = 0.9
 
     def items(self):
-        return Game.objects.all().order_by("-updated_at")
+        return Game.objects.all().order_by("-updated_at", "id")
 
     def lastmod(self, obj):
         return obj.updated_at

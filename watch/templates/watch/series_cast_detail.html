@@ -2,10 +2,28 @@
 
 {% block content %}
 <div class="container">
-    <h4>
+
+    <h3>
         <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }} </a>
-        Cast
-    </h4>
+        Staff and Cast
+    </h3>
+    <h4>Staff</h4>
+    <ul>
+        {% for role in series.seriesroles.all %}
+            {% if not role.role.is_cast %}
+                <li>
+                    <strong>{{ role.role.name }}:</strong> 
+                    <a href="{% url 'entity:person_detail' role.person.id %}">{{ role.person.name }} </a>
+                    
+                    {% if role.alt_name %}
+                        ({{ role.alt_name }})
+                    {% endif %}
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <h4>Cast</h4>
     <ul>
         {% for person, roles in series_casts.items %}
             <li>

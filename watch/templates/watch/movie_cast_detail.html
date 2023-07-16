@@ -2,14 +2,36 @@
 
 {% block content %}
 <div class="container">
-    <h1>{{ movie.title }} Cast</h1>
+    <h1>
+        <a href="{% url 'watch:movie_detail' movie.id %}"> {{ movie.title }} </a>
+        Staff and Cast
+    </h1>
+    
+    <h2>Staff</h2>
+    <ul>
+        {% for movierole in movieroles %}
+            {% if not movierole.role.is_cast %}
+                <li>
+                    <a href="{% url 'entity:person_detail' movierole.person.id %}">{{ movierole.person.name }} </a>
+                    as {{ movierole.role.name }}
+                    {% if movierole.alt_name %}
+                        ({{ movierole.alt_name }})
+                    {% endif %}
+                </li>
+            {% endif %}
+        {% empty %}
+        <li>No staff for this movie yet.</li>
+        {% endfor %}
+    </ul>
+    
+    <h2>Cast</h2>
     <ul>
         {% for moviecast in moviecasts %}
-
         <li>
             <a href="{% url 'entity:person_detail' moviecast.person.id %}">{{ moviecast.person.name }} </a>
             as 
-            {{ moviecast.character_name }}</li>
+            {{ moviecast.character_name }}
+        </li>
         {% empty %}
         <li>No cast for this movie yet.</li>
         {% endfor %}
