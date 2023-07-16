@@ -18,385 +18,426 @@
 
             {% for content in contents %}
 
-                {% if content.content_type.model == 'luvlist' %}
-                <div class="bg-light p-3 mb-3">
-                    <span class="sticky-note">{{content.order}}</span>
-                
-                    <div class="bg-white p-3">
-                        <a href="{% url 'write:luvlist_detail' content.content_object.id %}" class="text-decoration-none hover-username">
-                            <h5>{{ content.content_object.title }}</h5>
-                        </a>
-                    </div>
-                
-                    {% if content.comment %}   
-                        <div class="mt-3">
-                            {{content.comment}}
-                        </div>         
-                    {% endif %} 
-                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | List</div>
-                </div>
-
-                {% elif content.content_type.model == 'say' %}
-                <div class="bg-light p-3 mb-3">
-                    <span class="sticky-note">{{content.order}}</span>
-                
-                    <div class="bg-white p-3">
-                        <div class="d-flex"> 
-                            <a href="{% url 'accounts:detail' content.content_object.user.username %}" class='me-1'>
-                            {{ content.content_object.user.display_name | default:content.content_object.user.username }}
-                            </a> said:
+                {% if content.content_object %}
+                    {% if content.content_type.model == 'luvlist' %}
+                    <div class="bg-light p-3 mb-3">
+                        <span class="sticky-note">{{content.order}}</span>
+                    
+                        <div class="bg-white p-3">
+                            <a href="{% url 'write:luvlist_detail' content.content_object.id %}" class="text-decoration-none hover-username">
+                                <h5>{{ content.content_object.title }}</h5>
+                            </a>
                         </div>
-                        <div class="mt-2 p-3">
-                            <div>
-                                {{ content.content_object.content| linkify_tags:content.content_object.user | linkify_mentions | markdownify }}
-                            </div>
-                        </div>  
-                        <span class="d-flex mt-2">
-                            <p class='me-2 text-secondary mb-2'>
-                                <a href="{% url "write:say_detail" content.content_object.id %}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
-                            </p>
-                        </span>   
+                    
+                        {% if content.comment %}   
+                            <div class="mt-3">
+                                {{content.comment}}
+                            </div>         
+                        {% endif %} 
+                        <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | List</div>
                     </div>
-                    {% if content.comment %}   
+
+                    {% elif content.content_type.model == 'say' %}
+                    <div class="bg-light p-3 mb-3">
+                        <span class="sticky-note">{{content.order}}</span>
+                    
+                        <div class="bg-white p-3">
+                            <div class="d-flex"> 
+                                <a href="{% url 'accounts:detail' content.content_object.user.username %}" class='me-1'>
+                                {{ content.content_object.user.display_name | default:content.content_object.user.username }}
+                                </a> said:
+                            </div>
+                            <div class="mt-2 p-3">
+                                <div>
+                                    {{ content.content_object.content| linkify_tags:content.content_object.user | linkify_mentions | markdownify }}
+                                </div>
+                            </div>  
+                            <span class="d-flex mt-2">
+                                <p class='me-2 text-secondary mb-2'>
+                                    <a href="{% url "write:say_detail" content.content_object.id %}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                                </p>
+                            </span>   
+                        </div>
+                        {% if content.comment %}   
+                            <div class="mt-3">
+                                {{content.comment}}
+                            </div>         
+                        {% endif %}
+                        <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Say</div>
+                    </div>
+
+                    {% elif content.content_type.model == 'pin' %}
+                    <div class="bg-light p-3 mb-3">
+                        <span class="sticky-note">{{content.order}}</span>
+
+                        <div class="bg-white p-3">
+                            <div class="d-flex"> 
+                                <a href="{% url 'accounts:detail' content.content_object.user.username %}" class='me-1'>
+                                {{ content.content_object.user.display_name | default:content.content_object.user.username }}
+                                </a> pinned:
+                            </div>
+                            <div class="mt-2 p-3">
+                                <div>
+                                    <a href="{{ content.content_object.url }}" class="text-decoration-none">{{content.content_object.title}}</a>
+                                    (<a href="{% url 'write:pins_from_url' content.content_object.url|root_url %}" class="text-decoration-none text-secondary">{{content.content_object.url|root_url}}</a>)
+                                </div>
+                                {% if content.content_object.content %}
+                                <div>{{ content.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                                {% endif %}
+                            </div>                    
+                            <span class="d-flex mt-2">
+                                <p class='me-2 text-secondary mb-2'>
+                                    <a href="{% url "write:pin_detail" content.content_object.id %}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                                </p>
+                            </span>     
+                        </div>
+                        {% if content.comment %}   
                         <div class="mt-3">
                             {{content.comment}}
                         </div>         
+                        {% endif %} 
+                        <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Pin</div>
+                    </div>
+
+                    {% elif content.content_type.model == 'post' %}
+                    <!--Post-->
+                    <div class="bg-light p-3 mb-3">
+                        <span class="sticky-note">{{content.order}}</span>
+                    
+                        <div class="bg-white p-3">
+                            <div class="d-flex"> 
+                                <a href="{% url 'accounts:detail' content.content_object.user.username %}" class='me-1'>
+                                {{ content.content_object.user.display_name | default:content.content_object.user.username }}
+                                </a> posted:
+                            </div>
+                            <div class="mt-2 p-3">
+                                <div><a href="{% url 'write:post_detail' content.content_object.id %}" class="text-decoration-none">{{content.content_object.title}}</a></div>
+                                <div>{{ content.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                            </div>
+                            <span class="d-flex mt-2">
+                                <p class='me-2 text-secondary mb-2'>
+                                    <a href="{% url "write:post_detail" content.content_object.id %}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                                </p>
+                            </span>  
+                        </div>
+
+                        {% if content.comment %}   
+                        <div class="mt-3">
+                            {{content.comment}}
+                        </div>         
+                        {% endif %} 
+                        <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Post</div>
+                    </div>
+
+                    {% elif content.content_type.model == 'repost' %}
+                    <!--Post-->
+                    <div class="bg-light p-3 mb-3">
+                        <span class="sticky-note">{{content.order}}</span>
+                    
+                        <div class="bg-white p-3">
+                            <div class="d-flex"> 
+                                <a href="{% url 'accounts:detail' content.content_object.user.username %}" class='me-1'>
+                                {{ content.content_object.user.display_name | default:content.content_object.user.username }}
+                                </a> reposted:
+                            </div>
+                            <div class="mt-2 p-3">
+                                <div><a href="{% url 'write:repost_detail' content.content_object.id %}" class="text-decoration-none">{{content.content_object.title}}</a></div>
+                                <div>{{ content.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                            </div>
+                            <span class="d-flex mt-2">
+                                <p class='me-2 text-secondary mb-2'>
+                                    <a href="{% url "write:repost_detail" content.content_object.id %}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                                </p>
+                            </span>  
+                        </div>
+
+                        {% if content.comment %}   
+                        <div class="mt-3">
+                            {{content.comment}}
+                        </div>         
+                        {% endif %} 
+                        <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Post</div>
+                    </div>
+
+                    {% elif content.content_type.model == 'book' or content.content_type.model == 'issue' %}
+                    <!--Book-->
+                    <div class="bg-light p-3 mb-3">
+                        <span class="sticky-note">{{content.order}}</span>
+                    
+                        <div class="bg-white p-3 d-flex">
+                            <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                {% if content.content_object.cover %}
+                                    {% if content.content_object.cover_sens %}
+                                        <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;">
+                                    {% endif %}
+                                {% else %}
+                                    <p class="no-cover-text">No Cover</p>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                        
+                                {% if content.content_type.model == 'book' %}
+                                    <a href=" {% url 'read:book_detail' content.content_object.id %} " class="text-decoration-none hover-username">
+                                        <h5>{{ content.content_object.title }}</h5>
+                                    </a>
+                                {% elif content.content_type.model == 'issue' %}
+                                    <h5>{{ content.content_object.periodical.title }}</h5>
+                                    <a href=" {% url 'read:issue_detail' content.content_object.periodical.id content.content_object.id %} " class="text-decoration-none hover-username">
+                                        <h6>{{ content.content_object.title }}</h6>
+                                    </a>
+                                {% endif %}
+            
+                                {% if content.content_type.model == 'book' %}
+                                    {% regroup content.content_object.bookrole_set.all by role as roles_list %}
+                                    {% for role in roles_list %}
+                                        <div>
+                                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                            {% for book_role in role.list %}
+                                                {% if not forloop.first %} / {% endif %}
+                                                <a href="{% url 'entity:person_detail' book_role.person.id %}">
+                                                    {{ book_role.alt_name | default:book_role.person.name }}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}                        
+                                {% endif %}
+                                
+                                <div>
+                                    {% if content.content_object.publication_date %}
+                                        Date: {{ content.content_object.publication_date }}
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {% if content.comment %}   
+                        <div class="mt-3">
+                            {{content.comment}}
+                        </div>         
+                        {% endif %} 
+                        <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Book</div>
+                    </div>
+
+                    {% elif content.content_type.model == 'movie' or content.content_type.model == 'series' %}
+                    <!--Movie/Series-->
+                    <div class="bg-light p-3 mb-3">
+                        <span class="sticky-note">{{content.order}}</span>
+
+                        <div class="bg-white p-3 d-flex">
+                            <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                {% if content.content_object.poster %}
+                                    {% if content.content_object.poster_sens %}
+                                        <img src="{{ content.content_object.poster.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ content.content_object.poster.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;">
+                                    {% endif %}
+                                {% else %}
+                                    <p class="no-cover-text">No Cover</p>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                            
+                                {% if content.content_type.model == 'movie' %}
+                                    <a href=" {% url 'watch:movie_detail' content.content_object.id %} " class="text-decoration-none hover-username">
+                                        <h5>{{ content.content_object.title }}</h5>
+                                    </a>
+                                {% elif content.content_type.model == 'series' %}
+                                    <a href=" {% url 'watch:series_detail' content.content_object.id %} " class="text-decoration-none hover-username">
+                                        <h5>{{ content.content_object.title }}</h5>
+                                    </a>
+                                {% endif %}
+                            
+                                {% if content.content_type.model == 'movie' %}
+                                    {% regroup content.content_object.movierole_set.all by role as roles_list %}
+                                    {% for role in roles_list %}
+                                        <div>
+                                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                            {% for movie_role in role.list %}
+                                                {% if not forloop.first %} / {% endif %}
+                                                <a href="{% url 'entity:person_detail' movie_role.person.id %}">
+                                                    {{ movie_role.alt_name | default:movie_role.person.name }}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}                        
+                                {% endif %}
+                                
+                                <div>
+                                    {% if content.content_object.release_date %}
+                                        Date: {{ content.content_object.release_date }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if content.comment %}   
+                            <div class="mt-3">
+                                {{content.comment}}
+                            </div>         
+                        {% endif %} 
+                        <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | {% if content.content_type.model == 'movie' %}Movie{% elif content.content_type.model == 'series' %}Series{% endif %}</div>
+                    </div>
+
+                    {% elif content.content_type.model == 'release' %}
+                    <!--Music-->
+                    <div class="bg-light p-3 mb-3">
+                        <span class="sticky-note">{{content.order}}</span>
+                    
+                        <div class="bg-white p-3 d-flex">
+                            <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                {% if content.content_object.cover %}
+                                    {% if content.content_object.cover_sens %}
+                                        <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;">
+                                    {% endif %}
+                                {% else %}
+                                    <p class="no-cover-text">No Cover</p>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <a href="{% url 'listen:release_detail' content.content_object.id %}" class="text-decoration-none hover-username">
+                                    <h5>{{ content.content_object.title }}</h5>
+                                </a>
+                                
+                                {% regroup content.content_object.releaserole_set.all by role as roles_list %}
+                                {% for role in roles_list %}
+                                    <div>
+                                        {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                        {% for release_role in role.list %}
+                                            {% if not forloop.first %} / {% endif %}
+                                            <a href="{% url 'entity:person_detail' release_role.person.id %}">
+                                                {{ release_role.alt_name | default:release_role.person.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                        
+                                <div>
+                                    {% if content.content_object.labels %}
+                                        Labels:{% if content.content_object.labels.list|length > 1 %}s{% endif %}:
+                                        {% for label in content.content_object.labels.all %}
+                                            {% if not forloop.first %}, {% endif %}
+                                            <a href="{% url 'listen:label_detail' label.id %}">
+                                                {{ label.name }}
+                                            </a>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    {% if content.content_object.release_date %}
+                                        Release Date: {{ content.content_object.release_date }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    
+                        {% if content.comment %}   
+                            <div class="mt-3">
+                                {{content.comment}}
+                            </div>         
+                        {% endif %} 
+                        <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Music</div>
+                    </div>
+                
+                    {% elif content.content_type.model == 'game' %}
+                    <!--Game-->
+                    <div class="bg-light p-3 mb-3">
+                        <span class="sticky-note">{{content.order}}</span>
+                    
+                        <div class="bg-white p-3 d-flex">
+                            <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                {% if content.content_object.cover %}
+                                    {% if content.content_object.cover_sens %}
+                                        <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;">
+                                    {% endif %}
+                                {% else %}
+                                    <p class="no-cover-text">No Cover</p>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <a href="{% url 'play:game_detail' content.content_object.id %}" class="text-decoration-none hover-username">
+                                    <h5>{{ content.content_object.title }}</h5>
+                                </a>
+                                
+                                {% regroup content.content_object.gamerole_set.all by role as roles_list %}
+                                {% for role in roles_list %}
+                                    <div>
+                                        {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                        {% for game_role in role.list %}
+                                            {% if not forloop.first %} / {% endif %}
+                                            <a href="{% url 'entity:person_detail' game_role.person.id %}">
+                                                {{ game_role.alt_name | default:game_role.person.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                        
+                                <div>
+                                    {% if content.content_object.developers %}
+                                        Developer{% if content.content_object.developers.list|length > 1 %}s{% endif %}:
+                                        {% for developer in content.content_object.developers.all %}
+                                            {% if not forloop.first %}, {% endif %}
+                                            <a href="{% url 'play:developer_detail' developer.id %}">
+                                                {{ developer.name }}
+                                            </a>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    {% if content.content_object.platforms %}
+                                        Platform{% if content.content_object.platforms.list|length > 1 %}s{% endif %}:
+                                        {% for platform in content.content_object.platforms.all %}
+                                            {% if not forloop.first %}, {% endif %}
+                                            <a href="{% url 'play:platform_detail' platform.id %}">
+                                                {{ platform.name }}
+                                            </a>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    {% if content.content_object.release_date %}
+                                        Release Date: {{ content.content_object.release_date }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    
+                        {% if content.comment %}   
+                            <div class="mt-3">
+                                {{content.comment}}
+                            </div>         
+                        {% endif %} 
+                        <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Game</div>
+                    </div>
+                
+                    {% else %}
+                    <div>
+                        <span class="sticky-note">{{content.order}}</span>
+                        <div class="bg-white p-3">
+                            <p class="text-muted">This content type is not supported in List yet.</p>
+                        </div>
+                    </div>
                     {% endif %}
-                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Say</div>
-                </div>
-
-                {% elif content.content_type.model == 'pin' %}
-                <div class="bg-light p-3 mb-3">
-                    <span class="sticky-note">{{content.order}}</span>
-
-                    <div class="bg-white p-3">
-                        <div class="d-flex"> 
-                            <a href="{% url 'accounts:detail' content.content_object.user.username %}" class='me-1'>
-                            {{ content.content_object.user.display_name | default:content.content_object.user.username }}
-                            </a> pinned:
-                        </div>
-                        <div class="mt-2 p-3">
-                            <div>
-                                <a href="{{ content.content_object.url }}" class="text-decoration-none">{{content.content_object.title}}</a>
-                                (<a href="{% url 'write:pins_from_url' content.content_object.url|root_url %}" class="text-decoration-none text-secondary">{{content.content_object.url|root_url}}</a>)
-                            </div>
-                            {% if content.content_object.content %}
-                            <div>{{ content.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
-                            {% endif %}
-                        </div>                    
-                        <span class="d-flex mt-2">
-                            <p class='me-2 text-secondary mb-2'>
-                                <a href="{% url "write:pin_detail" content.content_object.id %}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
-                            </p>
-                        </span>     
-                    </div>
-                    {% if content.comment %}   
-                    <div class="mt-3">
-                        {{content.comment}}
-                    </div>         
-                    {% endif %} 
-                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Pin</div>
-                </div>
-
-                {% elif content.content_type.model == 'post' %}
-                <!--Post-->
-                <div class="bg-light p-3 mb-3">
-                    <span class="sticky-note">{{content.order}}</span>
-                
-                    <div class="bg-white p-3">
-                        <div class="d-flex"> 
-                            <a href="{% url 'accounts:detail' content.content_object.user.username %}" class='me-1'>
-                            {{ content.content_object.user.display_name | default:content.content_object.user.username }}
-                            </a> posted:
-                        </div>
-                        <div class="mt-2 p-3">
-                            <div><a href="{% url 'write:post_detail' content.content_object.id %}" class="text-decoration-none">{{content.content_object.title}}</a></div>
-                            <div>{{ content.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
-                        </div>
-                        <span class="d-flex mt-2">
-                            <p class='me-2 text-secondary mb-2'>
-                                <a href="{% url "write:post_detail" content.content_object.id %}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
-                            </p>
-                        </span>  
-                    </div>
-
-                    {% if content.comment %}   
-                    <div class="mt-3">
-                        {{content.comment}}
-                    </div>         
-                    {% endif %} 
-                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Post</div>
-                </div>
-
-                {% elif content.content_type.model == 'book' or content.content_type.model == 'issue' %}
-                <!--Book-->
-                <div class="bg-light p-3 mb-3">
-                    <span class="sticky-note">{{content.order}}</span>
-                
-                    <div class="bg-white p-3 d-flex">
-                        <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                            {% if content.content_object.cover %}
-                                {% if content.content_object.cover_sens %}
-                                    <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
-                                {% else %}
-                                    <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;">
-                                {% endif %}
-                            {% else %}
-                                <p class="no-cover-text">No Cover</p>
-                            {% endif %}
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                    
-                            {% if content.content_type.model == 'book' %}
-                                <a href=" {% url 'read:book_detail' content.content_object.id %} " class="text-decoration-none hover-username">
-                                    <h5>{{ content.content_object.title }}</h5>
-                                </a>
-                            {% elif content.content_type.model == 'issue' %}
-                                <h5>{{ content.content_object.periodical.title }}</h5>
-                                <a href=" {% url 'read:issue_detail' content.content_object.periodical.id content.content_object.id %} " class="text-decoration-none hover-username">
-                                    <h6>{{ content.content_object.title }}</h6>
-                                </a>
-                            {% endif %}
-        
-                            {% if content.content_type.model == 'book' %}
-                                {% regroup content.content_object.bookrole_set.all by role as roles_list %}
-                                {% for role in roles_list %}
-                                    <div>
-                                        {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
-                                        {% for book_role in role.list %}
-                                            {% if not forloop.first %} / {% endif %}
-                                            <a href="{% url 'entity:person_detail' book_role.person.id %}">
-                                                {{ book_role.alt_name | default:book_role.person.name }}
-                                            </a>
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}                        
-                            {% endif %}
-                            
-                            <div>
-                                {% if content.content_object.publication_date %}
-                                    Date: {{ content.content_object.publication_date }}
-                                {% endif %}
-                            </div>
-                        </div>
-
-                    </div>
-
-                    {% if content.comment %}   
-                    <div class="mt-3">
-                        {{content.comment}}
-                    </div>         
-                    {% endif %} 
-                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Book</div>
-                </div>
-
-                {% elif content.content_type.model == 'movie' or content.content_type.model == 'series' %}
-                <!--Movie/Series-->
-                <div class="bg-light p-3 mb-3">
-                    <span class="sticky-note">{{content.order}}</span>
-
-                    <div class="bg-white p-3 d-flex">
-                        <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                            {% if content.content_object.poster %}
-                                {% if content.content_object.poster_sens %}
-                                    <img src="{{ content.content_object.poster.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
-                                {% else %}
-                                    <img src="{{ content.content_object.poster.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;">
-                                {% endif %}
-                            {% else %}
-                                <p class="no-cover-text">No Cover</p>
-                            {% endif %}
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                        
-                            {% if content.content_type.model == 'movie' %}
-                                <a href=" {% url 'watch:movie_detail' content.content_object.id %} " class="text-decoration-none hover-username">
-                                    <h5>{{ content.content_object.title }}</h5>
-                                </a>
-                            {% elif content.content_type.model == 'series' %}
-                                <a href=" {% url 'watch:series_detail' content.content_object.id %} " class="text-decoration-none hover-username">
-                                    <h5>{{ content.content_object.title }}</h5>
-                                </a>
-                            {% endif %}
-                        
-                            {% if content.content_type.model == 'movie' %}
-                                {% regroup content.content_object.movierole_set.all by role as roles_list %}
-                                {% for role in roles_list %}
-                                    <div>
-                                        {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
-                                        {% for movie_role in role.list %}
-                                            {% if not forloop.first %} / {% endif %}
-                                            <a href="{% url 'entity:person_detail' movie_role.person.id %}">
-                                                {{ movie_role.alt_name | default:movie_role.person.name }}
-                                            </a>
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}                        
-                            {% endif %}
-                            
-                            <div>
-                                {% if content.content_object.release_date %}
-                                    Date: {{ content.content_object.release_date }}
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-
-                    {% if content.comment %}   
-                        <div class="mt-3">
-                            {{content.comment}}
-                        </div>         
-                    {% endif %} 
-                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | {% if content.content_type.model == 'movie' %}Movie{% elif content.content_type.model == 'series' %}Series{% endif %}</div>
-                </div>
-
-                {% elif content.content_type.model == 'release' %}
-                <!--Music-->
-                <div class="bg-light p-3 mb-3">
-                    <span class="sticky-note">{{content.order}}</span>
-                
-                    <div class="bg-white p-3 d-flex">
-                        <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                            {% if content.content_object.cover %}
-                                {% if content.content_object.cover_sens %}
-                                    <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
-                                {% else %}
-                                    <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;">
-                                {% endif %}
-                            {% else %}
-                                <p class="no-cover-text">No Cover</p>
-                            {% endif %}
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <a href="{% url 'listen:release_detail' content.content_object.id %}" class="text-decoration-none hover-username">
-                                <h5>{{ content.content_object.title }}</h5>
-                            </a>
-                            
-                            {% regroup content.content_object.releaserole_set.all by role as roles_list %}
-                            {% for role in roles_list %}
-                                <div>
-                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
-                                    {% for release_role in role.list %}
-                                        {% if not forloop.first %} / {% endif %}
-                                        <a href="{% url 'entity:person_detail' release_role.person.id %}">
-                                            {{ release_role.alt_name | default:release_role.person.name }}
-                                        </a>
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
-                    
-                            <div>
-                                {% if content.content_object.labels %}
-                                    Labels:{% if content.content_object.labels.list|length > 1 %}s{% endif %}:
-                                    {% for label in content.content_object.labels.all %}
-                                        {% if not forloop.first %}, {% endif %}
-                                        <a href="{% url 'listen:label_detail' label.id %}">
-                                            {{ label.name }}
-                                        </a>
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-                            
-                            <div>
-                                {% if content.content_object.release_date %}
-                                    Release Date: {{ content.content_object.release_date }}
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                
-                    {% if content.comment %}   
-                        <div class="mt-3">
-                            {{content.comment}}
-                        </div>         
-                    {% endif %} 
-                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Music</div>
-                </div>
-                
-                {% elif content.content_type.model == 'game' %}
-                <!--Game-->
-                <div class="bg-light p-3 mb-3">
-                    <span class="sticky-note">{{content.order}}</span>
-                
-                    <div class="bg-white p-3 d-flex">
-                        <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                            {% if content.content_object.cover %}
-                                {% if content.content_object.cover_sens %}
-                                    <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
-                                {% else %}
-                                    <img src="{{ content.content_object.cover.url }}" alt="{{ content.content_object.title }} cover" style="width: 100%;">
-                                {% endif %}
-                            {% else %}
-                                <p class="no-cover-text">No Cover</p>
-                            {% endif %}
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <a href="{% url 'play:game_detail' content.content_object.id %}" class="text-decoration-none hover-username">
-                                <h5>{{ content.content_object.title }}</h5>
-                            </a>
-                            
-                            {% regroup content.content_object.gamerole_set.all by role as roles_list %}
-                            {% for role in roles_list %}
-                                <div>
-                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
-                                    {% for game_role in role.list %}
-                                        {% if not forloop.first %} / {% endif %}
-                                        <a href="{% url 'entity:person_detail' game_role.person.id %}">
-                                            {{ game_role.alt_name | default:game_role.person.name }}
-                                        </a>
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
-                    
-                            <div>
-                                {% if content.content_object.developers %}
-                                    Developer{% if content.content_object.developers.list|length > 1 %}s{% endif %}:
-                                    {% for developer in content.content_object.developers.all %}
-                                        {% if not forloop.first %}, {% endif %}
-                                        <a href="{% url 'play:developer_detail' developer.id %}">
-                                            {{ developer.name }}
-                                        </a>
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-                            
-                            <div>
-                                {% if content.content_object.platforms %}
-                                    Platform{% if content.content_object.platforms.list|length > 1 %}s{% endif %}:
-                                    {% for platform in content.content_object.platforms.all %}
-                                        {% if not forloop.first %}, {% endif %}
-                                        <a href="{% url 'play:platform_detail' platform.id %}">
-                                            {{ platform.name }}
-                                        </a>
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
-                            
-                            <div>
-                                {% if content.content_object.release_date %}
-                                    Release Date: {{ content.content_object.release_date }}
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                
-                    {% if content.comment %}   
-                        <div class="mt-3">
-                            {{content.comment}}
-                        </div>         
-                    {% endif %} 
-                    <div class="text-muted mt-3">Added on {{content.timestamp|date:"Y.m.d H:i" }} | Game</div>
-                </div>
                 
                 {% else %}
-                <div>
-
-                    <a href="">{{ content.content_object }}</a>
-                    (Order: {{ content.order }})
+                <div class="bg-light p-3 mb-3">
+                    <span class="sticky-note">{{content.order}}</span>
+                    <div class="bg-white p-3">
+                        <p class="text-muted">This content has been removed.</p>
+                    </div>
                 </div>
                 {% endif %}
-
                 <hr>
+
             {% endfor %}
         </div>
 
