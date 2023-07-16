@@ -709,7 +709,14 @@ class WatchCheckInDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "watch/watch_checkin_delete.html"
 
     def get_success_url(self):
-        return reverse_lazy("watch:movie_detail", kwargs={"pk": self.object.movie.pk})
+        if self.object.content_type.model == "movie":
+            return reverse_lazy(
+                "watch:movie_detail", kwargs={"pk": self.object.content_object.pk}
+            )
+        else:
+            return reverse_lazy(
+                "watch:series_detail", kwargs={"pk": self.object.content_object.pk}
+            )
 
 
 class GenericCheckInListView(ListView):
