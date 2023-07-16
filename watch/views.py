@@ -515,7 +515,6 @@ class SeriesCastDetailView(DetailView):
             )
 
         context["series_casts"] = dict(series_casts)
-
         context["series_staffs"] = self.object.seriesroles.all()
         return context
 

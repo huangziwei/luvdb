@@ -2,12 +2,12 @@
 
 {% block content %}
 <div class="container">
-    <h1>
+    <h3>
         <a href="{% url 'watch:movie_detail' movie.id %}"> {{ movie.title }} </a>
         Staff and Cast
-    </h1>
+    </h3>
     
-    <h2>Staff</h2>
+    <h4>Staff</h4>
     <ul>
         {% regroup moviestaffs by role as roles_grouped %}
         {% for role_group in roles_grouped %}
@@ -24,7 +24,7 @@
     </ul>
 
     
-    <h2>Cast</h2>
+    <h4>Cast</h4>
     <ul>
         {% for moviecast in moviecasts %}
         <li>

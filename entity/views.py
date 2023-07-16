@@ -70,6 +70,7 @@ class PersonDetailView(DetailView):
         ).order_by("release_date")
 
         # watch
+        ## as casts
         context["movies"] = (
             Movie.objects.filter(moviecasts__person=person)
             .distinct()
@@ -77,6 +78,36 @@ class PersonDetailView(DetailView):
         )
         context["series"] = (
             Series.objects.filter(episodes__episodecasts__person=person)
+            .distinct()
+            .order_by("release_date")
+        )
+        ## as staff
+        context["movies_as_director"] = (
+            Movie.objects.filter(
+                movieroles__person=person, movieroles__role__name="Director"
+            )
+            .distinct()
+            .order_by("release_date")
+        )
+        context["series_as_director"] = (
+            Series.objects.filter(
+                seriesroles__person=person, seriesroles__role__name="Director"
+            )
+            .distinct()
+            .order_by("release_date")
+        )
+
+        context["movies_as_writer"] = (
+            Movie.objects.filter(
+                movieroles__person=person, movieroles__role__name="Writer"
+            )
+            .distinct()
+            .order_by("release_date")
+        )
+        context["series_as_writer"] = (
+            Series.objects.filter(
+                seriesroles__person=person, seriesroles__role__name="Writer"
+            )
             .distinct()
             .order_by("release_date")
         )
