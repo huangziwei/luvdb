@@ -9,11 +9,11 @@
     
     <h2>Staff</h2>
     <ul>
-        {% for movierole in movieroles %}
+        {% for movierole in moviestaffs %}
             {% if not movierole.role.is_cast %}
                 <li>
+                    <strong>{{ movierole.role.name }}:</strong>
                     <a href="{% url 'entity:person_detail' movierole.person.id %}">{{ movierole.person.name }} </a>
-                    as {{ movierole.role.name }}
                     {% if movierole.alt_name %}
                         ({{ movierole.alt_name }})
                     {% endif %}
