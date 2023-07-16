@@ -9,20 +9,20 @@
     
     <h2>Staff</h2>
     <ul>
-        {% for movierole in moviestaffs %}
-            {% if not movierole.role.is_cast %}
-                <li>
-                    <strong>{{ movierole.role.name }}:</strong>
+        {% regroup moviestaffs by role as roles_grouped %}
+        {% for role_group in roles_grouped %}
+            <li>
+                <strong>{{ role_group.grouper.name }}:</strong>
+                {% for movierole in role_group.list %}
                     <a href="{% url 'entity:person_detail' movierole.person.id %}">{{ movierole.person.name }} </a>
-                    {% if movierole.alt_name %}
-                        ({{ movierole.alt_name }})
-                    {% endif %}
-                </li>
-            {% endif %}
+                    {% if not forloop.last %} / {% endif %}
+                {% endfor %}
+            </li>
         {% empty %}
         <li>No staff for this movie yet.</li>
         {% endfor %}
     </ul>
+
     
     <h2>Cast</h2>
     <ul>

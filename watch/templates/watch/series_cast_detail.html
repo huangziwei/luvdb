@@ -9,17 +9,15 @@
     </h3>
     <h4>Staff</h4>
     <ul>
-        {% for role in series.seriesroles.all %}
-            {% if not role.role.is_cast %}
-                <li>
-                    <strong>{{ role.role.name }}:</strong> 
-                    <a href="{% url 'entity:person_detail' role.person.id %}">{{ role.person.name }} </a>
-                    
-                    {% if role.alt_name %}
-                        ({{ role.alt_name }})
-                    {% endif %}
-                </li>
-            {% endif %}
+        {% regroup series_staffs by role as roles_grouped %}
+        {% for role_group in roles_grouped %}
+            <li>
+                <strong>{{ role_group.grouper.name }}:</strong>
+                {% for seriesrole in role_group.list %}
+                    <a href="{% url 'entity:person_detail' seriesrole.person.id %}">{{ seriesrole.person.name }} </a>
+                    {% if not forloop.last %} / {% endif %}
+                {% endfor %}
+            </li>
         {% endfor %}
     </ul>
 
