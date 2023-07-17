@@ -5,11 +5,11 @@
 
     <h3>
         <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }} </a>
-        Staff and Cast
+        Crew and Cast
     </h3>
-    <h4>Staff</h4>
+    <h4>Crew</h4>
     <ul>
-        {% regroup series_staffs by role as roles_grouped %}
+        {% regroup series_crew by role as roles_grouped %}
         {% for role_group in roles_grouped %}
             <li>
                 <strong>{{ role_group.grouper.name }}:</strong>
@@ -23,7 +23,7 @@
 
     <h4>Cast</h4>
     <ul>
-        {% for person, roles in series_casts.items %}
+        {% for person, roles in series_cast.items %}
             <li>
                 <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }} </a>
                 as  

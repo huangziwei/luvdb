@@ -177,6 +177,15 @@ class MovieDetailView(DetailView):
 
         context["lists_containing_movie"] = lists_containing_movie
 
+        roles = {}
+        for movie_role in movie.movieroles.all():
+            if movie_role.role.name not in roles:
+                roles[movie_role.role.name] = []
+            alt_name_or_person_name = movie_role.alt_name or movie_role.person.name
+            roles[movie_role.role.name].append(
+                (movie_role.person, alt_name_or_person_name)
+            )
+        context["roles"] = roles
         return context
 
     def post(self, request, *args, **kwargs):
@@ -249,7 +258,7 @@ class MovieCastDetailView(DetailView):
         context[
             "moviecasts"
         ] = self.object.moviecasts.all()  # Update with your correct related name
-        context["moviestaffs"] = self.object.movieroles.all()
+        context["moviecrew"] = self.object.movieroles.all()
 
         return context
 
@@ -514,8 +523,8 @@ class SeriesCastDetailView(DetailView):
                 }
             )
 
-        context["series_casts"] = dict(series_casts)
-        context["series_staffs"] = self.object.seriesroles.all()
+        context["series_cast"] = dict(series_casts)
+        context["series_crew"] = self.object.seriesroles.all()
         return context
 
 

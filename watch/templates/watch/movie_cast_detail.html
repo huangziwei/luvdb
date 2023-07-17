@@ -4,12 +4,12 @@
 <div class="container">
     <h3>
         <a href="{% url 'watch:movie_detail' movie.id %}"> {{ movie.title }} </a>
-        Staff and Cast
+        Crew and Cast
     </h3>
     
-    <h4>Staff</h4>
+    <h4>Crew</h4>
     <ul>
-        {% regroup moviestaffs by role as roles_grouped %}
+        {% regroup moviecrew by role as roles_grouped %}
         {% for role_group in roles_grouped %}
             <li>
                 <strong>{{ role_group.grouper.name }}:</strong>
