@@ -181,21 +181,35 @@
                             </a>
                         {% endif %}
 
-                        {% if activity.content_object.original_activity.content_object.content_type.model == 'book' %}
-                            {% regroup activity.content_object.original_activity.content_object.content_object.bookrole_set.all by role as roles_list %}
+
+                        {% if activity.content_object.original_activity.content_object.content_type.model == 'movie' %}
+                            {% regroup activity.content_object.original_activity.content_object.content_object.movieroles.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
                                     {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
-                                    {% for book_role in role.list %}
+                                    {% for movie_role in role.list %}
                                         {% if not forloop.first %} / {% endif %}
-                                        <a href="{% url 'entity:person_detail' book_role.person.id %}">
-                                            {{ book_role.alt_name | default:book_role.person.name }}
+                                        <a href="{% url 'entity:person_detail' movie_role.person.id %}">
+                                            {{ movie_role.alt_name | default:movie_role.person.name }}
                                         </a>
                                     {% endfor %}
                                 </div>
-                            {% endfor %}  
-                                              
+                            {% endfor %}        
+                        {% elif activity.content_object.original_activity.content_object.content_type.model == 'series' %}
+                            {% regroup activity.content_object.original_activity.content_object.content_object.seriesroles.all by role as roles_list %}
+                            {% for role in roles_list %}
+                                <div>
+                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                    {% for series_role in role.list %}
+                                        {% if not forloop.first %} / {% endif %}
+                                        <a href="{% url 'entity:person_detail' series_role.person.id %}">
+                                            {{ series_role.alt_name | default:series_role.person.name }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}                
                         {% endif %}
+                                                                      
                         
                         <div>
                             {% if activity.content_object.original_activity.content_object.content_object.release_date %}
@@ -384,9 +398,10 @@
                                 </div>
                             {% endfor %}
                             
+
                             <div>
-                                {% if activity.content_object.original_activity.content_object.game.release_date %}
-                                    Release Date: {{ activity.content_object.original_activity.content_object.game.release_date|slice:":4" }}
+                                {% if activity.content_object.original_activity.content_object.content_object.release_date %}
+                                    Date: {{ activity.content_object.original_activity.content_object.content_object.release_date}}
                                 {% endif %}
                             </div>
                         </div>

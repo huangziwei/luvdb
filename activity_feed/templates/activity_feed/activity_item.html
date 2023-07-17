@@ -314,7 +314,7 @@
                     {% endif %}
 
                     {% if activity.content_object.content_type.model == 'movie' %}
-                        {% regroup activity.content_object.content_object.movierole_set.all by role as roles_list %}
+                        {% regroup activity.content_object.content_object.movieroles.all by role as roles_list %}
                         {% for role in roles_list %}
                             <div>
                                 {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
@@ -325,7 +325,20 @@
                                     </a>
                                 {% endfor %}
                             </div>
-                        {% endfor %}                        
+                        {% endfor %}        
+                    {% elif activity.content_object.content_type.model == 'series' %}
+                        {% regroup activity.content_object.content_object.seriesroles.all by role as roles_list %}
+                        {% for role in roles_list %}
+                            <div>
+                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                {% for series_role in role.list %}
+                                    {% if not forloop.first %} / {% endif %}
+                                    <a href="{% url 'entity:person_detail' series_role.person.id %}">
+                                        {{ series_role.alt_name | default:series_role.person.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}                
                     {% endif %}
                     
                     <div>
@@ -442,7 +455,7 @@
                     
                     <div>
                         {% if activity.content_object.content_object.release_date %}
-                            Release Date: {{ activity.content_object.content_object.release_date }}
+                            Date: {{ activity.content_object.content_object.release_date }}
                         {% endif %}
                     </div>
                 </div>
@@ -543,7 +556,7 @@
                     {% endfor %}
             
                     <div>
-                        {% if activity.content_object.game.developers %}
+                        {% if activity.content_object.game.developers.exists %}
                             Developer{% if activity.content_object.game.developers.list|length > 1 %}s{% endif %}:
                             {% for developer in activity.content_object.game.developers.all %}
                                 {% if not forloop.first %}, {% endif %}
@@ -555,7 +568,7 @@
                     </div>
                     
                     <div>
-                        {% if activity.content_object.game.platforms %}
+                        {% if activity.content_object.game.platforms.exists %}
                             Platform{% if activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:
                             {% for platform in activity.content_object.game.platforms.all %}
                                 {% if not forloop.first %}, {% endif %}
