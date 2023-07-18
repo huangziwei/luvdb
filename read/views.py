@@ -398,15 +398,29 @@ class BookDetailView(DetailView):
             }
         )
 
-        # Get the ContentType for the Book model
-        book_content_type = ContentType.objects.get_for_model(Book)
-
         # Query ContentInList instances that have the book as their content_object
         lists_containing_book = ContentInList.objects.filter(
-            content_type=book_content_type, object_id=book.id
+            content_type=content_type, object_id=book.id
         )
 
         context["lists_containing_book"] = lists_containing_book
+
+        # Fetch the latest check-in from the current user for this book
+        latest_user_checkin = (
+            ReadCheckIn.objects.filter(
+                content_type=content_type.id,
+                object_id=self.object.id,
+                user=self.request.user,
+            )
+            .order_by("-timestamp")
+            .first()
+        )
+        if latest_user_checkin is not None:
+            context["latest_user_status"] = latest_user_checkin.status
+        else:
+            context["latest_user_status"] = "to_read"
+
+        return context
 
         return context
 

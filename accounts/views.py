@@ -16,11 +16,16 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from activity_feed.models import Activity, Follow
 from entity.models import Person
-from listen.models import ListenCheckIn, Release, Track, Work
+from listen.models import ListenCheckIn, Release, Track
+from listen.models import Work as MusicWork
 from play.models import Game, GameCast, GameCheckIn, GameRole, Platform
-from read.models import Book, Periodical, ReadCheckIn
+from play.models import Work as GameWork
+from read.models import Book
+from read.models import Instance as LitInstance
+from read.models import Periodical, ReadCheckIn
+from read.models import Work as LitWork
 from watch.models import Movie, Series, WatchCheckIn
-from write.models import Pin, Post, Say
+from write.models import Pin, Post, Repost, Say
 
 from .forms import CustomUserCreationForm
 from .models import InvitationCode
@@ -283,16 +288,28 @@ def search_view(request):
 
     # Initialize all results as empty
     user_results = []
+    # entity
+    person_results = []
+    # write
     post_results = []
     say_results = []
     pin_results = []
-    person_results = []
+    repost_results = []
+    # read
+    litwork_results = []
+    litinstance_results = []
     book_results = []
     periodical_results = []
+    # play
+    gamework_results = []
     game_results = []
-    work_results = []
+    # listen
+    musicwork_results = []
     track_results = []
     release_results = []
+    # watch
+    movie_results = []
+    series_results = []
 
     if query:
         if model in ["all", "write"]:
@@ -303,16 +320,27 @@ def search_view(request):
             )
             post_results = Post.objects.filter(
                 Q(title__icontains=query) | Q(content__icontains=query)
-            )
-            say_results = Say.objects.filter(content__icontains=query)
+            ).distinct()
+            say_results = Say.objects.filter(content__icontains=query).distinct()
             pin_results = Pin.objects.filter(
                 Q(title__icontains=query)
                 | Q(content__icontains=query)
                 | Q(url__icontains=query)
-            )
+            ).distinct()
+            repost_results = Repost.objects.filter(content__icontains=query).distinct()
 
         if model in ["all", "read"]:
             person_results = Person.objects.filter(Q(name__icontains=query))
+            litwork_results = LitWork.objects.filter(
+                Q(title__icontains=query)
+                | Q(workrole__person__name__icontains=query)
+                | Q(publication_date__icontains=query)
+            ).distinct()
+            litinstance_results = LitInstance.objects.filter(
+                Q(title__icontains=query)
+                | Q(instancerole__person__name__icontains=query)
+                | Q(publication_date__icontains=query)
+            ).distinct()
             book_results = Book.objects.filter(
                 Q(title__icontains=query)
                 | Q(isbn_10__icontains=query)
@@ -320,30 +348,49 @@ def search_view(request):
                 | Q(asin__icontains=query)
                 | Q(bookrole__person__name__icontains=query)
                 | Q(bookrole__alt_name__icontains=query)
-            )
+                | Q(publication_date__icontains=query)
+            ).distinct()
             periodical_results = Periodical.objects.filter(
                 title__icontains=query
-            )  # Update with your real query
+            ).distinct()  # Update with your real query
 
         if model in ["all", "listen"]:
-            work_results = Work.objects.filter(
-                title__icontains=query
-            )  # Update with your real query
+            musicwork_results = MusicWork.objects.filter(
+                Q(title__icontains=query) | Q(workrole__person__name__icontains=query)
+            ).distinct()  # Update with your real query
             track_results = Track.objects.filter(
-                title__icontains=query
-            )  # Update with your real query
+                Q(title__icontains=query) | Q(trackrole__person__name__icontains=query)
+            ).distinct()  # Update with your real query
             release_results = Release.objects.filter(
-                title__icontains=query
-            )  # Update with your real query
+                Q(title__icontains=query)
+                | Q(releaserole__person__name__icontains=query)
+            ).distinct()  # Update with your real query
 
         if model in ["all", "play"]:
+            gamework_results = GameWork.objects.filter(
+                Q(title__icontains=query)
+                | Q(workrole__person__name__icontains=query)
+                | Q(first_release_date=query)
+            ).distinct()
             game_results = Game.objects.filter(
-                title__icontains=query
-            )  # Update with your real query
+                Q(title__icontains=query)
+                | Q(developers__name__icontains=query)
+                | Q(platforms__name__icontains=query)
+                | Q(release_date__icontains=query)
+            ).distinct()  # Update with your real query
 
         if model in ["all", "watch"]:
-            movie_results = Movie.objects.filter(title__icontains=query)
-            series_results = Series.objects.filter(title__icontains=query)
+            movie_results = Movie.objects.filter(
+                Q(title__icontains=query)
+                | Q(movieroles__person__name__icontains=query)
+                | Q(moviecasts__person__name__icontains=query)
+                | Q(release_date__icontains=query)
+            ).distinct()
+            series_results = Series.objects.filter(
+                Q(title__icontains=query)
+                | Q(seriesroles__person__name__icontains=query)
+                | Q(episodes__episodecasts__person__name__icontains=query)
+            ).distinct()
 
     return render(
         request,
@@ -351,16 +398,26 @@ def search_view(request):
         {
             "query": query,
             "user_results": user_results,
+            # entity
+            "person_results": person_results,
+            # write
             "post_results": post_results,
             "say_results": say_results,
             "pin_results": pin_results,
-            "person_results": person_results,
+            "repost_results": repost_results,
+            # read
+            "litwork_results": litwork_results,
+            "litinstance_results": litinstance_results,
             "book_results": book_results,
             "periodical_results": periodical_results,
+            # play
+            "gamework_results": gamework_results,
             "game_results": game_results,
-            "work_results": work_results,
+            # listen
+            "musicwork_results": musicwork_results,
             "track_results": track_results,
             "release_results": release_results,
+            # watch
             "movie_results": movie_results,
             "series_results": series_results,
         },

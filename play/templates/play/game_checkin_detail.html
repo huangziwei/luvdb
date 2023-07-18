@@ -32,7 +32,7 @@
                 {% regroup object.game.gamerole_set.all by role as roles_list %}
                 {% for role in roles_list %}
                     <div>
-                        {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                         {% for game_role in role.list %}
                             {% if not forloop.first %} / {% endif %}
                             <a href="{% url 'entity:person_detail' game_role.person.id %}">
@@ -43,7 +43,7 @@
                 {% endfor %}
                 <div>
                   {% if object.game.developers %}
-                      Developer{% if object.game.developers.list|length > 1 %}s{% endif %}:
+                      <span class="text-muted">Developer{% if object.game.developers.list|length > 1 %}s{% endif %}:</span>
                       {% for developer in object.game.developers.all %}
                           {% if not forloop.first %}, {% endif %}
                           <a href="{% url 'play:developer_detail' developer.id %}">
@@ -55,7 +55,7 @@
               
               <div>
                   {% if object.game.platforms %}
-                      Platform{% if object.game.platforms.list|length > 1 %}s{% endif %}:
+                      <span class="text-muted">Platform{% if object.game.platforms.list|length > 1 %}s{% endif %}:</span>
                       {% for platform in object.game.platforms.all %}
                           {% if not forloop.first %}, {% endif %}
                           <a href="{% url 'play:platform_detail' platform.id %}">
@@ -67,7 +67,7 @@
                 
                 <div>
                     {% if object.game.release_date %}
-                        Release Date: {{ object.game.release_date|slice:":4" }}
+                        <span class="text-muted">Date: </span>{{ object.game.release_date|slice:":4" }}
                     {% endif %}
                 </div>
             </div>

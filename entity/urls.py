@@ -7,6 +7,8 @@ from .views import (
     PersonUpdateView,
     RoleAutocomplete,
     RoleCreateView,
+    RoleDetailView,
+    RoleUpdateView,
 )
 
 app_name = "entity"
@@ -21,5 +23,7 @@ urlpatterns = [
     ),
     # role
     path("role/create/", RoleCreateView.as_view(), name="role_create"),
+    path("role/<int:pk>/", RoleDetailView.as_view(), name="role_detail"),
+    path("role/<int:pk>/update/", RoleUpdateView.as_view(), name="role_update"),
     path("role-autocomplete/", RoleAutocomplete.as_view(), name="role-autocomplete"),
 ]

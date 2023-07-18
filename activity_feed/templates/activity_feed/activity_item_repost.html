@@ -93,7 +93,7 @@
                                 {% regroup activity.content_object.original_activity.content_object.content_object.bookrole_set.all by role as roles_list %}
                                 {% for role in roles_list %}
                                     <div>
-                                        {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                         {% for book_role in role.list %}
                                             {% if not forloop.first %} / {% endif %}
                                             <a href="{% url 'entity:person_detail' book_role.person.id %}">
@@ -107,7 +107,7 @@
                             
                             <div>
                                 {% if activity.content_object.original_activity.content_object.content_object.publication_date %}
-                                    Year: {{ activity.content_object.original_activity.content_object.content_object.publication_date|slice:":4" }}
+                                    <span class="text-muted">Date: </span>{{ activity.content_object.original_activity.content_object.content_object.publication_date }}
                                 {% endif %}
                             </div>
                         </div>
@@ -186,7 +186,7 @@
                             {% regroup activity.content_object.original_activity.content_object.content_object.movieroles.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
-                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                     {% for movie_role in role.list %}
                                         {% if not forloop.first %} / {% endif %}
                                         <a href="{% url 'entity:person_detail' movie_role.person.id %}">
@@ -199,7 +199,7 @@
                             {% regroup activity.content_object.original_activity.content_object.content_object.seriesroles.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
-                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                     {% for series_role in role.list %}
                                         {% if not forloop.first %} / {% endif %}
                                         <a href="{% url 'entity:person_detail' series_role.person.id %}">
@@ -213,7 +213,7 @@
                         
                         <div>
                             {% if activity.content_object.original_activity.content_object.content_object.release_date %}
-                                Year: {{ activity.content_object.original_activity.content_object.content_object.release_date|slice:":4" }}
+                                <span class="text-muted">Date: </span>{{ activity.content_object.original_activity.content_object.content_object.release_date|slice:":4" }}
                             {% endif %}
                         </div>
                     </div>
@@ -284,7 +284,7 @@
                             {% regroup activity.content_object.original_activity.content_object.game.gamerole_set.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
-                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                     {% for game_role in role.list %}
                                         {% if not forloop.first %} / {% endif %}
                                         <a href="{% url 'entity:person_detail' game_role.person.id %}">
@@ -296,7 +296,8 @@
                     
                             <div>
                                 {% if activity.content_object.original_activity.content_object.game.developers %}
-                                    Developer{% if activity.content_object.original_activity.content_object.game.developers.list|length > 1 %}s{% endif %}:
+                                    <span class="text-muted">Developer{% if activity.content_object.original_activity.content_object.game.developers.list|length > 1 %}s{% endif %}:
+                                    </span>
                                     {% for developer in activity.content_object.original_activity.content_object.game.developers.all %}
                                         {% if not forloop.first %}, {% endif %}
                                         <a href="{% url 'play:developer_detail' developer.id %}">
@@ -308,7 +309,7 @@
                             
                             <div>
                                 {% if activity.content_object.original_activity.content_object.game.platforms %}
-                                    Platform{% if activity.content_object.original_activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:
+                                    <span class="text-muted">Platform{% if activity.content_object.original_activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:</span>
                                     {% for platform in activity.content_object.original_activity.content_object.game.platforms.all %}
                                         {% if not forloop.first %}, {% endif %}
                                         <a href="{% url 'play:platform_detail' platform.id %}">
@@ -320,7 +321,7 @@
                             
                             <div>
                                 {% if activity.content_object.original_activity.content_object.game.release_date %}
-                                    Release Date: {{ activity.content_object.original_activity.content_object.game.release_date|slice:":4" }}
+                                    <span class="text-muted">Date: </span>{{ activity.content_object.original_activity.content_object.game.release_date }}
                                 {% endif %}
                             </div>
                         </div>
@@ -388,7 +389,7 @@
                             {% regroup activity.content_object.original_activity.content_object.content_object.releaserole_set.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
-                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                     {% for release_role in role.list %}
                                         {% if not forloop.first %} / {% endif %}
                                         <a href="{% url 'entity:person_detail' release_role.person.id %}">
@@ -401,7 +402,7 @@
 
                             <div>
                                 {% if activity.content_object.original_activity.content_object.content_object.release_date %}
-                                    Date: {{ activity.content_object.original_activity.content_object.content_object.release_date}}
+                                    <span class="text-muted">Date: </span>{{ activity.content_object.original_activity.content_object.content_object.release_date}}
                                 {% endif %}
                             </div>
                         </div>

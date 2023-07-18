@@ -62,6 +62,8 @@
             </div>
                     
             <div class="flex-grow-1 ms-3">
+                
+
                 {% if object.content_type.model == 'book' %}
                 <a href="{% url 'read:book_detail' object.content_object.id %}" class="text-decoration-none hover-username">
                     <h5>{{ object.content_object.title }}</h5>
@@ -77,7 +79,7 @@
                         {% regroup object.content_object.bookrole_set.all by role as roles_list %}
                         {% for role in roles_list %}
                             <div>
-                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                 {% for book_role in role.list %}
                                     {% if not forloop.first %} / {% endif %}
                                     <a href="{% url 'entity:person_detail' book_role.person.id %}">
@@ -90,7 +92,7 @@
                 
                 <div>
                     {% if object.content_object.publication_date %}
-                        Year: {{ object.content_object.publication_date|slice:":4" }}
+                        <span class="text-muted">Date: {{ object.content_object.publication_date }}</span>
                     {% endif %}
                 </div>
             </div>

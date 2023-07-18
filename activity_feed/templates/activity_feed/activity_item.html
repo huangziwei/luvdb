@@ -207,7 +207,7 @@
                         {% regroup activity.content_object.content_object.bookrole_set.all by role as roles_list %}
                         {% for role in roles_list %}
                             <div>
-                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                 {% for book_role in role.list %}
                                     {% if not forloop.first %} / {% endif %}
                                     <a href="{% url 'entity:person_detail' book_role.person.id %}">
@@ -220,7 +220,7 @@
                     
                     <div>
                         {% if activity.content_object.content_object.publication_date %}
-                            Date: {{ activity.content_object.content_object.publication_date }}
+                            <span class="text-muted">Date: </span>{{ activity.content_object.content_object.publication_date }}
                         {% endif %}
                     </div>
                 </div>
@@ -317,7 +317,7 @@
                         {% regroup activity.content_object.content_object.movieroles.all by role as roles_list %}
                         {% for role in roles_list %}
                             <div>
-                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                 {% for movie_role in role.list %}
                                     {% if not forloop.first %} / {% endif %}
                                     <a href="{% url 'entity:person_detail' movie_role.person.id %}">
@@ -330,7 +330,7 @@
                         {% regroup activity.content_object.content_object.seriesroles.all by role as roles_list %}
                         {% for role in roles_list %}
                             <div>
-                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                 {% for series_role in role.list %}
                                     {% if not forloop.first %} / {% endif %}
                                     <a href="{% url 'entity:person_detail' series_role.person.id %}">
@@ -343,7 +343,7 @@
                     
                     <div>
                         {% if activity.content_object.content_object.release_date %}
-                            Date: {{ activity.content_object.content_object.release_date }}
+                            <span class="text-muted">Date: </span>{{ activity.content_object.content_object.release_date }}
                         {% endif %}
                     </div>
                 </div>
@@ -430,7 +430,7 @@
                     {% regroup activity.content_object.content_object.releaserole_set.all by role as roles_list %}
                     {% for role in roles_list %}
                         <div>
-                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                            <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                             {% for release_role in role.list %}
                                 {% if not forloop.first %} / {% endif %}
                                 <a href="{% url 'entity:person_detail' release_role.person.id %}">
@@ -442,8 +442,8 @@
             
                     <div>
                         {% if activity.content_object.content_object.labels %}
-                            Labels:{% if activity.content_object.content_object.developers.list|length > 1 %}s{% endif %}:
-                            {% for developer in activity.content_object.content_object.developers.all %}
+                            <span class="text-muted">Labels:{% if activity.content_object.content_object.labels.list|length > 1 %}s{% endif %}:</span>
+                            {% for developer in activity.content_object.content_object.labels.all %}
                                 {% if not forloop.first %}, {% endif %}
                                 <a href="{% url 'play:developer_detail' developer.id %}">
                                     {{ developer.name }}
@@ -455,7 +455,7 @@
                     
                     <div>
                         {% if activity.content_object.content_object.release_date %}
-                            Date: {{ activity.content_object.content_object.release_date }}
+                            <span class="text-muted">Date: </span>{{ activity.content_object.content_object.release_date }}
                         {% endif %}
                     </div>
                 </div>
@@ -545,7 +545,7 @@
                     {% regroup activity.content_object.game.gamerole_set.all by role as roles_list %}
                     {% for role in roles_list %}
                         <div>
-                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                            <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                             {% for game_role in role.list %}
                                 {% if not forloop.first %} / {% endif %}
                                 <a href="{% url 'entity:person_detail' game_role.person.id %}">
@@ -557,11 +557,23 @@
             
                     <div>
                         {% if activity.content_object.game.developers.exists %}
-                            Developer{% if activity.content_object.game.developers.list|length > 1 %}s{% endif %}:
+                            <span class="text-muted">Developer{% if activity.content_object.game.developers.count > 1 %}s{% endif %}:</span>
                             {% for developer in activity.content_object.game.developers.all %}
-                                {% if not forloop.first %}, {% endif %}
+                                {% if not forloop.first %}/ {% endif %}
                                 <a href="{% url 'play:developer_detail' developer.id %}">
                                     {{ developer.name }}
+                                </a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        {% if activity.content_object.game.publishers.exists %}
+                            <span class="text-muted">Publisher{% if activity.content_object.game.publishers.count > 1 %}s{% endif %}:</span>
+                            {% for publisher in activity.content_object.game.publishers.all %}
+                                {% if not forloop.first %}/ {% endif %}
+                                <a href="{% url 'play:publisher_detail' publisher.id %}">
+                                    {{ publisher.name }}
                                 </a>
                             {% endfor %}
                         {% endif %}
@@ -569,7 +581,7 @@
                     
                     <div>
                         {% if activity.content_object.game.platforms.exists %}
-                            Platform{% if activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:
+                            <span class="text-muted">Platform{% if activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:</span>
                             {% for platform in activity.content_object.game.platforms.all %}
                                 {% if not forloop.first %}, {% endif %}
                                 <a href="{% url 'play:platform_detail' platform.id %}">
@@ -581,7 +593,7 @@
                     
                     <div>
                         {% if activity.content_object.game.release_date %}
-                            Release Date: {{ activity.content_object.game.release_date }}
+                            <span class="text-muted">Date: </span>{{ activity.content_object.game.release_date }}
                         {% endif %}
                     </div>
                 </div>

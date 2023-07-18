@@ -154,6 +154,27 @@ class RoleCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy("activity_feed:activity_feed")
 
 
+class RoleUpdateView(LoginRequiredMixin, UpdateView):
+    model = Role
+    fields = ["name", "domain"]
+    template_name = "entity/role_update.html"
+
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        next_url = self.request.GET.get("next")
+        if next_url:
+            return next_url
+        return reverse_lazy("activity_feed:activity_feed")
+
+
+class RoleDetailView(LoginRequiredMixin, DetailView):
+    model = Role
+    template_name = "entity/role_detail.html"
+
+
 class PersonAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         qs = Person.objects.all()
