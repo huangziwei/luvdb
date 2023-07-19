@@ -69,7 +69,9 @@
             </div>
             <!--Movie Check-In-->
             <div class="mt-4">
-                {% include "watch/watch_checkin_form.html" %}
+                {% if user.is_authenticated %}
+                    {% include "watch/watch_checkin_form.html" %}
+                {% endif %}
 
                 <div class="d-flex justify-content-between mt-4 col-11">
                     <h4>Latest Check-Ins</h4>

@@ -392,7 +392,7 @@ class DeveloperAutocomplete(autocomplete.Select2QuerySetView):
         qs = Developer.objects.all()
 
         if self.q:
-            qs = qs.filter(name__istartswith=self.q)
+            qs = qs.filter(name__icontains=self.q)
 
         return qs
 
@@ -406,7 +406,7 @@ class GamePublisherAutocomplete(autocomplete.Select2QuerySetView):
         qs = GamePublisher.objects.all()
 
         if self.q:
-            qs = qs.filter(name__istartswith=self.q)
+            qs = qs.filter(name__icontains=self.q)
 
         return qs
 
@@ -420,7 +420,7 @@ class PlatformAutocomplete(autocomplete.Select2QuerySetView):
         qs = Platform.objects.all()
 
         if self.q:
-            qs = qs.filter(name__istartswith=self.q)
+            qs = qs.filter(name__icontains=self.q)
 
         return qs
 
@@ -433,7 +433,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         qs = Work.objects.all()
 
         if self.q:
-            qs = qs.filter(title__istartswith=self.q)
+            qs = qs.filter(name__icontains=self.q)
 
         return qs
 

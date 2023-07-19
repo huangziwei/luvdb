@@ -316,6 +316,7 @@ class BookDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         book = get_object_or_404(Book, pk=self.kwargs["pk"])
 
         roles = {}
@@ -406,21 +407,22 @@ class BookDetailView(DetailView):
         context["lists_containing_book"] = lists_containing_book
 
         # Fetch the latest check-in from the current user for this book
-        latest_user_checkin = (
-            ReadCheckIn.objects.filter(
-                content_type=content_type.id,
-                object_id=self.object.id,
-                user=self.request.user,
+        if self.request.user.is_authenticated:
+            latest_user_checkin = (
+                ReadCheckIn.objects.filter(
+                    content_type=content_type.id,
+                    object_id=self.object.id,
+                    user=self.request.user,
+                )
+                .order_by("-timestamp")
+                .first()
             )
-            .order_by("-timestamp")
-            .first()
-        )
-        if latest_user_checkin is not None:
-            context["latest_user_status"] = latest_user_checkin.status
+            if latest_user_checkin is not None:
+                context["latest_user_status"] = latest_user_checkin.status
+            else:
+                context["latest_user_status"] = "to_read"
         else:
             context["latest_user_status"] = "to_read"
-
-        return context
 
         return context
 
@@ -739,7 +741,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            authors = Person.objects.filter(name__istartswith=self.q)
+            authors = Person.objects.filter(name__icontains=self.q)
 
             # get the author role
             author_role = Role.objects.filter(name="Author").first()
@@ -783,7 +785,7 @@ class InstanceAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            authors = Person.objects.filter(name__istartswith=self.q)
+            authors = Person.objects.filter(name__icontains=self.q)
 
             # get the author role
             author_role = Role.objects.filter(name="Author").first()
@@ -828,7 +830,7 @@ class PublisherAutocomplete(autocomplete.Select2QuerySetView):
         qs = Publisher.objects.all()
 
         if self.q:
-            qs = qs.filter(name__istartswith=self.q)
+            qs = qs.filter(name__icontains=self.q)
 
         return qs
 

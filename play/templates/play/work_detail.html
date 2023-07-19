@@ -20,7 +20,7 @@
             <ul>
             {% for game in games %}
                 <li>
-                    <a href="{% url "play:game_detail" game.id %}">{{ game.title }}</a>
+                    <a href="{% url "play:game_detail" game.id %}">{{ game.title }}</a>{% if game.subtitle %}: {{game.subtitle}}{% endif %}
                     ({% if game.platforms%}
                     {% for platfrom in  game.platforms.all %}
                         {{ platfrom.name }}{% if not forloop.last %} / {% endif %}

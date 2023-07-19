@@ -76,7 +76,7 @@ class LabelAutocomplete(autocomplete.Select2QuerySetView):
         qs = Label.objects.all()
 
         if self.q:
-            qs = qs.filter(name__istartswith=self.q)
+            qs = qs.filter(name__icontains=self.q)
 
         return qs
 
@@ -185,7 +185,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            persons = Person.objects.filter(name__istartswith=self.q)
+            persons = Person.objects.filter(name__icontains=self.q)
 
             # get the author role
             singer_role = Role.objects.filter(name="Singer").first()
@@ -321,7 +321,7 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            persons = Person.objects.filter(name__istartswith=self.q)
+            persons = Person.objects.filter(name__icontains=self.q)
 
             # get the author role
             singer_role = Role.objects.filter(name="Singer").first()

@@ -32,7 +32,7 @@
                 {% for book in object.books.all %}
                 <div class="col-md-4">
                     <p>
-                        <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a>
+                        <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a>{% if book.subtitle %}: {{book.subtitle}}{% endif %} 
                         ({{ book.publication_date }})
                     </p>
                 </div>
