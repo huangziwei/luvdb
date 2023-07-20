@@ -17,6 +17,7 @@ from django.views.generic import (
     UpdateView,
 )
 
+from watch.models import Movie, Series
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
 
@@ -191,6 +192,12 @@ class WorkDetailView(DetailView):
                 issue.type = "issue"
             items = sorted(list(books) + list(issues), key=lambda x: x.publication_date)
             context["instances"].append({"instance": instance, "items": items})
+
+        adaptations = list(Movie.objects.filter(based_on=self.object)) + list(
+            Series.objects.filter(based_on=self.object)
+        )
+        adaptations.sort(key=lambda x: x.release_date)
+        context["adaptations"] = adaptations
         return context
 
 

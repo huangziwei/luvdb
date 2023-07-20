@@ -53,6 +53,20 @@
                 </li>
             {% endfor %}
             </ul>
+
+            <h3>Adaptations</h3>
+            <ul>
+                {% for adaptation in adaptations %}
+                <li>
+                    {% if adaptation.content_type.model == "Movie" %}
+                    <a href="{% url 'watch:movie_detail' adaptation.id %}">{{ adaptation.title }}</a>
+                    {% else %}
+                    <a href="{% url 'watch:series_detail' adaptation.id %}">{{ adaptation.title }}</a>
+                    {% endif %}
+                    {% if adaptation.release_date %}({{ adaptation.release_date }}){% endif %}
+                </li>
+                {% endfor %}
+            </ul>
         </div>
 
         <!--Right columns-->

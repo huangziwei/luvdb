@@ -61,7 +61,7 @@
                                 {% endif %}
                                 
                                 {% if object.based_on %}
-                                <p><strong>Based on:</strong> <a href="{% url "read:work_detail" object.based_on.id %}">{{object.based_on.title}}</a></p>
+                                <p><strong>Based on:</strong> <a href="{% url "read:work_detail" object.based_on.id %}">{{object.based_on.title}}</a>({{ object.based_on.publication_date }})</p>
                                 {% endif %}
 
                                 <p><strong>Cast:</strong> <a href="{% url 'watch:movie_cast_detail' object.id %}">View Cast</a></p>
