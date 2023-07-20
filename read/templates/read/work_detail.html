@@ -58,7 +58,7 @@
             <ul>
                 {% for adaptation in adaptations %}
                 <li>
-                    {% if adaptation.content_type.model == "Movie" %}
+                    {% if adaptation.model_name == "Movie" %}
                     <a href="{% url 'watch:movie_detail' adaptation.id %}">{{ adaptation.title }}</a>
                     {% else %}
                     <a href="{% url 'watch:series_detail' adaptation.id %}">{{ adaptation.title }}</a>

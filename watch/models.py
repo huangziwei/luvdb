@@ -124,6 +124,9 @@ class Movie(models.Model):
     def get_absolute_url(self):
         return reverse("watch:movie_detail", args=[str(self.id)])
 
+    def model_name(self):
+        return "Movie"
+
 
 class MovieRole(models.Model):
     """
@@ -232,6 +235,9 @@ class Series(models.Model):
 
     def get_absolute_url(self):
         return reverse("watch:series_detail", args=[str(self.id)])
+
+    def model_name(self):
+        return "Series"
 
 
 class SeriesRole(models.Model):
