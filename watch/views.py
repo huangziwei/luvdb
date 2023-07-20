@@ -594,6 +594,7 @@ class EpisodeDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         episode = get_object_or_404(Episode, pk=self.kwargs["pk"])
         context["episodecasts"] = episode.episodecasts.all()
+        context["episoderoles"] = episode.episoderoles.all()
 
         return context
 
@@ -660,6 +661,7 @@ class EpisodeCastDetailView(DetailView):
         context[
             "episodecasts"
         ] = self.object.episodecasts.all()  # Update with your correct related name
+        context["episoderoles"] = self.object.episoderoles.all()
         return context
 
 

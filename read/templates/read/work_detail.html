@@ -19,13 +19,8 @@
             <ul>
             {% for instance in instances %}
                 <li>
-                    <a href="{% url "read:instance_detail" instance.instance.id %}">{{ instance.instance.title }}</a>
-                    ({% if instance.instance.edition %}
-                        {{ instance.instance.edition }},
-                    {% endif %}
-                        {{ instance.instance.publication_date }}
-                        );
-                    Collected in:
+                    <a href="{% url "read:instance_detail" instance.instance.id %}">{{ instance.instance.title }}</a>{% if instance.instance.subtitle %}: {{instance.instance.subtitle}}{% endif %} 
+                    ({% if instance.instance.edition %}{{ instance.instance.edition }}, {% endif %}{{ instance.instance.publication_date }})
                     {% for item in instance.items %}
                     <ul>
                         <li>

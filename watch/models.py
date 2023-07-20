@@ -15,6 +15,7 @@ from PIL import Image
 from activity_feed.models import Activity
 from entity.models import Entity, Person, Role
 from read.models import LanguageField
+from read.models import Work as LitWork
 from write.models import create_mentions_notifications, handle_tags
 
 
@@ -51,6 +52,10 @@ class Movie(models.Model):
     casts = models.ManyToManyField(
         Person, through="MovieCast", related_name="movies_cast"
     )
+    based_on = models.ForeignKey(
+        LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="movies"
+    )
+
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
@@ -169,8 +174,9 @@ class Series(models.Model):
     poster_sens = models.BooleanField(default=False, null=True, blank=True)
     duration = models.CharField(max_length=10, blank=True, null=True)
     languages = LanguageField(blank=True, null=True)
-    # genres = models.ManyToManyField("Genre", related_name="series", blank=True)
-
+    based_on = models.ForeignKey(
+        LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="series"
+    )
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -276,7 +282,7 @@ class EpisodeRole(models.Model):
     """
 
     episode = models.ForeignKey(
-        Episode, on_delete=models.CASCADE, related_name="episodesroles"
+        Episode, on_delete=models.CASCADE, related_name="episoderoles"
     )
     person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)

@@ -31,7 +31,25 @@
                                 {% endif %}
                             </div>
                             <div class="row mt-3">
+                                <h4>Crew</h4>
+                                <ul>
+                                    {% regroup episoderoles by role as roles_grouped %}
+                                    {% for role_group in roles_grouped %}
+                                        <li>
+                                            <strong>{{ role_group.grouper.name }}:</strong>
+                                            {% for episoderole in role_group.list %}
+                                                <a href="{% url 'entity:person_detail' episoderole.person.id %}">{{ episoderole.person.name }} </a>
+                                                {% if not forloop.last %} / {% endif %}
+                                            {% endfor %}
+                                        </li>
+                                    {% empty %}
+                                    <li>No staff for this movie yet.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="row mt-3">
                                 <h4>Cast</h4>
+                                <ul>
                                 {% for episodecast in episodecasts %}
                                     <li>
                                         <a href="{% url 'entity:person_detail' episodecast.person.id %}">{{ episodecast.person.name }} </a>
@@ -40,6 +58,7 @@
                                     {% empty %}
                                     <li>No cast for this episode yet.</li>
                                 {% endfor %}
+                                </ul>
                             </div>
                         </div>
                         <!-- End of movie-card -->

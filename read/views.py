@@ -1,9 +1,11 @@
+from collections import defaultdict
+
 from dal import autocomplete
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import Count, F, OuterRef, Q, Subquery
+from django.db.models import Count, F, OuterRef, Prefetch, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.html import format_html
@@ -266,6 +268,15 @@ class InstanceUpdateView(LoginRequiredMixin, UpdateView):
 class InstanceDetailView(DetailView):
     model = Instance
     template_name = "read/instance_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        roles_by_name = defaultdict(list)
+        roles = self.object.instancerole_set.all().select_related("person", "role")
+        for role in roles:
+            roles_by_name[role.role.name].append(role)
+        context["roles_by_name"] = dict(roles_by_name)
+        return context
 
 
 ########

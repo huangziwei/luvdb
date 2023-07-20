@@ -48,7 +48,11 @@
                                 {% if object.website %}
                                     <p><strong>Website:</strong> <a href="{{ object.website }}">{{ object.website }}</a></p>
                                 {% endif %}
-                                
+
+                                {% if object.based_on %}
+                                <p><strong>Based on:</strong> <a href="{% url "read:work_detail" object.based_on.id %}">{{object.based_on.title}}</a></p>
+                                {% endif %}
+
                                 <p><strong>Cast:</strong> <a href="{% url 'watch:series_cast_detail' object.id %}">View Cast</a></p>
                             </div>
                         </div>

@@ -31,6 +31,9 @@ class MovieForm(forms.ModelForm):
             "studios": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("watch:studio-autocomplete")
             ),
+            "based_on": autocomplete.ModelSelect2(
+                url=reverse_lazy("read:work-autocomplete")
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -116,6 +119,9 @@ class SeriesForm(forms.ModelForm):
         widgets = {
             "studios": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("watch:studio-autocomplete")
+            ),
+            "based_on": autocomplete.ModelSelect2(
+                url=reverse_lazy("read:work-autocomplete")
             ),
         }
 

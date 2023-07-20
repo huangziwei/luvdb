@@ -9,12 +9,16 @@
             <h2>{{ object.title }} ({{ object.publication_date }})</h2>
             {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
             
-            {% for role in object.instancerole_set.all %}
+            {% for role_name, roles in roles_by_name.items %}
             <p>
-                {{role.role.name }}: <a href="{% url 'entity:person_detail' role.person.id %}"> {{ role.person.name }}</a> 
-                {% if role.person.romanized_name %}
-                    ({{ role.person.romanized_name }}) 
-                {% endif %}
+                {{ role_name }}{% if roles|length > 1 %}s{% endif %}:
+                {% for role in roles %}
+                    <a href="{% url 'entity:person_detail' role.person.id %}"> {{ role.person.name }}</a>
+                    {% if role.person.romanized_name %}
+                        ({{ role.person.romanized_name }}) 
+                    {% endif %}
+                    {% if not forloop.last %} / {% endif %}
+                {% endfor %}
             </p>
             {% endfor %}
 
