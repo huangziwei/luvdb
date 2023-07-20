@@ -1,6 +1,6 @@
 # LʌvDB
 
-A opinionated [Douban](https://www.douban.com/) clone.
+An opinionated Douban clone.
 
 ## Installation
 
