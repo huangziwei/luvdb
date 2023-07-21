@@ -8,3 +8,5 @@ db.sqlite3*
 *media/
 data.json
 Dockerfile
+config/settings/development_psql.py
+*.sql

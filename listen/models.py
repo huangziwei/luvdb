@@ -219,7 +219,7 @@ class Release(models.Model):
         super().save(*args, **kwargs)
 
         if self.cover:
-            img = Image.open(self.cover.path)
+            img = Image.open(self.cover.open(mode="rb"))
 
             if img.height > 500 or img.width > 500:
                 output_size = (500, 500)
