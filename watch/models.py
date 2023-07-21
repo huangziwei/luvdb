@@ -21,6 +21,8 @@ from write.models import create_mentions_notifications, handle_tags
 
 # helpers
 def rename_movie_poster(instance, filename):
+    if filename is None:
+        filename = "default.jpg"
     _, extension = os.path.splitext(filename)
     unique_id = uuid.uuid4()
     directory_name = (
@@ -110,6 +112,9 @@ class Movie(models.Model):
                 temp_file = BytesIO()
                 img.save(temp_file, format=img.format)
                 temp_file.seek(0)
+
+                # remove the original image
+                self.poster.delete(save=False)
 
                 # Save the BytesIO object to the FileField
                 self.poster.save(
@@ -222,6 +227,9 @@ class Series(models.Model):
                 temp_file = BytesIO()
                 img.save(temp_file, format=img.format)
                 temp_file.seek(0)
+
+                # remove the original image
+                self.poster.delete(save=False)
 
                 # Save the BytesIO object to the FileField
                 self.poster.save(

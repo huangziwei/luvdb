@@ -15,6 +15,7 @@
             </p>
             {% endfor %}
 
+            {% if instances %}
             <h3>Instances</h3>
             <ul>
             {% for instance in instances %}
@@ -53,7 +54,9 @@
                 </li>
             {% endfor %}
             </ul>
+            {% endif %}
 
+            {% if adaptations %}
             <h3>Adaptations</h3>
             <ul>
                 {% for adaptation in adaptations %}
@@ -67,6 +70,7 @@
                 </li>
                 {% endfor %}
             </ul>
+            {% endif %}
         </div>
 
         <!--Right columns-->

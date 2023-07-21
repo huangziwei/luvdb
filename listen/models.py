@@ -1,13 +1,16 @@
 import os
 import uuid
+from io import BytesIO
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.files.base import ContentFile
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from PIL import Image
 
 from activity_feed.models import Activity
 from entity.models import Entity, Person, Role
@@ -16,6 +19,8 @@ from write.models import create_mentions_notifications, handle_tags
 
 # helpers
 def rename_release_cover(instance, filename):
+    if filename is None:
+        filename = "default.jpg"
     _, extension = os.path.splitext(filename)
     unique_id = uuid.uuid4()
     directory_name = (
@@ -200,6 +205,42 @@ class Release(models.Model):
 
     def get_absolute_url(self):
         return reverse("listen:release_detail", kwargs={"pk": self.pk})
+
+    def save(self, *args, **kwargs):
+        # If the instance already exists in the database
+        if self.pk:
+            # Get the existing instance from the database
+            old_instance = Release.objects.get(pk=self.pk)
+            # If the cover has been updated
+            if old_instance.cover != self.cover:
+                # Delete the old cover
+                old_instance.cover.delete(save=False)
+
+        super().save(*args, **kwargs)
+
+        if self.cover:
+            img = Image.open(self.cover.path)
+
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
+                img.thumbnail(output_size)
+
+                # Save the image to a BytesIO object
+                temp_file = BytesIO()
+                img.save(temp_file, format=img.format)
+                temp_file.seek(0)
+
+                # remove the original image
+                self.cover.delete(save=False)
+
+                # Save the BytesIO object to the FileField
+                self.cover.save(
+                    self.cover.name, ContentFile(temp_file.read()), save=False
+                )
+
+            img.close()
+
+        super().save(*args, **kwargs)
 
 
 class ReleaseRole(models.Model):

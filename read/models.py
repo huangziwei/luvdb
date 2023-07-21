@@ -23,6 +23,8 @@ from write.models import create_mentions_notifications, handle_tags
 
 # helpers
 def rename_book_cover(instance, filename):
+    if filename is None:
+        filename = "default.jpg"
     _, extension = os.path.splitext(filename)
     unique_id = uuid.uuid4()
     directory_name = (
@@ -361,7 +363,7 @@ class Book(models.Model):
         super().save(*args, **kwargs)
 
         if self.cover:
-            img = Image.open(self.cover.open(mode="rb"))
+            img = Image.open(self.cover.path)
 
             if img.height > 500 or img.width > 500:
                 output_size = (500, 500)
@@ -372,13 +374,15 @@ class Book(models.Model):
                 img.save(temp_file, format=img.format)
                 temp_file.seek(0)
 
+                # remove the original image
+                self.cover.delete(save=False)
+
                 # Save the BytesIO object to the FileField
                 self.cover.save(
                     self.cover.name, ContentFile(temp_file.read()), save=False
                 )
 
             img.close()
-            self.cover.close()
 
         super().save(*args, **kwargs)
 

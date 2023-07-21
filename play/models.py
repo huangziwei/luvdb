@@ -19,6 +19,8 @@ from write.models import create_mentions_notifications, handle_tags
 
 # helpers
 def rename_game_cover(instance, filename):
+    if filename is None:
+        filename = "default.jpg"
     _, extension = os.path.splitext(filename)
     unique_id = uuid.uuid4()
     directory_name = (
@@ -219,6 +221,9 @@ class Game(models.Model):
                 temp_file = BytesIO()
                 img.save(temp_file, format=img.format)
                 temp_file.seek(0)
+
+                # remove the original image
+                self.cover.delete(save=False)
 
                 # Save the BytesIO object to the FileField
                 self.cover.save(
