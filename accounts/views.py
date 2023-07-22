@@ -31,7 +31,7 @@ from .forms import CustomUserCreationForm
 from .models import InvitationCode
 
 TIME_RESTRICTION = 365  # time restriction for generating invitation codes
-JOINING_TIME_RESTRICTION = 365 * 100
+JOINING_TIME_RESTRICTION = 30
 User = get_user_model()
 
 

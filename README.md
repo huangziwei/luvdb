@@ -1,8 +1,8 @@
-# LʌvDB
+# LʌvDB is ...
 
-An opinionated Douban clone.
+An opinionated, self-hosted alternative to Goodreads, IMDB, Discogs, and ultimately, Douban.
 
-## Installation
+## Try it out locally
 
 ```bash
 python -m venv .venv
