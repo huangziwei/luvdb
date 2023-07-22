@@ -22,7 +22,7 @@
                                     <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid">
                                 {% endif %}
                             {% else %}
-                                <p class="no-cover-text">No Cover</div>
+                                <div class="no-cover-text">No Cover</div>
                             {% endif %}
                         </div>
                     </div>
@@ -169,7 +169,7 @@
             <div class="bg-light p-3 mt-3">
                 <h5>Statistics</h5>
                 <div><strong>To Listen:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a></div>
-                <div><strong>Looping:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=listening">{{ listening_count }}</a></div>
+                <div><strong>Looping:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a></div>
                 <div><strong>Listened:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a></div>
             </div>
 

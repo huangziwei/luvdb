@@ -75,7 +75,7 @@
                                     <img src="{{ repost.original_activity.content_object.content_object.cover.url }}" alt="{{ repost.original_activity.content_object.content_object.title }} cover" style="width: 100%;">
                                 {% endif %}
                             {% else %}
-                                <p class="no-cover-text">No Cover</p>
+                                <div class="no-cover-text">No Cover</div>
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 ms-3">
@@ -162,7 +162,7 @@
                                     <img src="{{ repost.original_activity.content_object.content_object.poster.url }}" alt="{{ repost.original_activity.content_object.content_object.title }} poster" style="width: 100%;">
                                 {% endif %}
                             {% else %}
-                                <p class="no-cover-text">No Poster</p>
+                                <div class="no-cover-text">No Poster</div>
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 ms-3">
@@ -250,7 +250,7 @@
                                     <img src="{{ repost.original_activity.content_object.content_object.cover.url }}" alt="{{ repost.original_activity.content_object.content_object.title }} cover" style="width: 100%;">
                                 {% endif %}
                             {% else %}
-                                <p class="no-cover-text">No Cover</p>
+                                <div class="no-cover-text">No Cover</div>
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 ms-3">
@@ -327,7 +327,7 @@
                             {% if repost.original_activity.content_object.game.cover %}
                                 <img src="{{ repost.original_activity.content_object.game.cover.url }}" alt="{{ repost.original_activity.content_object.game.title }} cover" style="width: 100%;">
                             {% else %}
-                                <p class="no-cover-text">No Cover</p>
+                                <div class="no-cover-text">No Cover</div>
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 ms-3">
