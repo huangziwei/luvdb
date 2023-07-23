@@ -107,14 +107,14 @@
                 <div>
                     {% if object.releasetrack_set.count < 2 %}
                         {% if object.releasetrack_set.first.track.id %}
-                        <div><strong>Related Track:</strong> 
+                        <div  class="mb-3"><strong>Related Track:</strong> 
                             <a href="{% url 'listen:track_detail' object.releasetrack_set.first.track.id %}">
                                 {{ object.releasetrack_set.first.alt_title|default:object.releasetrack_set.first.track.title }}
                             </a>
                         </div>
                         {% endif %}
                     {% else %}
-                        <div class="row">
+                        <div class="row mb-3">
                             <h5>Tracklist</h5>
                             <!--list all related tracks by order-->
                             <div class="col-sm-12">
@@ -138,7 +138,7 @@
                     {% endif %}
         
                     {% if user.is_authenticated %}
-                        <div class="mt-3">
+                        <div>
                             <a href="{% url 'listen:release_update' object.pk %}" class='fs-6 text-secondary'>Edit Release</a>
                         </div>
                     {% endif %}

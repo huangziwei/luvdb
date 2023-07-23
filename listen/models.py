@@ -180,6 +180,7 @@ class Release(models.Model):
     )  # International Standard Recording Code
     spotify_url = models.URLField(blank=True, null=True)
     apple_music_url = models.URLField(blank=True, null=True)
+    kkbox_url = models.URLField(blank=True, null=True)
     youtube_url = models.URLField(blank=True, null=True)
     note = models.TextField(blank=True, null=True)
 

@@ -69,9 +69,11 @@
         {% endfor %}
     </div>
 
-    {{form.spotify_url | as_crispy_field}}
     {{form.apple_music_url | as_crispy_field}}
+    {{form.kkbox_url | as_crispy_field}}
+    {{form.spotify_url | as_crispy_field}}    
     {{form.youtube_url | as_crispy_field}}
+
 
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
