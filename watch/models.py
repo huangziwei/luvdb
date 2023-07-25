@@ -327,7 +327,7 @@ class WatchCheckIn(models.Model):
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey("content_type", "object_id")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    WATCHING_STATUS_CHOICES = [
+    STATUS_CHOICES = [
         ("to_watch", "To Watch"),
         ("watching", "Watching"),
         ("watched", "Watched"),
@@ -335,8 +335,9 @@ class WatchCheckIn(models.Model):
         ("abandoned", "Abandoned"),
         ("rewatching", "Rewatching"),
         ("rewatched", "Rewatched"),
+        ("Afterthoughts", "Afterthoughts"),
     ]
-    status = models.CharField(max_length=255, choices=WATCHING_STATUS_CHOICES)
+    status = models.CharField(max_length=255, choices=STATUS_CHOICES)
     share_to_feed = models.BooleanField(default=False)
     content = models.TextField(
         null=True, blank=True

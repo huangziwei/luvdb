@@ -270,7 +270,7 @@ class GameCast(models.Model):
 class GameCheckIn(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    PLAYING_STATUS_CHOICES = [
+    STATUS_CHOICES = [
         ("to_play", "To Play"),
         ("playing", "Playing"),
         ("played", "Played"),
@@ -278,8 +278,9 @@ class GameCheckIn(models.Model):
         ("abandoned", "Abandoned"),
         ("replaying", "Replaying"),
         ("replayed", "Replayed"),
+        ("afterthoughts", "Afterthoughts"),
     ]
-    status = models.CharField(max_length=255, choices=PLAYING_STATUS_CHOICES)
+    status = models.CharField(max_length=255, choices=STATUS_CHOICES)
     share_to_feed = models.BooleanField(default=False)
     content = models.TextField(
         null=True, blank=True

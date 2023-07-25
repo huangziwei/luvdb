@@ -51,11 +51,19 @@
               <div class="me-3">
                 {% if item.content_type.model == 'book' %}
                   <a href="{% url 'read:book_checkin_list' item.content_object.id item.user.username %}">
+                    {% if item.content_object.cover %}
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                    {% else %}
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.content_object.title}}</div>
+                    {% endif %}
                   </a>
                 {% elif item.content_type.model == 'issue' %}
                   <a href="{% url 'read:issue_checkin_list' item.content_object.periodical.id item.content_object.id item.user.username %}">
+                    {% if item.content_object.cover %}
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                    {% else %}
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.content_object.title}}</div>
+                    {% endif %}
                   </a>                
                 {% endif %}
               </div>
@@ -72,12 +80,17 @@
               <div class="me-3">
                 {% if item.content_type.model == 'book' %}
                   <a href="{% url 'read:book_checkin_list' item.content_object.id item.user.username %}">
+                    {% if item.content_object.cover %}
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
-                  </a>
+                    {% else %}
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.content_object.title}}</div>
+                    {% endif %}                  </a>
                 {% elif item.content_type.model == 'issue' %}
-                  <a href="{% url 'read:issue_checkin_list' item.content_object.periodical.id item.content_object.id item.user.username %}">
+                    {% if item.content_object.cover %}
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
-                  </a>                
+                    {% else %}
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.content_object.title}}</div>
+                    {% endif %}             
                 {% endif %}
               </div>
             {% empty %}
@@ -106,11 +119,19 @@
             <div class="me-3">
                 {% if item.content_type.model == 'movie' %}
                   <a href="{% url 'watch:movie_checkin_list' item.content_object.id item.user.username %}">
+                    {% if item.content_object.poster %}
                     <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                    {% else %}
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.content_object.title}}</div>
+                    {% endif %}
                   </a>
                 {% elif item.content_type.model == 'series' %}
                   <a href="{% url 'watch:series_checkin_list' item.content_object.id item.user.username %}">
-                    <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
+                    {% if item.content_object.poster %}
+                    <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                    {% else %}
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.content_object.title}}</div>
+                    {% endif %}                 
                   </a>
                 {% endif %}
             </div>
@@ -125,12 +146,18 @@
             {% for item in watched %}
             <div class="me-3">
                 {% if item.content_type.model == 'movie' %}
-                  <a href="{% url 'watch:movie_checkin_list' item.content_object.id item.user.username %}">
-                    <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
-                  </a>
+                {% if item.content_object.poster %}
+                <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                {% else %}
+                <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.content_object.title}}</div>
+                {% endif %}
                 {% elif item.content_type.model == 'series' %}
                   <a href="{% url 'watch:series_checkin_list' item.content_object.id item.user.username %}">
-                    <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
+                    {% if item.content_object.poster %}
+                    <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
+                    {% else %}
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.content_object.title}}</div>
+                    {% endif %} 
                   </a>
                 {% endif %}
             </div>
@@ -159,7 +186,11 @@
             {% for item in looping %}
             <div class="me-3">
               <a href="{% url 'listen:listen_checkin_list' item.content_object.id item.user.username %}">
+                {% if item.content_object.cover %}
                 <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
+                {% else %}
+                  <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.content_object.title}}</div>
+                {% endif %}
               </a>
             </div>
             {% empty %}
@@ -174,7 +205,11 @@
             {% for item in listened %}
             <div class="me-3">
               <a href="{% url 'listen:listen_checkin_list' item.content_object.id item.user.username %}">
+                {% if item.content_object.cover %}
                 <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">
+                {% else %}
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.content_object.title}}</div>
+                {% endif %}
               </a>
             </div>
             {% empty %}
@@ -194,7 +229,7 @@
             <a class="btn btn-outline-secondary btn-sm" href="{% url 'play:game_checkin_user_list' object.username %}">All</a>
           </div>  
         </div>   
-        <div class="col-sm-4">
+        <div class="col-sm-12">
 
           {% if playing %}
           <div class="mt-3 me-3 d-flex overflow-auto">
@@ -202,7 +237,11 @@
             {% for item in playing %}
             <div class='me-3'>
               <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
+                {% if item.game.cover %}
                 <img src="{{ item.game.cover.url }}" alt="{{ item.game.title }} cover" style="width: 120px;" class="cover-image">
+                {% else %}
+                <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.game.title}}</div>
+                {% endif %}
               </a>
             </div>
             {% empty %}
@@ -216,7 +255,11 @@
             {% for item in played %}
             <div class='me-3'>
               <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
+                {% if item.game.cover %}
                 <img src="{{ item.game.cover.url }}" alt="{{ item.game.title }} cover" style="width: 120px;" class="cover-image">
+                {% else %}
+                <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; padding-top: 100%;">{{item.game.title}}</div>
+                {% endif %}              
               </a>
             </div>
             {% empty %}

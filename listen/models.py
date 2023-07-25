@@ -279,14 +279,15 @@ class ListenCheckIn(models.Model):
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey("content_type", "object_id")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    READING_STATUS_CHOICES = [
+    STATUS_CHOICES = [
         ("to_listen", "To Listen"),
         ("looping", "Looping"),
         ("listened", "Listened"),
         ("paused", "Paused"),
         ("abandoned", "Abandoned"),
+        ("afterthought", "Afterthought"),
     ]
-    status = models.CharField(max_length=255, choices=READING_STATUS_CHOICES)
+    status = models.CharField(max_length=255, choices=STATUS_CHOICES)
     share_to_feed = models.BooleanField(default=False)
     content = models.TextField(
         null=True, blank=True
