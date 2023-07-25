@@ -18,6 +18,29 @@ for (var i = 0; i < buttons.length; i++) {
     });
 }
 
+function focusTextInput() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    var intervalId = setInterval(function() {
+        if (urlParams.has('reply') && urlParams.get('reply') == 'true'){
+            var replyInput = document.getElementById('text-input');
+            if (replyInput) {
+                replyInput.focus();
+                clearInterval(intervalId); // Clear the interval once the element is found
+            }
+        }
+
+        if (urlParams.has('repost') && urlParams.get('repost') == 'true'){
+            var repostInput = document.getElementById('text-input');
+            if (repostInput) {
+                repostInput.focus();
+                clearInterval(intervalId); // Clear the interval once the element is found
+            }
+        }
+    }, 100); // Check every 100ms
+}
+
+
 window.onload = function() {
     // Grab all toggle-buttons
     var buttons = document.getElementsByClassName('toggle-button');
@@ -38,11 +61,8 @@ window.onload = function() {
         var button = document.getElementById('show-reposts');
         button.classList.remove('btn-secondary');
         button.classList.add('btn-primary');
-
-        // focus on the text-input
-        
     }
+
+    // Use setTimeout to delay the focus execution
+    setTimeout(focusTextInput, 200); // Adjust the delay as needed
 };
-
-document.getElementById('text-input').focus();
-
