@@ -30,22 +30,24 @@ for (var i = 0; i < refs.length; i++) {
 }
 
 
-var popups = document.getElementsByClassName('popupnote');
+var popupParents = document.getElementsByClassName('popupnote-parent');
 
-for (var i = 0; i < popups.length; i++) {
-  popups[i].onmouseenter = function() {
+for (var i = 0; i < popupParents.length; i++) {
+  popupParents[i].onmouseover = function() {
+    var popup = this.getElementsByClassName('popupnote')[0];
     // Get bounding rectangle of the popup.
-    var rect = this.getBoundingClientRect();
+    var rect = popup.getBoundingClientRect();
+    
     // If it's out of the left boundary of the viewport.
     if(rect.left < 0) {
-      this.style.left = '0';
-      this.style.transform = 'translateX(0)';
+      popup.style.left = '0';
+      popup.style.transform = 'translateX(0)';
     }
 
     // If it's out of the right boundary of the viewport.
     else if(rect.right > window.innerWidth) {
       var overflowAmount = rect.right - window.innerWidth;
-      this.style.left = `calc(0% - ${overflowAmount}px)`;
+      popup.style.left = `calc(50% - ${overflowAmount}px)`;
     }
   }
 }
