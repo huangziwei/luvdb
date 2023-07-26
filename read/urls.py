@@ -24,6 +24,7 @@ from .views import (
     PublisherAutocomplete,
     PublisherCreateView,
     PublisherDetailView,
+    PublisherUpdateView,
     ReadCheckInCreateView,
     ReadCheckInDeleteView,
     ReadCheckInDetailView,
@@ -134,6 +135,11 @@ urlpatterns = [
     # publisher
     path("publisher/create/", PublisherCreateView.as_view(), name="publisher_create"),
     path("publisher/<int:pk>/", PublisherDetailView.as_view(), name="publisher_detail"),
+    path(
+        "publisher/<int:pk>/update/",
+        PublisherUpdateView.as_view(),
+        name="publisher_update",
+    ),
     # autocomplete views
     path(
         "instance-autocomplete/",
