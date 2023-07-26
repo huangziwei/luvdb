@@ -2,6 +2,16 @@
 
 An opinionated, self-hosted alternative to Goodreads, IMDB, Discogs, and ultimately, Douban.
 
+It's a Django-based cataloguing webapp, which allows you to keep track of your books, movies, music, and games. It also includes an activity feed, where you can follow your friends and see what they're reading, watching, listening to, and playing.
+
+## Preview
+
+I host an instance of the app at [luvdb.com](https://luvdb.com). It's currently not open for registration and probably never will. If you want to get the feel of the app, you can go and see some of the pages here:
+
+- [Read](https://luvdb.com/read/recent/)
+- [Watch](https://luvdb.com/watch/recent/)
+- [Listen](https://luvdb.com/listen/recent/)
+
 ## Try it out locally
 
 ```bash

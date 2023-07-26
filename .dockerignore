@@ -2,3 +2,4 @@ fly.toml
 .git/
 .luvdb
 db.sqlite3*
+*.png
