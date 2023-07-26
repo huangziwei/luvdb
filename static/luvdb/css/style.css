@@ -205,24 +205,28 @@ sup {
     height: auto;
     white-space: normal;
     overflow: auto;
+    box-sizing: border-box;
 }
 
 @media screen and (max-width: 600px) {
     .popupnote {
-        left: 0;
-        transform: translateX(-15%);
-        width: 100%;
-        box-sizing: border-box;
+        max-width: calc(100vw - 20px);
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 
 .popupnote-parent:hover .popupnote {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .footnote {
     display: none;
 }
+
 
 
 cite {
