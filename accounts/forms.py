@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
-from .models import InvitationCode
+from .models import CustomUser, InvitationCode
 
 User = get_user_model()
 
@@ -25,6 +25,14 @@ class CustomUserCreationForm(UserCreationForm):
             "But if you forget your username and password, you won't be able to recover it. "
             "Please mark down your username and password somewhere safe."
         )
+
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        if username in CustomUser.RESERVED_USERNAMES:
+            raise forms.ValidationError(
+                "This username is reserved and cannot be registered."
+            )
+        return username
 
     def clean_invitation_code(self):
         code = self.cleaned_data.get("invitation_code")

@@ -3,6 +3,7 @@ import string
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
@@ -48,7 +49,39 @@ class CustomUser(AbstractUser):
     display_name = models.CharField(max_length=100, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
 
+    RESERVED_USERNAMES = [
+        "admin",
+        "root",
+        "system",
+        "support",
+        "about",
+        "user",
+        "read",
+        "watch",
+        "listen",
+        "play",
+        "write",
+        "say",
+        "pin",
+        "post",
+        "repost",
+        "checkin",
+        "release",
+        "work",
+        "instance",
+        "game",
+        "movie",
+        "series",
+        "episode",
+        "issue",
+        "book",
+        "periodical",
+    ]
+
     def save(self, *args, **kwargs):
+        if self.username in self.RESERVED_USERNAMES:
+            raise ValidationError("This username is reserved and cannot be registered.")
+
         # Check if the user has used an invitation code and hasn't been assigned an inviter yet
         if self.code_used:
             # # Save the user instance before creating the Follow and Activity instances

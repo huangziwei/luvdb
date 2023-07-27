@@ -208,6 +208,7 @@ MARKDOWNIFY = {
             "th",
             "td",
             "p",
+            "hr",
             "br",
             "details",
             "summary",
