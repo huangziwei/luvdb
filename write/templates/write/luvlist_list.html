@@ -10,11 +10,13 @@
 
         <div class="d-flex justify-content-between mb-3">
             <h5>
-                <a href="{% url 'accounts:detail' user.username %}">
-                    {{user.display_name | default:user.username}} 
+                <a href="{% url 'accounts:detail' object.username %}">
+                    {{object.display_name | default:object.username}} 
                 </a>'s Lists 
             </h5>
+            {% if object == request.user %}
             <a class="btn btn-sm btn-primary" href="{% url 'write:luvlist_create' %}">New</a>
+            {% endif %}
         </div>
         {% for luvlist in luvlist_list %}
             <!--LuvList-->

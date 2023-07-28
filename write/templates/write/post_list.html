@@ -12,7 +12,9 @@
                         {{object.display_name | default:object.username}} 
                     </a> posted
                 </h5>
+                {% if object.username == request.user.username %}
                 <a class="btn btn-sm btn-primary" href="{% url 'write:post_create' %}">New</a>
+                {% endif %}
             </div>
             {% for post in post_list %}
                 <div>
@@ -36,6 +38,7 @@
             {% endfor %}
         </div>
 
+        {% if all_tags %}
         <div class="col-12 col-md-5 right-column">
             <!--All tags on the page-->
             <div class="bg-light p-3">
@@ -46,6 +49,7 @@
                 </span>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock content %}
