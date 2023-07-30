@@ -3,8 +3,7 @@
 {% load markdownify %}
 {% block content %}
 
-<div class='col-sm-7'>
-
+<div class="row">
     <!--left column-->
     <div class="col-12 col-md-8">    
         <div class="row">
@@ -147,53 +146,6 @@
             {% endfor %}
 
             
-        </div>
-    </div>
-
-    <!--right column-->
-    <div class="col-12 col-md-4">
-        <!-- release-card -->
-        <div class="release-card justify-content-start">
-            <div class="d-flex flex-column mt-2">
-                <!--cover-box-->
-                <div class="col-12 mb-3">
-                    <div style='width:50%'>
-                        {% if object.poster %}
-                            {% if object.poster_sens %}
-                                <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="blur img-fluid" onclick="this.classList.toggle('blur')">
-                            {% else %}
-                                <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="img-fluid">
-                            {% endif %}
-                        {% else %}
-                            <div class="no-cover-text">No Poster</div>
-                        {% endif %}
-                    </div>
-                </div>
-                <!--release-meta-->
-                <div class="col flex-grow-1">
-                    <div class="card-body">
-                        <span class='d-flex align-items-start'>
-                            <h2>{{ object.title }} </h2>
-                        </span>
-                        
-                        <div class="book-meta">
-                            {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
-                            {% for role_name, person_altname_tuples in roles.items %}
-                                <p>
-                                    <strong>{{ role_name }}:</strong> 
-                                    {% for person, alt_name in person_altname_tuples %}
-                                        <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
-                                        {% if not forloop.last %} / {% endif %}
-                                    {% endfor %}
-                                </p>
-                            {% endfor %}
-                            {% if object.release_date %}
-                                <p><strong>Date:</strong> {{ object.release_date }}</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>

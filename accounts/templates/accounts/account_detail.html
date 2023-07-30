@@ -54,7 +54,7 @@
                     {% if item.content_object.cover %}
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                     {% else %}
-                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; color: white; text-align: center;">{{item.content_object.title}}</div>
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 100%; color: white; text-align: center;">{{item.content_object.title}}</div>
                     {% endif %}
                   </a>
                 {% elif item.content_type.model == 'issue' %}
@@ -62,7 +62,7 @@
                     {% if item.content_object.cover %}
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                     {% else %}
-                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; color: white; text-align: center;">{{item.content_object.title}}</div>
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 100%; color: white; text-align: center;">{{item.content_object.title}}</div>
                     {% endif %}
                   </a>                
                 {% endif %}
@@ -83,13 +83,13 @@
                     {% if item.content_object.cover %}
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                     {% else %}
-                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; color: white; text-align: center;">{{item.content_object.title}}</div>
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 100%; color: white; text-align: center;">{{item.content_object.title}}</div>
                     {% endif %}                  </a>
                 {% elif item.content_type.model == 'issue' %}
                     {% if item.content_object.cover %}
                     <img src="{{ item.content_object.cover.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                     {% else %}
-                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; color: white; text-align: center;">{{item.content_object.title}}</div>
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 100%; color: white; text-align: center;">{{item.content_object.title}}</div>
                     {% endif %}             
                 {% endif %}
               </div>
@@ -122,7 +122,7 @@
                     {% if item.content_object.poster %}
                     <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                     {% else %}
-                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; color: white; text-align: center;">{{item.content_object.title}}</div>
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 100%; color: white; text-align: center;">{{item.content_object.title}}</div>
                     {% endif %}
                   </a>
                 {% elif item.content_type.model == 'series' %}
@@ -130,7 +130,7 @@
                     {% if item.content_object.poster %}
                     <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                     {% else %}
-                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; color: white; text-align: center;">{{item.content_object.title}}</div>
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 100%; color: white; text-align: center;">{{item.content_object.title}}</div>
                     {% endif %}                 
                   </a>
                 {% endif %}
@@ -149,14 +149,14 @@
                 {% if item.content_object.poster %}
                 <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                 {% else %}
-                <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; color: white; text-align: center;">{{item.content_object.title}}</div>
+                <div class="no-cover-text" style="background: gray; width: 120px; height: 100%; color: white; text-align: center;">{{item.content_object.title}}</div>
                 {% endif %}
                 {% elif item.content_type.model == 'series' %}
                   <a href="{% url 'watch:series_checkin_list' item.content_object.id item.user.username %}">
                     {% if item.content_object.poster %}
                     <img src="{{ item.content_object.poster.url }}" alt="{{ item.content_object.title }} cover" style="width: 120px;" class="cover-image">  
                     {% else %}
-                    <div class="no-cover-text" style="background: gray; width: 120px; height: 120px; color: white; text-align: center;">{{item.content_object.title}}</div>
+                    <div class="no-cover-text" style="background: gray; width: 120px; height: 100%; color: white; text-align: center;">{{item.content_object.title}}</div>
                     {% endif %} 
                   </a>
                 {% endif %}
