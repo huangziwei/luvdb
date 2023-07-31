@@ -67,6 +67,19 @@ class Platform(Entity):
         return self.name
 
 
+class Genre(models.Model):
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
 class Work(models.Model):  # Renamed from Book
     """
     A Work entity
@@ -85,7 +98,6 @@ class Work(models.Model):  # Renamed from Book
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
 
-    # novel, novella, short story, poem, etc.
     WORK_TYPES = (
         ("visual_novel", "Visual Novel"),
         ("rpg", "RPG"),
@@ -106,7 +118,8 @@ class Work(models.Model):  # Renamed from Book
     )
     work_type = models.CharField(
         max_length=255, choices=WORK_TYPES, blank=True, null=True
-    )  # novel, etc.
+    )
+    genres = models.ManyToManyField(Genre, related_name="play_works", blank=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)

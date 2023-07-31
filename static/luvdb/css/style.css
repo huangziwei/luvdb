@@ -7,6 +7,10 @@
     height: calc(1.5em + .75rem + 2px) !important;
 }
 
+.select2-selection__choice {
+    margin-bottom: .75em !important;
+}
+
 /* https://github.com/yourlabs/django-autocomplete-light/issues/1055#issuecomment-610613743  */
 
 .add-book-work,

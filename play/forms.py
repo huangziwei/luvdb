@@ -30,11 +30,15 @@ class WorkForm(forms.ModelForm):
             "developers": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("play:developer-autocomplete")
             ),
+            "genres": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("play:genre-autocomplete")
+            ),
         }
 
     def __init__(self, *args, **kwargs):
         super(WorkForm, self).__init__(*args, **kwargs)
         self.fields["developers"].required = False
+        self.fields["genres"].required = False
 
 
 class WorkRoleForm(forms.ModelForm):

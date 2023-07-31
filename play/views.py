@@ -36,6 +36,7 @@ from .models import (
     GamePublisher,
     GameRole,
     GameSeries,
+    Genre,
     Platform,
     Work,
 )
@@ -438,6 +439,19 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
+class GenreAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Genre.objects.none()
+
+        qs = Genre.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
+
 class GameCheckInDetailView(DetailView):
     model = GameCheckIn
     template_name = "play/game_checkin_detail.html"
@@ -632,17 +646,14 @@ class GameCheckInUserListView(ListView):
 class PlayListView(ListView):
     model = Game
     template_name = "play/play_list.html"
-    context_object_name = "games"
-    ordering = ["-created_at"]
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.prefetch_related(
-            Prefetch(
-                "gameroles", queryset=GameRole.objects.select_related("person", "role")
-            )
-        )
-        return queryset[:12]
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["games"] = Game.objects.all().order_by("-created_at")[:12]
+
+        # Include genres with at least one movie or series
+        context["genres"] = Genre.objects.filter(Q(play_works__isnull=False)).distinct()
+        return context
 
 
 class GameSeriesCreateView(LoginRequiredMixin, CreateView):
@@ -751,3 +762,40 @@ class GamePublisherUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
+
+
+#########
+# Genre #
+#########
+class GenreDetailView(DetailView):
+    model = Genre
+    template_name = "play/genre_detail.html"  # Update with your actual template name
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get the genre object
+        genre = self.object
+
+        # Get all movies and series associated with this genre
+        # and order them by release date
+        context["works"] = Work.objects.filter(genres=genre).order_by(
+            "-first_release_date"
+        )
+
+        return context
+
+
+class GenreAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Genre.objects.none()
+
+        qs = Genre.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs

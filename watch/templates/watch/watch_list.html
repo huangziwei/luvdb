@@ -57,16 +57,16 @@
                     </div>
                 </div>
 
+                {% if genres %}
                 <div class="bg-light p-3">
-                    {% if genres %}
-                        <h5 class="mt-3">Genres</h5>
-                        <div class='d-flex'>
+                        <h5>Genres</h5>
+                        <div class='d-flex flex-wrap'>
                         {% for genre in genres %}
                             <a href="{% url 'watch:genre_detail' genre.name %}" class="me-2">{{ genre.name }}</a>
                         {% endfor %}
                         </div>
-                    {% endif %}
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -2,9 +2,10 @@
 <form method="post">
     {% csrf_token %}
     {{ form.title|as_crispy_field }}
-    {{ form.subtitle|as_crispy_field}}
-    {{ form.romanized_title|as_crispy_field}}
-    {{ form.first_release_date|as_crispy_field}}
+    {{ form.subtitle|as_crispy_field }}
+    {{ form.romanized_title|as_crispy_field }}
+    {{ form.first_release_date|as_crispy_field }}
+    {{ form.genres|as_crispy_field }}
     <div class="mb-3">
         {{ form.developers|as_crispy_field }}
         <a href="{% url 'play:developer_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new developer?</a>                   

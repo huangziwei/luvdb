@@ -22,6 +22,8 @@ from .views import (
     GameSeriesDetailView,
     GameSeriesUpdateView,
     GameUpdateView,
+    GenreAutocomplete,
+    GenreDetailView,
     PlatformAutocomplete,
     PlatformCreateView,
     PlatformDetailView,
@@ -86,6 +88,7 @@ urlpatterns = [
         name="publisher-autocomplete",
     ),
     path("work-autocomplete/", WorkAutocomplete.as_view(), name="work-autocomplete"),
+    path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),
     # checkin
     path(
         "game/<int:game_id>/checkins/",
@@ -124,4 +127,6 @@ urlpatterns = [
     path(
         "series/<int:pk>/update/", GameSeriesUpdateView.as_view(), name="series_update"
     ),
+    # genre
+    path("genre/<slug:slug>/", GenreDetailView.as_view(), name="genre_detail"),
 ]

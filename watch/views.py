@@ -306,19 +306,6 @@ class StudioAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
-class GenreAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return Genre.objects.none()
-
-        qs = Genre.objects.all()
-
-        if self.q:
-            qs = qs.filter(name__icontains=self.q)
-
-        return qs
-
-
 class WatchListView(TemplateView):
     template_name = "watch/watch_list.html"
 
@@ -971,3 +958,16 @@ class GenreDetailView(DetailView):
         )
 
         return context
+
+
+class GenreAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Genre.objects.none()
+
+        qs = Genre.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs

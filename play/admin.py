@@ -8,6 +8,7 @@ from .models import (
     GameInSeries,
     GameRole,
     GameSeries,
+    Genre,
     Platform,
 )
 
@@ -82,3 +83,9 @@ class GameSeriesAdmin(admin.ModelAdmin):
 class GameInSeriesAdmin(admin.ModelAdmin):
     list_display = ["game", "series", "order"]
     search_fields = ["game__title", "series__title"]
+
+
+@admin.register(Genre)
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+    search_fields = ["name"]
