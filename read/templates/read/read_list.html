@@ -99,7 +99,7 @@
                 {% endif %}
             </div>
             <div class='col-12 col-md-4'>
-                <div class="bg-light p-3">
+                <div class="bg-light p-3 mb-3">
                     <h5>Add New</h5>
                     <div>
                         <a href="{% url "read:work_create" %}" class="text-muted">Work</a>
@@ -117,6 +117,17 @@
                         <a href="{% url "read:series_create" %}" class="text-muted">Series</a>
                     </div>
                 </div>
+
+                {% if genres %}
+                <div class="bg-light p-3">
+                    <h5>Genres</h5>
+                    <div class='d-flex flex-wrap'>
+                    {% for genre in genres %}
+                        <a href="{% url 'read:genre_detail' genre.slug %}" class="me-2">{{ genre.name }}</a>
+                    {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

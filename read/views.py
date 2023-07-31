@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import Any, Dict
 
 from dal import autocomplete
 from django.contrib.auth import get_user_model
@@ -40,6 +41,7 @@ from .forms import (
 from .models import (
     Book,
     BookSeries,
+    Genre,
     Instance,
     Issue,
     LanguageField,
@@ -908,6 +910,11 @@ class ReadListView(ListView):
             "trending_issues": trending_issues,
         }
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["genres"] = Genre.objects.filter(Q(read_works__isnull=False)).distinct()
+        return context
+
 
 ###########
 # Checkin #
@@ -1277,3 +1284,37 @@ class BookSeriesUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("read:series_detail", kwargs={"pk": self.object.pk})
+
+
+#########
+# Genre #
+#########
+class GenreDetailView(DetailView):
+    model = Genre
+    template_name = "read/genre_detail.html"  # Update with your actual template name
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get the genre object
+        genre = self.object
+        context["works"] = Work.objects.filter(genres=genre).order_by(
+            "-publication_date"
+        )
+
+        return context
+
+
+class GenreAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Genre.objects.none()
+
+        qs = Genre.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs

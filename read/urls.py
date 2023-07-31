@@ -10,6 +10,8 @@ from .views import (
     GenericCheckInAllListView,
     GenericCheckInListView,
     GenericCheckInUserListView,
+    GenreAutocomplete,
+    GenreDetailView,
     InstanceAutocomplete,
     InstanceCreateView,
     InstanceDetailView,
@@ -163,4 +165,7 @@ urlpatterns = [
     path(
         "series/<int:pk>/update/", BookSeriesUpdateView.as_view(), name="series_update"
     ),
+    # genre
+    path("genre/<slug:slug>/", GenreDetailView.as_view(), name="genre_detail"),
+    path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),
 ]

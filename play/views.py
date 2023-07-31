@@ -650,8 +650,6 @@ class PlayListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["games"] = Game.objects.all().order_by("-created_at")[:12]
-
-        # Include genres with at least one movie or series
         context["genres"] = Genre.objects.filter(Q(play_works__isnull=False)).distinct()
         return context
 

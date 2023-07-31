@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-7 left-column">
+    
+            <span class='d-flex align-items-start'>
+                <h2>
+                    {{ object.name }}
+                </h2> 
+            </span>
+
+            {% if works %}
+                <ul>
+                {% for work in works %}
+                    <li>
+                        <a href="{% url 'read:work_detail' work.id %}">{{ work.title }}</a> 
+                        ({{ work.publication_date}})
+                    </li>
+                {% empty %}
+                    <li>No works in this genre.</li>
+                {% endfor %}
+                </ul>
+            {% endif %} 
+
+
+            {% if series %}
+                <h3>Series</h3>
+                <ul>
+                {% for serie in series %}
+                    <li>
+                        <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> 
+                        ({{ serie.release_date}})
+                    </li>
+                {% empty %}
+                    <li>No series in this genre.</li>
+                {% endfor %}
+                </ul>
+            {% endif %} 
+        </div>
+    </div>
+</div>
+
+{% endblock %}

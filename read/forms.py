@@ -37,6 +37,9 @@ class WorkForm(forms.ModelForm):
         }
         widgets = {
             "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
+            "genres": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:genre-autocomplete")
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -46,6 +49,7 @@ class WorkForm(forms.ModelForm):
         self.fields["language"].label = "Original Language"
         self.fields["work_type"].label = "Type"
         self.fields["work_type"].help_text = "e.g. novel, short story, poem, etc."
+        self.fields["genres"].required = False
 
 
 class WorkRoleForm(forms.ModelForm):

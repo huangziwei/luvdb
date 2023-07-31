@@ -6,22 +6,22 @@ from .models import (
     BookInstance,
     BookRole,
     BookSeries,
+    Genre,
     Instance,
     InstanceRole,
     Issue,
     IssueInstance,
     Periodical,
-    Person,
     Publisher,
     ReadCheckIn,
-    Role,
     Work,
     WorkRole,
 )
 
-# class PersonAdmin(admin.ModelAdmin):
-#     list_display = ("name", "created_at", "updated_at", "created_by", "updated_by")
-#     search_fields = ("name",)
+
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
 
 
 class PublisherAdmin(admin.ModelAdmin):
@@ -142,6 +142,7 @@ admin.site.register(InstanceRole, InstanceRoleAdmin)
 admin.site.register(Periodical, PeriodicalAdmin)
 admin.site.register(Issue, IssueAdmin)
 admin.site.register(BookSeries, SeriesAdmin)
+admin.site.register(Genre, GenreAdmin)
 
 
 @admin.register(ReadCheckIn)

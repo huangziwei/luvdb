@@ -59,12 +59,12 @@
 
                 {% if genres %}
                 <div class="bg-light p-3">
-                        <h5>Genres</h5>
-                        <div class='d-flex flex-wrap'>
-                        {% for genre in genres %}
-                            <a href="{% url 'watch:genre_detail' genre.name %}" class="me-2">{{ genre.name }}</a>
-                        {% endfor %}
-                        </div>
+                    <h5>Genres</h5>
+                    <div class='d-flex flex-wrap'>
+                    {% for genre in genres %}
+                        <a href="{% url 'watch:genre_detail' genre.name %}" class="me-2">{{ genre.name }}</a>
+                    {% endfor %}
+                    </div>
                 </div>
                 {% endif %}
             </div>
