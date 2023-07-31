@@ -36,6 +36,7 @@ from .forms import (
 from .models import (
     Episode,
     EpisodeCast,
+    Genre,
     Movie,
     MovieRole,
     Series,
@@ -294,11 +295,23 @@ class StudioDetailView(DetailView):
 
 class StudioAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated:
             return Studio.objects.none()
 
         qs = Studio.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
+
+class GenreAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Genre.objects.none()
+
+        qs = Genre.objects.all()
 
         if self.q:
             qs = qs.filter(name__icontains=self.q)
@@ -926,5 +939,30 @@ class GenericCheckInUserListView(ListView):
         )  # Default is '-timestamp'
 
         context["status"] = self.request.GET.get("status", "")
+
+        return context
+
+
+#########
+# Genre #
+#########
+class GenreDetailView(DetailView):
+    model = Genre
+    template_name = "watch/genre_detail.html"  # Update with your actual template name
+    slug_field = "name"
+    slug_url_kwarg = "name"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get the genre object
+        genre = self.object
+
+        # Get all movies and series associated with this genre
+        # and order them by release date
+        context["movies"] = Movie.objects.filter(genres=genre).order_by("-release_date")
+        context["series"] = Series.objects.filter(genres=genre).order_by(
+            "-release_date"
+        )
 
         return context

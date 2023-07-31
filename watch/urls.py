@@ -8,6 +8,8 @@ from .views import (
     GenericCheckInAllListView,
     GenericCheckInListView,
     GenericCheckInUserListView,
+    GenreAutocomplete,
+    GenreDetailView,
     MovieCastDetailView,
     MovieCreateView,
     MovieDetailView,
@@ -73,6 +75,7 @@ urlpatterns = [
         StudioAutocomplete.as_view(),
         name="studio-autocomplete",
     ),
+    path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),
     # checkin
     path(
         "book/<int:book_id>/checkin/create/",
@@ -139,4 +142,6 @@ urlpatterns = [
         SeriesCastDetailView.as_view(),
         name="series_cast_detail",
     ),
+    # genre
+    path("genre/<slug:name>/", GenreDetailView.as_view(), name="genre_detail"),
 ]

@@ -4,6 +4,7 @@ from .models import (
     Episode,
     EpisodeCast,
     EpisodeRole,
+    Genre,
     Movie,
     MovieCast,
     MovieRole,
@@ -66,8 +67,19 @@ class WatchCheckInAdmin(admin.ModelAdmin):
     list_filter = ["status", "timestamp"]
 
 
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ["name"]
+
+
+class StudioAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ["name"]
+
+
+admin.site.register(Genre, GenreAdmin)
 admin.site.register(Movie, MovieAdmin)
-admin.site.register(Studio)
+admin.site.register(Studio, StudioAdmin)
 admin.site.register(Series, SeriesAdmin)
 admin.site.register(Episode, EpisodeAdmin)
 admin.site.register(WatchCheckIn, WatchCheckInAdmin)

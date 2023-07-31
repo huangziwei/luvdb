@@ -45,6 +45,13 @@ class Studio(Entity):
         return self.name
 
 
+class Genre(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 class Movie(models.Model):
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
@@ -68,7 +75,7 @@ class Movie(models.Model):
     box_office = models.CharField(max_length=20, blank=True, null=True)
     duration = models.CharField(max_length=10, blank=True, null=True)
     languages = LanguageField(blank=True, null=True)
-    # genres = models.ManyToManyField("Genre", related_name="movies", blank=True)
+    genres = models.ManyToManyField(Genre, related_name="movies", blank=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -182,6 +189,7 @@ class Series(models.Model):
     poster_sens = models.BooleanField(default=False, null=True, blank=True)
     duration = models.CharField(max_length=10, blank=True, null=True)
     languages = LanguageField(blank=True, null=True)
+    genres = models.ManyToManyField(Genre, related_name="series", blank=True)
     based_on = models.ForeignKey(
         LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="series"
     )

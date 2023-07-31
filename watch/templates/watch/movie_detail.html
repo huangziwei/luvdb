@@ -64,6 +64,16 @@
                                 <p><strong>Based on:</strong> <a href="{% url "read:work_detail" object.based_on.id %}">{{object.based_on.title}}</a> ({{ object.based_on.publication_date }})</p>
                                 {% endif %}
 
+                                {% if object.genres %}
+                                <p>
+                                    <strong>Genre:</strong>
+                                    {% for genre in object.genres.all %}
+                                        <a href="{% url 'watch:genre_detail' genre.name %}">{{ genre.name }}</a>
+                                        {% if not forloop.last %} / {% endif %}
+                                    {% endfor %}
+                                </p>
+                                {% endif %}
+
                                 <p><strong>Cast:</strong> <a href="{% url 'watch:movie_cast_detail' object.id %}">View Cast</a></p>
                             </div>
                         </div>

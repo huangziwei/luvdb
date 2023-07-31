@@ -34,11 +34,15 @@ class MovieForm(forms.ModelForm):
             "based_on": autocomplete.ModelSelect2(
                 url=reverse_lazy("read:work-autocomplete")
             ),
+            "genres": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:genre-autocomplete")
+            ),
         }
 
     def __init__(self, *args, **kwargs):
         super(MovieForm, self).__init__(*args, **kwargs)
         self.fields["studios"].required = False
+        self.fields["genres"].required = False
 
 
 class MovieRoleForm(forms.ModelForm):
@@ -123,11 +127,15 @@ class SeriesForm(forms.ModelForm):
             "based_on": autocomplete.ModelSelect2(
                 url=reverse_lazy("read:work-autocomplete")
             ),
+            "genres": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:genre-autocomplete")
+            ),
         }
 
     def __init__(self, *args, **kwargs):
         super(SeriesForm, self).__init__(*args, **kwargs)
         self.fields["studios"].required = False
+        self.fields["genres"].required = False
 
 
 class SeriesRoleForm(forms.ModelForm):
