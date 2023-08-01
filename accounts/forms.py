@@ -68,4 +68,11 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ("display_name", "username", "bio")
+        fields = ("display_name", "username", "bio", "is_public")
+        help_texts = {
+            "is_public": "Turn on to make your profile public. If not, non-logged-in users won't be able to see your profile.",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(CustomUserChangeForm, self).__init__(*args, **kwargs)
+        del self.fields["password"]

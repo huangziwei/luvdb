@@ -6,9 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
 from django.db.models import F, Max, OuterRef, Q, Subquery
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views import View
@@ -27,7 +27,7 @@ from read.models import Work as LitWork
 from watch.models import Movie, Series, WatchCheckIn
 from write.models import Pin, Post, Repost, Say
 
-from .forms import CustomUserCreationForm
+from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import InvitationCode
 
 TIME_RESTRICTION = 365  # time restriction for generating invitation codes
@@ -58,7 +58,7 @@ class SignUpView(CreateView):
         return super().form_valid(form)
 
 
-class AccountDetailView(LoginRequiredMixin, DetailView):
+class AccountDetailView(DetailView):
     """Detail view for user accounts."""
 
     model = User
@@ -66,20 +66,32 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
     slug_url_kwarg = "username"
     template_name = "accounts/account_detail.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        # Get the User object
+        user = get_object_or_404(User, username=self.kwargs["username"])
+        # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
+        if not user.is_public and not request.user.is_authenticated:
+            return redirect("{}?next={}".format(reverse("login"), request.path))
+        # Otherwise, proceed as normal
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         # Check if the user has already generated an invitation code within the time restriction
         start_date = datetime.now() - timedelta(days=TIME_RESTRICTION)
-        code_recently_generated = self.request.user.codes_generated.filter(
-            generated_at__gte=start_date
-        ).first()
+        if self.request.user.is_authenticated:
+            code_recently_generated = self.request.user.codes_generated.filter(
+                generated_at__gte=start_date
+            ).first()
 
-        # Check if the code is used
-        if code_recently_generated and code_recently_generated.is_used:
-            context["can_generate_code"] = False
+            # Check if the code is used
+            if code_recently_generated and code_recently_generated.is_used:
+                context["can_generate_code"] = False
+            else:
+                context["can_generate_code"] = True
         else:
-            context["can_generate_code"] = True
+            context["can_generate_code"] = False
 
         user_posts = self.object.post_set.all().order_by("-timestamp")
         user_pins = self.object.pin_set.all().order_by("-timestamp")
@@ -219,14 +231,8 @@ class AccountDetailView(LoginRequiredMixin, DetailView):
 
 
 class AccountUpdateView(LoginRequiredMixin, UpdateView):
-    """Update view for user accounts."""
-
     model = User
-    fields = [
-        "display_name",  # Add display_name to the list of fields
-        "username",
-        "bio",
-    ]
+    form_class = CustomUserChangeForm
     template_name = "accounts/account_update.html"
     slug_field = "username"
     slug_url_kwarg = "username"

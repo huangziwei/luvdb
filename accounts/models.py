@@ -48,6 +48,7 @@ class CustomUser(AbstractUser):
     )
     display_name = models.CharField(max_length=100, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
+    is_public = models.BooleanField(default=False)
 
     RESERVED_USERNAMES = [
         "admin",
