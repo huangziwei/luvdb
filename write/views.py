@@ -518,7 +518,7 @@ class LuvListDeleteView(LoginRequiredMixin, DeleteView):
         return queryset.filter(user=self.request.user)
 
 
-class LuvListUserListView(LoginRequiredMixin, ListView):
+class LuvListUserListView(ListView):
     model = LuvList
     template_name = "write/luvlist_list.html"  # Assuming 'luvlist_user_list.html' is the template for the user-specific list view
 

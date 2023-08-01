@@ -44,7 +44,7 @@
             <div class="bg-light p-3">
                 <span>
                     {% for tag, size in all_tags.items %}
-                    <a href="{% url 'write:tag_user_list' user.username tag.name %}" style="font-size: {{ size }}%;" class="text-success me-2">#{{ tag.name }}</a>
+                    <a href="{% url 'write:tag_user_list' object.username tag.name %}" style="font-size: {{ size }}%;" class="text-success me-2">#{{ tag.name }}</a>
                 {% endfor %}
                 </span>
             </div>
