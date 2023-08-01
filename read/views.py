@@ -912,7 +912,11 @@ class ReadListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["genres"] = Genre.objects.filter(Q(read_works__isnull=False)).distinct()
+        context["genres"] = (
+            Genre.objects.filter(Q(read_works__isnull=False))
+            .order_by("name")
+            .distinct()
+        )
         return context
 
 

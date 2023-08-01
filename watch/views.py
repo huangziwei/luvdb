@@ -315,9 +315,11 @@ class WatchListView(TemplateView):
         context["series"] = Series.objects.all().order_by("-created_at")[:12]
 
         # Include genres with at least one movie or series
-        context["genres"] = Genre.objects.filter(
-            Q(movies__isnull=False) | Q(series__isnull=False)
-        ).distinct()
+        context["genres"] = (
+            Genre.objects.filter(Q(movies__isnull=False) | Q(series__isnull=False))
+            .order_by("name")
+            .distinct()
+        )
         return context
 
 
