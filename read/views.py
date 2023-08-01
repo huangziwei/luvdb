@@ -1304,9 +1304,17 @@ class GenreDetailView(DetailView):
 
         # Get the genre object
         genre = self.object
-        context["works"] = Work.objects.filter(genres=genre).order_by(
-            "-publication_date"
-        )
+        works = Work.objects.filter(genres=genre).order_by("-publication_date")
+
+        works_with_authors = []
+        for work in works:
+            authors = Person.objects.filter(
+                read_workrole_set__work=work, read_workrole_set__role__name="Author"
+            )
+            work.authors = authors
+            works_with_authors.append(work)
+
+        context["works"] = works_with_authors
 
         return context
 
