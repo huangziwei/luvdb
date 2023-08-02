@@ -6,6 +6,7 @@ from crispy_forms.layout import Column, Div, Fieldset, Layout, Row, Submit
 from dal import autocomplete
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
@@ -55,9 +56,23 @@ class MovieRoleForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         person = cleaned_data.get("person")
-        if self.instance and not person:  # if the person field is empty
-            self.instance.delete()
+        role = cleaned_data.get("role")
+
+        # if the person field is filled but the role field is not
+        if person and not role:
+            raise ValidationError("Role is required when Person is filled.")
+
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.person is None:  # if the person field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
 
 
 MovieRoleFormSet = inlineformset_factory(
@@ -90,9 +105,23 @@ class MovieCastForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         person = cleaned_data.get("person")
-        if self.instance and not person:  # if the person field is empty
-            self.instance.delete()
+        role = cleaned_data.get("role")
+
+        # if the person field is filled but the role field is not
+        if person and not role:
+            raise ValidationError("Role is required when Person is filled.")
+
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.person is None:  # if the person field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
 
 
 MovieCastFormSet = inlineformset_factory(
@@ -148,9 +177,23 @@ class SeriesRoleForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         person = cleaned_data.get("person")
-        if self.instance and not person:  # if the person field is empty
-            self.instance.delete()
+        role = cleaned_data.get("role")
+
+        # if the person field is filled but the role field is not
+        if person and not role:
+            raise ValidationError("Role is required when Person is filled.")
+
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.person is None:  # if the person field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
 
 
 SeriesRoleFormSet = inlineformset_factory(
@@ -190,9 +233,23 @@ class EpisodeRoleForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         person = cleaned_data.get("person")
-        if self.instance and not person:  # if the person field is empty
-            self.instance.delete()
+        role = cleaned_data.get("role")
+
+        # if the person field is filled but the role field is not
+        if person and not role:
+            raise ValidationError("Role is required when Person is filled.")
+
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.person is None:  # if the person field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
 
 
 EpisodeRoleFormSet = inlineformset_factory(
@@ -225,9 +282,23 @@ class EpisodeCastForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         person = cleaned_data.get("person")
-        if self.instance and not person:  # if the person field is empty
-            self.instance.delete()
+        role = cleaned_data.get("role")
+
+        # if the person field is filled but the role field is not
+        if person and not role:
+            raise ValidationError("Role is required when Person is filled.")
+
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.person is None:  # if the person field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
 
 
 EpisodeCastFormSet = inlineformset_factory(

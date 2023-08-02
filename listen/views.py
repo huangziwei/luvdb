@@ -105,6 +105,11 @@ class WorkCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         context = self.get_context_data()
         workroles = context["workroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(workrole_form.is_valid() for workrole_form in workroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -133,6 +138,11 @@ class WorkUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         workroles = context["workroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(workrole_form.is_valid() for workrole_form in workroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -250,6 +260,11 @@ class TrackCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         context = self.get_context_data()
         trackroles = context["trackroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(trackrole_form.is_valid() for trackrole_form in trackroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -280,6 +295,11 @@ class TrackUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         trackroles = context["trackroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(trackrole_form.is_valid() for trackrole_form in trackroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -401,6 +421,11 @@ class ReleaseCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         releaseroles = context["releaseroles"]
         releasetracks = context["releasetracks"]
+
+        # Manually check validity of each form in the formset.
+        if not all(releaserole_form.is_valid() for releaserole_form in releaseroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -563,6 +588,11 @@ class ReleaseUpdateView(LoginRequiredMixin, UpdateView):
         context = self.get_context_data()
         releaseroles = context["releaseroles"]
         releasetracks = context["releasetracks"]
+
+        # Manually check validity of each form in the formset.
+        if not all(releaserole_form.is_valid() for releaserole_form in releaseroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.updated_by = self.request.user
             if self.request.method == "POST":

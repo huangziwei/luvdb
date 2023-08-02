@@ -75,6 +75,14 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         movierole = context["movieroles"]
         moviecast = context["moviecasts"]
+
+        # Manually check validity of each form in the formset.
+        if not all(movierole_form.is_valid() for movierole_form in movierole):
+            return self.form_invalid(form)
+
+        if not all(moviecast_form.is_valid() for moviecast_form in moviecast):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -237,6 +245,14 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
         context = self.get_context_data()
         movierole = context["movieroles"]
         moviecast = context["moviecasts"]
+
+        # Manually check validity of each form in the formset.
+        if not all(movierole_form.is_valid() for movierole_form in movierole):
+            return self.form_invalid(form)
+
+        if not all(moviecast_form.is_valid() for moviecast_form in moviecast):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.updated_by = self.request.user
             self.object = form.save()
@@ -345,6 +361,11 @@ class SeriesCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         context = self.get_context_data()
         seriesrole = context["seriesroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(seriesrole_form.is_valid() for seriesrole_form in seriesrole):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -491,6 +512,11 @@ class SeriesUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         seriesrole = context["seriesroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(seriesrole_form.is_valid() for seriesrole_form in seriesrole):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.updated_by = self.request.user
             self.object = form.save()
@@ -576,6 +602,13 @@ class EpisodeCreateView(LoginRequiredMixin, CreateView):
         episoderoles = context["episoderoles"]
         episodecasts = context["episodecasts"]
 
+        # Manually check validity of each form in the formset.
+        if not all(episoderole_form.is_valid() for episoderole_form in episoderoles):
+            return self.form_invalid(form)
+
+        if not all(episodecast_form.is_valid() for episodecast_form in episodecasts):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -646,6 +679,14 @@ class EpisodeUpdateView(LoginRequiredMixin, UpdateView):
         context = self.get_context_data()
         episoderoles = context["episoderoles"]
         episodecasts = context["episodecasts"]
+
+        # Manually check validity of each form in the formset.
+        if not all(episoderole_form.is_valid() for episoderole_form in episoderoles):
+            return self.form_invalid(form)
+
+        if not all(episodecast_form.is_valid() for episodecast_form in episodecasts):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.updated_by = self.request.user
             self.object = form.save()

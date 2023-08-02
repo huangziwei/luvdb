@@ -15,6 +15,11 @@
         <div class="form-wrapper">
             <div class="row">
                 {{ form.id }}
+                {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
+                {% endfor %}
                 <div class="col-md-4 mb-3">
                     {{ form.person | as_crispy_field}}
                     <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>

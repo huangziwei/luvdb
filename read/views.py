@@ -133,6 +133,11 @@ class WorkCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         context = self.get_context_data()
         workroles = context["workroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(workrole_form.is_valid() for workrole_form in workroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -161,6 +166,11 @@ class WorkUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         workroles = context["workroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(workrole_form.is_valid() for workrole_form in workroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -229,6 +239,11 @@ class InstanceCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         context = self.get_context_data()
         instanceroles = context["instanceroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(instancerole_form.is_valid() for instancerole_form in instanceroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -259,6 +274,11 @@ class InstanceUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         instanceroles = context["instanceroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(instancerole_form.is_valid() for instancerole_form in instanceroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -317,6 +337,11 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         bookroles = context["bookroles"]
         bookinstances = context["bookinstances"]
+
+        # Manually check validity of each form in the formset.
+        if not all(bookrole_form.is_valid() for bookrole_form in bookroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -492,6 +517,11 @@ class BookUpdateView(LoginRequiredMixin, UpdateView):
         context = self.get_context_data()
         bookroles = context["bookroles"]
         bookinstances = context["bookinstances"]
+
+        # Manually check validity of each form in the formset.
+        if not all(bookrole_form.is_valid() for bookrole_form in bookroles):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.updated_by = self.request.user
             if self.request.method == "POST":

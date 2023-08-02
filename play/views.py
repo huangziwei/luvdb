@@ -55,6 +55,11 @@ class WorkCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         context = self.get_context_data()
         workrole = context["workroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(workrole_form.is_valid() for workrole_form in workrole):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -104,6 +109,11 @@ class WorkUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         workrole = context["workroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(workrole_form.is_valid() for workrole_form in workrole):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -137,6 +147,14 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         gamerole = context["gameroles"]
         gamecast = context["gamecasts"]
+
+        # Manually check validity of each form in the formset.
+        if not all(gamerole_form.is_valid() for gamerole_form in gamerole):
+            return self.form_invalid(form)
+
+        if not all(gamecast_form.is_valid() for gamecast_form in gamecast):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -267,6 +285,14 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
         context = self.get_context_data()
         gamerole = context["gameroles"]
         gamecast = context["gamecasts"]
+
+        # Manually check validity of each form in the formset.
+        if not all(gamerole_form.is_valid() for gamerole_form in gamerole):
+            return self.form_invalid(form)
+
+        if not all(gamecast_form.is_valid() for gamecast_form in gamecast):
+            return self.form_invalid(form)
+
         with transaction.atomic():
             form.instance.updated_by = self.request.user
             self.object = form.save()

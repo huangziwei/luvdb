@@ -3,6 +3,7 @@ import re
 from dal import autocomplete
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
@@ -62,9 +63,23 @@ class WorkRoleForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         person = cleaned_data.get("person")
-        if self.instance and not person:  # if the person field is empty
-            self.instance.delete()  # delete the BookRole instance
+        role = cleaned_data.get("role")
+
+        # if the person field is filled but the role field is not
+        if person and not role:
+            raise ValidationError("Role is required when Person is filled.")
+
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.person is None:  # if the person field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
 
 
 WorkRoleFormSet = inlineformset_factory(
@@ -123,9 +138,23 @@ class InstanceRoleForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         person = cleaned_data.get("person")
-        if self.instance and not person:  # if the person field is empty
-            self.instance.delete()  # delete the BookRole instance
+        role = cleaned_data.get("role")
+
+        # if the person field is filled but the role field is not
+        if person and not role:
+            raise ValidationError("Role is required when Person is filled.")
+
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.person is None:  # if the person field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
 
 
 InstanceRoleFormSet = inlineformset_factory(
@@ -192,9 +221,23 @@ class BookRoleForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         person = cleaned_data.get("person")
-        if self.instance and not person:  # if the person field is empty
-            self.instance.delete()  # delete the BookRole instance
+        role = cleaned_data.get("role")
+
+        # if the person field is filled but the role field is not
+        if person and not role:
+            raise ValidationError("Role is required when Person is filled.")
+
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.person is None:  # if the person field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
 
 
 BookRoleFormSet = inlineformset_factory(
