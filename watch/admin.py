@@ -61,12 +61,6 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_filter = ["release_date", "series"]
 
 
-class WatchCheckInAdmin(admin.ModelAdmin):
-    list_display = ("user", "status", "timestamp")
-    search_fields = ["user__username", "status"]
-    list_filter = ["status", "timestamp"]
-
-
 class GenreAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ["name"]
@@ -82,4 +76,15 @@ admin.site.register(Movie, MovieAdmin)
 admin.site.register(Studio, StudioAdmin)
 admin.site.register(Series, SeriesAdmin)
 admin.site.register(Episode, EpisodeAdmin)
-admin.site.register(WatchCheckIn, WatchCheckInAdmin)
+
+
+@admin.register(WatchCheckIn)
+class WatchCheckInAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "status",
+        "content",
+        "timestamp",
+    )
+    search_fields = ("user__username", "content")
+    list_filter = ("status", "timestamp")

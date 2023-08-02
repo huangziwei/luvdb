@@ -68,7 +68,13 @@ class GameCastAdmin(admin.ModelAdmin):
 
 @admin.register(GameCheckIn)
 class GameCheckInAdmin(admin.ModelAdmin):
-    list_display = ["game", "user", "status", "timestamp", "progress", "progress_type"]
+    list_display = [
+        "game",
+        "user",
+        "status",
+        "timestamp",
+        "content",
+    ]
     search_fields = ["game__title", "user__username", "status"]
 
 

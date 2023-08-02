@@ -58,5 +58,16 @@ admin.site.register(Label)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(Track, TrackAdmin)
 admin.site.register(Release, ReleaseAdmin)
-admin.site.register(ListenCheckIn)
 admin.site.register(Genre, GenreAdmin)
+
+
+@admin.register(ListenCheckIn)
+class ListenCheckInAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "status",
+        "content",
+        "timestamp",
+    )
+    search_fields = ("user__username", "content")
+    list_filter = ("status", "timestamp")
