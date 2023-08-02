@@ -34,12 +34,16 @@ class WorkForm(forms.ModelForm):
             "release_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
         }
 
+        widgets = {
+            "genres": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:genre-autocomplete")
+            ),
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields["release_date"].label = "First Release Date"
-        self.fields["genre"].label = "Genre(s)"
-        self.fields["genre"].help_text = "e.g. pop, rock, jazz, etc."
 
 
 class WorkRoleForm(forms.ModelForm):
@@ -103,6 +107,9 @@ class TrackForm(forms.ModelForm):
         widgets = {
             "work": autocomplete.ModelSelect2(
                 url=reverse_lazy("listen:work-autocomplete")
+            ),
+            "genres": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:genre-autocomplete")
             ),
         }
 
@@ -181,6 +188,9 @@ class ReleaseForm(forms.ModelForm):
             ),
             "label": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("listen:label-autocomplete")
+            ),
+            "genres": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:genre-autocomplete")
             ),
         }
         help_texts = {

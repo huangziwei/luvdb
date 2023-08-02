@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import (
+    Genre,
     Label,
     ListenCheckIn,
     Release,
@@ -13,13 +14,18 @@ from .models import (
 )
 
 
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
+
+
 class WorkRoleInline(admin.TabularInline):
     model = WorkRole
     extra = 1
 
 
 class WorkAdmin(admin.ModelAdmin):
-    list_display = ["title", "release_date", "genre"]
+    list_display = ["title", "release_date"]
     inlines = [WorkRoleInline]
 
 
@@ -29,7 +35,7 @@ class TrackRoleInline(admin.TabularInline):
 
 
 class TrackAdmin(admin.ModelAdmin):
-    list_display = ["title", "release_date", "length", "genre"]
+    list_display = ["title", "release_date", "length"]
     inlines = [TrackRoleInline]
 
 
@@ -44,7 +50,7 @@ class ReleaseTrackInline(admin.TabularInline):
 
 
 class ReleaseAdmin(admin.ModelAdmin):
-    list_display = ["title", "release_date", "genre", "release_type", "release_format"]
+    list_display = ["title", "release_date", "release_type", "release_format"]
     inlines = [ReleaseRoleInline, ReleaseTrackInline]
 
 
@@ -53,3 +59,4 @@ admin.site.register(Work, WorkAdmin)
 admin.site.register(Track, TrackAdmin)
 admin.site.register(Release, ReleaseAdmin)
 admin.site.register(ListenCheckIn)
+admin.site.register(Genre, GenreAdmin)

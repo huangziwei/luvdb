@@ -52,17 +52,30 @@ class Label(Entity):
         return self.name
 
 
+class Genre(models.Model):
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
 class Work(models.Model):
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200, blank=True, null=True)
     romanized_title = models.CharField(max_length=200, blank=True, null=True)
-    genre = models.CharField(max_length=100, blank=True, null=True)  # rock, pop, etc.
     persons = models.ManyToManyField(
         Person, through="WorkRole", related_name="listen_works"
     )
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
+    genres = models.ManyToManyField(Genre, related_name="listen_works", blank=True)
     note = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -106,8 +119,9 @@ class Track(models.Model):
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
+    genres = models.ManyToManyField(Genre, related_name="tracks", blank=True)
+
     length = models.CharField(max_length=10, blank=True, null=True)  # HH:MM:SS
-    genre = models.CharField(max_length=255, blank=True, null=True)  # rock, pop, etc.
     note = models.TextField(blank=True, null=True)
 
     # entry meta data
@@ -160,8 +174,8 @@ class Release(models.Model):
         Track, through="ReleaseTrack", related_name="releases"
     )
     label = models.ManyToManyField(Label, related_name="releases")
+    genres = models.ManyToManyField(Genre, related_name="releases", blank=True)
 
-    genre = models.CharField(max_length=255, blank=True, null=True)  # rock, pop, etc.
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD

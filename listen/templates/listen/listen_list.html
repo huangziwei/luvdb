@@ -62,6 +62,17 @@
                         <a href="{% url "listen:release_create" %}" class="text-muted">Release</a>
                     </div>
                 </div>
+
+                {% if genres %}
+                <div class="bg-light p-3">
+                    <h5>Genres</h5>
+                    <div class='d-flex flex-wrap'>
+                    {% for genre in genres %}
+                        <a href="{% url 'listen:genre_detail' genre.slug %}" class="me-2">{{ genre.name }}</a>
+                    {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

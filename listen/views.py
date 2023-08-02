@@ -33,7 +33,7 @@ from .forms import (
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import Label, ListenCheckIn, Release, Track, Work
+from .models import Genre, Label, ListenCheckIn, Release, Track, Work
 
 User = get_user_model()
 
@@ -820,6 +820,16 @@ class ListenListView(ListView):
             "trending_releases": trending_releases,
         }
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Include genres with at least one movie or series
+        context["genres"] = (
+            Genre.objects.filter(Q(listen_works__isnull=False))
+            .order_by("name")
+            .distinct()
+        )
+        return context
+
 
 class ListenCheckInUserListView(ListView):
     """
@@ -872,3 +882,37 @@ class ListenCheckInUserListView(ListView):
         context["status"] = self.request.GET.get("status", "")
 
         return context
+
+
+#########
+# Genre #
+#########
+class GenreDetailView(DetailView):
+    model = Genre
+    template_name = "listen/genre_detail.html"  # Update with your actual template name
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get the genre object
+        genre = self.object
+        works = Work.objects.filter(genres=genre).order_by("-release_date")
+
+        context["works"] = works
+
+        return context
+
+
+class GenreAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Genre.objects.none()
+
+        qs = Genre.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
