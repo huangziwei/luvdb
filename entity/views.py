@@ -1,20 +1,15 @@
 from dal import autocomplete
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import transaction
-from django.db.models import Prefetch
-from django.shortcuts import render
-from django.urls import reverse, reverse_lazy
+from django.db.models import Q
+from django.urls import reverse_lazy
 from django.utils.html import format_html
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
-from listen.models import Release, Track
 from listen.models import Work as MusicWork
-from play.models import Game
 from play.models import Work as GameWork
-from read.models import Book, BookRole
+from read.models import Book
 from read.models import Instance as LitInstance
-from read.models import Work as LitWork
 from watch.models import Movie, Series
 
 from .forms import PersonForm
@@ -50,6 +45,14 @@ class PersonDetailView(DetailView):
             instancerole__role__name="Translator", instancerole__person=person
         ).order_by("publication_date")
         context["as_translator"] = as_translator
+
+        writings = Book.objects.filter(
+            Q(bookrole__role__name="Introduction")
+            | Q(bookrole__role__name="Afterword"),
+            bookrole__person=person,
+        ).order_by("publication_date")
+
+        context["writings"] = writings
 
         # listen
         context["listen_works"] = person.listen_works.all().order_by("release_date")
