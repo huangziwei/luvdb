@@ -1,14 +1,17 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, ListView
 
+from entity.models import Person
 from write.forms import ActivityFeedSayForm
 
 from .models import Activity, Block, Follow
@@ -26,6 +29,38 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         context["say_form"] = ActivityFeedSayForm()
         context["feed_type"] = "public"
         context["no_citation_css"] = True
+
+        # Get current month and day
+        now = datetime.now()
+        current_month_day = now.strftime(".%m.%d")
+        current_month_day_dash = now.strftime("-%m-%d")
+
+        # Query for people born or died on this day
+        born_today = Person.objects.filter(
+            Q(birth_date__contains=current_month_day)
+            | Q(birth_date__contains=current_month_day_dash)
+        )
+        died_today = Person.objects.filter(
+            Q(death_date__contains=current_month_day)
+            | Q(death_date__contains=current_month_day_dash)
+        )
+
+        # Calculate age at birth or death
+        for person in born_today:
+            birth_year = int(
+                person.birth_date.split("-" if "-" in person.birth_date else ".")[0]
+            )
+            person.since = now.year - birth_year
+
+        for person in died_today:
+            death_year = int(
+                person.death_date.split("-" if "-" in person.death_date else ".")[0]
+            )
+            person.since = now.year - death_year
+
+        context["born_today"] = born_today
+        context["died_today"] = died_today
+
         return context
 
     def post(self, request, *args, **kwargs):

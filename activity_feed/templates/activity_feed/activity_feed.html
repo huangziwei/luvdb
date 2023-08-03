@@ -49,6 +49,42 @@
             {% endif %}
             
         </div>
+
+        <div class="col-12 col-md-5 right-column">
+            <!--On this day-->
+            <div class='bg-light p-3 mb-3'>
+                <h4>On This Day</h4>
+        
+                {% if born_today or died_today %}
+                <h5>Persons</h5>
+                {% endif %}
+
+                {% if born_today %}
+                <h6>Born</h6>
+                <ul>
+                    {% for person in born_today %}
+                        <li>
+                            <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a> 
+                            ({{person.birth_date|slice:":4"}}-, {{ person.since }} years ago)
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+        
+                {% if died_today %}
+                <h6>Died</h6>
+                <ul>
+                    {% for person in died_today %}
+                        <li>
+                            <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a> 
+                            ({{person.birth_date|slice:":4"}}-{{person.death_date|slice:":4"}}, {{ person.since }} years ago)
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}        
+            </div>
+        </div>
+        
     </div>
 </div>
 <script type="text/javascript" src="{% static 'js/text-input-shortcuts.js' %}"></script>
