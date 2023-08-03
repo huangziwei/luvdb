@@ -46,6 +46,9 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.user} on {self.content_object}"
 
+    def get_absolute_url(self):
+        return self.content_object.get_absolute_url()
+
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
