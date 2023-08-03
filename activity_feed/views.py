@@ -12,6 +12,10 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, ListView
 
 from entity.models import Person
+from listen.models import Release
+from play.models import Game
+from read.models import Book
+from watch.models import Movie, Series
 from write.forms import ActivityFeedSayForm
 
 from .models import Activity, Block, Follow
@@ -60,6 +64,86 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
 
         context["born_today"] = born_today
         context["died_today"] = died_today
+
+        # Query for books published on this day
+        books_published_today = Book.objects.filter(
+            Q(publication_date__contains=current_month_day)
+            | Q(publication_date__contains=current_month_day_dash)
+        )
+
+        # Calculate years since publication
+        for book in books_published_today:
+            publication_year = int(
+                book.publication_date.split(
+                    "-" if "-" in book.publication_date else "."
+                )[0]
+            )
+            book.since = now.year - publication_year
+            book.authors = book.bookrole_set.filter(role__name="Author").values(
+                "person__name", "alt_name"
+            )
+
+        context["books_published_today"] = books_published_today
+
+        # Query for movies released on this day
+        movies_released_today = Movie.objects.filter(
+            Q(release_date__contains=current_month_day)
+            | Q(release_date__contains=current_month_day_dash)
+        )
+
+        # Calculate years since release
+        for movie in movies_released_today:
+            release_year = int(
+                movie.release_date.split("-" if "-" in movie.release_date else ".")[0]
+            )
+            movie.since = now.year - release_year
+
+        context["movies_released_today"] = movies_released_today
+
+        # Query for series released on this day
+        series_released_today = Series.objects.filter(
+            Q(release_date__contains=current_month_day)
+            | Q(release_date__contains=current_month_day_dash)
+        )
+
+        # Calculate years since release
+        for serie in series_released_today:
+            release_year = int(
+                serie.release_date.split("-" if "-" in serie.release_date else ".")[0]
+            )
+            serie.since = now.year - release_year
+
+        context["series_released_today"] = series_released_today
+
+        # Query for music released on this day
+        music_released_today = Release.objects.filter(
+            Q(release_date__contains=current_month_day)
+            | Q(release_date__contains=current_month_day_dash)
+        )
+
+        # Calculate years since release
+        for music in music_released_today:
+            release_year = int(
+                music.release_date.split("-" if "-" in music.release_date else ".")[0]
+            )
+            music.since = now.year - release_year
+
+        context["music_released_today"] = music_released_today
+
+        # Query for music released on this day
+        games_released_today = Game.objects.filter(
+            Q(release_date__contains=current_month_day)
+            | Q(release_date__contains=current_month_day_dash)
+        )
+
+        # Calculate years since release
+        for game in games_released_today:
+            release_year = int(
+                game.release_date.split("-" if "-" in game.release_date else ".")[0]
+            )
+            game.since = now.year - release_year
+
+        context["games_released_today"] = games_released_today
 
         return context
 
