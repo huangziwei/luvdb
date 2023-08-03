@@ -68,6 +68,7 @@ class PublisherCreateView(LoginRequiredMixin, CreateView):
         "history",
         "location",
         "website",
+        "wikipedia",
         "founded_date",
         "closed_date",
     ]
@@ -95,6 +96,7 @@ class PublisherUpdateView(LoginRequiredMixin, UpdateView):
         "history",
         "location",
         "website",
+        "wikipedia",
         "founded_date",
         "closed_date",
     ]

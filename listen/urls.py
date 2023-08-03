@@ -6,6 +6,7 @@ from .views import (
     LabelAutocomplete,
     LabelCreateView,
     LabelDetailView,
+    LabelUpdateView,
     ListenCheckInAllListView,
     ListenCheckInDeleteView,
     ListenCheckInDetailView,
@@ -31,6 +32,7 @@ urlpatterns = [
     # label
     path("label/create/", LabelCreateView.as_view(), name="label_create"),
     path("label/<int:pk>/", LabelDetailView.as_view(), name="label_detail"),
+    path("label/<int:pk>/update/", LabelUpdateView.as_view(), name="label_update"),
     # work
     path("work/create/", WorkCreateView.as_view(), name="work_create"),
     path("work/<int:pk>/", WorkDetailView.as_view(), name="work_detail"),

@@ -30,7 +30,7 @@ from write.models import Pin, Post, Repost, Say
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import InvitationCode
 
-TIME_RESTRICTION = 365  # time restriction for generating invitation codes
+TIME_RESTRICTION = 30  # time restriction for generating invitation codes
 JOINING_TIME_RESTRICTION = 30
 User = get_user_model()
 

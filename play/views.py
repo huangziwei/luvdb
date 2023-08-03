@@ -326,6 +326,7 @@ class DeveloperCreateView(LoginRequiredMixin, CreateView):
         "history",
         "location",
         "website",
+        "wikipedia",
         "founded_date",
         "closed_date",
     ]
@@ -354,6 +355,7 @@ class DeveloperUpdateView(LoginRequiredMixin, UpdateView):
         "history",
         "location",
         "website",
+        "wikipedia",
         "founded_date",
         "closed_date",
     ]
@@ -751,6 +753,7 @@ class GamePublisherCreateView(LoginRequiredMixin, CreateView):
         "history",
         "location",
         "website",
+        "wikipedia",
         "founded_date",
         "closed_date",
     ]
@@ -779,6 +782,7 @@ class GamePublisherUpdateView(LoginRequiredMixin, UpdateView):
         "history",
         "location",
         "website",
+        "wikipedia",
         "founded_date",
         "closed_date",
     ]

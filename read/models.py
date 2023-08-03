@@ -77,6 +77,7 @@ class Publisher(Entity):
     history = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     website = models.URLField(blank=True, null=True)
+    wikipedia = models.URLField(blank=True, null=True)
     founded_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD

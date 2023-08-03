@@ -282,13 +282,13 @@ class MovieCastDetailView(DetailView):
 
 class StudioCreateView(LoginRequiredMixin, CreateView):
     model = Studio
-    # form_class = StudioForm
     fields = [
         "name",
         "romanized_name",
         "history",
         "location",
         "website",
+        "wikipedia",
         "founded_date",
         "closed_date",
     ]
@@ -301,6 +301,29 @@ class StudioCreateView(LoginRequiredMixin, CreateView):
         form.instance.created_by = self.request.user
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
+
+class StudioUpdateView(LoginRequiredMixin, UpdateView):
+    model = Studio
+    fields = [
+        "name",
+        "romanized_name",
+        "history",
+        "location",
+        "website",
+        "wikipedia",
+        "founded_date",
+        "closed_date",
+    ]
+    template_name = "watch/studio_update.html"
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("watch:studio_detail", kwargs={"pk": self.object.pk})
+
 
 
 class StudioDetailView(DetailView):

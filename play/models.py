@@ -34,9 +34,10 @@ def rename_game_cover(instance, filename):
 class Developer(Entity):
     history = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=100, blank=True, null=True)
-    website = models.CharField(max_length=100, blank=True, null=True)
-    founded_date = models.DateField(blank=True, null=True)
-    closed_date = models.DateField(blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    wikipedia = models.URLField(blank=True, null=True)
+    founded_date = models.CharField(max_length=10, blank=True, null=True)
+    closed_date = models.CharField(max_length=10, blank=True, null=True)
 
     def __str__(self):
         if self.location:
@@ -47,9 +48,10 @@ class Developer(Entity):
 class GamePublisher(Entity):
     history = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=100, blank=True, null=True)
-    website = models.CharField(max_length=100, blank=True, null=True)
-    founded_date = models.DateField(blank=True, null=True)
-    closed_date = models.DateField(blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    wikipedia = models.URLField(blank=True, null=True)
+    founded_date = models.CharField(max_length=10, blank=True, null=True)
+    closed_date = models.CharField(max_length=10, blank=True, null=True)
 
     def __str__(self):
         if self.location:

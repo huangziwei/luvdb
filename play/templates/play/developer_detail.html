@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-sm-7 left-column">
+        <div class="col-sm-8 left-column">
     
             <span class='d-flex align-items-start'>
                 <h2>
@@ -28,6 +28,28 @@
                 {% endfor %}
                 </ul>
             {% endif %} 
+        </div>
+
+        <!--manage entry-->
+        <div class="col-sm-4">
+            <div class="bg-light p-3">
+                {% if user.is_authenticated %}
+                <a href="{% url 'play:developer_update' object.pk %}" class='fs-6 text-secondary'>Edit Developer</a>
+                {% endif %}
+
+                <h5 class="mt-3">Link</h5>
+                {% if object.wikipedia %}
+                <div>
+                    <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>
+                </div>
+                {% endif %}
+
+                {% if object.website %}
+                    <div>
+                        <a href="{{ object.website }}" target="_blank">Official Website</a>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

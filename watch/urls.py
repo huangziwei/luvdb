@@ -21,6 +21,7 @@ from .views import (
     StudioAutocomplete,
     StudioCreateView,
     StudioDetailView,
+    StudioUpdateView,
     WatchCheckInCreateView,
     WatchCheckInDeleteView,
     WatchCheckInDetailView,
@@ -69,6 +70,7 @@ urlpatterns = [
     # studio
     path("studio/create/", StudioCreateView.as_view(), name="studio_create"),
     path("studio/<int:pk>/", StudioDetailView.as_view(), name="studio_detail"),
+    path("studio/<int:pk>/update/", StudioUpdateView.as_view(), name="studio_update"),
     # autocomplete
     path(
         "studio-autocomplete/",
