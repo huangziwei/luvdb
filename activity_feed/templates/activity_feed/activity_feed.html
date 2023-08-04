@@ -67,10 +67,10 @@
 
                 {% if books_published_today %}
                     <div class="card mb-3">
-                        <div class="card-header" id="booksHeading" data-bs-toggle="collapse" data-bs-target="#booksCollapse" role="button" aria-expanded="true" aria-controls="booksCollapse">
+                        <div class="card-header" id="booksHeading" data-bs-toggle="collapse" data-bs-target="#booksCollapse" role="button" aria-expanded="false" aria-controls="booksCollapse">
                             <b>Books</b>
                         </div>
-                        <div id="booksCollapse" class="collapse show" aria-labelledby="booksHeading">
+                        <div id="booksCollapse" class="collapse" aria-labelledby="booksHeading">
                             <ul class="list-group list-group-flush">
                                 {% for book in books_published_today %}
                                     <li class="list-group-item">
@@ -85,10 +85,10 @@
         
                 {% if movies_released_today or series_released_today %}
                     <div class="card mb-3">
-                        <div class="card-header" id="moviesSeriesHeading" data-bs-toggle="collapse" data-bs-target="#moviesSeriesCollapse" role="button" aria-expanded="true" aria-controls="moviesSeriesCollapse">
+                        <div class="card-header" id="moviesSeriesHeading" data-bs-toggle="collapse" data-bs-target="#moviesSeriesCollapse" role="button" aria-expanded="false" aria-controls="moviesSeriesCollapse">
                             <b>Movies / Series</b>
                         </div>
-                        <div id="moviesSeriesCollapse" class="collapse show" aria-labelledby="moviesSeriesHeading">
+                        <div id="moviesSeriesCollapse" class="collapse" aria-labelledby="moviesSeriesHeading">
                             <ul class="list-group list-group-flush">
                                 {% for movie in movies_released_today %}
                                     <li class="list-group-item">
@@ -110,10 +110,10 @@
         
                 {% if music_released_today %}
                     <div class="card mb-3">
-                        <div class="card-header" id="musicHeading" data-bs-toggle="collapse" data-bs-target="#musicCollapse" role="button" aria-expanded="true" aria-controls="musicCollapse">
+                        <div class="card-header" id="musicHeading" data-bs-toggle="collapse" data-bs-target="#musicCollapse" role="button" aria-expanded="false" aria-controls="musicCollapse">
                             <b>Music</b>
                         </div>
-                        <div id="musicCollapse" class="collapse show" aria-labelledby="musicHeading">
+                        <div id="musicCollapse" class="collapse" aria-labelledby="musicHeading">
                             <ul class="list-group list-group-flush">
                                 {% for music in music_released_today %}
                                     <li class="list-group-item">
@@ -128,10 +128,10 @@
         
                 {% if games_released_today %}
                     <div class="card mb-3">
-                        <div class="card-header" id="gamesHeading" data-bs-toggle="collapse" data-bs-target="#gamesCollapse" role="button" aria-expanded="true" aria-controls="gamesCollapse">
+                        <div class="card-header" id="gamesHeading" data-bs-toggle="collapse" data-bs-target="#gamesCollapse" role="button" aria-expanded="false" aria-controls="gamesCollapse">
                             <b>Games</b>
                         </div>
-                        <div id="gamesCollapse" class="collapse show" aria-labelledby="gamesHeading">
+                        <div id="gamesCollapse" class="collapse" aria-labelledby="gamesHeading">
                             <ul class="list-group list-group-flush">
                                 {% for game in games_released_today %}
                                     <li class="list-group-item">
@@ -146,10 +146,10 @@
         
                 {% if born_today or died_today %}
                     <div class="card mb-3">
-                        <div class="card-header" id="personsHeading" data-bs-toggle="collapse" data-bs-target="#personsCollapse" role="button" aria-expanded="true" aria-controls="personsCollapse">
+                        <div class="card-header" id="personsHeading" data-bs-toggle="collapse" data-bs-target="#personsCollapse" role="button" aria-expanded="false" aria-controls="personsCollapse">
                             <b>Persons</b>
                         </div>
-                        <div id="personsCollapse" class="collapse show" aria-labelledby="personsHeading">
+                        <div id="personsCollapse" class="collapse" aria-labelledby="personsHeading">
                             <ul class="list-group list-group-flush">
                                 {% if born_today %}
                                     <li class="list-group-item"><b>Born</b></li>
