@@ -1,5 +1,4 @@
-from datetime import datetime
-
+import pytz
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -9,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views.generic import DeleteView, ListView
 
 from entity.models import Person
@@ -35,7 +35,9 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         context["no_citation_css"] = True
 
         # Get current month and day
-        now = datetime.now()
+        now = timezone.localtime(
+            timezone.now(), pytz.timezone(self.request.user.timezone)
+        )  # Use user's timezone
         current_month_day = now.strftime(".%m.%d")
         current_month_day_dash = now.strftime("-%m-%d")
 

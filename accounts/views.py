@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -79,7 +79,7 @@ class AccountDetailView(DetailView):
         context = super().get_context_data(**kwargs)
 
         # Check if the user has already generated an invitation code within the time restriction
-        start_date = datetime.now() - timedelta(days=TIME_RESTRICTION)
+        start_date = timezone.now() - timedelta(days=TIME_RESTRICTION)
         if self.request.user.is_authenticated:
             code_recently_generated = self.request.user.codes_generated.filter(
                 generated_at__gte=start_date
