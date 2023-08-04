@@ -38,9 +38,13 @@ User = get_user_model()
 class ShareDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["comments"] = Comment.objects.filter(
-            content_type=ContentType.objects.get_for_model(self.object),
-            object_id=self.object.id,
+        context["comments"] = (
+            Comment.objects.filter(
+                content_type=ContentType.objects.get_for_model(self.object),
+                object_id=self.object.id,
+            )
+            .order_by("timestamp")
+            .order_by("timestamp")
         )
         context["comment_form"] = CommentForm()
         context["repost_form"] = RepostForm()

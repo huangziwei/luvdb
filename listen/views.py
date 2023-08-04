@@ -648,7 +648,7 @@ class ListenCheckInDetailView(DetailView):
         context["comments"] = Comment.objects.filter(
             content_type=ContentType.objects.get_for_model(self.object),
             object_id=self.object.id,
-        )
+        ).order_by("timestamp")
         context["comment_form"] = CommentForm()
         context["repost_form"] = RepostForm()
         context["app_label"] = self.object._meta.app_label

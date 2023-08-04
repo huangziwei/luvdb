@@ -302,6 +302,7 @@ class StudioCreateView(LoginRequiredMixin, CreateView):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
+
 class StudioUpdateView(LoginRequiredMixin, UpdateView):
     model = Studio
     fields = [
@@ -323,7 +324,6 @@ class StudioUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("watch:studio_detail", kwargs={"pk": self.object.pk})
-
 
 
 class StudioDetailView(DetailView):
@@ -768,7 +768,7 @@ class WatchCheckInDetailView(DetailView):
         context["comments"] = Comment.objects.filter(
             content_type=ContentType.objects.get_for_model(self.object),
             object_id=self.object.id,
-        )
+        ).order_by("timestamp")
         context["comment_form"] = CommentForm()
         context["repost_form"] = RepostForm()
         context["app_label"] = self.object._meta.app_label
