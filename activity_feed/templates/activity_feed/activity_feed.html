@@ -156,7 +156,7 @@
                                     {% for person in born_today %}
                                         <li class="list-group-item">
                                             <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
-                                            ({{person.birth_date|slice:":4"}}-, {{ person.since }} years ago)
+                                            ({{person.birth_date|slice:":4"}}{% if person.death_date %}-{{person.death_date|slice:":4"}}{% else %}-{% endif %}, {{ person.since }} years ago)
                                         </li>
                                     {% endfor %}
                                 {% endif %}
@@ -166,7 +166,7 @@
                                     {% for person in died_today %}
                                         <li class="list-group-item">
                                             <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
-                                            ({{person.birth_date|slice:":4"}}-{{person.death_date|slice:":4"}}, {{ person.since }} years ago)
+                                            ({% if person.birth_date %}{{person.birth_date|slice:":4"}}{% else %}?{% endif %}-{{person.death_date|slice:":4"}}, {{ person.since }} years ago)
                                         </li>
                                     {% endfor %}
                                 {% endif %}
