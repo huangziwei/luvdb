@@ -16,7 +16,7 @@
         </a> reposted:
       </div>
       {% if repost.content %}
-        <div class="mt-2">{{ repost.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300  }}</div>
+        <div class="mt-2">{{ repost.content | linkify_tags | linkify_mentions | markdownify }}</div>
       {% endif %}
 
 
