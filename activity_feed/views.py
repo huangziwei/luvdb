@@ -45,11 +45,12 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         born_today = Person.objects.filter(
             Q(birth_date__contains=current_month_day)
             | Q(birth_date__contains=current_month_day_dash)
-        )
+        ).order_by("birth_date")
+
         died_today = Person.objects.filter(
             Q(death_date__contains=current_month_day)
             | Q(death_date__contains=current_month_day_dash)
-        )
+        ).order_by("death_date")
 
         # Calculate age at birth or death
         for person in born_today:
@@ -71,7 +72,7 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         books_published_today = Book.objects.filter(
             Q(publication_date__contains=current_month_day)
             | Q(publication_date__contains=current_month_day_dash)
-        )
+        ).order_by("publication_date")
 
         # Calculate years since publication
         for book in books_published_today:
@@ -91,7 +92,7 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         movies_released_today = Movie.objects.filter(
             Q(release_date__contains=current_month_day)
             | Q(release_date__contains=current_month_day_dash)
-        )
+        ).order_by("release_date")
 
         # Calculate years since release
         for movie in movies_released_today:
@@ -106,7 +107,7 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         series_released_today = Series.objects.filter(
             Q(release_date__contains=current_month_day)
             | Q(release_date__contains=current_month_day_dash)
-        )
+        ).order_by("release_date")
 
         # Calculate years since release
         for serie in series_released_today:
@@ -121,7 +122,7 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         music_released_today = Release.objects.filter(
             Q(release_date__contains=current_month_day)
             | Q(release_date__contains=current_month_day_dash)
-        )
+        ).order_by("release_date")
 
         # Calculate years since release
         for music in music_released_today:
@@ -136,7 +137,7 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         games_released_today = Game.objects.filter(
             Q(release_date__contains=current_month_day)
             | Q(release_date__contains=current_month_day_dash)
-        )
+        ).order_by("release_date")
 
         # Calculate years since release
         for game in games_released_today:
