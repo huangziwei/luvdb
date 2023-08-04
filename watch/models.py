@@ -78,6 +78,8 @@ class Movie(models.Model):
     languages = LanguageField(blank=True, null=True)
     genres = models.ManyToManyField(Genre, related_name="movies", blank=True)
 
+    watchcheckin = GenericRelation("WatchCheckIn")
+
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -194,6 +196,7 @@ class Series(models.Model):
     based_on = models.ForeignKey(
         LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="series"
     )
+    watchcheckin = GenericRelation("WatchCheckIn")
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

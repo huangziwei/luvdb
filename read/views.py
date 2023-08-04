@@ -1,14 +1,15 @@
 from collections import defaultdict
-from typing import Any, Dict
+from datetime import timedelta
 
 from dal import autocomplete
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import Count, F, OuterRef, Prefetch, Q, Subquery
+from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.html import format_html
 from django.views.generic import (
     CreateView,
@@ -910,12 +911,16 @@ class ReadListView(ListView):
     def get_queryset(self):
         book_content_type = ContentType.objects.get_for_model(Book)
         issue_content_type = ContentType.objects.get_for_model(Issue)
+        recent_date = timezone.now() - timedelta(days=7)
 
         trending_books = (
             Book.objects.annotate(
                 checkins=Count(
                     "readcheckin",
-                    filter=Q(readcheckin__content_type=book_content_type),
+                    filter=Q(
+                        readcheckin__content_type=book_content_type,
+                        readcheckin__timestamp__gte=recent_date,
+                    ),
                     distinct=True,
                 )
             )
@@ -927,7 +932,10 @@ class ReadListView(ListView):
             Issue.objects.annotate(
                 checkins=Count(
                     "readcheckin",
-                    filter=Q(readcheckin__content_type=issue_content_type),
+                    filter=Q(
+                        readcheckin__content_type=issue_content_type,
+                        readcheckin__timestamp__gte=recent_date,
+                    ),
                     distinct=True,
                 )
             )

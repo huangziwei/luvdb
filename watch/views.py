@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import timedelta
 
 from dal import autocomplete
 from django import forms
@@ -6,10 +7,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import F, OuterRef, Prefetch, Q, Subquery
+from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -350,8 +352,45 @@ class WatchListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        movie_content_type = ContentType.objects.get_for_model(Movie)
+        series_content_type = ContentType.objects.get_for_model(Series)
+        recent_date = timezone.now() - timedelta(days=7)  # Set your cutoff here
+
+        trending_movies = (
+            Movie.objects.annotate(
+                checkins=Count(
+                    "watchcheckin",
+                    filter=Q(
+                        watchcheckin__content_type=movie_content_type,
+                        watchcheckin__timestamp__gte=recent_date,
+                    ),
+                    distinct=True,
+                )
+            )
+            .exclude(checkins=0)
+            .order_by("-checkins")[:12]
+        )
+
+        trending_series = (
+            Series.objects.annotate(
+                checkins=Count(
+                    "watchcheckin",
+                    filter=Q(
+                        watchcheckin__content_type=series_content_type,
+                        watchcheckin__timestamp__gte=recent_date,
+                    ),
+                    distinct=True,
+                )
+            )
+            .exclude(checkins=0)
+            .order_by("-checkins")[:12]
+        )
+
         context["movies"] = Movie.objects.all().order_by("-created_at")[:12]
         context["series"] = Series.objects.all().order_by("-created_at")[:12]
+        context["trending_movies"] = trending_movies
+        context["trending_series"] = trending_series
 
         # Include genres with at least one movie or series
         context["genres"] = (

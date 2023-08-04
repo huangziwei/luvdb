@@ -1,15 +1,16 @@
 from collections import defaultdict
+from datetime import timedelta
 
 from dal import autocomplete
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.html import format_html
 from django.views.generic import (
     CreateView,
@@ -824,13 +825,17 @@ class ListenListView(ListView):
 
     def get_queryset(self):
         recent_releases = Release.objects.all().order_by("-created_at")[:12]
+        recent_date = timezone.now() - timedelta(days=7)
 
         release_content_type = ContentType.objects.get_for_model(Release)
         trending_releases = (
             Release.objects.annotate(
                 checkins=Count(
                     "listencheckin",
-                    filter=Q(listencheckin__content_type=release_content_type),
+                    filter=Q(
+                        listencheckin__content_type=release_content_type,
+                        listencheckin__timestamp__gte=recent_date,
+                    ),
                     distinct=True,
                 )
             )
