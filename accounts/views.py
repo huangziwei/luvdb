@@ -238,6 +238,11 @@ class AccountUpdateView(LoginRequiredMixin, UpdateView):
     slug_url_kwarg = "username"
     success_url = reverse_lazy("accounts:profile")
 
+    def get_initial(self):
+        initial = super().get_initial()
+        initial["timezone"] = self.request.user.timezone
+        return initial
+
     def get_object(self, queryset=None):
         return self.request.user
 

@@ -1,3 +1,4 @@
+import pytz
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
@@ -66,9 +67,11 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomUserChangeForm(UserChangeForm):
+    timezone = forms.ChoiceField(choices=[(tz, tz) for tz in pytz.all_timezones])
+
     class Meta:
         model = User
-        fields = ("display_name", "username", "bio", "is_public")
+        fields = ("display_name", "username", "bio", "is_public", "timezone")
         help_texts = {
             "is_public": "Turn on to make your profile public. If not, non-logged-in users won't be able to see your profile.",
         }

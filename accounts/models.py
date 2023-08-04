@@ -1,8 +1,5 @@
-import random
-import string
-
+import pytz
 from django.contrib.auth.models import AbstractUser
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_delete, post_save
@@ -49,6 +46,9 @@ class CustomUser(AbstractUser):
     display_name = models.CharField(max_length=100, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     is_public = models.BooleanField(default=False)
+    timezone = models.CharField(
+        max_length=50, choices=[(tz, tz) for tz in pytz.all_timezones], default="UTC"
+    )
 
     RESERVED_USERNAMES = [
         "admin",
