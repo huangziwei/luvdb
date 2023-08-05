@@ -423,7 +423,9 @@ class DeveloperAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
-        return qs
+            return qs
+
+        return Developer.objects.none()
 
 
 class GamePublisherAutocomplete(autocomplete.Select2QuerySetView):
@@ -437,7 +439,9 @@ class GamePublisherAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
-        return qs
+            return qs
+
+        return GamePublisher.objects.none()
 
 
 class PlatformAutocomplete(autocomplete.Select2QuerySetView):
@@ -451,7 +455,9 @@ class PlatformAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
-        return qs
+            return qs
+
+        return Platform.objects.none()
 
 
 class WorkAutocomplete(autocomplete.Select2QuerySetView):
@@ -464,20 +470,9 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
-        return qs
+            return qs
 
-
-class GenreAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return Genre.objects.none()
-
-        qs = Genre.objects.all()
-
-        if self.q:
-            qs = qs.filter(name__icontains=self.q)
-
-        return qs
+        return Work.objects.none()
 
 
 class GameCheckInDetailView(DetailView):

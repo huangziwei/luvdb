@@ -806,7 +806,9 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
                 | Q(publication_date__icontains=self.q)
             ).distinct()
 
-        return qs[:10]
+            return qs
+
+        return Work.objects.none()
 
     def get_result_label(self, item):
         # Get the first person with a role of 'Author' for the book
@@ -850,7 +852,9 @@ class InstanceAutocomplete(autocomplete.Select2QuerySetView):
                 | Q(publication_date__icontains=self.q)
             ).distinct()
 
-        return qs[:10]
+            return qs
+
+        return Instance.objects.none()
 
     def get_result_label(self, item):
         # Get the first person with a role of 'Author' for the book
@@ -885,7 +889,9 @@ class PublisherAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
-        return qs
+            return qs
+
+        return Publisher.objects.none()
 
 
 class LanguageAutocomplete(autocomplete.Select2ListView):

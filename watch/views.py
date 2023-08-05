@@ -343,7 +343,9 @@ class StudioAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
-        return qs
+            return qs
+
+        return Studio.objects.none()
 
 
 class WatchListView(TemplateView):

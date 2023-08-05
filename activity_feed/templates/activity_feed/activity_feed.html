@@ -56,7 +56,7 @@
 
                 {% now "Y-m-d" as current_date %}
                 
-                <h5>On This Day ({{current_date}})</h5>
+                <h5>On This Day ({{current_date|slice:"5:10"}})</h5>
 
                 {% if current_date|slice:"5:10" == "06-10" %}
                     {% now "Y" as current_year %}

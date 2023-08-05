@@ -183,9 +183,13 @@ class PersonAutoComplete(autocomplete.Select2QuerySetView):
         qs = Person.objects.all()
 
         if self.q:
-            qs = qs.filter(name__icontains=self.q)
+            qs = qs.filter(
+                Q(name__icontains=self.q) | Q(romanized_name__icontains=self.q)
+            ).distinct()
 
-        return qs
+            return qs
+
+        return Person.objects.none()
 
     def get_result_label(self, item):
         # Get the birth and death years
@@ -212,4 +216,6 @@ class RoleAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
-        return qs[:5]
+            return qs
+
+        return Role.objects.none()

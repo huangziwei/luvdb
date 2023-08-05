@@ -102,7 +102,9 @@ class LabelAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
-        return qs
+            return qs
+
+        return Label.objects.none()
 
 
 ##########
@@ -231,7 +233,9 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
                 | Q(release_date__icontains=self.q)
             ).distinct()
 
-        return qs[:5]
+            return qs
+
+        return Work.objects.none()  # If no query is provided, return no objects
 
     def get_result_label(self, item):
         # Get the first person with a role of 'Singer' for the release
@@ -377,7 +381,9 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
                 | Q(release_date__icontains=self.q)
             ).distinct()
 
-        return qs[:10]
+            return qs
+
+        return Track.objects.none()  # If no query is provided, return no objects
 
     def get_result_label(self, item):
         # Get the role objects for 'Singer' and 'Composer'
