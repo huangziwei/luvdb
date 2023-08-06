@@ -7,6 +7,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
 from listen.models import Release, Track
+from listen.models import Work as ListenWork
 from play.models import Work as GameWork
 from read.models import Book
 from read.models import Instance as LitInstance
@@ -74,11 +75,11 @@ class PersonDetailView(DetailView):
         context["tracks_as_singer"] = Track.objects.filter(
             trackrole__role__name="Singer", trackrole__person=person
         ).order_by("release_date")
-        context["tracks_as_composer"] = Track.objects.filter(
-            trackrole__role__name="Composer", trackrole__person=person
+        context["works_as_composer"] = ListenWork.objects.filter(
+            workrole__role__name="Composer", workrole__person=person
         ).order_by("release_date")
-        context["tracks_as_lyricist"] = Track.objects.filter(
-            trackrole__role__name="Lyricist", trackrole__person=person
+        context["works_as_lyricist"] = ListenWork.objects.filter(
+            workrole__role__name="Lyricist", workrole__person=person
         ).order_by("release_date")
         context["tracks_as_producer"] = Track.objects.filter(
             trackrole__role__name="Producer", trackrole__person=person

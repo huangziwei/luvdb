@@ -16,271 +16,287 @@
             </span>
 
             <!--Read-->
-            <div class="row">
+            {% if object.read_works.count != 0 or as_translator or writings%}
+            <h3 class="mt-3">Bibliography</h3>
                 {% if object.read_works.count != 0 %}
-                <div class="col-md-6">
-                    <h3 class="mt-3">Bibliography</h3>
-                    <ul>
-                    {% for work in read_works %}
-                        <li>
-                            {% if work.work_type == 'NO' %}
-                                <a href="{% url 'read:work_detail' work.pk %}" style="font-weight: bold;">{{ work.title }}</a> ({{ work.publication_date}})
-                            {% else %}
-                                <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date}})
-                            {% endif %}
-                        </li>
-                    {% empty %}
-                        <li>This person has no books.</li>
-                    {% endfor %}
-                    </ul>
+                <div class="row">
+                    {% if object.read_works.count != 0 %}
+                    <div class="col-md-6 mt-3">
+                        <h4>Works</h4>
+                        <ul>
+                        {% for work in read_works %}
+                            <li>
+                                {% if work.work_type == 'NO' %}
+                                    <a href="{% url 'read:work_detail' work.pk %}" style="font-weight: bold;">{{ work.title }}</a> ({{ work.publication_date}})
+                                {% else %}
+                                    <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date}})
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <li>This person has no books.</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
                 </div>
                 {% endif %}
-            </div>
 
-            <div class="row">
-                {% if as_translator.count != 0 %}
-                <div class="col-md-6">
-                    <h3 class="mt-3">As Translator</h3>
-                    <ul>
-                    {% for instance in as_translator.all %}
-                        <li>
-                            <a href="{% url 'read:instance_detail' instance.pk %}">{{ instance.title }}</a> ({{ instance.publication_date}})
-                        </li>
-                    {% empty %}
-                        <li>This person has no translation works.</li>
-                    {% endfor %}
-                    </ul>
+                {% if as_translator or writings %}
+                <div class="row">
+                    {% if as_translator.count != 0 %}
+                    <div class="col-md-6 mt-3">
+                        <h4>As Translator</h4>
+                        <ul>
+                        {% for instance in as_translator.all %}
+                            <li>
+                                <a href="{% url 'read:instance_detail' instance.pk %}">{{ instance.title }}</a> ({{ instance.publication_date}})
+                            </li>
+                        {% empty %}
+                            <li>This person has no translation works.</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    {% if writings.count != 0 %}
+                    <div class="col-md-6 mt-3">
+                        <h4>Introduction / Afterword</h4>
+                        <ul>
+                        {% for book in writings.all %}
+                            <li>
+                                <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a> ({{ book.publication_date}})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %} 
                 </div>
                 {% endif %}
-                
-                {% if writings.count != 0 %}
-                <div class="col-md-6">
-                    <h3 class="mt-3">Introduction / Afterword</h3>
-                    <ul>
-                    {% for book in writings.all %}
-                        <li>
-                            <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a> ({{ book.publication_date}})
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </div>
-                {% endif %} 
-
-            </div>
+            {% endif %}
 
             <!--Listen-->
-            <div class="row">
+            {% if LPs_as_singer or EPs_as_singer or singles_as_singer or works_as_lyricist or works_as_composer or tracks_as_singer or  tracks_as_arranger or tracks_as_producer%}
+            <h3 class="mt-3">Discography</h3>
 
                 {% if LPs_as_singer or EPs_as_singer or singles_as_singer %}
-                <h3 class="mt-3">Discography</h3>
+                <div class="row">
+                    {% if singles_as_singer %}
+                    <div class="col-md-4 mt-3">
+                        <h4>Single</h4>
+                        <ul>
+                        {% for single in singles_as_singer %}
+                            <li>
+                                <a href="{% url 'listen:release_detail' single.pk %}">{{ single.title }}</a> ({{ single.release_date}})
+                            </li>
+                        {% empty %}
+                            <li>This person has no singles.</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
 
-                {% if singles_as_singer %}
-                <div class="col-md-4">
-                    <h4>Single</h4>
-                    <ul>
-                    {% for single in singles_as_singer %}
-                        <li>
-                            <a href="{% url 'listen:release_detail' single.pk %}">{{ single.title }}</a> ({{ single.release_date}})
-                        </li>
-                    {% empty %}
-                        <li>This person has no singles.</li>
-                    {% endfor %}
-                    </ul>
+                    {% if EPs_as_singer %}
+                    <div class="col-md-4 mt-3">
+                        <h4>EP</h4>
+                        <ul>
+                        {% for ep in EPs_as_singer %}
+                            <li>
+                                <a href="{% url 'listen:release_detail' ep.pk %}">{{ ep.title }}</a> ({{ ep.release_date}})
+                            </li>
+                        {% empty %}
+                            <li>This person has no EPs.</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {% if LPs_as_singer %}
+                    <div class="col-md-4 mt-4">
+                        <h4>LP</h4>
+                        <ul>
+                        {% for lp in LPs_as_singer %}
+                            <li>
+                                <a href="{% url 'listen:release_detail' lp.pk %}">{{ lp.title }}</a> ({{ lp.release_date}})
+                            </li>
+                        {% empty %}
+                            <li>This person has no LPs.</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
                 </div>
                 {% endif %}
-
-                {% if EPs_as_singer %}
-                <div class="col-md-4">
-                    <h4>EP</h4>
-                    <ul>
-                    {% for ep in EPs_as_singer %}
-                        <li>
-                            <a href="{% url 'listen:release_detail' ep.pk %}">{{ ep.title }}</a> ({{ ep.release_date}})
-                        </li>
-                    {% empty %}
-                        <li>This person has no EPs.</li>
-                    {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-
-                {% if LPs_as_singer %}
-                <div class="col-md-4">
-                    <h4>LP</h4>
-                    <ul>
-                    {% for lp in LPs_as_singer %}
-                        <li>
-                            <a href="{% url 'listen:release_detail' lp.pk %}">{{ lp.title }}</a> ({{ lp.release_date}})
-                        </li>
-                    {% empty %}
-                        <li>This person has no LPs.</li>
-                    {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-
-                {% endif %}
-            </div>
-            
-            {% if tracks_as_singer or tracks_as_lyricist or tracks_as_composer or tracks_as_arranger or tracks_as_arranger or tracks_as_producer%}
-            <div class='row'>
-                <h3>Tracks</h3>
-            
-                {% if tracks_as_singer.count != 0 %}
-                <div class="col-md-4">
-                    <h4>As Singer</h4>
-                    <ul>
-                    {% for track in tracks_as_singer %}
-                        <li>
-                            <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
+                
+                {% if works_as_lyricist or works_as_composer %}
+                <div class='row'>
+                    <h4 class="mt-3">Works</h4>
+                                    
+                    {% if works_as_lyricist.count != 0 %}
+                    <div class="col-md-4">
+                        <h5>As Lyricist</h5>
+                        <ul>
+                        {% for work in works_as_lyricist %}
+                            <li>
+                                <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
                                 
-                {% if tracks_as_lyricist.count != 0 %}
-                <div class="col-md-4">
-                    <h4>As Lyricist</h4>
-                    <ul>
-                    {% for track in tracks_as_lyricist %}
-                        <li>
-                            <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
-                        </li>
-                    {% endfor %}
-                    </ul>
+                    {% if works_as_composer.count != 0 %}
+                    <div class="col-md-4">
+                        <h5>As Composer</h5>
+                        <ul>
+                        {% for work in works_as_composer %}
+                            <li>
+                                <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
                 </div>
                 {% endif %}
-               
 
-                
-                {% if tracks_as_composer.count != 0 %}
-                <div class="col-md-4">
-                    <h4>As Composer</h4>
-                    <ul>
-                    {% for track in tracks_as_composer %}
-                        <li>
-                            <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-            </div>
-            <div class="row">
+                {% if tracks_as_singer or  tracks_as_arranger or tracks_as_producer%}
+                    <div class="row">
+                        <h4>Tracks</h4>
+                    
+                        {% if tracks_as_singer.count != 0 %}
+                        <div class="col-md-4">
+                            <h5>As Singer</h5>
+                            <ul>
+                            {% for track in tracks_as_singer %}
+                                <li>
+                                    <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
 
-                {% if tracks_as_arranger.count != 0 %}
-                <div class="col-md-4">
-                    <h4>As Arranger</h4>
-                    <ul>
-                    {% for track in tracks_as_arranger %}
-                        <li>
-                            <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </div>
+                        {% if tracks_as_arranger.count != 0 %}
+                        <div class="col-md-4">
+                            <h5>As Arranger</h5>
+                            <ul>
+                            {% for track in tracks_as_arranger %}
+                                <li>
+                                    <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        
+                        {% if tracks_as_producer.count != 0 %}
+                        <div class="col-md-4">
+                            <h5>As Producer</h5>
+                            <ul>
+                            {% for track in tracks_as_producer %}
+                                <li>
+                                    <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        
+                    </div>
                 {% endif %}
-                
-                {% if tracks_as_producer.count != 0 %}
-                <div class="col-md-4">
-                    <h4>As Producer</h4>
-                    <ul>
-                    {% for track in tracks_as_producer %}
-                        <li>
-                            <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-                
-            </div>
             {% endif %}
 
             <!--Watch-->
             {% if movies or series or movies_as_director or series_as_director or movies_as_writer or series_as_writer %}
+            <h3>Filmography</h3>
             <div class="row">
-                <h3>Filmography</h3>
                 <!--As cast-->
-                {% if movies.count != 0 %}
-                <div class="col-md-6">
-                    <h4>As Cast (Movies)</h4>
-                    <ul>
-                    {% for movie in movies %}
-                        <li>
-                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
+                {% if movies.count != 0 or series.count != 0 %}
+                <h4 class="mt-3">As Cast</h4>
+                    {% if movies.count != 0 %}
+                    <div class="col-md-6">
+                        <h5>Movies</h5>
+                        <ul>
+                        {% for movie in movies %}
+                            <li>
+                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
 
-                {% if series.count != 0 %}
-                <div class="col-md-6">
-                    <h4>As Cast (Series)</h4>
-                    <ul>
-                    {% for serie in series %}
-                        <li>
-                            <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.release_date }})
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </div>
+                    {% if series.count != 0 %}
+                    <div class="col-md-6">
+                        <h5>Series</h5>
+                        <ul>
+                        {% for serie in series %}
+                            <li>
+                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.release_date }})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
                 {% endif %}
                 <!--As Director-->
-                {% if movies_as_director.count != 0 %}
-                <div class="col-md-6">
-                    <h4>As Director (Movies)</h4>
-                    <ul>
-                    {% for movie in movies_as_director %}
-                        <li>
-                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
+                {% if movies_as_director.count != 0 or series_as_director.count != 0 %}
+                <h4>As Director</h4>
+                    {% if movies_as_director.count != 0 %}
+                    <div class="col-md-6">
+                        <h5>Movies</h5>
+                        <ul>
+                        {% for movie in movies_as_director %}
+                            <li>
+                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
 
-                {% if series_as_director.count != 0 %}
-                <div class="col-md-6">
-                    <h4>As Director (Series)</h4>
-                    <ul>
-                    {% for serie in series_as_director %}
-                        <li>
-                            <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.release_date }})
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </div>
+                    {% if series_as_director.count != 0 %}
+                    <div class="col-md-6">
+                        <h5>Series</h5>
+                        <ul>
+                        {% for serie in series_as_director %}
+                            <li>
+                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.release_date }})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
                 {% endif %}
 
                 <!--As Writer-->
-                {% if movies_as_writer.count != 0 %}
-                <div class="col-md-6">
-                    <h4>As Writer (Movies)</h4>
-                    <ul>
-                    {% for movie in movies_as_writer %}
-                        <li>
-                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </div>
+                {% if movies_as_writer.count != 0 or series_as_writer.count != 0 %}
+                <h4>As Writer</h4>
+                    {% if movies_as_writer.count != 0 %}
+                    <div class="col-md-6">
+                        <h5>Movies</h5>
+                        <ul>
+                        {% for movie in movies_as_writer %}
+                            <li>
+                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
 
-                {% endif %}
-
-                {% if series_as_writer.count != 0 %}
-                <div class="col-md-6">
-                    <h4>As Writer (Series)</h4>
-                    <ul>
-                    {% for serie in series_as_writer %}
-                        <li>
-                            <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.release_date }})
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </div>
+                    {% if series_as_writer.count != 0 %}
+                    <div class="col-md-6">
+                        <h5>Series</h5>
+                        <ul>
+                        {% for serie in series_as_writer %}
+                            <li>
+                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.release_date }})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
                 {% endif %}
             </div>
             {% endif %}
