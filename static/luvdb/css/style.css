@@ -16,11 +16,17 @@
 .add-book-work,
 .add-book-role,
 .add-book-instance,
+.add-instance-role,
 .add-work-role,
 .add-issue-instance,
 .add-instance-work,
 .add-game-role,
-.add-release-track {
+.add-track-role,
+.add-release-track,
+.add-release-role,
+.add-game-cast,
+.add-movie-role,
+.add-movie-cast {
     height: 38px !important;
     /* Adjust this value to your liking */
     width: 100% !important;

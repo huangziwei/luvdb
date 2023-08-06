@@ -65,114 +65,119 @@
                     </div>
                 {% endif %}
 
-                {% if books_published_today %}
-                    <div class="card mb-3">
-                        <div class="card-header" id="booksHeading" data-bs-toggle="collapse" data-bs-target="#booksCollapse" role="button" aria-expanded="false" aria-controls="booksCollapse">
-                            <b>Books</b>
-                        </div>
-                        <div id="booksCollapse" class="collapse" aria-labelledby="booksHeading">
-                            <ul class="list-group list-group-flush">
-                                {% for book in books_published_today %}
-                                    <li class="list-group-item">
-                                        <a href="{% url 'read:book_detail' book.id %}">{{ book.title }}</a>
-                                        ({{ book.publication_date|slice:":4" }}{% if book.since == 0 %}, today{% else %}, {{ book.since }} years ago{% endif %})
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                {% endif %}
-        
-                {% if movies_released_today or series_released_today %}
-                    <div class="card mb-3">
-                        <div class="card-header" id="moviesSeriesHeading" data-bs-toggle="collapse" data-bs-target="#moviesSeriesCollapse" role="button" aria-expanded="false" aria-controls="moviesSeriesCollapse">
-                            <b>Movies / Series</b>
-                        </div>
-                        <div id="moviesSeriesCollapse" class="collapse" aria-labelledby="moviesSeriesHeading">
-                            <ul class="list-group list-group-flush">
-                                {% for movie in movies_released_today %}
-                                    <li class="list-group-item">
-                                        <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
-                                        ({{ movie.release_date|slice:":4" }}{% if movie.since == 0 %}, today{% else %}, {{ movie.since }} years ago{% endif %})
-                                    </li>
-                                {% endfor %}
-        
-                                {% for serie in series_released_today %}
-                                    <li class="list-group-item">
-                                        <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a>
-                                        ({{ serie.release_date|slice:":4" }}{% if serie.since == 0 %}, today{% else %}, {{ serie.since }} years ago{% endif %})
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                {% endif %}
-        
-                {% if music_released_today %}
-                    <div class="card mb-3">
-                        <div class="card-header" id="musicHeading" data-bs-toggle="collapse" data-bs-target="#musicCollapse" role="button" aria-expanded="false" aria-controls="musicCollapse">
-                            <b>Music</b>
-                        </div>
-                        <div id="musicCollapse" class="collapse" aria-labelledby="musicHeading">
-                            <ul class="list-group list-group-flush">
-                                {% for music in music_released_today %}
-                                    <li class="list-group-item">
-                                        <a href="{% url 'listen:release_detail' music.id %}">{{ music.title }}</a>
-                                        ({{ music.release_date|slice:":4" }}{% if music.since == 0 %}, today{% else %}, {{ music.since }} years ago{% endif %})
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                {% endif %}
-        
-                {% if games_released_today %}
-                    <div class="card mb-3">
-                        <div class="card-header" id="gamesHeading" data-bs-toggle="collapse" data-bs-target="#gamesCollapse" role="button" aria-expanded="false" aria-controls="gamesCollapse">
-                            <b>Games</b>
-                        </div>
-                        <div id="gamesCollapse" class="collapse" aria-labelledby="gamesHeading">
-                            <ul class="list-group list-group-flush">
-                                {% for game in games_released_today %}
-                                    <li class="list-group-item">
-                                        <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
-                                        ({{ game.release_date|slice:":4" }}{% if game.since == 0 %}, today{% else %}, {{ game.since }} years ago{% endif %})
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                {% endif %}
-        
-                {% if born_today or died_today %}
-                    <div class="card mb-3">
-                        <div class="card-header" id="personsHeading" data-bs-toggle="collapse" data-bs-target="#personsCollapse" role="button" aria-expanded="false" aria-controls="personsCollapse">
-                            <b>Persons</b>
-                        </div>
-                        <div id="personsCollapse" class="collapse" aria-labelledby="personsHeading">
-                            <ul class="list-group list-group-flush">
-                                {% if born_today %}
-                                    <li class="list-group-item"><b>Born</b></li>
-                                    {% for person in born_today %}
+                {% if not books_published_today and not movies_released_today and not series_released_today and not music_released_today and not games_released_today and not born_today and not died_today %}
+                    <p>Looks like it's a quiet day in our database.</p>
+                {% else %}
+
+                    {% if books_published_today %}
+                        <div class="card mb-3">
+                            <div class="card-header" id="booksHeading" data-bs-toggle="collapse" data-bs-target="#booksCollapse" role="button" aria-expanded="false" aria-controls="booksCollapse">
+                                <b>Books</b>
+                            </div>
+                            <div id="booksCollapse" class="collapse" aria-labelledby="booksHeading">
+                                <ul class="list-group list-group-flush">
+                                    {% for book in books_published_today %}
                                         <li class="list-group-item">
-                                            <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
-                                            ({{person.birth_date|slice:":4"}}{% if person.death_date %}-{{person.death_date|slice:":4"}}{% else %}-{% endif %}, {{ person.since }} years ago)
+                                            <a href="{% url 'read:book_detail' book.id %}">{{ book.title }}</a>
+                                            ({{ book.publication_date|slice:":4" }}{% if book.since == 0 %}, today{% else %}, {{ book.since }} years ago{% endif %})
                                         </li>
                                     {% endfor %}
-                                {% endif %}
-        
-                                {% if died_today %}
-                                    <li class="list-group-item"><b>Died</b></li>
-                                    {% for person in died_today %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endif %}
+            
+                    {% if movies_released_today or series_released_today %}
+                        <div class="card mb-3">
+                            <div class="card-header" id="moviesSeriesHeading" data-bs-toggle="collapse" data-bs-target="#moviesSeriesCollapse" role="button" aria-expanded="false" aria-controls="moviesSeriesCollapse">
+                                <b>Movies / Series</b>
+                            </div>
+                            <div id="moviesSeriesCollapse" class="collapse" aria-labelledby="moviesSeriesHeading">
+                                <ul class="list-group list-group-flush">
+                                    {% for movie in movies_released_today %}
                                         <li class="list-group-item">
-                                            <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
-                                            ({% if person.birth_date %}{{person.birth_date|slice:":4"}}{% else %}?{% endif %}-{{person.death_date|slice:":4"}}, {{ person.since }} years ago)
+                                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
+                                            ({{ movie.release_date|slice:":4" }}{% if movie.since == 0 %}, today{% else %}, {{ movie.since }} years ago{% endif %})
                                         </li>
                                     {% endfor %}
-                                {% endif %}
-                            </ul>
+            
+                                    {% for serie in series_released_today %}
+                                        <li class="list-group-item">
+                                            <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a>
+                                            ({{ serie.release_date|slice:":4" }}{% if serie.since == 0 %}, today{% else %}, {{ serie.since }} years ago{% endif %})
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
+            
+                    {% if music_released_today %}
+                        <div class="card mb-3">
+                            <div class="card-header" id="musicHeading" data-bs-toggle="collapse" data-bs-target="#musicCollapse" role="button" aria-expanded="false" aria-controls="musicCollapse">
+                                <b>Music</b>
+                            </div>
+                            <div id="musicCollapse" class="collapse" aria-labelledby="musicHeading">
+                                <ul class="list-group list-group-flush">
+                                    {% for music in music_released_today %}
+                                        <li class="list-group-item">
+                                            <a href="{% url 'listen:release_detail' music.id %}">{{ music.title }}</a>
+                                            ({{ music.release_date|slice:":4" }}{% if music.since == 0 %}, today{% else %}, {{ music.since }} years ago{% endif %})
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endif %}
+            
+                    {% if games_released_today %}
+                        <div class="card mb-3">
+                            <div class="card-header" id="gamesHeading" data-bs-toggle="collapse" data-bs-target="#gamesCollapse" role="button" aria-expanded="false" aria-controls="gamesCollapse">
+                                <b>Games</b>
+                            </div>
+                            <div id="gamesCollapse" class="collapse" aria-labelledby="gamesHeading">
+                                <ul class="list-group list-group-flush">
+                                    {% for game in games_released_today %}
+                                        <li class="list-group-item">
+                                            <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
+                                            ({{ game.release_date|slice:":4" }}{% if game.since == 0 %}, today{% else %}, {{ game.since }} years ago{% endif %})
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endif %}
+            
+                    {% if born_today or died_today %}
+                        <div class="card mb-3">
+                            <div class="card-header" id="personsHeading" data-bs-toggle="collapse" data-bs-target="#personsCollapse" role="button" aria-expanded="false" aria-controls="personsCollapse">
+                                <b>Persons</b>
+                            </div>
+                            <div id="personsCollapse" class="collapse" aria-labelledby="personsHeading">
+                                <ul class="list-group list-group-flush">
+                                    {% if born_today %}
+                                        <li class="list-group-item"><b>Born</b></li>
+                                        {% for person in born_today %}
+                                            <li class="list-group-item">
+                                                <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
+                                                ({{person.birth_date|slice:":4"}}{% if person.death_date %}-{{person.death_date|slice:":4"}}{% else %}-{% endif %}, {{ person.since }} years ago)
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+            
+                                    {% if died_today %}
+                                        <li class="list-group-item"><b>Died</b></li>
+                                        {% for person in died_today %}
+                                            <li class="list-group-item">
+                                                <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
+                                                ({% if person.birth_date %}{{person.birth_date|slice:":4"}}{% else %}?{% endif %}-{{person.death_date|slice:":4"}}, {{ person.since }} years ago)
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
