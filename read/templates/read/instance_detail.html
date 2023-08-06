@@ -31,39 +31,38 @@
             </p>
             {% endif %}
 
+            {% if books %}
             <h3>Books</h3>
             <div class="row">
-                {% for book in object.books.all %}
-                <div class="col-md-4">
-                    <p>
+                <ul>
+                {% for book in books %}
+                    <li>
                         <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a>{% if book.subtitle %}: {{book.subtitle}}{% endif %} 
                         ({{ book.publication_date }})
-                    </p>
-                </div>
+                    </li>
                 {% empty %}
                 <p>This instance has no related books.</p>
                 {% endfor %}
-                
+                </ul>
             </div>
+            {% endif %}
 
-            <br>
-
-            {% if object.issues.all %}
+            {% if issues %}
             <h3>Periodicals</h3>
             <div class="row">
-                {% for issue in object.issues.all %}
-                <div class="col-md-4">
-                    <p>
+                <ul>
+                {% for issue in issues %}
+                    <li>
                         <a href="{% url 'read:issue_detail' issue.periodical.pk issue.pk %}">{{ issue.title }}</a>
                         , 
                         <a href="{% url 'read:periodical_detail' issue.periodical.pk %}">{{ issue.periodical.title }}</a>
                         
                         ({{ issue.publication_date }})
-                    </p>
-                </div>
+                    </li>
                 {% empty %}
                 <p>This instance has no related periodical issues.</p>
                 {% endfor %}
+                </ul>
             </div>
             {% endif %}
         </div>

@@ -30,17 +30,16 @@
 
             <h3>Releases</h3>
             <div class="row">
-                {% for release in object.releases.all %}
-                <div class="col-md-4">
-                    <p>
+                <ul>
+                {% for release in releases %}
+                    <li>
                         <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a>
                         ({{ release.release_type }}, {{ release.release_date }})
-                    </p>
-                </div>
+                    </li>
                 {% empty %}
-                <p>This track has no related releases.</p>
+                    <p>This track has no related releases.</p>
                 {% endfor %}
-                
+                </ul>                
             </div>
         </div>
         <!--Right columns-->

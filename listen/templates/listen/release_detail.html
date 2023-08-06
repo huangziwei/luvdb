@@ -105,37 +105,28 @@
             <!--Related tracks / Edit -->
             <div class="bg-light p-3">
                 <div>
-                    {% if object.releasetrack_set.count < 2 %}
-                        {% if object.releasetrack_set.first.track.id %}
-                        <div  class="mb-3"><strong>Related Track:</strong> 
-                            <a href="{% url 'listen:track_detail' object.releasetrack_set.first.track.id %}">
-                                {{ object.releasetrack_set.first.alt_title|default:object.releasetrack_set.first.track.title }}
-                            </a>
-                        </div>
-                        {% endif %}
-                    {% else %}
-                        <div class="row mb-3">
-                            <h5>Tracklist</h5>
-                            <!--list all related tracks by order-->
-                            <div class="col-sm-12">
-                                {% for release_track in object.releasetrack_set.all %}
-                                    <div class="related-track"> 
-                                        <div>
-                                            <strong>{{ release_track.order }}.</strong>
-                                            <a href="{% url 'listen:track_detail' release_track.track.id %}">
-                                                {{ release_track.alt_title|default:release_track.track.title }}
-                                            </a> 
-                                            {% if release_track.track.length %}
-                                            ({{ release_track.track.length }})
-                                            {% endif %}
-                                        </div>
+
+                    <div class="row mb-3">
+                        <h5>Tracklist</h5>
+                        <!--list all related tracks by order-->
+                        <div class="col-sm-12">
+                            {% for release_track in object.releasetrack_set.all %}
+                                <div class="related-track"> 
+                                    <div>
+                                        <strong>{{ release_track.order }}.</strong>
+                                        <a href="{% url 'listen:track_detail' release_track.track.id %}">
+                                            {{ release_track.alt_title|default:release_track.track.title }}
+                                        </a> 
+                                        {% if release_track.track.length %}
+                                        ({{ release_track.track.length }})
+                                        {% endif %}
                                     </div>
-                                {% empty %}
-                                    <div>No related tracks found.</div>
-                                {% endfor %}
-                            </div>
-                        </div>   
-                    {% endif %}
+                                </div>
+                            {% empty %}
+                                <div>No related tracks found.</div>
+                            {% endfor %}
+                        </div>
+                    </div>   
         
                     {% if user.is_authenticated %}
                         <div>

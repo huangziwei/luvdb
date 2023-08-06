@@ -308,6 +308,8 @@ class InstanceDetailView(DetailView):
         for role in roles:
             roles_by_name[role.role.name].append(role)
         context["roles_by_name"] = dict(roles_by_name)
+        context["books"] = self.object.books.all().order_by("publication_date")
+        context["issues"] = self.object.issues.all().order_by("publication_date")
         return context
 
 

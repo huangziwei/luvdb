@@ -357,6 +357,7 @@ class TrackDetailView(DetailView):
             grouped_roles[role.role.name].append(role.person)
 
         context["grouped_roles"] = dict(grouped_roles)
+        context["releases"] = track.releases.all().order_by("release_date")
         return context
 
 
