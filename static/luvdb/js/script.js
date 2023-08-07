@@ -45,3 +45,15 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }
 
 });
+
+// Function to resize images
+function resizeImages(imgElements) {
+    for (let img of imgElements) {
+      img.style.maxWidth = "100%";
+      img.style.height = "auto";
+    }
+  }
+  
+// Resize images inside <p> tags
+const markdownImages = document.querySelectorAll('p img');
+resizeImages(markdownImages);
