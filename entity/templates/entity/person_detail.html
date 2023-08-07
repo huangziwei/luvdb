@@ -14,6 +14,19 @@
             <span class="text-secondary">
                 {% if object.birth_date %}{{ object.birth_date }}{% if object.birth_place %}({{object.birth_place}}){% endif %} - {% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %}{% if object.death_place %}({{object.death_place}}){% endif %}
             </span>
+            <!--Other names in muted text in a line-->
+            {% if object.other_names %}
+            <span class="text-muted">
+                {% for name in object.other_names.all %}
+                    {% if name.romanized_name %}
+                        {{ name.name }} / {{ name.romanized_name }}
+                    {% else %}
+                        {{ name.name }}
+                    {% endif %}
+                {% endfor %}
+            </span>
+            {% endif %}
+            
 
             <!--Read-->
             {% if object.read_works.count != 0 or as_translator or writings%}

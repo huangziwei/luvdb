@@ -44,6 +44,7 @@ class Person(Entity):
     """
 
     # person meta data
+    other_names = models.TextField(blank=True, null=True)
     birth_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
