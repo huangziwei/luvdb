@@ -78,7 +78,7 @@
                                 <ul class="list-group list-group-flush">
                                     {% for book in books_published_today %}
                                         <li class="list-group-item">
-                                            <a href="{% url 'read:book_detail' book.id %}">{{ book.title }}</a>
+                                            <span><a href="{% url 'read:book_detail' book.id %}">{{ book.title }}</a>{% if book.subtitle %}: {{book.subtitle}}{% endif %}</span>
                                             ({{ book.publication_date|slice:":4" }}{% if book.since == 0 %}, today{% else %}, {{ book.since }} years ago{% endif %})
                                         </li>
                                     {% endfor %}

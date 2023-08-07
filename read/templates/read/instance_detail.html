@@ -32,24 +32,23 @@
             {% endif %}
 
             {% if books %}
-            <h3>Books</h3>
-            <div class="row">
+            <div>
+                <h3>Books</h3>
                 <ul>
                 {% for book in books %}
                     <li>
                         <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a>{% if book.subtitle %}: {{book.subtitle}}{% endif %} 
                         ({{ book.publication_date }})
                     </li>
-                {% empty %}
-                <p>This instance has no related books.</p>
                 {% endfor %}
                 </ul>
             </div>
             {% endif %}
 
+            
             {% if issues %}
-            <h3>Periodicals</h3>
-            <div class="row">
+            <div>
+                <h3>Periodicals</h3>
                 <ul>
                 {% for issue in issues %}
                     <li>
