@@ -38,7 +38,7 @@
                                 {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
                                 {% for role_name, person_altname_tuples in roles.items %}
                                     <p>
-                                        <strong>{{ role_name }}:</strong> 
+                                        <span class="text-muted">{{ role_name }}:</span> 
                                         {% for person, alt_name in person_altname_tuples %}
                                             <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
                                             {% if not forloop.last %} / {% endif %}

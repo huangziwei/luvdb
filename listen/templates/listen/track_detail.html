@@ -8,13 +8,12 @@
             <span class='d-flex align-items-start'>
                 <h2>{{ object.title }} ({{ object.release_date }})</h2>
             </span>
-            
-            {% for role, persons in grouped_roles.items %}
+            {% for role, persons_altname_tuples in grouped_roles.items %}
                 <p>
-                    <span class="text-muted">{{ role }}: </span>
-                    {% for person in persons %}
-                        <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
-                        {% if not forloop.last %}/ {% endif %}
+                    <span class="text-muted">{{ role }}:</span>
+                    {% for person, name in persons_altname_tuples %}
+                        <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
+                        {% if not forloop.last %} / {% endif %}
                     {% endfor %}
                 </p>
             {% endfor %}

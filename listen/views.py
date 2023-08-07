@@ -351,12 +351,14 @@ class TrackDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         track = get_object_or_404(Track, pk=self.kwargs.get("pk"))
         # roles
-        grouped_roles = defaultdict(list)
-
+        grouped_roles = {}
         for role in track.trackrole_set.all():
-            grouped_roles[role.role.name].append(role.person)
-
-        context["grouped_roles"] = dict(grouped_roles)
+            if role.role.name not in grouped_roles:
+                grouped_roles[role.role.name] = []
+            alt_name_or_person_name = role.alt_name or role.person.name
+            print(role.alt_name, role.person.name, alt_name_or_person_name)
+            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+        context["grouped_roles"] = grouped_roles
         context["releases"] = track.releases.all().order_by("release_date")
         return context
 
