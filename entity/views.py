@@ -200,7 +200,9 @@ class PersonAutoComplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             qs = qs.filter(
-                Q(name__icontains=self.q) | Q(romanized_name__icontains=self.q)
+                Q(name__icontains=self.q)
+                | Q(romanized_name__icontains=self.q)
+                | Q(other_names__icontains=self.q)
             ).distinct()
 
             return qs

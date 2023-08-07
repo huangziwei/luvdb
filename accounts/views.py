@@ -341,7 +341,9 @@ def search_view(request):
             repost_results = Repost.objects.filter(content__icontains=query).distinct()
 
         if model in ["all", "read"]:
-            person_results = Person.objects.filter(Q(name__icontains=query))
+            person_results = Person.objects.filter(
+                Q(name__icontains=query) | Q(other_names__icontains=query)
+            ).distinct()
             litwork_results = LitWork.objects.filter(
                 Q(title__icontains=query)
                 | Q(workrole__person__name__icontains=query)
