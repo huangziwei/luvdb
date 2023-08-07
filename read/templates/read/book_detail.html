@@ -47,7 +47,7 @@
                                 {% endfor %}
                                 {% if object.publisher %}
                                     <p>
-                                        <strong>Publisher:</strong>
+                                        <span class="text-muted">Publisher:</span>
                                         <a href="{% url 'read:publisher_detail' object.publisher.id %}">
                                             {% if object.publisher.location %}{{ object.publisher.location }}: {% endif %} 
                                             {{ object.publisher.name }}
@@ -55,17 +55,17 @@
                                     </p>
                                 {% endif %}
                                 {% if object.format %}
-                                            <p><strong>Format:</strong> {{ object.format }}</p>
+                                            <p><span class="text-muted">Format:</span> {{ object.format }}</p>
                                         {% endif %}
                                 {% if object.publication_date %}
-                                    <p><strong>Date:</strong> {{ object.publication_date }}</p>
+                                    <p><span class="text-muted">Date:</span> {{ object.publication_date }}</p>
                                 {% endif %}
                                 
                                 
                                 <!--add series here-->
                                 {% if object.bookinseries_set.all %}
                                     <p>
-                                        <strong>Series:</strong> 
+                                        <span class="text-muted">Series:</span> 
                                         {% for bookinseries in object.bookinseries_set.all %}
                                             <a href="{% url 'read:series_detail' bookinseries.series.id %}">{{ bookinseries.series.title }}</a>
                                             {% if not forloop.last %} / {% endif %}
@@ -76,24 +76,24 @@
                                 
                                 <div class="my-3">
                                     <p class="text-muted" type="button" data-bs-toggle="collapse" data-bs-target="#detailsCollapse" aria-expanded="false" aria-controls="detailsCollapse">
-                                        <strong>More Metadata</strong>
+                                        <span class="text-muted">More Metadata</span>
                                     </p>
                                     <div class="collapse" id="detailsCollapse">
                                         
                                         {% if object.pages %}
-                                            <p><strong>Pages:</strong> {{ object.pages }}</p>
+                                            <p><span class="text-muted">Pages:</span> {{ object.pages }}</p>
                                         {% endif %}
                                         {% if object.isbn_10 %}
-                                            <p><strong>ISBN-10:</strong> {{ object.isbn_10 }}</p>
+                                            <p><span class="text-muted">ISBN-10:</span> {{ object.isbn_10 }}</p>
                                         {% endif %}
                                         {% if object.isbn_13 %}
-                                            <p><strong>ISBN-13:</strong> {{ object.isbn_13 }}</p>
+                                            <p><span class="text-muted">ISBN-13:</span> {{ object.isbn_13 }}</p>
                                         {% endif %}
                                         {% if object.asin %}
-                                            <p><strong>ASIN:</strong> {{ object.asin }}</p>
+                                            <p><span class="text-muted">ASIN:</span> {{ object.asin }}</p>
                                         {% endif %}
                                         {% if object.details %}
-                                        <strong>Details:</strong> 
+                                        <span class="text-muted">Details:</span> 
                                         <div class="card card-body">
                                             {{ object.details|markdownify }}
                                         </div>

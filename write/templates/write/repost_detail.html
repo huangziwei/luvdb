@@ -19,8 +19,7 @@
         <div class="mt-2">{{ repost.content | linkify_tags | linkify_mentions | markdownify }}</div>
       {% endif %}
 
-
-        <div class="bg-light p-3">
+        <div class="bg-light mt-2 p-3">
 
             {% if repost.original_activity %}
             <!-- Display the reposted activity -->
@@ -400,7 +399,7 @@
                     
                     {% endif %}
                     <div class="bg-light">
-                        <blockquote>{{ repost.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</blockquote>
+                        <div>{{ repost.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
                         <p><a href="{{ repost.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ repost.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></p>
                     </div>
 
@@ -418,9 +417,10 @@
         <a href="{% url "write:repost_delete" object.pk %}" class="me-2">Delete</a>{% endif %}
       </span>
       
-      <button id="show-comments" class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
-      <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto toggle-button">Reposts ({{ object.get_reposts.count }})</button>
-
+      <div class="mt-2">
+        <button id="show-comments" class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
+        <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto toggle-button">Reposts ({{ object.get_reposts.count }})</button>
+      </div>
       <hr>
 
       <div id="comments-section">
