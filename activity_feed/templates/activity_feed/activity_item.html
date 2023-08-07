@@ -467,6 +467,7 @@
             {% endif %}
             <p class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_detail' activity.content_object.id %}?repost=true" class="text-decoration-none">Repost</a></p>
             {% if activity.user == request.user %}
+                <p class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p>
                 <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
             {% endif %}
         </div> 
@@ -602,6 +603,7 @@
             {% endif %}
             <p class="ms-2 me-2"><a href="{% url 'play:game_checkin_detail' activity.content_object.id %}?repost=true" class="text-decoration-none">Repost</a></p>
             {% if activity.user == request.user %}
+                <p class="ms-2 me-2"><a href="{% url 'play:game_checkin_update' activity.content_object.id %}" class="text-decoration-none">Edit</a></p>
                 <p class="ms-2 me-2"><a href="{% url 'activity_feed:activity_delete' activity.id %}" class="text-decoration-none">Delete</a></p>
             {% endif %}
         </div>

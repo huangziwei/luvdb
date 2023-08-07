@@ -12,7 +12,7 @@
                 </h2> 
             </span>
             <span class="text-secondary">
-                {% if object.birth_date %}{{ object.birth_date }}-{% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %}
+                {% if object.birth_date %}{{ object.birth_date }}{% if object.birth_place %}({{object.birth_place}}){% endif %} - {% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %}{% if object.death_place %}({{object.death_place}}){% endif %}
             </span>
 
             <!--Read-->
