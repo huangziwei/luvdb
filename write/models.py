@@ -78,6 +78,9 @@ class Repost(models.Model):
     original_activity = models.ForeignKey(
         Activity, on_delete=models.SET_NULL, related_name="reposts", null=True
     )
+    original_repost = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, related_name="reposts", null=True, blank=True
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -103,15 +106,7 @@ class Repost(models.Model):
             return None
 
     def get_reposts(self):
-        return Repost.objects.filter(
-            Q(original_activity=self.original_activity)
-            | Q(
-                original_activity__content_type=ContentType.objects.get_for_model(
-                    Repost
-                ),
-                original_activity__object_id=self.id,
-            )
-        ).exclude(id=self.id)
+        return Repost.objects.filter(original_repost=self).exclude(id=self.id)
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
