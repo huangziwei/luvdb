@@ -44,6 +44,28 @@ window.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
+    function updateIframeHeight() {
+        var iframes = document.querySelectorAll('iframe');
+      
+        iframes.forEach(function (iframe) {
+          var originalWidth = iframe.getAttribute('width');
+          var originalHeight = iframe.getAttribute('height');
+          
+          if (originalWidth && originalHeight) {
+            var aspectRatio = originalHeight / originalWidth;
+            var currentWidth = iframe.clientWidth;
+            var newHeight = currentWidth * aspectRatio;
+            iframe.style.height = newHeight + 'px';
+          }
+        });
+      }
+      
+      // Update the iframe height when the page is loaded
+      updateIframeHeight();
+      
+      // Update the iframe height when the window is resized
+      window.addEventListener('resize', updateIframeHeight);
+
     // // dark mode toggle
     // document.getElementById('btnSwitch').addEventListener('click',()=>{
     //     if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
