@@ -81,16 +81,16 @@
             {% endif %}
 
             <!--Listen-->
-            {% if LPs_as_singer or EPs_as_singer or singles_as_singer or works_as_lyricist or works_as_composer or tracks_as_singer or  tracks_as_arranger or tracks_as_producer%}
+            {% if LPs_as_performer or EPs_as_performer or singles_as_performer or works_as_lyricist or works_as_composer or tracks_as_singer or  tracks_as_arranger or tracks_as_producer%}
             <h3 class="mt-3">Discography</h3>
 
-                {% if LPs_as_singer or EPs_as_singer or singles_as_singer %}
+                {% if LPs_as_performer or EPs_as_performer or singles_as_performer %}
                 <div class="row">
-                    {% if singles_as_singer %}
+                    {% if singles_as_performer %}
                     <div class="col-md-4 mt-3">
                         <h4>Single</h4>
                         <ul>
-                        {% for single in singles_as_singer %}
+                        {% for single in singles_as_performer %}
                             <li>
                                 <a href="{% url 'listen:release_detail' single.pk %}">{{ single.title }}</a> ({{ single.release_date}})
                             </li>
@@ -101,11 +101,11 @@
                     </div>
                     {% endif %}
 
-                    {% if EPs_as_singer %}
+                    {% if EPs_as_performer %}
                     <div class="col-md-4 mt-3">
                         <h4>EP</h4>
                         <ul>
-                        {% for ep in EPs_as_singer %}
+                        {% for ep in EPs_as_performer %}
                             <li>
                                 <a href="{% url 'listen:release_detail' ep.pk %}">{{ ep.title }}</a> ({{ ep.release_date}})
                             </li>
@@ -116,11 +116,11 @@
                     </div>
                     {% endif %}
 
-                    {% if LPs_as_singer %}
+                    {% if LPs_as_performer %}
                     <div class="col-md-4 mt-3">
                         <h4>LP</h4>
                         <ul>
-                        {% for lp in LPs_as_singer %}
+                        {% for lp in LPs_as_performer %}
                             <li>
                                 <a href="{% url 'listen:release_detail' lp.pk %}">{{ lp.title }}</a> ({{ lp.release_date}})
                             </li>

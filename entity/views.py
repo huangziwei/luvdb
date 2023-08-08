@@ -56,18 +56,20 @@ class PersonDetailView(DetailView):
         context["writings"] = writings
 
         # listen
-        context["LPs_as_singer"] = Release.objects.filter(
-            releaserole__role__name="Singer",
+        roles_as_performer = ["Singer", "Pianist", "Conductor"]
+
+        context["LPs_as_performer"] = Release.objects.filter(
+            releaserole__role__name__in=roles_as_performer,
             releaserole__person=person,
             release_type="LP",
         ).order_by("release_date")
-        context["EPs_as_singer"] = Release.objects.filter(
-            releaserole__role__name="Singer",
+        context["EPs_as_performer"] = Release.objects.filter(
+            releaserole__role__name__in=roles_as_performer,
             releaserole__person=person,
             release_type="EP",
         ).order_by("release_date")
-        context["singles_as_singer"] = Release.objects.filter(
-            releaserole__role__name="Singer",
+        context["singles_as_performer"] = Release.objects.filter(
+            releaserole__role__name__in=roles_as_performer,
             releaserole__person=person,
             release_type="Single",
         ).order_by("release_date")
