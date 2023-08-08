@@ -86,6 +86,14 @@ class WorkDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         work = get_object_or_404(Work, pk=self.kwargs.get("pk"))
+        grouped_roles = {}
+        for role in work.workrole_set.all():
+            if role.role.name not in grouped_roles:
+                grouped_roles[role.role.name] = []
+            alt_name_or_person_name = role.alt_name or role.person.name
+            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+        context["grouped_roles"] = grouped_roles
+
         context["games"] = work.games.all().order_by("release_date")
         return context
 
@@ -175,6 +183,13 @@ class GameDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         game = get_object_or_404(Game, pk=self.kwargs["pk"])
+        grouped_roles = {}
+        for role in game.gameroles.all():
+            if role.role.name not in grouped_roles:
+                grouped_roles[role.role.name] = []
+            alt_name_or_person_name = role.alt_name or role.person.name
+            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+        context["grouped_roles"] = grouped_roles
 
         context["checkin_form"] = GameCheckInForm(
             initial={"game": self.object, "user": self.request.user}

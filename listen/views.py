@@ -356,7 +356,6 @@ class TrackDetailView(DetailView):
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
             alt_name_or_person_name = role.alt_name or role.person.name
-            print(role.alt_name, role.person.name, alt_name_or_person_name)
             grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
         context["grouped_roles"] = grouped_roles
         context["releases"] = track.releases.all().order_by("release_date")

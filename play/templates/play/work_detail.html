@@ -9,14 +9,17 @@
                 <h2>{{ object.title }} ({{ object.first_release_date }})</h2>
             </span>
 
-            {% for role in object.workrole_set.all %}
-            <p>
-                <strong>{{role.role.name}}:</strong>
-                <a href="{% url 'entity:person_detail' role.person.id %}">{{ role.person.name }}</a> ({{ role.person.romanized_name }})
-            </p>
+            {% for role, persons_altname_tuples in grouped_roles.items %}
+                <div>
+                    <span class="text-muted">{{ role }}:</span>
+                    {% for person, name in persons_altname_tuples %}
+                        <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}
+                </div>
             {% endfor %}
 
-            <h3>Releases</h3>
+            <h3 class='mt-3'>Releases</h3>
             <ul>
             {% for game in games %}
                 <li>

@@ -213,6 +213,14 @@ class WorkDetailView(DetailView):
         )
         adaptations.sort(key=lambda x: x.release_date)
         context["adaptations"] = adaptations
+
+        grouped_roles = {}
+        for role in work.workrole_set.all():
+            if role.role.name not in grouped_roles:
+                grouped_roles[role.role.name] = []
+            grouped_roles[role.role.name].append((role.person, role.person.name))
+        context["grouped_roles"] = grouped_roles
+
         return context
 
 
@@ -304,10 +312,14 @@ class InstanceDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         roles_by_name = defaultdict(list)
-        roles = self.object.instancerole_set.all().select_related("person", "role")
-        for role in roles:
-            roles_by_name[role.role.name].append(role)
-        context["roles_by_name"] = dict(roles_by_name)
+
+        grouped_roles = {}
+        for role in self.object.instancerole_set.all():
+            if role.role.name not in grouped_roles:
+                grouped_roles[role.role.name] = []
+            alt_name_or_person_name = role.alt_name or role.person.name
+            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+        context["grouped_roles"] = grouped_roles
         context["books"] = self.object.books.all().order_by("publication_date")
         context["issues"] = self.object.issues.all().order_by("publication_date")
         return context

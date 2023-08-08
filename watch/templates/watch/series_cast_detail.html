@@ -12,7 +12,7 @@
         {% regroup series_crew by role as roles_grouped %}
         {% for role_group in roles_grouped %}
             <li>
-                <strong>{{ role_group.grouper.name }}:</strong>
+                <span class="text-muted">{{ role_group.grouper.name }}:</span>
                 {% for seriesrole in role_group.list %}
                     <a href="{% url 'entity:person_detail' seriesrole.person.id %}">{{ seriesrole.person.name }} </a>
                     {% if not forloop.last %} / {% endif %}

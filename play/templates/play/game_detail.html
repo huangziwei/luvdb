@@ -36,9 +36,19 @@
                             <p class='text-muted'>{{ object.romanized_title }} </p>
                             {% endif %}
                             <div class="game-meta">
+                                {% for role, persons_altname_tuples in grouped_roles.items %}
+                                    <p>
+                                        <span class="text-muted">{{ role }}:</span>
+                                        {% for person, name in persons_altname_tuples %}
+                                            <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
+                                            {% if not forloop.last %} / {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                {% endfor %}
+
                                 {% if object.developers.count != 0 %}
                                 <p>
-                                    <strong>Developers:</strong> 
+                                    <span class="text-muted">Developers:</span> 
                                     {% for developer in object.developers.all %}
                                         <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
                                         {% if not forloop.last %} / {% endif %}
@@ -47,7 +57,7 @@
                                 {% endif %}
                                 {% if object.publishers.count != 0 %}
                                 <p>
-                                    <strong>Publishers:</strong> 
+                                    <span class="text-muted">Publishers:</span> 
                                     {% for publisher in object.publishers.all %}
                                         <a href="{% url 'play:publisher_detail' publisher.id %}">{{ publisher.name }}</a>
                                         {% if not forloop.last %} / {% endif %}
@@ -56,7 +66,7 @@
                                 {% endif %}
                                 {% if object.platforms.count != 0 %}
                                 <p>
-                                    <strong>Platforms:</strong> 
+                                    <span class="text-muted">Platforms:</span> 
                                     {% for platform in object.platforms.all %}
                                         <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
                                         {% if not forloop.last %} / {% endif %}
@@ -64,23 +74,23 @@
                                 </p>
                                 {% endif %}
                                 {% if object.release_date %}
-                                    <p><strong>Release Date:</strong> {{ object.release_date }}</p>
+                                    <p><span class="text-muted">Release Date:</span> {{ object.release_date }}</p>
                                 {% endif %}
                                 {% if object.price %}
-                                    <p><strong>Price:</strong> {{ object.price }}</p>
+                                    <p><span class="text-muted">Price:</span> {{ object.price }}</p>
                                 {% endif %}
                                 {% if object.website %}
-                                    <p><strong>Website:</strong> <a href="{{ object.website }}">{{ object.website }}</a></p>
+                                    <p><span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a></p>
                                 {% endif %}
                                 {% if object.description %}
-                                    <p><strong>Description:</strong> {{ object.description }}</p>
+                                    <p><span class="text-muted">Description:</span> {{ object.description }}</p>
                                 {% endif %}
                                 
-                                <p><strong>Cast:</strong> <a href="{% url 'play:game_cast_detail' object.id %}">View Cast</a></p>
+                                <p><span class="text-muted">Cast:</span> <a href="{% url 'play:game_cast_detail' object.id %}">View Cast</a></p>
                                 <!--add series here-->
                                 {% if object.gameinseries_set.all %}
                                     <p>
-                                        <strong>Series:</strong> 
+                                        <span class="text-muted">Series:</span> 
                                         {% for gameinseries in object.gameinseries_set.all %}
                                             <a href="{% url 'play:series_detail' gameinseries.series.id %}">{{ gameinseries.series.title }}</a>
                                             {% if not forloop.last %} / {% endif %}

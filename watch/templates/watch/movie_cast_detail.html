@@ -12,7 +12,7 @@
         {% regroup moviecrew by role as roles_grouped %}
         {% for role_group in roles_grouped %}
             <li>
-                <strong>{{ role_group.grouper.name }}:</strong>
+                <span class="text-muted">{{ role_group.grouper.name }}:</span>
                 {% for movierole in role_group.list %}
                     <a href="{% url 'entity:person_detail' movierole.person.id %}">{{ movierole.person.name }} </a>
                     {% if not forloop.last %} / {% endif %}

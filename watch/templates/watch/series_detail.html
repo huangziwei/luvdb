@@ -36,26 +36,26 @@
                             {% endif %}
                             <div class="movie-meta">
                                 <p>
-                                    <strong>Studio:</strong> 
+                                    <span class="text-muted">Studio{% if object.studios.count > 1 %}s{% endif %}:</span> 
                                     {% for studio in object.studios.all %}
                                         <a href="{% url 'watch:studio_detail' studio.id %}">{{ studio.name }}</a>
                                         {% if not forloop.last %} / {% endif %}
                                     {% endfor %}
                                 </p>
                                 {% if object.release_date %}
-                                    <p><strong>Release Date:</strong> {{ object.release_date }}</p>
+                                    <p><span class="text-muted">Release Date:</span> {{ object.release_date }}</p>
                                 {% endif %}
                                 {% if object.website %}
-                                    <p><strong>Website:</strong> <a href="{{ object.website }}">{{ object.website }}</a></p>
+                                    <p><span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a></p>
                                 {% endif %}
 
                                 {% if object.based_on %}
-                                <p><strong>Based on:</strong> <a href="{% url "read:work_detail" object.based_on.id %}">{{object.based_on.title}}</a> ({{ object.based_on.publication_date }})</p>
+                                <p><span class="text-muted">Based on:</span> <a href="{% url "read:work_detail" object.based_on.id %}">{{object.based_on.title}}</a> ({{ object.based_on.publication_date }})</p>
                                 {% endif %}
 
                                 {% if object.genres %}
                                 <p>
-                                    <strong>Genre:</strong>
+                                    <span class="text-muted">Genre{% if object.genres.count > 1 %}s{% endif %}:</span>
                                     {% for genre in object.genres.all %}
                                         <a href="{% url 'watch:genre_detail' genre.name %}">{{ genre.name }}</a>
                                         {% if not forloop.last %} / {% endif %}
@@ -63,7 +63,7 @@
                                 </p>
                                 {% endif %}
 
-                                <p><strong>Cast:</strong> <a href="{% url 'watch:series_cast_detail' object.id %}">View Cast</a></p>
+                                <p><span class="text-muted">Cast:</span> <a href="{% url 'watch:series_cast_detail' object.id %}">View Cast</a></p>
                             </div>
                         </div>
                         <!-- End of movie-card -->
