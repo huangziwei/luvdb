@@ -9,6 +9,19 @@
             <h2>Create a new Instance entry</h2>
             {% include "read/instance_form.html" %}
         </div>
+
+        <div class="col-12 col-md-5 right-column">
+            <div class="bg-light p-3">
+                <h4>Guide to Creating an Instance</h4>
+                
+                <h5>Instance: The Edition Level</h5>
+                <p>An Instance represents a specific edition or translation of a Work. It's a unique realization of the abstract Work, capturing details that vary between editions. For information about the physical copy, create a <a href="{% url "read:book_create" %}">Book</a> entry.</p>
+                
+                <h5>What to Include in an Instance</h5>
+                <p>Include details that define the edition, such as publication date of the instance, language of the instance, etc. Link it to the appropriate Work to build a detailed view of the book's different versions.</p>
+            </div>
+        </div>
+        
     </div>
 </div>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>

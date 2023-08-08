@@ -9,6 +9,22 @@
             <h2>Create a new Work entry</h2>
             {% include "play/work_form.html" %}
         </div>
+
+        <!--Instruction-->
+        <div class="col-12 col-md-5 right column">
+            <div class="bg-light p-3">
+                <h4>Guide to Creating a Work</h4>
+                
+                <h5>Work: An Overview</h5>
+                <p>A Work represents a foundational concept for a game, encompassing all its different releases. If you're aiming to log a specific release, head to the <a href="{% url "play:game_create" %}">Game</a> section instead.</p>
+                
+                <p>Consider a Work as an umbrella: various releases, including those on different platforms or remastered versions, fall under it. However, distinctively unique releases should have their separate Game entries, all of which are connected by one Work.</p>
+            
+                <h5>What to Include in a Work</h5>
+                <p>Log the basic details of the game and its creators in a Work. It captures the first release date, regardless of subsequent game completions.</p>
+            </div>
+            
+        </div>
     </div>
 </div>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>

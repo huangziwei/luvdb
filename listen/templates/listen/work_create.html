@@ -9,6 +9,20 @@
             <h2>Create a new Work entry</h2>
             {% include "listen/work_form.html" %}
         </div>
+
+        <div class="col-12 col-md-5 right-column">
+            <div class="bg-light p-3">
+                <h4>Guide to Creating a Musical Work</h4>
+                
+                <h5>Work: The Abstract Musical Concept</h5>
+                <p>A Work refers to the overarching musical idea. It includes only the title, first release date, and its original creators such as composer, lyricists, and first performers. For specific performances or recordings, proceed to the <a href="{% url "listen:track_create" %}">Track</a> section.</p>
+                
+                <h5>What to Include in a Work</h5>
+                <p>Define the Work by logging its title, the date of first release, and the original creators. This forms the basis for the different tracks and releases that may follow.</p>
+            </div>
+        </div>
+        
+        
     </div>
 </div>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>

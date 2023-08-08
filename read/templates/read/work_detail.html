@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <!--Left columns-->
-        <div class="col-sm-8">
+        <div class="col-12 col-md-8 left-column">
             <h2>{{ object.title }} ({{ object.publication_date }})</h2>
             {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
             
@@ -77,7 +77,7 @@
         </div>
 
         <!--Right columns-->
-        <div class="col-sm-4">
+        <div class="col-12 col-md-4 right-column">
             <!--Related Work / Edit -->
             <div class="bg-light p-3">
                 {% if user.is_authenticated %}

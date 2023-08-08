@@ -9,6 +9,19 @@
             <h2>Create a new Track entry</h2>
             {% include "listen/track_form.html" %}
         </div>
+
+        <div class="col-12 col-md-5 right-column">
+            <div class="bg-light p-3">
+                <h4>Guide to Creating a Track</h4>
+                
+                <h5>Track: The Performed Version</h5>
+                <p>A Track represents a specific performance or recorded version of a Work or part of a Work. This includes the individual renditions you might find within an album. To group tracks into a physical or digital format, create a <a href="{% url "listen:release_create" %}">Release</a> entry.</p>
+                
+                <h5>What to Include in a Track</h5>
+                <p>Include the details that are unique to the particular performance or recording, such as the performers, the arrangement, and any specific variations from the original Work. Link it to the Work it's derived from to maintain the connection.</p>
+            </div>
+        </div>
+        
     </div>
 </div>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>

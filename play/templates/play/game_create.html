@@ -11,6 +11,22 @@
             <h3>Create a new Game entry</h3>
             {% include "play/game_form.html" %}
         </div>
+
+        <!--Instruction-->
+        <div class="col-12 col-md-5 right column">
+            <div class="bg-light p-3">
+                <h4>Guide to Creating a Game</h4>
+                
+                <h5>Game: An Overview</h5>
+                <p>A Game entry represents a specific release or version of a game. If you're aiming to log a higher-level concept that includes all releases of a game, go to the <a href="{% url "play:work_create" %}">Work</a> section instead.</p>
+                
+                <p>Think of a Game as an individual instance: one unique release on a platform, or a distinct version like a remastered edition. Multiple Game entries may be linked to a single Work.</p>
+            
+                <h5>What to Include in a Game</h5>
+                <p>Log specific details such as the title, release date, platform, developers, publishers, and any unique attributes like cover art or additional content.</p>
+            </div>
+            
+        </div>
     </div>
 </div>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
