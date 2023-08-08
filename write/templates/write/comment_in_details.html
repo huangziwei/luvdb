@@ -4,12 +4,12 @@
 
 {% if comments %}
   {% for comment in comments %}
-    <div class="mb-3">
-      <span class='d-flex'>
+    <div class="mt-2">
+      <span class='d-flex mt-2'>
         <a href="{% url 'accounts:detail' comment.user.username%}" class="me-2">
           {{ comment.user.display_name | default:comment.user.username }}
         </a>
-        <p class='me-2 text-secondary'>{{comment.timestamp | date:"Y.m.d H:i"}} </p>
+        <div class='me-2 text-secondary'>{{comment.timestamp | date:"Y.m.d H:i"}}</div>
         <a href="#" class="quote-link me-2" data-comment="{{ comment.content }}" data-user-username="{{ comment.user.username}}" data-user="{{ comment.user.display_name | default:comment.user.username }}" data-timestamp="{{comment.timestamp | date:'Y.m.d H:i'}}">Quote</a>
         {% if comment.user == request.user %} 
           <a href="{% url "write:comment_update" comment.pk %}" class="me-2">Edit</a>
@@ -18,7 +18,7 @@
           <a href="{% url "write:comment_delete" comment.pk %}" class="me-2">Delete</a>
         {% endif %}
       </span>
-      <div class="bg-light p-3">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
+      <div class="bg-light mt-2 p-3">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
     </div>
   {% empty %}
     <p>No comments yet.</p>

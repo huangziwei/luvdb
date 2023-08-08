@@ -4,12 +4,12 @@
 
 {% if reposts.count != 0 %}
     {% for repost in reposts.all %}
-    <div>
-      <span class='d-flex'>
+    <div class="mt-2">
+      <span class='d-flex mt-2'>
         <a href="{% url 'accounts:detail' repost.user.username%}" class="me-2">
           {{ repost.user.display_name | default:repost.user.username }}
         </a>
-        <p class='me-2 text-secondary'><a href="{{repost.get_absolute_url}}" class="text-secondary">{{repost.timestamp | date:"Y.m.d H:i"}}</a></p>
+          <div class='me-2 text-secondary'><a href="{{repost.get_absolute_url}}" class="text-secondary">{{repost.timestamp | date:"Y.m.d H:i"}}</a></div>
         {% if repost.user == request.user %} 
           <a href="{% url "write:repost_update" repost.pk %}" class="me-2">Edit</a>
         {% endif %}
@@ -18,7 +18,7 @@
         {% endif %}
       </span>
       {% if repost.content  %}  
-        <div class="bg-light p-3">{{ repost.content| linkify_tags | linkify_mentions | markdownify }}</div>
+        <div class="bg-light mt-2 p-3">{{ repost.content| linkify_tags | linkify_mentions | markdownify }}</div>
       {% endif %}
     </div>
     {% empty %}

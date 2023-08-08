@@ -49,9 +49,10 @@
             <span class="text-muted">{{ activity.activity_type | parse_activity_type}}:</span>
         </div>
         <div class="bg-light mt-2 p-3">
-            <div><a href="{% url 'write:post_detail' activity.content_object.id %}" class="text-decoration-none">{{activity.content_object.title}}</a></div>
+            <h5><a href="{% url 'write:post_detail' activity.content_object.id %}" class="text-decoration-none">{{activity.content_object.title}}</a></h5>
             <div>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
         </div>
+        
         <div class="d-flex mt-2">
             <p class="me-2">
                 <a href="{% url 'write:post_detail' activity.content_object.id %}" class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>

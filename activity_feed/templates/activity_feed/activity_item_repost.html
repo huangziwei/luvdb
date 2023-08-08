@@ -419,13 +419,19 @@
                     {{ activity.content_object.original_activity.activity_type | parse_activity_type }}:
                 </div>
                 {% if activity.content_object.original_activity.activity_type == "post" %}
-                    <p><a href="{% url 'write:post_detail' activity.content_object.original_activity.content_object.id %}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a></p>
-                {% elif activity.content_object.original_activity.activity_type == "pin" %}
-                    <p><a href="{{ activity.content_object.original_activity.content_object.url }}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a> ({{  activity.content_object.original_activity.content_object.url | root_url }})</p>                    
-                {% endif %}
-                <div>
-                    <div class="mt-2">{{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
-                    <div class="mt-2"><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></div>
+                <div class="bg-white mt-2 p-3">
+                {% else %}
+                <div class="mt-2">
+                {%endif%}
+                    {% if activity.content_object.original_activity.activity_type == "post" %}
+                        <h5><a href="{% url 'write:post_detail' activity.content_object.original_activity.content_object.id %}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a></h5>
+                    {% elif activity.content_object.original_activity.activity_type == "pin" %}
+                        <p><a href="{{ activity.content_object.original_activity.content_object.url }}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a> ({{  activity.content_object.original_activity.content_object.url | root_url }})</p>                    
+                    {% endif %}
+                    <div>
+                        <div class="mt-2">{{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                        <div class="mt-2"><a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}" class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a></div>
+                    </div>
                 </div>
 
             {% endif %}
