@@ -7,11 +7,6 @@
     {{ form.language | as_crispy_field }}
     {{ form.edition | as_crispy_field }}
 
-    <div class="mb-3">
-        {{ form.work|as_crispy_field }}
-        <a href="{% url 'read:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>                   
-    </div>
-
     {{ instanceroles.management_form|crispy }}
     <div id="instance-role-formset" class="bg-light p-2 mb-3">
         <strong>Persons related to this instance</strong>
@@ -42,6 +37,12 @@
         {% endfor %}
     </div>
     
+    <div class="bg-light p-3 mb-3">
+        <strong>The Work related to this instance</strong>
+        {{ form.work|as_crispy_field }}
+        <a href="{% url 'read:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>                   
+    </div>
+
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
 

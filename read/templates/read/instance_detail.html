@@ -6,7 +6,7 @@
     <div class="row">
         <!--Left columns-->
         <div class="col-sm-8">
-            <h2>{{ object.title }} ({{ object.publication_date }})</h2>
+            <h2>{{ object.title }}</h2>
             {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
             
             {% for role, persons_altname_tuples in grouped_roles.items %}
@@ -18,9 +18,17 @@
                     {% endfor %}
                 </div>
             {% endfor %}
+                
+            {% if object.publication_date %}
+            <div>
+                <span class="text-muted">Date:</span>
+                {{ object.publication_date }}
+            </div>
+            {% endif %}
+
 
             {% if books %}
-            <div>
+            <div class="mt-3">
                 <h3>Books</h3>
                 <ul>
                 {% for book in books %}

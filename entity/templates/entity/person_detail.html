@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <!--meta-->
-        <div class="col-sm-8">
+        <div class="col-12 col-md-8">
             <span class='d-flex align-items-start'>
                 <h2>
                     {{ object.name }}
@@ -19,15 +19,14 @@
                 {% if object.birth_date %}{{ object.birth_date }}{% if object.birth_place %}({{object.birth_place}}){% endif %} - {% endif %}{% if object.death_date %}{{ object.death_date }}{% endif %}{% if object.death_place %}({{object.death_place}}){% endif %}
             </span>
             
-            
-
+        
             <!--Read-->
-            {% if object.read_works.count != 0 or as_translator or writings%}
-            <h3 class="mt-3">Bibliography</h3>
+            {% if object.read_works.count != 0 or as_translator or as_editor or as_annotator or writings %}
+            <h3 class="mt-2">Bibliography</h3>
                 {% if object.read_works.count != 0 %}
                 <div class="row">
                     {% if object.read_works.count != 0 %}
-                    <div class="col-md-6">
+                    <div class="col-md-6 mt-2">
                         <h4>Works</h4>
                         <ul>
                         {% for work in read_works %}
@@ -50,7 +49,7 @@
                 {% if as_translator or writings %}
                 <div class="row">
                     {% if as_translator.count != 0 %}
-                    <div class="col-md-6 mt-3">
+                    <div class="col-md-6 mt-2">
                         <h4>As Translator</h4>
                         <ul>
                         {% for instance in as_translator.all %}
@@ -65,7 +64,7 @@
                     {% endif %}
                     
                     {% if writings.count != 0 %}
-                    <div class="col-md-6 mt-3">
+                    <div class="col-md-6 mt-2">
                         <h4>Introduction / Afterword</h4>
                         <ul>
                         {% for book in writings.all %}
@@ -78,16 +77,45 @@
                     {% endif %} 
                 </div>
                 {% endif %}
+
+                {% if as_editor or as_annotator%}
+                <div class="row">
+                    {% if as_editor.count != 0 %}
+                    <div class="col-md-6 mt-2">
+                        <h4>As Editor</h4>
+                        <ul>
+                        {% for instance in as_editor.all %}
+                            <li>
+                                <a href="{% url 'read:instance_detail' instance.pk %}">{{ instance.title }}</a> ({{ instance.publication_date}})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    {% if as_annotator.count != 0 %}
+                    <div class="col-md-6 mt-2">
+                        <h4>As Annotator</h4>
+                        <ul>
+                        {% for instance in as_annotator.all %}
+                            <li>
+                                <a href="{% url 'read:instance_detail' instance.pk %}">{{ instance.title }}</a> ({{ instance.publication_date}})
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
             {% endif %}
 
             <!--Listen-->
             {% if LPs_as_performer or EPs_as_performer or singles_as_performer or works_as_lyricist or works_as_composer or tracks_as_singer or  tracks_as_arranger or tracks_as_producer%}
-            <h3 class="mt-3">Discography</h3>
+            <h3 class="mt-2">Discography</h3>
 
                 {% if LPs_as_performer or EPs_as_performer or singles_as_performer %}
                 <div class="row">
                     {% if singles_as_performer %}
-                    <div class="col-md-4 mt-3">
+                    <div class="col-md-4 mt-2">
                         <h4>Single</h4>
                         <ul>
                         {% for single in singles_as_performer %}
@@ -102,7 +130,7 @@
                     {% endif %}
 
                     {% if EPs_as_performer %}
-                    <div class="col-md-4 mt-3">
+                    <div class="col-md-4 mt-2">
                         <h4>EP</h4>
                         <ul>
                         {% for ep in EPs_as_performer %}
@@ -117,7 +145,7 @@
                     {% endif %}
 
                     {% if LPs_as_performer %}
-                    <div class="col-md-4 mt-3">
+                    <div class="col-md-4 mt-2">
                         <h4>LP</h4>
                         <ul>
                         {% for lp in LPs_as_performer %}
@@ -135,7 +163,7 @@
                 
                 {% if works_as_lyricist or works_as_composer %}
                 <div class='row'>
-                    <h4 class="mt-3">Works</h4>
+                    <h4 class="mt-2">Works</h4>
                                     
                     {% if works_as_lyricist.count != 0 %}
                     <div class="col-md-4">
@@ -218,7 +246,7 @@
             <div class="row">
                 <!--As cast-->
                 {% if movies.count != 0 or series.count != 0 %}
-                <h4 class="mt-3">As Cast</h4>
+                <h4 class="mt-2">As Cast</h4>
                     {% if movies.count != 0 %}
                     <div class="col-md-6">
                         <h5>Movies</h5>
@@ -326,13 +354,13 @@
         </div>
 
         <!--manage entry-->
-        <div class="col-sm-4">
+        <div class="col-12 col-md-4">
             <div class="bg-light p-3">
                 {% if user.is_authenticated %}
                 <a href="{% url 'entity:person_update' object.pk %}" class='fs-6 text-secondary'>Edit Person</a>
                 {% endif %}
 
-                <h5 class="mt-3">Link</h5>
+                <h5 class="mt-2">Link</h5>
                 {% if object.wikipedia %}
                 <div>
                     <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>

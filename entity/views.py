@@ -55,6 +55,16 @@ class PersonDetailView(DetailView):
 
         context["writings"] = writings
 
+        as_editor = LitInstance.objects.filter(
+            instancerole__role__name="Editor", instancerole__person=person
+        ).order_by("publication_date")
+        context["as_editor"] = as_editor
+
+        as_annotator = LitInstance.objects.filter(
+            instancerole__role__name="Annotator", instancerole__person=person
+        ).order_by("publication_date")
+        context["as_annotator"] = as_annotator
+
         # listen
         roles_as_performer = ["Singer", "Pianist", "Conductor"]
 

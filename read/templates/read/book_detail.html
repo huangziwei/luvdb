@@ -132,8 +132,9 @@
                         {% if object.bookinstance_set.first.instance.id %}
                         <p><strong>Related Instance:</strong> 
                             <a href="{% url 'read:instance_detail' object.bookinstance_set.first.instance.id %}">
-                                {{ object.bookinstance_set.first.alt_title|default:object.bookinstance_set.first.instance.title }}
-                            </a>
+                                {{ object.bookinstance_set.first.alt_title|default:object.bookinstance_set.first.instance.title }} {% if object.bookinstance_set.first.instance.publication_date %}
+                            </a>({{object.bookinstance_set.first.instance.publication_date}}){% endif %}
+
                         </p>
                         {% endif %}
                     {% else %}
