@@ -147,6 +147,7 @@
             {% endfor %}
         </div>
 
+        {% comment %} 
         <div class="col-12 col-md-5">
             <div class="bg-light p-3">
                 <div class="me-3">
@@ -158,7 +159,8 @@
                     <div><strong class="text-muted">Abandoned:</strong> {{ status_counts.abandoned|default:0 }}</div>
                 </div>     
             </div>
-        </div>
+        </div> 
+        {% endcomment %}
     </div>
 </div>
 

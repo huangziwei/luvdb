@@ -1293,18 +1293,7 @@ class GenericCheckInUserListView(ListView):
 
         context["status"] = self.request.GET.get("status", "")
 
-        # Query to get counts of unique content objects grouped by status
-        status_counts = (
-            ReadCheckIn.objects.filter(user=user)
-            .values("status")
-            .distinct()
-            .annotate(count=Count("content_type", distinct=True))
-        )
-
-        context["status_counts"] = {item["status"]: item["count"] for item in status_counts}
-
         return context
-
 
 
 class BookSeriesCreateView(LoginRequiredMixin, CreateView):
