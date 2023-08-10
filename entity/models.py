@@ -1,7 +1,6 @@
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.urls import reverse
 
 
 # Create your models here.
@@ -58,6 +57,9 @@ class Person(Entity):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse("entity:person_detail", kwargs={"pk": self.pk})
 
 
 class Role(models.Model):

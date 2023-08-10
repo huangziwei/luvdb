@@ -82,6 +82,9 @@ class Work(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse("listen:work_detail", kwargs={"pk": self.pk})
+
 
 class WorkRole(models.Model):
     work = models.ForeignKey(Work, on_delete=models.CASCADE)
@@ -143,6 +146,9 @@ class Track(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("listen:track_detail", kwargs={"pk": self.pk})
 
 
 class TrackRole(models.Model):

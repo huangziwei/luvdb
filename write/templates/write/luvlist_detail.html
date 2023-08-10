@@ -251,7 +251,7 @@
                                 {% endif %}
                             
                                 {% if content.content_type.model == 'movie' %}
-                                    {% regroup content.content_object.movierole_set.all by role as roles_list %}
+                                    {% regroup content.content_object.movieroles.all by role as roles_list %}
                                     {% for role in roles_list %}
                                         <div>
                                             {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
@@ -262,7 +262,20 @@
                                                 </a>
                                             {% endfor %}
                                         </div>
-                                    {% endfor %}                        
+                                    {% endfor %}   
+                                {% else %}
+                                    {% regroup content.content_object.seriesroles.all by role as roles_list %}
+                                    {% for role in roles_list %}
+                                        <div>
+                                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                            {% for series_role in role.list %}
+                                                {% if not forloop.first %} / {% endif %}
+                                                <a href="{% url 'entity:person_detail' series_role.person.id %}">
+                                                    {{ series_role.alt_name | default:series_role.person.name }}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}                                                            
                                 {% endif %}
                                 
                                 <div>

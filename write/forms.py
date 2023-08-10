@@ -191,7 +191,7 @@ ContentInListFormSet = forms.inlineformset_factory(
     LuvList,
     ContentInList,
     form=ContentInListForm,
-    extra=2,
+    extra=1,
     can_delete=True,
     widgets={
         "content_url": forms.URLInput(attrs={"required": False}),

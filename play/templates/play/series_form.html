@@ -21,29 +21,45 @@
         </div>
     {% endfor %}
     </div>
-    <button id="addMore" type="button" class="btn btn-sm btn-outline-dark">+</button>
-    <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button id="addMore" type="button" class="btn btn-outline-dark">Add More</button>
+    </div>
 </form>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let formsetNum = {{ games|length }};
         let emptyForm = document.querySelector('.empty-form').cloneNode(true);
-    
+
+        function updateFormIndices() {
+            let forms = document.querySelectorAll('#gameInSeriesDiv .row:not(.empty-form)');
+            forms.forEach((form, index) => {
+                form.querySelectorAll('input, select, textarea').forEach(input => {
+                    if (input.name) {
+                        input.name = input.name.replace(/gameinseries_set-\d+-/, `gameinseries_set-${index}-`);
+                    }
+                    if (input.id) {
+                        input.id = input.id.replace(/gameinseries_set-\d+-/, `gameinseries_set-${index}-`);
+                    }
+                });
+            });
+        }
+
         document.querySelector('#addMore').addEventListener('click', function(e) {
             e.preventDefault();
             
             let newForm = emptyForm.cloneNode(true);
             newForm.classList.remove('empty-form');
             newForm.style.display = '';
-    
-            newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formsetNum);
-    
+
             document.querySelector('#gameInSeriesDiv').appendChild(newForm);
-            
+
             formsetNum++;
             document.querySelector('#id_gameinseries_set-TOTAL_FORMS').value = formsetNum;
+
+            // Update all the form indices
+            updateFormIndices();
         });
     });
-    </script>
-    
+</script>

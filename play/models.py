@@ -142,6 +142,9 @@ class Work(models.Model):  # Renamed from Book
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse("play:work_detail", kwargs={"pk": self.pk})
+
 
 class WorkRole(models.Model):  # Renamed from BookRole
     """

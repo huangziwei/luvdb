@@ -41,6 +41,7 @@ from .forms import (
 )
 from .models import (
     Book,
+    BookInSeries,
     BookSeries,
     Genre,
     Instance,
@@ -1306,18 +1307,27 @@ class BookSeriesCreateView(LoginRequiredMixin, CreateView):
         if self.request.POST:
             data["books"] = BookInSeriesFormSet(self.request.POST)
         else:
-            data["books"] = BookInSeriesFormSet()
+            data["books"] = BookInSeriesFormSet(queryset=BookInSeries.objects.none())
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         books = context["books"]
-        with transaction.atomic():
-            form.instance.created_by = self.request.user
-            self.object = form.save()
-            if books.is_valid():
+
+        print("Formset data before validation:", books.data)  # Debugging print
+
+        if books.is_valid():
+            print("Formset cleaned_data:", books.cleaned_data)  # Debugging print
+            with transaction.atomic():
+                form.instance.created_by = self.request.user
+                self.object = form.save()
                 books.instance = self.object
                 books.save()
+        else:
+            print("Formset errors:", books.errors)  # Debugging print
+            return self.form_invalid(
+                form
+            )  # If there are formset errors, re-render the form.
         return super().form_valid(form)
 
 
@@ -1342,7 +1352,15 @@ class BookSeriesUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         books = context["books"]
+
+        print(
+            "Formset data before validation for updating:", books.data
+        )  # Debugging print
+
         if books.is_valid():
+            print(
+                "Formset cleaned_data for updating:", books.cleaned_data
+            )  # Debugging print
             self.object = form.save()
             books.instance = self.object
             books.save()

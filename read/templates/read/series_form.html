@@ -33,6 +33,20 @@
         let formsetNum = {{ books|length }};
         let emptyForm = document.querySelector('.empty-form').cloneNode(true);
     
+        function updateFormIndices() {
+            let forms = document.querySelectorAll('#bookInSeriesDiv .row:not(.empty-form)');
+            forms.forEach((form, index) => {
+                form.querySelectorAll('input, select, textarea').forEach(input => {
+                    if (input.name) {
+                        input.name = input.name.replace(/bookinseries_set-\d+-/, `bookinseries_set-${index}-`);
+                    }
+                    if (input.id) {
+                        input.id = input.id.replace(/bookinseries_set-\d+-/, `bookinseries_set-${index}-`);
+                    }
+                });
+            });
+        }
+    
         document.querySelector('#addMore').addEventListener('click', function(e) {
             e.preventDefault();
             
@@ -40,13 +54,16 @@
             newForm.classList.remove('empty-form');
             newForm.style.display = '';
     
-            newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formsetNum);
-    
             document.querySelector('#bookInSeriesDiv').appendChild(newForm);
-            
+    
             formsetNum++;
             document.querySelector('#id_bookinseries_set-TOTAL_FORMS').value = formsetNum;
+    
+            // Update all the form indices
+            updateFormIndices();
         });
+    
     });
-    </script>
+    
+</script>
     

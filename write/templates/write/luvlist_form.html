@@ -42,19 +42,43 @@
         let formsetNum = {{ contents|length }};
         let emptyForm = document.querySelector('.empty-form').cloneNode(true);
     
+        function updateNewFormIndices(newForm, index) {
+            newForm.querySelectorAll('input, select, textarea, label').forEach(element => {
+                if (element.name) {
+                    element.name = element.name.replace(/contents-\d+-/, `contents-${index}-`);
+                }
+                if (element.id) {
+                    element.id = element.id.replace(/contents-\d+-/, `contents-${index}-`);
+                    if (element.id === 'text-input') {
+                        element.id = `id_contents-${index}-comment`;
+                    }
+                }
+                if (element.htmlFor) {
+                    element.htmlFor = element.htmlFor.replace(/contents-\d+-/, `contents-${index}-`);
+                    if (element.htmlFor === 'text-input') {
+                        element.htmlFor = `id_contents-${index}-comment`;
+                    }
+                }
+            });
+        }
+    
         document.querySelector('#addMore').addEventListener('click', function(e) {
             e.preventDefault();
-            
+    
             let newForm = emptyForm.cloneNode(true);
             newForm.classList.remove('empty-form');
             newForm.style.display = '';
     
-            newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formsetNum);
-    
             document.querySelector('#contentInListDiv').appendChild(newForm);
-            
+    
             formsetNum++;
-            document.querySelector('#id_contentinlist_set-TOTAL_FORMS').value = formsetNum;
+            document.querySelector('#id_contents-TOTAL_FORMS').value = formsetNum;
+            
+            // Update the indices of the newly appended form only
+            updateNewFormIndices(newForm, formsetNum-1);
         });
+
+        document.querySelector('#addMore').click();
     });
+    
 </script>
