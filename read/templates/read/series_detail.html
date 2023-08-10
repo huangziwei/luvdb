@@ -1,19 +1,35 @@
 {% extends "base.html" %} <!-- You should have a base template for your website layout -->
 
 {% block content %}
-    <h2>{{ object.title }}</h2> <!-- 'object' is the default context variable name for the model instance -->
-    <p>{{ object.description }}</p>
 
-    <h3>Books in series</h3>
-    <div class='mt-3'>
-        {% for book_in_series in object.bookinseries_set.all %}
-            <p>
-                <span>{{ book_in_series.order }}.</span>
-                <a href="{% url 'read:book_detail' book_in_series.book.pk %}">{{ book_in_series.book.title }}</a>
-                <span>({{ book_in_series.book.publication_date }})</span>
-            </p>
-        {% empty %}
-            <p>No books in this series yet.</p>
-        {% endfor %}
+<div class="container">
+    <div class="row">
+        <div class='col-12 col-md-8'>
+            <h2>{{ object.title }}</h2> <!-- 'object' is the default context variable name for the model instance -->
+            <p>{{ object.description }}</p>
+
+            <div class='mt-3'>
+                {% for book_in_series in object.bookinseries_set.all %}
+                    <p>
+                        <span>{{ book_in_series.order }}.</span>
+                        <a href="{% url 'read:book_detail' book_in_series.book.pk %}">{{ book_in_series.book.title }}</a>
+                        <span>({{ book_in_series.book.publication_date }})</span>
+                    </p>
+                {% empty %}
+                    <p>No books in this series yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="bg-light p-3">
+                {% if user.is_authenticated %}
+                        <div>
+                            <a href="{% url 'read:series_update' object.id %}" class='fs-6 text-secondary'>Edit Book Series</a>
+                        </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
+</div>
 {% endblock %}
