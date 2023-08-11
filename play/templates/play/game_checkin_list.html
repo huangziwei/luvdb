@@ -28,62 +28,66 @@
                 <a href="?status=abandoned&order={{order}}" class="btn btn-sm btn-danger mb-1">Abandoned</a>
             </div>
         </span>
-        {% for checkin in checkins %}
-            <div class="checkin mb-3 p-3 bg-light">
-                <p class="d-flex align-items-center">
-                    <!--badge: checkin status-->
-                    {% if checkin.status == "to_play" %}
-                    <span class="badge text-bg-info me-2">
-                    {% elif checkin.status == "playing" %}
-                    <span class="badge text-bg-primary me-2">    
-                    {% elif checkin.status == "played" %}
-                    <span class="badge text-bg-success me-2"> 
-                    {% elif checkin.status == "paused" %}
-                    <span class="badge text-bg-warning me-2"> 
-                    {% elif checkin.status == "abandoned" %}
-                    <span class="badge text-bg-danger me-2"> 
-                    {% elif checkin.status == "replaying" %}
-                    <span class="badge text-bg-primary me-2"> 
-                    {% elif checkin.status == "replayed" %}
-                    <span class="badge text-bg-success me-2">    
-                    {% endif %}
-                        {{ checkin.get_status_display }}
-                    </span>
-                    {% if checkin.progress %}
-                    <span class="badge text-bg-warning me-2">
-                        Played Time: {{ checkin.progress }} 
-                        {% if checkin.progress_type == "TT" %}
-                            Hour{% if checkin.progress != 1 %}s{% endif %}
-                        {% else %}
-                            %
+        {% if profile_user.is_public or request.user.is_authenticated %}
+            {% for checkin in checkins %}
+                <div class="checkin mb-3 p-3 bg-light">
+                    <p class="d-flex align-items-center">
+                        <!--badge: checkin status-->
+                        {% if checkin.status == "to_play" %}
+                        <span class="badge text-bg-info me-2">
+                        {% elif checkin.status == "playing" %}
+                        <span class="badge text-bg-primary me-2">    
+                        {% elif checkin.status == "played" %}
+                        <span class="badge text-bg-success me-2"> 
+                        {% elif checkin.status == "paused" %}
+                        <span class="badge text-bg-warning me-2"> 
+                        {% elif checkin.status == "abandoned" %}
+                        <span class="badge text-bg-danger me-2"> 
+                        {% elif checkin.status == "replaying" %}
+                        <span class="badge text-bg-primary me-2"> 
+                        {% elif checkin.status == "replayed" %}
+                        <span class="badge text-bg-success me-2">    
                         {% endif %}
-                    </span>
-                    {% endif %}
-                </p>
-                {% if checkin.content %}
-                <div>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
-                {% endif %}
-                <div class="d-flex mt-3">
-                    <span class="me-2">
-                        <a href="{% url 'play:game_checkin_detail' checkin.id %}" class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i"  }}</a>
-                    </span>
-                    {% if checkin.comments_enabled %}
-                        <span class="ms-2 me-2">
-                            <a href="{% url 'play:game_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
+                            {{ checkin.get_status_display }}
                         </span>
+                        {% if checkin.progress %}
+                        <span class="badge text-bg-warning me-2">
+                            Played Time: {{ checkin.progress }} 
+                            {% if checkin.progress_type == "TT" %}
+                                Hour{% if checkin.progress != 1 %}s{% endif %}
+                            {% else %}
+                                %
+                            {% endif %}
+                        </span>
+                        {% endif %}
+                    </p>
+                    {% if checkin.content %}
+                    <div>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
                     {% endif %}
-                    {% if checkin.get_activity_id %}
-                        <span class="ms-2 me-2"><a href="{% url 'play:game_checkin_detail' checkin.id %}?repost=true" class="text-decoration-none">Repost</a></span>
-                    {% endif %}
-                    {% if checkin.user == request.user %}
-                        <span class="ms-2 me-2"><a href="{% url 'play:game_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
-                        <span class="ms-2 me-2"><a href="{% url 'play:game_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
-                    {% endif %}
+                    <div class="d-flex mt-3">
+                        <span class="me-2">
+                            <a href="{% url 'play:game_checkin_detail' checkin.id %}" class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i"  }}</a>
+                        </span>
+                        {% if checkin.comments_enabled %}
+                            <span class="ms-2 me-2">
+                                <a href="{% url 'play:game_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
+                            </span>
+                        {% endif %}
+                        {% if checkin.get_activity_id %}
+                            <span class="ms-2 me-2"><a href="{% url 'play:game_checkin_detail' checkin.id %}?repost=true" class="text-decoration-none">Repost</a></span>
+                        {% endif %}
+                        {% if checkin.user == request.user %}
+                            <span class="ms-2 me-2"><a href="{% url 'play:game_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
+                            <span class="ms-2 me-2"><a href="{% url 'play:game_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-        {% empty %}
-            <p>No check-ins yet.</p>
-        {% endfor %}
+            {% empty %}
+                <p>No check-ins yet.</p>
+            {% endfor %}
+        {% else %}
+            <p>This user's check-ins are private.</p>
+        {% endif %}   
     </div>
 
     <!--right column-->
