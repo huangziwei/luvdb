@@ -103,6 +103,7 @@ class TrackForm(forms.ModelForm):
         help_texts = {
             "title": "Enter the track's title. ",
             "release_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
+            "length": "Enter the track's length, e.g. 3:45",
         }
         widgets = {
             "work": autocomplete.ModelSelect2(

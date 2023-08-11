@@ -223,7 +223,6 @@ class WorkDetailView(DetailView):
             grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
         context["grouped_roles"] = grouped_roles
 
-
         return context
 
 
@@ -1081,7 +1080,7 @@ class GenericCheckInListView(ListView):
     def get_queryset(self):
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
         status = self.request.GET.get("status", "")
-        user = get_object_or_404(
+        profile_user = get_object_or_404(
             User, username=self.kwargs["username"]
         )  # Get user from url param
         model = self.get_model()
@@ -1091,7 +1090,7 @@ class GenericCheckInListView(ListView):
             content_type = ContentType.objects.get_for_model(model)
             object_id = self.kwargs["object_id"]  # Get object id from url param
             checkins = ReadCheckIn.objects.filter(
-                user=user, content_type=content_type, object_id=object_id
+                user=profile_user, content_type=content_type, object_id=object_id
             )
 
         if status:
@@ -1111,8 +1110,8 @@ class GenericCheckInListView(ListView):
 
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
         status = self.request.GET.get("status", "")  # Added status
-        user = get_object_or_404(User, username=self.kwargs["username"])
-        context["user"] = user
+        profile_user = get_object_or_404(User, username=self.kwargs["username"])
+        context["profile_user"] = profile_user
         context["order"] = order
         context["status"] = status  # Add status to context
 
@@ -1249,16 +1248,16 @@ class GenericCheckInUserListView(ListView):
     context_object_name = "checkins"
 
     def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs["username"])
+        profile_user = get_object_or_404(User, username=self.kwargs["username"])
 
         latest_checkin_subquery = ReadCheckIn.objects.filter(
-            user=user,
+            user=profile_user,
             content_type=OuterRef("content_type"),
             object_id=OuterRef("object_id"),
         ).order_by("-timestamp")
 
         checkins = (
-            ReadCheckIn.objects.filter(user=user)
+            ReadCheckIn.objects.filter(user=profile_user)
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
@@ -1287,8 +1286,8 @@ class GenericCheckInUserListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        user = get_object_or_404(User, username=self.kwargs["username"])
-        context["user"] = user
+        profile_user = get_object_or_404(User, username=self.kwargs["username"])
+        context["profile_user"] = profile_user
 
         context["order"] = self.request.GET.get(
             "order", "-timestamp"

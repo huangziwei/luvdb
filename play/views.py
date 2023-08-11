@@ -547,12 +547,12 @@ class GameCheckInListView(ListView):
     def get_queryset(self):
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
         status = self.request.GET.get("status")  # Get status from query params
-        user = get_object_or_404(
+        profile_user = get_object_or_404(
             User, username=self.kwargs["username"]
         )  # Get user from url param
         game_id = self.kwargs["game_id"]  # Get game id from url param
 
-        queryset = GameCheckIn.objects.filter(user=user, game__id=game_id)
+        queryset = GameCheckIn.objects.filter(user=profile_user, game__id=game_id)
 
         # if status is specified, filter by status
         if status:
@@ -566,8 +566,8 @@ class GameCheckInListView(ListView):
 
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
         status = self.request.GET.get("status")  # Get status from query params
-        user = get_object_or_404(User, username=self.kwargs["username"])
-        context["user"] = user
+        profile_user = get_object_or_404(User, username=self.kwargs["username"])
+        context["profile_user"] = profile_user
         context["order"] = order
         context["status"] = status  # pass the status to the context
         checkins = GameCheckIn.objects.filter(
@@ -640,7 +640,7 @@ class GameCheckInAllListView(ListView):
 
 class GameCheckInUserListView(ListView):
     """
-    All latest check-ins from a given user of all movies and series.
+    All latest check-ins from a given user of all games.
     """
 
     model = GameCheckIn
@@ -648,14 +648,14 @@ class GameCheckInUserListView(ListView):
     context_object_name = "checkins"
 
     def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs["username"])
+        profile_user = get_object_or_404(User, username=self.kwargs["username"])
 
         latest_checkin_subquery = GameCheckIn.objects.filter(
             user=OuterRef("user"), game=OuterRef("game")
         ).order_by("-timestamp")
 
         checkins = (
-            GameCheckIn.objects.filter(user=user)
+            GameCheckIn.objects.filter(user=profile_user)
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
@@ -682,8 +682,8 @@ class GameCheckInUserListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        user = get_object_or_404(User, username=self.kwargs["username"])
-        context["user"] = user
+        profile_user = get_object_or_404(User, username=self.kwargs["username"])
+        context["profile_user"] = profile_user
 
         context["order"] = self.request.GET.get(
             "order", "-timestamp"

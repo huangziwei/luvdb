@@ -8,8 +8,8 @@
     <div class="col-12 col-md-8">
         <h4 class='mb-4'>
             Check-ins by 
-            <a href="{% url 'accounts:detail' user.username %}">
-                {{ user.display_name|default:user.username }}
+            <a href="{% url 'accounts:detail' profile_user.username %}">
+                {{ profile_user.display_name|default:profile_user.username }}
             </a> for 
             <a href="{% url 'play:game_detail' game.id %}"> {{ game.title }}</a>
         </h4>

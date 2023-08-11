@@ -9,8 +9,8 @@
     <div class="col-12 col-md-8">
         <h4 class='mb-4'>
             Check-ins by 
-            <a href="{% url 'accounts:detail' user.username %}">
-                {{ user.display_name|default:user.username }}
+            <a href="{% url 'accounts:detail' profile_user.username %}">
+                {{ profile_user.display_name|default:profile_user.username }}
             </a> of 
             {% if model_name == "movie" %}
                 <a href="{% url 'watch:movie_detail' object.id %}"> {{ object.title }}</a>

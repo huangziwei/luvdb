@@ -58,6 +58,19 @@ class PostListView(ListView):
     model = Post
     template_name = "write/post_list.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        # Get the User object
+        self.user = get_object_or_404(
+            get_user_model(), username=self.kwargs["username"]
+        )
+
+        # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
+        if not self.user.is_public and not request.user.is_authenticated:
+            return redirect("{}?next={}".format(reverse("login"), request.path))
+
+        # Otherwise, proceed as normal
+        return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs["username"])
         return Post.objects.filter(user=self.user).order_by("-timestamp")
@@ -127,6 +140,19 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 class SayListView(ListView):
     model = Say
     template_name = "write/say_list.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Get the User object
+        self.user = get_object_or_404(
+            get_user_model(), username=self.kwargs["username"]
+        )
+
+        # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
+        if not self.user.is_public and not request.user.is_authenticated:
+            return redirect("{}?next={}".format(reverse("login"), request.path))
+
+        # Otherwise, proceed as normal
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         self.user = get_object_or_404(
@@ -200,6 +226,19 @@ class SayDeleteView(LoginRequiredMixin, DeleteView):
 class PinListView(ListView):
     model = Pin
     template_name = "write/pin_list.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Get the User object
+        self.user = get_object_or_404(
+            get_user_model(), username=self.kwargs["username"]
+        )
+
+        # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
+        if not self.user.is_public and not request.user.is_authenticated:
+            return redirect("{}?next={}".format(reverse("login"), request.path))
+
+        # Otherwise, proceed as normal
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         self.user = get_object_or_404(
@@ -525,6 +564,19 @@ class LuvListDeleteView(LoginRequiredMixin, DeleteView):
 class LuvListUserListView(ListView):
     model = LuvList
     template_name = "write/luvlist_list.html"  # Assuming 'luvlist_user_list.html' is the template for the user-specific list view
+
+    def dispatch(self, request, *args, **kwargs):
+        # Get the User object
+        self.user = get_object_or_404(
+            get_user_model(), username=self.kwargs["username"]
+        )
+
+        # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
+        if not self.user.is_public and not request.user.is_authenticated:
+            return redirect("{}?next={}".format(reverse("login"), request.path))
+
+        # Otherwise, proceed as normal
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         self.user = get_object_or_404(

@@ -9,8 +9,8 @@
         
         <h4 class='mb-4'>
             Check-ins by 
-            <a href="{% url 'accounts:detail' user.username %}">
-                {{ user.display_name|default:user.username }}
+            <a href="{% url 'accounts:detail' profile_user.username %}">
+                {{ profile_user.display_name|default:profile_user.username }}
             </a> of 
             {% if model_name == "book" %}
                 <a href="{% url 'read:book_detail' object.id %}"> {{ object.title }}</a>
@@ -33,63 +33,68 @@
                 <a href="?status=abandoned&order={{order}}" class="btn btn-sm btn-danger mb-1">Abandoned</a>
             </div>
         </span>
-        {% for checkin in checkins %}
-            <div class="checkin bg-light p-3 mb-3">
-                <p class="d-flex align-items-center">
-                    <!--badge: checkin status-->
-                    {% if checkin.status == "to_read" %}
-                    <span class="badge text-bg-info me-2">
-                    {% elif checkin.status == "reading" %}
-                    <span class="badge text-bg-primary me-2">    
-                    {% elif checkin.status == "finished_reading" %}
-                    <span class="badge text-bg-success me-2"> 
-                    {% elif checkin.status == "paused" %}
-                    <span class="badge text-bg-warning me-2"> 
-                    {% elif checkin.status == "abandoned" %}
-                    <span class="badge text-bg-danger me-2"> 
-                    {% elif checkin.status == "rereading" %}
-                    <span class="badge text-bg-primary me-2"> 
-                    {% elif checkin.status == "reread" %}
-                    <span class="badge text-bg-success me-2">    
-                    {% endif %}
-                        {{ checkin.get_status_display }}
-                    </span>
-                    {% if checkin.progress %}
-                    <span class="badge text-bg-warning me-2">
-                        Progress: {{ checkin.progress }} 
-                        {% if checkin.progress_type == "PG" %}
-                            Page
-                        {% else %}
-                            %
-                        {% endif %}
-                    </span>
-                    {% endif %}
-                </p>
-                {% if checkin.content %}
-                <p>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</p>
-                {% endif %}
-                <div class="d-flex mt-3">
-                    <span class="me-2">
-                        <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i"  }}</a>
-                    </span>
-                    {% if checkin.comments_enabled %}
-                        <span class="ms-2 me-2">
-                            <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
-                        </span>
-                    {% endif %}
-                    {% if checkin.get_activity_id %}
-                        <span class="ms-2 me-2"><a href="{% url 'read:read_checkin_detail' checkin.id %}?repost=true" class="text-decoration-none">Repost</a></span>
-                    {% endif %}
+        {% if checkin.user.is_public or checkin.user == request.user or request.user.is_authenticated %}
 
-                    {% if checkin.user == request.user %}
-                        <span class="ms-2 me-2"><a href="{% url 'read:read_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
-                        <span class="ms-2 me-2"><a href="{% url 'read:read_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
+            {% for checkin in checkins %}
+                <div class="checkin bg-light p-3 mb-3">
+                    <p class="d-flex align-items-center">
+                        <!--badge: checkin status-->
+                        {% if checkin.status == "to_read" %}
+                        <span class="badge text-bg-info me-2">
+                        {% elif checkin.status == "reading" %}
+                        <span class="badge text-bg-primary me-2">    
+                        {% elif checkin.status == "finished_reading" %}
+                        <span class="badge text-bg-success me-2"> 
+                        {% elif checkin.status == "paused" %}
+                        <span class="badge text-bg-warning me-2"> 
+                        {% elif checkin.status == "abandoned" %}
+                        <span class="badge text-bg-danger me-2"> 
+                        {% elif checkin.status == "rereading" %}
+                        <span class="badge text-bg-primary me-2"> 
+                        {% elif checkin.status == "reread" %}
+                        <span class="badge text-bg-success me-2">    
+                        {% endif %}
+                            {{ checkin.get_status_display }}
+                        </span>
+                        {% if checkin.progress %}
+                        <span class="badge text-bg-warning me-2">
+                            Progress: {{ checkin.progress }} 
+                            {% if checkin.progress_type == "PG" %}
+                                Page
+                            {% else %}
+                                %
+                            {% endif %}
+                        </span>
+                        {% endif %}
+                    </p>
+                    {% if checkin.content %}
+                    <p>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</p>
                     {% endif %}
+                    <div class="d-flex mt-3">
+                        <span class="me-2">
+                            <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i"  }}</a>
+                        </span>
+                        {% if checkin.comments_enabled %}
+                            <span class="ms-2 me-2">
+                                <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
+                            </span>
+                        {% endif %}
+                        {% if checkin.get_activity_id %}
+                            <span class="ms-2 me-2"><a href="{% url 'read:read_checkin_detail' checkin.id %}?repost=true" class="text-decoration-none">Repost</a></span>
+                        {% endif %}
+
+                        {% if checkin.user == request.user %}
+                            <span class="ms-2 me-2"><a href="{% url 'read:read_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
+                            <span class="ms-2 me-2"><a href="{% url 'read:read_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-        {% empty %}
-            <p>No check-ins yet.</p>
-        {% endfor %}
+            {% empty %}
+                <p>No check-ins yet.</p>
+            {% endfor %}
+        {% else %}
+            <p>This user's check-ins are private.</p>
+        {% endif %}
     </div>
 
 
