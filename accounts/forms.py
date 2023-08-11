@@ -73,7 +73,8 @@ class CustomUserChangeForm(UserChangeForm):
         model = User
         fields = ("display_name", "username", "bio", "is_public", "timezone")
         help_texts = {
-            "is_public": "Turn on to make your profile public. If not, non-logged-in users won't be able to see your profile.",
+            "is_public": "Enable this option to make your profile visible to everyone, including non-logged-in users. If disabled, only logged-in users will have access to view your profile.",
+            "timezone": "Set your preferred timezone. This will adjust the display of all timestamps to match your local date and time.",
         }
 
     def __init__(self, *args, **kwargs):
