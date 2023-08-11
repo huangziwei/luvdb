@@ -8,6 +8,7 @@ from django.db.models import F, OuterRef, Prefetch, Q, Subquery
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils.html import format_html
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -483,11 +484,23 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         qs = Work.objects.all()
 
         if self.q:
-            qs = qs.filter(name__icontains=self.q)
+            qs = qs.filter(title__icontains=self.q)
+            print(f"Filtered qs: {qs}")  # Debugging print
 
             return qs
 
         return Work.objects.none()
+
+    def get_result_label(self, item):
+        # Get the year from the publication_date
+        release_year = (
+            item.first_release_date[:4] if item.first_release_date else "Unknown"
+        )
+
+        # Format the label
+        label = format_html("{} ({})", item.title, release_year)
+
+        return label
 
 
 class GameCheckInDetailView(DetailView):

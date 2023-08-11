@@ -58,7 +58,7 @@ class WorkRoleForm(forms.ModelForm):
 
     class Meta:
         model = WorkRole
-        fields = ["person", "role", "domain"]
+        fields = ["person", "alt_name", "role", "domain"]
 
     def clean(self):
         cleaned_data = super().clean()

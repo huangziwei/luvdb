@@ -1,4 +1,5 @@
 import os
+import re
 import uuid
 from io import BytesIO
 
@@ -205,6 +206,25 @@ class Work(models.Model):  # Renamed from Book
     def get_absolute_url(self):
         return reverse("read:work_detail", kwargs={"pk": self.pk})
 
+    def save(self, *args, **kwargs):
+        # Convert the publication_date to a standard format if it's not None or empty
+        if self.publication_date:
+            self.publication_date = self.standardize_date(self.publication_date)
+        super(Work, self).save(*args, **kwargs)
+
+    @staticmethod
+    def standardize_date(date_str):
+        """
+        Standardize date strings to be in the format YYYY.MM, YYYY.MM.DD, or YYYY depending on input
+        """
+        # Replace common separators with a dot
+        standardized_date = re.sub(r"[-/]", ".", date_str)
+        # Make sure the resulting date is in a valid format
+        if re.match(r"^\d{4}(\.\d{1,2}(\.\d{1,2})?)?$", standardized_date):
+            return standardized_date
+        # If not in a valid format, return the original string (or raise an error, based on your requirements)
+        return date_str
+
 
 class WorkRole(models.Model):  # Renamed from BookRole
     """
@@ -226,6 +246,7 @@ class WorkRole(models.Model):  # Renamed from BookRole
         blank=True,
         related_name="read_workrole_set",
     )
+    alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"{self.work} - {self.person} - {self.role}"
@@ -274,6 +295,25 @@ class Instance(models.Model):
 
     def get_absolute_url(self):
         return reverse("read:instance_detail", kwargs={"pk": self.pk})
+
+    def save(self, *args, **kwargs):
+        # Convert the publication_date to a standard format if it's not None or empty
+        if self.publication_date:
+            self.publication_date = self.standardize_date(self.publication_date)
+        super(Instance, self).save(*args, **kwargs)
+
+    @staticmethod
+    def standardize_date(date_str):
+        """
+        Standardize date strings to be in the format YYYY.MM, YYYY.MM.DD, or YYYY depending on input
+        """
+        # Replace common separators with a dot
+        standardized_date = re.sub(r"[-/]", ".", date_str)
+        # Make sure the resulting date is in a valid format
+        if re.match(r"^\d{4}(\.\d{1,2}(\.\d{1,2})?)?$", standardized_date):
+            return standardized_date
+        # If not in a valid format, return the original string (or raise an error, based on your requirements)
+        return date_str
 
 
 class InstanceRole(models.Model):
@@ -402,7 +442,24 @@ class Book(models.Model):
 
             img.close()
 
+        # Convert the publication_date to a standard format if it's not None or empty
+        if self.publication_date:
+            self.publication_date = self.standardize_date(self.publication_date)
+
         super().save(*args, **kwargs)
+
+    @staticmethod
+    def standardize_date(date_str):
+        """
+        Standardize date strings to be in the format YYYY.MM, YYYY.MM.DD, or YYYY depending on input
+        """
+        # Replace common separators with a dot
+        standardized_date = re.sub(r"[-/]", ".", date_str)
+        # Make sure the resulting date is in a valid format
+        if re.match(r"^\d{4}(\.\d{1,2}(\.\d{1,2})?)?$", standardized_date):
+            return standardized_date
+        # If not in a valid format, return the original string (or raise an error, based on your requirements)
+        return date_str
 
 
 class BookRole(models.Model):
