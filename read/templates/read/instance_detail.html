@@ -34,7 +34,7 @@
                 {% for book in books %}
                     <li>
                         <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a>{% if book.subtitle %}: {{book.subtitle}}{% endif %} 
-                        ({{ book.publication_date }})
+                        ({% if book.publisher %}{{book.publisher}}, {% endif %}{% if book.format %}{{book.format}}, {% endif %} {{ book.publication_date }})
                     </li>
                 {% endfor %}
                 </ul>

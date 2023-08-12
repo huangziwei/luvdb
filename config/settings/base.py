@@ -102,6 +102,7 @@ TEMPLATES = [
                 "linkify": "write.templatetags.linkify",
                 "parse_activity_type": "activity_feed.templatetags.parse_activity_type",
                 "concat_sets": "read.templatetags.concat_sets",
+                "language_name": "read.templatetags.language_name",
             },
         },
     },

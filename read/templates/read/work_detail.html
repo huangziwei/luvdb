@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load language_name %}
 {% block content %}
 <div class="container">
     <div class="row">
@@ -18,61 +18,40 @@
                 </div>
             {% endfor %}
 
-            {% if instances %}
-            <h3 class="mt-3">Instances</h3>
-            <ul>
-            {% for instance in instances %}
-                <li>
-                    <a href="{% url "read:instance_detail" instance.instance.id %}">{{ instance.instance.title }}</a>{% if instance.instance.subtitle %}: {{instance.instance.subtitle}}{% endif %} 
-                    ({% if instance.instance.edition %}{{ instance.instance.edition }}, {% endif %}{{ instance.instance.publication_date }})
-                    {% for item in instance.items %}
+            {% if grouped_instances %}
+                <h3 class="mt-3">Instances</h3>
+                {% for lang, instances in grouped_instances.items %}
+                    <h4>{{ lang | language_name }}</h4> <!-- Display the human-readable name -->
                     <ul>
+                    {% for instance_data in instances %}
                         <li>
-                            {% if item.type == 'book' %}
-                                <a href="{% url 'read:book_detail' item.id %}">{{ item.title }}</a>
-                                {% if item.publication_date %}
-                                ({% if item.publisher %}
-                                    {{ item.publisher.name }},
-                                {% endif %}
-                                {% if item.format %}
-                                    {{ item.format }},
-                                {% endif %}
-                                    {{ item.publication_date }}
-                                )
-                                {% endif %}
-                            {% elif item.type == 'issue' %}
-                                <a href="{% url 'read:issue_detail' item.periodical.id item.id %}">{{ item.title }}</a>
-                                , <a href="{% url 'read:periodical_detail' item.periodical.id %}">{{ item.periodical.title }}</a>
-                                {% if item.publication_date %}
-                                ({% if item.periodical.publisher %}
-                                    {{ item.periodical.publisher.name }},
-                                {% endif %}
-                                    {{ item.publication_date }}
-                                )
-                                {% endif %}
-                            {% endif %}
+                            <a href="{% url "read:instance_detail" instance_data.instance.id %}">{{ instance_data.instance.title }}</a>{% if instance_data.instance.subtitle %}: {{instance_data.instance.subtitle}}{% endif %}
+                            ({% if instance_data.instance.edition %}{{ instance_data.instance.edition }}, {% endif %}{{ instance_data.instance.publication_date }})
+                            {% for item in instance_data.items %}
+                                <!-- ... rest of your item template ... -->
+                            {% endfor %}
                         </li>
-                    </ul> 
                     {% endfor %}
-                </li>
-            {% endfor %}
-            </ul>
+                    </ul>
+                {% endfor %}
             {% endif %}
+            
+
 
             {% if adaptations %}
-            <h3>Adaptations</h3>
-            <ul>
-                {% for adaptation in adaptations %}
-                <li>
-                    {% if adaptation.model_name == "Movie" %}
-                    <a href="{% url 'watch:movie_detail' adaptation.id %}">{{ adaptation.title }}</a>
-                    {% else %}
-                    <a href="{% url 'watch:series_detail' adaptation.id %}">{{ adaptation.title }}</a>
-                    {% endif %}
-                    {% if adaptation.release_date %}({{ adaptation.release_date }}){% endif %}
-                </li>
-                {% endfor %}
-            </ul>
+                <h3>Adaptations</h3>
+                <ul>
+                    {% for adaptation in adaptations %}
+                    <li>
+                        {% if adaptation.model_name == "Movie" %}
+                        <a href="{% url 'watch:movie_detail' adaptation.id %}">{{ adaptation.title }}</a>
+                        {% else %}
+                        <a href="{% url 'watch:series_detail' adaptation.id %}">{{ adaptation.title }}</a>
+                        {% endif %}
+                        {% if adaptation.release_date %}({{ adaptation.release_date }}){% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
             {% endif %}
         </div>
 

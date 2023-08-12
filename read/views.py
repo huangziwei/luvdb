@@ -198,16 +198,25 @@ class WorkDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         work = get_object_or_404(Work, pk=self.kwargs.get("pk"))
         instances = work.instances.all().order_by("publication_date")
-        context["instances"] = []
+        language_grouped_instances = {}
+
         for instance in instances:
-            books = instance.books.all()
+            lang = instance.language
+            if lang not in language_grouped_instances:
+                language_grouped_instances[lang] = []
+
+            books = instance.books.all().order_by("publication_date")
             for book in books:
                 book.type = "book"
-            issues = instance.issues.all()
+            issues = instance.issues.all().order_by("publication_date")
             for issue in issues:
                 issue.type = "issue"
             items = sorted(list(books) + list(issues), key=lambda x: x.publication_date)
-            context["instances"].append({"instance": instance, "items": items})
+            language_grouped_instances[lang].append(
+                {"instance": instance, "items": items}
+            )
+
+        context["grouped_instances"] = language_grouped_instances
 
         adaptations = list(Movie.objects.filter(based_on=self.object)) + list(
             Series.objects.filter(based_on=self.object)
