@@ -23,7 +23,7 @@
             <div class="activity-item mb-3">
                 <div class="mb-2">
                     <div class="bg-light p-3 mb-2">
-                        <a href="{{ pin.url }}">{{ pin.title }}</a> (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
+                        <a href="{{ pin.url }}">{{ pin.title }}</a> <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
                     </div>
                     {% if pin.content %}
                     <div class="mb-2">{{ pin.content | linkify_tags:pin.user | linkify_mentions | markdownify }}</div>

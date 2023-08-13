@@ -426,7 +426,10 @@
                     {% if activity.content_object.original_activity.activity_type == "post" %}
                         <h5><a href="{% url 'write:post_detail' activity.content_object.original_activity.content_object.id %}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a></h5>
                     {% elif activity.content_object.original_activity.activity_type == "pin" %}
-                        <p><a href="{{ activity.content_object.original_activity.content_object.url }}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a> ({{  activity.content_object.original_activity.content_object.url | root_url }})</p>                    
+                        <div class="bg-white p-3">
+                            <a href="{{ activity.content_object.original_activity.content_object.url }}" class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a> 
+                            <a href="{% url 'write:pins_from_url' activity.content_object.original_activity.content_object.url|root_url %}" class="link-secondary">({{  activity.content_object.original_activity.content_object.url | root_url }})</a>
+                        </div>                    
                     {% endif %}
                     <div>
                         <div class="mt-2 truncatable-text">{{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify }}</div>
