@@ -25,7 +25,7 @@
                             {% endif %}
                         </div>
                     </div>
-                    <!--movie-meta-->
+                    <!--series-meta-->
                     <div class="col flex-grow-1 ms-lg-3">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
@@ -43,7 +43,7 @@
                                     {% endfor %}
                                 </p>
                                 {% if object.release_date %}
-                                    <p><span class="text-muted">Date:</span> {{ object.release_date }}</p>
+                                    <p><span class="text-muted">Premiere on:</span> {{ object.release_date }}</p>
                                 {% endif %}
                                 {% if object.website %}
                                     <p><span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a></p>
@@ -66,11 +66,11 @@
                                 <p><span class="text-muted">Cast:</span> <a href="{% url 'watch:series_cast_detail' object.id %}">View Cast</a></p>
                             </div>
                         </div>
-                        <!-- End of movie-card -->
+                        <!-- End of series-card -->
                     </div>
                 </div>       
             </div>
-            <!--Movie Check-In-->
+            <!--Series Check-In-->
             <div class="mt-4">
                 {% if user.is_authenticated %}
                     {% include "watch/watch_checkin_form.html" %}
