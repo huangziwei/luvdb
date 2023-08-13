@@ -61,7 +61,7 @@
             <h4>Reposts</h4>
             {% for repost in repost_results %}
                 <p>
-                    <a href="{% url 'write:repost_detail' pin.id %}">{{ repost.content|truncatechars:50 }}</a>
+                    <a href="{% url 'write:repost_detail' repost.id %}">{{ repost.content|truncatechars:50 }}</a>
                     ({{repost.user.display_name | default:repost.user.username}}, {{repost.timestamp|date:"Y.m.d"}})
                 </p>
             {% empty %}

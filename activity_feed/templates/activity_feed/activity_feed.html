@@ -184,6 +184,122 @@
         {% endif %}
     </div>
 </div>
-<script type="text/javascript" src="{% static 'js/text-input-shortcuts.js' %}"></script>
+<script>
+    function smartTruncate(str, maxLength) {
+        if (str.length <= maxLength) return str;
+    
+        if (str.includes(" ")) {
+            let truncated = str.substr(0, maxLength);
+            return truncated.substr(0, Math.min(truncated.length, truncated.lastIndexOf(' ')));
+        } else {
+            return str.substr(0, maxLength);
+        }
+    }
+    
+    function getOpenTags(html) {
+        const regex = /<([a-z]+)(?=[\s>])[^<]*?(?<!\/)>/gi;
+        const closingTagsRegex = /<\/([a-z]+)>/gi;
+        const result = [];
+        let match;
+        
+        while (match = regex.exec(html)) {
+            result.push(match[1]);
+        }
+        
+        while (match = closingTagsRegex.exec(html)) {
+            const closeTagName = match[1];
+            const index = result.lastIndexOf(closeTagName);
+            if (index !== -1) {
+                result.splice(index, 1);
+            }
+        }
+        
+        return result;
+    }
+    
+    function getHtmlTruncationPoint(html, plainTextTruncationPoint) {
+        // Move the truncation point forward until a "<" character is found
+        while (plainTextTruncationPoint < html.length && html[plainTextTruncationPoint] !== '<') {
+            plainTextTruncationPoint++;
+        }
+        return plainTextTruncationPoint;
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        const threshold = 300;
+        const elements = document.querySelectorAll('.truncatable-text');
+    
+        elements.forEach(el => {
+            const paragraphs = Array.from(el.querySelectorAll('p'));
+            let totalChars = 0;
+            let breakAtParagraphIndex = -1;
+            let breakAtCharIndex = -1;
+    
+            for (let i = 0; i < paragraphs.length; i++) {
+                totalChars += paragraphs[i].textContent.length;
+                if (totalChars > threshold && breakAtParagraphIndex === -1) {
+                    breakAtParagraphIndex = i;
+                    breakAtCharIndex = threshold - (totalChars - paragraphs[i].textContent.length);
+                }
+            }
+    
+            if (breakAtParagraphIndex !== -1) {
+                const paragraph = paragraphs[breakAtParagraphIndex];
+                const truncatedText = smartTruncate(paragraph.textContent, breakAtCharIndex);
+                const originalHTML = paragraph.innerHTML;
+    
+                const truncatePosInPlainText = paragraph.textContent.lastIndexOf(truncatedText) + truncatedText.length;
+                const truncatePosInHTML = getHtmlTruncationPoint(originalHTML, truncatePosInPlainText);
+    
+                const preHTML = originalHTML.substr(0, truncatePosInHTML);
+                const postHTML = originalHTML.substr(truncatePosInHTML);
+    
+                const openTags = getOpenTags(preHTML);
+                const closeTags = openTags.map(tag => `</${tag}>`).reverse().join('');
+                const openTagsStr = openTags.map(tag => `<${tag}>`).join('');
+    
+                paragraph.innerHTML = `${preHTML}${closeTags}<span class="truncated-ellipsis">...</span><span class="truncated-more-content" style="display: none;">${openTagsStr}${postHTML}</span>`;
+                
+                for (let i = breakAtParagraphIndex + 1; i < paragraphs.length; i++) {
+                    paragraphs[i].style.display = 'none';
+                    paragraphs[i].classList.add('truncated-more-content');
+                }
+    
+                const showMoreLink = document.createElement('a');
+                showMoreLink.href = "javascript:void(0);";
+                showMoreLink.textContent = '(Show More)';
+                showMoreLink.classList.add('show-more-link');
+                el.appendChild(showMoreLink);
+    
+                showMoreLink.addEventListener('click', function() {
+                    const moreContentElems = el.querySelectorAll('.truncated-more-content');
+                    const ellipsisElem = el.querySelector('.truncated-ellipsis');
+                    
+                    if (this.textContent === '(Show More)') {
+                        moreContentElems.forEach(elem => {
+                            elem.style.display = 'inline';
+                        });
+                        ellipsisElem.style.display = 'none';
+                        this.textContent = '(Show Less)';
+                    } else {
+                        moreContentElems.forEach(elem => {
+                            elem.style.display = 'none';
+                        });
+                        ellipsisElem.style.display = 'inline';
+                        this.textContent = '(Show More)';
+                    }
+                });
+            }
+        });
+    });
+    
+</script>
+<style>
+    .show-more-link {
+        color: #657786; 
+        cursor: pointer;
+        text-decoration: none;
+    }
+</style>
 {% endblock %}
 

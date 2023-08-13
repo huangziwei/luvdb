@@ -14,8 +14,8 @@
             </a> 
             <span class="text-muted">{{ activity.activity_type | parse_activity_type}}:</span>
         </div>
-        <div class="mt-2">
-            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:600}}
+        <div class="mt-2 truncatable-text">
+            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
         </div>
         <div class="d-flex mt-2">
             <p class="me-2">
@@ -50,7 +50,7 @@
         </div>
         <div class="bg-light mt-2 p-3">
             <h5><a href="{% url 'write:post_detail' activity.content_object.id %}" class="text-decoration-none">{{activity.content_object.title}}</a></h5>
-            <div>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+            <div>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300}}</div>
         </div>
 
         <div class="d-flex mt-2">
@@ -83,12 +83,12 @@
             <span class="text-muted">{{ activity.activity_type | parse_activity_type}}:</span>
         </div>
         <div class="bg-light mt-2 p-3">
-            <div>
+            <div class="mb-2">
                 <a href="{{ activity.content_object.url }}" class="text-decoration-none">{{activity.content_object.title}}</a>
                 (<a href="{% url 'write:pins_from_url' activity.content_object.url|root_url %}" class="text-decoration-none text-secondary">{{activity.content_object.url|root_url}}</a>)
             </div>
             {% if activity.content_object.content %}
-            <div>{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+            <div class="truncatable-text">{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}</div>
             {% endif %}
         </div>
         <div class="d-flex mt-2">
@@ -175,8 +175,8 @@
                 </span>
                 {% endif %}
         </div>
-        <div class="mt-2">
-            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
+        <div class="mt-2 truncatable-text">
+            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -284,8 +284,8 @@
                 </span>
                 {% endif %}
         </div>
-        <div class="mt-2">
-            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
+        <div class="mt-2 truncatable-text">
+            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -402,8 +402,8 @@
             </span>
             {% endif %}
         </div>
-        <div class="mt-2">
-            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
+        <div class="mt-2 truncatable-text">
+            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -515,8 +515,8 @@
             {% endif %}
             
         </div>
-        <div class="mt-2">
-            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
+        <div class="mt-2 truncatable-text">
+            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
