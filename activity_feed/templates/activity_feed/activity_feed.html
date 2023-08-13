@@ -218,13 +218,18 @@
     }
     
     function getHtmlTruncationPoint(html, plainTextTruncationPoint) {
-        // Move the truncation point forward until a "<" character is found
-        while (plainTextTruncationPoint < html.length && html[plainTextTruncationPoint] !== '<') {
-            plainTextTruncationPoint++;
-        }
-        return plainTextTruncationPoint;
-    }
+        // Start from the plainTextTruncationPoint
+        let point = plainTextTruncationPoint;
     
+        // Move the point forward until a "<" character is found or until we've checked the entire string
+        while (point < html.length && html[point] !== '<') {
+            point++;
+        }
+        
+        // If we've reached the end of the string without finding a "<", return the original plainTextTruncationPoint
+        return (point === html.length) ? plainTextTruncationPoint : point;
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         const threshold = 300;
         const elements = document.querySelectorAll('.truncatable-text');
@@ -260,10 +265,17 @@
     
                 paragraph.innerHTML = `${preHTML}${closeTags}<span class="truncated-ellipsis">...</span><span class="truncated-more-content" style="display: none;">${openTagsStr}${postHTML}</span>`;
                 
+                // Wrap the following paragraphs in a div
+                const moreContentDiv = document.createElement('div');
+                moreContentDiv.classList.add('truncated-more-content');
+                moreContentDiv.style.display = 'none';
+
                 for (let i = breakAtParagraphIndex + 1; i < paragraphs.length; i++) {
-                    paragraphs[i].style.display = 'none';
-                    paragraphs[i].classList.add('truncated-more-content');
+                    moreContentDiv.appendChild(paragraphs[i].cloneNode(true)); // Append a copy of the paragraph to the div
+                    paragraphs[i].remove(); // Remove the original paragraph from the DOM
                 }
+                
+                el.appendChild(moreContentDiv);
     
                 const showMoreLink = document.createElement('a');
                 showMoreLink.href = "javascript:void(0);";
@@ -274,10 +286,10 @@
                 showMoreLink.addEventListener('click', function() {
                     const moreContentElems = el.querySelectorAll('.truncated-more-content');
                     const ellipsisElem = el.querySelector('.truncated-ellipsis');
-                    
+                                    
                     if (this.textContent === '(Show More)') {
                         moreContentElems.forEach(elem => {
-                            elem.style.display = 'inline';
+                            elem.style.display = elem.tagName === 'DIV' ? 'block' : 'inline'; // Display div as block and spans as inline
                         });
                         ellipsisElem.style.display = 'none';
                         this.textContent = '(Show Less)';
