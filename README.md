@@ -40,4 +40,6 @@ DJANGO_SETTINGS_MODULE=config.settings.development python manage.py createsuperu
 DJANGO_SETTINGS_MODULE=config.settings.development python manage.py runserver
 ```
 
+## Reaching Out
 
+[![](https://dcbadge.vercel.app/api/server/PpZCb9q5?style=flat)](https://discord.gg/PpZCb9q5)
