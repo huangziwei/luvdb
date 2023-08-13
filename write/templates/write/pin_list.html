@@ -8,7 +8,6 @@
     <div class="row">
       <div class="col-12 col-md-7 left-column">
 
-        
         <div class="d-flex justify-content-between mb-3">
             <h5>
                 <a href="{% url 'accounts:detail' object.username %}">
@@ -22,11 +21,12 @@
         {% for pin in pin_list %}
             <!--Pin-->
             <div class="activity-item mb-3">
-                <div style="background-color:#f9f9f9; padding: 1em;">
-                    <a href="{{ pin.url }}">{{ pin.title }}</a> 
-                    (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
+                <div class="mb-2">
+                    <div class="bg-light p-3 mb-2">
+                        <a href="{{ pin.url }}">{{ pin.title }}</a> (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
+                    </div>
                     {% if pin.content %}
-                    <blockquote>{{ pin.content | linkify_tags:pin.user | linkify_mentions | markdownify | truncatechars:300 }}</blockquote>
+                    <div class="mb-2">{{ pin.content | linkify_tags:pin.user | linkify_mentions | markdownify }}</div>
                     {% endif %}
                 </div>
                 <span class="d-flex mt-2">

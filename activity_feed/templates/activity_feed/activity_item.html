@@ -82,13 +82,13 @@
             </a> 
             <span class="text-muted">{{ activity.activity_type | parse_activity_type}}:</span>
         </div>
-        <div class="bg-light mt-2 p-3">
-            <div class="mb-2">
+        <div class="mt-2">
+            <div class="bg-light p-3">
                 <a href="{{ activity.content_object.url }}" class="text-decoration-none">{{activity.content_object.title}}</a>
                 (<a href="{% url 'write:pins_from_url' activity.content_object.url|root_url %}" class="text-decoration-none text-secondary">{{activity.content_object.url|root_url}}</a>)
             </div>
             {% if activity.content_object.content %}
-            <div class="truncatable-text">{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}</div>
+            <div class="mt-2 truncatable-text">{{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}</div>
             {% endif %}
         </div>
         <div class="d-flex mt-2">
