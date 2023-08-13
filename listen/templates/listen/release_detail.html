@@ -103,42 +103,38 @@
             
         <div class="col-sm-4">
             <!--Related tracks / Edit -->
-            <div class="bg-light p-3">
+            <div class="bg-light p-3 mb-3">
+                {% if user.is_authenticated %}
                 <div>
-
-                    <div class="row mb-3">
-                        <h5>Tracklist</h5>
-                        <!--list all related tracks by order-->
-                        <div class="col-sm-12">
-                            {% for release_track in object.releasetrack_set.all %}
-                                <div class="related-track"> 
-                                    <div>
-                                        <strong>{{ release_track.order }}.</strong>
-                                        <a href="{% url 'listen:track_detail' release_track.track.id %}">
-                                            {{ release_track.alt_title|default:release_track.track.title }}
-                                        </a> 
-                                        {% if release_track.track.length %}
-                                        ({{ release_track.track.length }})
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            {% empty %}
-                                <div>No related tracks found.</div>
-                            {% endfor %}
+                    <a href="{% url 'listen:release_update' object.pk %}" class='fs-6 text-secondary'>Edit Release</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="bg-light p-3 mb-3">
+                <h5>Tracklist</h5>
+                <!--list all related tracks by order-->
+                <div class="col-sm-12">
+                    {% for release_track in object.releasetrack_set.all %}
+                        <div class="related-track"> 
+                            <div>
+                                <strong>{{ release_track.order }}.</strong>
+                                <a href="{% url 'listen:track_detail' release_track.track.id %}">
+                                    {{ release_track.alt_title|default:release_track.track.title }}
+                                </a> 
+                                {% if release_track.track.length %}
+                                ({{ release_track.track.length }})
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>   
-        
-                    {% if user.is_authenticated %}
-                        <div>
-                            <a href="{% url 'listen:release_update' object.pk %}" class='fs-6 text-secondary'>Edit Release</a>
-                        </div>
-                    {% endif %}
+                    {% empty %}
+                        <div>No related tracks found.</div>
+                    {% endfor %}
                 </div>
             </div>
 
             <!--Listen on-->
             {% if object.apple_music_url or object.spotify_url or  object.kkbox_url or object.spotify_url%}
-            <div class="bg-light p-3 mt-3">
+            <div class="bg-light p-3 mb-3">
                 <h5>Listen this release on </h5>
                 {% if object.apple_music_url %}
                 <div>
@@ -164,7 +160,7 @@
             {% endif %}
 
             <!--Release Stats-->
-            <div class="bg-light p-3 mt-3">
+            <div class="bg-light p-3 mb-3">
                 <h5>Statistics</h5>
                 <div><strong>To Listen:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a></div>
                 <div><strong>Looping:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a></div>
@@ -173,7 +169,7 @@
 
             {% if lists_containing_release.count != 0 %}
             <!--LuvLists that included this release-->
-            <div class="bg-light p-3 mt-3">
+            <div class="bg-light p-3 mb-3">
                 <h5>Lists</h5>
                 <ul>
                 {% for content_in_list in lists_containing_release %}

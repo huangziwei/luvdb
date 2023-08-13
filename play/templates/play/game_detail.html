@@ -122,7 +122,14 @@
         <!--right columns-->
         <div class="col-sm-4">
             <!--Related works / Edit -->
-            <div class="bg-light p-3">
+            <div class="bg-light p-3 mb-3">
+                {% if user.is_authenticated %}
+                    <div>
+                        <a href="{% url 'play:game_update' object.pk %}" class='fs-6 text-secondary'>Edit game data</a>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="bg-light p-3 mb-3">
                 {% if object.work.id %}
                     <p>
                         <strong>Related work: </strong><a href={% url "play:work_detail" object.work.id %}>{{object.work.title}}</a>
@@ -130,16 +137,11 @@
                             ({{object.work.first_release_date}})
                         {% endif %}
                     </p>
-                    {% endif %}
-                {% if user.is_authenticated %}
-                    <div class="mt-3">
-                        <a href="{% url 'play:game_update' object.pk %}" class='fs-6 text-secondary'>Edit game data</a>
-                    </div>
                 {% endif %}
             </div>
 
             <!--stats-->
-            <div class="bg-light p-3 mt-3">
+            <div class="bg-light p-3 mb-3">
                 <h5>Statistics</h5>
                 <p><strong>To Play:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=to_play">{{ to_play_count }}</a></p>
                 <p><strong>Playing:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=playing_replaying">{{ playing_count }}</a></p>
@@ -148,9 +150,9 @@
 
             {% if lists_containing_game.count != 0 %}
             <!--LuvLists that included this game-->
-            <div class="bg-light p-3 mt-3">
+            <div class="bg-light p-3 mb-3">
                 <h5>Lists</h5>
-                <ul>
+                <ul class="m-0">
                 {% for content_in_list in lists_containing_game %}
                     <li>
                         <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">

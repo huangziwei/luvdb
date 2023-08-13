@@ -65,6 +65,13 @@
         <!--Right columns-->
         <div class="col-sm-4">
             <!--Related Work / Edit -->
+            {% if user.is_authenticated %}
+            <div class="bg-light p-3 mb-3">
+                <a href="{% url 'read:instance_update' object.pk %}" class='fs-6 text-secondary'>Edit Instance</a>
+                <br>
+                <a href="{% url 'read:book_create'%}" class='fs-6 text-secondary'>Add Book</a>
+            </div>
+            {% endif %}
             <div class="bg-light p-3">
                 {% if object.work.id %}
                 <p>
@@ -74,15 +81,6 @@
                         ({{object.work.publication_date}})
                     {% endif %}
                 </p>
-                {% endif %}
-
-                {% if user.is_authenticated %}
-                <div>
-                    <a href="{% url 'read:instance_update' object.pk %}" class='fs-6 text-secondary'>Edit Instance</a>
-                </div>
-                <div>
-                    <a href="{% url 'read:book_create'%}" class='fs-6 text-secondary'>Add Book</a>
-                </div>
                 {% endif %}
             </div>
         </div>

@@ -126,49 +126,47 @@
             
         <div class="col-sm-4">
             <!--Related instances / Edit -->
-            <div class="bg-light p-3">
-                <div>
-                    {% if object.bookinstance_set.count < 2 %}
-                        {% if object.bookinstance_set.first.instance.id %}
-                        <p><strong>Related Instance:</strong> 
-                            <a href="{% url 'read:instance_detail' object.bookinstance_set.first.instance.id %}">
-                                {{ object.bookinstance_set.first.alt_title|default:object.bookinstance_set.first.instance.title }} {% if object.bookinstance_set.first.instance.publication_date %}
-                            </a>({{object.bookinstance_set.first.instance.publication_date}}){% endif %}
-
-                        </p>
-                        {% endif %}
-                    {% else %}
-                        <div class="row">
-                            <h5>Table of Content</h5>
-                            <!--list all related instances by order-->
-                            <div class="col-sm-12">
-                                {% for book_instance in object.bookinstance_set.all %}
-                                    <div class="related-instance"> 
-                                        <p>
-                                            <a href="{% url 'read:instance_detail' book_instance.instance.id %}">
-                                                {{ book_instance.alt_title|default:book_instance.instance.title }}
-                                            </a> 
-                                            ({% if book_instance.role %}{{ book_instance.role.name }}: 
-                                                <a href="{% url 'entity:person_detail' book_instance.person.id %}">
-                                                    {{ book_instance.name|default:book_instance.person.name }}
-                                                </a>
-                                                , 
-                                            {% endif %}{{ book_instance.publication_date|default:book_instance.instance.publication_date }})
-                                        </p>
-                                    </div>
-                                {% empty %}
-                                    <p>No related instances found.</p>
-                                {% endfor %}
-                            </div>
-                        </div>   
-                    {% endif %}
-        
-                    {% if user.is_authenticated %}
-                        <div class="mt-3">
-                            <a href="{% url 'read:book_update' object.id %}" class='fs-6 text-secondary'>Edit book data</a>
-                        </div>
-                    {% endif %}
+            {% if user.is_authenticated %}
+                <div class="bg-light p-3 mb-3">
+                    <a href="{% url 'read:book_update' object.id %}" class='fs-6 text-secondary'>Edit book data</a>
                 </div>
+            {% endif %}
+            <div class="bg-light p-3">
+
+                {% if object.bookinstance_set.count < 2 %}
+                    {% if object.bookinstance_set.first.instance.id %}
+                    <p><strong>Related Instance:</strong> 
+                        <a href="{% url 'read:instance_detail' object.bookinstance_set.first.instance.id %}">
+                            {{ object.bookinstance_set.first.alt_title|default:object.bookinstance_set.first.instance.title }} {% if object.bookinstance_set.first.instance.publication_date %}
+                        </a>({{object.bookinstance_set.first.instance.publication_date}}){% endif %}
+
+                    </p>
+                    {% endif %}
+                {% else %}
+                    <div class="row">
+                        <h5>Table of Content</h5>
+                        <!--list all related instances by order-->
+                        <div class="col-sm-12">
+                            {% for book_instance in object.bookinstance_set.all %}
+                                <div class="related-instance"> 
+                                    <p>
+                                        <a href="{% url 'read:instance_detail' book_instance.instance.id %}">
+                                            {{ book_instance.alt_title|default:book_instance.instance.title }}
+                                        </a> 
+                                        ({% if book_instance.role %}{{ book_instance.role.name }}: 
+                                            <a href="{% url 'entity:person_detail' book_instance.person.id %}">
+                                                {{ book_instance.name|default:book_instance.person.name }}
+                                            </a>
+                                            , 
+                                        {% endif %}{{ book_instance.publication_date|default:book_instance.instance.publication_date }})
+                                    </p>
+                                </div>
+                            {% empty %}
+                                <p>No related instances found.</p>
+                            {% endfor %}
+                        </div>
+                    </div>   
+                {% endif %}
             </div>
         
 

@@ -33,6 +33,16 @@
         <!--Right columns-->
         <div class="col-sm-4">
             <!--Related tracks / Edit -->
+            <div class="bg-light p-3 mb-3">
+                {% if user.is_authenticated %}
+                <div>
+                    <a href="{% url 'listen:track_update' object.pk %}" class='fs-6 text-secondary'>Edit Track</a>
+                </div>
+                <div>
+                    <a href="{% url 'listen:release_create'%}" class='fs-6 text-secondary'>Add Release</a>
+                </div>
+                {% endif %}
+            </div>
             <div class="bg-light p-3">
                 {% if object.work.id %}
                 <p>
@@ -42,15 +52,6 @@
                         ({{object.work.release_date}})
                     {% endif %}
                 </p>
-                {% endif %}
-
-                {% if user.is_authenticated %}
-                <div>
-                    <a href="{% url 'listen:track_update' object.pk %}" class='fs-6 text-secondary'>Edit Track</a>
-                </div>
-                <div>
-                    <a href="{% url 'listen:release_create'%}" class='fs-6 text-secondary'>Add Release</a>
-                </div>
                 {% endif %}
             </div>
         </div>
