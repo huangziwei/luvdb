@@ -1,26 +1,48 @@
 {% load crispy_forms_tags %}
 
-<form method="POST" enctype="multipart/form-data">
-{% csrf_token %}
-{{ form|crispy }}
-{{ issueinstances.management_form|crispy }}
-<div id="issue-instance-formset" class="bg-light p-3 mb-3">
-    <strong>Instances related to this issue</strong>
-    <p class='text-muted'>An "Instance" is any representation of a literature work, e.g. the original version, revised version, or translation, etc. </p>
-    {% for form in issueinstances %}
-    <div class="form-wrapper">
-        <div class="row">
-            {{ form.id }}
-            <div class="col-md-9">
-                {{ form.instance | as_crispy_field}}
-                <a href="{% url 'read:instance_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new instance?</a>
-            </div>
-            <div class="col-md-2">
-                {{ form.order | as_crispy_field}}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.periodical|as_crispy_field }}
+    {{ form.cover|as_crispy_field }}
+    {{ form.title|as_crispy_field }}
+    {{ form.volume|as_crispy_field }}
+    {{ form.number|as_crispy_field }}
+    {{ form.publication_date|as_crispy_field }}
+    {{ form.publisher|as_crispy_field }}
+
+        <!-- Form for Issue Instances (inlined formset) -->
+    <div id="issue-instance-formset" class="bg-light p-3 mb-3">
+        <strong>Instances related to this issue</strong>
+        <p class='text-muted'>An "Instance" is any representation of a literature work, e.g. the original version, revised version, or translation, etc. </p>
+        
+        {% for form in issueinstances %}
+        <div class="form-wrapper">
+            <div class="row">
+                {{ form.id }}
+                <div class="col-md-9">
+                    {{ form.instance|as_crispy_field }}
+                    <a href="{% url 'read:instance_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new instance?</a>
+                </div>
+                <div class="col-md-2">
+                    {{ form.order|as_crispy_field }}
+                </div>
             </div>
         </div>
-    </div>  
-    {% endfor %}
-</div>
-<button type="submit" class="btn btn-sm btn-primary">Submit</button>
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
+
+{% if form.errors %}
+<div class="alert alert-danger mt-5">
+    <ul>
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <li>{{ field }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+

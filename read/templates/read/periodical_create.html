@@ -1,24 +1,39 @@
-{% extends 'base.html' %}
-
-{% load static %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}New Periodical{% endblock %}
 
 {% block content %}
-
-  <div class="container">
+<div class="container">
     <div class="row">
-        <div class="col-sm-7 left-column">
-            <h2>Create a new Periodical entry</h2>
-            <form method="POST">
-              {% csrf_token %}
-              {{ form | crispy }}
-              <button type="submit" class="btn btn-sm btn-primary">Submit</button>
-            </form>
+        <div class="col-12 col-md-7 left-column">
+            <h3>Create a new Periodical entry</h3>
+            {% include "read/periodical_form.html" %}
         </div>
+
+        <div class="col-12 col-md-5 right-column">
+            <div class="bg-light p-3">
+                <h4>Guide to Creating a Periodical</h4>
+                
+                <h5>Periodical: The Published Entity</h5>
+                <p>A Periodical represents a regular publication such as a magazine or journal. Here, you can log details about the specific publication series. Remember to mention its frequency, ISSN, publisher and other relevant details.</p>
+                
+                <h5>What to Include in a Periodical</h5>
+                <p>Log specifics about the publication, such as title, subtitle, publisher, frequency, etc. This will create a comprehensive record of the Periodical.</p>
+            </div>
+        </div>
+        
     </div>
 </div>
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+{{ form.media }}
 
-  <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-  {{ form.media }}
+<script type="text/javascript" src="{% static 'js/generalFormsetHandler.js' %}"></script>
+<script>
+    $(document).ready(function() {
+        $('select:not([name="model"], [name="frequency"])').removeClass('form-select');
+    });
+</script>
 
-{% endblock %}
+{% endblock content %}

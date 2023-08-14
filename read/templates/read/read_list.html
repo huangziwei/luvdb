@@ -119,14 +119,12 @@
                     <div>
                         <a href="{% url "read:book_create" %}" class="text-muted">Book</a>
                     </div>
-                    {% comment %} 
-                    <div>
-                        <a href="{% url "read:periodical_create" %}" class="text-muted">Periodical</a>
-                    </div> 
-                    {% endcomment %}
                     <div>
                         <a href="{% url "read:series_create" %}" class="text-muted">Book Series</a>
                     </div>
+                    <div>
+                        <a href="{% url "read:periodical_create" %}" class="text-muted">Periodical</a>
+                    </div> 
                 </div>
 
                 {% if genres %}

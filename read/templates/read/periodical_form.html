@@ -1,0 +1,23 @@
+{% load crispy_forms_tags %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.title|as_crispy_field }}
+    {{ form.subtitle|as_crispy_field }}
+    {{ form.frequency|as_crispy_field }}
+    {{ form.language|as_crispy_field }}
+    {{ form.issn|as_crispy_field }}
+    {{ form.wikipedia|as_crispy_field }}
+    {{ form.website|as_crispy_field }}
+    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+</form>
+{% if form.errors %}
+<div class="alert alert-danger mt-5">
+    <ul>
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <li>{{ field }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

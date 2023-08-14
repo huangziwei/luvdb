@@ -28,19 +28,17 @@
                     <!--issue-meta-->
                     <div class="col flex-grow-1 ms-lg-3">
                         <div class="card-body">
-                            <span class='d-flex align-items-start'>
-                                <h3>{{ issue.periodical.title }}: {{ issue.title }} </h3>
+                            <span class='align-items-start'>
+                                <h3>Vol. {{ issue.volume }} Issue {{ issue.number }} </h3>
+                                <h5><a class="text-muted" href="{% url 'read:periodical_detail' issue.periodical.id %}">{{ issue.periodical.title }}</a></h5>
                             </span>
                             
                             <div class="issue-meta">
-                                {% if issue.number %}
-                                    <p><strong>Number:</strong> {{ issue.number }}</p>
-                                {% endif %}
-                                {% if issue.volume %}
-                                    <p><strong>Volume:</strong> {{ issue.volume }}</p>
-                                {% endif %}
                                 {% if issue.publication_date %}
                                     <p><strong>Date:</strong> {{ issue.publication_date }}</p>
+                                {% endif %}
+                                {% if issue.publisher %}
+                                    <p><strong>Publisher:</strong> {{ issue.publisher }}</p>
                                 {% endif %}
                             </div>
                         </div>
@@ -65,7 +63,14 @@
         </div>
             
         <div class="col-sm-4">
+            
+            {% if user.is_authenticated %}
+                <div class="bg-light p-3 mb-3">
+                    <a href="{% url 'read:issue_update' issue.periodical.id issue.pk %}" class='fs-6 text-secondary'>Edit issue data</a>
+                </div>
+            {% endif %}
             <!--Related instances / Edit -->
+            {% if object.issueinstance_set.count != 0 %}
             <div class="bg-light p-3">
                 <!-- Related instances or issues etc. -->
                 {% if object.issueinstance_set.count < 2 %}
@@ -101,13 +106,8 @@
                             </div>
                         </div>   
                     {% endif %}
-
-                {% if user.is_authenticated %}
-                    <div class="mt-3">
-                        <a href="{% url 'read:issue_update' issue.periodical.id issue.pk %}" class='fs-6 text-secondary'>Edit issue data</a>
-                    </div>
-                {% endif %}
             </div>
+            {% endif %}
         
             <!--Issue Stats -->
             <div class="bg-light p-3 mt-3">

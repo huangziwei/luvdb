@@ -93,7 +93,7 @@
                                     {% elif checkin.content_type.model == 'issue' %}
                                         <h5>{{ checkin.content_object.periodical.title }}</h5>
                                         <a href=" {% url 'read:issue_detail' checkin.content_object.periodical.id checkin.content_object.id %} " class="text-decoration-none hover-username">
-                                            <h6>{{ checkin.content_object.title }}</h6>
+                                            <h6>Vol. {{ checkin.content_object.volume }} Issue {{checkin.content_object.number}}</h6>
                                         </a>
                                     {% endif %}
 

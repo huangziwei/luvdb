@@ -575,13 +575,6 @@ class ReadCheckIn(models.Model):
 class Periodical(models.Model):
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
-    publisher = models.ForeignKey(
-        Publisher,
-        on_delete=models.SET_NULL,
-        related_name="periodicals",
-        null=True,
-        blank=True,
-    )
     FREQUENCY_CHOICES = (
         ("D", "Daily"),
         ("SW", "Semiweekly"),
@@ -605,6 +598,7 @@ class Periodical(models.Model):
     )
     language = LanguageField(max_length=8, blank=True, null=True)
     issn = models.CharField(max_length=8, blank=True, null=True)
+    wikipedia = models.URLField(max_length=200, blank=True, null=True)
     website = models.URLField(max_length=200, blank=True, null=True)
 
     # entry meta data
@@ -630,6 +624,13 @@ class Periodical(models.Model):
 class Issue(models.Model):
     periodical = models.ForeignKey(
         Periodical, on_delete=models.CASCADE, related_name="issues"
+    )
+    publisher = models.ForeignKey(
+        Publisher,
+        on_delete=models.SET_NULL,
+        related_name="published_issues",
+        null=True,
+        blank=True,
     )
     title = models.CharField(max_length=255, blank=True, null=True)
     volume = models.IntegerField(blank=True, null=True)

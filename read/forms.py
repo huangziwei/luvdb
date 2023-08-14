@@ -300,10 +300,10 @@ class PeriodicalForm(forms.ModelForm):
         fields = [
             "title",
             "subtitle",
-            "publisher",
             "frequency",
             "language",
             "issn",
+            "wikipedia",
             "website",
         ]
 
@@ -320,11 +320,12 @@ class IssueForm(forms.ModelForm):
         model = Issue
         fields = [
             "periodical",
+            "cover",
             "number",
             "volume",
+            "publisher",
             "publication_date",
             "title",
-            "cover",
         ]
         exclude = [
             "created_by",
@@ -334,6 +335,9 @@ class IssueForm(forms.ModelForm):
         widgets = {
             "instances": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("read:instance-autocomplete")
+            ),
+            "publisher": autocomplete.ModelSelect2(
+                url=reverse_lazy("read:publisher-autocomplete")
             ),
         }
 
