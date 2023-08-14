@@ -608,13 +608,20 @@ class SeriesCastDetailView(DetailView):
 
         # Prepare data structure for the HTML
         series_casts = defaultdict(list)
+
         for cast in casts:
+            
+            season_str = str(cast.episode.season).zfill(2)
+            episode_str = str(cast.episode.episode).zfill(2)
+            episode_num = f"S{season_str}E{episode_str}"
+
             series_casts[cast.person].append(
                 {
                     "character_name": cast.character_name,
                     "role": cast.role,
                     "episode_title": cast.episode.title,
                     "episode_id": cast.episode.id,
+                    "episode_num": episode_num,
                     "release_date": cast.episode.release_date,
                 }
             )

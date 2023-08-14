@@ -40,7 +40,7 @@
             {% for role in roles %}
                 <li>
                     <a href="{% url 'watch:episode_detail' series.id role.episode_id %}">{{ role.episode_title }} </a>
-                    ({{ role.release_date }}) {{ role.character_name }}
+                    ({{ role.release_date }})
                 </li>
             {% endfor %}
             </ul>            

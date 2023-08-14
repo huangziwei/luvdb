@@ -35,6 +35,7 @@
                             <p class='text-muted'>{{ object.romanized_title }} </p>
                             {% endif %}
                             <div class="movie-meta">
+                                {% if object.studios %}
                                 <p>
                                     <span class="text-muted">Studio{% if object.studios.count > 1 %}s{% endif %}:</span> 
                                     {% for studio in object.studios.all %}
@@ -42,9 +43,8 @@
                                         {% if not forloop.last %} / {% endif %}
                                     {% endfor %}
                                 </p>
-                                {% if object.release_date %}
-                                    <p><span class="text-muted">Premiere on:</span> {{ object.release_date }}</p>
                                 {% endif %}
+                                
                                 {% if object.website %}
                                     <p><span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a></p>
                                 {% endif %}
@@ -63,7 +63,11 @@
                                 </p>
                                 {% endif %}
 
-                                <p><span class="text-muted">Cast:</span> <a href="{% url 'watch:series_cast_detail' object.id %}">View Cast</a></p>
+                                {% if object.release_date %}
+                                    <p><span class="text-muted">Premiere on:</span> {{ object.release_date }}</p>
+                                {% endif %}
+
+                                <p><span class="text-muted">Cast:</span> <a href="{% url 'watch:series_cast_detail' object.id %}">View All Cast</a></p>
                             </div>
                         </div>
                         <!-- End of series-card -->
