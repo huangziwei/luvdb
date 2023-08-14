@@ -37,6 +37,7 @@ from .forms import (
 from .models import (
     Episode,
     EpisodeCast,
+    EpisodeRole,
     Genre,
     Movie,
     MovieRole,
@@ -606,16 +607,14 @@ class SeriesCastDetailView(DetailView):
             "person", "role"
         )
 
-        # Prepare data structure for the HTML
-        series_casts = defaultdict(list)
-
+        # Prepare data structure for the episode casts
+        episodes_cast = defaultdict(list)
         for cast in casts:
-            
             season_str = str(cast.episode.season).zfill(2)
             episode_str = str(cast.episode.episode).zfill(2)
             episode_num = f"S{season_str}E{episode_str}"
 
-            series_casts[cast.person].append(
+            episodes_cast[cast.person].append(
                 {
                     "character_name": cast.character_name,
                     "role": cast.role,
@@ -626,8 +625,40 @@ class SeriesCastDetailView(DetailView):
                 }
             )
 
-        context["series_cast"] = dict(series_casts)
-        context["series_crew"] = self.object.seriesroles.all()
+        # Extract all crews from those episodes
+        crews = EpisodeRole.objects.filter(episode__in=episodes).prefetch_related(
+            "person", "role"
+        )
+
+        # Prepare data structure for the episode crews grouped by roles then persons
+        episodes_crew_by_role = defaultdict(lambda: defaultdict(list))
+        for crew in crews:
+            season_str = str(crew.episode.season).zfill(2)
+            episode_str = str(crew.episode.episode).zfill(2)
+            episode_num = f"S{season_str}E{episode_str}"
+
+            episodes_crew_by_role[crew.role][crew.person].append(
+                {
+                    "episode_title": crew.episode.title,
+                    "episode_id": crew.episode.id,
+                    "episode_num": episode_num,
+                    "release_date": crew.episode.release_date,
+                }
+            )
+
+        # Convert inner defaultdicts to dict
+        for role, crew_info in episodes_crew_by_role.items():
+            episodes_crew_by_role[role] = dict(crew_info)
+
+        context["episodes_crew_by_role"] = dict(episodes_crew_by_role)
+        # Group series crew by their roles
+        series_crew_grouped = defaultdict(list)
+        for seriesrole in self.object.seriesroles.all():
+            series_crew_grouped[seriesrole.role].append(seriesrole)
+
+        context["series_crew"] = dict(series_crew_grouped)
+        context["episodes_cast"] = dict(episodes_cast)
+
         return context
 
 
@@ -704,7 +735,12 @@ class EpisodeDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         episode = get_object_or_404(Episode, pk=self.kwargs["pk"])
         context["episodecasts"] = episode.episodecasts.all()
-        context["episoderoles"] = episode.episoderoles.all()
+        # Group episoderoles by their roles
+        episoderoles_grouped = defaultdict(list)
+        for episoderole in episode.episoderoles.all():
+            episoderoles_grouped[episoderole.role].append(episoderole)
+
+        context["episoderoles"] = dict(episoderoles_grouped)
 
         return context
 
