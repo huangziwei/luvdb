@@ -51,8 +51,12 @@
                                     {% if issue.number %}
                                         Issue {{ issue.number }}
                                     {% endif %}
+                                    {% if issue.publication_date %}
+                                      ({{issue.publication_date}})
+                                    {% endif %}
                                 </div>
                             </a>
+                            
                         </div>
                     {% empty %}
                         <p>No issues available.</p>

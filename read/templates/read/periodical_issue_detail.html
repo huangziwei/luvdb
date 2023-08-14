@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}{{ issue.title }}{% endblock %}
-
 {% block content %}
 <div class="container">
     <div class="row">
@@ -35,10 +33,10 @@
                             
                             <div class="issue-meta">
                                 {% if issue.publication_date %}
-                                    <p><strong>Date:</strong> {{ issue.publication_date }}</p>
+                                    <p class='text-secondary'>Date: {{ issue.publication_date }}</p>
                                 {% endif %}
                                 {% if issue.publisher %}
-                                    <p><strong>Publisher:</strong> {{ issue.publisher }}</p>
+                                    <p class='text-secondary'>Publisher: {{ issue.publisher }}</p>
                                 {% endif %}
                             </div>
                         </div>

@@ -622,7 +622,13 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         periodical_id = self.kwargs.get("periodical_id")
-        return reverse("read:periodical_detail", kwargs={"pk": periodical_id})
+        return reverse(
+            "read:issue_detail",
+            kwargs={
+                "pk": self.object.pk,
+                "periodical_id": periodical_id,
+            },
+        )
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -777,7 +783,13 @@ class IssueUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         periodical_id = self.object.periodical.pk
-        return reverse("read:periodical_detail", kwargs={"pk": periodical_id})
+        return reverse(
+            "read:issue_detail",
+            kwargs={
+                "pk": self.object.pk,
+                "periodical_id": periodical_id,
+            },
+        )
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
