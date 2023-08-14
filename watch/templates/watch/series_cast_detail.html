@@ -39,7 +39,7 @@
             <ul id="episodeList{{ forloop.counter }}" class="collapse">
             {% for role in roles %}
                 <li>
-                    <a href="{% url 'watch:episode_detail' series.id role.episode_id %}">{{ role.episode_title }} </a>
+                    {{ role.episode_num }} <a href="{% url 'watch:episode_detail' series.id role.episode_id %}">{{ role.episode_title }} </a>
                     ({{ role.release_date }})
                 </li>
             {% endfor %}
