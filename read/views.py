@@ -799,6 +799,7 @@ class IssueUpdateView(LoginRequiredMixin, UpdateView):
             )
         else:
             data["issueinstances"] = IssueInstanceFormSet(instance=self.object)
+
         return data
 
     def form_valid(self, form):

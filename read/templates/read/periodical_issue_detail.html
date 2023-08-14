@@ -71,39 +71,25 @@
             {% if object.issueinstance_set.count != 0 %}
             <div class="bg-light p-3">
                 <!-- Related instances or issues etc. -->
-                {% if object.issueinstance_set.count < 2 %}
-                        {% if object.issueinstance_set.first.instance.id %}
-                        <p><strong>Related Instance:</strong> 
-                            <a href="{% url 'read:instance_detail' object.issueinstance_set.first.instance.id %}">
-                                {{ object.issueinstance_set.first.alt_title|default:object.issueinstance_set.first.instance.title }}
-                            </a>
-                        </p>
-                        {% endif %}
-                    {% else %}
-                        <div class="row">
-                            <h5>Table of Content</h5>
-                            <!--list all related instances by order-->
-                            <div class="col-sm-12">
-                                {% for book_instance in object.issueinstance_set.all %}
-                                    <div class="related-instance"> 
-                                        <p>
-                                            <a href="{% url 'read:instance_detail' book_instance.instance.id %}">
-                                                {{ book_instance.alt_title|default:book_instance.instance.title }}
-                                            </a> 
-                                            ({% if book_instance.role %}{{ book_instance.role.name }}: 
-                                                <a href="{% url 'entity:person_detail' book_instance.person.id %}">
-                                                    {{ book_instance.name|default:book_instance.person.name }}
-                                                </a>
-                                                , 
-                                            {% endif %}{{ book_instance.publication_date|default:book_instance.instance.publication_date }})
-                                        </p>
-                                    </div>
-                                {% empty %}
-                                    <p>No related instances found.</p>
-                                {% endfor %}
+                <div class="row">
+                    <h5>Table of Content</h5>
+                    <!--list all related instances by order-->
+                    <div class="col-sm-12">
+                        {% for issueinstance in object.issueinstance_set.all %}
+                            <div class="related-instance"> 
+                                <p>
+                                    <a href="{% url 'read:instance_detail' issueinstance.instance.id %}">
+                                        {{ issueinstance.alt_title|default:issueinstance.instance.title }}
+                                    </a> 
+                                    ({% for role in issueinstance.instance.instancerole_set.all %}{% if role.role.name == "Author" %}{{ role.alt_name|default:role.person.name }}, {% endif %}{% endfor %}
+                                    {{ issueinstance.publication_date|default:issueinstance.instance.publication_date }})
+                                </p>
                             </div>
-                        </div>   
-                    {% endif %}
+                        {% empty %}
+                            <p>No related instances found.</p>
+                        {% endfor %}
+                    </div>
+                </div>   
             </div>
             {% endif %}
         

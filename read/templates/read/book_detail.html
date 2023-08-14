@@ -131,8 +131,9 @@
                     <a href="{% url 'read:book_update' object.id %}" class='fs-6 text-secondary'>Edit book data</a>
                 </div>
             {% endif %}
-            <div class="bg-light p-3">
 
+            {% if object.bookinstance_set.count != 0 %}
+            <div class="bg-light p-3">
                 {% if object.bookinstance_set.count < 2 %}
                     {% if object.bookinstance_set.first.instance.id %}
                     <p><strong>Related Instance:</strong> 
@@ -168,6 +169,7 @@
                     </div>   
                 {% endif %}
             </div>
+            {% endif %}
         
 
             <!--Book Stats-->
