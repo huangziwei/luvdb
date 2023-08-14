@@ -13,12 +13,12 @@
         {% for pin in pins %}
             <!--Pin-->
             <div class="activity-item mb-3">
-                <p>
+                <div class="mb-2">
                     <a href="{% url 'accounts:detail' pin.user.username %}">
                         {{ pin.user.display_name | default:pin.user.username }}
                     </a> pinned:
-                </p>
-                <div style="background-color:#f9f9f9; padding: 1em;">
+                </div>
+                <div class="bg-light p-3">
                     <a href="{{ pin.url }}">{{ pin.title }}</a> 
                     (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
                     {% if pin.content %}
