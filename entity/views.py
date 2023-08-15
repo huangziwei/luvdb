@@ -109,6 +109,7 @@ class PersonDetailView(DetailView):
         )
         context["series"] = (
             Series.objects.filter(episodes__episodecasts__person=person)
+            .annotate(episode_count=Count("episodes"))
             .distinct()
             .order_by("release_date")
         )

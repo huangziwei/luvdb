@@ -266,7 +266,7 @@
                         <ul>
                         {% for serie in series %}
                             <li>
-                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.release_date }})
+                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.episode_count }} eps, {{ serie.release_date }})
                             </li>
                         {% endfor %}
                         </ul>
