@@ -96,9 +96,9 @@
             <!--Issue Stats -->
             <div class="bg-light p-3 mt-3">
                 <h5>Statistics</h5>
-                <p><strong>To Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=to_read">{{ to_read_count }}</a></p>
-                <p><strong>Reading:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=reading_rereading">{{ reading_count }}</a></p>
-                <p><strong>Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=read_reread">{{ read_count }}</a></p>
+                <div><strong class="text-muted">To Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=to_read">{{ to_read_count }}</a></div>
+                <div><strong class="text-muted">Reading:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=reading_rereading">{{ reading_count }}</a></div>
+                <div><strong class="text-muted">Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=read_reread">{{ read_count }}</a></div>
             </div>
 
             {% if issue.internet_archive_url %}

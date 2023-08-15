@@ -184,6 +184,7 @@ class Work(models.Model):  # Renamed from Book
     )  # novel, etc.
     genres = models.ManyToManyField(Genre, related_name="read_works", blank=True)
     wikipedia = models.URLField(max_length=200, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
