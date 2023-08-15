@@ -91,6 +91,7 @@ class Work(models.Model):  # Renamed from Book
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
+    other_titles = models.TextField(blank=True, null=True)
     persons = models.ManyToManyField(
         Person, through="WorkRole", related_name="play_works"
     )
@@ -177,6 +178,7 @@ class Game(models.Model):
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
+    other_titles = models.TextField(blank=True, null=True)
     work = models.ForeignKey(
         Work, on_delete=models.CASCADE, null=True, blank=True, related_name="games"
     )

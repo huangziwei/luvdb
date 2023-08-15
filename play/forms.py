@@ -31,12 +31,16 @@ class WorkForm(forms.ModelForm):
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("play:genre-autocomplete")
             ),
+            "other_titles": forms.TextInput(),
         }
 
     def __init__(self, *args, **kwargs):
         super(WorkForm, self).__init__(*args, **kwargs)
         self.fields["developers"].required = False
         self.fields["genres"].required = False
+        self.fields[
+            "other_titles"
+        ].help_text = "e.g. translated titles in different languages, separated by comma or slash."
 
 
 class WorkRoleForm(forms.ModelForm):
@@ -106,6 +110,7 @@ class GameForm(forms.ModelForm):
             "publishers": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("play:publisher-autocomplete")
             ),
+            "other_titles": forms.TextInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -113,6 +118,9 @@ class GameForm(forms.ModelForm):
         self.fields["developers"].required = False
         self.fields["platforms"].required = False
         self.fields["publishers"].required = False
+        self.fields[
+            "other_titles"
+        ].help_text = "e.g. translated titles in different languages, separated by comma or slash."
 
 
 class GameRoleForm(forms.ModelForm):
