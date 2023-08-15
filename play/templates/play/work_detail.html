@@ -50,6 +50,13 @@
                 </div>
                 {% endif %}
             </div>
+
+            {% if object.wikipedia %}
+            <div class="bg-light p-3 mt-3">
+                <h5>Links</h5>
+                <div><a href="{{object.wikipedia}}">Wikipedia</a></div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

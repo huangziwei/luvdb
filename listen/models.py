@@ -77,6 +77,7 @@ class Work(models.Model):
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
     genres = models.ManyToManyField(Genre, related_name="listen_works", blank=True)
+    wikipedia = models.URLField(blank=True, null=True)
     note = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -182,6 +183,7 @@ class Release(models.Model):
     )
     label = models.ManyToManyField(Label, related_name="releases")
     genres = models.ManyToManyField(Genre, related_name="releases", blank=True)
+    wikipedia = models.URLField(blank=True, null=True)
 
     release_date = models.CharField(
         max_length=10, blank=True, null=True

@@ -10,6 +10,7 @@
         {{ form.developers|as_crispy_field }}
         <a href="{% url 'play:developer_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new developer?</a>                   
     </div>
+    {{ form.wikipedia|as_crispy_field}}
 
     {{ workroles.management_form|crispy }}
     <div id="work-role-formset" class="bg-light p-2 mb-3">

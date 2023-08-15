@@ -18,6 +18,7 @@
     {{ form.isbn_10|as_crispy_field }}
     {{ form.isbn_13|as_crispy_field }}
     {{ form.asin|as_crispy_field }}
+    {{ form.internet_archive_url|as_crispy_field}}
 
     {{ bookroles.management_form|crispy }}
     <div id="book-role-formset" class="bg-light p-3 mb-3">

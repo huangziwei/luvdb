@@ -183,6 +183,7 @@ class Work(models.Model):  # Renamed from Book
         max_length=255, choices=WORK_TYPES, blank=True, null=True
     )  # novel, etc.
     genres = models.ManyToManyField(Genre, related_name="read_works", blank=True)
+    wikipedia = models.URLField(max_length=200, blank=True, null=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -378,6 +379,7 @@ class Book(models.Model):
         null=True,
         validators=[validate_asin],
     )
+    internet_archive_url = models.URLField(max_length=200, blank=True, null=True)
     readcheckin = GenericRelation("ReadCheckIn")
 
     # entry meta data
@@ -639,6 +641,8 @@ class Issue(models.Model):
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
+    internet_archive_url = models.URLField(max_length=200, blank=True, null=True)
+
     instances = models.ManyToManyField(
         Instance, through="IssueInstance", related_name="issues"
     )

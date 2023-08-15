@@ -101,6 +101,13 @@
                 <p><strong>Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=read_reread">{{ read_count }}</a></p>
             </div>
 
+            {% if issue.internet_archive_url %}
+            <div class="bg-light p-3 mt-3">
+                <h5>Read on</h5>
+                <div><a href="{{issue.internet_archive_url}}">Internet Archive</a></div>
+            </div>
+            {% endif %}
+
             {% if lists_containing_issue.count != 0 %}
             <!--LuvLists that included this issue-->
             <div class="bg-light p-3 mt-3">

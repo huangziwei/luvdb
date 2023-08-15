@@ -9,6 +9,7 @@
     {{ form.number|as_crispy_field }}
     {{ form.publication_date|as_crispy_field }}
     {{ form.publisher|as_crispy_field }}
+    {{ form.internet_archive_url|as_crispy_field }}
 
         <!-- Form for Issue Instances (inlined formset) -->
     {{ issueinstances.management_form|crispy }}

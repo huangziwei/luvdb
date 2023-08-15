@@ -326,6 +326,7 @@ class IssueForm(forms.ModelForm):
             "publisher",
             "publication_date",
             "title",
+            "internet_archive_url",
         ]
         exclude = [
             "created_by",

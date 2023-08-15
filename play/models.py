@@ -122,6 +122,7 @@ class Work(models.Model):  # Renamed from Book
         max_length=255, choices=WORK_TYPES, blank=True, null=True
     )
     genres = models.ManyToManyField(Genre, related_name="play_works", blank=True)
+    wikipedia = models.URLField(blank=True, null=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)

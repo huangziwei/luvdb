@@ -116,6 +116,13 @@
                 <p><strong>Watched:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a></p>
             </div>
 
+            {% if object.wikipedia %}
+            <div class="bg-light p-3 mt-3">
+                <h5>Links</h5>
+                <div><a href="{{object.wikipedia}}">Wikipedia</a></div>
+            </div>
+            {% endif %}
+
 
             {% if lists_containing_movie.count != 0 %}
             <!--LuvLists that included this movie-->
