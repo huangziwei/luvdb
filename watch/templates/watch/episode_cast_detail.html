@@ -5,7 +5,6 @@
     <h1>{{ episode.title }} Cast</h1>
     <ul>
         {% for episodecast in episodecasts %}
-
         <li>
             <a href="{% url 'entity:person_detail' episodecast.person.id %}">{{ episodecast.person.name }} </a>
             as 
