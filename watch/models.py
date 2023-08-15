@@ -57,6 +57,7 @@ class Movie(models.Model):
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
+    other_titles = models.TextField(blank=True, null=True)
     studios = models.ManyToManyField(Studio, related_name="movies")
     persons = models.ManyToManyField(Person, through="MovieRole", related_name="movies")
     casts = models.ManyToManyField(
@@ -180,6 +181,7 @@ class Series(models.Model):
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
+    other_titles = models.TextField(blank=True, null=True)
     studios = models.ManyToManyField(Studio, related_name="series")
     persons = models.ManyToManyField(
         Person, through="SeriesRole", related_name="series"
@@ -285,6 +287,7 @@ class Episode(models.Model):
     title = models.CharField(max_length=255, blank=True, null=True)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     romanized_title = models.CharField(max_length=255, blank=True, null=True)
+    other_titles = models.TextField(blank=True, null=True)
     season = models.IntegerField(blank=True, null=True)
     episode = models.IntegerField(blank=True, null=True)
     release_date = models.CharField(

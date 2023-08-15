@@ -38,12 +38,16 @@ class MovieForm(forms.ModelForm):
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("watch:genre-autocomplete")
             ),
+            "other_titles": forms.TextInput(),
         }
 
     def __init__(self, *args, **kwargs):
         super(MovieForm, self).__init__(*args, **kwargs)
         self.fields["studios"].required = False
         self.fields["genres"].required = False
+        self.fields[
+            "other_titles"
+        ].help_text = "e.g. translated titles in different languages, separated by comma or slash."
 
 
 class MovieRoleForm(forms.ModelForm):
@@ -159,12 +163,16 @@ class SeriesForm(forms.ModelForm):
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("watch:genre-autocomplete")
             ),
+            "other_titles": forms.TextInput(),
         }
 
     def __init__(self, *args, **kwargs):
         super(SeriesForm, self).__init__(*args, **kwargs)
         self.fields["studios"].required = False
         self.fields["genres"].required = False
+        self.fields[
+            "other_titles"
+        ].help_text = "e.g. translated titles in different languages, separated by comma or slash."
 
 
 class SeriesRoleForm(forms.ModelForm):
@@ -221,6 +229,16 @@ class EpisodeForm(forms.ModelForm):
         model = Episode
         exclude = ["created_by", "updated_by", "persons", "casts"]
         fields = "__all__"
+
+        widgets = {
+            "other_titles": forms.TextInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(EpisodeForm, self).__init__(*args, **kwargs)
+        self.fields[
+            "other_titles"
+        ].help_text = "e.g. translated titles in different languages, separated by comma or slash."
 
 
 class EpisodeRoleForm(forms.ModelForm):

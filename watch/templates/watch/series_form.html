@@ -2,7 +2,7 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.title|as_crispy_field }}
-    {{ form.romanized_title|as_crispy_field }}    
+    {{ form.other_titles|as_crispy_field }}    
     {{ form.poster|as_crispy_field}}
     <div class="mb-3">
         {{ form.studios|as_crispy_field }}

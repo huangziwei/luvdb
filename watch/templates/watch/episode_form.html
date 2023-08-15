@@ -3,7 +3,7 @@
     {% csrf_token %}
     {{ form.series | as_crispy_field }}
     {{ form.title|as_crispy_field }}
-    {{ form.romanized_title|as_crispy_field }}
+    {{ form.other_titles|as_crispy_field }}
     {{ form.season | as_crispy_field }}
     {{ form.episode | as_crispy_field }}
     {{ form.release_date|as_crispy_field }}
