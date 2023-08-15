@@ -42,7 +42,7 @@
                 </div>
 
                 {% if genres %}
-                <div class="bg-light p-3">
+                <div class="bg-light p-3 mb-3">
                     <h5>Genres</h5>
                     <div class='d-flex flex-wrap'>
                     {% for genre in genres %}
@@ -51,6 +51,12 @@
                     </div>
                 </div>
                 {% endif %}
+
+                <div class="bg-light p-3 mb-3">
+                    <h5>Statistics</h5>
+                    <div><span class="text-muted">Works</span>: {{works_count}}</div>
+                    <div><span class="text-muted">Games</span>: {{games_count}}</div>
+                </div>
             </div>
         </div>
     </div>

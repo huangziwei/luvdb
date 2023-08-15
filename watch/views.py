@@ -40,9 +40,7 @@ from .models import (
     EpisodeRole,
     Genre,
     Movie,
-    MovieRole,
     Series,
-    SeriesRole,
     Studio,
     WatchCheckIn,
 )
@@ -400,6 +398,11 @@ class WatchListView(TemplateView):
             .order_by("name")
             .distinct()
         )
+
+        context["movies_count"] = Movie.objects.count()
+        context["series_count"] = Series.objects.count()
+        context["episodes_count"] = Episode.objects.count()
+        
         return context
 
 

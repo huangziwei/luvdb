@@ -1001,6 +1001,12 @@ class ReadListView(ListView):
             .order_by("name")
             .distinct()
         )
+        # Additional context for the statistics
+        context["works_count"] = Work.objects.count()
+        context["instances_count"] = Instance.objects.count()
+        context["books_count"] = Book.objects.count()
+        context["periodicals_count"] = Periodical.objects.count()
+        context["issues_count"] = Issue.objects.count()
         return context
 
 

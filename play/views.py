@@ -706,6 +706,11 @@ class PlayListView(ListView):
             .order_by("name")
             .distinct()
         )
+
+        # Additional context for the statistics
+        context["works_count"] = Work.objects.count()
+        context["games_count"] = Game.objects.count()
+
         return context
 
 

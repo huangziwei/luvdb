@@ -864,6 +864,10 @@ class ListenListView(ListView):
             .order_by("name")
             .distinct()
         )
+
+        context["works_count"] = Work.objects.count()
+        context["tracks_count"] = Track.objects.count()
+        context["releases_count"] = Release.objects.count()
         return context
 
 
