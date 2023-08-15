@@ -625,6 +625,10 @@ class SeriesCastDetailView(DetailView):
                 }
             )
 
+        # Sort episodes for each cast member by release_date
+        for person, roles in episodes_cast.items():
+            episodes_cast[person] = sorted(roles, key=lambda x: x["release_date"])
+
         # Extract all crews from those episodes
         crews = EpisodeRole.objects.filter(episode__in=episodes).prefetch_related(
             "person", "role"
@@ -646,11 +650,14 @@ class SeriesCastDetailView(DetailView):
                 }
             )
 
-        # Convert inner defaultdicts to dict
+        # Convert inner defaultdicts to dict and sort episodes by release_date
         for role, crew_info in episodes_crew_by_role.items():
+            for person, episodes in crew_info.items():
+                crew_info[person] = sorted(episodes, key=lambda x: x["release_date"])
             episodes_crew_by_role[role] = dict(crew_info)
 
         context["episodes_crew_by_role"] = dict(episodes_crew_by_role)
+
         # Group series crew by their roles
         series_crew_grouped = defaultdict(list)
         for seriesrole in self.object.seriesroles.all():

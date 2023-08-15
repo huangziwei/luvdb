@@ -1,6 +1,6 @@
 from dal import autocomplete
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.urls import reverse_lazy
 from django.utils.html import format_html
 from django.views.generic.detail import DetailView
@@ -11,7 +11,7 @@ from listen.models import Work as ListenWork
 from play.models import Work as GameWork
 from read.models import Book
 from read.models import Instance as LitInstance
-from watch.models import Movie, Series
+from watch.models import Episode, Movie, Series
 
 from .forms import PersonForm
 from .models import Person, Role
@@ -120,13 +120,45 @@ class PersonDetailView(DetailView):
             .distinct()
             .order_by("release_date")
         )
-        context["series_as_director"] = (
-            Series.objects.filter(
-                seriesroles__person=person, seriesroles__role__name="Director"
+
+        directed_series = Series.objects.filter(
+            seriesroles__person=person, seriesroles__role__name="Director"
+        ).distinct()
+
+        episode_series = (
+            Episode.objects.filter(
+                episoderoles__person=person, episoderoles__role__name="Director"
             )
-            .distinct()
-            .order_by("release_date")
+            .values("series__id", "series__title")
+            .annotate(episode_count=Count("id"))
         )
+
+        series_directed_info = []
+
+        # Add series directed by the person
+        for series in directed_series:
+            series_directed_info.append({"series": series, "episode_count": None})
+
+        # Add series based on episodes directed by the person
+        for entry in episode_series:
+            # Check if series is already in series_directed_info
+            if any(
+                info["series"].id == entry["series__id"]
+                for info in series_directed_info
+            ):
+                # If the series is already in the list, update the episode_count
+                for info in series_directed_info:
+                    if info["series"].id == entry["series__id"]:
+                        info["episode_count"] = entry["episode_count"]
+            else:
+                # If the series is not in the list, add it with the episode count
+                series = Series.objects.get(pk=entry["series__id"])
+                series_directed_info.append(
+                    {"series": series, "episode_count": entry["episode_count"]}
+                )
+
+        # Add to context
+        context["series_as_director"] = series_directed_info
 
         context["movies_as_writer"] = (
             Movie.objects.filter(
@@ -135,13 +167,44 @@ class PersonDetailView(DetailView):
             .distinct()
             .order_by("release_date")
         )
-        context["series_as_writer"] = (
-            Series.objects.filter(
-                seriesroles__person=person, seriesroles__role__name="Writer"
+
+        written_series = Series.objects.filter(
+            seriesroles__person=person, seriesroles__role__name="Writer"
+        ).distinct()
+
+        episode_series_writer = (
+            Episode.objects.filter(
+                episoderoles__person=person, episoderoles__role__name="Writer"
             )
-            .distinct()
-            .order_by("release_date")
+            .values("series__id", "series__title")
+            .annotate(episode_count=Count("id"))
         )
+
+        series_written_info = []
+
+        # Add series written by the person
+        for series in written_series:
+            series_written_info.append({"series": series, "episode_count": None})
+
+        # Add series based on episodes written by the person
+        for entry in episode_series_writer:
+            # Check if series is already in series_written_info
+            if any(
+                info["series"].id == entry["series__id"] for info in series_written_info
+            ):
+                # If the series is already in the list, update the episode_count
+                for info in series_written_info:
+                    if info["series"].id == entry["series__id"]:
+                        info["episode_count"] = entry["episode_count"]
+            else:
+                # If the series is not in the list, add it with the episode count
+                series = Series.objects.get(pk=entry["series__id"])
+                series_written_info.append(
+                    {"series": series, "episode_count": entry["episode_count"]}
+                )
+
+        # Add to context
+        context["series_as_writer"] = series_written_info
 
         # play
         context["gameworks"] = (

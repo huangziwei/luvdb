@@ -274,28 +274,31 @@
                     {% endif %}
                 {% endif %}
                 <!--As Director-->
-                {% if movies_as_director.count != 0 or series_as_director.count != 0 %}
+                {% if movies_as_director.count != 0 or series_as_director %}
                 <h4>As Director</h4>
-                    {% if movies_as_director.count != 0 %}
-                    <div class="col-md-6">
-                        <h5>Movies</h5>
-                        <ul>
-                        {% for movie in movies_as_director %}
-                            <li>
-                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
-                            </li>
-                        {% endfor %}
-                        </ul>
-                    </div>
-                    {% endif %}
+                {% if movies_as_director.count != 0 %}
+                <div class="col-md-6">
+                    <h5>Movies</h5>
+                    <ul>
+                    {% for movie in movies_as_director %}
+                        <li>
+                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
 
-                    {% if series_as_director.count != 0 %}
+                {% if series_as_director %}
                     <div class="col-md-6">
                         <h5>Series</h5>
                         <ul>
-                        {% for serie in series_as_director %}
+                        {% for entry in series_as_director %}
                             <li>
-                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.release_date }})
+                                <a href="{% url 'watch:series_detail' entry.series.id %}">{{ entry.series.title }}</a> ({{ entry.series.release_date }})
+                                {% if entry.episode_count %}
+                                    ({{ entry.episode_count }} episodes)
+                                {% endif %}
                             </li>
                         {% endfor %}
                         </ul>
@@ -303,8 +306,9 @@
                     {% endif %}
                 {% endif %}
 
+
                 <!--As Writer-->
-                {% if movies_as_writer.count != 0 or series_as_writer.count != 0 %}
+                {% if movies_as_writer.count != 0 or series_as_writer %}
                 <h4>As Writer</h4>
                     {% if movies_as_writer.count != 0 %}
                     <div class="col-md-6">
@@ -318,20 +322,24 @@
                         </ul>
                     </div>
                     {% endif %}
-
-                    {% if series_as_writer.count != 0 %}
+                
+                    {% if series_as_writer %}
                     <div class="col-md-6">
                         <h5>Series</h5>
                         <ul>
-                        {% for serie in series_as_writer %}
+                        {% for entry in series_as_writer %}
                             <li>
-                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.release_date }})
+                                <a href="{% url 'watch:series_detail' entry.series.id %}">{{ entry.series.title }}</a> ({{ entry.series.release_date }})
+                                {% if entry.episode_count %}
+                                    ({{ entry.episode_count }} episodes)
+                                {% endif %}
                             </li>
                         {% endfor %}
                         </ul>
                     </div>
                     {% endif %}
                 {% endif %}
+                
             </div>
             {% endif %}
 
