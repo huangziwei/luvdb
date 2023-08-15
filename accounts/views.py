@@ -395,12 +395,14 @@ def search_view(request):
         if model in ["all", "watch"]:
             movie_results = Movie.objects.filter(
                 Q(title__icontains=query)
+                | Q(other_titles__icontains=query)
                 | Q(movieroles__person__name__icontains=query)
                 | Q(moviecasts__person__name__icontains=query)
                 | Q(release_date__icontains=query)
             ).distinct()
             series_results = Series.objects.filter(
                 Q(title__icontains=query)
+                | Q(other_titles__icontains=query)
                 | Q(seriesroles__person__name__icontains=query)
                 | Q(episodes__episodecasts__person__name__icontains=query)
             ).distinct()

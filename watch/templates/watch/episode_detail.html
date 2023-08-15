@@ -20,8 +20,8 @@
                                 S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}</div>
                         </div>
 
-                        {% if object.romanized_title %}
-                        <p class='text-muted'>{{ object.romanized_title }} </p>
+                        {% if object.other_titles %}
+                        <p class='text-muted'>{{ object.other_titles }} </p>
                         {% endif %}
                         <div class="movie-meta">
                             {% if object.release_date %}
