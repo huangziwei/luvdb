@@ -12,7 +12,7 @@ class PersonForm(forms.ModelForm):
         fields = [
             "name",
             "other_names",
-            "romanized_name",
+            # "romanized_name",
             "birth_date",
             "birth_place",
             "death_date",
@@ -23,7 +23,7 @@ class PersonForm(forms.ModelForm):
         help_texts = {
             "name": "Enter the person's most-used name in their original language. ",
             "other_names": "Enter any other names the person is known by, separated by commas.",
-            "romanized_name": "Enter the English or romanized version of the person's name.",
+            # "romanized_name": "Enter the English or romanized version of the person's name.",
             "birth_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
             "birth_place": "Enter the place of birth in its original language.",
             "wikipedia": "Enter the person's Wikipedia URL.",

@@ -402,7 +402,7 @@ class WatchListView(TemplateView):
         context["movies_count"] = Movie.objects.count()
         context["series_count"] = Series.objects.count()
         context["episodes_count"] = Episode.objects.count()
-        
+
         return context
 
 
@@ -631,6 +631,10 @@ class SeriesCastDetailView(DetailView):
         # Sort episodes for each cast member by release_date
         for person, roles in episodes_cast.items():
             episodes_cast[person] = sorted(roles, key=lambda x: x["release_date"])
+        # Sort cast by number of episodes they've participated in
+        episodes_cast = dict(
+            sorted(episodes_cast.items(), key=lambda x: len(x[1]), reverse=True)
+        )
 
         # Extract all crews from those episodes
         crews = EpisodeRole.objects.filter(episode__in=episodes).prefetch_related(
@@ -657,7 +661,9 @@ class SeriesCastDetailView(DetailView):
         for role, crew_info in episodes_crew_by_role.items():
             for person, episodes in crew_info.items():
                 crew_info[person] = sorted(episodes, key=lambda x: x["release_date"])
-            episodes_crew_by_role[role] = dict(crew_info)
+            episodes_crew_by_role[role] = dict(
+                sorted(crew_info.items(), key=lambda x: len(x[1]), reverse=True)
+            )
 
         context["episodes_crew_by_role"] = dict(episodes_crew_by_role)
 
