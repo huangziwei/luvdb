@@ -1,59 +1,68 @@
 {% extends "base.html" %}
 {% load markdownify %}
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-sm-7 left-column">
-      <h3>Notifications</h3>
-
-      <div class="d-flex">
-        <form method="post" action="{% url 'notify:mark_all_as_read' %}" class="d-inline-block me-2">
-          {% csrf_token %}
-          <input type="submit" class='btn btn-sm btn-success' value="Mark all as read">
-        </form>
-        <form method="post" action="{% url 'notify:delete_all' %}">
-          {% csrf_token %}
-          <input type="submit" class='btn btn-sm btn-danger' value="Delete all">
-        </form>
-      </div>
-      <hr>
-      {% for notification in page_obj %}
-      <div class="notification {% if notification.is_delete %}notification-delete{% else %}notification-default{% endif %}">
-        <p>{{ notification.message | markdownify | safe}}</p>
-        <div class="d-flex">
-          <p class="d-inline-block me-2">&nbsp;<small class='text-muted'>{{ notification.timestamp | date:"Y.m.d H:i"}}</small></p>
-          <div>
-            {% if not notification.read %}
-              <form method="post" action="{% url 'notify:mark_as_read' notification.pk %}" class="d-inline-block me-2">
-                {% csrf_token %}
-                <input type="submit" class='btn btn-sm btn-outline-success' value="Mark as read">
-              </form>
-            {% endif %}
-            <form method="post" action="{% url 'notify:delete' notification.pk %}" class="d-inline-block">
-              {% csrf_token %}
-              <input type="submit" class='btn btn-sm btn-outline-danger' value="Delete">
-            </form>
-          </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-7 left-column">
+                <h3>Notifications</h3>
+                <div class="d-flex">
+                    <form method="post"
+                          action="{% url 'notify:mark_all_as_read' %}"
+                          class="d-inline-block me-2">
+                        {% csrf_token %}
+                        <input type="submit" class='btn btn-sm btn-success' value="Mark all as read">
+                    </form>
+                    <form method="post" action="{% url 'notify:delete_all' %}">
+                        {% csrf_token %}
+                        <input type="submit" class='btn btn-sm btn-danger' value="Delete all">
+                    </form>
+                </div>
+                <hr>
+                {% for notification in page_obj %}
+                    <div class="notification {% if notification.is_delete %}notification-delete{% else %}notification-default{% endif %}">
+                        <p>{{ notification.message | markdownify | safe }}</p>
+                        <div class="d-flex">
+                            <p class="d-inline-block me-2">
+                                &nbsp;<small class='text-muted'>{{ notification.timestamp | date:"Y.m.d H:i" }}</small>
+                            </p>
+                            <div>
+                                {% if not notification.read %}
+                                    <form method="post"
+                                          action="{% url 'notify:mark_as_read' notification.pk %}"
+                                          class="d-inline-block me-2">
+                                        {% csrf_token %}
+                                        <input type="submit"
+                                               class='btn btn-sm btn-outline-success'
+                                               value="Mark as read">
+                                    </form>
+                                {% endif %}
+                                <form method="post"
+                                      action="{% url 'notify:delete' notification.pk %}"
+                                      class="d-inline-block">
+                                    {% csrf_token %}
+                                    <input type="submit" class='btn btn-sm btn-outline-danger' value="Delete">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>You have no notifications.</p>
+                {% endfor %}
+                {% if page_obj.paginator.num_pages > 1 %}
+                    <hr>
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% for i in page_obj.paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <span class="current">{{ i }}</span>
+                                {% else %}
+                                    <a href="?page={{ i }}">{{ i }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-      </div>
-      {% empty %}
-        <p>You have no notifications.</p>
-      {% endfor %}
-      {% if page_obj.paginator.num_pages > 1 %}
-      <hr>
-      <div class="pagination">
-          <span class="step-links">
-              {% for i in page_obj.paginator.page_range %}
-                  {% if page_obj.number == i %}
-                      <span class="current">{{ i }}</span>
-                  {% else %}
-                      <a href="?page={{ i }}">{{ i }}</a>
-                  {% endif %}
-              {% endfor %}
-          </span>
-      </div>
-      {% endif %}
     </div>
-  </div>
-</div>
 {% endblock %}
