@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
+{% block title %}Vol. {{issue.volume}} Issue {{issue.number}} - {{ issue.periodical.title }}{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row">
