@@ -76,9 +76,11 @@
                                             <span class="text-muted">More Metadata</span>
                                         </div>
                                         <div class="collapse" id="detailsCollapse">
-                                            {% if object.release_type %}
+                                            {% if object.release_type or object.recording_type %}
                                                 <div class="mb-1">
-                                                    <span class="text-muted">Type:</span> {{ object.release_type }}
+                                                    <span class="text-muted">Type:</span>
+                                                    {% if object.recording_type %}{{ object.recording_type }}{% endif %}
+                                                    {{ object.release_type }}
                                                 </div>
                                             {% endif %}
                                             {% if object.release_format %}

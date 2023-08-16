@@ -51,7 +51,7 @@ class WorkRoleForm(forms.ModelForm):
 
     class Meta:
         model = WorkRole
-        fields = ["person", "role", "domain"]
+        fields = ["person", "alt_name", "role", "domain"]
 
     def clean(self):
         cleaned_data = super().clean()
@@ -197,6 +197,7 @@ class ReleaseForm(forms.ModelForm):
         help_texts = {
             "release_format": "e.g. CD, digital, etc.",
             "release_type": "e.g. Single, EP, LP, etc.",
+            "recording_type": "e.g. Live, Studio, etc.",
         }
 
     def __init__(self, *args, **kwargs):

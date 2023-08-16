@@ -103,6 +103,7 @@ class WorkRole(models.Model):
         blank=True,
         related_name="listen_workrole_set",
     )
+    alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"{self.role} of {self.work} by {self.person}"
@@ -188,9 +189,26 @@ class Release(models.Model):
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
+    RELEASE_TYPES = [
+        ("LP", "LP"),
+        ("EP", "EP"),
+        ("Single", "Single"),
+    ]
     release_type = models.CharField(
-        max_length=255, blank=True, null=True
-    )  # album, single, etc.
+        max_length=255, choices=RELEASE_TYPES, blank=True, null=True
+    )
+
+    RECORDING_TYPES = [
+        ("Studio", "Studio"),
+        ("Live", "Live"),
+        ("Studio and Live", "Studio and Live"),
+        ("Compilation", "Compilation"),
+        ("Box Set", "Box Set"),
+        ("Bootleg", "Bootleg"),
+    ]
+    recording_type = models.CharField(
+        max_length=255, choices=RECORDING_TYPES, blank=True, null=True
+    )
     release_format = models.CharField(
         max_length=255, blank=True, null=True
     )  # CD, digital, etc.

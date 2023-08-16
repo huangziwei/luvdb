@@ -207,7 +207,10 @@ class WorkDetailView(DetailView):
             for release in releases:
                 release.type = "release"
             items = sorted(list(releases), key=lambda x: x.release_date)
-            context["tracks"].append({"track": track, "items": items})
+            singers = track.persons.filter(trackrole__role__name="Singer")
+            context["tracks"].append(
+                {"track": track, "items": items, "singers": singers}
+            )
 
         return context
 
