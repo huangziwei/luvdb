@@ -1,38 +1,41 @@
 {% extends "base.html" %}
 {% block title %}Play{% endblock %}
-
 {% block content %}
     <div class="container">
         <div class="row">
             <div class='col-12 col-md-8'>
-
                 {% if trending_games %}
-                <div class="mb-3">
-                    <h2>Trending</h2>
-                    <div class="row">
-                        {% for game in trending_games %}
-                            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-                                <a href="{% url 'play:game_detail' game.pk %}">
-                                    {% if game.cover %}
-                                        {% if game.cover_sens %}
-                                            <img src="{{ game.cover.url }}" alt="{{ game.title }} cover" class="img-fluid blur" onclick="this.classList.toggle('blur')">
+                    <div class="mb-3">
+                        <h2>Trending</h2>
+                        <div class="row">
+                            {% for game in trending_games %}
+                                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                    <a href="{% url 'play:game_detail' game.pk %}">
+                                        {% if game.cover %}
+                                            {% if game.cover_sens %}
+                                                <img src="{{ game.cover.url }}"
+                                                     alt="{{ game.title }} cover"
+                                                     class="img-fluid blur"
+                                                     onclick="this.classList.toggle('blur')">
+                                            {% else %}
+                                                <img src="{{ game.cover.url }}" alt="{{ game.title }}" class="img-fluid">
+                                            {% endif %}
                                         {% else %}
-                                            <img src="{{ game.cover.url }}" alt="{{ game.title }}" class="img-fluid">
+                                            <div class="cover-placeholder"
+                                                 style="background: grey;
+                                                        width: 100%;
+                                                        height:100%;
+                                                        color:white;
+                                                        text-align: center">{{ release.title }}</div>
                                         {% endif %}
-                                    {% else %}
-                                        <div class="cover-placeholder" style="background: grey; width: 100%; height:100%; color:white; text-align: center">{{release.title}}</div>
-                                    {% endif %}
-                                </a>
-                            </div>
-                        {% empty %}
-                            <p>No trending games to display.</p>
-                        {% endfor %}
+                                    </a>
+                                </div>
+                            {% empty %}
+                                <p>No trending games to display.</p>
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
                 {% endif %}
-
-
-
                 <h2>Recently Added</h2>
                 <div class="row">
                     {% for game in recent_games %}
@@ -40,12 +43,20 @@
                             <a href="{% url 'play:game_detail' game.pk %}">
                                 {% if game.cover %}
                                     {% if game.cover_sens %}
-                                        <img src="{{ game.cover.url }}" alt="{{ game.title }} cover" class="img-fluid blur" onclick="this.classList.toggle('blur')">
+                                        <img src="{{ game.cover.url }}"
+                                             alt="{{ game.title }} cover"
+                                             class="img-fluid blur"
+                                             onclick="this.classList.toggle('blur')">
                                     {% else %}
                                         <img src="{{ game.cover.url }}" alt="{{ game.title }}" class="img-fluid">
                                     {% endif %}
                                 {% else %}
-                                    <div class="cover-placeholder" style="background: grey; width: 100%; height:100%; color:white; text-align: center">{{game.title}}</div>
+                                    <div class="cover-placeholder"
+                                         style="background: grey;
+                                                width: 100%;
+                                                height:100%;
+                                                color:white;
+                                                text-align: center">{{ game.title }}</div>
                                 {% endif %}
                             </a>
                         </div>
@@ -54,7 +65,6 @@
                     {% endfor %}
                 </div>
             </div>
-
             <div class='col-12 col-md-4'>
                 <div class="bg-light p-3 mb-3">
                     <h5>Add New</h5>
@@ -68,22 +78,24 @@
                         <a href="{% url "play:series_create" %}" class="text-muted">Game Series</a>
                     </div>
                 </div>
-
                 {% if genres %}
-                <div class="bg-light p-3 mb-3">
-                    <h5>Genres</h5>
-                    <div class='d-flex flex-wrap'>
-                    {% for genre in genres %}
-                        <a href="{% url 'play:genre_detail' genre.slug %}" class="me-2">{{ genre.name }}</a>
-                    {% endfor %}
+                    <div class="bg-light p-3 mb-3">
+                        <h5>Genres</h5>
+                        <div class='d-flex flex-wrap'>
+                            {% for genre in genres %}
+                                <a href="{% url 'play:genre_detail' genre.slug %}" class="me-2">{{ genre.name }}</a>
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
                 {% endif %}
-
                 <div class="bg-light p-3 mb-3">
                     <h5>Statistics</h5>
-                    <div><span class="text-muted">Works</span>: {{works_count}}</div>
-                    <div><span class="text-muted">Games</span>: {{games_count}}</div>
+                    <div>
+                        <span class="text-muted">Works</span>: {{ works_count }}
+                    </div>
+                    <div>
+                        <span class="text-muted">Games</span>: {{ games_count }}
+                    </div>
                 </div>
             </div>
         </div>

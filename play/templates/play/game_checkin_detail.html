@@ -3,142 +3,123 @@
 {% load markdownify %}
 {% load linkify %}
 {% load crispy_forms_tags %}
-
+{% load parse_activity_type %}
 {% block title %}Game Check In{% endblock %}
-
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-sm-7 left-column">
-      <div class="bg-light p-3 mt-2">
-        <div class="d-flex flex-row bg-light mt-2">
-            <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                {% if object.game.cover %}
-                    {% if object.game.cover_sens %}
-                        <img src="{{ object.game.cover.url }}" alt="{{ object.game.title }} cover" style="width: 100%;" class="img-fluid blur" onclick="this.classList.toggle('blur')">
-                    {% else %}
-                        <img src="{{ object.game.cover.url }}" alt="{{ object.game.title }} cover" style="width: 100%;">
-                    {% endif %}    
-                {% else %}
-                    <div class="no-cover-text">No Cover</div>
-                {% endif %}
-            </div>
-                    
-            <div class="flex-grow-1 ms-3">
-                <a href="{% url 'play:game_detail' object.game.id %}" class="text-decoration-none hover-username">
-                    <h5>{{ object.game.title }}</h5>
-                </a>
-                
-                {% regroup object.game.gamerole_set.all by role as roles_list %}
-                {% for role in roles_list %}
-                    <div>
-                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
-                        {% for game_role in role.list %}
-                            {% if not forloop.first %} / {% endif %}
-                            <a href="{% url 'entity:person_detail' game_role.person.id %}">
-                                {{ game_role.alt_name | default:game_role.person.name }}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-7 left-column">
+                <div class="bg-light p-3 mt-2">
+                    <div class="d-flex flex-row bg-light mt-2">
+                        <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                            {% if object.game.cover %}
+                                {% if object.game.cover_sens %}
+                                    <img src="{{ object.game.cover.url }}"
+                                         alt="{{ object.game.title }} cover"
+                                         style="width: 100%"
+                                         class="img-fluid blur"
+                                         onclick="this.classList.toggle('blur')">
+                                {% else %}
+                                    <img src="{{ object.game.cover.url }}"
+                                         alt="{{ object.game.title }} cover"
+                                         style="width: 100%">
+                                {% endif %}
+                            {% else %}
+                                <div class="no-cover-text">No Cover</div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <a href="{% url 'play:game_detail' object.game.id %}"
+                               class="text-decoration-none hover-username">
+                                <h5>{{ object.game.title }}</h5>
                             </a>
-                        {% endfor %}
+                            {% regroup object.game.gamerole_set.all by role as roles_list %}
+                            {% for role in roles_list %}
+                                <div>
+                                    <span class="text-muted">{{ role.grouper.name }}
+                                        {% if role.list|length > 1 %}s{% endif %}
+                                    :</span>
+                                    {% for game_role in role.list %}
+                                        {% if not forloop.first %}/{% endif %}
+                                        <a href="{% url 'entity:person_detail' game_role.person.id %}">
+                                            {{ game_role.alt_name | default:game_role.person.name }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                            <div>
+                                {% if object.game.developers %}
+                                    <span class="text-muted">Developer
+                                        {% if object.game.developers.list|length > 1 %}s{% endif %}
+                                    :</span>
+                                    {% for developer in object.game.developers.all %}
+                                        {% if not forloop.first %},{% endif %}
+                                        <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div>
+                                {% if object.game.platforms %}
+                                    <span class="text-muted">Platform
+                                        {% if object.game.platforms.list|length > 1 %}s{% endif %}
+                                    :</span>
+                                    {% for platform in object.game.platforms.all %}
+                                        {% if not forloop.first %},{% endif %}
+                                        <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div>
+                                {% if object.game.release_date %}
+                                    <span class="text-muted">Date:</span>{{ object.game.release_date|slice:":4" }}
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                {% endfor %}
-                <div>
-                  {% if object.game.developers %}
-                      <span class="text-muted">Developer{% if object.game.developers.list|length > 1 %}s{% endif %}:</span>
-                      {% for developer in object.game.developers.all %}
-                          {% if not forloop.first %}, {% endif %}
-                          <a href="{% url 'play:developer_detail' developer.id %}">
-                              {{ developer.name }}
-                          </a>
-                      {% endfor %}
-                  {% endif %}
-              </div>
-              
-              <div>
-                  {% if object.game.platforms %}
-                      <span class="text-muted">Platform{% if object.game.platforms.list|length > 1 %}s{% endif %}:</span>
-                      {% for platform in object.game.platforms.all %}
-                          {% if not forloop.first %}, {% endif %}
-                          <a href="{% url 'play:platform_detail' platform.id %}">
-                              {{ platform.name }}
-                          </a>
-                      {% endfor %}
-                  {% endif %}
-              </div>
-                
-                <div>
-                    {% if object.game.release_date %}
-                        <span class="text-muted">Date: </span>{{ object.game.release_date|slice:":4" }}
-                    {% endif %}
+                </div>
+                <div class='mt-4'>
+                    <div class="d-flex align-items-center">
+                        <a href="{% url 'accounts:detail' object.user.username %}" class='me-1'>
+                            {{ object.user.display_name | default:object.user.username }}
+                        </a>
+                        <span class="me-2">checked in</span>
+                        <!--badge: checkin status-->
+                        <span class="badge {{ object.status|get_status_class }} me-1">{{ object.get_status_display }}</span>
+                        {% if object.progress %}
+                            <span class="badge text-bg-warning me-2">
+                                Progress: {{ object.progress }}
+                                {% if object.progress_type == "TT" %}
+                                    Total Time
+                                {% else %}
+                                    %
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="mt-2">{{ object.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                    <span class="d-flex mt-2">
+                        <p class='me-2 text-secondary mb-2'>{{ object.timestamp|date:"Y.m.d H:i" }}</p>
+                        {% if object.author == request.user %}
+                            <a href="{% url "play:game_checkin_update" object.pk %}" class="me-2">Edit</a>
+                            <a href="{% url "play:game_checkin_delete" object.pk %}" class="me-2">Delete</a>
+                        {% endif %}
+                    </span>
+                </div>
+                <button id="show-comments"
+                        class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
+                <button id="show-reposts"
+                        class="btn btn-secondary btn-sm mx-auto toggle-button">
+                    Reposts ({{ object.reposts.count }})
+                </button>
+                <hr>
+                <div id="comments-section">
+                    {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='gamecheckin' %}
+                </div>
+                <div id="reposts-section" style="display: none;">
+                    {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts %}
                 </div>
             </div>
         </div>
     </div>
-
-
-      <div class='mt-4'>
-        <div class="d-flex align-items-center"> 
-          <a href="{% url 'accounts:detail' object.user.username %}" class='me-1'>
-            {{ object.user.display_name | default:object.user.username }}
-          </a> 
-           <span class="me-2">checked in </span>
-            <!--badge: checkin status-->
-            {% if object.status == "to_play" %}
-            <span class="badge text-bg-info me-2">
-            {% elif object.status == "playing" %}
-            <span class="badge text-bg-primary me-2">
-            {% elif object.status == "played" %}
-            <span class="badge text-bg-success me-2">
-            {% elif object.status == "paused" %}
-            <span class="badge text-bg-warning me-2">
-            {% elif object.status == "abandoned" %}
-            <span class="badge text-bg-danger me-2">
-            {% elif object.status == "replaying" %}
-            <span class="badge text-bg-primary me-2">
-            {% elif object.status == "replayed" %}
-            <span class="badge text-bg-success me-2">
-            {% endif %}
-                 {{ object.get_status_display }}
-            </span>
-            {% if object.progress %}
-            <span class="badge text-bg-warning me-2">
-                Progress: {{ object.progress }} 
-                {% if object.progress_type == "TT" %}
-                    Total Time
-                {% else %}
-                    %
-                {% endif %}
-            </span>
-            {% endif %}
-        </div>
-        <div class="mt-2">
-          {{ object.content | linkify_tags | linkify_mentions | markdownify }}
-        </div>
-        <span class="d-flex mt-2">
-          <p class='me-2 text-secondary mb-2'>{{ object.timestamp|date:"Y.m.d H:i" }} </p>
-          {% if object.author == request.user %}
-          <a href="{% url "play:game_checkin_update" object.pk %}" class="me-2">Edit</a>
-          <a href="{% url "play:game_checkin_delete" object.pk %}" class="me-2">Delete</a>
-          {% endif %}
-        </span>
-      </div>
-
-      <button id="show-comments" class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
-      <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto toggle-button">Reposts ({{ object.reposts.count }})</button>
-      
-      <hr>
-
-      <div id="comments-section">
-        {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='gamecheckin' %}
-      </div>
-
-      <div id="reposts-section" style="display: none;">
-        {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts %}
-      </div>
-
-    </div>
-  </div>
-</div>
- 
-<script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
-
+    <script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
 {% endblock content %}

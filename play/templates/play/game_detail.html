@@ -1,175 +1,179 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-
 {% block title %}{{ object.title }}{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="row">
-        <!--Left columns-->
-        <div class="col-lg-8 col-md-8 col-sm-12">
-            <!-- game-card -->
-            <div class="game-card justify-content-start">
-                <div class="d-flex flex-column flex-lg-row mt-2">
-                    <!--cover-box-->
-                    <div class="col-12 col-lg-auto mb-3 mb-lg-0">
-                        <div class="game-cover-box">
-                            {% if object.cover %}
-                                {% if object.cover_sens %}
-                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid blur" onclick="this.classList.toggle('blur')">
+    <div class="container">
+        <div class="row">
+            <!--Left columns-->
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <!-- game-card -->
+                <div class="game-card justify-content-start">
+                    <div class="d-flex flex-column flex-lg-row mt-2">
+                        <!--cover-box-->
+                        <div class="col-12 col-lg-auto mb-3 mb-lg-0">
+                            <div class="game-cover-box">
+                                {% if object.cover %}
+                                    {% if object.cover_sens %}
+                                        <img src="{{ object.cover.url }}"
+                                             alt="{{ object.title }} cover"
+                                             class="img-fluid blur"
+                                             onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ object.cover.url }}"
+                                             alt="{{ object.title }} cover"
+                                             class="img-fluid">
+                                    {% endif %}
                                 {% else %}
-                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid">
-                                {% endif %}    
-                            {% else %}
-                                <div class="no-cover-text">No Cover</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <!--game-meta-->
-                    <div class="col flex-grow-1 ms-lg-3">
-                        <div class="card-body">
-                            <span class='d-flex align-items-start'>
-                                <h4>{{ object.title }} </h4>
-                            </span>
-                            {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
-                            {% if object.other_titles %}
-                                <p class='text-muted'>Other titles: {{ object.other_titles }} </p>
-                            {% endif %}
-                                            
-                            {% if object.romanized_title %}
-                            <p class='text-muted'>{{ object.romanized_title }} </p>
-                            {% endif %}
-                            <div class="game-meta">
-                                {% for role, persons_altname_tuples in grouped_roles.items %}
-                                    <p>
-                                        <span class="text-muted">{{ role }}:</span>
-                                        {% for person, name in persons_altname_tuples %}
-                                            <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
-                                            {% if not forloop.last %} / {% endif %}
-                                        {% endfor %}
-                                    </p>
-                                {% endfor %}
-
-                                {% if object.developers.count != 0 %}
-                                <p>
-                                    <span class="text-muted">Developers:</span> 
-                                    {% for developer in object.developers.all %}
-                                        <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
-                                        {% if not forloop.last %} / {% endif %}
-                                    {% endfor %}
-                                </p>
-                                {% endif %}
-                                {% if object.publishers.count != 0 %}
-                                <p>
-                                    <span class="text-muted">Publishers:</span> 
-                                    {% for publisher in object.publishers.all %}
-                                        <a href="{% url 'play:publisher_detail' publisher.id %}">{{ publisher.name }}</a>
-                                        {% if not forloop.last %} / {% endif %}
-                                    {% endfor %}
-                                </p>
-                                {% endif %}
-                                {% if object.platforms.count != 0 %}
-                                <p>
-                                    <span class="text-muted">Platforms:</span> 
-                                    {% for platform in object.platforms.all %}
-                                        <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
-                                        {% if not forloop.last %} / {% endif %}
-                                    {% endfor %}
-                                </p>
-                                {% endif %}
-                                {% if object.release_date %}
-                                    <p><span class="text-muted">Release Date:</span> {{ object.release_date }}</p>
-                                {% endif %}
-                                {% if object.price %}
-                                    <p><span class="text-muted">Price:</span> {{ object.price }}</p>
-                                {% endif %}
-                                {% if object.website %}
-                                    <p><span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a></p>
-                                {% endif %}
-                                {% if object.description %}
-                                    <p><span class="text-muted">Description:</span> {{ object.description }}</p>
-                                {% endif %}
-                                
-                                <p><span class="text-muted">Cast:</span> <a href="{% url 'play:game_cast_detail' object.id %}">View Cast</a></p>
-                                <!--add series here-->
-                                {% if object.gameinseries_set.all %}
-                                    <p>
-                                        <span class="text-muted">Series:</span> 
-                                        {% for gameinseries in object.gameinseries_set.all %}
-                                            <a href="{% url 'play:series_detail' gameinseries.series.id %}">{{ gameinseries.series.title }}</a>
-                                            {% if not forloop.last %} / {% endif %}
-                                        {% endfor %}
-                                    </p>
+                                    <div class="no-cover-text">No Cover</div>
                                 {% endif %}
                             </div>
                         </div>
-                        <!-- End of game-card -->
+                        <!--game-meta-->
+                        <div class="col flex-grow-1 ms-lg-3">
+                            <div class="card-body">
+                                <span class='d-flex align-items-start'>
+                                    <h4>{{ object.title }}</h4>
+                                </span>
+                                {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
+                                {% if object.other_titles %}<p class='text-muted'>Other titles: {{ object.other_titles }}</p>{% endif %}
+                                {% if object.romanized_title %}<p class='text-muted'>{{ object.romanized_title }}</p>{% endif %}
+                                <div class="game-meta">
+                                    {% for role, persons_altname_tuples in grouped_roles.items %}
+                                        <p>
+                                            <span class="text-muted">{{ role }}:</span>
+                                            {% for person, name in persons_altname_tuples %}
+                                                <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endfor %}
+                                    {% if object.developers.count != 0 %}
+                                        <p>
+                                            <span class="text-muted">Developers:</span>
+                                            {% for developer in object.developers.all %}
+                                                <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
+                                    {% if object.publishers.count != 0 %}
+                                        <p>
+                                            <span class="text-muted">Publishers:</span>
+                                            {% for publisher in object.publishers.all %}
+                                                <a href="{% url 'play:publisher_detail' publisher.id %}">{{ publisher.name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
+                                    {% if object.platforms.count != 0 %}
+                                        <p>
+                                            <span class="text-muted">Platforms:</span>
+                                            {% for platform in object.platforms.all %}
+                                                <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
+                                    {% if object.release_date %}
+                                        <p>
+                                            <span class="text-muted">Release Date:</span> {{ object.release_date }}
+                                        </p>
+                                    {% endif %}
+                                    {% if object.price %}
+                                        <p>
+                                            <span class="text-muted">Price:</span> {{ object.price }}
+                                        </p>
+                                    {% endif %}
+                                    {% if object.website %}
+                                        <p>
+                                            <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
+                                        </p>
+                                    {% endif %}
+                                    {% if object.description %}
+                                        <p>
+                                            <span class="text-muted">Description:</span> {{ object.description }}
+                                        </p>
+                                    {% endif %}
+                                    <p>
+                                        <span class="text-muted">Cast:</span> <a href="{% url 'play:game_cast_detail' object.id %}">View Cast</a>
+                                    </p>
+                                    <!--add series here-->
+                                    {% if object.gameinseries_set.all %}
+                                        <p>
+                                            <span class="text-muted">Series:</span>
+                                            {% for gameinseries in object.gameinseries_set.all %}
+                                                <a href="{% url 'play:series_detail' gameinseries.series.id %}">{{ gameinseries.series.title }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <!-- End of game-card -->
+                        </div>
                     </div>
-                </div>       
-            </div>
-            <!--Game Check-In-->
-            <div class="mt-4">
-                {% if user.is_authenticated %}
-                    {% include "play/game_checkin_form.html" %}
-                {% endif %}
-
-                <div class="d-flex justify-content-between mt-4 col-11">
-                    <h4>Latest Check-Ins</h4>
-                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'play:game_checkin_all_list' game.id %}" style="height:30px">All</a>
                 </div>
-            
-                {% include "play/game_checkin_in_game_detail.html" %}
+                <!--Game Check-In-->
+                <div class="mt-4">
+                    {% if user.is_authenticated %}
+                        {% include "play/game_checkin_form.html" %}
+                    {% endif %}
+                    <div class="d-flex justify-content-between mt-4 col-11">
+                        <h4>Latest Check-Ins</h4>
+                        <a class="btn btn-outline-secondary btn-sm"
+                           href="{% url 'play:game_checkin_all_list' game.id %}"
+                           style="height:30px">All</a>
+                    </div>
+                    {% include "play/game_checkin_in_game_detail.html" %}
+                </div>
             </div>
-        </div>
-
-
-        <!--right columns-->
-        <div class="col-sm-4">
-            <!--Related works / Edit -->
-            {% if user.is_authenticated %}
-            <div class="bg-light p-3 mb-3">
-                <a href="{% url 'play:game_update' object.pk %}" class='fs-6 text-secondary'>Edit game data</a>
-            </div>
-            {% endif %}
-            <div class="bg-light p-3 mb-3">
-                {% if object.work.id %}
-                    <h5> Work</h5>
-                    <p>
-                        <a href={% url "play:work_detail" object.work.id %}>{{object.work.title}}</a>
-                        {% if object.work.first_release_date %}
-                            ({{object.work.first_release_date}})
-                        {% endif %}
-                    </p>
+            <!--right columns-->
+            <div class="col-sm-4">
+                <!--Related works / Edit -->
+                {% if user.is_authenticated %}
+                    <div class="bg-light p-3 mb-3">
+                        <a href="{% url 'play:game_update' object.pk %}"
+                           class='fs-6 text-secondary'>Edit game data</a>
+                    </div>
+                {% endif %}
+                <div class="bg-light p-3 mb-3">
+                    {% if object.work.id %}
+                        <h5>Work</h5>
+                        <p>
+                            <a href={% url "play:work_detail" object.work.id %}>{{ object.work.title }}</a>
+                            {% if object.work.first_release_date %}({{ object.work.first_release_date }}){% endif %}
+                        </p>
+                    {% endif %}
+                </div>
+                <!--stats-->
+                <div class="bg-light p-3 mb-3">
+                    <h5>Statistics</h5>
+                    <div>
+                        <strong class="text-muted">To Play:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=to_play">{{ to_play_count }}</a>
+                    </div>
+                    <div>
+                        <strong class="text-muted">Playing:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=playing_replaying">{{ playing_count }}</a>
+                    </div>
+                    <div>
+                        <strong class="text-muted">Played:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=played_replayed">{{ played_count }}</a>
+                    </div>
+                </div>
+                {% if lists_containing_game.count != 0 %}
+                    <!--LuvLists that included this game-->
+                    <div class="bg-light p-3 mb-3">
+                        <h5>Lists</h5>
+                        <ul class="m-0">
+                            {% for content_in_list in lists_containing_game %}
+                                <li>
+                                    <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
+                                </li>
+                            {% empty %}
+                                <p>This game is not included in any LuvLists.</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 {% endif %}
             </div>
-
-            <!--stats-->
-            <div class="bg-light p-3 mb-3">
-                <h5>Statistics</h5>
-                <div><strong class="text-muted">To Play:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=to_play">{{ to_play_count }}</a></div>
-                <div><strong class="text-muted">Playing:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=playing_replaying">{{ playing_count }}</a></div>
-                <div><strong class="text-muted">Played:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=played_replayed">{{ played_count }}</a></div>
-            </div>
-
-            {% if lists_containing_game.count != 0 %}
-            <!--LuvLists that included this game-->
-            <div class="bg-light p-3 mb-3">
-                <h5>Lists</h5>
-                <ul class="m-0">
-                {% for content_in_list in lists_containing_game %}
-                    <li>
-                        <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">
-                            {{ content_in_list.luv_list.title }}
-                        </a>
-                    </li>
-                {% empty %}
-                    <p>This game is not included in any LuvLists.</p>
-                {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
         </div>
     </div>
-</div>
-
 {% endblock content %}

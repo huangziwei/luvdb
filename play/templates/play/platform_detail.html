@@ -1,33 +1,29 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-sm-7 left-column">
-    
-            <span class='d-flex align-items-start'>
-                <h2>
-                    {{ platform.name }}
-                    {% if platform.romanized_name %} / {{ platform.romanized_name }} {% endif %}
-                </h2> 
-            </span>
-
-            {% if platform.games.count != 0 %}
-                <h3>Game releases</h3>
-                <ul>
-                {% for game in platform.games.all %}
-                    <li>
-                        <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a> 
-                        (Released on {{ platform.name }},
-                        {{ game.release_date}})
-                    </li>
-                {% empty %}
-                    <li>No games have been released on this platform.</li>
-                {% endfor %}
-                </ul>
-            {% endif %} 
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-7 left-column">
+                <span class='d-flex align-items-start'>
+                    <h2>
+                        {{ platform.name }}
+                        {% if platform.romanized_name %}/ {{ platform.romanized_name }}{% endif %}
+                    </h2>
+                </span>
+                {% if platform.games.count != 0 %}
+                    <h3>Game releases</h3>
+                    <ul>
+                        {% for game in platform.games.all %}
+                            <li>
+                                <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
+                                (Released on {{ platform.name }},
+                                {{ game.release_date }})
+                            </li>
+                        {% empty %}
+                            <li>No games have been released on this platform.</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
         </div>
     </div>
-</div>
-
 {% endblock %}
