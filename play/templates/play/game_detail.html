@@ -126,13 +126,11 @@
         <!--right columns-->
         <div class="col-sm-4">
             <!--Related works / Edit -->
+            {% if user.is_authenticated %}
             <div class="bg-light p-3 mb-3">
-                {% if user.is_authenticated %}
-                    <div>
-                        <a href="{% url 'play:game_update' object.pk %}" class='fs-6 text-secondary'>Edit game data</a>
-                    </div>
-                {% endif %}
+                <a href="{% url 'play:game_update' object.pk %}" class='fs-6 text-secondary'>Edit game data</a>
             </div>
+            {% endif %}
             <div class="bg-light p-3 mb-3">
                 {% if object.work.id %}
                     <h5> Work</h5>

@@ -15,9 +15,10 @@
                     <div class="card-body">
                         <div>
                             <h3> {{ object.title }} </h3>
-                            <div>
+                            <div class="mb-3">
                                 <a href="{% url "watch:series_detail" episode.series.id %}">{{episode.series.title}} </a>
-                                S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}</div>
+                                S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}
+                            </div>
                         </div>
 
                         {% if object.other_titles %}
@@ -25,7 +26,11 @@
                         {% endif %}
                         <div class="movie-meta">
                             {% if object.release_date %}
-                                <p><span class="text-muted">Release Date: </span>{{ object.release_date }}</p>
+                                <div><span class="text-muted">Release Date: </span>{{ object.release_date }}</div>
+                            {% endif %}
+                            {% if object.length %}
+                                <div><span class="text-muted">Length: </span>{{ object.length }}</div>
+
                             {% endif %}
                         </div>
                         <div class="mt-3">

@@ -239,6 +239,7 @@ class EpisodeForm(forms.ModelForm):
         self.fields[
             "other_titles"
         ].help_text = "e.g. translated titles in different languages, separated by comma or slash."
+        self.fields["length"].help_text = "e.g. 45 mins, or 1:30:00"
 
 
 class EpisodeRoleForm(forms.ModelForm):

@@ -103,13 +103,12 @@
             
         <div class="col-sm-4">
             <!--Related tracks / Edit -->
+            {% if user.is_authenticated %}
             <div class="bg-light p-3 mb-3">
-                {% if user.is_authenticated %}
-                <div>
-                    <a href="{% url 'listen:release_update' object.pk %}" class='fs-6 text-secondary'>Edit Release</a>
-                </div>
-                {% endif %}
+                <a href="{% url 'listen:release_update' object.pk %}" class='fs-6 text-secondary'>Edit Release</a>
             </div>
+            {% endif %}
+            
             <div class="bg-light p-3 mb-3">
                 <h5>Tracklist</h5>
                 <!--list all related tracks by order-->

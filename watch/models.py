@@ -293,6 +293,7 @@ class Episode(models.Model):
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
+    length = models.CharField(max_length=10, blank=True, null=True)  # in minutes
     persons = models.ManyToManyField(
         Person, through="EpisodeRole", related_name="episodes_role"
     )

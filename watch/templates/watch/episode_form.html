@@ -1,12 +1,13 @@
 {% load crispy_forms_tags %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.series | as_crispy_field }}
+    {{ form.series|as_crispy_field }}
     {{ form.title|as_crispy_field }}
     {{ form.other_titles|as_crispy_field }}
-    {{ form.season | as_crispy_field }}
-    {{ form.episode | as_crispy_field }}
+    {{ form.season|as_crispy_field }}
+    {{ form.episode|as_crispy_field }}
     {{ form.release_date|as_crispy_field }}
+    {{ form.length|as_crispy_field}}
     {{ episoderoles.management_form|crispy }}
     <div id="episode-role-formset" class="bg-light p-3 mb-3">
         <strong>Persons related to this Episode</strong>

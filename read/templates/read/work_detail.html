@@ -89,19 +89,19 @@
         <!--Right columns-->
         <div class="col-12 col-md-4 right-column">
             <!--Related Work / Edit -->
-            <div class="bg-light p-3">
-                {% if user.is_authenticated %}
+            {% if user.is_authenticated %}
+            <div class="bg-light p-3 mb-3">
                 <div>
                     <a href="{% url 'read:work_update' object.pk %}" class='fs-6 text-secondary'>Edit Work</a>
                 </div>
                 <div>
                     <a href="{% url 'read:instance_create'%}" class='fs-6 text-secondary'>Add Instance</a>
                 </div>
-                {% endif %}
             </div>
+            {% endif %}
 
             {% if object.wikipedia %}
-            <div class="bg-light p-3 mt-3">
+            <div class="bg-light p-3">
                 <h5>Links</h5>
                 <div><a href="{{object.wikipedia}}">Wikipedia</a></div>
             </div>

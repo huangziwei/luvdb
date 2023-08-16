@@ -388,9 +388,15 @@ class TagListView(ListView):
         context = super().get_context_data(**kwargs)
         tag = self.kwargs["tag"]
         context["tag"] = tag
-        context["posts"] = posts = Post.objects.filter(tags__name=tag)
-        context["says"] = says = Say.objects.filter(tags__name=tag)
-        context["pins"] = pins = Pin.objects.filter(tags__name=tag)
+        context["posts"] = posts = Post.objects.filter(tags__name=tag).order_by(
+            "-timestamp"
+        )
+        context["says"] = says = Say.objects.filter(tags__name=tag).order_by(
+            "-timestamp"
+        )
+        context["pins"] = pins = Pin.objects.filter(tags__name=tag).order_by(
+            "-timestamp"
+        )
         context["users"] = User.objects.filter(
             bio__icontains=tag
         )  # these are the users with this tag in their bio
@@ -421,9 +427,15 @@ class TagUserListView(ListView):
         user = User.objects.get(username=username)
         context["tag"] = tag
         context["user"] = user  # the user whose tags we are viewing
-        context["posts"] = posts = Post.objects.filter(tags__name=tag, user=user)
-        context["says"] = says = Say.objects.filter(tags__name=tag, user=user)
-        context["pins"] = pins = Pin.objects.filter(tags__name=tag, user=user)
+        context["posts"] = posts = Post.objects.filter(
+            tags__name=tag, user=user
+        ).order_by("-timestamp")
+        context["says"] = says = Say.objects.filter(tags__name=tag, user=user).order_by(
+            "-timestamp"
+        )
+        context["pins"] = pins = Pin.objects.filter(tags__name=tag, user=user).order_by(
+            "-timestamp"
+        )
         all_tags = set()
         for obj in chain(posts, says, pins):
             for t in obj.tags.all():

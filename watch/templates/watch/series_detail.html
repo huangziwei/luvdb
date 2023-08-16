@@ -93,13 +93,11 @@
         <!--right columns-->
         <div class="col-sm-4">
             <!--Related works / Edit -->
+            {% if user.is_authenticated %}
             <div class="bg-light p-3 mb-3">
-                {% if user.is_authenticated %}
-                <div>
-                    <a href="{% url 'watch:series_update' object.id %}" class='fs-6 text-secondary'>Edit series data</a>
-                </div>
-                {% endif %}
+                <a href="{% url 'watch:series_update' object.id %}" class='fs-6 text-secondary'>Edit series data</a>
             </div>
+            {% endif %}
             <div class="bg-light p-3 mb-3">
                 <h5>Episode List</h5>
                 {% for episode in episodes %}

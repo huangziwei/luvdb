@@ -22,13 +22,11 @@
         </div>
 
         <div class="col-12 col-md-4">
-            <div class="bg-light p-3">
                 {% if user.is_authenticated %}
-                        <div>
-                            <a href="{% url 'read:series_update' object.id %}" class='fs-6 text-secondary'>Edit Book Series</a>
-                        </div>
+                <div class="bg-light p-3">
+                    <a href="{% url 'read:series_update' object.id %}" class='fs-6 text-secondary'>Edit Book Series</a>
+                </div>
                 {% endif %}
-            </div>
         </div>
     </div>
 </div>
