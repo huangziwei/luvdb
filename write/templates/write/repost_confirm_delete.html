@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-
 {% block content %}
-  <h1>Delete Repost</h1>
-  <p>Are you sure you want to delete this repost?</p>
-  <blockquote>{{ object.content }}</blockquote>
-
-  <form method="POST">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Yes, delete</button>
-  </form>
+    <h1>Delete Repost</h1>
+    <p>Are you sure you want to delete this repost?</p>
+    <blockquote>
+        {{ object.content }}
+    </blockquote>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+    </form>
 {% endblock %}

@@ -1,55 +1,62 @@
 {% extends "base.html" %}
 {% block title %}Posts{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-12 col-md-7 left-column">
-            
-            <div class="d-flex justify-content-between mb-3">
-                <h5>
-                    <a href="{% url 'accounts:detail' object.username %}">
-                        {{object.display_name | default:object.username}} 
-                    </a> posted
-                </h5>
-                {% if object.username == request.user.username %}
-                <a class="btn btn-sm btn-primary" href="{% url 'write:post_create' %}">New</a>
-                {% endif %}
-            </div>
-            {% for post in post_list %}
-                <div>
-                    <div><a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a></div>
-                    <span class="d-flex">
-                        <p class="me-2 text-muted">{{ post.timestamp|date:"Y.m.d H:i" }}</p>
-                        {% if post.comments_enabled %}
-                        <p class="ms-2 me-2"><a href="{% url 'write:post_detail' post.id %}">Reply</a></p>
-                        {% endif %}
-                        {% if post.get_activity_id is not None %}
-                            <p style='margin: 0 0.5em'><a href="{% url 'write:post_detail' post.id %}?repost=true">Repost</a></p>
-                        {% endif %}
-                        {% if object == request.user %}
-                        <p class="ms-2 me-2"><a href="{% url 'write:post_update' post.id %}">Edit</a></p>
-                        <p class="ms-2 me-2"><a href="{% url 'write:post_delete' post.id %}">Delete</a></p>
-                        {% endif %}
-                    </span>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7 left-column">
+                <div class="d-flex justify-content-between mb-3">
+                    <h5>
+                        <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a> posted
+                    </h5>
+                    {% if object.username == request.user.username %}
+                        <a class="btn btn-sm btn-primary" href="{% url 'write:post_create' %}">New</a>
+                    {% endif %}
                 </div>
-            {% empty %}
-                <p>Nothing.</p>
-            {% endfor %}
-        </div>
-
-        {% if all_tags %}
-        <div class="col-12 col-md-5 right-column">
-            <!--All tags on the page-->
-            <div class="bg-light p-3">
-                <span>
-                    {% for tag, size in all_tags.items %}
-                    <a href="{% url 'write:tag_user_list' object.username tag.name %}" style="font-size: {{ size }}%;" class="text-success me-2">#{{ tag.name }}</a>
+                {% for post in post_list %}
+                    <div>
+                        <div>
+                            <a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a>
+                        </div>
+                        <span class="d-flex">
+                            <p class="me-2 text-muted">{{ post.timestamp|date:"Y.m.d H:i" }}</p>
+                            {% if post.comments_enabled %}
+                                <p class="ms-2 me-2">
+                                    <a href="{% url 'write:post_detail' post.id %}">Reply</a>
+                                </p>
+                            {% endif %}
+                            {% if post.get_activity_id is not None %}
+                                <p style='margin: 0 0.5em'>
+                                    <a href="{% url 'write:post_detail' post.id %}?repost=true">Repost</a>
+                                </p>
+                            {% endif %}
+                            {% if object == request.user %}
+                                <p class="ms-2 me-2">
+                                    <a href="{% url 'write:post_update' post.id %}">Edit</a>
+                                </p>
+                                <p class="ms-2 me-2">
+                                    <a href="{% url 'write:post_delete' post.id %}">Delete</a>
+                                </p>
+                            {% endif %}
+                        </span>
+                    </div>
+                {% empty %}
+                    <p>Nothing.</p>
                 {% endfor %}
-                </span>
             </div>
+            {% if all_tags %}
+                <div class="col-12 col-md-5 right-column">
+                    <!--All tags on the page-->
+                    <div class="bg-light p-3">
+                        <span>
+                            {% for tag, size in all_tags.items %}
+                                <a href="{% url 'write:tag_user_list' object.username tag.name %}"
+                                   style="font-size: {{ size }}%"
+                                   class="text-success me-2">#{{ tag.name }}</a>
+                            {% endfor %}
+                        </span>
+                    </div>
+                </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
-</div>
 {% endblock content %}

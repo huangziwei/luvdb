@@ -1,40 +1,41 @@
 {% load markdownify %}
 {% load linkify %}
 {% load crispy_forms_tags %}
-
 {% if reposts.count != 0 %}
     {% for repost in reposts.all %}
-    <div class="mt-2">
-      <span class='d-flex mt-2'>
-        <a href="{% url 'accounts:detail' repost.user.username%}" class="me-2">
-          {{ repost.user.display_name | default:repost.user.username }}
-        </a>
-          <div class='me-2 text-secondary'><a href="{{repost.get_absolute_url}}" class="text-secondary">{{repost.timestamp | date:"Y.m.d H:i"}}</a></div>
-        {% if repost.user == request.user %} 
-          <a href="{% url "write:repost_update" repost.pk %}" class="me-2">Edit</a>
-        {% endif %}
-        {% if object.user == request.user or repost.user == request.user %} 
-          <a href="{% url "write:repost_delete" repost.pk %}" class="me-2">Delete</a>
-        {% endif %}
-      </span>
-      {% if repost.content  %}  
-        <div class="bg-light mt-2 p-3">{{ repost.content| linkify_tags | linkify_mentions | markdownify }}</div>
-      {% endif %}
-    </div>
+        <div class="mt-2">
+            <span class='d-flex mt-2'>
+                <a href="{% url 'accounts:detail' repost.user.username %}" class="me-2">
+                    {{ repost.user.display_name | default:repost.user.username }}
+                </a>
+                <div class='me-2 text-secondary'>
+                    <a href="{{ repost.get_absolute_url }}" class="text-secondary">{{ repost.timestamp | date:"Y.m.d H:i" }}</a>
+                </div>
+                {% if repost.user == request.user %}
+                    <a href="{% url "write:repost_update" repost.pk %}" class="me-2">Edit</a>
+                {% endif %}
+                {% if object.user == request.user or repost.user == request.user %}
+                    <a href="{% url "write:repost_delete" repost.pk %}" class="me-2">Delete</a>
+                {% endif %}
+            </span>
+            {% if repost.content %}
+                <div class="bg-light mt-2 p-3">{{ repost.content| linkify_tags | linkify_mentions | markdownify }}</div>
+            {% endif %}
+        </div>
     {% empty %}
-      <p>No reposts yet.</p>
+        <p>No reposts yet.</p>
     {% endfor %}
     <hr>
 {% endif %}
-
 {% if user.is_authenticated %}
-  {% if object.get_activity_id is not None %}
-    <form method="POST" action="{% url 'write:repost_create' object.get_activity_id %}">
-      {% csrf_token %}
-      {{ repost_form | crispy }}
-      <button type="submit" class='btn btn-sm btn-primary'>Add Repost</button>
-    </form> 
-  {% else %}
-    <p>Repost disabled.</p>
-  {% endif %}
+    {% if object.get_activity_id is not None %}
+        <form method="POST"
+              action="{% url 'write:repost_create' object.get_activity_id %}">
+            {% csrf_token %}
+            {{ repost_form | crispy }}
+            <button type="submit" class='btn btn-sm btn-primary'>Add Repost</button>
+        </form>
+    {% else %}
+        <p>Repost disabled.</p>
+    {% endif %}
 {% endif %}

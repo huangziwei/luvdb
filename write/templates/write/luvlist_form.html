@@ -2,41 +2,27 @@
 <form method="post">
     {% csrf_token %}
     <div class="row">
-        <div class="col-md-12">
-            {{ form.title|as_crispy_field }} 
-        </div>
-        <div class="col-md-12">
-            {{ form.description|as_crispy_field }}
-        </div>
+        <div class="col-md-12">{{ form.title|as_crispy_field }}</div>
+        <div class="col-md-12">{{ form.description|as_crispy_field }}</div>
     </div>
-    
     <h4>Items</h4>
     {{ contents.management_form }}
     <div id="contentInListDiv">
         {% for form in contents %}
-        {{ form.id }}
-
-        <div class="row{% if forloop.last %} empty-form{% endif %} mb-3 p-2 bg-light " {% if forloop.last %}style="display: none;"{% endif %}>
-            <div class="col-md-10">
-                {{ form.content_url|as_crispy_field }}
+            {{ form.id }}
+            <div class="row{% if forloop.last %} empty-form{% endif %} mb-3 p-2 bg-light "
+                 {% if forloop.last %}style="display: none;"{% endif %}>
+                <div class="col-md-10">{{ form.content_url|as_crispy_field }}</div>
+                <div class="col-md-2">{{ form.order|as_crispy_field }}</div>
+                <div class="col-md-12">{{ form.comment|as_crispy_field }}</div>
             </div>
-            <div class="col-md-2">
-                {{ form.order|as_crispy_field }}
-            </div>
-            <div class="col-md-12">
-                {{ form.comment|as_crispy_field }}
-            </div>
-        </div>
-
-    {% endfor %}
+        {% endfor %}
     </div>
     <div class="d-flex justify-content-between">
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <button id="addMore" type="button" class="btn btn-outline-dark">Add More</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button id="addMore" type="button" class="btn btn-outline-dark">Add More</button>
     </div>
-
 </form>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let formsetNum = {{ contents|length }};

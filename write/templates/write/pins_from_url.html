@@ -3,51 +3,61 @@
 {% load linkify %}
 {% load markdownify %}
 {% block content %}
-
-<div class="container">
-    <div class="row">
-      <div class="col-sm-7 left-column">
-
-        <h4>Pins from <a href="{{ root_url }}">{{ root_url }}</a></h4>
-        
-        {% for pin in pins %}
-            <!--Pin-->
-            <div class="activity-item mb-3">
-                <div class="mb-2">
-                    <a href="{% url 'accounts:detail' pin.user.username %}">
-                        {{ pin.user.display_name | default:pin.user.username }}
-                    </a> pinned:
-                </div>
-                <div class="bg-light p-3">
-                    <a href="{{ pin.url }}">{{ pin.title }}</a> 
-                    (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
-                    {% if pin.content %}
-                    <blockquote>{{ pin.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</blockquote>
-                    {% endif %}
-                </div>
-                <span class="d-flex mt-2">
-                    <p style='margin-right: 0.5em'>
-                        <a href="{% url 'write:pin_detail' pin.id %}" class="link-secondary">{{ pin.timestamp |date:"Y.m.d H:i" }}</a>
-                    </p>
-                    {% if pin.comments_enabled %}   
-                        <p style='margin: 0 0.5em'><a href="{% url 'write:pin_detail' pin.id %}">Reply</a></p>
-                    {% endif %}
-                    {% if pin.get_activity_id is not None %}
-                    <p style='margin: 0 0.5em'><a href="{% url 'write:pin_detail' pin.id %}?repost=true">Repost</a></p>
-                    {% endif %}
-                    {% if pin.user != request.user %}
-                        <p style='margin: 0 0.5em'><a href="{% url 'write:pin_copy' pin.id %}">Copy</a></p>
-                    {% endif %}
-                    {% if pin.user == request.user %}
-                        <p style='margin: 0 0.5em'><a href="{% url 'write:pin_update' pin.id %}">Edit</a></p>
-                        <p style='margin: 0 0.5em'><a href="{% url 'write:pin_delete' pin.id %}">Delete</a></p>
-                    {% endif %}
-                </span>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-7 left-column">
+                <h4>
+                    Pins from <a href="{{ root_url }}">{{ root_url }}</a>
+                </h4>
+                {% for pin in pins %}
+                    <!--Pin-->
+                    <div class="activity-item mb-3">
+                        <div class="mb-2">
+                            <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.display_name | default:pin.user.username }}</a> pinned:
+                        </div>
+                        <div class="bg-light p-3">
+                            <a href="{{ pin.url }}">{{ pin.title }}</a>
+                            (<a href="{% url 'write:pins_from_url' pin.url|root_url %}"
+   class="link-secondary">{{ pin.url|root_url }}</a>)
+                            {% if pin.content %}
+                                <blockquote>
+                                    {{ pin.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
+                                </blockquote>
+                            {% endif %}
+                        </div>
+                        <span class="d-flex mt-2">
+                            <p style='margin-right: 0.5em'>
+                                <a href="{% url 'write:pin_detail' pin.id %}" class="link-secondary">{{ pin.timestamp |date:"Y.m.d H:i" }}</a>
+                            </p>
+                            {% if pin.comments_enabled %}
+                                <p style='margin: 0 0.5em'>
+                                    <a href="{% url 'write:pin_detail' pin.id %}">Reply</a>
+                                </p>
+                            {% endif %}
+                            {% if pin.get_activity_id is not None %}
+                                <p style='margin: 0 0.5em'>
+                                    <a href="{% url 'write:pin_detail' pin.id %}?repost=true">Repost</a>
+                                </p>
+                            {% endif %}
+                            {% if pin.user != request.user %}
+                                <p style='margin: 0 0.5em'>
+                                    <a href="{% url 'write:pin_copy' pin.id %}">Copy</a>
+                                </p>
+                            {% endif %}
+                            {% if pin.user == request.user %}
+                                <p style='margin: 0 0.5em'>
+                                    <a href="{% url 'write:pin_update' pin.id %}">Edit</a>
+                                </p>
+                                <p style='margin: 0 0.5em'>
+                                    <a href="{% url 'write:pin_delete' pin.id %}">Delete</a>
+                                </p>
+                            {% endif %}
+                        </span>
+                    </div>
+                {% empty %}
+                    <p>No pins from this URL.</p>
+                {% endfor %}
             </div>
-        {% empty %}
-            <p>No pins from this URL.</p>
-        {% endfor %}
         </div>
     </div>
-</div>
 {% endblock %}

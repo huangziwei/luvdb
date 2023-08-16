@@ -3,46 +3,43 @@
 {% load crispy_forms_tags %}
 {% load markdownify %}
 {% load linkify %}
-
 {% block title %}{{ object.title }}{% endblock %}
-
 {% block content %}
-
-<div class="container">
-  <div class="row">
-    <div class="col-12 col-md-7 left-column">
-      <h2>{{ object.title }}</h2>
-      <span class="d-flex">
-        <p class='me-2'>
-          by 
-          <a href="{% url 'accounts:detail' object.user.username %}">{{object.user.display_name|default:object.user.username}}</a>
-        </p>
-        <p class='me-2 text-secondary'>
-          <a href="{% url 'write:post_list' object.user.username %}" class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
-          
-        </p>
-        {% if object.user == request.user %}
-        <a href="{% url "write:post_update" object.pk %}" class="me-2">Edit</a>
-        <a href="{% url "write:post_delete" object.pk %}" class="me-2">Delete</a>{% endif %}
-      </span>
-      <div>{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify}}</div>
-      <br>
-      <button id="show-comments" class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
-      <button id="show-reposts" class="btn btn-secondary btn-sm mx-auto toggle-button">Reposts ({{ object.reposts.count }})</button>
-      
-      <hr>
-
-      <div id="comments-section">
-        {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='post' %}
-      </div>
-
-      <div id="reposts-section" style="display: none;">
-        {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts%}
-      </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7 left-column">
+                <h2>{{ object.title }}</h2>
+                <span class="d-flex">
+                    <p class='me-2'>
+                        by
+                        <a href="{% url 'accounts:detail' object.user.username %}">{{ object.user.display_name|default:object.user.username }}</a>
+                    </p>
+                    <p class='me-2 text-secondary'>
+                        <a href="{% url 'write:post_list' object.user.username %}"
+                           class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                    </p>
+                    {% if object.user == request.user %}
+                        <a href="{% url "write:post_update" object.pk %}" class="me-2">Edit</a>
+                        <a href="{% url "write:post_delete" object.pk %}" class="me-2">Delete</a>
+                    {% endif %}
+                </span>
+                <div>{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify }}</div>
+                <br>
+                <button id="show-comments"
+                        class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
+                <button id="show-reposts"
+                        class="btn btn-secondary btn-sm mx-auto toggle-button">
+                    Reposts ({{ object.reposts.count }})
+                </button>
+                <hr>
+                <div id="comments-section">
+                    {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='post' %}
+                </div>
+                <div id="reposts-section" style="display: none;">
+                    {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts %}
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
-<script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
-
+    <script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
 {% endblock %}

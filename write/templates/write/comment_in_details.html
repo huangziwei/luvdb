@@ -1,44 +1,48 @@
 {% load markdownify %}
 {% load linkify %}
 {% load crispy_forms_tags %}
-
 {% if comments %}
-  {% for comment in comments %}
-    <div class="mt-2">
-      <span class='d-flex mt-2'>
-        <a href="{% url 'accounts:detail' comment.user.username%}" class="me-2">
-          {{ comment.user.display_name | default:comment.user.username }}
-        </a>
-        <div class='me-2 text-secondary'>{{comment.timestamp | date:"Y.m.d H:i"}}</div>
-        <a href="#" class="quote-link me-2" data-comment="{{ comment.content }}" data-user-username="{{ comment.user.username}}" data-user="{{ comment.user.display_name | default:comment.user.username }}" data-timestamp="{{comment.timestamp | date:'Y.m.d H:i'}}">Quote</a>
-        {% if comment.user == request.user %} 
-          <a href="{% url "write:comment_update" comment.pk %}" class="me-2">Edit</a>
-        {% endif %}
-        {% if object.user == request.user or comment.user == request.user %} 
-          <a href="{% url "write:comment_delete" comment.pk %}" class="me-2">Delete</a>
-        {% endif %}
-      </span>
-      <div class="bg-light mt-2 p-3">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
-    </div>
-  {% empty %}
-    <p>No comments yet.</p>
-  {% endfor %}
-  <hr>
+    {% for comment in comments %}
+        <div class="mt-2">
+            <span class='d-flex mt-2'>
+                <a href="{% url 'accounts:detail' comment.user.username %}" class="me-2">
+                    {{ comment.user.display_name | default:comment.user.username }}
+                </a>
+                <div class='me-2 text-secondary'>{{ comment.timestamp | date:"Y.m.d H:i" }}</div>
+                <a href="#"
+                   class="quote-link me-2"
+                   data-comment="{{ comment.content }}"
+                   data-user-username="{{ comment.user.username }}"
+                   data-user="{{ comment.user.display_name | default:comment.user.username }}"
+                   data-timestamp="{{ comment.timestamp | date:'Y.m.d H:i' }}">Quote</a>
+                {% if comment.user == request.user %}
+                    <a href="{% url "write:comment_update" comment.pk %}" class="me-2">Edit</a>
+                {% endif %}
+                {% if object.user == request.user or comment.user == request.user %}
+                    <a href="{% url "write:comment_delete" comment.pk %}" class="me-2">Delete</a>
+                {% endif %}
+            </span>
+            <div class="bg-light mt-2 p-3">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
+        </div>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
+    <hr>
 {% endif %}
-
 {% if user.is_authenticated %}
-  {% if object.comments_enabled %}
-    <form method="POST" action="{% url 'write:comment_create' app_label object_type object.id %}" id="comment-form">
-      {% csrf_token %}
-      {{ comment_form|crispy }}
-      <button type="submit" class='btn btn-sm btn-primary'>Add Comment</button>
-    </form>
-    <br>
-  {% else %}
-    <p>Comment disabled.</p>
-  {% endif %} 
+    {% if object.comments_enabled %}
+        <form method="POST"
+              action="{% url 'write:comment_create' app_label object_type object.id %}"
+              id="comment-form">
+            {% csrf_token %}
+            {{ comment_form|crispy }}
+            <button type="submit" class='btn btn-sm btn-primary'>Add Comment</button>
+        </form>
+        <br>
+    {% else %}
+        <p>Comment disabled.</p>
+    {% endif %}
 {% endif %}
-
 <script>
   document.querySelectorAll('.quote-link').forEach(function(link) {
     link.addEventListener('click', function(e) {
@@ -54,8 +58,3 @@
     });
   });
 </script>
-
-
-
-
-

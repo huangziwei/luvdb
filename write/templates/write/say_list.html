@@ -2,61 +2,63 @@
 {% load linkify %}
 {% load markdownify %}
 {% block title %}Says{% endblock %}
-
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-12 col-md-7 left-column">
-          
-          <div class="d-flex justify-content-between mb-3">
-            <h5>
-                <a href="{% url 'accounts:detail' object.username %}">
-                    {{object.display_name | default:object.username}} 
-                </a> said
-              </h5>
-              {% if object.username == request.user.username %}
-              <a class="btn btn-sm btn-primary" href="{% url 'write:say_create' %}">New</a>
-              {% endif %}
-          </div>
-          {% for say in say_list %}
-          <div class="activity-item mb-3">
-              <div>
-                  {{ say.content | linkify_tags | linkify_mentions | markdownify }}
-              </div>
-              <span class="d-flex mt-2">
-                  <div class="me-2">
-                      <a href="{% url 'write:say_detail' say.id %}" class="link-secondary">{{ say.timestamp |date:"Y.m.d H:i" }}</a>
-                  </div>
-                  {% if say.comments_enabled %}
-                      <p class="ms-2 me-2">
-                          <a href="{% url 'write:say_detail' say.id %}">Reply</a>
-                      </p>
-                  {% endif %}
-                  {% if say.get_activity_id is not None %}
-                    <p style='margin: 0 0.5em'><a href="{% url 'write:say_detail' say.id %}?repost=true">Repost</a></p>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7 left-column">
+                <div class="d-flex justify-content-between mb-3">
+                    <h5>
+                        <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a> said
+                    </h5>
+                    {% if object.username == request.user.username %}
+                        <a class="btn btn-sm btn-primary" href="{% url 'write:say_create' %}">New</a>
                     {% endif %}
-                  {% if object == request.user %}
-                      <p class="ms-2 me-2"><a href="{% url 'write:say_update' say.id %}">Edit</a></p>
-                      <p class="ms-2 me-2"><a href="{% url 'write:say_delete' say.id %}">Delete</a></p>
-                  {% endif %}
-              </span>
-          </div>
-      {% empty %}
-          <p>Nothing.</p>
-      {% endfor %}
-    </div>
-    {% if all_tags %}
-    <div class="col-12 col-md-5 right-column">
-        <!--All tags on the page-->
-        <div class="bg-light p-3">
-            <span>
-                {% for tag, size in all_tags.items %}
-                <a href="{% url 'write:tag_user_list' object.username tag.name %}" style="font-size: {{ size }}%;" class="text-success me-2">#{{ tag.name }}</a>
-            {% endfor %}
-            </span>
+                </div>
+                {% for say in say_list %}
+                    <div class="activity-item mb-3">
+                        <div>{{ say.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                        <span class="d-flex mt-2">
+                            <div class="me-2">
+                                <a href="{% url 'write:say_detail' say.id %}" class="link-secondary">{{ say.timestamp |date:"Y.m.d H:i" }}</a>
+                            </div>
+                            {% if say.comments_enabled %}
+                                <p class="ms-2 me-2">
+                                    <a href="{% url 'write:say_detail' say.id %}">Reply</a>
+                                </p>
+                            {% endif %}
+                            {% if say.get_activity_id is not None %}
+                                <p style='margin: 0 0.5em'>
+                                    <a href="{% url 'write:say_detail' say.id %}?repost=true">Repost</a>
+                                </p>
+                            {% endif %}
+                            {% if object == request.user %}
+                                <p class="ms-2 me-2">
+                                    <a href="{% url 'write:say_update' say.id %}">Edit</a>
+                                </p>
+                                <p class="ms-2 me-2">
+                                    <a href="{% url 'write:say_delete' say.id %}">Delete</a>
+                                </p>
+                            {% endif %}
+                        </span>
+                    </div>
+                {% empty %}
+                    <p>Nothing.</p>
+                {% endfor %}
+            </div>
+            {% if all_tags %}
+                <div class="col-12 col-md-5 right-column">
+                    <!--All tags on the page-->
+                    <div class="bg-light p-3">
+                        <span>
+                            {% for tag, size in all_tags.items %}
+                                <a href="{% url 'write:tag_user_list' object.username tag.name %}"
+                                   style="font-size: {{ size }}%"
+                                   class="text-success me-2">#{{ tag.name }}</a>
+                            {% endfor %}
+                        </span>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
-    {% endif %}
-  </div>
-</div>
 {% endblock content %}
