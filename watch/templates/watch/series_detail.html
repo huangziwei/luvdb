@@ -118,9 +118,9 @@
             <!--stats-->
             <div class="bg-light p-3 mb-3">
                 <h5>Statistics</h5>
-                <p><strong>To Watch:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=to_watch">{{ to_watch_count }}</a></p>
-                <p><strong>Watching:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=watching_rewatching">{{ watching_count }}</a></p>
-                <p><strong>Watched:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a></p>
+                <p><strong>To Watch:</strong> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=to_watch">{{ to_watch_count }}</a></p>
+                <p><strong>Watching:</strong> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watching_rewatching">{{ watching_count }}</a></p>
+                <p><strong>Watched:</strong> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a></p>
             </div>
 
             {% if object.wikipedia %}
