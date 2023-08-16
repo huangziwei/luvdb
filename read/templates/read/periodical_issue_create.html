@@ -1,22 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-
 {% block title %}New Issue{% endblock %}
-
 {% block content %}
   <div class="container">
     <div class="row">
-        <div class="col-sm-7 left-column">
-          <h3>Create Issue for "{{ form.initial.periodical.title }}"</h3>
-          {% include "read/periodical_issue_form.html" %}
-        </div>
+      <div class="col-sm-7 left-column">
+        <h3>Create Issue for "{{ form.initial.periodical.title }}"</h3>
+        {% include "read/periodical_issue_form.html" %}
+      </div>
     </div>
   </div>
-
-  <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+  <script type="text/javascript"
+          src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
   {{ issueinstances.media }}
-  <script type="text/javascript" src="{% static 'js/generalFormsetHandler.js' %}"></script>
+  <script type="text/javascript"
+          src="{% static 'js/generalFormsetHandler.js' %}"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       // Call the function for work-role-formset

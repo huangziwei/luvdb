@@ -1,36 +1,33 @@
 {% extends "base.html" %}
 {% block title %}{{ object.name }}{% endblock %}
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-sm-7 left-column">
-    
-            <span class='d-flex align-items-start'>
-                <h2>
-                    {{ object.name }}
-                </h2> 
-            </span>
-
-            {% if works %}
-                <ul>
-                {% for work in works %}
-                    <li>
-                        <a href="{% url 'read:work_detail' work.id %}">{{ work.title }}</a> 
-                        {% if work.authors.exists %}
-                            (
-                            {% for author in work.authors %}
-                                {{ author.name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %},
-                            {{ work.publication_date}})
-                        {% endif %}
-                    </li>
-                {% empty %}
-                    <li>No works in this genre.</li>
-                {% endfor %}
-                </ul>
-            {% endif %} 
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-7 left-column">
+                <span class='d-flex align-items-start'>
+                    <h2>{{ object.name }}</h2>
+                </span>
+                {% if works %}
+                    <ul>
+                        {% for work in works %}
+                            <li>
+                                <a href="{% url 'read:work_detail' work.id %}">{{ work.title }}</a>
+                                {% if work.authors.exists %}
+                                    (
+                                    {% for author in work.authors %}
+                                        {{ author.name }}
+                                        {% if not forloop.last %},{% endif %}
+                                    {% endfor %}
+                                    ,
+                                    {{ work.publication_date }})
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <li>No works in this genre.</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
         </div>
     </div>
-</div>
-
 {% endblock %}

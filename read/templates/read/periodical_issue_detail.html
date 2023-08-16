@@ -1,134 +1,138 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-
-{% block title %}Vol. {{issue.volume}} Issue {{issue.number}} - {{ issue.periodical.title }}{% endblock %}
-
+{% block title %}Vol. {{ issue.volume }} Issue {{ issue.number }} - {{ issue.periodical.title }}{% endblock %}
 {% block content %}
-<div class="container">
-    <div class="row">
-        <!--Left columns-->
-        <div class="col-sm-8">
-            <!-- issue-card -->
-            <div class="issue-card justify-content-start">
-                <div class="d-flex flex-column flex-lg-row mt-2">
-                    <!--cover-box-->
-                    <div class="col-12 col-lg-auto mb-3 mb-lg-0">
-                        <div class="read-cover-box">
-                            {% if issue.cover %}
-                                {% if issue.cover_sens %}
-                                    <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="img-fluid blur" onclick="this.classList.toggle('blur')">
+    <div class="container">
+        <div class="row">
+            <!--Left columns-->
+            <div class="col-sm-8">
+                <!-- issue-card -->
+                <div class="issue-card justify-content-start">
+                    <div class="d-flex flex-column flex-lg-row mt-2">
+                        <!--cover-box-->
+                        <div class="col-12 col-lg-auto mb-3 mb-lg-0">
+                            <div class="read-cover-box">
+                                {% if issue.cover %}
+                                    {% if issue.cover_sens %}
+                                        <img src="{{ issue.cover.url }}"
+                                             alt="{{ issue.title }} cover"
+                                             class="img-fluid blur"
+                                             onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ issue.cover.url }}"
+                                             alt="{{ issue.title }} cover"
+                                             class="img-fluid">
+                                    {% endif %}
                                 {% else %}
-                                    <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="img-fluid">
-                                {% endif %}
-                            {% else %}
-                                <div class="no-cover-text">No Cover</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <!--issue-meta-->
-                    <div class="col flex-grow-1 ms-lg-3">
-                        <div class="card-body">
-                            <span class='align-items-start'>
-                                <h3>Vol. {{ issue.volume }} Issue {{ issue.number }} </h3>
-                                <h5><a class="text-muted" href="{% url 'read:periodical_detail' issue.periodical.id %}">{{ issue.periodical.title }}</a></h5>
-                            </span>
-                            
-                            <div class="issue-meta">
-                                {% if issue.publication_date %}
-                                    <p class='text-secondary'>Date: {{ issue.publication_date }}</p>
-                                {% endif %}
-                                {% if issue.publisher %}
-                                    <p class='text-secondary'>Publisher: {{ issue.publisher }}</p>
+                                    <div class="no-cover-text">No Cover</div>
                                 {% endif %}
                             </div>
                         </div>
-                        <!-- End of issue-card -->
+                        <!--issue-meta-->
+                        <div class="col flex-grow-1 ms-lg-3">
+                            <div class="card-body">
+                                <span class='align-items-start'>
+                                    <h3>Vol. {{ issue.volume }} Issue {{ issue.number }}</h3>
+                                    <h5>
+                                        <a class="text-muted"
+                                           href="{% url 'read:periodical_detail' issue.periodical.id %}">{{ issue.periodical.title }}</a>
+                                    </h5>
+                                </span>
+                                <div class="issue-meta">
+                                    {% if issue.publication_date %}<p class='text-secondary'>Date: {{ issue.publication_date }}</p>{% endif %}
+                                    {% if issue.publisher %}<p class='text-secondary'>Publisher: {{ issue.publisher }}</p>{% endif %}
+                                </div>
+                            </div>
+                            <!-- End of issue-card -->
+                        </div>
                     </div>
-                </div>       
+                </div>
+                <!--Book Check-In-->
+                <div class="mt-4">
+                    {% if user.is_authenticated %}
+                        {% include "read/read_checkin_form.html" %}
+                    {% endif %}
+                    <div class="d-flex justify-content-between mt-4 col-11">
+                        <h4>Latest Check-Ins</h4>
+                        <a class="btn btn-outline-secondary btn-sm"
+                           href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}"
+                           style="height:30px">All</a>
+                    </div>
+                    {% include "read/read_checkin_in_entry_detail.html" %}
+                </div>
             </div>
-
-            <!--Book Check-In-->
-            <div class="mt-4">
+            <div class="col-sm-4">
                 {% if user.is_authenticated %}
-                    {% include "read/read_checkin_form.html" %}
-                {% endif %}
-
-                <div class="d-flex justify-content-between mt-4 col-11">
-                    <h4>Latest Check-Ins</h4>
-                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}" style="height:30px">All</a>
-                </div>
-            
-                {% include "read/read_checkin_in_entry_detail.html" %}
-            </div>
-        </div>
-            
-        <div class="col-sm-4">
-            
-            {% if user.is_authenticated %}
-                <div class="bg-light p-3 mb-3">
-                    <a href="{% url 'read:issue_update' issue.periodical.id issue.pk %}" class='fs-6 text-secondary'>Edit issue data</a>
-                </div>
-            {% endif %}
-            <!--Related instances / Edit -->
-            {% if object.issueinstance_set.count != 0 %}
-            <div class="bg-light p-3">
-                <!-- Related instances or issues etc. -->
-                <div class="row">
-                    <h5>Table of Content</h5>
-                    <!--list all related instances by order-->
-                    <div class="col-sm-12">
-                        {% for issueinstance in object.issueinstance_set.all %}
-                            <div class="related-instance"> 
-                                <p>
-                                    <a href="{% url 'read:instance_detail' issueinstance.instance.id %}">
-                                        {{ issueinstance.alt_title|default:issueinstance.instance.title }}
-                                    </a> 
-                                    ({% for role in issueinstance.instance.instancerole_set.all %}{% if role.role.name == "Author" %}{{ role.alt_name|default:role.person.name }}, {% endif %}{% endfor %}
-                                    {{ issueinstance.publication_date|default:issueinstance.instance.publication_date }})
-                                </p>
-                            </div>
-                        {% empty %}
-                            <p>No related instances found.</p>
-                        {% endfor %}
+                    <div class="bg-light p-3 mb-3">
+                        <a href="{% url 'read:issue_update' issue.periodical.id issue.pk %}"
+                           class='fs-6 text-secondary'>Edit issue data</a>
                     </div>
-                </div>   
+                {% endif %}
+                <!--Related instances / Edit -->
+                {% if object.issueinstance_set.count != 0 %}
+                    <div class="bg-light p-3">
+                        <!-- Related instances or issues etc. -->
+                        <div class="row">
+                            <h5>Table of Content</h5>
+                            <!--list all related instances by order-->
+                            <div class="col-sm-12">
+                                {% for issueinstance in object.issueinstance_set.all %}
+                                    <div class="related-instance">
+                                        <p>
+                                            <a href="{% url 'read:instance_detail' issueinstance.instance.id %}">
+                                                {{ issueinstance.alt_title|default:issueinstance.instance.title }}
+                                            </a>
+                                            (
+                                            {% for role in issueinstance.instance.instancerole_set.all %}
+                                                {% if role.role.name == "Author" %}{{ role.alt_name|default:role.person.name }},{% endif %}
+                                            {% endfor %}
+                                            {{ issueinstance.publication_date|default:issueinstance.instance.publication_date }})
+                                        </p>
+                                    </div>
+                                {% empty %}
+                                    <p>No related instances found.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                <!--Issue Stats -->
+                <div class="bg-light p-3 mt-3">
+                    <h5>Statistics</h5>
+                    <div>
+                        <strong class="text-muted">To Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=to_read">{{ to_read_count }}</a>
+                    </div>
+                    <div>
+                        <strong class="text-muted">Reading:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=reading_rereading">{{ reading_count }}</a>
+                    </div>
+                    <div>
+                        <strong class="text-muted">Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=read_reread">{{ read_count }}</a>
+                    </div>
+                </div>
+                {% if issue.internet_archive_url %}
+                    <div class="bg-light p-3 mt-3">
+                        <h5>Read on</h5>
+                        <div>
+                            <a href="{{ issue.internet_archive_url }}">Internet Archive</a>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if lists_containing_issue.count != 0 %}
+                    <!--LuvLists that included this issue-->
+                    <div class="bg-light p-3 mt-3">
+                        <h5>Lists</h5>
+                        <ul class='mb-0'>
+                            {% for content_in_list in lists_containing_issue %}
+                                <li>
+                                    <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
+                                </li>
+                            {% empty %}
+                                <p>This issue is not included in any LuvLists.</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
-            {% endif %}
-        
-            <!--Issue Stats -->
-            <div class="bg-light p-3 mt-3">
-                <h5>Statistics</h5>
-                <div><strong class="text-muted">To Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=to_read">{{ to_read_count }}</a></div>
-                <div><strong class="text-muted">Reading:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=reading_rereading">{{ reading_count }}</a></div>
-                <div><strong class="text-muted">Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=read_reread">{{ read_count }}</a></div>
-            </div>
-
-            {% if issue.internet_archive_url %}
-            <div class="bg-light p-3 mt-3">
-                <h5>Read on</h5>
-                <div><a href="{{issue.internet_archive_url}}">Internet Archive</a></div>
-            </div>
-            {% endif %}
-
-            {% if lists_containing_issue.count != 0 %}
-            <!--LuvLists that included this issue-->
-            <div class="bg-light p-3 mt-3">
-                <h5>Lists</h5>
-                <ul class='mb-0'>
-                {% for content_in_list in lists_containing_issue %}
-                    <li>
-                        <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">
-                            {{ content_in_list.luv_list.title }}
-                        </a>
-                    </li>
-                {% empty %}
-                    <p>This issue is not included in any LuvLists.</p>
-                {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
         </div>
     </div>
-</div>
-
 {% endblock content %}

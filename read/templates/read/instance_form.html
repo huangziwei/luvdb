@@ -3,57 +3,51 @@
     {% csrf_token %}
     {{ form.title | as_crispy_field }}
     {{ form.subtitle | as_crispy_field }}
-    {{ form.publication_date | as_crispy_field}}
+    {{ form.publication_date | as_crispy_field }}
     {{ form.language | as_crispy_field }}
     {{ form.edition | as_crispy_field }}
-
     {{ instanceroles.management_form|crispy }}
     <div id="instance-role-formset" class="bg-light p-2 mb-3">
         <strong>Persons related to this instance</strong>
         <p class='text-muted'>E.g. Authors, Editors, Illustrators, etc.</p>
         {% for form in instanceroles %}
-        <div class="form-wrapper">
-            <div class="row">
-                {{ form.id }}
-                {% for error in form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {{ error }}
-                </div>
-                {% endfor %}
-                <div class="col-md-4 mb-3">
-                    {{ form.person | as_crispy_field}}
-                    <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person entry?</a>
-                </div>
-                <div class="col-md-3 mb-3">
-                    {{ form.role | as_crispy_field}}
-                    {{ form.domain | as_crispy_field }}
-                    <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role entry?</a>
-                </div>
-                <div class="col-md-4 mb-3">
-                    {{ form.alt_name | as_crispy_field}}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4 mb-3">
+                        {{ form.person | as_crispy_field }}
+                        <a href="{% url 'entity:person_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new person entry?</a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        {{ form.role | as_crispy_field }}
+                        {{ form.domain | as_crispy_field }}
+                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new role entry?</a>
+                    </div>
+                    <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
                 </div>
             </div>
-        </div>
         {% endfor %}
     </div>
-    
     <div class="bg-light p-3 mb-3">
         <strong>The Work related to this instance</strong>
         {{ form.work|as_crispy_field }}
-        <a href="{% url 'read:work_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new work?</a>                   
+        <a href="{% url 'read:work_create' %}?next={{ request.path }}"
+           class="text-secondary"
+           target="_blank">Add a new work?</a>
     </div>
-
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
-
 {% if form.errors %}
-<div class="alert alert-danger mt-5">
-    <ul>
-        {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-                <li>{{ field }}: {{ error }}</li>
+    <div class="alert alert-danger mt-5">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}<li>{{ field }}: {{ error }}</li>{% endfor %}
             {% endfor %}
-        {% endfor %}
-    </ul>
-</div>
+        </ul>
+    </div>
 {% endif %}

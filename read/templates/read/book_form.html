@@ -3,11 +3,13 @@
     {% csrf_token %}
     {{ form.title|as_crispy_field }}
     {{ form.subtitle|as_crispy_field }}
-    {{ form.cover|as_crispy_field}}
-    {{ form.cover_sens|as_crispy_field}}
+    {{ form.cover|as_crispy_field }}
+    {{ form.cover_sens|as_crispy_field }}
     <div class="mb-3">
         {{ form.publisher|as_crispy_field }}
-        <a href="{% url 'read:publisher_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new publisher?</a>                   
+        <a href="{% url 'read:publisher_create' %}?next={{ request.path }}"
+           class="text-secondary"
+           target="_blank">Add a new publisher?</a>
     </div>
     {{ form.language|as_crispy_field }}
     {{ form.details|as_crispy_field }}
@@ -18,70 +20,63 @@
     {{ form.isbn_10|as_crispy_field }}
     {{ form.isbn_13|as_crispy_field }}
     {{ form.asin|as_crispy_field }}
-    {{ form.internet_archive_url|as_crispy_field}}
-
+    {{ form.internet_archive_url|as_crispy_field }}
     {{ bookroles.management_form|crispy }}
     <div id="book-role-formset" class="bg-light p-3 mb-3">
         <strong>Persons related to this book</strong>
         <p class='text-muted'>E.g. Authors, Editors, Designers, etc.</p>
         {% for form in bookroles %}
-        <div class="form-wrapper">
-            <div class="row">
-                {{ form.id }}
-                {% for error in form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {{ error }}
-                </div>
-                {% endfor %}
-                <div class="col-md-4">
-                    {{ form.person | as_crispy_field}}
-                    <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>
-                </div>
-                <div class="col-md-4">
-                    {{ form.role | as_crispy_field}}
-                    {{ form.domain | as_crispy_field }}
-                    <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
-                </div>
-                <div class="col-md-3">
-                    {{ form.alt_name | as_crispy_field}}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4">
+                        {{ form.person | as_crispy_field }}
+                        <a href="{% url 'entity:person_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new person?</a>
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.role | as_crispy_field }}
+                        {{ form.domain | as_crispy_field }}
+                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new role?</a>
+                    </div>
+                    <div class="col-md-3">{{ form.alt_name | as_crispy_field }}</div>
                 </div>
             </div>
-        </div>  
         {% endfor %}
     </div>
-    
     {{ bookinstances.management_form|crispy }}
     <div id="book-instance-formset" class="bg-light p-3 mb-3">
         <strong>Instances related to this book</strong>
-        <p class='text-muted'>An "Instance" is any representation of a literature work, e.g. the original version, revised version, or translation, etc. </p>
+        <p class='text-muted'>
+            An "Instance" is any representation of a literature work, e.g. the original version, revised version, or translation, etc.
+        </p>
         {% for form in bookinstances %}
-        <div class="form-wrapper">
-            <div class="row">
-                {{ form.id }}
-                <div class="col-md-9">
-                    {{ form.instance | as_crispy_field}}
-                    <a href="{% url 'read:instance_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new instance?</a>
-                </div>
-                <div class="col-md-2">
-                    {{ form.order | as_crispy_field}}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    <div class="col-md-9">
+                        {{ form.instance | as_crispy_field }}
+                        <a href="{% url 'read:instance_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new instance?</a>
+                    </div>
+                    <div class="col-md-2">{{ form.order | as_crispy_field }}</div>
                 </div>
             </div>
-        </div>  
         {% endfor %}
     </div>
-
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
 {% if form.errors %}
-<div class="alert alert-danger mt-5">
-    <ul>
-        {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-                <li>{{ field }}: {{ error }}</li>
+    <div class="alert alert-danger mt-5">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}<li>{{ field }}: {{ error }}</li>{% endfor %}
             {% endfor %}
-        {% endfor %}
-    </ul>
-</div>
+        </ul>
+    </div>
 {% endif %}
-
-

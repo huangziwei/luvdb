@@ -1,16 +1,15 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container">
-    <h2>Followers</h2>
-    <ul>
-        {% for follow in follower_list %}
-        <li>
-            <a href="{% url 'accounts:detail' follow.follower.username %}">{{ follow.follower.username }}</a>
-        </li>
-        {% empty %}
-        <li>No followers yet.</li>
-        {% endfor %}
-    </ul>
-</div>
+    <div class="container">
+        <h2>Followers</h2>
+        <ul>
+            {% for follow in follower_list %}
+                <li>
+                    <a href="{% url 'accounts:detail' follow.follower.username %}">{{ follow.follower.username }}</a>
+                </li>
+            {% empty %}
+                <li>No followers yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

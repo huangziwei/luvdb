@@ -1,28 +1,37 @@
 {% load static %}
 <div class="activity-filter-buttons">
-    <button class="btn btn-light btn-sm activity-filter selected" data-filter="all">All</button>
+    <button class="btn btn-light btn-sm activity-filter selected"
+            data-filter="all">All</button>
     <div class="btn-group">
         <button class="btn btn-light btn-sm activity-filter" data-filter="check-in">Check-In</button>
-        <button class="btn btn-light btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"></button>
+        <button class="btn btn-light btn-sm dropdown-toggle dropdown-toggle-split"
+                data-bs-toggle="dropdown"></button>
         <div class="dropdown-menu dropdown-menu-fit-content">
-            <a class="dropdown-item activity-filter" href="#" data-filter="read-check-in">Read</a>
-            <a class="dropdown-item activity-filter" href="#" data-filter="watch-check-in">Watch</a>
-            <a class="dropdown-item activity-filter" href="#" data-filter="listen-check-in">Listen</a>
-            <a class="dropdown-item activity-filter" href="#" data-filter="game-check-in">Play</a>
+            <a class="dropdown-item activity-filter"
+               href="#"
+               data-filter="read-check-in">Read</a>
+            <a class="dropdown-item activity-filter"
+               href="#"
+               data-filter="watch-check-in">Watch</a>
+            <a class="dropdown-item activity-filter"
+               href="#"
+               data-filter="listen-check-in">Listen</a>
+            <a class="dropdown-item activity-filter"
+               href="#"
+               data-filter="game-check-in">Play</a>
         </div>
     </div>
     <div class="btn-group">
         <button class="btn btn-light btn-sm activity-filter" data-filter="say">Say</button>
-        <button class="btn btn-light btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"></button>
+        <button class="btn btn-light btn-sm dropdown-toggle dropdown-toggle-split"
+                data-bs-toggle="dropdown"></button>
         <div class="dropdown-menu dropdown-menu-fit-content">
             <a class="dropdown-item activity-filter" href="#" data-filter="post">Post</a>
             <a class="dropdown-item activity-filter" href="#" data-filter="pin">Pin</a>
             <a class="dropdown-item activity-filter" href="#" data-filter="repost">Repost</a>
-
         </div>
     </div>
     <button class="btn btn-light btn-sm activity-filter" data-filter="follow">Follow</button>
     <hr>
 </div>
-
 <script type="text/javascript" src="{% static 'js/activity-filter.js' %}"></script>

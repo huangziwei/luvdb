@@ -11,13 +11,11 @@
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
 {% if form.errors %}
-<div class="alert alert-danger mt-5">
-    <ul>
-        {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-                <li>{{ field }}: {{ error }}</li>
+    <div class="alert alert-danger mt-5">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}<li>{{ field }}: {{ error }}</li>{% endfor %}
             {% endfor %}
-        {% endfor %}
-    </ul>
-</div>
+        </ul>
+    </div>
 {% endif %}

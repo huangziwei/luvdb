@@ -1,96 +1,90 @@
 {% extends "base.html" %}
 {% block title %}{{ periodical.title }}{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="row">
-        <!-- Left columns -->
-        <div class="col-sm-8">
-            <!-- periodical-card -->
-            <div class="periodical-card justify-content-start">
-                <div class="d-flex flex-column flex-lg-row mt-2">
-                    <!-- periodical-meta -->
-                    <div class="col flex-grow-1">
-                        <div class="card-body">
-                            <span class='d-flex align-items-start'>
-                                <h2>{{ periodical.title }}</h2>
-                            </span>
-
-                            <div class="periodical-meta">
-                                {% if periodical.subtitle %}
-                                    <p class='text-secondary'>{{ periodical.subtitle }}</p>
-                                {% endif %}
-
-                                <p><span class="text-muted">Frequency:</span> {{ periodical.get_frequency_display }}</p>
-                                <p><span class="text-muted">ISSN:</span> {{ periodical.issn }}</p>
+    <div class="container">
+        <div class="row">
+            <!-- Left columns -->
+            <div class="col-sm-8">
+                <!-- periodical-card -->
+                <div class="periodical-card justify-content-start">
+                    <div class="d-flex flex-column flex-lg-row mt-2">
+                        <!-- periodical-meta -->
+                        <div class="col flex-grow-1">
+                            <div class="card-body">
+                                <span class='d-flex align-items-start'>
+                                    <h2>{{ periodical.title }}</h2>
+                                </span>
+                                <div class="periodical-meta">
+                                    {% if periodical.subtitle %}<p class='text-secondary'>{{ periodical.subtitle }}</p>{% endif %}
+                                    <p>
+                                        <span class="text-muted">Frequency:</span> {{ periodical.get_frequency_display }}
+                                    </p>
+                                    <p>
+                                        <span class="text-muted">ISSN:</span> {{ periodical.issn }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="mt-4">
-                <h3>Issues</h3>
-                <div class="row">
-                    {% for issue in periodical.issues.all %}
-                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-                            <a href="{% url 'read:issue_detail' periodical.id issue.id %}">
-                                {% if issue.cover %}
-                                    {% if issue.cover_sens %}
-                                        <img src="{{ issue.cover.url }}" alt="{{ issue.title }} cover" class="img-fluid blur" onclick="this.classList.toggle('blur')">
+                <div class="mt-4">
+                    <h3>Issues</h3>
+                    <div class="row">
+                        {% for issue in periodical.issues.all %}
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                <a href="{% url 'read:issue_detail' periodical.id issue.id %}">
+                                    {% if issue.cover %}
+                                        {% if issue.cover_sens %}
+                                            <img src="{{ issue.cover.url }}"
+                                                 alt="{{ issue.title }} cover"
+                                                 class="img-fluid blur"
+                                                 onclick="this.classList.toggle('blur')">
+                                        {% else %}
+                                            <img src="{{ issue.cover.url }}" alt="{{ issue.title }}" class="img-fluid">
+                                        {% endif %}
                                     {% else %}
-                                        <img src="{{ issue.cover.url }}" alt="{{ issue.title }}" class="img-fluid">
+                                        <div class="cover-placeholder"
+                                             style="background: grey;
+                                                    width: 100%;
+                                                    height:100%;
+                                                    color:white;
+                                                    text-align: center">{{ issue.title }}</div>
                                     {% endif %}
-                                {% else %}
-                                    <div class="cover-placeholder" style="background: grey; width: 100%; height:100%; color:white; text-align: center">{{ issue.title }}</div>
-                                {% endif %}
-                                <div class="issue-title text-center mt-2">
-                                    {% if issue.volume %}
-                                        Vol. {{ issue.volume }}
-                                    {% endif %}
-                                    {% if issue.number %}
-                                        Issue {{ issue.number }}
-                                    {% endif %}
-                                    {% if issue.publication_date %}
-                                      ({{issue.publication_date}})
-                                    {% endif %}
-                                </div>
-                            </a>
-                            
-                        </div>
-                    {% empty %}
-                        <p>No issues available.</p>
-                    {% endfor %}
+                                    <div class="issue-title text-center mt-2">
+                                        {% if issue.volume %}Vol. {{ issue.volume }}{% endif %}
+                                        {% if issue.number %}Issue {{ issue.number }}{% endif %}
+                                        {% if issue.publication_date %}({{ issue.publication_date }}){% endif %}
+                                    </div>
+                                </a>
+                            </div>
+                        {% empty %}
+                            <p>No issues available.</p>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Right column -->
-        <div class="col-sm-4">
-            <!-- Related actions for authenticated users -->
-            {% if user.is_authenticated %}
-                <div class="bg-light p-3 mb-3">
-                    <a href="{% url 'read:periodical_update' periodical.id %}" class='fs-6 text-secondary'>Edit periodical data</a>
-                    <br>
-                    <a href="{% url "read:issue_create" periodical.id %}" class='fs-6 text-secondary'>Add an Issue</a>
-                </div>
-                
-            {% endif %}
-
-            <!--Links-->
-            {% if periodical.wikipedia or periodical.website %}
-            <div class="bg-light p-3 mb-3">
-                <h5>Links</h5>
-                {% if  periodical.wikipedia %}
-                  <a href="{{ periodical.wikipedia }}" target="_blank">Wikipedia</a>
+            <!-- Right column -->
+            <div class="col-sm-4">
+                <!-- Related actions for authenticated users -->
+                {% if user.is_authenticated %}
+                    <div class="bg-light p-3 mb-3">
+                        <a href="{% url 'read:periodical_update' periodical.id %}"
+                           class='fs-6 text-secondary'>Edit periodical data</a>
+                        <br>
+                        <a href="{% url "read:issue_create" periodical.id %}"
+                           class='fs-6 text-secondary'>Add an Issue</a>
+                    </div>
                 {% endif %}
-                  <br>
-                {% if  periodical.website %}
-                  <a href="{{ periodical.website }}" target="_blank">Official Website</a>
+                <!--Links-->
+                {% if periodical.wikipedia or periodical.website %}
+                    <div class="bg-light p-3 mb-3">
+                        <h5>Links</h5>
+                        {% if  periodical.wikipedia %}<a href="{{ periodical.wikipedia }}" target="_blank">Wikipedia</a>{% endif %}
+                        <br>
+                        {% if  periodical.website %}<a href="{{ periodical.website }}" target="_blank">Official Website</a>{% endif %}
+                    </div>
                 {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
-</div>
 {% endblock content %}

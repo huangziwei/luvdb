@@ -1,60 +1,56 @@
 {% extends "base.html" %}
-
 {% block title %}{{ object.name }}{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-sm-8 left-column">
-    
-            <span class='d-flex align-items-start'>
-                <h2>
-                    {{ object.name }}
-                    {% if object.romanized_name %} / {{ object.romanized_name }} {% endif %}
-                </h2> 
-            </span>
-            <span class="text-secondary">
-                {% if object.founded_date %}{{ object.founded_date }}-{% endif %}{% if object.closed_date %}{{ object.closed_date }}{% endif %}
-            </span>
-
-            {% if object.books.count != 0 %}
-                <h3>Books</h3>
-                <ul>
-                {% for book in object.books.all %}
-                    <li>
-                        <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a> ({% if book.format %}{{book.format}}, {% endif %}{{ book.publication_date}})
-                    </li>
-                {% empty %}
-                    <li>This publisher has no books.</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-
-        <!--manage entry-->
-        <div class="col-sm-4">
-            {% if user.is_authenticated %}
-            <div class="bg-light p-3 mb-3">
-                <a href="{% url 'read:publisher_update' object.pk %}" class='fs-6 text-secondary'>Edit Publisher</a>
-            </div>
-            {% endif %}
-
-            <div class="bg-light p-3 mb-3">
-                <h5>Link</h5>
-                {% if object.wikipedia %}
-                <div>
-                    <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>
-                </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 left-column">
+                <span class='d-flex align-items-start'>
+                    <h2>
+                        {{ object.name }}
+                        {% if object.romanized_name %}/ {{ object.romanized_name }}{% endif %}
+                    </h2>
+                </span>
+                <span class="text-secondary">
+                    {% if object.founded_date %}{{ object.founded_date }}-{% endif %}
+                    {% if object.closed_date %}{{ object.closed_date }}{% endif %}
+                </span>
+                {% if object.books.count != 0 %}
+                    <h3>Books</h3>
+                    <ul>
+                        {% for book in object.books.all %}
+                            <li>
+                                <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a> (
+                                {% if book.format %}{{ book.format }},{% endif %}
+                                {{ book.publication_date }})
+                            </li>
+                        {% empty %}
+                            <li>This publisher has no books.</li>
+                        {% endfor %}
+                    </ul>
                 {% endif %}
-
-                {% if object.website %}
-                    <div>
-                        <a href="{{ object.website }}" target="_blank">Official Website</a>
+            </div>
+            <!--manage entry-->
+            <div class="col-sm-4">
+                {% if user.is_authenticated %}
+                    <div class="bg-light p-3 mb-3">
+                        <a href="{% url 'read:publisher_update' object.pk %}"
+                           class='fs-6 text-secondary'>Edit Publisher</a>
                     </div>
                 {% endif %}
+                <div class="bg-light p-3 mb-3">
+                    <h5>Link</h5>
+                    {% if object.wikipedia %}
+                        <div>
+                            <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>
+                        </div>
+                    {% endif %}
+                    {% if object.website %}
+                        <div>
+                            <a href="{{ object.website }}" target="_blank">Official Website</a>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-</div>
-
 {% endblock %}
