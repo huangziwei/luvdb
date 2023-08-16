@@ -1,200 +1,213 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load concat_sets %}
-
 {% block title %}{{ object.title }}{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="row">
-        <!--Left columns-->
-        <div class="col-lg-8 col-md-8 col-sm-12">
-            <!-- release-card -->
-            <div class="release-card justify-content-start">
-                <div class="d-flex flex-column flex-lg-row mt-2">
-                    <!--cover-box-->
-                    <div class="col-12 col-lg-auto mb-3 mb-lg-0">
-                        <div class="listen-cover-box">
-                            {% if object.cover %}
-                                {% if object.cover_sens %}
-                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="cover-image blur img-fluid" onclick="this.classList.toggle('blur')">
+    <div class="container">
+        <div class="row">
+            <!--Left columns-->
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <!-- release-card -->
+                <div class="release-card justify-content-start">
+                    <div class="d-flex flex-column flex-lg-row mt-2">
+                        <!--cover-box-->
+                        <div class="col-12 col-lg-auto mb-3 mb-lg-0">
+                            <div class="listen-cover-box">
+                                {% if object.cover %}
+                                    {% if object.cover_sens %}
+                                        <img src="{{ object.cover.url }}"
+                                             alt="{{ object.title }} cover"
+                                             class="cover-image blur img-fluid"
+                                             onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ object.cover.url }}"
+                                             alt="{{ object.title }} cover"
+                                             class="img-fluid">
+                                    {% endif %}
                                 {% else %}
-                                    <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid">
+                                    <div class="no-cover-text">No Cover</div>
                                 {% endif %}
-                            {% else %}
-                                <div class="no-cover-text">No Cover</div>
-                            {% endif %}
+                            </div>
                         </div>
-                    </div>
-                    <!--release-meta-->
-                    <div class="col flex-grow-1 ms-lg-3">
-                        <div class="card-body">
-                            <span class='d-flex align-items-start'>
-                                <h2>{{ object.title }} </h2>
-                            </span>
-                            
-                            <div class="release-meta">
-                                {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</div>{% endif %}
-                                {% for role_name, person_altname_tuples in roles.items %}
-                                    <div class="mb-1">
-                                        <span class="text-muted">{{ role_name }}:</span> 
-                                        {% for person, alt_name in person_altname_tuples %}
-                                            <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
-                                            {% if not forloop.last %} / {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                                {% if object.label %}
-                                    <div class="mb-1">
-                                        <span class="text-muted">Label:</span>
-                                        {% for label in object.label.all %}
-                                        <a href="{% url 'listen:label_detail' label.id %}">
-                                            {{ label.name }} {% if not forloop.last %} / {% endif %}
-                                        </a>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                                {% if object.release_date %}
-                                    <div class="mb-1"><span class="text-muted">Date:</span> {{ object.release_date }}</div>
-                                {% endif %}
-                                
-                                
-                                <div class="my-3">
-                                    <div class="text-muted mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#detailsCollapse" aria-expanded="false" aria-controls="detailsCollapse">
-                                        <span class="text-muted">More Metadata</span>
-                                    </div>
-                                    <div class="collapse" id="detailsCollapse">
-                                        {% if object.release_type %}
-                                            <div class="mb-1"><span class="text-muted">Type:</span> {{ object.release_type }}</div>
-                                        {% endif %}
-                                        {% if object.release_format %}
-                                            <div class="mb-1"><span class="text-muted">Format:</span> {{ object.release_format }}</div>
-                                        {% endif %}
-                                        {% if object.release_region %}
-                                            <div class="mb-1"><span class="text-muted">Region:</span> {{ object.release_region }}</div>
-                                        {% endif %}
-                                        {% if object.release_length %}
-                                            <div class="mb-1"><span class="text-muted">Length:</span> {{ object.release_length }}</div>
-                                        {% endif %}
+                        <!--release-meta-->
+                        <div class="col flex-grow-1 ms-lg-3">
+                            <div class="card-body">
+                                <span class='d-flex align-items-start'>
+                                    <h2>{{ object.title }}</h2>
+                                </span>
+                                <div class="release-meta">
+                                    {% if object.subtitle %}
+                                        <p class='text-secondary'>
+                                            {{ object.subtitle }}
+                                        </div>
+                                    {% endif %}
+                                    {% for role_name, person_altname_tuples in roles.items %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">{{ role_name }}:</span>
+                                            {% for person, alt_name in person_altname_tuples %}
+                                                <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                    {% if object.label %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Label:</span>
+                                            {% for label in object.label.all %}
+                                                <a href="{% url 'listen:label_detail' label.id %}">
+                                                    {{ label.name }}
+                                                    {% if not forloop.last %}/{% endif %}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if object.release_date %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Date:</span> {{ object.release_date }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="my-3">
+                                        <div class="text-muted mb-1"
+                                             type="button"
+                                             data-bs-toggle="collapse"
+                                             data-bs-target="#detailsCollapse"
+                                             aria-expanded="false"
+                                             aria-controls="detailsCollapse">
+                                            <span class="text-muted">More Metadata</span>
+                                        </div>
+                                        <div class="collapse" id="detailsCollapse">
+                                            {% if object.release_type %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Type:</span> {{ object.release_type }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.release_format %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Format:</span> {{ object.release_format }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.release_region %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Region:</span> {{ object.release_region }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.release_length %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Length:</span> {{ object.release_length }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
+                            <!-- End of release-card -->
                         </div>
-                        <!-- End of release-card -->
                     </div>
-                </div>       
+                </div>
+                <!--Listen Check-In-->
+                <div class="mt-4">
+                    {% if user.is_authenticated %}
+                        {% include "listen/listen_checkin_form.html" %}
+                    {% endif %}
+                    <div class="d-flex justify-content-between mt-4 col-11">
+                        <h4>Latest Check-Ins</h4>
+                        <a class="btn btn-outline-secondary btn-sm"
+                           href="{% url 'listen:listen_checkin_all_list' release.id %}"
+                           style="height:30px">All</a>
+                    </div>
+                    {% include "listen/listen_checkin_in_release_detail.html" %}
+                </div>
             </div>
-
-            <!--Listen Check-In-->
-            <div class="mt-4">
+            <div class="col-sm-4">
+                <!--Related tracks / Edit -->
                 {% if user.is_authenticated %}
-                    {% include "listen/listen_checkin_form.html" %}
+                    <div class="bg-light p-3 mb-3">
+                        <a href="{% url 'listen:release_update' object.pk %}"
+                           class='fs-6 text-secondary'>Edit Release</a>
+                    </div>
                 {% endif %}
-                <div class="d-flex justify-content-between mt-4 col-11">
-                    <h4>Latest Check-Ins</h4>
-                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'listen:listen_checkin_all_list' release.id %}" style="height:30px">All</a>
-                </div>
-            
-                {% include "listen/listen_checkin_in_release_detail.html" %}
-            </div>
-        </div>
-
-            
-        <div class="col-sm-4">
-            <!--Related tracks / Edit -->
-            {% if user.is_authenticated %}
-            <div class="bg-light p-3 mb-3">
-                <a href="{% url 'listen:release_update' object.pk %}" class='fs-6 text-secondary'>Edit Release</a>
-            </div>
-            {% endif %}
-            
-            <div class="bg-light p-3 mb-3">
-                <h5>Tracklist</h5>
-                <!--list all related tracks by order-->
-                <div class="col-sm-12">
-                    {% for release_track in object.releasetrack_set.all %}
-                        <div class="related-track"> 
-                            <div>
-                                <strong>{{ release_track.order }}.</strong>
-                                <a href="{% url 'listen:track_detail' release_track.track.id %}">
-                                    {{ release_track.alt_title|default:release_track.track.title }}
-                                </a> 
-                                {% if release_track.track.length %}
-                                ({{ release_track.track.length }})
-                                {% endif %}
+                <div class="bg-light p-3 mb-3">
+                    <h5>Tracklist</h5>
+                    <!--list all related tracks by order-->
+                    <div class="col-sm-12">
+                        {% for release_track in object.releasetrack_set.all %}
+                            <div class="related-track">
+                                <div>
+                                    <strong>{{ release_track.order }}.</strong>
+                                    <a href="{% url 'listen:track_detail' release_track.track.id %}">
+                                        {{ release_track.alt_title|default:release_track.track.title }}
+                                    </a>
+                                    {% if release_track.track.length %}({{ release_track.track.length }}){% endif %}
+                                </div>
                             </div>
+                        {% empty %}
+                            <div>No related tracks found.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!--Release Stats-->
+                <div class="bg-light p-3 mb-3">
+                    <h5>Statistics</h5>
+                    <div>
+                        <strong>To Listen:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a>
+                    </div>
+                    <div>
+                        <strong>Looping:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a>
+                    </div>
+                    <div>
+                        <strong>Listened:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a>
+                    </div>
+                </div>
+                <!--Listen on-->
+                {% if object.apple_music_url or object.spotify_url or  object.kkbox_url or object.spotify_url %}
+                    <div class="bg-light p-3 mb-3">
+                        <h5>Listen on</h5>
+                        {% if object.apple_music_url %}
+                            <div>
+                                <a href="{{ object.apple_music_url }}">Apple Music</a>
+                            </div>
+                        {% endif %}
+                        {% if object.kkbox_url %}
+                            <div>
+                                <a href="{{ object.kkbox_url }}">KKBox</a>
+                            </div>
+                        {% endif %}
+                        {% if object.spotify_url %}
+                            <div>
+                                <a href="{{ object.spotify_url }}">Spotify</a>
+                            </div>
+                        {% endif %}
+                        {% if object.youtube_url %}
+                            <div>
+                                <a href="{{ object.youtube_url }}">YouTube</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                {% if object.wikipedia %}
+                    <div class="bg-light p-3 mb-3">
+                        <h5>Links</h5>
+                        <div>
+                            <a href="{{ object.wikipedia }}">Wikipedia</a>
                         </div>
-                    {% empty %}
-                        <div>No related tracks found.</div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!--Release Stats-->
-            <div class="bg-light p-3 mb-3">
-                <h5>Statistics</h5>
-                <div><strong>To Listen:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a></div>
-                <div><strong>Looping:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a></div>
-                <div><strong>Listened:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a></div>
-            </div>
-
-            <!--Listen on-->
-            {% if object.apple_music_url or object.spotify_url or  object.kkbox_url or object.spotify_url%}
-            <div class="bg-light p-3 mb-3">
-                <h5>Listen on </h5>
-                {% if object.apple_music_url %}
-                <div>
-                    <a href="{{ object.apple_music_url }}">Apple Music</a>
-                </div>
+                    </div>
                 {% endif %}
-                {% if object.kkbox_url %}
-                <div>
-                    <a href="{{ object.kkbox_url }}">KKBox</a>
-                </div>
-                {% endif %}
-                {% if object.spotify_url %}
-                <div>
-                    <a href="{{ object.spotify_url }}">Spotify</a>
-                </div>
-                {% endif %}
-                {% if object.youtube_url %}
-                <div>
-                    <a href="{{ object.youtube_url }}">YouTube</a>
-                </div>
+                {% if lists_containing_release.count != 0 %}
+                    <!--LuvLists that included this release-->
+                    <div class="bg-light p-3 mb-3">
+                        <h5>Lists</h5>
+                        <ul>
+                            {% for content_in_list in lists_containing_release %}
+                                <li>
+                                    <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
+                                </li>
+                            {% empty %}
+                                <p>This release is not included in any LuvLists.</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 {% endif %}
             </div>
-            {% endif %}
-
-            {% if object.wikipedia %}
-            <div class="bg-light p-3 mb-3">
-                <h5>Links</h5>
-                <div><a href="{{object.wikipedia}}">Wikipedia</a></div>
-            </div>
-            {% endif %}
-
-            
-
-            {% if lists_containing_release.count != 0 %}
-            <!--LuvLists that included this release-->
-            <div class="bg-light p-3 mb-3">
-                <h5>Lists</h5>
-                <ul>
-                {% for content_in_list in lists_containing_release %}
-                    <li>
-                        <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">
-                            {{ content_in_list.luv_list.title }}
-                        </a>
-                    </li>
-                {% empty %}
-                    <p>This release is not included in any LuvLists.</p>
-                {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
         </div>
     </div>
-</div>
-
-
 {% endblock content %}

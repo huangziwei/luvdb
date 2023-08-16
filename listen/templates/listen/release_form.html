@@ -4,95 +4,82 @@
     {{ form.title|as_crispy_field }}
     {{ form.subtitle|as_crispy_field }}
     {{ form.romanized_title|as_crispy_field }}
-
-    
-    {{ form.cover|as_crispy_field}}
-    {{ form.cover_sens|as_crispy_field}}
+    {{ form.cover|as_crispy_field }}
+    {{ form.cover_sens|as_crispy_field }}
     <div class="mb-3">
         {{ form.label|as_crispy_field }}
-        <a href="{% url 'listen:label_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new label?</a>                   
+        <a href="{% url 'listen:label_create' %}?next={{ request.path }}"
+           class="text-secondary"
+           target="_blank">Add a new label?</a>
     </div>
     {{ form.release_date|as_crispy_field }}
     {{ form.release_length|as_crispy_field }}
     {{ form.release_type|as_crispy_field }}
     {{ form.release_format|as_crispy_field }}
     {{ form.release_region|as_crispy_field }}
-
     {{ releaseroles.management_form|crispy }}
     <div id="release-role-formset" class="bg-light p-3 mb-3">
         <strong>Persons related to this release</strong>
         <p class='text-muted'>E.g. Singer, Lyricist, Composer, etc.</p>
         {% for form in releaseroles %}
-        <div class="form-wrapper">
-            <div class="row">
-                {{ form.id }}
-                {% for error in form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {{ error }}
-                </div>
-                {% endfor %}
-                <div class="col-md-4">
-                    {{ form.person | as_crispy_field}}
-                    <a href="{% url 'entity:person_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new person?</a>
-                </div>
-                <div class="col-md-4">
-                    {{ form.role | as_crispy_field}}
-                    {{ form.domain | as_crispy_field }}
-                    <a href="{% url 'entity:role_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new role?</a>
-                </div>
-                <div class="col-md-3">
-                    {{ form.alt_name | as_crispy_field}}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4">
+                        {{ form.person | as_crispy_field }}
+                        <a href="{% url 'entity:person_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new person?</a>
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.role | as_crispy_field }}
+                        {{ form.domain | as_crispy_field }}
+                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new role?</a>
+                    </div>
+                    <div class="col-md-3">{{ form.alt_name | as_crispy_field }}</div>
                 </div>
             </div>
-        </div>  
         {% endfor %}
-    </div> 
-    
+    </div>
     {{ releasetracks.management_form|crispy }}
     <div id="release-track-formset" class="bg-light p-3 mb-3">
         <strong>Tracks related to this release</strong>
-        <p class='text-muted'>An "Track" is any representation of a music work, e.g. the original version, cover version, or live, etc. </p>
+        <p class='text-muted'>
+            An "Track" is any representation of a music work, e.g. the original version, cover version, or live, etc.
+        </p>
         {% for form in releasetracks %}
-        <div class="form-wrapper">
-            <div class="row">
-                {{ form.id }}
-                <div class="col-md-4">
-                    {{ form.track | as_crispy_field}}
-                    <a href="{% url 'listen:track_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new track?</a>
-                </div>
-                <div class="col-md-3">
-                    {{ form.alt_title | as_crispy_field}}
-                </div>
-                <div class="col-md-2">
-                    {{ form.order | as_crispy_field}}
-                </div>
-                <div class="col-md-2">
-                    {{ form.disk | as_crispy_field}}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    <div class="col-md-4">
+                        {{ form.track | as_crispy_field }}
+                        <a href="{% url 'listen:track_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new track?</a>
+                    </div>
+                    <div class="col-md-3">{{ form.alt_title | as_crispy_field }}</div>
+                    <div class="col-md-2">{{ form.order | as_crispy_field }}</div>
+                    <div class="col-md-2">{{ form.disk | as_crispy_field }}</div>
                 </div>
             </div>
-        </div>  
         {% endfor %}
     </div>
-
-    {{form.apple_music_url | as_crispy_field}}
-    {{form.kkbox_url | as_crispy_field}}
-    {{form.spotify_url | as_crispy_field}}    
-    {{form.youtube_url | as_crispy_field}}
-    {{form.wikipedia | as_crispy_field}}
-
-
+    {{ form.apple_music_url | as_crispy_field }}
+    {{ form.kkbox_url | as_crispy_field }}
+    {{ form.spotify_url | as_crispy_field }}
+    {{ form.youtube_url | as_crispy_field }}
+    {{ form.wikipedia | as_crispy_field }}
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
 {% if form.errors %}
-<div class="alert alert-danger mt-5">
-    <ul>
-        {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-                <li>{{ field }}: {{ error }}</li>
+    <div class="alert alert-danger mt-5">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}<li>{{ field }}: {{ error }}</li>{% endfor %}
             {% endfor %}
-        {% endfor %}
-    </ul>
-</div>
+        </ul>
+    </div>
 {% endif %}
-
-

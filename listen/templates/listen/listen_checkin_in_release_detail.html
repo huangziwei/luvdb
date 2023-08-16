@@ -1,5 +1,7 @@
 {% load markdownify %}
 {% load linkify %}
+{% load static %}
+{% load parse_activity_type %}
 <div class="col-sm-11 mt-3">
     {% for checkin in checkins %}
         {% if checkin.user.is_public or request.user.is_authenticated %}
@@ -10,60 +12,42 @@
                     </a>
                 </span>
                 <!--badge: checkin status-->
-                {% if checkin.status == "to_listen" %}
-                <span class="badge text-bg-info me-2">
-                {% elif checkin.status == "looping" %}
-                <span class="badge text-bg-primary me-2">    
-                {% elif checkin.status == "listened" %}
-                <span class="badge text-bg-success me-2"> 
-                {% elif checkin.status == "paused" %}
-                <span class="badge text-bg-warning me-2"> 
-                {% elif checkin.status == "abandoned" %}
-                <span class="badge text-bg-danger me-2"> 
-                {% endif %}
-                    {{ checkin.get_status_display }}
-                </span>
+                <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
                 {% if checkin.progress %}
-                <span class="badge text-bg-warning me-2">
-                    Loop: {{ checkin.progress }} 
-                    {% if checkin.progress_type == "TT" %}
-                        Minutes
-                    {% else %}
-                        Times
-                    {% endif %}
-                </span>
+                    <span class="badge text-bg-warning me-2">
+                        Loop: {{ checkin.progress }}
+                        {% if checkin.progress_type == "TT" %}
+                            Minutes
+                        {% else %}
+                            Times
+                        {% endif %}
+                    </span>
                 {% endif %}
             </div>
             {% if checkin.content %}
-            <div class="checkin bg-light p-3 mb-3">
-                {{ checkin.content | linkify_tags | linkify_mentions | markdownify }}
-            </div>
+                <div class="checkin bg-light p-3 mb-3">{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
             {% endif %}
             <div class="d-flex mb-4">
                 <span class="me-2">
-                    <a href="{% url 'listen:listen_checkin_list' checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary">
-                        {{ checkin.timestamp|date:"Y.m.d H:i"  }}
-                    </a>
+                    <a href="{% url 'listen:listen_checkin_list' checkin.content_object.id checkin.user.username %}"
+                       class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
                 </span>
                 {% if checkin.comments_enabled %}
                     <span class="ms-2 me-2">
-                        <a href="{% url 'listen:listen_checkin_detail' checkin.id %}" class="text-decoration-none">Reply</a>
+                        <a href="{% url 'listen:listen_checkin_detail' checkin.id %}"
+                           class="text-decoration-none">Reply</a>
                     </span>
                 {% endif %}
                 {% if checkin.get_activity_id %}
-                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_detail' checkin.id %}?repost=true" class="text-decoration-none">Repost</a></span>
+                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_detail' checkin.id %}?repost=true"
+   class="text-decoration-none">Repost</a></span>
                 {% endif %}
-
                 {% if checkin.user == request.user %}
-                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_update' checkin.id %}" class="text-decoration-none">Edit</a></span>
-                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_delete' checkin.id %}" class="text-decoration-none">Delete</a></span>
+                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_update' checkin.id %}"
+   class="text-decoration-none">Edit</a></span>
+                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_delete' checkin.id %}"
+   class="text-decoration-none">Delete</a></span>
                 {% endif %}
-
-                {% comment %} <span class="ms-2 me-2">
-                    <a href="{% url 'listen:listen_checkin_list' checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary">
-                        Others
-                    </a>
-                </span> {% endcomment %}
             </div>
         {% endif %}
     {% empty %}
