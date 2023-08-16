@@ -2,32 +2,25 @@
 <form method="post">
     {% csrf_token %}
     <div class="row">
-        <div class="col-md-12">
-            {{ form.title|as_crispy_field }} 
-        </div>
+        <div class="col-md-12">{{ form.title|as_crispy_field }}</div>
     </div>
     <h2>Books in Series</h2>
     {{ books.management_form }}
     <div id="bookInSeriesDiv">
-    {% for form in books %}
-        {{ form.id }}
-        <div class="row{% if forloop.last %} empty-form{% endif %}" {% if forloop.last %}style="display: none;"{% endif %}>
-            <div class="col-md-8">
-                {{ form.book_url|as_crispy_field }}
+        {% for form in books %}
+            {{ form.id }}
+            <div class="row{% if forloop.last %} empty-form{% endif %}"
+                 {% if forloop.last %}style="display: none;"{% endif %}>
+                <div class="col-md-8">{{ form.book_url|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.order|as_crispy_field }}</div>
             </div>
-            <div class="col-md-4">
-                {{ form.order|as_crispy_field }}
-            </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
     </div>
     <div class="d-flex justify-content-between">
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <button id="addMore" type="button" class="btn btn-outline-dark">Add More</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button id="addMore" type="button" class="btn btn-outline-dark">Add More</button>
     </div>
-
 </form>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let formsetNum = {{ books|length }};
@@ -66,4 +59,3 @@
     });
     
 </script>
-    

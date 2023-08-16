@@ -1,22 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
-
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-12 col-md-7 left-column">
-            <h2>Update this Work entry</h2>
-            {% include "read/work_form.html" %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7 left-column">
+                <h2>Update this Work entry</h2>
+                {% include "read/work_form.html" %}
+            </div>
         </div>
     </div>
-</div>
-<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-
-{{ workroles.media }}
-
-<script type="text/javascript" src="{% static 'js/generalFormsetHandler.js' %}"></script>
-<script>
+    <script type="text/javascript"
+            src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+    {{ workroles.media }}
+    <script type="text/javascript"
+            src="{% static 'js/generalFormsetHandler.js' %}"></script>
+    <script>
     document.addEventListener("DOMContentLoaded", function() {
 
         // Call the function for work-role-formset
@@ -26,5 +25,5 @@
     $(document).ready(function() {
         $('select:not([name="work_type"], [name="model"])').removeClass('form-select');
     });
-</script>
+    </script>
 {% endblock %}

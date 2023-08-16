@@ -1,115 +1,121 @@
 {% extends "base.html" %}
 {% load language_name %}
-
 {% block title %}{{ object.title }}{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="row">
-        <!--Left columns-->
-        <div class="col-12 col-md-8 left-column">
-            <h2>{{ object.title }}</h2>
-            {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
-            
-            {% for role, persons_altname_tuples in grouped_roles.items %}
+    <div class="container">
+        <div class="row">
+            <!--Left columns-->
+            <div class="col-12 col-md-8 left-column">
+                <h2>{{ object.title }}</h2>
+                {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
+                {% for role, persons_altname_tuples in grouped_roles.items %}
+                    <div>
+                        <span class="text-muted">{{ role }}:</span>
+                        {% for person, name in persons_altname_tuples %}
+                            <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
+                            {% if not forloop.last %}/{% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
                 <div>
-                    <span class="text-muted">{{ role }}:</span>
-                    {% for person, name in persons_altname_tuples %}
-                        <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
-                        {% if not forloop.last %} / {% endif %}
-                    {% endfor %}
+                    <span class="text-muted">First publication date:</span>
+                    {{ object.publication_date }}
                 </div>
-            {% endfor %}
-            <div>
-                <span class="text-muted">First publication date: </span>
-                {{ object.publication_date }}
-            </div>
-
-            {% if object.notes %}
-            <div>
-                <span class="text-muted">Notes:</span>
-                {{ object.notes }}
-            </div>
-            {% endif %}
-
-            {% if grouped_instances %}
-                <h3 class="mt-3">Instances</h3>
-                {% with grouped_length=grouped_instances|length %}
-                    {% for lang, instances in grouped_instances.items %}
-                        {% if grouped_length > 1 %}
-                            <h5>{{ lang | language_name }}</h5> <!-- Display the human-readable name only if more than one language -->
-                        {% endif %}
-                        <ul>
-                        {% for instance_data in instances %}
-                            <li>
-                                <a href="{% url "read:instance_detail" instance_data.instance.id %}">{{ instance_data.instance.title }}</a>{% if instance_data.instance.subtitle %}: {{instance_data.instance.subtitle}}{% endif %}
-                                ({% if instance_data.instance.edition %}{{ instance_data.instance.edition }}, {% endif %}{{ instance_data.instance.publication_date }})
-                                {% for item in instance_data.items %}
-                                    <ul>
-                                        <li>
-                                            {% if item.type == 'book' %}
-                                                <a href="{% url 'read:book_detail' item.id %}">{{ item.title }}</a>
-                                                {% if item.publication_date %}
-                                                    ({% if item.publisher %}{{ item.publisher }}, {% endif %}{% if item.format %}{{ item.format }}, {% endif %}{% if item.publication_date %}{{ item.publication_date }}{% endif %})
-                                                {% endif %}
-                                            {% elif item.type == 'issue' %}
-                                                <a href="{% url 'read:issue_detail' item.periodical.pk item.pk %}">{% if item.title %}{{ item.title }}, {% endif %}{% if item.volume %}Vol. {{item.volume}}{% endif %} {% if item.volume %}Issue {{item.number}}{% endif %}</a>, 
-                                                <a href="{% url 'read:periodical_detail' item.periodical.id %}">{{ item.periodical.title }}</a>
-                                                {% if item.publication_date %}
-                                                    ({% if item.periodical.publisher %}{{ item.periodical.publisher }},{% endif %}{{ item.publication_date }})
-                                                {% endif %}
-                                            {% endif %}
-                                        </li>
-                                    </ul> 
+                {% if object.notes %}
+                    <div>
+                        <span class="text-muted">Notes:</span>
+                        {{ object.notes }}
+                    </div>
+                {% endif %}
+                {% if grouped_instances %}
+                    <h3 class="mt-3">Instances</h3>
+                    {% with grouped_length=grouped_instances|length %}
+                        {% for lang, instances in grouped_instances.items %}
+                            {% if grouped_length > 1 %}
+                                <h5>{{ lang | language_name }}</h5>
+                                <!-- Display the human-readable name only if more than one language -->
+                            {% endif %}
+                            <ul>
+                                {% for instance_data in instances %}
+                                    <li>
+                                        <a href="{% url "read:instance_detail" instance_data.instance.id %}">{{ instance_data.instance.title }}</a>
+                                        {% if instance_data.instance.subtitle %}: {{ instance_data.instance.subtitle }}{% endif %}
+                                        (
+                                        {% if instance_data.instance.edition %}{{ instance_data.instance.edition }},{% endif %}
+                                        {{ instance_data.instance.publication_date }})
+                                        {% for item in instance_data.items %}
+                                            <ul>
+                                                <li>
+                                                    {% if item.type == 'book' %}
+                                                        <a href="{% url 'read:book_detail' item.id %}">{{ item.title }}</a>
+                                                        {% if item.publication_date %}
+                                                            (
+                                                            {% if item.publisher %}{{ item.publisher }},{% endif %}
+                                                            {% if item.format %}{{ item.format }},{% endif %}
+                                                            {% if item.publication_date %}{{ item.publication_date }}{% endif %}
+                                                            )
+                                                        {% endif %}
+                                                    {% elif item.type == 'issue' %}
+                                                        <a href="{% url 'read:issue_detail' item.periodical.pk item.pk %}">
+                                                            {% if item.title %}{{ item.title }},{% endif %}
+                                                            {% if item.volume %}Vol. {{ item.volume }}{% endif %}
+                                                            {% if item.volume %}Issue {{ item.number }}{% endif %}
+                                                        </a>,
+                                                        <a href="{% url 'read:periodical_detail' item.periodical.id %}">{{ item.periodical.title }}</a>
+                                                        {% if item.publication_date %}
+                                                            (
+                                                            {% if item.periodical.publisher %}{{ item.periodical.publisher }},{% endif %}
+                                                            {{ item.publication_date }})
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        {% endfor %}
+                                    </li>
                                 {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    {% endwith %}
+                {% endif %}
+                {% if adaptations %}
+                    <h3>Adaptations</h3>
+                    <ul>
+                        {% for adaptation in adaptations %}
+                            <li>
+                                {% if adaptation.model_name == "Movie" %}
+                                    <a href="{% url 'watch:movie_detail' adaptation.id %}">{{ adaptation.title }}</a>
+                                {% else %}
+                                    <a href="{% url 'watch:series_detail' adaptation.id %}">{{ adaptation.title }}</a>
+                                {% endif %}
+                                {% if adaptation.release_date %}({{ adaptation.release_date }}){% endif %}
                             </li>
                         {% endfor %}
-                        </ul>
-                    {% endfor %}
-                {% endwith %}
-            {% endif %}
-
-            
-
-
-            {% if adaptations %}
-                <h3>Adaptations</h3>
-                <ul>
-                    {% for adaptation in adaptations %}
-                    <li>
-                        {% if adaptation.model_name == "Movie" %}
-                        <a href="{% url 'watch:movie_detail' adaptation.id %}">{{ adaptation.title }}</a>
-                        {% else %}
-                        <a href="{% url 'watch:series_detail' adaptation.id %}">{{ adaptation.title }}</a>
-                        {% endif %}
-                        {% if adaptation.release_date %}({{ adaptation.release_date }}){% endif %}
-                    </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-
-        <!--Right columns-->
-        <div class="col-12 col-md-4 right-column">
-            <!--Related Work / Edit -->
-            {% if user.is_authenticated %}
-            <div class="bg-light p-3 mb-3">
-                <div>
-                    <a href="{% url 'read:work_update' object.pk %}" class='fs-6 text-secondary'>Edit Work</a>
-                </div>
-                <div>
-                    <a href="{% url 'read:instance_create'%}" class='fs-6 text-secondary'>Add Instance</a>
-                </div>
+                    </ul>
+                {% endif %}
             </div>
-            {% endif %}
-
-            {% if object.wikipedia %}
-            <div class="bg-light p-3">
-                <h5>Links</h5>
-                <div><a href="{{object.wikipedia}}">Wikipedia</a></div>
+            <!--Right columns-->
+            <div class="col-12 col-md-4 right-column">
+                <!--Related Work / Edit -->
+                {% if user.is_authenticated %}
+                    <div class="bg-light p-3 mb-3">
+                        <div>
+                            <a href="{% url 'read:work_update' object.pk %}"
+                               class='fs-6 text-secondary'>Edit Work</a>
+                        </div>
+                        <div>
+                            <a href="{% url 'read:instance_create' %}" class='fs-6 text-secondary'>Add Instance</a>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if object.wikipedia %}
+                    <div class="bg-light p-3">
+                        <h5>Links</h5>
+                        <div>
+                            <a href="{{ object.wikipedia }}">Wikipedia</a>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
-</div>
 {% endblock %}
