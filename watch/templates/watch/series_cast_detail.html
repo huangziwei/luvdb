@@ -1,84 +1,85 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container">
-
-    <h3>
-        <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }} </a>
-        Crew and Cast
-    </h3>
-    <h4>Main Crew</h4>
-    <ul>
-        {% for role, roles_list in series_crew.items %}
-            <li>
-                <span class="text-muted">{{ role.name }}:</span>
-                {% for seriesrole in roles_list %}
-                    <a href="{% url 'entity:person_detail' seriesrole.person.id %}">{{ seriesrole.person.name }}</a>
-                    {% if not forloop.last %} / {% endif %}
-                {% endfor %}
-            </li>
-        {% endfor %}
-    </ul>
-
-    <h4>Episode Crew</h4>
-    {% if episodes_crew_by_role|length == 0 %}
-        <p>There is no episode crew added yet.</p>
-    {% else %}
+    <div class="container">
+        <h3>
+            <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }}</a>
+            Crew and Cast
+        </h3>
+        <h4>Main Crew</h4>
         <ul>
-            {% for role, crew_info in episodes_crew_by_role.items %}
-                <li><span class="text-muted">{{ role.name }}:</span></li>
-                <ul>
-                {% for person, episodes in crew_info.items %}
-                    
-                    <li>
-                        <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
-                        <a href="#" class="text-muted" data-bs-toggle="collapse" data-bs-target="#episodeListCrew{{ forloop.parentloop.counter }}{{ forloop.counter }}">
-                            ({{ episodes|length }} episodes)
-                        </a>
-                        <ul id="episodeListCrew{{ forloop.parentloop.counter }}{{ forloop.counter }}" class="collapse">
-                            {% for episode in episodes %}
-                                <li>
-                                    {{ episode.episode_num }} <a href="{% url 'watch:episode_detail' series.id episode.episode_id %}">{{ episode.episode_title }} </a>
-                                    ({{ episode.release_date }})
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                {% endfor %}
-                </ul>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    
-    
-    <h4>Cast</h4>
-    {% if episodes_cast|length == 0 %}
-        <p>There is no episode cast added yet.</p>
-    {% else %}
-    <ul>
-        {% for person, roles in episodes_cast.items %}
-            <li>
-                <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }} </a>
-                as  
-                {% regroup roles by character_name as character_roles %}
-                {% for character_role in character_roles %}
-                    {% if not forloop.first %} / {% endif %}
-                    {{ character_role.grouper }}
-                {% endfor %}
-                <a href="#" class="text-muted" data-bs-toggle="collapse" data-bs-target="#episodeList{{ forloop.counter }}">
-                    ({{ roles|length }} episodes)
-                </a>
-            </li>
-            <ul id="episodeList{{ forloop.counter }}" class="collapse">
-            {% for role in roles %}
+            {% for role, roles_list in series_crew.items %}
                 <li>
-                    {{ role.episode_num }} <a href="{% url 'watch:episode_detail' series.id role.episode_id %}">{{ role.episode_title }} </a>
-                    ({{ role.release_date }})
+                    <span class="text-muted">{{ role.name }}:</span>
+                    {% for seriesrole in roles_list %}
+                        <a href="{% url 'entity:person_detail' seriesrole.person.id %}">{{ seriesrole.person.name }}</a>
+                        {% if not forloop.last %}/{% endif %}
+                    {% endfor %}
                 </li>
             {% endfor %}
-            </ul>            
-        {% endfor %}
-    </ul>
-    {% endif %}
-</div>
+        </ul>
+        <h4>Episode Crew</h4>
+        {% if episodes_crew_by_role|length == 0 %}
+            <p>There is no episode crew added yet.</p>
+        {% else %}
+            <ul>
+                {% for role, crew_info in episodes_crew_by_role.items %}
+                    <li>
+                        <span class="text-muted">{{ role.name }}:</span>
+                    </li>
+                    <ul>
+                        {% for person, episodes in crew_info.items %}
+                            <li>
+                                <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
+                                <a href="#"
+                                   class="text-muted"
+                                   data-bs-toggle="collapse"
+                                   data-bs-target="#episodeListCrew{{ forloop.parentloop.counter }}{{ forloop.counter }}">
+                                    ({{ episodes|length }} episodes)
+                                </a>
+                                <ul id="episodeListCrew{{ forloop.parentloop.counter }}{{ forloop.counter }}"
+                                    class="collapse">
+                                    {% for episode in episodes %}
+                                        <li>
+                                            {{ episode.episode_num }} <a href="{% url 'watch:episode_detail' series.id episode.episode_id %}">{{ episode.episode_title }}</a>
+                                            ({{ episode.release_date }})
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <h4>Cast</h4>
+        {% if episodes_cast|length == 0 %}
+            <p>There is no episode cast added yet.</p>
+        {% else %}
+            <ul>
+                {% for person, roles in episodes_cast.items %}
+                    <li>
+                        <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
+                        as
+                        {% regroup roles by character_name as character_roles %}
+                        {% for character_role in character_roles %}
+                            {% if not forloop.first %}/{% endif %}
+                            {{ character_role.grouper }}
+                        {% endfor %}
+                        <a href="#"
+                           class="text-muted"
+                           data-bs-toggle="collapse"
+                           data-bs-target="#episodeList{{ forloop.counter }}">({{ roles|length }} episodes)</a>
+                    </li>
+                    <ul id="episodeList{{ forloop.counter }}" class="collapse">
+                        {% for role in roles %}
+                            <li>
+                                {{ role.episode_num }} <a href="{% url 'watch:episode_detail' series.id role.episode_id %}">{{ role.episode_title }}</a>
+                                ({{ role.release_date }})
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 {% endblock %}

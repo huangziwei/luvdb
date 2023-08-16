@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container">
-    <h1>{{ episode.title }} Cast</h1>
-    <ul>
-        {% for episodecast in episodecasts %}
-        <li>
-            <a href="{% url 'entity:person_detail' episodecast.person.id %}">{{ episodecast.person.name }} </a>
-            as 
-            {{ episodecast.character_name }}</li>
-        {% empty %}
-        <li>No cast for this episode yet.</li>
-        {% endfor %}
-    </ul>
-</div>
+    <div class="container">
+        <h1>{{ episode.title }} Cast</h1>
+        <ul>
+            {% for episodecast in episodecasts %}
+                <li>
+                    <a href="{% url 'entity:person_detail' episodecast.person.id %}">{{ episodecast.person.name }}</a>
+                    as
+                    {{ episodecast.character_name }}
+                </li>
+            {% empty %}
+                <li>No cast for this episode yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

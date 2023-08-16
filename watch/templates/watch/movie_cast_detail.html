@@ -1,40 +1,36 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container">
-    <h3>
-        <a href="{% url 'watch:movie_detail' movie.id %}"> {{ movie.title }} </a>
-        Crew and Cast
-    </h3>
-    
-    <h4>Crew</h4>
-    <ul>
-        {% regroup moviecrew by role as roles_grouped %}
-        {% for role_group in roles_grouped %}
-            <li>
-                <span class="text-muted">{{ role_group.grouper.name }}:</span>
-                {% for movierole in role_group.list %}
-                    <a href="{% url 'entity:person_detail' movierole.person.id %}">{{ movierole.person.name }} </a>
-                    {% if not forloop.last %} / {% endif %}
-                {% endfor %}
-            </li>
-        {% empty %}
-        <li>No staff for this movie yet.</li>
-        {% endfor %}
-    </ul>
-
-    
-    <h4>Cast</h4>
-    <ul>
-        {% for moviecast in moviecasts %}
-        <li>
-            <a href="{% url 'entity:person_detail' moviecast.person.id %}">{{ moviecast.person.name }} </a>
-            as 
-            {{ moviecast.character_name }}
-        </li>
-        {% empty %}
-        <li>No cast for this movie yet.</li>
-        {% endfor %}
-    </ul>
-</div>
+    <div class="container">
+        <h3>
+            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
+            Crew and Cast
+        </h3>
+        <h4>Crew</h4>
+        <ul>
+            {% regroup moviecrew by role as roles_grouped %}
+            {% for role_group in roles_grouped %}
+                <li>
+                    <span class="text-muted">{{ role_group.grouper.name }}:</span>
+                    {% for movierole in role_group.list %}
+                        <a href="{% url 'entity:person_detail' movierole.person.id %}">{{ movierole.person.name }}</a>
+                        {% if not forloop.last %}/{% endif %}
+                    {% endfor %}
+                </li>
+            {% empty %}
+                <li>No staff for this movie yet.</li>
+            {% endfor %}
+        </ul>
+        <h4>Cast</h4>
+        <ul>
+            {% for moviecast in moviecasts %}
+                <li>
+                    <a href="{% url 'entity:person_detail' moviecast.person.id %}">{{ moviecast.person.name }}</a>
+                    as
+                    {{ moviecast.character_name }}
+                </li>
+            {% empty %}
+                <li>No cast for this movie yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

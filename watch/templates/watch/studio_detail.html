@@ -1,71 +1,62 @@
 {% extends "base.html" %}
-
 {% block title %}{{ object.name }}{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-sm-8 left-column">
-    
-            <span class='d-flex align-items-start'>
-                <h2>
-                    {{ object.name }}
-                    {% if object.romanized_name %} / {{ object.romanized_name }} {% endif %}
-                </h2> 
-            </span>
-
-            {% if object.movies.count != 0 %}
-                <h3>Movies</h3>
-                <ul>
-                {% for movie in object.movies.all %}
-                    <li>
-                        <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> 
-                        ({{ movie.release_date}})
-                    </li>
-                {% empty %}
-                    <li>This Studio has no movies.</li>
-                {% endfor %}
-                </ul>
-            {% endif %} 
-
-
-            {% if object.series.count != 0 %}
-                <h3>Series</h3>
-                <ul>
-                {% for serie in object.series.all %}
-                    <li>
-                        <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> 
-                        ({{ serie.release_date}})
-                    </li>
-                {% empty %}
-                    <li>This Studio has no series.</li>
-                {% endfor %}
-                </ul>
-            {% endif %} 
-        </div>
-
-        <!--manage entry-->
-        <div class="col-sm-4">
-            <div class="bg-light p-3">
-                {% if user.is_authenticated %}
-                <a href="{% url 'watch:studio_update' object.pk %}" class='fs-6 text-secondary'>Edit Studio</a>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 left-column">
+                <span class='d-flex align-items-start'>
+                    <h2>
+                        {{ object.name }}
+                        {% if object.romanized_name %}/ {{ object.romanized_name }}{% endif %}
+                    </h2>
+                </span>
+                {% if object.movies.count != 0 %}
+                    <h3>Movies</h3>
+                    <ul>
+                        {% for movie in object.movies.all %}
+                            <li>
+                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
+                                ({{ movie.release_date }})
+                            </li>
+                        {% empty %}
+                            <li>This Studio has no movies.</li>
+                        {% endfor %}
+                    </ul>
                 {% endif %}
-
-                <h5 class="mt-3">Link</h5>
-                {% if object.wikipedia %}
-                <div>
-                    <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>
+                {% if object.series.count != 0 %}
+                    <h3>Series</h3>
+                    <ul>
+                        {% for serie in object.series.all %}
+                            <li>
+                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a>
+                                ({{ serie.release_date }})
+                            </li>
+                        {% empty %}
+                            <li>This Studio has no series.</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <!--manage entry-->
+            <div class="col-sm-4">
+                <div class="bg-light p-3">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'watch:studio_update' object.pk %}"
+                           class='fs-6 text-secondary'>Edit Studio</a>
+                    {% endif %}
+                    <h5 class="mt-3">Link</h5>
+                    {% if object.wikipedia %}
+                        <div>
+                            <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>
+                        </div>
+                    {% endif %}
+                    {% if object.website %}
+                        <div>
+                            <a href="{{ object.website }}" target="_blank">Official Website</a>
+                        </div>
+                    {% endif %}
                 </div>
-                {% endif %}
-
-                {% if object.website %}
-                    <div>
-                        <a href="{{ object.website }}" target="_blank">Official Website</a>
-                    </div>
-                {% endif %}
             </div>
         </div>
     </div>
-</div>
-
 {% endblock %}

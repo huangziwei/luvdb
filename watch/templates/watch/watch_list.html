@@ -1,155 +1,181 @@
 {% extends "base.html" %}
 {% block title %}Watch{% endblock %}
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class='col-12 col-md-8'>
-
-            {% if trending_movies or trending_series %}
-            <div class="mb-3">
-                <h2>Trending</h2>
-                {% if trending_movies %}
-                <h4>Movies</h4>
-                <div class="row">
-                    {% for movie in trending_movies %}
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-                        <a href="{% url 'watch:movie_detail' movie.pk %}">
-                            {% if movie.poster %}
-                            {% if movie.poster_sens %}
-                            <img src="{{ movie.poster.url }}" alt="{{ movie.title }} poster" class="img-fluid blur"
-                                onclick="this.classList.toggle('blur')">
-                            {% else %}
-                            <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="img-fluid">
-                            {% endif %}
-                            {% else %}
-                            <div class="cover-placeholder"
-                                style="background: grey; width: 100%; height:100%; color:white; text-align: center">
-                                {{movie.title}}</div>
-                            {% endif %}
-                        </a>
+    <div class="container">
+        <div class="row">
+            <div class='col-12 col-md-8'>
+                {% if trending_movies or trending_series %}
+                    <div class="mb-3">
+                        <h2>Trending</h2>
+                        {% if trending_movies %}
+                            <h4>Movies</h4>
+                            <div class="row">
+                                {% for movie in trending_movies %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'watch:movie_detail' movie.pk %}">
+                                            {% if movie.poster %}
+                                                {% if movie.poster_sens %}
+                                                    <img src="{{ movie.poster.url }}"
+                                                         alt="{{ movie.title }} poster"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ movie.poster.url }}"
+                                                         alt="{{ movie.title }}"
+                                                         class="img-fluid">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ movie.title }}</div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No trending movies.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if trending_series %}
+                            <h4>Series</h4>
+                            <div class="row">
+                                {% for series in trending_series %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'watch:series_detail' series.pk %}">
+                                            {% if series.poster %}
+                                                {% if series.poster_sens %}
+                                                    <img src="{{ series.poster.url }}"
+                                                         alt="{{ series.title }} poster"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ series.poster.url }}"
+                                                         alt="{{ series.title }}"
+                                                         class="img-fluid">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ series.title }}</div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No trending series.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
-                    {% empty %}
-                    <p>No trending movies.</p>
-                    {% endfor %}
-                </div>
                 {% endif %}
-
-                {% if trending_series %}
-                <h4>Series</h4>
-                <div class="row">
-                    {% for series in trending_series %}
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-                        <a href="{% url 'watch:series_detail' series.pk %}">
-                            {% if series.poster %}
-                            {% if series.poster_sens %}
-                            <img src="{{ series.poster.url }}" alt="{{ series.title }} poster" class="img-fluid blur"
-                                onclick="this.classList.toggle('blur')">
-                            {% else %}
-                            <img src="{{ series.poster.url }}" alt="{{ series.title }}" class="img-fluid">
-                            {% endif %}
-                            {% else %}
-                            <div class="cover-placeholder"
-                                style="background: grey; width: 100%; height:100%; color:white; text-align: center">
-                                {{series.title}}</div>
-                            {% endif %}
-                        </a>
+                {% if movies or series %}
+                    <div>
+                        <h2>Recently Added</h2>
+                        {% if movies %}
+                            <h4>Movies</h4>
+                            <div class="row">
+                                {% for movie in movies %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'watch:movie_detail' movie.pk %}">
+                                            {% if movie.poster %}
+                                                {% if movie.poster_sens %}
+                                                    <img src="{{ movie.poster.url }}"
+                                                         alt="{{ movie.title }} poster"
+                                                         class="poster-image blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ movie.poster.url }}"
+                                                         alt="{{ movie.title }}"
+                                                         class="img-fluid">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="poster-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ movie.title }}</div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No recent movies to display.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if series %}
+                            <h4>Series</h4>
+                            <div class="row">
+                                {% for serie in series %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'watch:series_detail' serie.pk %}">
+                                            {% if serie.poster %}
+                                                {% if serie.poster_sens %}
+                                                    <img src="{{ serie.poster.url }}"
+                                                         alt="{{ serie.title }} poster"
+                                                         class="poster-image blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ serie.poster.url }}"
+                                                         alt="{{ serie.title }}"
+                                                         class="img-fluid">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="poster-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ serie.title }}</div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No recent series to display.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
-                    {% empty %}
-                    <p>No trending series.</p>
-                    {% endfor %}
-                </div>
                 {% endif %}
             </div>
-            {% endif %}
-
-
-            {% if movies or series %}
-            <div>
-                <h2>Recently Added</h2>
-                {% if movies %}
-                <h4>Movies</h4>
-                <div class="row">
-                    {% for movie in movies %}
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-                        <a href="{% url 'watch:movie_detail' movie.pk %}">
-                            {% if movie.poster %}
-                            {% if movie.poster_sens %}
-                            <img src="{{ movie.poster.url }}" alt="{{ movie.title }} poster" class="poster-image blur"
-                                onclick="this.classList.toggle('blur')">
-                            {% else %}
-                            <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="img-fluid">
-                            {% endif %}
-                            {% else %}
-                            <div class="poster-placeholder"
-                                style="background: grey; width: 100%; height:100%; color:white; text-align: center">
-                                {{movie.title}}</div>
-                            {% endif %}
-                        </a>
+            <div class='col-12 col-md-4'>
+                <div class="bg-light p-3 mb-3">
+                    <h5>Add New</h5>
+                    <div>
+                        <a href="{% url "watch:movie_create" %}" class="text-muted">Movie</a>
                     </div>
-                    {% empty %}
-                    <p>No recent movies to display.</p>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-                {% if series %}
-                <h4>Series</h4>
-                <div class="row">
-                    {% for serie in series %}
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-                        <a href="{% url 'watch:series_detail' serie.pk %}">
-                            {% if serie.poster %}
-                            {% if serie.poster_sens %}
-                            <img src="{{ serie.poster.url }}" alt="{{ serie.title }} poster" class="poster-image blur"
-                                onclick="this.classList.toggle('blur')">
-                            {% else %}
-                            <img src="{{ serie.poster.url }}" alt="{{ serie.title }}" class="img-fluid">
-                            {% endif %}
-                            {% else %}
-                            <div class="poster-placeholder"
-                                style="background: grey; width: 100%; height:100%; color:white; text-align: center">
-                                {{serie.title}}</div>
-                            {% endif %}
-                        </a>
+                    <div>
+                        <a href="{% url "watch:series_create" %}" class="text-muted">Series</a>
                     </div>
-                    {% empty %}
-                    <p>No recent series to display.</p>
-                    {% endfor %}
                 </div>
+                {% if genres %}
+                    <div class="bg-light p-3 mb-3">
+                        <h5>Genres</h5>
+                        <div class='d-flex flex-wrap'>
+                            {% for genre in genres %}
+                                <a href="{% url 'watch:genre_detail' genre.name %}" class="me-2">{{ genre.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
                 {% endif %}
-            </div>
-            {% endif %}
-        </div>
-
-        <div class='col-12 col-md-4'>
-            <div class="bg-light p-3 mb-3">
-                <h5>Add New</h5>
-                <div>
-                    <a href="{% url "watch:movie_create" %}" class="text-muted">Movie</a>
+                <div class="bg-light p-3 mb-3">
+                    <h5>Statistics</h5>
+                    <div>
+                        <span class="text-muted">Movies</span>: {{ movies_count }}
+                    </div>
+                    <div>
+                        <span class="text-muted">Series</span>: {{ series_count }}
+                    </div>
+                    <div>
+                        <span class="text-muted">Episodes</span>: {{ episodes_count }}
+                    </div>
                 </div>
-                <div>
-                    <a href="{% url "watch:series_create" %}" class="text-muted">Series</a>
-                </div>
-            </div>
-
-            {% if genres %}
-            <div class="bg-light p-3 mb-3">
-                <h5>Genres</h5>
-                <div class='d-flex flex-wrap'>
-                    {% for genre in genres %}
-                    <a href="{% url 'watch:genre_detail' genre.name %}" class="me-2">{{ genre.name }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            <div class="bg-light p-3 mb-3">
-                <h5>Statistics</h5>
-                <div><span class="text-muted">Movies</span>: {{movies_count}}</div>
-                <div><span class="text-muted">Series</span>: {{series_count}}</div>
-                <div><span class="text-muted">Episodes</span>: {{episodes_count}}</div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

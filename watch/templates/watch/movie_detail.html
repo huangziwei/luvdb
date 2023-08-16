@@ -1,146 +1,156 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-
 {% block title %}{{ object.title }}{% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="row">
-        <!--Left columns-->
-        <div class="col-lg-8 col-md-8 col-sm-12">
-            <!-- movie-card -->
-            <div class="movie-card justify-content-start">
-                <div class="d-flex flex-column flex-lg-row mt-2">
-                    <!--poster-box-->
-                    <div class="col-12 col-lg-auto mb-3 mb-lg-0">
-                        <div class="watch-cover-box">
-                            {% if object.poster %}
-                                {% if object.poster_sens %}
-                                    <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="img-fluid blur" onclick="this.classList.toggle('blur')">
+    <div class="container">
+        <div class="row">
+            <!--Left columns-->
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <!-- movie-card -->
+                <div class="movie-card justify-content-start">
+                    <div class="d-flex flex-column flex-lg-row mt-2">
+                        <!--poster-box-->
+                        <div class="col-12 col-lg-auto mb-3 mb-lg-0">
+                            <div class="watch-cover-box">
+                                {% if object.poster %}
+                                    {% if object.poster_sens %}
+                                        <img src="{{ object.poster.url }}"
+                                             alt="{{ object.title }} poster"
+                                             class="img-fluid blur"
+                                             onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ object.poster.url }}"
+                                             alt="{{ object.title }} poster"
+                                             class="img-fluid">
+                                    {% endif %}
                                 {% else %}
-                                    <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="img-fluid">
-                                {% endif %}    
-                            {% else %}
-                                <p class="no-poster-text">No Poster</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <!--movie-meta-->
-                    <div class="col flex-grow-1 ms-lg-3">
-                        <div class="card-body">
-                            <span class='d-flex align-items-start'>
-                                <h4>{{ object.title }} </h4>
-                            </span>
-                            {% if object.other_titles %}
-                                <p class='text-muted'>{{ object.other_titles }} </p>
-                            {% endif %}
-                            <div class="movie-meta">
-                                {% for role_name, person_altname_tuples in roles.items %}
-                                    <p>
-                                        <span class="text-muted">{{ role_name }}:</span> 
-                                        {% for person, alt_name in person_altname_tuples %}
-                                            <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
-                                            {% if not forloop.last %} / {% endif %}
-                                        {% endfor %}
-                                    </p>
-                                {% endfor %}
-                                {% if object.studios.count > 1 %}
-                                <p>
-                                    <span class="text-muted">Studio{% if object.studios.count > 1 %}s{% endif %}:</span> 
-                                    {% for studio in object.studios.all %}
-                                        <a href="{% url 'watch:studio_detail' studio.id %}">{{ studio.name }}</a>
-                                        {% if not forloop.last %} / {% endif %}
-                                    {% endfor %}
-                                </p>
+                                    <p class="no-poster-text">No Poster</p>
                                 {% endif %}
-                                {% if object.release_date %}
-                                    <p><span class="text-muted">Date:</span> {{ object.release_date }}</p>
-                                {% endif %}
-                                {% if object.website %}
-                                    <p><span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a></p>
-                                {% endif %}
-                                
-                                {% if object.based_on %}
-                                <p><span class="text-muted">Based on:</span> <a href="{% url "read:work_detail" object.based_on.id %}">{{object.based_on.title}}</a> ({{ object.based_on.publication_date }})</p>
-                                {% endif %}
-
-                                {% if object.genres %}
-                                <p>
-                                    <span class="text-muted">Genre{% if object.genres.count > 1 %}s{% endif %}:</span>
-                                    {% for genre in object.genres.all %}
-                                        <a href="{% url 'watch:genre_detail' genre.name %}">{{ genre.name }}</a>
-                                        {% if not forloop.last %} / {% endif %}
-                                    {% endfor %}
-                                </p>
-                                {% endif %}
-
-                                <p><span class="text-muted">Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View Cast</a></p>
                             </div>
                         </div>
-                        <!-- End of movie-card -->
+                        <!--movie-meta-->
+                        <div class="col flex-grow-1 ms-lg-3">
+                            <div class="card-body">
+                                <span class='d-flex align-items-start'>
+                                    <h4>{{ object.title }}</h4>
+                                </span>
+                                {% if object.other_titles %}<p class='text-muted'>{{ object.other_titles }}</p>{% endif %}
+                                <div class="movie-meta">
+                                    {% for role_name, person_altname_tuples in roles.items %}
+                                        <p>
+                                            <span class="text-muted">{{ role_name }}:</span>
+                                            {% for person, alt_name in person_altname_tuples %}
+                                                <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endfor %}
+                                    {% if object.studios.count > 1 %}
+                                        <p>
+                                            <span class="text-muted">Studio
+                                                {% if object.studios.count > 1 %}s{% endif %}
+                                            :</span>
+                                            {% for studio in object.studios.all %}
+                                                <a href="{% url 'watch:studio_detail' studio.id %}">{{ studio.name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
+                                    {% if object.release_date %}
+                                        <p>
+                                            <span class="text-muted">Date:</span> {{ object.release_date }}
+                                        </p>
+                                    {% endif %}
+                                    {% if object.website %}
+                                        <p>
+                                            <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
+                                        </p>
+                                    {% endif %}
+                                    {% if object.based_on %}
+                                        <p>
+                                            <span class="text-muted">Based on:</span> <a href="{% url "read:work_detail" object.based_on.id %}">{{ object.based_on.title }}</a> ({{ object.based_on.publication_date }})
+                                        </p>
+                                    {% endif %}
+                                    {% if object.genres %}
+                                        <p>
+                                            <span class="text-muted">Genre
+                                                {% if object.genres.count > 1 %}s{% endif %}
+                                            :</span>
+                                            {% for genre in object.genres.all %}
+                                                <a href="{% url 'watch:genre_detail' genre.name %}">{{ genre.name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
+                                    <p>
+                                        <span class="text-muted">Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View Cast</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- End of movie-card -->
+                        </div>
                     </div>
-                </div>       
-            </div>
-            <!--Movie Check-In-->
-            <div class="mt-4">
-                {% if user.is_authenticated %}
-                    {% include "watch/watch_checkin_form.html" %}
-                {% endif %}
-
-                <div class="d-flex justify-content-between mt-4 col-11">
-                    <h4>Latest Check-Ins</h4>
-                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'watch:movie_checkin_all_list' movie.id %}" style="height:30px">All</a>
                 </div>
-            
-                {% include "watch/watch_checkin_in_entry_detail.html" %}
-            </div> 
-        </div>
-
-
-        <!--right columns-->
-        <div class="col-sm-4">
-            <!--Related works / Edit -->
-            {% if user.is_authenticated %}
-            <div class="bg-light p-3">
-                <a href="{% url 'watch:movie_update' object.pk %}" class='fs-6 text-secondary'>Edit movie data</a>
+                <!--Movie Check-In-->
+                <div class="mt-4">
+                    {% if user.is_authenticated %}
+                        {% include "watch/watch_checkin_form.html" %}
+                    {% endif %}
+                    <div class="d-flex justify-content-between mt-4 col-11">
+                        <h4>Latest Check-Ins</h4>
+                        <a class="btn btn-outline-secondary btn-sm"
+                           href="{% url 'watch:movie_checkin_all_list' movie.id %}"
+                           style="height:30px">All</a>
+                    </div>
+                    {% include "watch/watch_checkin_in_entry_detail.html" %}
+                </div>
             </div>
-            {% endif %}
-
-            <!--stats-->
-            <div class="bg-light p-3 mt-3">
-                <h5>Statistics</h5>
-                <div><strong class="text-muted">To Watch:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=to_watch">{{ to_watch_count }}</a></div>
-                <div><strong class="text-muted">Watching:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=watching_rewatching">{{ watching_count }}</a></div>
-                <div><strong class="text-muted">Watched:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a></div>
+            <!--right columns-->
+            <div class="col-sm-4">
+                <!--Related works / Edit -->
+                {% if user.is_authenticated %}
+                    <div class="bg-light p-3">
+                        <a href="{% url 'watch:movie_update' object.pk %}"
+                           class='fs-6 text-secondary'>Edit movie data</a>
+                    </div>
+                {% endif %}
+                <!--stats-->
+                <div class="bg-light p-3 mt-3">
+                    <h5>Statistics</h5>
+                    <div>
+                        <strong class="text-muted">To Watch:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=to_watch">{{ to_watch_count }}</a>
+                    </div>
+                    <div>
+                        <strong class="text-muted">Watching:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=watching_rewatching">{{ watching_count }}</a>
+                    </div>
+                    <div>
+                        <strong class="text-muted">Watched:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a>
+                    </div>
+                </div>
+                {% if object.wikipedia %}
+                    <div class="bg-light p-3 mt-3">
+                        <h5>Links</h5>
+                        <div>
+                            <a href="{{ object.wikipedia }}">Wikipedia</a>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if lists_containing_movie.count != 0 %}
+                    <!--LuvLists that included this movie-->
+                    <div class="bg-light p-3 mt-3">
+                        <h5>Lists</h5>
+                        <ul>
+                            {% for content_in_list in lists_containing_movie %}
+                                <li>
+                                    <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
+                                </li>
+                            {% empty %}
+                                <p>This movie is not included in any LuvLists.</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
-
-            {% if object.wikipedia %}
-            <div class="bg-light p-3 mt-3">
-                <h5>Links</h5>
-                <div><a href="{{object.wikipedia}}">Wikipedia</a></div>
-            </div>
-            {% endif %}
-
-
-            {% if lists_containing_movie.count != 0 %}
-            <!--LuvLists that included this movie-->
-            <div class="bg-light p-3 mt-3">
-                <h5>Lists</h5>
-                <ul>
-                {% for content_in_list in lists_containing_movie %}
-                    <li>
-                        <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">
-                            {{ content_in_list.luv_list.title }}
-                        </a>
-                    </li>
-                {% empty %}
-                    <p>This movie is not included in any LuvLists.</p>
-                {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
         </div>
     </div>
-</div>
-
 {% endblock content %}

@@ -1,98 +1,109 @@
 {% extends 'base.html' %}
-
 {% block content %}
-
-<div class="row">
-<div class='col-12 col-md-8'>
     <div class="row">
-        <div class="col-sm-12">
-            <h4>All Check-Ins of 
-                {% if model_name == "movie" %}
-                    <a href="{% url 'watch:movie_detail' object.id %}"> {{ object.title }}</a>
-                {% elif  model_name == "series" %}
-                    <a href="{% url 'watch:series_detail' object.id %}"> {{ object.title }}</a>
-                {% endif %}
-            </h4>
-            <span class='d-flex'>
-                <div class="me-3">
-                    <a href="?order=timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
-                    <a href="?order=-timestamp&status={{status}}" class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
-                </div>
-                <div class="me-3">|</div>
-                <div class="me-3">
-                    <a href="?status=&order={{order}}" class="btn btn-sm btn-outline-dark mb-1">All</a>
-                    <a href="?status=to_watch&order={{order}}" class="btn btn-sm btn-info mb-1">To Watch</a>
-                    <a href="?status=watching_rewatching&order={{order}}" class="btn btn-sm btn-primary mb-1">(Re)Watching</a>
-                    <a href="?status=watched_rewatched&order={{order}}" class="btn btn-sm btn-success mb-1">(Re)Watched</a>
-                    <a href="?status=paused&order={{order}}" class="btn btn-sm btn-warning mb-1">Paused</a>
-                    <a href="?status=abandoned&order={{order}}" class="btn btn-sm btn-danger mb-1">Abandoned</a>
-                </div>
-            </span>
-        </div>
-        
-        {% include "watch/watch_checkin_in_entry_detail.html" %}
-    </div>
-</div>
-
-<!--right column-->
-<div class="col-12 col-md-4">
-    <!-- release-card -->
-    <div class="release-card justify-content-start">
-        <div class="d-flex flex-column mt-2">
-            <!--cover-box-->
-            <div class="col-12 mb-3">
-                <div style='width:50%'>
-                    {% if object.poster %}
-                        {% if object.poster_sens %}
-                            <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="blur img-fluid" onclick="this.classList.toggle('blur')">
-                        {% else %}
-                            <img src="{{ object.poster.url }}" alt="{{ object.title }} poster" class="img-fluid">
+        <div class='col-12 col-md-8'>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4>
+                        All Check-Ins of
+                        {% if model_name == "movie" %}
+                            <a href="{% url 'watch:movie_detail' object.id %}">{{ object.title }}</a>
+                        {% elif  model_name == "series" %}
+                            <a href="{% url 'watch:series_detail' object.id %}">{{ object.title }}</a>
                         {% endif %}
-                    {% else %}
-                        <div class="no-cover-text">No Poster</div>
-                    {% endif %}
-                </div>
-            </div>
-            <!--release-meta-->
-            <div class="col flex-grow-1">
-                <div class="card-body">
-                    <span class='d-flex align-items-start'>
-                        <h4>{{ object.title }} </h4>
+                    </h4>
+                    <span class='d-flex'>
+                        <div class="me-3">
+                            <a href="?order=timestamp&status={{ status }}"
+                               class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+                            <a href="?order=-timestamp&status={{ status }}"
+                               class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                        </div>
+                        <div class="me-3">|</div>
+                        <div class="me-3">
+                            <a href="?status=&order={{ order }}"
+                               class="btn btn-sm btn-outline-dark mb-1">All</a>
+                            <a href="?status=to_watch&order={{ order }}"
+                               class="btn btn-sm btn-info mb-1">To Watch</a>
+                            <a href="?status=watching_rewatching&order={{ order }}"
+                               class="btn btn-sm btn-primary mb-1">(Re)Watching</a>
+                            <a href="?status=watched_rewatched&order={{ order }}"
+                               class="btn btn-sm btn-success mb-1">(Re)Watched</a>
+                            <a href="?status=paused&order={{ order }}"
+                               class="btn btn-sm btn-warning mb-1">Paused</a>
+                            <a href="?status=abandoned&order={{ order }}"
+                               class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                        </div>
                     </span>
-                    {% if object.romanized_title %}
-                    <p class='text-muted'>{{ object.romanized_title }} </p>
-                    {% endif %}
-                    <div class="movie-meta">
-                        {% for role_name, person_altname_tuples in roles.items %}
-                            <p>
-                                <strong>{{ role_name }}:</strong> 
-                                {% for person, alt_name in person_altname_tuples %}
-                                    <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
-                                    {% if not forloop.last %} / {% endif %}
+                </div>
+                {% include "watch/watch_checkin_in_entry_detail.html" %}
+            </div>
+        </div>
+        <!--right column-->
+        <div class="col-12 col-md-4">
+            <!-- release-card -->
+            <div class="release-card justify-content-start">
+                <div class="d-flex flex-column mt-2">
+                    <!--cover-box-->
+                    <div class="col-12 mb-3">
+                        <div style='width:50%'>
+                            {% if object.poster %}
+                                {% if object.poster_sens %}
+                                    <img src="{{ object.poster.url }}"
+                                         alt="{{ object.title }} poster"
+                                         class="blur img-fluid"
+                                         onclick="this.classList.toggle('blur')">
+                                {% else %}
+                                    <img src="{{ object.poster.url }}"
+                                         alt="{{ object.title }} poster"
+                                         class="img-fluid">
+                                {% endif %}
+                            {% else %}
+                                <div class="no-cover-text">No Poster</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!--release-meta-->
+                    <div class="col flex-grow-1">
+                        <div class="card-body">
+                            <span class='d-flex align-items-start'>
+                                <h4>{{ object.title }}</h4>
+                            </span>
+                            {% if object.romanized_title %}<p class='text-muted'>{{ object.romanized_title }}</p>{% endif %}
+                            <div class="movie-meta">
+                                {% for role_name, person_altname_tuples in roles.items %}
+                                    <p>
+                                        <strong>{{ role_name }}:</strong>
+                                        {% for person, alt_name in person_altname_tuples %}
+                                            <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
+                                            {% if not forloop.last %}/{% endif %}
+                                        {% endfor %}
+                                    </p>
                                 {% endfor %}
-                            </p>
-                        {% endfor %}
-                        {% if object.studios %}
-                        <p>
-                            <strong>Studio:</strong> 
-                            {% for studio in object.studios.all %}
-                                <a href="{% url 'watch:studio_detail' studio.id %}">{{ studio.name }}</a>
-                                {% if not forloop.last %} / {% endif %}
-                            {% endfor %}
-                        </p>
-                        {% endif %}
-                        {% if object.release_date %}
-                            <p><strong>Release Date:</strong> {{ object.release_date }}</p>
-                        {% endif %}
-                        {% if object.website %}
-                            <p><strong>Website:</strong> <a href="{{ object.website }}">{{ object.website }}</a></p>
-                        {% endif %}                        
+                                {% if object.studios %}
+                                    <p>
+                                        <strong>Studio:</strong>
+                                        {% for studio in object.studios.all %}
+                                            <a href="{% url 'watch:studio_detail' studio.id %}">{{ studio.name }}</a>
+                                            {% if not forloop.last %}/{% endif %}
+                                        {% endfor %}
+                                    </p>
+                                {% endif %}
+                                {% if object.release_date %}
+                                    <p>
+                                        <strong>Release Date:</strong> {{ object.release_date }}
+                                    </p>
+                                {% endif %}
+                                {% if object.website %}
+                                    <p>
+                                        <strong>Website:</strong> <a href="{{ object.website }}">{{ object.website }}</a>
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-</div>
 {% endblock content %}
