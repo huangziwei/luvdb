@@ -1,13 +1,14 @@
+from datetime import timedelta
+
 from dal import autocomplete
-from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import F, OuterRef, Prefetch, Q, Subquery
-from django.forms import inlineformset_factory
+from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.html import format_html
 from django.views.generic import (
     CreateView,
@@ -698,14 +699,46 @@ class PlayListView(ListView):
     model = Game
     template_name = "play/play_list.html"
 
+    def get_queryset(self):
+        # Getting recent games
+        recent_games = Game.objects.all().order_by("-created_at")[:12]
+
+        # Getting trending games based on checkins in the past week
+        recent_date = timezone.now() - timedelta(days=7)
+        trending_games = (
+            Game.objects.annotate(
+                checkins=Count(
+                    "gamecheckin",
+                    filter=Q(gamecheckin__timestamp__gte=recent_date),
+                    distinct=True,
+                )
+            )
+            .exclude(checkins=0)
+            .order_by("-checkins")[:12]
+        )
+
+        return {
+            "recent_games": recent_games,
+            "trending_games": trending_games,
+        }
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # Existing game list based on the model's creation date
         context["games"] = Game.objects.all().order_by("-created_at")[:12]
+
+        # Get the genres
         context["genres"] = (
             Genre.objects.filter(Q(play_works__isnull=False))
             .order_by("name")
             .distinct()
         )
+
+        # Get the recent and trending games
+        queryset = self.get_queryset()
+        context["recent_games"] = queryset["recent_games"]
+        context["trending_games"] = queryset["trending_games"]
 
         # Additional context for the statistics
         context["works_count"] = Work.objects.count()
