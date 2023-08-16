@@ -44,7 +44,7 @@
                                         {% endfor %}
                                     </p>
                                 {% endfor %}
-                                {% if object.studios %}
+                                {% if object.studios.count > 1 %}
                                 <p>
                                     <span class="text-muted">Studio{% if object.studios.count > 1 %}s{% endif %}:</span> 
                                     {% for studio in object.studios.all %}
