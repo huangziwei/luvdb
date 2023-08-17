@@ -43,11 +43,14 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h2>Episodes</h2>
                         <div class="d-flex">
-                            <form method="post" action="{% url 'listen:podcast_detail' podcast.pk %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="action" value="recrawl">
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">Update</button>
-                            </form>
+                            <!-- Check the recently_updated context variable -->
+                            {% if not recently_updated %}
+                                <form method="post" action="{% url 'listen:podcast_detail' podcast.pk %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="recrawl">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Update</button>
+                                </form>
+                            {% endif %}
                             <button class="ms-2 btn btn-sm btn-outline-secondary "
                                     type="button"
                                     data-bs-toggle="collapse"

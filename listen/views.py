@@ -1103,8 +1103,17 @@ class PodcastDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["content_type"] = "podcast"
+        # Calculate the time difference
+        if self.object.updated_at:
+            time_diff = timezone.now() - self.object.updated_at
+            if time_diff < timedelta(days=1):
+                context["recently_updated"] = True
+            else:
+                context["recently_updated"] = False
+        else:
+            context["recently_updated"] = False
 
+        context["content_type"] = "podcast"
         # Add the check-in related context data (following the ReleaseDetailView example)
         content_type = ContentType.objects.get_for_model(Podcast)
         context["checkin_form"] = ListenCheckInForm(
