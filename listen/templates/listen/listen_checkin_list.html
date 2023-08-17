@@ -11,7 +11,11 @@
                 <a href="{% url 'accounts:detail' profile_user.username %}">
                     {{ profile_user.display_name|default:profile_user.username }}
                 </a> of
-                <a href="{% url 'listen:release_detail' object.id %}">{{ object.title }}</a>
+                {% if model_name == "release" %}
+                    <a href="{% url 'listen:release_detail' object.id %}">{{ object.title }}</a>
+                {% elif model_name == "podcast" %}
+                    <a href="{% url 'listen:podcast_detail' object.id %}">{{ object.title }}</a>
+                {% endif %}
             </h4>
             <span class='d-flex mb-3'>
                 <div class="me-3">
