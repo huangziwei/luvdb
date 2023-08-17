@@ -1,23 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Add a New Podcast</h1>
-    <form method="post" action="{% url 'listen:podcast_create' %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="rss_feed_url">Podcast RSS Feed URL:</label>
-            <input type="url"
-                   class="form-control"
-                   id="rss_feed_url"
-                   name="rss_feed_url"
-                   required>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    {% if messages %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7">
+                <h1>Add a New Podcast</h1>
+                <form method="post" action="{% url 'listen:podcast_create' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="rss_feed_url">Podcast RSS Feed URL:</label>
+                        <input type="url"
+                               class="form-control"
+                               id="rss_feed_url"
+                               name="rss_feed_url"
+                               required>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                </form>
+                {% comment %} {% if messages %}
         <div class="messages">
             {% for message in messages %}
                 <div {% if message.tags %}class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
             {% endfor %}
         </div>
-    {% endif %}
+                {% endif %} {% endcomment %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

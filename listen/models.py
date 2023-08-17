@@ -343,7 +343,7 @@ class ListenCheckIn(models.Model):
         null=True, blank=True
     )  # Any thoughts or comments at this check-in.
     timestamp = models.DateTimeField(auto_now_add=True)
-    progress = models.IntegerField(null=True, blank=True)
+    progress = models.CharField(max_length=20, null=True, blank=True)
     TOTAL_LISTEN_TIME = "TT"
     LOOP_TIME = "LT"
     PROGRESS_TYPE_CHOICES = [

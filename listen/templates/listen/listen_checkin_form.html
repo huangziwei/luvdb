@@ -15,36 +15,67 @@
                 <button type="button"
                         class="btn btn-sm btn-light status-button"
                         id="status-looping"
-                        onclick="setStatus(event, 'looping')">Looping</button>
+                        onclick="setStatus(event, 'looping')">
+                    {% if content_type == "release" %}
+                        Looping
+                    {% else %}
+                        Subscribed
+                    {% endif %}
+                </button>
                 <button type="button"
                         class="btn btn-sm btn-light status-button"
                         id="status-listened"
                         onclick="setStatus(event, 'listened')">Listened</button>
             </div>
         </div>
-        <div class="col-md-4 col-sm-12">
-            <!-- Progress and Progress Type -->
-            <div class="input-group input-group-sm mb-3">
-                <input type="number"
-                       class="form-control"
-                       id="progressInput"
-                       name="progress"
-                       placeholder="Loop">
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                        type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                        id="progressTypeBtn">Page</button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                        <a class="dropdown-item" href="#" onclick="setProgressType(event,'TT')">Minutes</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#" onclick="setProgressType(event,'LT')">Loop Times</a>
-                    </li>
-                </ul>
+        {% if content_type == "release" %}
+            <div class="col-md-4 col-sm-12">
+                <!-- Progress and Progress Type -->
+                <div class="input-group input-group-sm mb-3">
+                    <input type="number" class="form-control" id="progressInput" name="progress">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            id="progressTypeBtn">Minutes</button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item"
+                               href="#"
+                               onclick="setProgressType(event,'TT', '{{ content_type }}')">Minutes</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                               href="#"
+                               onclick="setProgressType(event,'LT', '{{ content_type }}')">Loop Times</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
+        {% elif content_type == "podcast" %}
+            <div class="col-md-4 col-sm-12">
+                <!-- Progress and Progress Type -->
+                <div class="input-group input-group-sm mb-3">
+                    <input type="text"
+                           class="form-control"
+                           id="progressInput"
+                           name="progress"
+                           placeholder="No. or title">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            id="progressTypeBtn">Episode</button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item"
+                               href="#"
+                               onclick="setProgressType(event,'TT', '{{ content_type }}')">Episode</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
     </div>
     <!-- Hidden input fields to hold status and progress_type values -->
     <input type="hidden" id="statusInput" name="status">
@@ -78,22 +109,30 @@
         "to_listen": "status-to-listen",
         "looping": "status-looping",
         "listened": "status-listened",
+        "listening": "status-listening", // New entry
         "paused": "status-paused",
         "abandoned": "status-abandoned",
     };
 
     function setStatus(event, status) {
         event.preventDefault();
+        if (status === 'looping' && document.getElementById('status-listening')) {
+            status = 'listening'; // Switch to 'listening' if the 'Listening' button is present
+        }
         document.getElementById('statusInput').value = status;
         updateStatusButton(status);
     }
     
-    function setProgressType(event, type) {
+    function setProgressType(event, type, contentType) {
         event.preventDefault();
         document.getElementById('progressTypeInput').value = type;
-        document.getElementById('progressTypeBtn').textContent = type == 'TT' ? 'Minutes' : 'LT';
+    
+        if (contentType === 'release') {
+            document.getElementById('progressTypeBtn').textContent = type === 'TT' ? 'Minutes' : 'Loop Times';
+        } else if (contentType === 'podcast') {
+            document.getElementById('progressTypeBtn').textContent = 'Episode';
+        }
     }
-
     function updateStatusButton(status) {
         var status_buttons = document.getElementsByClassName('status-button');
         for (var i = 0; i < status_buttons.length; i++) {

@@ -488,6 +488,7 @@ class ReleaseDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         release = get_object_or_404(Release, pk=self.kwargs["pk"])
+        context["content_type"] = "podcast"
 
         roles = {}
         for release_role in release.releaserole_set.all():
@@ -1045,6 +1046,17 @@ def create_podcast_from_feed(rss_feed_url):
     return podcast
 
 
+def create_or_update_podcast_from_feed(rss_feed_url):
+    """
+    Create or update Podcast and PodcastEpisode from the given RSS feed URL.
+    """
+    podcast_info = parse_podcast(rss_feed_url)
+    podcast, created = Podcast.objects.update_or_create(
+        rss_feed_url=rss_feed_url, defaults=podcast_info
+    )
+    return podcast
+
+
 def fetch_image_from_url(url):
     response = requests.get(url, stream=True)
     response.raise_for_status()
@@ -1091,6 +1103,7 @@ class PodcastDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["content_type"] = "podcast"
 
         # Add the check-in related context data (following the ReleaseDetailView example)
         content_type = ContentType.objects.get_for_model(Podcast)
@@ -1177,6 +1190,23 @@ class PodcastDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+
+        if request.POST.get("action") == "recrawl":
+            try:
+                # Re-parse the podcast from its feed
+                updated_podcast_info = parse_podcast(self.object.rss_feed_url)
+                # Update the episodes (assuming it's a JSONField)
+                self.object.episodes = updated_podcast_info["episodes"]
+                self.object.save()
+
+                # Redirecting to the same detail page after update
+                messages.success(request, "Podcast episodes have been updated!")
+                return redirect(self.object.get_absolute_url())
+
+            except Exception as e:
+                messages.error(request, f"Failed to update the podcast: {str(e)}")
+                return redirect(self.object.get_absolute_url())
+
         content_type = ContentType.objects.get_for_model(Podcast)
         form = ListenCheckInForm(
             data=request.POST,
