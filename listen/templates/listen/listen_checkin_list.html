@@ -28,12 +28,16 @@
                 <div class="me-3">
                     <a href="?status=&order={{ order }}"
                        class="btn btn-sm btn-outline-dark mb-1">All</a>
-                    <a href="?status=to_listen&order={{ order }}"
+                    <a href="?status=to_read&order={{ order }}"
                        class="btn btn-sm btn-info mb-1">To Listen</a>
                     <a href="?status=looping&order={{ order }}"
                        class="btn btn-sm btn-primary mb-1">Looping</a>
                     <a href="?status=listened&order={{ order }}"
                        class="btn btn-sm btn-success mb-1">Listened</a>
+                    <a href="?status=subscribed&order={{ order }}"
+                       class="btn btn-sm btn-primary mb-1">Subscribed</a>
+                    <a href="?status=sampled&order={{ order }}"
+                       class="btn btn-sm btn-success mb-1">Sampled</a>
                 </div>
             </span>
             {% if profile_user.is_public  or request.user.is_authenticated %}
