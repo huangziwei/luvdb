@@ -165,10 +165,14 @@ class AccountDetailView(DetailView):
         to_listen = latest_listen_checkins.filter(status="to_listen").order_by(
             "-timestamp"
         )[:6]
+        subscribed = latest_listen_checkins.filter(status="subscribed").order_by(
+            "-timestamp"
+        )[:6]
 
         context["looping"] = looping
         context["listened"] = listened
         context["to_listen"] = to_listen
+        context["subscribed"] = subscribed
         context["does_listen_exist"] = listened.exists() or looping.exists()
 
         # First, get the latest check-in for each show

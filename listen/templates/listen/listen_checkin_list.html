@@ -6,7 +6,7 @@
     <div class="row">
         <!--left column-->
         <div class="col-12 col-md-8">
-            <h4 class='mb-4'>
+            <h4 class="mb-4">
                 Check-ins by
                 <a href="{% url 'accounts:detail' profile_user.username %}">
                     {{ profile_user.display_name|default:profile_user.username }}
@@ -17,7 +17,7 @@
                     <a href="{% url 'listen:podcast_detail' object.id %}">{{ object.title }}</a>
                 {% endif %}
             </h4>
-            <span class='d-flex mb-3'>
+            <span class="d-flex mb-3">
                 <div class="me-3">
                     <a href="?order=timestamp&status={{ status }}"
                        class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>

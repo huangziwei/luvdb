@@ -7,7 +7,11 @@
                 <div class="col-sm-12">
                     <h4>
                         All Check-Ins of
-                        <a href="{% url 'listen:release_detail' object.id %}">{{ object.title }}</a>
+                        {% if model_name == "release" %}
+                            <a href="{% url 'listen:release_detail' object.id %}">{{ object.title }}</a>
+                        {% elif  model_name == "podcast" %}
+                            <a href="{% url 'listen:podcast_detail' object.id %}">{{ object.title }}</a>
+                        {% endif %}
                     </h4>
                     <span class='d-flex'>
                         <div class="me-3">

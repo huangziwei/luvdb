@@ -308,6 +308,34 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
+                            {% if subscribed %}
+                                <div class="mt-3 me-3 d-flex overflow-auto">
+                                    <div class="rotate text-muted">Subscribed</div>
+                                    {% for item in subscribed %}
+                                        <div class="me-3">
+                                            <a href="{% url 'listen:podcast_checkin_list' item.content_object.id item.user.username %}">
+                                                {% if item.content_object.cover %}
+                                                    <img src="{{ item.content_object.cover.url }}"
+                                                         alt="{{ item.content_object.title }} cover"
+                                                         style="width: 120px"
+                                                         class="cover-image">
+                                                {% else %}
+                                                    <div class="no-cover-text"
+                                                         style="background: gray;
+                                                                width: 120px;
+                                                                height: 120px;
+                                                                color: white;
+                                                                text-align: center">
+                                                        {{ item.content_object.title }}
+                                                    </div>
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                    {% empty %}
+                                        <p>No items.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 {% endif %}
