@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load concat_sets %}
-{% block title %}{{ object.title }}{% endblock %}
+{% block title %}
+    {{ object.title }}
+{% endblock title %}
 {% block content %}
     <div class="container">
         <div class="row">
@@ -32,12 +34,12 @@
                         <!--release-meta-->
                         <div class="col flex-grow-1 ms-lg-3">
                             <div class="card-body">
-                                <span class='d-flex align-items-start'>
+                                <span class="d-flex align-items-start">
                                     <h2>{{ object.title }}</h2>
                                 </span>
                                 <div class="release-meta">
                                     {% if object.subtitle %}
-                                        <p class='text-secondary'>
+                                        <p class="text-secondary">
                                             {{ object.subtitle }}
                                         </div>
                                     {% endif %}

@@ -340,7 +340,7 @@
                            class='fs-6 text-secondary'>Edit Person</a>
                     </div>
                 {% endif %}
-                <div class="bg-light p-3">
+                <div class="bg-light p-3 mb-3">
                     <h5 class="mt-2">Link</h5>
                     {% if object.wikipedia %}
                         <div>
@@ -352,6 +352,79 @@
                             <a href="{{ object.website }}" target="_blank">Official Website</a>
                         </div>
                     {% endif %}
+                </div>
+
+                <div class="bg-light p-3">
+                    <h5>Statistics</h5>
+                    {% if litworks_count != 0 or litinstances_count != 0 or books_count != 0 %}
+                    <div class="mb-3">
+                        <h6>Read</h6>
+                        {% if litworks_count != 0 %}
+                        <div>
+                            <span class="text-muted">Works</span>: {{ litworks_count }}
+                        </div>
+                        {% endif %}
+                        {% if litinstances_count != 0 %}
+                        <div>
+                            <span class="text-muted">Instances</span>: {{ litinstances_count }}
+                        </div>
+                        {% endif %}
+                        {% if books_count != 0 %}
+                        <div>
+                            <span class="text-muted">Books</span>: {{ books_count }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if movies_count != 0 or series_count != 0%}
+                    <div class="mb-3">
+                        <h6>Watch</h6>
+                        {% if movies_count != 0 %}
+                        <div>
+                            <span class="text-muted">Movies</span>: {{ movies_count }}
+                        </div>
+                        {% endif %}
+                        {% if series_count != 0 %}
+                        <div>
+                            <span class="text-muted">Series</span>: {{ series_count }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if listenworks_count != 0 or tracks_count != 0 or releases_count != 0%}
+                    <div class="mb-3">
+                        <h6>Listen</h6>
+                        {% if listenworks_count != 0 %}
+                        <div>
+                            <span class="text-muted">Works</span>: {{ listenworks_count }}
+                        </div>
+                        {% endif %}
+                        {% if tracks_count != 0 %}
+                        <div>
+                            <span class="text-muted">Tracks</span>: {{ tracks_count }}
+                        </div>
+                        {% endif %}
+                        {% if releases_count != 0 %}
+                        <div>
+                            <span class="text-muted">Releases</span>: {{ releases_count }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if gameworks_count != 0 %}
+                    <div class="mb-2">
+                        <h6>Play</h6>
+                        {% if gameworks_count != 0 %}
+                        <div>
+                            <span class="text-muted">Works</span>: {{ gameworks_count }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
                 </div>
             </div>
         </div>

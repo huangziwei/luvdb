@@ -65,6 +65,12 @@ class PersonDetailView(DetailView):
         ).order_by("publication_date")
         context["as_annotator"] = as_annotator
 
+        context["litworks_count"] = person.read_works.count()
+        context["litinstances_count"] = LitInstance.objects.filter(
+            instancerole__person=person
+        ).count()
+        context["books_count"] = Book.objects.filter(bookrole__person=person).count()
+
         # listen
         roles_as_performer = ["Singer", "Pianist", "Conductor"]
 
@@ -100,6 +106,13 @@ class PersonDetailView(DetailView):
             trackrole__role__name="Arranger", trackrole__person=person
         ).order_by("release_date")
 
+        context["listenworks_count"] = ListenWork.objects.filter(
+            workrole__person=person
+        ).count()
+        context["tracks_count"] = Track.objects.filter(trackrole__person=person).count()
+        context["releases_count"] = Release.objects.filter(
+            releaserole__person=person
+        ).count()
         # watch
         ## as casts
         context["movies"] = (
@@ -207,6 +220,21 @@ class PersonDetailView(DetailView):
         # Add to context
         context["series_as_writer"] = series_written_info
 
+        context["movies_count"] = (
+            Movie.objects.filter(
+                Q(movieroles__person=person) | Q(moviecasts__person=person)
+            )
+            .distinct()
+            .count()
+        )
+        context["series_count"] = (
+            Series.objects.filter(
+                Q(seriesroles__person=person) | Q(episodes__episodecasts__person=person)
+            )
+            .distinct()
+            .count()
+        )
+
         # play
         context["gameworks"] = (
             GameWork.objects.filter(
@@ -215,6 +243,10 @@ class PersonDetailView(DetailView):
             .distinct()
             .order_by("first_release_date")
         )
+
+        context["gameworks_count"] = GameWork.objects.filter(
+            workrole__person=person
+        ).count()
 
         return context
 
