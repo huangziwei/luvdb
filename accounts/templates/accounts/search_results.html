@@ -153,7 +153,7 @@
                     {% endif %}
                     <hr>
                 {% endif %}
-                {% if musicwork_results or track_results or release_results %}
+                {% if musicwork_results or track_results or release_results or podcast_results %}
                     <h3 class="mb-4">Listen</h3>
                     {% if musicwork_results %}
                         <h4>Works</h4>
@@ -188,6 +188,7 @@
                             <p>No release results found.</p>
                         {% endfor %}
                     {% endif %}
+
                     {% if podcast_results %}
                         <h4>Podcasts</h4>
                         {% for podcast in podcast_results %}
