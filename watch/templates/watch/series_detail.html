@@ -38,9 +38,9 @@
                                 <div class="movie-meta">
                                     {% if object.studios.count > 1 %}
                                         <p>
-                                            <span class="text-muted">Studio
-                                                {% if object.studios.count > 1 %}s{% endif %}
-                                            :</span>
+                                            {# djlint:off #}
+                                            <span class="text-muted">Studio{% if object.studios.count > 1 %}s{% endif %}:</span>
+                                            {# djlint:on #}
                                             {% for studio in object.studios.all %}
                                                 <a href="{% url 'watch:studio_detail' studio.id %}">{{ studio.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}

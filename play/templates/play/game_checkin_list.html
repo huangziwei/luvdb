@@ -46,8 +46,9 @@
                                 <span class="badge text-bg-warning me-2">
                                     Played Time: {{ checkin.progress }}
                                     {% if checkin.progress_type == "TT" %}
-                                        Hour
-                                        {% if checkin.progress != 1 %}s{% endif %}
+                                        {# djlint:off #}
+                                        Hour{% if checkin.progress != 1 %}s{% endif %}
+                                        {# djlint:on #}
                                     {% else %}
                                         %
                                     {% endif %}

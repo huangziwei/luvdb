@@ -55,9 +55,9 @@
                             {% regroup object.content_object.releaserole_set.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
-                                    <span class="text-muted">{{ role.grouper.name }}
-                                        {% if role.list|length > 1 %}s{% endif %}
-                                    :</span>
+                                    {# djlint:off #}
+                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                    {# djlint:on #}
                                     {% for release_role in role.list %}
                                         {% if not forloop.first %}/{% endif %}
                                         <a href="{% url 'entity:person_detail' release_role.person.id %}">

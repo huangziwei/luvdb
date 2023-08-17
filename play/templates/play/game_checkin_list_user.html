@@ -54,8 +54,9 @@
                                     <span class="badge text-bg-warning me-2">
                                         Played Time: {{ checkin.progress }}
                                         {% if checkin.progress_type == "TT" %}
-                                            Hour
-                                            {% if checkin.progress != 1 %}s{% endif %}
+                                            {# djlint:off #}
+                                            Hour{% if checkin.progress != 1 %}s{% endif %}
+                                            {# djlint:on #}
                                         {% else %}
                                             %
                                         {% endif %}
@@ -89,9 +90,9 @@
                                     {% regroup checkin.game.gamerole_set.all by role as roles_list %}
                                     {% for role in roles_list %}
                                         <div>
-                                            {{ role.grouper.name }}
-                                            {% if role.list|length > 1 %}s{% endif %}
-                                            :
+                                            {# djlint:off #}
+                                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                            {# djlint:on #}
                                             {% for game_role in role.list %}
                                                 {% if not forloop.first %}/{% endif %}
                                                 <a href="{% url 'entity:person_detail' game_role.person.id %}">

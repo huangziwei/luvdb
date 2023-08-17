@@ -240,9 +240,9 @@
                     {% regroup activity.content_object.content_object.bookrole_set.all by role as roles_list %}
                     {% for role in roles_list %}
                         <div>
-                            <span class="text-muted">{{ role.grouper.name }}
-                                {% if role.list|length > 1 %}s{% endif %}
-                            :</span>
+                            {# djlint:off #}
+                            <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                            {# djlint:on #}
                             {% for book_role in role.list %}
                                 {% if not forloop.first %}/{% endif %}
                                 <a href="{% url 'entity:person_detail' book_role.person.id %}">
@@ -348,9 +348,9 @@
                     {% regroup activity.content_object.content_object.movieroles.all by role as roles_list %}
                     {% for role in roles_list %}
                         <div>
-                            <span class="text-muted">{{ role.grouper.name }}
-                                {% if role.list|length > 1 %}s{% endif %}
-                            :</span>
+                            {# djlint:off #}
+                            <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                            {# djlint:on #}
                             {% for movie_role in role.list %}
                                 {% if not forloop.first %}/{% endif %}
                                 <a href="{% url 'entity:person_detail' movie_role.person.id %}">
@@ -363,9 +363,9 @@
                     {% regroup activity.content_object.content_object.seriesroles.all by role as roles_list %}
                     {% for role in roles_list %}
                         <div>
-                            <span class="text-muted">{{ role.grouper.name }}
-                                {% if role.list|length > 1 %}s{% endif %}
-                            :</span>
+                            {# djlint:off #}
+                            <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                            {# djlint:on #}
                             {% for series_role in role.list %}
                                 {% if not forloop.first %}/{% endif %}
                                 <a href="{% url 'entity:person_detail' series_role.person.id %}">
@@ -429,13 +429,13 @@
             {% if activity.content_object.progress %}
                 <span class="badge text-bg-warning me-1">
                     Loop: {{ activity.content_object.progress }}
+                    {# djlint:off #}
                     {% if activity.content_object.progress_type == "TT" %}
-                        Minute
-                        {% if checkin.progress != 1 %}s{% endif %}
+                        Minute{% if checkin.progress != 1 %}s{% endif %}
                     {% else %}
-                        Time
-                        {% if checkin.progress != 1 %}s{% endif %}
+                        Time{% if checkin.progress != 1 %}s{% endif %}
                     {% endif %}
+                    {# djlint:on #}
                 </span>
             {% endif %}
         </div>
@@ -468,9 +468,9 @@
                 {% regroup activity.content_object.content_object.releaserole_set.all by role as roles_list %}
                 {% for role in roles_list %}
                     <div>
-                        <span class="text-muted">{{ role.grouper.name }}
-                            {% if role.list|length > 1 %}s{% endif %}
-                        :</span>
+                        {# djlint:off #}
+                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                        {# djlint:on #}
                         {% for release_role in role.list %}
                             {% if not forloop.first %}/{% endif %}
                             <a href="{% url 'entity:person_detail' release_role.person.id %}">
@@ -481,9 +481,9 @@
                 {% endfor %}
                 <div>
                     {% if activity.content_object.content_object.labels %}
-                        <span class="text-muted">Labels:
-                            {% if activity.content_object.content_object.labels.list|length > 1 %}s{% endif %}
-                        :</span>
+                        {# djlint:off #}
+                        <span class="text-muted">Label{% if activity.content_object.content_object.labels.list|length > 1 %}s{% endif %}:</span>
+                        {# djlint:on #}
                         {% for developer in activity.content_object.content_object.labels.all %}
                             {% if not forloop.first %},{% endif %}
                             <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
@@ -546,8 +546,9 @@
                 <span class="badge text-bg-warning me-1">
                     Played Time: {{ activity.content_object.progress }}
                     {% if activity.content_object.progress_type == "TT" %}
-                        Hour
-                        {% if checkin.progress != 1 %}s{% endif %}
+                        {# djlint:off #}
+                        Hour{% if checkin.progress != 1 %}s{% endif %}
+                        {# djlint:on #}
                     {% endif %}
                 </span>
             {% endif %}
@@ -581,9 +582,9 @@
                 {% regroup activity.content_object.game.gamerole_set.all by role as roles_list %}
                 {% for role in roles_list %}
                     <div>
-                        <span class="text-muted">{{ role.grouper.name }}
-                            {% if role.list|length > 1 %}s{% endif %}
-                        :</span>
+                        {# djlint:off #}
+                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                        {# djlint:on #}
                         {% for game_role in role.list %}
                             {% if not forloop.first %}/{% endif %}
                             <a href="{% url 'entity:person_detail' game_role.person.id %}">
@@ -594,9 +595,9 @@
                 {% endfor %}
                 <div>
                     {% if activity.content_object.game.developers.exists %}
-                        <span class="text-muted">Developer
-                            {% if activity.content_object.game.developers.count > 1 %}s{% endif %}
-                        :</span>
+                        {# djlint:off #}
+                        <span class="text-muted">Developer{% if activity.content_object.game.developers.count > 1 %}s{% endif %}:</span>
+                        {# djlint:on #}
                         {% for developer in activity.content_object.game.developers.all %}
                             {% if not forloop.first %}/{% endif %}
                             <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
@@ -605,9 +606,10 @@
                 </div>
                 <div>
                     {% if activity.content_object.game.publishers.exists %}
+                        {# djlint:off #}
                         <span class="text-muted">Publisher
-                            {% if activity.content_object.game.publishers.count > 1 %}s{% endif %}
-                        :</span>
+                            {% if activity.content_object.game.publishers.count > 1 %}s{% endif %}:</span>
+                        {# djlint:on #}
                         {% for publisher in activity.content_object.game.publishers.all %}
                             {% if not forloop.first %}/{% endif %}
                             <a href="{% url 'play:publisher_detail' publisher.id %}">{{ publisher.name }}</a>
@@ -616,9 +618,9 @@
                 </div>
                 <div>
                     {% if activity.content_object.game.platforms.exists %}
-                        <span class="text-muted">Platform
-                            {% if activity.content_object.game.platforms.list|length > 1 %}s{% endif %}
-                        :</span>
+                        {# djlint:off #}
+                        <span class="text-muted">Platform{% if activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:</span>
+                        {# djlint:on #}
                         {% for platform in activity.content_object.game.platforms.all %}
                             {% if not forloop.first %},{% endif %}
                             <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>

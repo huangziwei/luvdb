@@ -64,9 +64,9 @@
                                 {% regroup object.content_object.movieroles.all by role as roles_list %}
                                 {% for role in roles_list %}
                                     <div>
-                                        <span class="text-muted">{{ role.grouper.name }}
-                                            {% if role.list|length > 1 %}s{% endif %}
-                                        :</span>
+                                        {# djlint:off #}
+                                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                        {# djlint:on #}
                                         {% for movie_role in role.list %}
                                             {% if not forloop.first %}/{% endif %}
                                             <a href="{% url 'entity:person_detail' movie_role.person.id %}">
@@ -79,9 +79,9 @@
                                 {% regroup object.content_object.seriesroles.all by role as roles_list %}
                                 {% for role in roles_list %}
                                     <div>
-                                        <span class="text-muted">{{ role.grouper.name }}
-                                            {% if role.list|length > 1 %}s{% endif %}
-                                        :</span>
+                                        {# djlint:off #}
+                                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                        {# djlint:on #}
                                         {% for series_role in role.list %}
                                             {% if not forloop.first %}/{% endif %}
                                             <a href="{% url 'entity:person_detail' series_role.person.id %}">

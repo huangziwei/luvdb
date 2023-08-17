@@ -99,9 +99,9 @@
                                                 {% regroup checkin.content_object.bookrole_set.all by role as roles_list %}
                                                 {% for role in roles_list %}
                                                     <div>
-                                                        {{ role.grouper.name }}
-                                                        {% if role.list|length > 1 %}s{% endif %}
-                                                        :
+                                                        {# djlint:off #}
+                                                        {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                                        {# djlint:on #}
                                                         {% for book_role in role.list %}
                                                             {% if not forloop.first %}/{% endif %}
                                                             <a href="{% url 'entity:person_detail' book_role.person.id %}">

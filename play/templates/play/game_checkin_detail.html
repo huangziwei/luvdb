@@ -36,9 +36,9 @@
                             {% regroup object.game.gamerole_set.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
-                                    <span class="text-muted">{{ role.grouper.name }}
-                                        {% if role.list|length > 1 %}s{% endif %}
-                                    :</span>
+                                    {# djlint:off #}
+                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                    {# djlint:on #}
                                     {% for game_role in role.list %}
                                         {% if not forloop.first %}/{% endif %}
                                         <a href="{% url 'entity:person_detail' game_role.person.id %}">
@@ -49,9 +49,9 @@
                             {% endfor %}
                             <div>
                                 {% if object.game.developers %}
-                                    <span class="text-muted">Developer
-                                        {% if object.game.developers.list|length > 1 %}s{% endif %}
-                                    :</span>
+                                    {# djlint:off #}
+                                    <span class="text-muted">Developer{% if object.game.developers.list|length > 1 %}s{% endif %}:</span>
+                                    {# djlint:on #}
                                     {% for developer in object.game.developers.all %}
                                         {% if not forloop.first %},{% endif %}
                                         <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
@@ -60,9 +60,9 @@
                             </div>
                             <div>
                                 {% if object.game.platforms %}
-                                    <span class="text-muted">Platform
-                                        {% if object.game.platforms.list|length > 1 %}s{% endif %}
-                                    :</span>
+                                    {# djlint:off #}
+                                    <span class="text-muted">Platform{% if object.game.platforms.list|length > 1 %}s{% endif %}:</span>
+                                    {# djlint:on #}
                                     {% for platform in object.game.platforms.all %}
                                         {% if not forloop.first %},{% endif %}
                                         <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
