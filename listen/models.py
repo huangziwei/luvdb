@@ -305,7 +305,7 @@ class ReleaseTrack(models.Model):
     release = models.ForeignKey(Release, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, on_delete=models.CASCADE, null=True, blank=True)
     alt_title = models.CharField(max_length=255, blank=True, null=True)
-    disk = models.PositiveIntegerField(default=1, null=True, blank=True)
+    disk = models.CharField(max_length=10, default="1")
     order = models.PositiveIntegerField(default=1, null=True, blank=True)
 
     class Meta:

@@ -340,6 +340,7 @@
                            class='fs-6 text-secondary'>Edit Person</a>
                     </div>
                 {% endif %}
+                {% if object.wikipedia or object.website%}
                 <div class="bg-light p-3 mb-3">
                     <h5 class="mt-2">Link</h5>
                     {% if object.wikipedia %}
@@ -353,6 +354,7 @@
                         </div>
                     {% endif %}
                 </div>
+                {% endif %}
 
                 <div class="bg-light p-3">
                     <h5>Statistics</h5>
