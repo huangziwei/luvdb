@@ -843,6 +843,7 @@ class ListenListView(ListView):
 
     def get_queryset(self):
         recent_releases = Release.objects.all().order_by("-created_at")[:12]
+        recent_podcasts = Podcast.objects.all().order_by("-created_at")[:12]
         recent_date = timezone.now() - timedelta(days=7)
 
         release_content_type = ContentType.objects.get_for_model(Release)
@@ -860,10 +861,27 @@ class ListenListView(ListView):
             .exclude(checkins=0)
             .order_by("-checkins")[:12]
         )
+        podcast_content_type = ContentType.objects.get_for_model(Podcast)
+        trending_podcasts = (
+            Podcast.objects.annotate(
+                checkins=Count(
+                    "listencheckin",
+                    filter=Q(
+                        listencheckin__content_type=podcast_content_type,
+                        listencheckin__timestamp__gte=recent_date,
+                    ),
+                    distinct=True,
+                )
+            )
+            .exclude(checkins=0)
+            .order_by("-checkins")[:12]
+        )
 
         return {
             "recent_releases": recent_releases,
             "trending_releases": trending_releases,
+            "recent_podcasts": recent_podcasts,
+            "trending_podcasts": trending_podcasts,
         }
 
     def get_context_data(self, **kwargs):
@@ -878,6 +896,7 @@ class ListenListView(ListView):
         context["works_count"] = Work.objects.count()
         context["tracks_count"] = Track.objects.count()
         context["releases_count"] = Release.objects.count()
+        context["podcasts_count"] = Podcast.objects.count()
         return context
 
 

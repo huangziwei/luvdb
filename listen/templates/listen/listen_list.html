@@ -4,72 +4,142 @@
     <div class="container">
         <div class="row">
             <div class='col-12 col-md-8'>
-                {% if objects.trending_releases %}
+                {% if objects.trending_releases or objects.trending_podcasts %}
                     <div class="mb-3">
                         <h2>Trending</h2>
-                        <div class="row">
-                            {% for release in objects.trending_releases %}
-                                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-                                    <a href="{% url 'listen:release_detail' release.pk %}">
-                                        {% if release.cover %}
-                                            {% if release.cover_sens %}
-                                                <img src="{{ release.cover.url }}"
-                                                     alt="{{ release.title }} cover"
-                                                     class="img-fluid blur"
-                                                     onclick="this.classList.toggle('blur')">
+                        {% if objects.trending_releases %}
+                            <h4>Music</h4>
+                            <div class="row">
+                                {% for release in objects.trending_releases %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'listen:release_detail' release.pk %}">
+                                            {% if release.cover %}
+                                                {% if release.cover_sens %}
+                                                    <img src="{{ release.cover.url }}"
+                                                         alt="{{ release.title }} cover"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ release.cover.url }}"
+                                                         alt="{{ release.title }}"
+                                                         class="img-fluid">
+                                                {% endif %}
                                             {% else %}
-                                                <img src="{{ release.cover.url }}"
-                                                     alt="{{ release.title }}"
-                                                     class="img-fluid">
+                                                <div class="cover-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ release.title }}</div>
                                             {% endif %}
-                                        {% else %}
-                                            <div class="cover-placeholder"
-                                                 style="background: grey;
-                                                        width: 100%;
-                                                        height:100%;
-                                                        color:white;
-                                                        text-align: center">{{ release.title }}</div>
-                                        {% endif %}
-                                    </a>
-                                </div>
-                            {% empty %}
-                                <p>No trending releases to display.</p>
-                            {% endfor %}
-                        </div>
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No trending releases to display.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if objects.trending_podcasts %}
+                            <h4>Podcast</h4>
+                            <div class="row">
+                                {% for podcast in objects.trending_podcasts %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'listen:podcast_detail' podcast.pk %}">
+                                            {% if podcast.cover %}
+                                                {% if podcast.cover_sens %}
+                                                    <img src="{{ podcast.cover.url }}"
+                                                         alt="{{ podcast.title }} cover"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ podcast.cover.url }}"
+                                                         alt="{{ podcast.title }}"
+                                                         class="img-fluid">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ podcast.title }}</div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No trending podcasts to display.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 {% endif %}
-                {% if objects.recent_releases %}
+                {% if objects.recent_releases or objects.recent_podcasts %}
                     <div>
                         <h2>Recently Added</h2>
-                        <div class="row">
-                            {% for release in objects.recent_releases %}
-                                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-                                    <a href="{% url 'listen:release_detail' release.pk %}">
-                                        {% if release.cover %}
-                                            {% if release.cover_sens %}
-                                                <img src="{{ release.cover.url }}"
-                                                     alt="{{ release.title }} cover"
-                                                     class="img-fluid blur"
-                                                     onclick="this.classList.toggle('blur')">
+                        {% if objects.recent_releases %}
+                            <h4>Music</h4>
+                            <div class="row">
+                                {% for release in objects.recent_releases %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'listen:release_detail' release.pk %}">
+                                            {% if release.cover %}
+                                                {% if release.cover_sens %}
+                                                    <img src="{{ release.cover.url }}"
+                                                         alt="{{ release.title }} cover"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ release.cover.url }}"
+                                                         alt="{{ release.title }}"
+                                                         class="img-fluid">
+                                                {% endif %}
                                             {% else %}
-                                                <img src="{{ release.cover.url }}"
-                                                     alt="{{ release.title }}"
-                                                     class="img-fluid">
+                                                <div class="cover-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ release.title }}</div>
                                             {% endif %}
-                                        {% else %}
-                                            <div class="cover-placeholder"
-                                                 style="background: grey;
-                                                        width: 100%;
-                                                        height:100%;
-                                                        color:white;
-                                                        text-align: center">{{ release.title }}</div>
-                                        {% endif %}
-                                    </a>
-                                </div>
-                            {% empty %}
-                                <p>No recent release to display.</p>
-                            {% endfor %}
-                        </div>
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No recent release to display.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if objects.recent_podcasts %}
+                            <h4>Podcast</h4>
+                            <div class="row">
+                                {% for podcast in objects.recent_podcasts %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'listen:podcast_detail' podcast.pk %}">
+                                            {% if podcast.cover %}
+                                                {% if podcast.cover_sens %}
+                                                    <img src="{{ podcast.cover.url }}"
+                                                         alt="{{ podcast.title }} cover"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ podcast.cover.url }}"
+                                                         alt="{{ podcast.title }}"
+                                                         class="img-fluid">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ podcast.title }}</div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No recent podcast to display.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>

@@ -407,6 +407,8 @@ class Podcast(models.Model):
     episodes = models.JSONField(blank=True, null=True)
     listencheckin = GenericRelation("ListenCheckIn")
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return self.title
 
