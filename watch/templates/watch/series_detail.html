@@ -59,9 +59,9 @@
                                     {% endif %}
                                     {% if object.genres %}
                                         <p>
-                                            <span class="text-muted">Genre
-                                                {% if object.genres.count > 1 %}s{% endif %}
-                                            :</span>
+                                            {# djlint:off #}
+                                                <span class="text-muted">Genre{% if object.genres.count > 1 %}s{% endif %}:</span>
+                                            {# djlint:on #}
                                             {% for genre in object.genres.all %}
                                                 <a href="{% url 'watch:genre_detail' genre.name %}">{{ genre.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}

@@ -178,9 +178,9 @@
                                             {% regroup content.content_object.bookrole_set.all by role as roles_list %}
                                             {% for role in roles_list %}
                                                 <div>
-                                                    {{ role.grouper.name }}
-                                                    {% if role.list|length > 1 %}s{% endif %}
-                                                    :
+                                                    {# djlint:off #}
+                                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                                    {# djlint:on #}
                                                     {% for book_role in role.list %}
                                                         {% if not forloop.first %}/{% endif %}
                                                         <a href="{% url 'entity:person_detail' book_role.person.id %}">
@@ -236,9 +236,9 @@
                                             {% regroup content.content_object.movieroles.all by role as roles_list %}
                                             {% for role in roles_list %}
                                                 <div>
-                                                    {{ role.grouper.name }}
-                                                    {% if role.list|length > 1 %}s{% endif %}
-                                                    :
+                                                    {# djlint:off #}
+                                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                                    {# djlint:on #}
                                                     {% for movie_role in role.list %}
                                                         {% if not forloop.first %}/{% endif %}
                                                         <a href="{% url 'entity:person_detail' movie_role.person.id %}">
@@ -251,9 +251,9 @@
                                             {% regroup content.content_object.seriesroles.all by role as roles_list %}
                                             {% for role in roles_list %}
                                                 <div>
-                                                    {{ role.grouper.name }}
-                                                    {% if role.list|length > 1 %}s{% endif %}
-                                                    :
+                                                    {# djlint:off #}
+                                                    {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                                    {# djlint:on #}
                                                     {% for series_role in role.list %}
                                                         {% if not forloop.first %}/{% endif %}
                                                         <a href="{% url 'entity:person_detail' series_role.person.id %}">
@@ -308,9 +308,9 @@
                                         {% regroup content.content_object.releaserole_set.all by role as roles_list %}
                                         {% for role in roles_list %}
                                             <div>
-                                                {{ role.grouper.name }}
-                                                {% if role.list|length > 1 %}s{% endif %}
-                                                :
+                                                {# djlint:off #}
+                                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                                {# djlint:on #}
                                                 {% for release_role in role.list %}
                                                     {% if not forloop.first %}/{% endif %}
                                                     <a href="{% url 'entity:person_detail' release_role.person.id %}">
@@ -321,9 +321,9 @@
                                         {% endfor %}
                                         <div>
                                             {% if content.content_object.labels %}
-                                                Labels:
-                                                {% if content.content_object.labels.list|length > 1 %}s{% endif %}
-                                                :
+                                                {# djlint:off #}
+                                                Label{% if content.content_object.labels.list|length > 1 %}s{% endif %}:
+                                                {# djlint:on #}
                                                 {% for label in content.content_object.labels.all %}
                                                     {% if not forloop.first %},{% endif %}
                                                     <a href="{% url 'listen:label_detail' label.id %}">{{ label.name }}</a>
@@ -368,9 +368,9 @@
                                         {% regroup content.content_object.gamerole_set.all by role as roles_list %}
                                         {% for role in roles_list %}
                                             <div>
-                                                {{ role.grouper.name }}
-                                                {% if role.list|length > 1 %}s{% endif %}
-                                                :
+                                                {# djlint:off #}
+                                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                                {# djlint:on #}
                                                 {% for game_role in role.list %}
                                                     {% if not forloop.first %}/{% endif %}
                                                     <a href="{% url 'entity:person_detail' game_role.person.id %}">
@@ -381,9 +381,9 @@
                                         {% endfor %}
                                         <div>
                                             {% if content.content_object.developers %}
-                                                Developer
-                                                {% if content.content_object.developers.list|length > 1 %}s{% endif %}
-                                                :
+                                                {# djlint:off #}
+                                                Developer{% if content.content_object.developers.list|length > 1 %}s{% endif %}:
+                                                {# djlint:on #}
                                                 {% for developer in content.content_object.developers.all %}
                                                     {% if not forloop.first %},{% endif %}
                                                     <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
@@ -392,9 +392,9 @@
                                         </div>
                                         <div>
                                             {% if content.content_object.platforms %}
-                                                Platform
-                                                {% if content.content_object.platforms.list|length > 1 %}s{% endif %}
-                                                :
+                                                {# djlint:off #}
+                                                Platform{% if content.content_object.platforms.list|length > 1 %}s{% endif %}:
+                                                {# djlint:on #}
                                                 {% for platform in content.content_object.platforms.all %}
                                                     {% if not forloop.first %},{% endif %}
                                                     <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>

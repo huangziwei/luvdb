@@ -60,9 +60,9 @@
                                     {% regroup original_activity.content_object.book.bookrole_set.all by role as roles_list %}
                                     {% for role in roles_list %}
                                         <div>
-                                            {{ role.grouper.name }}
-                                            {% if role.list|length > 1 %}s{% endif %}
-                                            :
+                                            {# djlint:off #}
+                                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                            {# djlint:on #}
                                             {% for book_role in role.list %}
                                                 {% if not forloop.first %}/{% endif %}
                                                 <a href="{% url 'entity:person_detail' book_role.person.id %}">
@@ -92,8 +92,9 @@
                                     <span class="badge text-bg-warning me-1">
                                         Played Time: {{ original_activity.content_object.progress }}
                                         {% if original_activity.content_object.progress_type == "TT" %}
-                                            Hour
-                                            {% if checkin.progress != 1 %}s{% endif %}
+                                            {# djlint:off #}
+                                            Hour{% if checkin.progress != 1 %}s{% endif %}
+                                            {# djlint:on #}
                                         {% endif %}
                                     </span>
                                 {% endif %}
@@ -126,9 +127,9 @@
                                     {% regroup original_activity.content_object.game.gamerole_set.all by role as roles_list %}
                                     {% for role in roles_list %}
                                         <div>
-                                            {{ role.grouper.name }}
-                                            {% if role.list|length > 1 %}s{% endif %}
-                                            :
+                                            {# djlint:off #}
+                                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                            {# djlint:on #}
                                             {% for game_role in role.list %}
                                                 {% if not forloop.first %}/{% endif %}
                                                 <a href="{% url 'entity:person_detail' game_role.person.id %}">
@@ -139,9 +140,9 @@
                                     {% endfor %}
                                     <div>
                                         {% if original_activity.content_object.game.developers %}
-                                            Developer
-                                            {% if original_activity.content_object.game.developers.list|length > 1 %}s{% endif %}
-                                            :
+                                            {# djlint:off #}
+                                            Developer{% if original_activity.content_object.game.developers.list|length > 1 %}s{% endif %}:
+                                            {# djlint:on #}
                                             {% for developer in original_activity.content_object.game.developers.all %}
                                                 {% if not forloop.first %},{% endif %}
                                                 <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
@@ -150,9 +151,9 @@
                                     </div>
                                     <div>
                                         {% if original_activity.content_object.game.platforms %}
-                                            Platform
-                                            {% if original_activity.content_object.game.platforms.list|length > 1 %}s{% endif %}
-                                            :
+                                            {# djlint:off #}
+                                            Platform{% if original_activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:
+                                            {# djlint:on #}
                                             {% for platform in original_activity.content_object.game.platforms.all %}
                                                 {% if not forloop.first %},{% endif %}
                                                 <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
