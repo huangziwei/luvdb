@@ -16,7 +16,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from activity_feed.models import Activity, Follow
 from entity.models import Person
-from listen.models import ListenCheckIn, Release, Track
+from listen.models import ListenCheckIn, Podcast, Release, Track
 from listen.models import Work as MusicWork
 from play.models import Game, GameCast, GameCheckIn, GameRole
 from play.models import Work as GameWork
@@ -322,6 +322,7 @@ def search_view(request):
     musicwork_results = []
     track_results = []
     release_results = []
+    podcast_results = []
     # watch
     movie_results = []
     series_results = []
@@ -382,6 +383,9 @@ def search_view(request):
                 Q(title__icontains=query)
                 | Q(releaserole__person__name__icontains=query)
             ).distinct()  # Update with your real query
+            podcast_results = Podcast.objects.filter(
+                Q(title__icontains=query)
+            ).distinct()
 
         if model in ["all", "play"]:
             gamework_results = GameWork.objects.filter(
@@ -436,6 +440,7 @@ def search_view(request):
             "musicwork_results": musicwork_results,
             "track_results": track_results,
             "release_results": release_results,
+            "podcast_results": podcast_results,
             # watch
             "movie_results": movie_results,
             "series_results": series_results,

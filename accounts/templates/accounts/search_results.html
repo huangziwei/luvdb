@@ -188,6 +188,16 @@
                             <p>No release results found.</p>
                         {% endfor %}
                     {% endif %}
+                    {% if podcast_results %}
+                        <h4>Podcasts</h4>
+                        {% for podcast in podcast_results %}
+                            <p>
+                                <a href="{% url 'listen:podcast_detail' podcast.id %}">{{ podcast.title|truncatechars:50 }}</a>
+                            </p>
+                        {% empty %}
+                            <p>No podcast results found.</p>
+                        {% endfor %}
+                    {% endif %}
                     <hr>
                 {% endif %}
                 {% if movie_results or series_results %}
