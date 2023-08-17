@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load markdownify %}
 {% block title %}
     {{ podcast.title }}
 {% endblock title %}
@@ -12,7 +13,7 @@
                 <div class="release-card justify-content-start col-11">
                     <div class="d-flex flex-column flex-lg-row mt-2">
                         <!--cover-box-->
-                        <div class="col-12 col-lg-auto mb-3 mb-lg-0">
+                        <div class="col-12 col-lg-auto mb-3 mb-lg-0 mt-1">
                             <div class="listen-cover-box">
                                 {% if podcast.cover %}
                                     <img src="{{ podcast.cover.url }}"
@@ -24,16 +25,45 @@
                             </div>
                         </div>
                         <!--podcast-meta-->
-                        <div class="col flex-grow-1 ms-lg-3">
+                        <div class="flex-grow-1 ms-lg-3">
                             <div class="card-body">
                                 <h2>{{ podcast.title }}</h2>
+                                
+                                <!-- Categories & Language Row -->
+                                <div class="d-flex flex-wrap mb-2">
+                                    <!-- Categories -->
+                                    {% if podcast.categories %}
+                                        {% for category in podcast.categories %}<span class="badge bg-secondary me-1 mb-1">{{ category }}</span>{% endfor %}
+                                    {% endif %}
+                                    
+                                    <!-- Language -->
+                                    {% if podcast.language %}
+                                        <span class="badge bg-primary mb-1">{{ podcast.language }}</span>
+                                    {% endif %}
+                                    <!-- Explicit Badge -->
+                                    {% if podcast.explicit %}
+                                        <div class="mb-2">
+                                            <span class="badge bg-danger">Explicit</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Publisher -->
                                 {% if podcast.publisher %}<p class="text-secondary">{{ podcast.publisher }}</p>{% endif %}
-                                {% if podcast.description %}<div class="mb-1 text-muted">{{ podcast.description }}</div>{% endif %}
-                                {% if podcast.publisher %}
-                                    <div class="mb-1">
-                                        <span class="text-muted">Publisher:</span> {{ podcast.publisher }}
+                                <!-- Description with "Show more" functionality -->
+                                {% if podcast.description %}
+                                    <div class="mb-1 text-muted">
+                                        {{ podcast.description|markdownify }}
                                     </div>
                                 {% endif %}
+
+                                <!-- Copyright & Last Updated Row -->
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <!-- Last Updated -->
+                                    {% if podcast.last_updated %}<div class="small">Last updated: {{ podcast.last_updated|date:"F j, Y" }}</div>{% endif %}
+                                    <!-- Copyright -->
+                                    {% if podcast.copyright %}<div class="small text-secondary">&copy; {{ podcast.copyright }}</div>{% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -139,9 +169,6 @@
                     </div>
                     <div>
                         <strong>Subscribed:</strong> <a href="{% url 'listen:podcast_checkin_all_list' podcast.id %}?status=looping">{{ listening_count }}</a>
-                    </div>
-                    <div>
-                        <strong>Listened:</strong> <a href="{% url 'listen:podcast_checkin_all_list' podcast.id %}?status=listened">{{ listened_count }}</a>
                     </div>
                 </div>
             </div>

@@ -17,17 +17,21 @@
                             class="btn btn-sm btn-light status-button"
                             id="status-looping"
                             onclick="setStatus(event, 'looping')">Looping</button>
+                    <button type="button"
+                            class="btn btn-sm btn-light status-button"
+                            id="status-listened"
+                            onclick="setStatus(event, 'listened')">Listened</button>
                 {% endif %}
                 {% if content_type == "podcast" %}
                     <button type="button"
                             class="btn btn-sm btn-light status-button"
                             id="status-subscribed"
                             onclick="setStatus(event, 'subscribed')">Subscribed</button>
+                    <button type="button"
+                            class="btn btn-sm btn-light status-button"
+                            id="status-sampled"
+                            onclick="setStatus(event, 'sampled')">Sampled</button>
                 {% endif %}
-                <button type="button"
-                        class="btn btn-sm btn-light status-button"
-                        id="status-listened"
-                        onclick="setStatus(event, 'listened')">Listened</button>
                 <div class="btn-group" role="group">
                     <button id="status-more"
                             type="button"
@@ -126,10 +130,11 @@
         "to_listen": "status-to-listen",
         "looping": "status-looping",
         "listened": "status-listened",
-        "subscribed": "status-subscribed", // New entry
+        "subscribed": "status-subscribed", 
         "paused": "status-paused",
         "abandoned": "status-abandoned",
         "unsubscribed": "status-unsubscribed", 
+        "sampled": "status-sampled", 
     };
 
     function setStatus(event, status) {

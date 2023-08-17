@@ -907,7 +907,7 @@ class ListenCheckInUserListView(ListView):
     """
 
     model = ListenCheckIn
-    template_name = "listen/release_checkin_list_user.html"
+    template_name = "listen/listen_checkin_list_user.html"
     context_object_name = "checkins"
 
     def get_queryset(self):
@@ -1011,6 +1011,21 @@ def parse_podcast(rss_feed_url):
         if hasattr(feed.feed, "image")
         else None,
     }
+    podcast_info["author"] = getattr(feed.feed, "author", None)
+    podcast_info["language"] = getattr(feed.feed, "language", None)
+    if hasattr(feed.feed, "copyright"):
+        podcast_info["copyright"] = feed.feed.copyright.replace("&copy;", "").strip()
+    else:
+        podcast_info["copyright"] = None
+    if hasattr(feed.feed, "updated_parsed"):
+        last_updated = datetime(*feed.feed.updated_parsed[:6]).strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+        podcast_info["last_updated"] = last_updated
+    podcast_info["categories"] = list(
+        set(cat.term for cat in feed.feed.get("tags", []) if hasattr(cat, "term"))
+    )
+    podcast_info["explicit"] = getattr(feed.feed, "explicit", None)
 
     episodes_info = []
     for entry in feed.entries:
@@ -1392,7 +1407,7 @@ class GenericCheckInUserListView(ListView):
     """
 
     model = ListenCheckIn
-    template_name = "listen/release_checkin_list_user.html"
+    template_name = "listen/listen_checkin_list_user.html"
     context_object_name = "checkins"
 
     def get_queryset(self):

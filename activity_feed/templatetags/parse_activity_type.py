@@ -41,6 +41,7 @@ STATUS_CLASSES = {
     "relistened": "text-bg-success",
     "subscribed": "text-bg-primary",
     "unsubscribed": "text-bg-danger",
+    "sampled": "text-bg-success",
     # Playing Status
     "to_play": "text-bg-info",
     "playing": "text-bg-primary",

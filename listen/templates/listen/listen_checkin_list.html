@@ -43,15 +43,21 @@
                             <!--badge: checkin status-->
                             <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
                             {% if checkin.progress %}
-                                <span class="badge text-bg-warning me-2">
-                                    Loop: {{ checkin.progress }}
-                                    {% if checkin.progress_type == "TT" %}
-                                        Minutes
-                                    {% else %}
-                                        Times
-                                    {% endif %}
-                                </span>
-                            {% endif %}
+                                {% if checkin.content_type.model == "release" %}
+                                    <span class="badge text-bg-warning me-1">
+                                        Loop: {{ checkin.progress }}
+                                        {% if checkin.progress_type == "TM" %}
+                                            Times
+                                        {% else %}
+                                            Minutes
+                                        {% endif %}
+                                    </span>
+                                {% elif checkin.content_type.model == "podcast" %}
+                                    <span class="badge text-bg-warning me-1">
+                                        EP: {{ checkin.progress }}
+                                    </span>
+                                {% endif %}
+                            {% endif %}   
                         </p>
                         {% if checkin.content %}<p>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</p>{% endif %}
                         <div class="d-flex mt-3">

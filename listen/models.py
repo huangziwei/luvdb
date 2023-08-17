@@ -338,6 +338,7 @@ class ListenCheckIn(models.Model):
         ("abandoned", "Abandoned"),
         ("subscribed", "Subscribed"),
         ("unsubscribed", "Unsubscribed"),
+        ("sampled", "Sampled"),
     ]
     status = models.CharField(max_length=255, choices=STATUS_CHOICES)
     share_to_feed = models.BooleanField(default=False)
@@ -407,6 +408,13 @@ class Podcast(models.Model):
     rss_feed_url = models.URLField(unique=True)  # To fetch episodes
     website_url = models.URLField(blank=True, null=True)  # Original podcast page
     episodes = models.JSONField(blank=True, null=True)
+    language = models.CharField(max_length=20, blank=True, null=True)
+    copyright = models.CharField(max_length=255, blank=True, null=True)
+    last_updated = models.DateTimeField(blank=True, null=True)
+    categories = models.JSONField(blank=True, null=True)
+    explicit = models.BooleanField(null=True, blank=True, default=False)
+    author = models.CharField(max_length=255, blank=True, null=True)
+
     listencheckin = GenericRelation("ListenCheckIn")
 
     created_at = models.DateTimeField(auto_now_add=True)
