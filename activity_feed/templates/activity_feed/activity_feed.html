@@ -79,7 +79,7 @@
                                                 <span><a href="{% url 'read:book_detail' book.id %}">{{ book.title }}</a>
                                                 {% if book.subtitle %}: {{ book.subtitle }}{% endif %}
                                             </span>
-                                            ({{ book.publication_date|slice:":4" }}
+                                            ( {{ book.publication_date|slice:":4" }}
                                             {% if book.since == 0 %}
                                                 , today
                                             {% else %}
@@ -110,7 +110,7 @@
                                     {% for movie in movies_released_today %}
                                         <li class="list-group-item">
                                             <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
-                                            ({{ movie.release_date|slice:":4" }}
+                                            ( {{ movie.release_date|slice:":4" }}
                                             {% if movie.since == 0 %}
                                                 , today
                                             {% else %}
@@ -122,7 +122,7 @@
                                     {% for serie in series_released_today %}
                                         <li class="list-group-item">
                                             <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a>
-                                            ({{ serie.release_date|slice:":4" }}
+                                            ( {{ serie.release_date|slice:":4" }}
                                             {% if serie.since == 0 %}
                                                 , today
                                             {% else %}
@@ -151,7 +151,7 @@
                                     {% for music in music_released_today %}
                                         <li class="list-group-item">
                                             <a href="{% url 'listen:release_detail' music.id %}">{{ music.title }}</a>
-                                            ({{ music.release_date|slice:":4" }}
+                                            ( {{ music.release_date|slice:":4" }}
                                             {% if music.since == 0 %}
                                                 , today
                                             {% else %}
@@ -180,7 +180,7 @@
                                     {% for game in games_released_today %}
                                         <li class="list-group-item">
                                             <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
-                                            ({{ game.release_date|slice:":4" }}
+                                            ( {{ game.release_date|slice:":4" }}
                                             {% if game.since == 0 %}
                                                 , today
                                             {% else %}
@@ -215,13 +215,13 @@
                                         {% for person in born_today %}
                                             <li class="list-group-item">
                                                 <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
-                                                ({{ person.birth_date|slice:":4" }}
+                                                ( {{ person.birth_date|slice:":4" }}
                                                 {% if person.death_date %}
                                                     -{{ person.death_date|slice:":4" }}
                                                 {% else %}
                                                     -
                                                 {% endif %}
-                                                , {{ person.since }} years ago)
+                                                , {{ person.since }} years ago )
                                             </li>
                                         {% endfor %}
                                     {% endif %}
@@ -238,7 +238,7 @@
                                                 {% else %}
                                                     ?
                                                 {% endif %}
-                                                -{{ person.death_date|slice:":4" }}, {{ person.since }} years ago)
+                                                -{{ person.death_date|slice:":4" }}, {{ person.since }} years ago )
                                             </li>
                                         {% endfor %}
                                     {% endif %}

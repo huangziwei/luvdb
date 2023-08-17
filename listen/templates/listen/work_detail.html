@@ -20,6 +20,12 @@
                     <span class="text-muted">First release date:</span>
                     {{ object.release_date }}
                 </div>
+                {% if object.note %}
+                    <div>
+                        <span class="text-muted">Notes:</span>
+                        {{ object.note }}
+                    </div>
+                {% endif %}
                 <h3 class="mt-3">Tracks</h3>
                 <ul>
                     {% for track in tracks %}
