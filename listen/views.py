@@ -488,7 +488,7 @@ class ReleaseDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         release = get_object_or_404(Release, pk=self.kwargs["pk"])
-        context["content_type"] = "podcast"
+        context["content_type"] = "release"
 
         roles = {}
         for release_role in release.releaserole_set.all():

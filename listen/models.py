@@ -333,9 +333,11 @@ class ListenCheckIn(models.Model):
         ("to_listen", "To Listen"),
         ("looping", "Looping"),
         ("listened", "Listened"),
+        ("listening", "Listening"),
         ("paused", "Paused"),
         ("abandoned", "Abandoned"),
-        ("afterthought", "Afterthought"),
+        ("subscribed", "Subscribed"),
+        ("unsubscribed", "Unsubscribed"),
     ]
     status = models.CharField(max_length=255, choices=STATUS_CHOICES)
     share_to_feed = models.BooleanField(default=False)

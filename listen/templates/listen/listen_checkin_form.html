@@ -12,20 +12,37 @@
                         class="btn btn-sm btn-light status-button"
                         id="status-to-listen"
                         onclick="setStatus(event, 'to_listen')">To Listen</button>
-                <button type="button"
-                        class="btn btn-sm btn-light status-button"
-                        id="status-looping"
-                        onclick="setStatus(event, 'looping')">
-                    {% if content_type == "release" %}
-                        Looping
-                    {% else %}
-                        Subscribed
-                    {% endif %}
-                </button>
+                {% if content_type == "release" %}
+                    <button type="button"
+                            class="btn btn-sm btn-light status-button"
+                            id="status-looping"
+                            onclick="setStatus(event, 'looping')">Looping</button>
+                {% endif %}
+                {% if content_type == "podcast" %}
+                    <button type="button"
+                            class="btn btn-sm btn-light status-button"
+                            id="status-subscribed"
+                            onclick="setStatus(event, 'subscribed')">Subscribed</button>
+                {% endif %}
                 <button type="button"
                         class="btn btn-sm btn-light status-button"
                         id="status-listened"
                         onclick="setStatus(event, 'listened')">Listened</button>
+                <div class="btn-group" role="group">
+                    <button id="status-more"
+                            type="button"
+                            class="btn btn-sm btn-light dropdown-toggle status-button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">More</button>
+                    <ul class="dropdown-menu" aria-labelledby="status-more">
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-unsubscribed"
+                               href="#"
+                               onclick="setStatus(event, 'unsubscribed')">Unsubscribed</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
         {% if content_type == "release" %}
@@ -109,15 +126,16 @@
         "to_listen": "status-to-listen",
         "looping": "status-looping",
         "listened": "status-listened",
-        "listening": "status-listening", // New entry
+        "subscribed": "status-subscribed", // New entry
         "paused": "status-paused",
         "abandoned": "status-abandoned",
+        "unsubscribed": "status-unsubscribed", 
     };
 
     function setStatus(event, status) {
         event.preventDefault();
-        if (status === 'looping' && document.getElementById('status-listening')) {
-            status = 'listening'; // Switch to 'listening' if the 'Listening' button is present
+        if (status === 'looping' && document.getElementById('status-subscribed')) {
+            status = 'subscribed'; // Switch to 'listening' if the 'Listening' button is present
         }
         document.getElementById('statusInput').value = status;
         updateStatusButton(status);
