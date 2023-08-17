@@ -48,10 +48,18 @@
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <a href="{% url 'listen:release_detail' object.content_object.id %}"
-                               class="text-decoration-none hover-username">
-                                <h5>{{ object.content_object.title }}</h5>
-                            </a>
+                            {% if object.content_type.model == 'release' %}
+                                <a href="{% url 'listen:release_detail' object.content_object.id %}"
+                                   class="text-decoration-none hover-username">
+                                    <h5>{{ object.content_object.title }}</h5>
+                                </a>
+                            {% elif object.content_type.model == 'podcast' %}
+                                <a href="{% url 'listen:podcast_detail' object.content_object.id %}"
+                                   class="text-decoration-none hover-username">
+                                    <h5>{{ object.content_object.title }}</h5>
+                                </a>
+                                <div class="text-muted">{{ object.content_object.description | truncatechars:600 }}</div>
+                            {% endif %}
                             {% regroup object.content_object.releaserole_set.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
@@ -77,8 +85,13 @@
                 <div class='mt-4'>
                     <span class="d-flex mt-2">
                         <p class='me-2 text-secondary mb-2'>
-                            <a href="{% url 'listen:listen_checkin_list' object.content_object.id object.user.username %}"
-                               class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                            {% if object.content_type.model == 'release' %}
+                                <a href="{% url 'listen:release_checkin_list' object.content_object.id object.user.username %}"
+                                   class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                            {% elif object.content_type.model == 'podcast' %}
+                                <a href="{% url 'listen:podcast_checkin_list' object.content_object.id object.user.username %}"
+                                   class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                            {% endif %}
                         </p>
                         {% if object.user == request.user %}
                             <a href="{% url "listen:listen_checkin_update" object.id %}"

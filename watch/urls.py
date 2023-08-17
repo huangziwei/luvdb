@@ -80,11 +80,6 @@ urlpatterns = [
     path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),
     # checkin
     path(
-        "book/<int:book_id>/checkin/create/",
-        WatchCheckInCreateView.as_view(),
-        name="read_checkin_create",
-    ),
-    path(
         "movie/<int:object_id>/checkins/",
         view=GenericCheckInAllListView.as_view(),
         kwargs={"model_name": "movie"},

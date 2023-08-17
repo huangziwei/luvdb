@@ -290,6 +290,9 @@ class Release(models.Model):
 
         super().save(*args, **kwargs)
 
+    def model_name(self):
+        return "Release"
+
 
 class ReleaseRole(models.Model):
     release = models.ForeignKey(Release, on_delete=models.CASCADE)
@@ -409,3 +412,6 @@ class Podcast(models.Model):
 
     def get_absolute_url(self):
         return reverse("listen:podcast_detail", kwargs={"pk": self.pk})
+
+    def model_name(self):
+        return "Podcast"

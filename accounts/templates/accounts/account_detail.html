@@ -257,7 +257,7 @@
                                     <div class="rotate text-muted">Looping</div>
                                     {% for item in looping %}
                                         <div class="me-3">
-                                            <a href="{% url 'listen:listen_checkin_list' item.content_object.id item.user.username %}">
+                                            <a href="{% url 'listen:release_checkin_list' item.content_object.id item.user.username %}">
                                                 {% if item.content_object.cover %}
                                                     <img src="{{ item.content_object.cover.url }}"
                                                          alt="{{ item.content_object.title }} cover"
@@ -285,7 +285,7 @@
                                     <div class="rotate text-muted">Listend</div>
                                     {% for item in listened %}
                                         <div class="me-3">
-                                            <a href="{% url 'listen:listen_checkin_list' item.content_object.id item.user.username %}">
+                                            <a href="{% url 'listen:release_checkin_list' item.content_object.id item.user.username %}">
                                                 {% if item.content_object.cover %}
                                                     <img src="{{ item.content_object.cover.url }}"
                                                          alt="{{ item.content_object.title }} cover"

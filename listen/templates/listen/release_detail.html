@@ -116,7 +116,7 @@
                     <div class="d-flex justify-content-between mt-4 col-11">
                         <h4>Latest Check-Ins</h4>
                         <a class="btn btn-outline-secondary btn-sm"
-                           href="{% url 'listen:listen_checkin_all_list' release.id %}"
+                           href="{% url 'listen:release_checkin_all_list' release.id %}"
                            style="height:30px">All</a>
                     </div>
                     {% include "listen/listen_checkin_in_entry_detail.html" %}
@@ -153,13 +153,13 @@
                 <div class="bg-light p-3 mb-3">
                     <h5>Statistics</h5>
                     <div>
-                        <strong>To Listen:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a>
+                        <strong>To Listen:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a>
                     </div>
                     <div>
-                        <strong>Looping:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a>
+                        <strong>Looping:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a>
                     </div>
                     <div>
-                        <strong>Listened:</strong> <a href="{% url 'listen:listen_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a>
+                        <strong>Listened:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a>
                     </div>
                 </div>
                 <!--Listen on-->

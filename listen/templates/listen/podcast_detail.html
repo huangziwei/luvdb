@@ -100,7 +100,7 @@
                     <div class="d-flex justify-content-between mt-4 col-11">
                         <h4>Latest Check-Ins</h4>
                         <a class="btn btn-outline-secondary btn-sm"
-                           href="{% url 'listen:listen_checkin_all_list' podcast.id %}"
+                           href="{% url 'listen:podcast_checkin_all_list' podcast.id %}"
                            style="height:30px">All</a>
                     </div>
                     {% include "listen/listen_checkin_in_entry_detail.html" %}

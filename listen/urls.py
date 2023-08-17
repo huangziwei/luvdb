@@ -1,6 +1,8 @@
 from django.urls import path
 
 from .views import (
+    GenericCheckInAllListView,
+    GenericCheckInListView,
     GenreAutocomplete,
     GenreDetailView,
     LabelAutocomplete,
@@ -62,14 +64,28 @@ urlpatterns = [
     path("track-autocomplete/", TrackAutocomplete.as_view(), name="track-autocomplete"),
     # checkin
     path(
-        "release/<int:release_id>/checkins/",
-        view=ListenCheckInAllListView.as_view(),
-        name="listen_checkin_all_list",
+        "release/<int:object_id>/checkins/",
+        view=GenericCheckInAllListView.as_view(),
+        kwargs={"model_name": "release"},
+        name="release_checkin_all_list",
     ),
     path(
-        "release/<int:release_id>/<str:username>/checkins/",
-        view=ListenCheckInListView.as_view(),
-        name="listen_checkin_list",
+        "release/<int:object_id>/<str:username>/checkins/",
+        view=GenericCheckInListView.as_view(),
+        kwargs={"model_name": "release"},
+        name="release_checkin_list",
+    ),
+    path(
+        "podcast/<int:object_id>/checkins/",
+        view=GenericCheckInAllListView.as_view(),
+        kwargs={"model_name": "podcast"},
+        name="podcast_checkin_all_list",
+    ),
+    path(
+        "podcast/<int:object_id>/<str:username>/checkins/",
+        view=GenericCheckInListView.as_view(),
+        kwargs={"model_name": "podcast"},
+        name="podcast_checkin_list",
     ),
     path(
         "checkin/<int:pk>/",
