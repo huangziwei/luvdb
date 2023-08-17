@@ -210,14 +210,14 @@
                 {% if activity.content_object.content_object.cover %}
                     {% if activity.content_object.content_object.cover_sens %}
                         <img src="{{ activity.content_object.content_object.cover.url }}"
-                                alt="{{ activity.content_object.content_object.title }} cover"
-                                style="width: 100%"
-                                class="img-fluid blur"
-                                onclick="this.classList.toggle('blur')">
+                             alt="{{ activity.content_object.content_object.title }} cover"
+                             style="width: 100%"
+                             class="img-fluid blur"
+                             onclick="this.classList.toggle('blur')">
                     {% else %}
                         <img src="{{ activity.content_object.content_object.cover.url }}"
-                                alt="{{ activity.content_object.content_object.title }} cover"
-                                style="width: 100%">
+                             alt="{{ activity.content_object.content_object.title }} cover"
+                             style="width: 100%">
                     {% endif %}
                 {% else %}
                     <div class="no-cover-text">No Cover</div>
@@ -226,13 +226,13 @@
             <div class="flex-grow-1 ms-3">
                 {% if activity.content_object.content_type.model == 'book' %}
                     <a href=" {% url 'read:book_detail' activity.content_object.content_object.id %} "
-                        class="text-decoration-none hover-username">
+                       class="text-decoration-none hover-username">
                         <h5>{{ activity.content_object.content_object.title }}</h5>
                     </a>
                 {% elif activity.content_object.content_type.model == 'issue' %}
                     <h5>{{ activity.content_object.content_object.periodical.title }}</h5>
                     <a href=" {% url 'read:issue_detail' activity.content_object.content_object.periodical.id activity.content_object.content_object.id %} "
-                        class="text-decoration-none hover-username">
+                       class="text-decoration-none hover-username">
                         <h6>{{ activity.content_object.content_object.title }}</h6>
                     </a>
                 {% endif %}
@@ -244,7 +244,9 @@
                             <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                             {# djlint:on #}
                             {% for book_role in role.list %}
-                                {% if not forloop.first %}/{% endif %}
+                                {% if not forloop.first %}
+                                    /
+                                {% endif %}
                                 <a href="{% url 'entity:person_detail' book_role.person.id %}">
                                     {{ book_role.alt_name | default:book_role.person.name }}
                                 </a>
@@ -262,26 +264,26 @@
         <div class="d-flex mt-2">
             <p class="me-2">
                 <a href="{% url 'read:read_checkin_detail' activity.content_object.id %}"
-                    class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                   class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
                     <a href="{% url 'read:read_checkin_detail' activity.content_object.id %}"
-                        class="text-decoration-none">Reply</a>
+                       class="text-decoration-none">Reply</a>
                 </p>
             {% endif %}
             <p class="ms-2 me-2">
                 <a href="{% url 'read:read_checkin_detail' activity.content_object.id %}?repost=true"
-                    class="text-decoration-none">Repost</a>
+                   class="text-decoration-none">Repost</a>
             </p>
             {% if activity.user == request.user %}
                 <p class="ms-2 me-2">
                     <a href="{% url 'read:read_checkin_update' activity.content_object.id %}"
-                        class="text-decoration-none">Edit</a>
+                       class="text-decoration-none">Edit</a>
                 </p>
                 <p class="ms-2 me-2">
                     <a href="{% url 'activity_feed:activity_delete' activity.id %}"
-                        class="text-decoration-none">Delete</a>
+                       class="text-decoration-none">Delete</a>
                 </p>
             {% endif %}
         </div>
@@ -290,10 +292,10 @@
 {% elif activity.activity_type == 'watch-check-in' %}
     <!--Watch-Check-in-->
     <div class="activity-item mb-3"
-            data-activity-type="{{ activity.activity_type }}">
+         data-activity-type="{{ activity.activity_type }}">
         <div class="d-flex flex-wrap align-items-center">
             <a href="{% url 'accounts:detail' activity.user.username %}"
-                class="text-decoration-none hover-username me-1">
+               class="text-decoration-none hover-username me-1">
                 {{ activity.user.display_name | default:activity.user.username }}
                 <span class="username">@{{ activity.user.username }}</span>
             </a>
@@ -319,14 +321,14 @@
                 {% if activity.content_object.content_object.poster %}
                     {% if activity.content_object.content_object.poster_sens %}
                         <img src="{{ activity.content_object.content_object.poster.url }}"
-                                alt="{{ activity.content_object.content_object.title }} cover"
-                                style="width: 100%"
-                                class="img-fluid blur"
-                                onclick="this.classList.toggle('blur')">
+                             alt="{{ activity.content_object.content_object.title }} cover"
+                             style="width: 100%"
+                             class="img-fluid blur"
+                             onclick="this.classList.toggle('blur')">
                     {% else %}
                         <img src="{{ activity.content_object.content_object.poster.url }}"
-                                alt="{{ activity.content_object.content_object.title }} cover"
-                                style="width: 100%">
+                             alt="{{ activity.content_object.content_object.title }} cover"
+                             style="width: 100%">
                     {% endif %}
                 {% else %}
                     <div class="no-cover-text">No Cover</div>
@@ -335,12 +337,12 @@
             <div class="flex-grow-1 ms-3">
                 {% if activity.content_object.content_type.model == 'movie' %}
                     <a href=" {% url 'watch:movie_detail' activity.content_object.content_object.id %} "
-                        class="text-decoration-none hover-username">
+                       class="text-decoration-none hover-username">
                         <h5>{{ activity.content_object.content_object.title }}</h5>
                     </a>
                 {% elif activity.content_object.content_type.model == 'series' %}
                     <a href=" {% url 'watch:series_detail' activity.content_object.content_object.id %} "
-                        class="text-decoration-none hover-username">
+                       class="text-decoration-none hover-username">
                         <h5>{{ activity.content_object.content_object.title }}</h5>
                     </a>
                 {% endif %}
@@ -385,37 +387,37 @@
         <div class="d-flex mt-2">
             <p class="me-2">
                 <a href="{% url 'watch:watch_checkin_detail' activity.content_object.id %}"
-                    class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                   class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
                     <a href="{% url 'watch:watch_checkin_detail' activity.content_object.id %}"
-                        class="text-decoration-none">Reply</a>
+                       class="text-decoration-none">Reply</a>
                 </p>
             {% endif %}
             <p class="ms-2 me-2">
                 <a href="{% url 'watch:watch_checkin_detail' activity.content_object.id %}?repost=true"
-                    class="text-decoration-none">Repost</a>
+                   class="text-decoration-none">Repost</a>
             </p>
             {% if activity.user == request.user %}
                 <p class="ms-2 me-2">
                     <a href="{% url 'watch:watch_checkin_update' activity.content_object.id %}"
-                        class="text-decoration-none">Edit</a>
+                       class="text-decoration-none">Edit</a>
                 </p>
                 <p class="ms-2 me-2">
                     <a href="{% url 'activity_feed:activity_delete' activity.id %}"
-                        class="text-decoration-none">Delete</a>
+                       class="text-decoration-none">Delete</a>
                 </p>
             {% endif %}
         </div>
     </div>
-<!--Listen-->
+    <!--Listen-->
 {% elif activity.activity_type == 'listen-check-in' %}
     <div class="activity-item mb-3"
-            data-activity-type="{{ activity.activity_type }}">
+         data-activity-type="{{ activity.activity_type }}">
         <div class="d-flex flex-wrap align-items-center">
             <a href="{% url 'accounts:detail' activity.user.username %}"
-                class="text-decoration-none hover-username me-1">
+               class="text-decoration-none hover-username me-1">
                 {{ activity.user.display_name | default:activity.user.username }}
                 <span class="username">@{{ activity.user.username }}</span>
             </a>
@@ -447,24 +449,32 @@
                 {% if activity.content_object.content_object.cover %}
                     {% if activity.content_object.content_object.cover_sens %}
                         <img src="{{ activity.content_object.content_object.cover.url }}"
-                                alt="{{ activity.content_object.content_object.title }} cover"
-                                style="width: 100%"
-                                class="img-fluid blur"
-                                onclick="this.classList.toggle('blur')">
+                             alt="{{ activity.content_object.content_object.title }} cover"
+                             style="width: 100%"
+                             class="img-fluid blur"
+                             onclick="this.classList.toggle('blur')">
                     {% else %}
                         <img src="{{ activity.content_object.content_object.cover.url }}"
-                                alt="{{ activity.content_object.content_object.title }} cover"
-                                style="width: 100%">
+                             alt="{{ activity.content_object.content_object.title }} cover"
+                             style="width: 100%">
                     {% endif %}
                 {% else %}
                     <div class="no-cover-text">No Cover</div>
                 {% endif %}
             </div>
             <div class="flex-grow-1 ms-3">
-                <a href="{% url 'listen:release_detail' activity.content_object.content_object.id %}"
-                    class="text-decoration-none hover-username">
-                    <h5>{{ activity.content_object.content_object.title }}</h5>
-                </a>
+                {% if activity.content_object.content_type.model == "release" %}
+                    <a href="{% url 'listen:release_detail' activity.content_object.content_object.id %}"
+                       class="text-decoration-none hover-username">
+                        <h5>{{ activity.content_object.content_object.title }}</h5>
+                    </a>
+                {% else %}
+                    <a href="{% url 'listen:podcast_detail' activity.content_object.content_object.id %}"
+                       class="text-decoration-none hover-username">
+                        <h5>{{ activity.content_object.content_object.title }}</h5>
+                    </a>
+                    <div class="text-muted">{{ activity.content_object.content_object.description|truncatechars:600 }}</div>
+                {% endif %}
                 {% regroup activity.content_object.content_object.releaserole_set.all by role as roles_list %}
                 {% for role in roles_list %}
                     <div>
@@ -500,26 +510,26 @@
         <div class="d-flex mt-2">
             <p class="me-2">
                 <a href="{% url 'listen:listen_checkin_detail' activity.content_object.id %}"
-                    class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                   class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
                     <a href="{% url 'listen:listen_checkin_detail' activity.content_object.id %}"
-                        class="text-decoration-none">Reply</a>
+                       class="text-decoration-none">Reply</a>
                 </p>
             {% endif %}
             <p class="ms-2 me-2">
                 <a href="{% url 'listen:listen_checkin_detail' activity.content_object.id %}?repost=true"
-                    class="text-decoration-none">Repost</a>
+                   class="text-decoration-none">Repost</a>
             </p>
             {% if activity.user == request.user %}
                 <p class="ms-2 me-2">
                     <a href="{% url 'listen:listen_checkin_update' activity.content_object.id %}"
-                        class="text-decoration-none">Edit</a>
+                       class="text-decoration-none">Edit</a>
                 </p>
                 <p class="ms-2 me-2">
                     <a href="{% url 'activity_feed:activity_delete' activity.id %}"
-                        class="text-decoration-none">Delete</a>
+                       class="text-decoration-none">Delete</a>
                 </p>
             {% endif %}
         </div>
@@ -528,10 +538,10 @@
 {% elif activity.activity_type == 'game-check-in' %}
     <!--Game-Check-in-->
     <div class="activity-item mb-3"
-            data-activity-type="{{ activity.activity_type }}">
+         data-activity-type="{{ activity.activity_type }}">
         <div class="d-flex flex-wrap align-items-center">
             <a href="{% url 'accounts:detail' activity.user.username %}"
-                class="text-decoration-none hover-username me-1">
+               class="text-decoration-none hover-username me-1">
                 {{ activity.user.display_name | default:activity.user.username }}
                 <span class="username">@{{ activity.user.username }}</span>
             </a>
@@ -561,14 +571,14 @@
                 {% if activity.content_object.game.cover %}
                     {% if activity.content_object.game.cover_sens %}
                         <img src="{{ activity.content_object.game.cover.url }}"
-                                alt="{{ activity.content_object.game.title }} cover"
-                                style="width: 100%"
-                                class="img-fluid blur"
-                                onclick="this.classList.toggle('blur')">
+                             alt="{{ activity.content_object.game.title }} cover"
+                             style="width: 100%"
+                             class="img-fluid blur"
+                             onclick="this.classList.toggle('blur')">
                     {% else %}
                         <img src="{{ activity.content_object.game.cover.url }}"
-                                alt="{{ activity.content_object.game.title }} cover"
-                                style="width: 100%">
+                             alt="{{ activity.content_object.game.title }} cover"
+                             style="width: 100%">
                     {% endif %}
                 {% else %}
                     <div class="no-cover-text">No Cover</div>
@@ -576,7 +586,7 @@
             </div>
             <div class="flex-grow-1 ms-3">
                 <a href="{% url 'play:game_detail' activity.content_object.game.id %}"
-                    class="text-decoration-none hover-username">
+                   class="text-decoration-none hover-username">
                     <h5>{{ activity.content_object.game.title }}</h5>
                 </a>
                 {% regroup activity.content_object.game.gamerole_set.all by role as roles_list %}
@@ -637,26 +647,26 @@
         <div class="d-flex mt-2">
             <p class="me-2">
                 <a href="{% url 'play:game_checkin_detail' activity.content_object.id %}"
-                    class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                   class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
                     <a href="{% url 'play:game_checkin_detail' activity.content_object.id %}"
-                        class="text-decoration-none">Reply</a>
+                       class="text-decoration-none">Reply</a>
                 </p>
             {% endif %}
             <p class="ms-2 me-2">
                 <a href="{% url 'play:game_checkin_detail' activity.content_object.id %}?repost=true"
-                    class="text-decoration-none">Repost</a>
+                   class="text-decoration-none">Repost</a>
             </p>
             {% if activity.user == request.user %}
                 <p class="ms-2 me-2">
                     <a href="{% url 'play:game_checkin_update' activity.content_object.id %}"
-                        class="text-decoration-none">Edit</a>
+                       class="text-decoration-none">Edit</a>
                 </p>
                 <p class="ms-2 me-2">
                     <a href="{% url 'activity_feed:activity_delete' activity.id %}"
-                        class="text-decoration-none">Delete</a>
+                       class="text-decoration-none">Delete</a>
                 </p>
             {% endif %}
         </div>

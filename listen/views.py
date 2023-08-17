@@ -1,11 +1,16 @@
 from collections import defaultdict
-from datetime import timedelta
+from datetime import datetime, timedelta
+from io import BytesIO
 
+import feedparser
+import requests
 from dal import autocomplete
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import transaction
 from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
@@ -18,7 +23,9 @@ from django.views.generic import (
     DetailView,
     ListView,
     UpdateView,
+    View,
 )
+from PIL import Image
 
 from entity.models import Person, Role
 from write.forms import CommentForm, RepostForm
@@ -34,7 +41,7 @@ from .forms import (
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import Genre, Label, ListenCheckIn, Release, Track, Work
+from .models import Genre, Label, ListenCheckIn, Podcast, Release, Track, Work
 
 User = get_user_model()
 
@@ -959,3 +966,213 @@ class GenreAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__icontains=self.q)
 
         return qs
+
+
+###########
+# Podcast #
+###########
+
+
+def parse_podcast(rss_feed_url):
+    """
+    Parse the given RSS feed URL and returns a dictionary with podcast and episodes information.
+    """
+    feed = feedparser.parse(rss_feed_url)
+
+    podcast_info = {
+        "title": feed.feed.title,
+        "description": feed.feed.description
+        if hasattr(feed.feed, "description")
+        else None,
+        "publisher": feed.feed.publisher if hasattr(feed.feed, "publisher") else None,
+        "rss_feed_url": rss_feed_url,
+        "website_url": feed.feed.link if hasattr(feed.feed, "link") else None,
+        "cover": fetch_image_from_url(feed.feed.image.href)
+        if hasattr(feed.feed, "image")
+        else None,
+    }
+
+    episodes_info = []
+    for entry in feed.entries:
+        # Convert datetime object to string representation
+        release_date = (
+            datetime(*entry.published_parsed[:6])
+            if hasattr(entry, "published_parsed")
+            else None
+        )
+        if release_date:
+            release_date = release_date.strftime("%Y-%m-%d %H:%M:%S")
+
+        episode_info = {
+            "title": entry.title,
+            "subtitle": entry.subtitle if hasattr(entry, "subtitle") else None,
+            "release_date": release_date,
+            "audio_url": entry.enclosures[0].href if entry.enclosures else None,
+            "episode_url": entry.link if hasattr(entry, "link") else None,
+        }
+        episodes_info.append(episode_info)
+
+    podcast_info["episodes"] = episodes_info
+
+    return podcast_info
+
+
+def create_podcast_from_feed(rss_feed_url):
+    """
+    Create Podcast and PodcastEpisode from the given RSS feed URL.
+    """
+    podcast_info = parse_podcast(rss_feed_url)
+    podcast = Podcast.objects.create(**podcast_info)
+    return podcast
+
+
+def fetch_image_from_url(url):
+    response = requests.get(url, stream=True)
+    response.raise_for_status()
+
+    # Open the image using PIL
+    image = Image.open(BytesIO(response.content))
+
+    # Save the image in memory
+    img_temp = BytesIO()
+    image.save(img_temp, format=image.format)
+
+    # Convert it to a Django-compatible format
+    img_name = url.split("/")[-1]  # Take the last part of the URL as the image name
+    django_file = InMemoryUploadedFile(
+        img_temp, None, img_name, "image/" + image.format.lower(), img_temp.tell, None
+    )
+
+    return django_file
+
+
+class PodcastCreateView(View):
+    template_name = "listen/podcast_create.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        rss_feed_url = request.POST.get("rss_feed_url")
+        if rss_feed_url:
+            try:
+                podcast = create_podcast_from_feed(rss_feed_url)
+                return redirect(
+                    reverse("listen:podcast_detail", kwargs={"pk": podcast.pk})
+                )
+            except Exception as e:
+                messages.error(request, f"An error occurred: {str(e)}")
+                return render(request, self.template_name)
+
+
+class PodcastDetailView(DetailView):
+    model = Podcast
+    template_name = "listen/podcast_detail.html"
+    context_object_name = "podcast"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Add the check-in related context data (following the ReleaseDetailView example)
+        content_type = ContentType.objects.get_for_model(Podcast)
+        context["checkin_form"] = ListenCheckInForm(
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": self.request.user.id,
+            }
+        )
+
+        latest_checkin_subquery = ListenCheckIn.objects.filter(
+            content_type=content_type.id,
+            object_id=self.object.id,
+            user=OuterRef("user"),
+        ).order_by("-timestamp")
+
+        checkins = (
+            ListenCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        ).order_by("-timestamp")[:5]
+
+        context["checkins"] = checkins
+
+        latest_checkin_status_subquery = (
+            ListenCheckIn.objects.filter(
+                content_type=content_type.id,
+                object_id=self.object.id,
+                user=OuterRef("user"),
+            )
+            .order_by("-timestamp")
+            .values("status")[:1]
+        )
+        latest_checkins = (
+            ListenCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
+            .values("user", "latest_checkin_status")
+            .distinct()
+        )
+
+        to_listen_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] == "to_listen"
+        )
+        listening_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["looping", "relistening"]
+        )
+        listened_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["listened", "relistened"]
+        )
+
+        # Add status counts to context
+        context.update(
+            {
+                "to_listen_count": to_listen_count,
+                "listening_count": listening_count,
+                "listened_count": listened_count,
+            }
+        )
+
+        # Get the ContentType for the Issue model
+        release_content_type = ContentType.objects.get_for_model(Release)
+
+        # Query ContentInList instances that have the release as their content_object
+        lists_containing_release = ContentInList.objects.filter(
+            content_type=release_content_type, object_id=self.object.id
+        )
+
+        context["lists_containing_release"] = lists_containing_release
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        content_type = ContentType.objects.get_for_model(Podcast)
+        form = ListenCheckInForm(
+            data=request.POST,
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": request.user.id,
+                "comments_enabled": True,
+            },
+        )
+        if form.is_valid():
+            podcast_check_in = form.save(commit=False)
+            podcast_check_in.user = request.user  # Set the user manually here
+            podcast_check_in.save()
+        else:
+            print("listen_checkin_in_detail:", form.errors)
+
+        return redirect(self.object.get_absolute_url())

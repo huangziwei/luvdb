@@ -21,3 +21,5 @@ python-dotenv
 Pygments
 pycountry
 langcodes[data]
+feedparser
+requests

@@ -4,6 +4,7 @@ from .models import (
     Genre,
     Label,
     ListenCheckIn,
+    Podcast,
     Release,
     ReleaseRole,
     ReleaseTrack,
@@ -54,11 +55,16 @@ class ReleaseAdmin(admin.ModelAdmin):
     inlines = [ReleaseRoleInline, ReleaseTrackInline]
 
 
+class PodcastAdmin(admin.ModelAdmin):
+    list_display = ["title"]
+
+
 admin.site.register(Label)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(Track, TrackAdmin)
 admin.site.register(Release, ReleaseAdmin)
 admin.site.register(Genre, GenreAdmin)
+admin.site.register(Podcast, PodcastAdmin)
 
 
 @admin.register(ListenCheckIn)

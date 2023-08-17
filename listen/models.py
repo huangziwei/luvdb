@@ -23,9 +23,15 @@ def rename_release_cover(instance, filename):
         filename = "default.jpg"
     _, extension = os.path.splitext(filename)
     unique_id = uuid.uuid4()
-    directory_name = (
-        f"{slugify(instance.title, allow_unicode=True)}-{instance.release_date}"
-    )
+
+    base_name = slugify(instance.title, allow_unicode=True)
+
+    # Check if the instance has a release_date attribute and if it's not None
+    if hasattr(instance, "release_date") and instance.release_date:
+        directory_name = f"{base_name}-{instance.release_date}"
+    else:
+        directory_name = base_name
+
     new_name = f"{unique_id}{extension}"
     return os.path.join("covers", directory_name, new_name)
 
@@ -378,3 +384,28 @@ class ListenCheckIn(models.Model):
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
+
+
+class Podcast(models.Model):
+    """
+    A Podcast Entity
+    """
+
+    title = models.CharField(max_length=255)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
+    cover = models.ImageField(upload_to=rename_release_cover, null=True, blank=True)
+    description = models.TextField(blank=True, null=True)
+    publisher = models.CharField(
+        max_length=255, blank=True, null=True
+    )  # Can be linked to the existing `Label` entity if desired
+    genres = models.ManyToManyField(Genre, related_name="podcasts", blank=True)
+    rss_feed_url = models.URLField(unique=True)  # To fetch episodes
+    website_url = models.URLField(blank=True, null=True)  # Original podcast page
+    episodes = models.JSONField(blank=True, null=True)
+    listencheckin = GenericRelation("ListenCheckIn")
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("listen:podcast_detail", kwargs={"pk": self.pk})

@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+    {{ podcast.title }}
+{% endblock title %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <!--Left columns-->
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <!-- podcast-card -->
+                <div class="release-card justify-content-start col-11">
+                    <div class="d-flex flex-column flex-lg-row mt-2">
+                        <!--cover-box-->
+                        <div class="col-12 col-lg-auto mb-3 mb-lg-0">
+                            <div class="listen-cover-box">
+                                {% if podcast.cover %}
+                                    <img src="{{ podcast.cover.url }}"
+                                         alt="{{ podcast.title }} cover"
+                                         class="img-fluid">
+                                {% else %}
+                                    <div class="no-cover-text">No Cover</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!--podcast-meta-->
+                        <div class="col flex-grow-1 ms-lg-3">
+                            <div class="card-body">
+                                <h2>{{ podcast.title }}</h2>
+                                {% if podcast.publisher %}<p class="text-secondary">{{ podcast.publisher }}</p>{% endif %}
+                                {% if podcast.description %}<div class="mb-1 text-muted">{{ podcast.description }}</div>{% endif %}
+                                {% if podcast.publisher %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Publisher:</span> {{ podcast.publisher }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Podcast Episodes List-->
+                <div class="mt-4 col-11">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2>Episodes</h2>
+                        <button class="btn btn-sm btn-outline-secondary"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#moreEpisodes"
+                                aria-expanded="false"
+                                aria-controls="moreEpisodes">Show All</button>
+                    </div>
+                    <ul class="list-group">
+                        {% for episode in podcast.episodes|slice:":3" %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <strong>{{ episode.title }}</strong>
+                                        <br>
+                                    </div>
+                                    {% if episode.episode_url %}
+                                        <div>
+                                            <a href="{{ episode.episode_url }}"
+                                               target="_blank"
+                                               class="btn btn-primary btn-sm">Listen</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {% if episode.release_date %}<small class="text-muted">Released on: {{ episode.release_date }}</small>{% endif %}
+                            </li>
+                        {% endfor %}
+                        <!-- Start of the collapsible content -->
+                        <div class="collapse" id="moreEpisodes">
+                            {% for episode in podcast.episodes|slice:"3:" %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong>{{ episode.title }}</strong>
+                                            <br>
+                                        </div>
+                                        {% if episode.episode_url %}
+                                            <div>
+                                                <a href="{{ episode.episode_url }}"
+                                                   target="_blank"
+                                                   class="btn btn-primary btn-sm">Listen</a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    {% if episode.release_date %}<small class="text-muted">Released on: {{ episode.release_date }}</small>{% endif %}
+                                </li>
+                            {% endfor %}
+                        </div>
+                        <!-- End of the collapsible content -->
+                    </ul>
+                </div>
+                <!--Listen Check-In-->
+                <div class="mt-4">
+                    {% if user.is_authenticated %}
+                        {% include "listen/listen_checkin_form.html" %}
+                    {% endif %}
+                    <div class="d-flex justify-content-between mt-4 col-11">
+                        <h4>Latest Check-Ins</h4>
+                        <a class="btn btn-outline-secondary btn-sm"
+                           href="{% url 'listen:listen_checkin_all_list' podcast.id %}"
+                           style="height:30px">All</a>
+                    </div>
+                    {% include "listen/listen_checkin_in_entry_detail.html" %}
+                </div>
+            </div>
+            <!--Right columns-->
+            <div class="col-sm-4">
+                <!-- Edit Podcast Option -->
+                {% comment %} {% if user.is_authenticated %}
+                    <div class="bg-light p-3 mb-3">
+                        <a href="{% url 'listen:podcast_update' podcast.pk %}" class='fs-6 text-secondary'>Edit Podcast</a>
+                    </div>
+                {% endif %} {% endcomment %}
+                <!--Podcast Links-->
+                <div class="bg-light p-3 mb-3">
+                    <h5>Links</h5>
+                    {% if podcast.website_url %}
+                        <div>
+                            <a href="{{ podcast.website_url }}" target="_blank">Official Website</a>
+                        </div>
+                    {% endif %}
+                    {% if podcast.rss_feed_url %}
+                        <div>
+                            <a href="{{ podcast.rss_feed_url }}" target="_blank">RSS Feed</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

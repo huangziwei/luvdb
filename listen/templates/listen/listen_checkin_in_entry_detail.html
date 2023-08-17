@@ -29,8 +29,13 @@
             {% endif %}
             <div class="d-flex mb-4">
                 <span class="me-2">
-                    <a href="{% url 'listen:listen_checkin_list' checkin.content_object.id checkin.user.username %}"
-                       class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
+                    {% if checkin.content_type.model == 'release' %}
+                        <a href="{% url 'listen:listen_checkin_list' checkin.content_object.id checkin.user.username %}"
+                           class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
+                    {% elif checkin.content_type.model == 'podcast' %}
+                        <a href="{% url 'listen:listen_checkin_list' checkin.content_object.id checkin.user.username %}"
+                           class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
+                    {% endif %}
                 </span>
                 {% if checkin.comments_enabled %}
                     <span class="ms-2 me-2">
