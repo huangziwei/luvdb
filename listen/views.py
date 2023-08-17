@@ -1316,7 +1316,7 @@ class GenericCheckInListView(ListView):
 
 class GenericCheckInAllListView(ListView):
     model = ListenCheckIn
-    template_name = "listen/release_checkin_list_all.html"
+    template_name = "listen/listen_checkin_list_all.html"
     context_object_name = "checkins"
 
     def get_model(self):
