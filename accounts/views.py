@@ -346,9 +346,6 @@ def search_view(request):
             repost_results = Repost.objects.filter(content__icontains=query).distinct()
 
         if model in ["all", "read"]:
-            person_results = Person.objects.filter(
-                Q(name__icontains=query) | Q(other_names__icontains=query)
-            ).distinct()
             litwork_results = LitWork.objects.filter(
                 Q(title__icontains=query)
                 | Q(workrole__person__name__icontains=query)
@@ -374,13 +371,18 @@ def search_view(request):
 
         if model in ["all", "listen"]:
             musicwork_results = MusicWork.objects.filter(
-                Q(title__icontains=query) | Q(workrole__person__name__icontains=query)
+                Q(title__icontains=query)
+                | Q(other_titles__icontains=query)
+                | Q(workrole__person__name__icontains=query)
             ).distinct()  # Update with your real query
             track_results = Track.objects.filter(
-                Q(title__icontains=query) | Q(trackrole__person__name__icontains=query)
+                Q(title__icontains=query)
+                | Q(other_titles__icontains=query)
+                | Q(trackrole__person__name__icontains=query)
             ).distinct()  # Update with your real query
             release_results = Release.objects.filter(
                 Q(title__icontains=query)
+                | Q(other_titles__icontains=query)
                 | Q(releaserole__person__name__icontains=query)
             ).distinct()  # Update with your real query
             podcast_results = Podcast.objects.filter(
@@ -414,6 +416,10 @@ def search_view(request):
                 | Q(seriesroles__person__name__icontains=query)
                 | Q(episodes__episodecasts__person__name__icontains=query)
             ).distinct()
+
+        person_results = Person.objects.filter(
+            Q(name__icontains=query) | Q(other_names__icontains=query)
+        ).distinct()
 
     return render(
         request,
