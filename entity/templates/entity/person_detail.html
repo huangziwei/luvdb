@@ -416,12 +416,17 @@
                     </div>
                     {% endif %}
 
-                    {% if gameworks_count != 0 %}
+                    {% if gameworks_count != 0 or games_count != 0%}
                     <div class="mb-2">
                         <h6>Play</h6>
                         {% if gameworks_count != 0 %}
                         <div>
                             <span class="text-muted">Works</span>: {{ gameworks_count }}
+                        </div>
+                        {% endif %}
+                        {% if games_count != 0 %}
+                        <div>
+                            <span class="text-muted">Games</span>: {{ games_count }}
                         </div>
                         {% endif %}
                     </div>

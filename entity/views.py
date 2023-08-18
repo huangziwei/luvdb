@@ -8,6 +8,7 @@ from django.views.generic.edit import CreateView, UpdateView
 
 from listen.models import Release, Track
 from listen.models import Work as ListenWork
+from play.models import Game
 from play.models import Work as GameWork
 from read.models import Book
 from read.models import Instance as LitInstance
@@ -65,11 +66,13 @@ class PersonDetailView(DetailView):
         ).order_by("publication_date")
         context["as_annotator"] = as_annotator
 
-        context["litworks_count"] = person.read_works.count()
-        context["litinstances_count"] = LitInstance.objects.filter(
-            instancerole__person=person
-        ).count()
-        context["books_count"] = Book.objects.filter(bookrole__person=person).count()
+        context["litworks_count"] = person.read_works.distinct().count()
+        context["litinstances_count"] = (
+            LitInstance.objects.filter(instancerole__person=person).distinct().count()
+        )
+        context["books_count"] = (
+            Book.objects.filter(bookrole__person=person).distinct().count()
+        )
 
         # listen
         roles_as_performer = ["Singer", "Pianist", "Conductor"]
@@ -106,13 +109,15 @@ class PersonDetailView(DetailView):
             trackrole__role__name="Arranger", trackrole__person=person
         ).order_by("release_date")
 
-        context["listenworks_count"] = ListenWork.objects.filter(
-            workrole__person=person
-        ).count()
-        context["tracks_count"] = Track.objects.filter(trackrole__person=person).count()
-        context["releases_count"] = Release.objects.filter(
-            releaserole__person=person
-        ).count()
+        context["listenworks_count"] = (
+            ListenWork.objects.filter(workrole__person=person).distinct().count()
+        )
+        context["tracks_count"] = (
+            Track.objects.filter(trackrole__person=person).distinct().count()
+        )
+        context["releases_count"] = (
+            Release.objects.filter(releaserole__person=person).distinct().count()
+        )
         # watch
         ## as casts
         context["movies"] = (
@@ -229,7 +234,9 @@ class PersonDetailView(DetailView):
         )
         context["series_count"] = (
             Series.objects.filter(
-                Q(seriesroles__person=person) | Q(episodes__episodecasts__person=person)
+                Q(seriesroles__person=person)
+                | Q(episodes__episodecasts__person=person)
+                | Q(episodes__episoderoles__person=person)
             )
             .distinct()
             .count()
@@ -244,9 +251,12 @@ class PersonDetailView(DetailView):
             .order_by("first_release_date")
         )
 
-        context["gameworks_count"] = GameWork.objects.filter(
-            workrole__person=person
-        ).count()
+        context["gameworks_count"] = (
+            GameWork.objects.filter(workrole__person=person).distinct().count()
+        )
+        context["games_count"] = (
+            Game.objects.filter(gameroles__person=person).distinct().count()
+        )
 
         return context
 
