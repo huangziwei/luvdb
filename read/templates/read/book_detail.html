@@ -167,11 +167,7 @@
                                                     {{ book_instance.alt_title|default:book_instance.instance.title }}
                                                 </a>
                                                 {# djlint:off #}
-                                                ({% if book_instance.role %}{{ book_instance.role.name }}:
-                                                    <a href="{% url 'entity:person_detail' book_instance.person.id %}">
-                                                        {{ book_instance.name|default:book_instance.person.name }}
-                                                    </a>,{% endif %}
-                                                {{ book_instance.publication_date|default:book_instance.instance.publication_date }})
+                                                ({% if book_instance.role %}{{ book_instance.role.name }}:<a href="{% url 'entity:person_detail' book_instance.person.id %}">{{ book_instance.name|default:book_instance.person.name }}</a>, {% endif %}{{ book_instance.publication_date|default:book_instance.instance.publication_date }})
                                                 {# djlint:on #}
                                             </p>
                                         </div>
