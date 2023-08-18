@@ -16,10 +16,18 @@
                         {% endfor %}
                     </div>
                 {% endfor %}
+                {% if object.release_date %}
                 <div>
                     <span class="text-muted">Release date:</span>
                     {{ object.release_date }}
                 </div>
+                {% endif %}
+                {% if object.isrc %}
+                <div>
+                    <span class="text-muted">ISRC:</span>
+                    {{ object.isrc }}
+                </div>
+                {% endif %}
                 {% if object.note %}
                     <div>
                         <span class="text-muted">Notes:</span>

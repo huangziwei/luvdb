@@ -134,6 +134,9 @@ class Track(models.Model):
     genres = models.ManyToManyField(Genre, related_name="tracks", blank=True)
 
     length = models.CharField(max_length=10, blank=True, null=True)  # HH:MM:SS
+    isrc = models.CharField(
+        max_length=255, blank=True, null=True
+    )  # International Standard Recording Code
     note = models.TextField(blank=True, null=True)
 
     # entry meta data
@@ -191,6 +194,7 @@ class Release(models.Model):
     label = models.ManyToManyField(Label, related_name="releases")
     genres = models.ManyToManyField(Genre, related_name="releases", blank=True)
     wikipedia = models.URLField(blank=True, null=True)
+    catalog_number = models.CharField(max_length=255, blank=True, null=True)
 
     release_date = models.CharField(
         max_length=10, blank=True, null=True
@@ -222,9 +226,7 @@ class Release(models.Model):
         max_length=255, blank=True, null=True
     )  # Japan, USA, etc.
     release_length = models.CharField(max_length=10, blank=True, null=True)  # HH:MM:SS
-    isrc = models.CharField(
-        max_length=255, blank=True, null=True
-    )  # International Standard Recording Code
+
     spotify_url = models.URLField(blank=True, null=True)
     apple_music_url = models.URLField(blank=True, null=True)
     kkbox_url = models.URLField(blank=True, null=True)
