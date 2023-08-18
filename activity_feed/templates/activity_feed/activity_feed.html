@@ -79,13 +79,9 @@
                                                 <span><a href="{% url 'read:book_detail' book.id %}">{{ book.title }}</a>
                                                 {% if book.subtitle %}: {{ book.subtitle }}{% endif %}
                                             </span>
-                                            ( {{ book.publication_date|slice:":4" }}
-                                            {% if book.since == 0 %}
-                                                , today
-                                            {% else %}
-                                                , {{ book.since }} years ago
-                                            {% endif %}
-                                            )
+                                            {# djlint:off #}
+                                            ({{ book.publication_date|slice:":4" }}{% if book.since == 0 %}, today{% else %}, {{ book.since }} years ago{% endif %})
+                                            {# djlint:on #}
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -110,25 +106,17 @@
                                     {% for movie in movies_released_today %}
                                         <li class="list-group-item">
                                             <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
-                                            ( {{ movie.release_date|slice:":4" }}
-                                            {% if movie.since == 0 %}
-                                                , today
-                                            {% else %}
-                                                , {{ movie.since }} years ago
-                                            {% endif %}
-                                            )
+                                            {# djlint:off #}
+                                            ({{ movie.release_date|slice:":4" }}{% if movie.since == 0 %}, today{% else %}, {{ movie.since }} years ago{% endif %})
+                                            {# djlint:on #}
                                         </li>
                                     {% endfor %}
                                     {% for serie in series_released_today %}
                                         <li class="list-group-item">
                                             <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a>
-                                            ( {{ serie.release_date|slice:":4" }}
-                                            {% if serie.since == 0 %}
-                                                , today
-                                            {% else %}
-                                                , {{ serie.since }} years ago
-                                            {% endif %}
-                                            )
+                                            {# djlint:off #}
+                                            ({{ serie.release_date|slice:":4" }}{% if serie.since == 0 %}, today{% else %}, {{ serie.since }} years ago{% endif %})
+                                            {# djlint:on #}
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -151,13 +139,9 @@
                                     {% for music in music_released_today %}
                                         <li class="list-group-item">
                                             <a href="{% url 'listen:release_detail' music.id %}">{{ music.title }}</a>
-                                            ( {{ music.release_date|slice:":4" }}
-                                            {% if music.since == 0 %}
-                                                , today
-                                            {% else %}
-                                                , {{ music.since }} years ago
-                                            {% endif %}
-                                            )
+                                            {# djlint:off #}
+                                            ({{ music.release_date|slice:":4" }}{% if music.since == 0 %}, today{% else %}, {{ music.since }} years ago{% endif %})
+                                            {# djlint:on #}
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -180,13 +164,9 @@
                                     {% for game in games_released_today %}
                                         <li class="list-group-item">
                                             <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
-                                            ( {{ game.release_date|slice:":4" }}
-                                            {% if game.since == 0 %}
-                                                , today
-                                            {% else %}
-                                                , {{ game.since }} years ago
-                                            {% endif %}
-                                            )
+                                            {# djlint:off #}
+                                            ({{ game.release_date|slice:":4" }}{% if game.since == 0 %}, today{% else %}, {{ game.since }} years ago{% endif %})
+                                            {# djlint:on #}
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -214,14 +194,10 @@
                                         </li>
                                         {% for person in born_today %}
                                             <li class="list-group-item">
+                                                {# djlint:off #}
                                                 <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
-                                                ( {{ person.birth_date|slice:":4" }}
-                                                {% if person.death_date %}
-                                                    -{{ person.death_date|slice:":4" }}
-                                                {% else %}
-                                                    -
-                                                {% endif %}
-                                                , {{ person.since }} years ago )
+                                                ({{ person.birth_date|slice:":4" }}{% if person.death_date %}-{{ person.death_date|slice:":4" }}{% else %} - {% endif %}, {{ person.since }} years ago)
+                                                {# djlint:on #}
                                             </li>
                                         {% endfor %}
                                     {% endif %}
@@ -232,13 +208,9 @@
                                         {% for person in died_today %}
                                             <li class="list-group-item">
                                                 <a href="{% url 'entity:person_detail' person.id %}">{{ person.name }}</a>
-                                                (
-                                                {% if person.birth_date %}
-                                                    {{ person.birth_date|slice:":4" }}
-                                                {% else %}
-                                                    ?
-                                                {% endif %}
-                                                -{{ person.death_date|slice:":4" }}, {{ person.since }} years ago )
+                                                {# djlint:off #}
+                                                ({% if person.birth_date %}{{ person.birth_date|slice:":4" }}{% else %}?{% endif %}-{{ person.death_date|slice:":4" }}, {{ person.since }} years ago)
+                                                {# djlint:on #}
                                             </li>
                                         {% endfor %}
                                     {% endif %}
