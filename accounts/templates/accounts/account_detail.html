@@ -49,7 +49,7 @@
                                                         <img src="{{ item.content_object.cover.url }}"
                                                              alt="{{ item.content_object.title }} cover"
                                                              style="width: 120px"
-                                                             class="cover-image">
+                                                             class="cover-image-2">
                                                     {% else %}
                                                         <div class="no-cover-text"
                                                              style="background: gray;
@@ -67,7 +67,7 @@
                                                         <img src="{{ item.content_object.cover.url }}"
                                                              alt="{{ item.content_object.title }} cover"
                                                              style="width: 120px"
-                                                             class="cover-image">
+                                                             class="cover-image-2">
                                                     {% else %}
                                                         <div class="no-cover-text"
                                                              style="background: gray;
@@ -97,7 +97,7 @@
                                                         <img src="{{ item.content_object.cover.url }}"
                                                              alt="{{ item.content_object.title }} cover"
                                                              style="width: 120px"
-                                                             class="cover-image">
+                                                             class="cover-image-2">
                                                     {% else %}
                                                         <div class="no-cover-text"
                                                              style="background: gray;
@@ -114,7 +114,7 @@
                                                     <img src="{{ item.content_object.cover.url }}"
                                                          alt="{{ item.content_object.title }} cover"
                                                          style="width: 120px"
-                                                         class="cover-image">
+                                                         class="cover-image-2">
                                                 {% else %}
                                                     <div class="no-cover-text"
                                                          style="background: gray;
@@ -156,7 +156,7 @@
                                                         <img src="{{ item.content_object.poster.url }}"
                                                              alt="{{ item.content_object.title }} cover"
                                                              style="width: 120px"
-                                                             class="cover-image">
+                                                             class="cover-image-2">
                                                     {% else %}
                                                         <div class="no-cover-text"
                                                              style="background: gray;
@@ -174,7 +174,7 @@
                                                         <img src="{{ item.content_object.poster.url }}"
                                                              alt="{{ item.content_object.title }} cover"
                                                              style="width: 120px"
-                                                             class="cover-image">
+                                                             class="cover-image-2">
                                                     {% else %}
                                                         <div class="no-cover-text"
                                                              style="background: gray;
@@ -203,7 +203,7 @@
                                                     <img src="{{ item.content_object.poster.url }}"
                                                          alt="{{ item.content_object.title }} cover"
                                                          style="width: 120px"
-                                                         class="cover-image">
+                                                         class="cover-image-2">
                                                 {% else %}
                                                     <div class="no-cover-text"
                                                          style="background: gray;
@@ -220,7 +220,7 @@
                                                         <img src="{{ item.content_object.poster.url }}"
                                                              alt="{{ item.content_object.title }} cover"
                                                              style="width: 120px"
-                                                             class="cover-image">
+                                                             class="cover-image-2">
                                                     {% else %}
                                                         <div class="no-cover-text"
                                                              style="background: gray;
@@ -262,7 +262,7 @@
                                                     <img src="{{ item.content_object.cover.url }}"
                                                          alt="{{ item.content_object.title }} cover"
                                                          style="width: 120px"
-                                                         class="cover-image">
+                                                         class="cover-image-2">
                                                 {% else %}
                                                     <div class="no-cover-text"
                                                          style="background: gray;
@@ -290,7 +290,7 @@
                                                     <img src="{{ item.content_object.cover.url }}"
                                                          alt="{{ item.content_object.title }} cover"
                                                          style="width: 120px"
-                                                         class="cover-image">
+                                                         class="cover-image-2">
                                                 {% else %}
                                                     <div class="no-cover-text"
                                                          style="background: gray;
@@ -318,7 +318,7 @@
                                                     <img src="{{ item.content_object.cover.url }}"
                                                          alt="{{ item.content_object.title }} cover"
                                                          style="width: 120px"
-                                                         class="cover-image">
+                                                         class="cover-image-2">
                                                 {% else %}
                                                     <div class="no-cover-text"
                                                          style="background: gray;
@@ -359,7 +359,7 @@
                                                     <img src="{{ item.game.cover.url }}"
                                                          alt="{{ item.game.title }} cover"
                                                          style="width: 120px"
-                                                         class="cover-image">
+                                                         class="cover-image-2">
                                                 {% else %}
                                                     <div class="no-cover-text"
                                                          style="background: gray;
@@ -385,7 +385,7 @@
                                                     <img src="{{ item.game.cover.url }}"
                                                          alt="{{ item.game.title }} cover"
                                                          style="width: 120px"
-                                                         class="cover-image">
+                                                         class="cover-image-2">
                                                 {% else %}
                                                     <div class="no-cover-text"
                                                          style="background: gray;
@@ -552,14 +552,21 @@
         </div>
     </div>
     <style>
-  .rotate {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    text-align: center;
-    margin-top: 0; 
-    margin-bottom: 0;
-    margin-left: 0;
-    margin-right: 0.25em;
-}
+    .rotate {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        text-align: center;
+        margin-top: 0; 
+        margin-bottom: 0;
+        margin-left: 0;
+        margin-right: 0.25em;
+    }
+    .cover-image-2 {
+        max-width: 120px;
+        width: 95%;
+        height: auto;
+    }
+    
+
     </style>
 {% endblock content %}
