@@ -47,7 +47,9 @@ class MovieForm(forms.ModelForm):
         self.fields["genres"].required = False
         self.fields[
             "other_titles"
-        ].help_text = "e.g. translated titles in different languages, separated by comma or slash."
+        ].help_text = (
+            "e.g. translated titles in different languages, separated by slashes (`/`)."
+        )
 
 
 class MovieRoleForm(forms.ModelForm):
@@ -172,7 +174,9 @@ class SeriesForm(forms.ModelForm):
         self.fields["genres"].required = False
         self.fields[
             "other_titles"
-        ].help_text = "e.g. translated titles in different languages, separated by comma or slash."
+        ].help_text = (
+            "e.g. translated titles in different languages, separated by slashes (`/`)."
+        )
 
 
 class SeriesRoleForm(forms.ModelForm):
@@ -238,7 +242,9 @@ class EpisodeForm(forms.ModelForm):
         super(EpisodeForm, self).__init__(*args, **kwargs)
         self.fields[
             "other_titles"
-        ].help_text = "e.g. translated titles in different languages, separated by comma or slash."
+        ].help_text = (
+            "e.g. translated titles in different languages, separated by slashes (`/`)."
+        )
         self.fields["length"].help_text = "e.g. 45 mins, or 1:30:00"
 
 

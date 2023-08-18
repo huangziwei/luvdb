@@ -107,7 +107,9 @@ class LabelAutocomplete(autocomplete.Select2QuerySetView):
         qs = Label.objects.all()
 
         if self.q:
-            qs = qs.filter(name__icontains=self.q)
+            qs = qs.filter(
+                Q(name__icontains=self.q) | Q(romanized_name__icontains=self.q)
+            )
 
             return qs
 

@@ -40,7 +40,9 @@ class WorkForm(forms.ModelForm):
         self.fields["genres"].required = False
         self.fields[
             "other_titles"
-        ].help_text = "e.g. translated titles in different languages, separated by comma or slash."
+        ].help_text = (
+            "e.g. translated titles in different languages, separated by slashes (`/`)"
+        )
 
 
 class WorkRoleForm(forms.ModelForm):
@@ -120,7 +122,9 @@ class GameForm(forms.ModelForm):
         self.fields["publishers"].required = False
         self.fields[
             "other_titles"
-        ].help_text = "e.g. translated titles in different languages, separated by comma or slash."
+        ].help_text = (
+            "e.g. translated titles in different languages, separated by slashes (`/`)"
+        )
 
 
 class GameRoleForm(forms.ModelForm):
