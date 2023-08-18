@@ -9,11 +9,11 @@
         <div class="row">
             <div class="col-sm-7 left-column">
                 <div>
-                    <p class="d-flex">
+                    <div class="d-flex mb-2">
                         <a href="{% url 'accounts:detail' object.user.username %}" class='me-1'>
                             {{ object.user.display_name | default:object.user.username }}
                         </a> said:
-                    </p>
+                    </div>
                     <div>{{ object.content| linkify_tags:object.user | linkify_mentions | markdownify }}</div>
                     <span class="d-flex mt-2">
                         <p class='me-2 text-secondary mb-2'>
