@@ -1016,7 +1016,9 @@ def parse_podcast(rss_feed_url):
     podcast_info["author"] = getattr(feed.feed, "author", None)
     podcast_info["language"] = getattr(feed.feed, "language", None)
     if hasattr(feed.feed, "copyright"):
-        podcast_info["copyright"] = feed.feed.copyright.replace("&copy;", "").strip()
+        podcast_info["copyright"] = (
+            feed.feed.copyright.replace("&copy;", "").replace("©", "").strip()
+        )
     else:
         podcast_info["copyright"] = None
     podcast_info["last_updated"] = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
