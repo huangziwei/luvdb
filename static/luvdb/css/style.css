@@ -57,25 +57,12 @@ blockquote:last-child {
 
 .read-cover-box,
 .watch-cover-box,
-.game-cover-box {
+.game-cover-box,
+.listen-cover-box {
     min-width: 200px;
-    min-height: 260px;
+    min-height: 200px;
     max-width: 200px;
     /* sets the maximum width */
-    background-color: #f0f0f0;
-    /* light gray */
-    display: inline-flex;
-    /* changed from flex to inline-flex */
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding: 5px;
-    /* creates the gray border effect */
-}
-
-.listen-cover-box {
-    max-width: 225px;
-    /* slightly wider for the square version */
     background-color: #f0f0f0;
     /* light gray */
     display: inline-flex;
