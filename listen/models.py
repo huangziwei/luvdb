@@ -75,6 +75,7 @@ class Genre(models.Model):
 class Work(models.Model):
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200, blank=True, null=True)
+    other_titles = models.TextField(blank=True, null=True)
     romanized_title = models.CharField(max_length=200, blank=True, null=True)
     persons = models.ManyToManyField(
         Person, through="WorkRole", related_name="listen_works"
@@ -123,6 +124,7 @@ class Track(models.Model):
     # track meta data
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
+    other_titles = models.TextField(blank=True, null=True)
     romanized_title = models.CharField(max_length=255, blank=True, null=True)
     persons = models.ManyToManyField(Person, through="TrackRole", related_name="tracks")
     work = models.ForeignKey(
@@ -185,6 +187,8 @@ class Release(models.Model):
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     romanized_title = models.CharField(max_length=255, blank=True, null=True)
+    other_titles = models.TextField(blank=True, null=True)
+
     persons = models.ManyToManyField(
         Person, through="ReleaseRole", related_name="releases"
     )

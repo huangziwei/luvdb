@@ -27,7 +27,7 @@ from .models import (
 class WorkForm(forms.ModelForm):
     class Meta:
         model = Work
-        exclude = ["created_by", "updated_by", "persons"]
+        exclude = ["created_by", "updated_by", "persons", "romanized_title"]
         fields = "__all__"
         help_texts = {
             "title": "Enter the work's title in its original language. ",
@@ -38,12 +38,17 @@ class WorkForm(forms.ModelForm):
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("listen:genre-autocomplete")
             ),
+            "other_titles": forms.TextInput(),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.fields["release_date"].label = "First Release Date"
+        self.fields[
+            "other_titles"
+        ].help_text = (
+            "e.g. translated titles in different languages, separated by slashes (`/`)."
+        )
 
 
 class WorkRoleForm(forms.ModelForm):
@@ -112,12 +117,17 @@ class TrackForm(forms.ModelForm):
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("listen:genre-autocomplete")
             ),
+            "other_titles": forms.TextInput(),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.fields["release_date"].label = "Release Date"
+        self.fields[
+            "other_titles"
+        ].help_text = (
+            "e.g. translated titles in different languages, separated by slashes (`/`)."
+        )
 
 
 class TrackRoleForm(forms.ModelForm):
@@ -193,11 +203,13 @@ class ReleaseForm(forms.ModelForm):
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("listen:genre-autocomplete")
             ),
+            "other_titles": forms.TextInput(),
         }
         help_texts = {
             "release_format": "e.g. CD, digital, etc.",
             "release_type": "e.g. Single, EP, LP, etc.",
             "recording_type": "e.g. Live, Studio, etc.",
+            "other_titles": "e.g. translated titles in different languages, separated by slashes (`/`).",
         }
 
     def __init__(self, *args, **kwargs):
