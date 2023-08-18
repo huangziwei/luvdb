@@ -78,6 +78,15 @@
                         <a href="{% url "play:series_create" %}" class="text-muted">Game Series</a>
                     </div>
                 </div>
+                <div class="bg-light p-3 mb-3">
+                    <h5>Statistics</h5>
+                    <div>
+                        <span class="text-muted">Works</span>: {{ works_count }}
+                    </div>
+                    <div>
+                        <span class="text-muted">Games</span>: {{ games_count }}
+                    </div>
+                </div>
                 {% if genres %}
                     <div class="bg-light p-3 mb-3">
                         <h5>Genres</h5>
@@ -88,15 +97,6 @@
                         </div>
                     </div>
                 {% endif %}
-                <div class="bg-light p-3 mb-3">
-                    <h5>Statistics</h5>
-                    <div>
-                        <span class="text-muted">Works</span>: {{ works_count }}
-                    </div>
-                    <div>
-                        <span class="text-muted">Games</span>: {{ games_count }}
-                    </div>
-                </div>
             </div>
         </div>
     </div>

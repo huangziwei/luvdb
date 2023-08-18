@@ -159,16 +159,6 @@
                         <a href="{% url 'listen:podcast_create' %}" class="text-muted">Podcast</a>
                     </div>
                 </div>
-                {% if genres %}
-                    <div class="bg-light p-3 mb-3">
-                        <h5>Genres</h5>
-                        <div class='d-flex flex-wrap'>
-                            {% for genre in genres %}
-                                <a href="{% url 'listen:genre_detail' genre.slug %}" class="me-2">{{ genre.name }}</a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
                 <div class="bg-light p-3 mb-3">
                     <h5>Statistics</h5>
                     <div>
@@ -184,6 +174,16 @@
                         <span class="text-muted">Podcasts</span>: {{ podcasts_count }}
                     </div>
                 </div>
+                {% if genres %}
+                    <div class="bg-light p-3 mb-3">
+                        <h5>Genres</h5>
+                        <div class='d-flex flex-wrap'>
+                            {% for genre in genres %}
+                                <a href="{% url 'listen:genre_detail' genre.slug %}" class="me-2">{{ genre.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
