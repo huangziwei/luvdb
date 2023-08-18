@@ -56,7 +56,7 @@ class ReleaseAdmin(admin.ModelAdmin):
 
 
 class PodcastAdmin(admin.ModelAdmin):
-    list_display = ["title"]
+    list_display = ["title", "updated_at"]
 
 
 admin.site.register(Label)

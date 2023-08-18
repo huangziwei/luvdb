@@ -1019,11 +1019,7 @@ def parse_podcast(rss_feed_url):
         podcast_info["copyright"] = feed.feed.copyright.replace("&copy;", "").strip()
     else:
         podcast_info["copyright"] = None
-    if hasattr(feed.feed, "updated_parsed"):
-        last_updated = datetime(*feed.feed.updated_parsed[:6]).strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
-        podcast_info["last_updated"] = last_updated
+    podcast_info["last_updated"] = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
     podcast_info["categories"] = list(
         set(cat.term for cat in feed.feed.get("tags", []) if hasattr(cat, "term"))
     )
@@ -1054,13 +1050,13 @@ def parse_podcast(rss_feed_url):
     return podcast_info
 
 
-def create_podcast_from_feed(rss_feed_url):
-    """
-    Create Podcast and PodcastEpisode from the given RSS feed URL.
-    """
-    podcast_info = parse_podcast(rss_feed_url)
-    podcast = Podcast.objects.create(**podcast_info)
-    return podcast
+# def create_podcast_from_feed(rss_feed_url):
+#     """
+#     Create Podcast and PodcastEpisode from the given RSS feed URL.
+#     """
+#     podcast_info = parse_podcast(rss_feed_url)
+#     podcast = Podcast.objects.create(**podcast_info)
+#     return podcast
 
 
 def create_or_update_podcast_from_feed(rss_feed_url):
@@ -1104,7 +1100,7 @@ class PodcastCreateView(View):
         rss_feed_url = request.POST.get("rss_feed_url")
         if rss_feed_url:
             try:
-                podcast = create_podcast_from_feed(rss_feed_url)
+                podcast = create_or_update_podcast_from_feed(rss_feed_url)
                 return redirect(
                     reverse("listen:podcast_detail", kwargs={"pk": podcast.pk})
                 )
@@ -1121,8 +1117,9 @@ class PodcastDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Calculate the time difference
-        if self.object.updated_at:
-            time_diff = timezone.now() - self.object.updated_at
+        if self.object.last_updated:
+            time_diff = timezone.now() - self.object.last_updated
+            print("time_diff", time_diff)
             if time_diff < timedelta(days=1):
                 context["recently_updated"] = True
             else:
@@ -1222,7 +1219,9 @@ class PodcastDetailView(DetailView):
                 # Re-parse the podcast from its feed
                 updated_podcast_info = parse_podcast(self.object.rss_feed_url)
                 # Update the episodes (assuming it's a JSONField)
-                self.object.episodes = updated_podcast_info["episodes"]
+                for attr, value in updated_podcast_info.items():
+                    if hasattr(self.object, attr):
+                        setattr(self.object, attr, value)
                 self.object.save()
 
                 # Redirecting to the same detail page after update
