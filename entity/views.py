@@ -113,7 +113,10 @@ class PersonDetailView(DetailView):
             ListenWork.objects.filter(workrole__person=person).distinct().count()
         )
         context["tracks_count"] = (
-            Track.objects.filter(trackrole__person=person).distinct().count()
+            Track.objects.filter(trackrole__person=person)
+            .exclude(trackrole__role__in=["Composer", "Lyricist"])
+            .distinct()
+            .count()
         )
         context["releases_count"] = (
             Release.objects.filter(releaserole__person=person).distinct().count()
