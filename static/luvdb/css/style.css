@@ -58,34 +58,38 @@ blockquote:last-child {
 .read-cover-box,
 .watch-cover-box,
 .game-cover-box {
-    width: 200px;
-    /* adjust as needed */
-    height: 300px;
-    /* adjust as needed */
+    min-width: 200px;
+    min-height: 260px;
+    max-width: 200px;
+    /* sets the maximum width */
     background-color: #f0f0f0;
     /* light gray */
-    display: flex;
+    display: inline-flex;
+    /* changed from flex to inline-flex */
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    padding: 5px;
+    /* creates the gray border effect */
 }
 
 .listen-cover-box {
-    width: 225px;
-    /* adjust as needed */
-    height: 225px;
-    /* adjust as needed */
+    max-width: 225px;
+    /* slightly wider for the square version */
     background-color: #f0f0f0;
     /* light gray */
-    display: flex;
+    display: inline-flex;
+    /* changed from flex to inline-flex */
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    padding: 5px;
+    /* creates the gray border effect */
 }
 
 .cover-image {
-    max-width: 120px;
-    width: 95%;
+    max-width: 100%;
+    /* the image will fit into the padded parent */
     height: auto;
 }
 

@@ -32,11 +32,11 @@
                         <div class="col flex-grow-1 ms-lg-3">
                             <div class="card-body">
                                 <span class='align-items-start'>
-                                    <h3>Vol. {{ issue.volume }} Issue {{ issue.number }}</h3>
-                                    <h5>
-                                        <a class="text-muted"
-                                           href="{% url 'read:periodical_detail' issue.periodical.id %}">{{ issue.periodical.title }}</a>
-                                    </h5>
+                                    <h4>
+                                        <a href="{% url 'read:periodical_detail' issue.periodical.id %}">{{ issue.periodical.title }}</a>
+                                    </h4>
+                                    <h5 class="text-muted">Vol. {{ issue.volume }} Issue {{ issue.number }}</h5>
+
                                 </span>
                                 <div class="issue-meta">
                                     {% if issue.publication_date %}<p class='text-secondary'>Date: {{ issue.publication_date }}</p>{% endif %}
@@ -82,11 +82,10 @@
                                             <a href="{% url 'read:instance_detail' issueinstance.instance.id %}">
                                                 {{ issueinstance.alt_title|default:issueinstance.instance.title }}
                                             </a>
-                                            (
-                                            {% for role in issueinstance.instance.instancerole_set.all %}
-                                                {% if role.role.name == "Author" %}{{ role.alt_name|default:role.person.name }},{% endif %}
-                                            {% endfor %}
+                                            {# djlint:off #}
+                                            ({% for role in issueinstance.instance.instancerole_set.all %}{% if role.role.name == "Author" %}{{ role.alt_name|default:role.person.name }},{% endif %}{% endfor %}
                                             {{ issueinstance.publication_date|default:issueinstance.instance.publication_date }})
+                                            {# djlint:on #}
                                         </p>
                                     </div>
                                 {% empty %}
