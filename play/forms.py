@@ -113,6 +113,7 @@ class GameForm(forms.ModelForm):
                 url=reverse_lazy("play:publisher-autocomplete")
             ),
             "other_titles": forms.TextInput(),
+            "rating": forms.TextInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -124,6 +125,11 @@ class GameForm(forms.ModelForm):
             "other_titles"
         ].help_text = (
             "e.g. translated titles in different languages, separated by slashes (`/`)"
+        )
+        self.fields[
+            "rating"
+        ].help_text = (
+            "e.g. ESRB, PEGI, CERO, OFLC, USK, GRAC, VET, DJCTQ, IARC, ACB, GSRR"
         )
 
 

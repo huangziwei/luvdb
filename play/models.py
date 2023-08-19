@@ -199,6 +199,7 @@ class Game(models.Model):
     cover_sens = models.BooleanField(default=False, null=True, blank=True)
     price = models.CharField(max_length=20, blank=True, null=True)
     platforms = models.ManyToManyField(Platform, related_name="games")
+    rating = models.TextField(blank=True, null=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)

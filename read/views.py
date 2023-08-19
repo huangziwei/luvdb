@@ -2,6 +2,7 @@ from collections import defaultdict
 from datetime import timedelta
 
 from dal import autocomplete
+from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
@@ -76,6 +77,11 @@ class PublisherCreateView(LoginRequiredMixin, CreateView):
     ]
     template_name = "read/publisher_create.html"
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
+
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         form.instance.updated_by = self.request.user
@@ -103,6 +109,11 @@ class PublisherUpdateView(LoginRequiredMixin, UpdateView):
         "closed_date",
     ]
     template_name = "read/publisher_update.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user

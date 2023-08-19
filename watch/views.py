@@ -294,6 +294,11 @@ class StudioCreateView(LoginRequiredMixin, CreateView):
     ]
     template_name = "watch/studio_create.html"
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
+
     def get_success_url(self):
         return reverse_lazy("watch:studio_detail", kwargs={"pk": self.object.pk})
 
@@ -316,6 +321,11 @@ class StudioUpdateView(LoginRequiredMixin, UpdateView):
         "closed_date",
     ]
     template_name = "watch/studio_update.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user

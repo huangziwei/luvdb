@@ -5,6 +5,7 @@ from io import BytesIO
 import feedparser
 import requests
 from dal import autocomplete
+from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -63,6 +64,11 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
     ]
     template_name = "listen/label_create.html"
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
+
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         form.instance.updated_by = self.request.user
@@ -90,6 +96,11 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
         "closed_date",
     ]
     template_name = "listen/label_update.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
 
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
