@@ -417,9 +417,10 @@ def search_view(request):
                 | Q(episodes__episodecasts__person__name__icontains=query)
             ).distinct()
 
-        person_results = Person.objects.filter(
-            Q(name__icontains=query) | Q(other_names__icontains=query)
-        ).distinct()
+        if model in ["all", "person"]:
+            person_results = Person.objects.filter(
+                Q(name__icontains=query) | Q(other_names__icontains=query)
+            ).distinct()
 
     return render(
         request,
