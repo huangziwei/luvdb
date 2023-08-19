@@ -11,7 +11,8 @@ class Entity(models.Model):
 
     # entity meta data
     name = models.CharField(max_length=255)
-    romanized_name = models.CharField(max_length=255, blank=True, null=True)
+    # romanized_name = models.CharField(max_length=255, blank=True, null=True)
+    other_names = models.TextField(blank=True, null=True)
     note = models.TextField(blank=True, null=True)
 
     # entry meta data
@@ -43,7 +44,6 @@ class Person(Entity):
     """
 
     # person meta data
-    other_names = models.TextField(blank=True, null=True)
     birth_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD

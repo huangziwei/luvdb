@@ -66,7 +66,7 @@ class PublisherCreateView(LoginRequiredMixin, CreateView):
     model = Publisher
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "history",
         "location",
         "website",
@@ -94,7 +94,7 @@ class PublisherUpdateView(LoginRequiredMixin, UpdateView):
     model = Publisher
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "history",
         "location",
         "website",

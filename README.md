@@ -1,6 +1,6 @@
 # LʌvDB is... <sup>[1](#f1)</sup>
 
-- an opinionated, self-hosted alternative to Goodreads, IMDB, Discogs, and ultimately, Douban. This Django-based cataloging application enables you to log and manage your books, movies, music, and games. An inclusive activity feed is also available to stay updated on your friends' activities, including their current readings, watched movies, listened music, and played games.
+- an opinionated, self-hosted alternative to Goodreads, IMDB, Discogs, and ultimately, Douban. This Django-based media cataloging application enables you to log and manage your books, movies, music, and games. An inclusive activity feed is also available to stay updated on your friends' activities, including their current readings, watched movies, listened music, and played games.
 
 - LʌvDB is opinionated in the sense that it has no ratings (what's the point?), no reviews (replaced by check-ins), no recommendation (replaced by your friends, if you have any), and most importantly, no imports from other services (you should love it enough to create an entry).
 

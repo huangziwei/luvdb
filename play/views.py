@@ -339,7 +339,7 @@ class DeveloperCreateView(LoginRequiredMixin, CreateView):
     model = Developer
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "history",
         "location",
         "website",
@@ -368,7 +368,7 @@ class DeveloperUpdateView(LoginRequiredMixin, UpdateView):
     model = Developer
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "history",
         "location",
         "website",
@@ -390,7 +390,7 @@ class PlatformCreateView(LoginRequiredMixin, CreateView):
     model = Platform
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "website",
     ]
     template_name = "play/platform_create.html"
@@ -414,7 +414,7 @@ class PlatformUpdateView(LoginRequiredMixin, UpdateView):
     model = Platform
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "website",
     ]
     template_name = (
@@ -810,7 +810,7 @@ class GamePublisherCreateView(LoginRequiredMixin, CreateView):
     model = GamePublisher
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "history",
         "location",
         "website",
@@ -839,7 +839,7 @@ class GamePublisherUpdateView(LoginRequiredMixin, UpdateView):
     model = GamePublisher
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "history",
         "location",
         "website",

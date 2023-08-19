@@ -7,7 +7,7 @@ from .models import Person, Role
 class PersonAdmin(admin.ModelAdmin):
     list_display = [
         "name",
-        "romanized_name",
+        "other_names",
         "birth_date",
         "death_date",
         "birth_place",
@@ -17,7 +17,7 @@ class PersonAdmin(admin.ModelAdmin):
     ]
     search_fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "birth_date",
         "death_date",
         "birth_place",

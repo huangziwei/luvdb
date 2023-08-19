@@ -53,7 +53,7 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
     model = Label
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "history",
         "location",
         "website",
@@ -81,7 +81,7 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
     model = Label
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "history",
         "location",
         "website",
@@ -107,9 +107,7 @@ class LabelAutocomplete(autocomplete.Select2QuerySetView):
         qs = Label.objects.all()
 
         if self.q:
-            qs = qs.filter(
-                Q(name__icontains=self.q) | Q(romanized_name__icontains=self.q)
-            )
+            qs = qs.filter(Q(name__icontains=self.q) | Q(other_names__icontains=self.q))
 
             return qs
 

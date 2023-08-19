@@ -6,12 +6,14 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-8 left-column">
-                <span class='d-flex align-items-start'>
-                    <h2>
-                        {{ object.name }}
-                        {% if object.romanized_name %}/ {{ object.romanized_name }}{% endif %}
-                    </h2>
-                </span>
+                <h2>
+                    {{ object.name }}
+                </h2>
+                {% if object.other_names %}
+                <div class="text-muted">
+                    {{ object.other_names}}
+                </div>
+                {% endif %}
                 <span class="text-secondary">
                     {% if object.founded_date %}{{ object.founded_date }}-{% endif %}
                     {% if object.closed_date %}{{ object.closed_date }}{% endif %}

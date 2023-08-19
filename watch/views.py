@@ -284,7 +284,7 @@ class StudioCreateView(LoginRequiredMixin, CreateView):
     model = Studio
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "history",
         "location",
         "website",
@@ -307,7 +307,7 @@ class StudioUpdateView(LoginRequiredMixin, UpdateView):
     model = Studio
     fields = [
         "name",
-        "romanized_name",
+        "other_names",
         "history",
         "location",
         "website",
