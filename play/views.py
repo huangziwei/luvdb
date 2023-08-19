@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from dal import autocomplete
+from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
@@ -349,6 +350,11 @@ class DeveloperCreateView(LoginRequiredMixin, CreateView):
     ]
     template_name = "play/developer_create.html"
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['other_names'].widget = forms.TextInput()
+        return form
+
     def get_success_url(self):
         return reverse_lazy("play:developer_detail", kwargs={"pk": self.object.pk})
 
@@ -378,6 +384,11 @@ class DeveloperUpdateView(LoginRequiredMixin, UpdateView):
     ]
     template_name = "play/developer_update.html"
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
+
     def get_success_url(self):
         return reverse_lazy("play:developer_detail", kwargs={"pk": self.object.pk})
 
@@ -394,6 +405,11 @@ class PlatformCreateView(LoginRequiredMixin, CreateView):
         "website",
     ]
     template_name = "play/platform_create.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
 
     def get_success_url(self):
         return reverse_lazy("play:platform_detail", kwargs={"pk": self.object.pk})
@@ -421,6 +437,11 @@ class PlatformUpdateView(LoginRequiredMixin, UpdateView):
         "play/platform_update.html"  # Change the template name as per your requirement
     )
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
+
     def get_success_url(self):
         return reverse_lazy("play:platform_detail", kwargs={"pk": self.object.pk})
 
@@ -438,7 +459,7 @@ class DeveloperAutocomplete(autocomplete.Select2QuerySetView):
         qs = Developer.objects.all()
 
         if self.q:
-            qs = qs.filter(name__icontains=self.q)
+            qs = qs.filter(Q(name__icontains=self.q) | Q(other_names__icontains=self.q))
 
             return qs
 
@@ -454,7 +475,7 @@ class GamePublisherAutocomplete(autocomplete.Select2QuerySetView):
         qs = GamePublisher.objects.all()
 
         if self.q:
-            qs = qs.filter(name__icontains=self.q)
+            qs = qs.filter(Q(name__icontains=self.q) | Q(other_names__icontains=self.q))
 
             return qs
 
@@ -485,7 +506,9 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         qs = Work.objects.all()
 
         if self.q:
-            qs = qs.filter(title__icontains=self.q)
+            qs = qs.filter(
+                Q(title__icontains=self.q) | Q(other_titles__icontains=self.q)
+            )
             print(f"Filtered qs: {qs}")  # Debugging print
 
             return qs
@@ -820,6 +843,11 @@ class GamePublisherCreateView(LoginRequiredMixin, CreateView):
     ]
     template_name = "play/gamepublisher_create.html"
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
+
     def get_success_url(self):
         return reverse_lazy("play:publisher_detail", kwargs={"pk": self.object.pk})
 
@@ -848,6 +876,11 @@ class GamePublisherUpdateView(LoginRequiredMixin, UpdateView):
         "closed_date",
     ]
     template_name = "play/gamepublisher_update.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
 
     def get_success_url(self):
         return reverse_lazy("play:publisher_detail", kwargs={"pk": self.object.pk})
