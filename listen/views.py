@@ -251,6 +251,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(
                 Q(workrole__role=singer_role, workrole__person__in=persons)
                 | Q(title__icontains=self.q)
+                | Q(other_titles__icontains=self.q)
                 | Q(release_date__icontains=self.q)
             ).distinct()
 
@@ -401,6 +402,7 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(
                 Q(trackrole__role=singer_role, trackrole__person__in=persons)
                 | Q(title__icontains=self.q)
+                | Q(other_titles__icontains=self.q)
                 | Q(release_date__icontains=self.q)
             ).distinct()
 
