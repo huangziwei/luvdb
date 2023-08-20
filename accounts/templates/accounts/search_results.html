@@ -106,10 +106,10 @@
                         <h4>Book</h4>
                         {% for book in book_results %}
                             <p>
-                                <a href="{% url 'read:book_detail' book.id %}">{{ book.title|truncatechars:50 }}</a>
-                                (
-                                {% if book.format %}{{ book.format }},{% endif %}
-                                {{ book.publication_date }})
+                                <a href="{% url 'read:book_detail' book.id %}">{{ book.title|truncatechars:50 }}</a>{% if book.subtitle %}: {{book.subtitle|truncatechars:50}}{% endif %}
+                                {# djlint:off #}
+                                ({% if book.format %}{{ book.format }},{% endif %}{{ book.publication_date }})
+                                {# djlint:on #}
                             </p>
                         {% empty %}
                             <p>No Book results found.</p>

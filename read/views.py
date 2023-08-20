@@ -865,17 +865,23 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
             name="Author"
         ).first()  # Adjust 'Author' to match your data
         work_role = item.workrole_set.filter(role=author_role).first()
-        author_name = (
-            work_role.person.name if work_role and work_role.person else "Unknown"
-        )
+
+        author_name = None
+        if work_role:
+            author_name = work_role.alt_name or work_role.person.name
 
         # Get the year from the publication_date
         publication_year = (
-            item.publication_date[:4] if item.publication_date else "Unknown"
+            item.publication_date.split(".")[0] if item.publication_date else "?"
         )
 
         # Format the label
-        label = format_html("{} ({}, {})", item.title, author_name, publication_year)
+        if author_name:
+            label = format_html(
+                "{} ({} - {})", item.title, author_name, publication_year
+            )
+        else:
+            label = format_html("{} ({})", item.title, publication_year)
 
         return label
 
@@ -910,20 +916,25 @@ class InstanceAutocomplete(autocomplete.Select2QuerySetView):
         author_role = Role.objects.filter(
             name="Author"
         ).first()  # Adjust 'Author' to match your data
+
         instance_role = item.instancerole_set.filter(role=author_role).first()
-        author_name = (
-            instance_role.alt_name
-            if instance_role and instance_role.alt_name
-            else instance_role.person.name
-        )
+
+        author_name = None
+        if instance_role:
+            author_name = instance_role.alt_name or instance_role.person.name
 
         # Get the year from the publication_date
         publication_year = (
-            item.publication_date[:4] if item.publication_date else "Unknown"
+            item.publication_date.split(".")[0] if item.publication_date else "?"
         )
 
         # Format the label
-        label = format_html("{} ({}, {})", item.title, author_name, publication_year)
+        if author_name:
+            label = format_html(
+                "{} ({} - {})", item.title, author_name, publication_year
+            )
+        else:
+            label = format_html("{} ({})", item.title, publication_year)
 
         return label
 
