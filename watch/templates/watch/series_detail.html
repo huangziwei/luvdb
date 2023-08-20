@@ -36,7 +36,7 @@
                                 </span>
                                 {% if object.other_titles %}<p class='text-muted'>{{ object.other_titles }}</p>{% endif %}
                                 <div class="movie-meta">
-                                    {% if object.studios.count > 1 %}
+                                    {% if object.studios.count != 0 %}
                                         <p>
                                             {# djlint:off #}
                                             <span class="text-muted">Studio{% if object.studios.count > 1 %}s{% endif %}:</span>

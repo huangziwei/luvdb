@@ -66,6 +66,33 @@ class ISBNField(models.CharField):
             )
 
 
+def standardize_date(date_str):
+    """
+    Standardize date strings to be in the format YYYY.MM, YYYY.MM.DD, or YYYY depending on input.
+    Can also accommodate BCE dates like "500 BCE" or "500 BCE.MM.DD".
+    """
+    # Replace common separators with a dot
+    standardized_date = re.sub(r"[-/]", ".", date_str)
+
+    # Handle BCE dates
+    bce_match = re.match(
+        r"(?P<year>\d{1,5}) BCE(\.(?P<month>\d{1,2})(\.(?P<day>\d{1,2}))?)?$",
+        standardized_date,
+    )
+    if bce_match:
+        year = bce_match.group("year")
+        month = bce_match.group("month") or ""
+        day = bce_match.group("day") or ""
+        return f"-{year}.{month}.{day}".rstrip(".")  # Negative year denotes BCE
+
+    # Handle CE dates
+    if re.match(r"^\d{4}(\.\d{1,2}(\.\d{1,2})?)?$", standardized_date):
+        return standardized_date
+
+    # If not in a valid format, return the original string (or raise an error, based on your requirements)
+    return date_str
+
+
 # models
 
 
@@ -162,10 +189,7 @@ class Work(models.Model):  # Renamed from Book
     persons = models.ManyToManyField(
         Person, through="WorkRole", related_name="read_works"
     )
-    publication_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
-
+    publication_date = models.TextField(blank=True, null=True)
     language = LanguageField(max_length=8, blank=True, null=True)
 
     # novel, novella, short story, poem, etc.
@@ -211,21 +235,8 @@ class Work(models.Model):  # Renamed from Book
     def save(self, *args, **kwargs):
         # Convert the publication_date to a standard format if it's not None or empty
         if self.publication_date:
-            self.publication_date = self.standardize_date(self.publication_date)
+            self.publication_date = standardize_date(self.publication_date)
         super(Work, self).save(*args, **kwargs)
-
-    @staticmethod
-    def standardize_date(date_str):
-        """
-        Standardize date strings to be in the format YYYY.MM, YYYY.MM.DD, or YYYY depending on input
-        """
-        # Replace common separators with a dot
-        standardized_date = re.sub(r"[-/]", ".", date_str)
-        # Make sure the resulting date is in a valid format
-        if re.match(r"^\d{4}(\.\d{1,2}(\.\d{1,2})?)?$", standardized_date):
-            return standardized_date
-        # If not in a valid format, return the original string (or raise an error, based on your requirements)
-        return date_str
 
 
 class WorkRole(models.Model):  # Renamed from BookRole
@@ -268,9 +279,7 @@ class Instance(models.Model):
     work = models.ForeignKey(
         Work, on_delete=models.SET_NULL, null=True, blank=True, related_name="instances"
     )
-    publication_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
+    publication_date = models.TextField(blank=True, null=True)
     language = LanguageField(max_length=8, blank=True, null=True)
     edition = models.CharField(
         max_length=255, blank=True, null=True
@@ -301,21 +310,8 @@ class Instance(models.Model):
     def save(self, *args, **kwargs):
         # Convert the publication_date to a standard format if it's not None or empty
         if self.publication_date:
-            self.publication_date = self.standardize_date(self.publication_date)
+            self.publication_date = standardize_date(self.publication_date)
         super(Instance, self).save(*args, **kwargs)
-
-    @staticmethod
-    def standardize_date(date_str):
-        """
-        Standardize date strings to be in the format YYYY.MM, YYYY.MM.DD, or YYYY depending on input
-        """
-        # Replace common separators with a dot
-        standardized_date = re.sub(r"[-/]", ".", date_str)
-        # Make sure the resulting date is in a valid format
-        if re.match(r"^\d{4}(\.\d{1,2}(\.\d{1,2})?)?$", standardized_date):
-            return standardized_date
-        # If not in a valid format, return the original string (or raise an error, based on your requirements)
-        return date_str
 
 
 class InstanceRole(models.Model):
@@ -350,10 +346,9 @@ class Book(models.Model):
         blank=True,
     )
     language = LanguageField(max_length=8, blank=True, null=True)
+    publication_date = models.TextField(blank=True, null=True)
     details = models.TextField(blank=True, null=True)
-    publication_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
+
     # novel, novella, short story, poem, etc.
     format = models.CharField(
         max_length=255, blank=True, null=True
@@ -447,22 +442,9 @@ class Book(models.Model):
 
         # Convert the publication_date to a standard format if it's not None or empty
         if self.publication_date:
-            self.publication_date = self.standardize_date(self.publication_date)
+            self.publication_date = standardize_date(self.publication_date)
 
         super().save(*args, **kwargs)
-
-    @staticmethod
-    def standardize_date(date_str):
-        """
-        Standardize date strings to be in the format YYYY.MM, YYYY.MM.DD, or YYYY depending on input
-        """
-        # Replace common separators with a dot
-        standardized_date = re.sub(r"[-/]", ".", date_str)
-        # Make sure the resulting date is in a valid format
-        if re.match(r"^\d{4}(\.\d{1,2}(\.\d{1,2})?)?$", standardized_date):
-            return standardized_date
-        # If not in a valid format, return the original string (or raise an error, based on your requirements)
-        return date_str
 
 
 class BookRole(models.Model):

@@ -34,13 +34,14 @@ class WorkForm(forms.ModelForm):
         fields = "__all__"
         help_texts = {
             "title": "Enter the work's title in its original language. ",
-            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
+            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For works published before common era, use negative numbers, e.g. `-100`.",
         }
         widgets = {
             "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("read:genre-autocomplete")
             ),
+            "publication_date": forms.TextInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -112,13 +113,14 @@ class InstanceForm(forms.ModelForm):
         fields = "__all__"
         help_texts = {
             "title": "Enter the instance's title. ",
-            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
+            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For instances published before common era, use negative numbers, e.g. `-100`.",
         }
         widgets = {
             "work": autocomplete.ModelSelect2(
                 url=reverse_lazy("read:work-autocomplete")
             ),
             "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
+            "publication_date": forms.TextInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -199,11 +201,12 @@ class BookForm(forms.ModelForm):
                 url=reverse_lazy("read:publisher-autocomplete")
             ),
             "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
+            "publication_date": forms.TextInput(),
         }
         help_texts = {
             "format": "e.g. paperback, hardcover, ebook, etc.",
             "length": "e.g. 300 pages, 10:20:33, etc.",
-            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
+            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For books published before common era, use negative numbers, e.g. `-100`.",
         }
 
     def __init__(self, *args, **kwargs):
