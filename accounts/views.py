@@ -349,11 +349,13 @@ def search_view(request):
             litwork_results = LitWork.objects.filter(
                 Q(title__icontains=query)
                 | Q(workrole__person__name__icontains=query)
+                | Q(workrole__alt_name__icontains=query)
                 | Q(publication_date__icontains=query)
             ).distinct()
             litinstance_results = LitInstance.objects.filter(
                 Q(title__icontains=query)
                 | Q(instancerole__person__name__icontains=query)
+                | Q(instancerole__alt_name__icontains=query)
                 | Q(publication_date__icontains=query)
             ).distinct()
             book_results = Book.objects.filter(
@@ -374,16 +376,19 @@ def search_view(request):
                 Q(title__icontains=query)
                 | Q(other_titles__icontains=query)
                 | Q(workrole__person__name__icontains=query)
+                | Q(workrole__alt_name__icontains=query)
             ).distinct()  # Update with your real query
             track_results = Track.objects.filter(
                 Q(title__icontains=query)
                 | Q(other_titles__icontains=query)
                 | Q(trackrole__person__name__icontains=query)
+                | Q(trackrole__alt_name__icontains=query)
             ).distinct()  # Update with your real query
             release_results = Release.objects.filter(
                 Q(title__icontains=query)
                 | Q(other_titles__icontains=query)
                 | Q(releaserole__person__name__icontains=query)
+                | Q(releaserole__alt_name__icontains=query)
             ).distinct()  # Update with your real query
             podcast_results = Podcast.objects.filter(
                 Q(title__icontains=query)
@@ -407,14 +412,18 @@ def search_view(request):
                 Q(title__icontains=query)
                 | Q(other_titles__icontains=query)
                 | Q(movieroles__person__name__icontains=query)
+                | Q(movieroles__alt_name__icontains=query)
                 | Q(moviecasts__person__name__icontains=query)
+                | Q(moviecasts__character_name__icontains=query)
                 | Q(release_date__icontains=query)
             ).distinct()
             series_results = Series.objects.filter(
                 Q(title__icontains=query)
                 | Q(other_titles__icontains=query)
                 | Q(seriesroles__person__name__icontains=query)
+                | Q(seriesroles__alt_name__icontains=query)
                 | Q(episodes__episodecasts__person__name__icontains=query)
+                | Q(episodes__episodecasts__character_name__icontains=query)
             ).distinct()
 
         if model in ["all", "person"]:
