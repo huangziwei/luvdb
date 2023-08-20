@@ -13,6 +13,7 @@ You can explore LʌvDB at [luvdb.com](https://luvdb.com). This instance is not c
 - [Read](https://luvdb.com/read/recent/)
 - [Watch](https://luvdb.com/watch/recent/)
 - [Listen](https://luvdb.com/listen/recent/)
+- [Play](https://luvdb.com/play/recent/)
 
 ## Testing Locally
 

@@ -19,6 +19,11 @@
                     {% if object.death_date %}{{ object.death_date }}{% endif %}
                     {% if object.death_place %}({{ object.death_place }}){% endif %}
                 </span>
+                {% if object.note %}
+                <div class="text-muted">
+                    Notes: {{ object.note}}
+                </div>
+                {% endif %}
                 <!--Read-->
                 {% if object.read_works.count != 0 or as_translator or as_editor or as_annotator or writings %}
                     <h3 class="mt-2">Bibliography</h3>
