@@ -398,6 +398,7 @@ def search_view(request):
             gamework_results = GameWork.objects.filter(
                 Q(title__icontains=query)
                 | Q(workrole__person__name__icontains=query)
+                | Q(workrole__alt_name__icontains=query)
                 | Q(first_release_date=query)
             ).distinct()
             game_results = Game.objects.filter(
@@ -405,6 +406,8 @@ def search_view(request):
                 | Q(developers__name__icontains=query)
                 | Q(platforms__name__icontains=query)
                 | Q(release_date__icontains=query)
+                | Q(gamerole__person__name__icontains=query)
+                | Q(gamerole__alt_name__icontains=query)
             ).distinct()  # Update with your real query
 
         if model in ["all", "watch"]:
