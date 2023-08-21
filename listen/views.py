@@ -210,12 +210,13 @@ class WorkDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         work = get_object_or_404(Work, pk=self.kwargs.get("pk"))
         # roles
-        grouped_roles = defaultdict(list)
-
+        grouped_roles = {}
         for role in work.workrole_set.all():
-            grouped_roles[role.role.name].append(role.person)
-
-        context["grouped_roles"] = dict(grouped_roles)
+            if role.role.name not in grouped_roles:
+                grouped_roles[role.role.name] = []
+            alt_name_or_person_name = role.alt_name or role.person.name
+            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+        context["grouped_roles"] = grouped_roles
 
         # tracks
         tracks = work.tracks.all().order_by("release_date")
