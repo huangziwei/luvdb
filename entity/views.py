@@ -12,6 +12,7 @@ from play.models import Game
 from play.models import Work as GameWork
 from read.models import Book
 from read.models import Instance as LitInstance
+from read.models import Work as LitWork
 from watch.models import Episode, Movie, Series
 
 from .forms import PersonForm
@@ -41,7 +42,14 @@ class PersonDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         person = self.object
         # read
-        context["read_works"] = person.read_works.all().order_by("publication_date")
+        # context["read_works"] = person.read_works.all().order_by("publication_date")
+        context["read_works"] = (
+            LitWork.objects.filter(
+                Q(workrole__role__name="Author", workrole__person=person)
+            )
+            .distinct()
+            .order_by("publication_date")
+        )
 
         as_translator = LitInstance.objects.filter(
             instancerole__role__name="Translator", instancerole__person=person
