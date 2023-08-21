@@ -25,28 +25,26 @@
                 </div>
                 {% endif %}
                 <!--Read-->
-                {% if object.read_works.count != 0 or as_translator or as_editor or as_annotator or writings %}
+                {% if read_works or as_translator or as_editor or as_annotator or writings %}
                     <h3 class="mt-2">Bibliography</h3>
-                    {% if object.read_works.count != 0 %}
+                    {% if read_works %}
                         <div class="row">
-                            {% if object.read_works.count != 0 %}
-                                <div class="col-12 mt-2">
-                                    <h4>Works</h4>
-                                    <ul>
-                                        {% for work in read_works %}
-                                            <li>
-                                                {% if work.work_type == 'NO' %}
-                                                    <a href="{% url 'read:work_detail' work.pk %}" style="font-weight: bold">{{ work.title }}</a> ({{ work.publication_date }})
-                                                {% else %}
-                                                    <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date }})
-                                                {% endif %}
-                                            </li>
-                                        {% empty %}
-                                            <li>This person has no books.</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
+                            <div class="col-12 mt-2">
+                                <h4>Works</h4>
+                                <ul>
+                                    {% for work in read_works %}
+                                        <li>
+                                            {% if work.work_type == 'NO' %}
+                                                <a href="{% url 'read:work_detail' work.pk %}" style="font-weight: bold">{{ work.title }}</a> ({{ work.publication_date }})
+                                            {% else %}
+                                                <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date }})
+                                            {% endif %}
+                                        </li>
+                                    {% empty %}
+                                        <li>This person has no books.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
                     {% endif %}
                     {% if as_translator or writings %}
