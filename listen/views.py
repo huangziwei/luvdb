@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import transaction
-from django.db.models import Count, F, OuterRef, Q, Subquery
+from django.db.models import Count, F, Max, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -871,10 +871,17 @@ class ListenListView(ListView):
                         listencheckin__timestamp__gte=recent_date,
                     ),
                     distinct=True,
-                )
+                ),
+                latest_checkin=Max(
+                    "listencheckin__timestamp",
+                    filter=Q(
+                        listencheckin__content_type=release_content_type,
+                        listencheckin__timestamp__gte=recent_date,
+                    ),
+                ),
             )
             .exclude(checkins=0)
-            .order_by("-checkins")[:12]
+            .order_by("-latest_checkin")[:12]
         )
         podcast_content_type = ContentType.objects.get_for_model(Podcast)
         trending_podcasts = (
@@ -886,10 +893,17 @@ class ListenListView(ListView):
                         listencheckin__timestamp__gte=recent_date,
                     ),
                     distinct=True,
-                )
+                ),
+                latest_checkin=Max(
+                    "listencheckin__timestamp",
+                    filter=Q(
+                        listencheckin__content_type=podcast_content_type,
+                        listencheckin__timestamp__gte=recent_date,
+                    ),
+                ),
             )
             .exclude(checkins=0)
-            .order_by("-checkins")[:12]
+            .order_by("-latest_checkin")[:12]
         )
 
         return {

@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import Count, F, OuterRef, Q, Subquery
+from django.db.models import Count, F, Max, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -376,10 +376,17 @@ class WatchListView(TemplateView):
                         watchcheckin__timestamp__gte=recent_date,
                     ),
                     distinct=True,
-                )
+                ),
+                latest_checkin=Max(
+                    "watchcheckin__timestamp",
+                    filter=Q(
+                        watchcheckin__content_type=movie_content_type,
+                        watchcheckin__timestamp__gte=recent_date,
+                    ),
+                ),
             )
             .exclude(checkins=0)
-            .order_by("-checkins")[:12]
+            .order_by("-latest_checkin")[:12]
         )
 
         trending_series = (
@@ -391,10 +398,17 @@ class WatchListView(TemplateView):
                         watchcheckin__timestamp__gte=recent_date,
                     ),
                     distinct=True,
-                )
+                ),
+                latest_checkin=Max(
+                    "watchcheckin__timestamp",
+                    filter=Q(
+                        watchcheckin__content_type=series_content_type,
+                        watchcheckin__timestamp__gte=recent_date,
+                    ),
+                ),
             )
             .exclude(checkins=0)
-            .order_by("-checkins")[:12]
+            .order_by("-latest_checkin")[:12]
         )
 
         context["movies"] = Movie.objects.all().order_by("-created_at")[:12]

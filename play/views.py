@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import Count, F, OuterRef, Q, Subquery
+from django.db.models import Count, F, Max, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -352,7 +352,7 @@ class DeveloperCreateView(LoginRequiredMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.fields['other_names'].widget = forms.TextInput()
+        form.fields["other_names"].widget = forms.TextInput()
         return form
 
     def get_success_url(self):
@@ -734,10 +734,14 @@ class PlayListView(ListView):
                     "gamecheckin",
                     filter=Q(gamecheckin__timestamp__gte=recent_date),
                     distinct=True,
-                )
+                ),
+                latest_checkin=Max(
+                    "gamecheckin__timestamp",
+                    filter=Q(gamecheckin__timestamp__gte=recent_date),
+                ),
             )
             .exclude(checkins=0)
-            .order_by("-checkins")[:12]
+            .order_by("-latest_checkin")[:12]
         )
 
         return {
