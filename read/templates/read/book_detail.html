@@ -101,6 +101,11 @@
                                                     <span class="text-muted">ISBN-13:</span> {{ object.isbn_13 }}
                                                 </p>
                                             {% endif %}
+                                            {% if object.eisbn_13 %}
+                                                <p>
+                                                    <span class="text-muted">E-ISBN-13:</span> {{ object.eisbn_13 }}
+                                                </p>
+                                            {% endif %}
                                             {% if object.asin %}
                                                 <p>
                                                     <span class="text-muted">ASIN:</span> {{ object.asin }}
