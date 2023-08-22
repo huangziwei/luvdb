@@ -259,7 +259,7 @@ class PersonDetailView(DetailView):
             .order_by("first_release_date")
         )
 
-        context["gameworks_as_aritist"] = (
+        context["gameworks_as_artist"] = (
             GameWork.objects.filter(
                 workrole__role__name="Artist", workrole__person=person
             )
