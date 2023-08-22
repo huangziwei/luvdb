@@ -251,12 +251,42 @@ class PersonDetailView(DetailView):
         )
 
         # play
-        context["gameworks"] = (
+        context["gameworks_as_writer"] = (
             GameWork.objects.filter(
                 workrole__role__name="Writer", workrole__person=person
             )
             .distinct()
             .order_by("first_release_date")
+        )
+
+        context["gameworks_as_aritist"] = (
+            GameWork.objects.filter(
+                workrole__role__name="Artist", workrole__person=person
+            )
+            .distinct()
+            .order_by("first_release_date")
+        )
+
+        context["gameworks_as_musician"] = (
+            GameWork.objects.filter(
+                workrole__role__name="Musician", workrole__person=person
+            )
+            .distinct()
+            .order_by("first_release_date")
+        )
+
+        context["gameworks_as_producer"] = (
+            GameWork.objects.filter(
+                workrole__role__name="Writer", workrole__person=person
+            )
+            .distinct()
+            .order_by("first_release_date")
+        )
+
+        context["games_as_cast"] = (
+            Game.objects.filter(gamecasts__person=person)
+            .distinct()
+            .order_by("release_date")
         )
 
         context["gameworks_count"] = (

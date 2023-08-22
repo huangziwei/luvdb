@@ -319,20 +319,77 @@
                     </div>
                 {% endif %}
                 <!--Play-->
-                {% if gameworks.count != 0 %}
+                {% if gameworks_as_writer or gameworks_as_artist or gameworks_as_musician or games_as_cast%}
+                    <h3>Gameography</h3>
+                    {% if gameworks_as_writer or gameworks_as_artist or gameworks_as_musician %}
                     <div class="row">
-                        <h3>Gameography</h3>
+                        {% if gameworks_as_writer %}
                         <div class="col-sm-4">
                             <h4>As Writer</h4>
                             <ul>
-                                {% for work in gameworks %}
+                                {% for work in gameworks_as_writer %}
                                     <li>
                                         <a href="{% url 'play:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.first_release_date }})
                                     </li>
                                 {% endfor %}
                             </ul>
                         </div>
+                        {% endif %}
+                        {% if gameworks_as_artist %}
+                        <div class="col-sm-4">
+                            <h4>As Artist</h4>
+                            <ul>
+                                {% for work in gameworks_as_artist %}
+                                    <li>
+                                        <a href="{% url 'play:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.first_release_date }})
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        {% if gameworks_as_musician %}
+                        <div class="col-sm-4">
+                            <h4>As Musician</h4>
+                            <ul>
+                                {% for work in gameworks_as_musician %}
+                                    <li>
+                                        <a href="{% url 'play:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.first_release_date }})
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
                     </div>
+                    {% endif %}
+
+                    {% if gameworks_as_producer or games_as_cast %}
+                    <div class="row">
+                        {% if gameworks_as_producer %}
+                        <div class="col-sm-4">
+                            <h4>As Producer</h4>
+                            <ul>
+                                {% for work in gameworks_as_producer %}
+                                    <li>
+                                        <a href="{% url 'play:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.first_release_date }})
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        {% if games_as_cast %}
+                        <div class="col-sm-4">
+                            <h4>As Cast</h4>
+                            <ul>
+                                {% for game in games_as_cast %}
+                                    <li>
+                                        <a href="{% url 'play:game_detail' game.pk %}">{{ game.title }}</a> ({{ game.release_date }})
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 {% endif %}
             </div>
             <!--manage entry-->
