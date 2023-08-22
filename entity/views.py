@@ -277,7 +277,7 @@ class PersonDetailView(DetailView):
 
         context["gameworks_as_producer"] = (
             GameWork.objects.filter(
-                workrole__role__name="Writer", workrole__person=person
+                workrole__role__name="Producer", workrole__person=person
             )
             .distinct()
             .order_by("first_release_date")
