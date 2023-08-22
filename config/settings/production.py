@@ -2,7 +2,7 @@
 
 from .base import *
 
-DEBUG = True
+DEBUG = False
 
 AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")

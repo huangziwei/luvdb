@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth.views import redirect_to_login
 from django.contrib.sitemaps.views import sitemap
+from django.http import Http404
 from django.urls import include, path
 
 from accounts.views import home
@@ -18,7 +20,18 @@ sitemaps = {
     "series": SeriesSiteMap,
 }
 
+
+def custom_admin_login(request):
+    # If user is already logged in and is staff
+    if request.user.is_authenticated and request.user.is_staff:
+        return redirect_to_login(request.get_full_path(), "admin:index")
+
+    # Otherwise, raise 404 error
+    raise Http404
+
+
 urlpatterns = [
+    path("admin/login/", custom_admin_login, name="custom_admin_login"),
     path("admin/", admin.site.urls),
     path("", home, name="home"),  # Updated home view
     path("", include("accounts.urls")),
