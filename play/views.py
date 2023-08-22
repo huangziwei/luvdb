@@ -333,6 +333,7 @@ class GameCastDetailView(DetailView):
         context[
             "gamecasts"
         ] = self.object.gamecasts.all()  # Update with your correct related name
+        context["gamecrew"] = self.object.gameroles.all()
         return context
 
 

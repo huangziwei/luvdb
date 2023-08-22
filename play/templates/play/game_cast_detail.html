@@ -1,7 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="container">
-        <h1>{{ game.title }} Cast</h1>
+        <h3>
+            <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
+            Crew and Cast
+        </h3>
+        <h4>Crew</h4>
+        <ul>
+            {% regroup gamecrew by role as roles_grouped %}
+            {% for role_group in roles_grouped %}
+                <li>
+                    <span class="text-muted">{{ role_group.grouper.name }}:</span>
+                    {% for gamerole in role_group.list %}
+                        <a href="{% url 'entity:person_detail' gamerole.person.id %}">{{ gamerole.person.name }}</a>
+                        {% if not forloop.last %}/{% endif %}
+                    {% endfor %}
+                </li>
+            {% empty %}
+                <li>No staff for this game yet.</li>
+            {% endfor %}
+        </ul>
+        <h4>Cast</h4>
         <ul>
             {% for gamecast in gamecasts %}
                 <li>
