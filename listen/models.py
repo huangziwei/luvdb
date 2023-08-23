@@ -207,6 +207,7 @@ class Release(models.Model):
         ("LP", "LP"),
         ("EP", "EP"),
         ("Single", "Single"),
+        ("Box Set", "Box Set"),
     ]
     release_type = models.CharField(
         max_length=255, choices=RELEASE_TYPES, blank=True, null=True
@@ -217,7 +218,6 @@ class Release(models.Model):
         ("Live", "Live"),
         ("Studio and Live", "Studio and Live"),
         ("Compilation", "Compilation"),
-        ("Box Set", "Box Set"),
         ("Bootleg", "Bootleg"),
     ]
     recording_type = models.CharField(

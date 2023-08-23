@@ -88,7 +88,7 @@ class PersonDetailView(DetailView):
         context["LPs_as_performer"] = Release.objects.filter(
             releaserole__role__name__in=roles_as_performer,
             releaserole__person=person,
-            release_type="LP",
+            release_type__in=["LP", "Box Set"],
         ).order_by("release_date")
         context["EPs_as_performer"] = Release.objects.filter(
             releaserole__role__name__in=roles_as_performer,
