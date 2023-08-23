@@ -39,7 +39,7 @@
                                 </span>
                                 <div class="release-meta">
                                     {% if object.subtitle %}
-                                        <p class="text-secondary">
+                                        <div class="text-secondary">
                                             {{ object.subtitle }}
                                         </div>
                                     {% endif %}
@@ -127,6 +127,7 @@
                     {% include "listen/listen_checkin_in_entry_detail.html" %}
                 </div>
             </div>
+            <!--Right columns-->
             <div class="col-sm-4">
                 <!--Related tracks / Edit -->
                 {% if user.is_authenticated %}
