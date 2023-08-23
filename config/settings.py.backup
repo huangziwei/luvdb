@@ -162,7 +162,6 @@ CRISPY_CLASS_CONVERTERS = {
     "form-select": "",
 }
 
-# TEMPLATE_404 = "404.html"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "activity_feed:activity_feed"
 LOGOUT_REDIRECT_URL = "login"
