@@ -15,13 +15,13 @@
                     <h3>Says</h3>
                     {% for say in says %}
                         <div class="item mb-3">
-                            <p>
-                                <a href="{% url 'accounts:detail' say.user.username %}">{{ say.user.display_name | default:say.user.username }}</a>said:
-                            </p>
-                            <div>{{ say.content | linkify_tags:say.user | linkify_mentions | markdownify | truncatechars:300 }}</div>
-                            <small>
+                            <div class="mb-2">
+                                <a href="{% url 'accounts:detail' say.user.username %}">{{ say.user.display_name | default:say.user.username }}</a> said:
+                            </div>
+                            <div class="mb-2">{{ say.content | linkify_tags:say.user | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                            <div>
                                 <a href="{% url 'write:say_detail' say.id %}" class='text-muted'>{{ say.timestamp|date:"Y.m.d H:i" }}</a>
-                            </small>
+                            </div>
                         </div>
                     {% endfor %}
                 {% endif %}
@@ -35,9 +35,9 @@
                             </h5>
                             <div>{{ pin.content | linkify_tags:pin.user | linkify_mentions | markdownify | truncatechars:300 }}</div>
                             <p>
-                                <small>
+                                <div>
                                     <a href="{% url 'write:pin_detail' pin.id %}" class='text-muted'>{{ pin.timestamp | date:"Y.m.d H:i" }}</a>
-                                </small>
+                                </div>
                             </p>
                         </div>
                     {% endfor %}
