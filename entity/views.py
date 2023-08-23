@@ -83,7 +83,7 @@ class PersonDetailView(DetailView):
         )
 
         # listen
-        roles_as_performer = ["Singer", "Pianist", "Conductor"]
+        roles_as_performer = ["Singer", "Pianist", "Conductor", "Performer"]
 
         context["LPs_as_performer"] = Release.objects.filter(
             releaserole__role__name__in=roles_as_performer,
