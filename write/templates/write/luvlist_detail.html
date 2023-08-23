@@ -440,12 +440,13 @@
                     <hr>
                 {% endfor %}
             </div>
-            <div class="col-12 col-md-4">
-                <!--All tags on the page-->
-                <div class="bg-light p-3 mb-3">
-                    <a class="text-muted" href="{% url 'write:luvlist_update' object.id %}">Edit List</a>
+            {% if request.user == object.user %}
+                <div class="col-12 col-md-4">
+                    <div class="bg-light p-3 mb-3">
+                        <a class="text-muted" href="{% url 'write:luvlist_update' object.id %}">Edit List</a>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
     </div>
     <style>
