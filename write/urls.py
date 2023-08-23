@@ -31,6 +31,7 @@ from .views import (
     SayUpdateView,
     TagListView,
     TagUserListView,
+    content_detail_redirect,
 )
 
 app_name = "write"
@@ -98,5 +99,10 @@ urlpatterns = [
     ),
     path(
         "luvlists/<str:username>/", LuvListUserListView.as_view(), name="luvlist_list"
+    ),
+    path(
+        "random_content/<int:content_id>/",
+        content_detail_redirect,
+        name="content_detail_redirect",
     ),
 ]

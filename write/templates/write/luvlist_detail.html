@@ -430,9 +430,15 @@
             </div>
             <div class="col-12 col-md-4">
                 <!--All tags on the page-->
-                <div class="bg-light p-3">
+                <div class="bg-light p-3 mb-3">
                     <a class="text-muted" href="{% url 'write:luvlist_update' object.id %}">Edit List</a>
                 </div>
+
+                {% if random_content %}
+                <div class="bg-light p-3 mb-3">
+                    <a href="{% url 'write:content_detail_redirect' random_content.id %}" class="btn btn-primary">Surprise me</a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
