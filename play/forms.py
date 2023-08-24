@@ -80,6 +80,7 @@ WorkRoleFormSet = inlineformset_factory(
     form=WorkRoleForm,
     extra=15,
     can_delete=True,
+    labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:person-autocomplete"),
@@ -168,6 +169,7 @@ GameRoleFormSet = inlineformset_factory(
     form=GameRoleForm,
     extra=15,
     can_delete=True,
+    labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:person-autocomplete"),
@@ -217,6 +219,7 @@ GameCastFormSet = inlineformset_factory(
     form=GameCastForm,
     extra=15,
     can_delete=True,
+    labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:person-autocomplete"),

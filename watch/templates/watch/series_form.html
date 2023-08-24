@@ -23,7 +23,7 @@
     {{ form.wikipedia|as_crispy_field }}
     {{ seriesroles.management_form|crispy }}
     <div id="series-role-formset" class="bg-light p-3 mb-3">
-        <strong>Persons related to this Series</strong>
+        <strong>Entities related to this Series</strong>
         <p class='text-muted'>E.g. Directors, Writers, Designers, etc.</p>
         {% for form in seriesroles %}
             <div class="form-wrapper">
@@ -34,7 +34,7 @@
                         {{ form.person | as_crispy_field }}
                         <a href="{% url 'entity:person_create' %}?next={{ request.path }}"
                            class="text-secondary"
-                           target="_blank">Add a new person?</a>
+                           target="_blank">Add a new entity?</a>
                     </div>
                     <div class="col-md-4 mb-3">
                         {{ form.role | as_crispy_field }}

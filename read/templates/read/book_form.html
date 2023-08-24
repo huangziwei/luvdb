@@ -25,7 +25,7 @@
     {{ form.wikipedia|as_crispy_field }}
     {{ bookroles.management_form|crispy }}
     <div id="book-role-formset" class="bg-light p-3 mb-3">
-        <strong>Persons related to this book</strong>
+        <strong>Entities related to this book</strong>
         <p class='text-muted'>E.g. Authors, Editors, Designers, etc.</p>
         {% for form in bookroles %}
             <div class="form-wrapper">
@@ -36,7 +36,7 @@
                         {{ form.person | as_crispy_field }}
                         <a href="{% url 'entity:person_create' %}?next={{ request.path }}"
                            class="text-secondary"
-                           target="_blank">Add a new person?</a>
+                           target="_blank">Add a new entity?</a>
                     </div>
                     <div class="col-md-4">
                         {{ form.role | as_crispy_field }}

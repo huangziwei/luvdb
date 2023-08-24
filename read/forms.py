@@ -89,6 +89,7 @@ WorkRoleFormSet = inlineformset_factory(
     form=WorkRoleForm,
     extra=15,
     can_delete=True,
+    labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:person-autocomplete"),
@@ -165,6 +166,7 @@ InstanceRoleFormSet = inlineformset_factory(
     form=InstanceRoleForm,
     extra=15,
     can_delete=True,
+    labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:person-autocomplete"),
@@ -249,6 +251,7 @@ BookRoleFormSet = inlineformset_factory(
     form=BookRoleForm,
     extra=10,
     can_delete=True,
+    labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:person-autocomplete"),

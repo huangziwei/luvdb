@@ -20,7 +20,7 @@
     {{ form.catalog_number|as_crispy_field }}
     {{ releaseroles.management_form|crispy }}
     <div id="release-role-formset" class="bg-light p-3 mb-3">
-        <strong>Persons related to this release</strong>
+        <strong>Entities related to this release</strong>
         <p class='text-muted'>E.g. Singer, Lyricist, Composer, etc.</p>
         {% for form in releaseroles %}
             <div class="form-wrapper">
@@ -31,7 +31,7 @@
                         {{ form.person | as_crispy_field }}
                         <a href="{% url 'entity:person_create' %}?next={{ request.path }}"
                            class="text-secondary"
-                           target="_blank">Add a new person?</a>
+                           target="_blank">Add a new entity?</a>
                     </div>
                     <div class="col-md-4">
                         {{ form.role | as_crispy_field }}

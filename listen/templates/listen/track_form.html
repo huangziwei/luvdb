@@ -12,7 +12,7 @@
     {{ form.note | as_crispy_field }}
     {{ trackroles.management_form|crispy }}
     <div id="track-role-formset" class="bg-light p-2 mb-3">
-        <strong>Persons related to this track</strong>
+        <strong>Entities related to this track</strong>
         <p class='text-muted'>E.g. Singers, Lyricist, Composer, etc.</p>
         {% for form in trackroles %}
             <div class="form-wrapper">
@@ -23,14 +23,14 @@
                         {{ form.person | as_crispy_field }}
                         <a href="{% url 'entity:person_create' %}?next={{ request.path }}"
                            class="text-secondary"
-                           target="_blank">Add a new person entry?</a>
+                           target="_blank">Add a new entity?</a>
                     </div>
                     <div class="col-md-3 mb-3">
                         {{ form.role | as_crispy_field }}
                         {{ form.domain | as_crispy_field }}
                         <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
                            class="text-secondary"
-                           target="_blank">Add a new role entry?</a>
+                           target="_blank">Add a new role?</a>
                     </div>
                     <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
                 </div>

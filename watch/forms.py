@@ -87,6 +87,7 @@ MovieRoleFormSet = inlineformset_factory(
     form=MovieRoleForm,
     extra=15,
     can_delete=True,
+    labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:person-autocomplete"),
@@ -136,6 +137,7 @@ MovieCastFormSet = inlineformset_factory(
     form=MovieCastForm,
     extra=15,
     can_delete=True,
+    labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:person-autocomplete"),
@@ -214,6 +216,7 @@ SeriesRoleFormSet = inlineformset_factory(
     form=SeriesRoleForm,
     extra=15,
     can_delete=True,
+    labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:person-autocomplete"),
@@ -332,6 +335,7 @@ EpisodeCastFormSet = inlineformset_factory(
     form=EpisodeCastForm,
     extra=15,
     can_delete=True,
+    labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:person-autocomplete"),
