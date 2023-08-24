@@ -168,6 +168,7 @@
                                     {% for book_instance in object.bookinstance_set.all %}
                                         <div class="related-instance">
                                             <p>
+                                                {{book_instance.order}}.
                                                 <a href="{% url 'read:instance_detail' book_instance.instance.id %}">
                                                     {{ book_instance.alt_title|default:book_instance.instance.title }}
                                                 </a>
