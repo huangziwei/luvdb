@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.syndication.views import Feed
+from django.http import Http404
 from django.urls import reverse
 
 from .models import Pin, Post, Say
@@ -7,7 +8,19 @@ from .models import Pin, Post, Say
 User = get_user_model()
 
 
+class PrivateFeedError(Exception):
+    """Exception raised when trying to access a private feed."""
+
+    pass
+
+
 class UserSayFeed(Feed):
+    def __call__(self, request, *args, **kwargs):
+        user = self.get_object(request, *args, **kwargs)
+        if not user.is_public:
+            raise Http404("This feed is private.")
+        return super().__call__(request, *args, **kwargs)
+
     def get_object(self, request, username):
         return User.objects.get(username=username)
 
@@ -34,7 +47,11 @@ class UserSayFeed(Feed):
 
 
 class UserPostFeed(Feed):
-    description = "Updates on user's posts."
+    def __call__(self, request, *args, **kwargs):
+        user = self.get_object(request, *args, **kwargs)
+        if not user.is_public:
+            raise Http404("This feed is private.")
+        return super().__call__(request, *args, **kwargs)
 
     def get_object(self, request, username):
         return User.objects.get(username=username)
@@ -62,6 +79,12 @@ class UserPostFeed(Feed):
 
 
 class UserPinFeed(Feed):
+    def __call__(self, request, *args, **kwargs):
+        user = self.get_object(request, *args, **kwargs)
+        if not user.is_public:
+            raise Http404("This feed is private.")
+        return super().__call__(request, *args, **kwargs)
+
     def get_object(self, request, username):
         return User.objects.get(username=username)
 
