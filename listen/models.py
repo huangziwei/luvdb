@@ -198,6 +198,7 @@ class Release(models.Model):
     )
     label = models.ManyToManyField(Label, related_name="releases")
     genres = models.ManyToManyField(Genre, related_name="releases", blank=True)
+    discogs = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
     catalog_number = models.CharField(max_length=255, blank=True, null=True)
 

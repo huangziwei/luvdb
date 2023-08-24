@@ -194,12 +194,19 @@
                         {% endif %}
                     </div>
                 {% endif %}
-                {% if object.wikipedia %}
+                {% if object.wikipedia or object.discogs %}
                     <div class="bg-light p-3 mb-3">
                         <h5>Links</h5>
+                        {% if object.discogs %}
+                        <div>
+                            <a href="{{ object.discogs }}">Discogs</a>
+                        </div>
+                        {% endif %}
+                        {% if object.wikipedia %}
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
                         </div>
+                        {% endif %}
                     </div>
                 {% endif %}
                 {% if lists_containing_release.count != 0 %}
