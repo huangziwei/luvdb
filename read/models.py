@@ -284,6 +284,7 @@ class Instance(models.Model):
     edition = models.CharField(
         max_length=255, blank=True, null=True
     )  # 1st ed., revised ed., etc.
+    wikipedia = models.URLField(max_length=200, blank=True, null=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -347,6 +348,7 @@ class Book(models.Model):
     )
     language = LanguageField(max_length=8, blank=True, null=True)
     publication_date = models.TextField(blank=True, null=True)
+    wikipedia = models.URLField(max_length=200, blank=True, null=True)
     details = models.TextField(blank=True, null=True)
 
     # novel, novella, short story, poem, etc.

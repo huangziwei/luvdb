@@ -136,12 +136,19 @@
                         <strong class="text-muted">Watched:</strong> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a>
                     </div>
                 </div>
-                {% if object.wikipedia %}
-                    <div class="bg-light p-3 mb-3">
+                {% if object.wikipedia or object.imdb %}
+                    <div class="bg-light p-3 mt-3">
                         <h5>Links</h5>
+                        {% if object.imdb %}
+                        <div>
+                            <a href="{{ object.imdb }}">IMDB</a>
+                        </div>
+                        {% endif %}
+                        {% if object.wikipedia %}
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
                         </div>
+                        {% endif %}
                     </div>
                 {% endif %}
                 {% if lists_containing_series.count != 0 %}

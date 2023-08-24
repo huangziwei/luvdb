@@ -19,6 +19,7 @@
            class="text-secondary"
            target="_blank">Add a new work?</a>
     </div>
+    {{ form.imdb|as_crispy_field }}
     {{ form.wikipedia|as_crispy_field }}
     {{ movieroles.management_form|crispy }}
     <div id="movie-role-formset" class="bg-light p-3 mb-3">

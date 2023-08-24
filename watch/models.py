@@ -78,6 +78,7 @@ class Movie(models.Model):
     duration = models.CharField(max_length=10, blank=True, null=True)
     languages = LanguageField(blank=True, null=True)
     genres = models.ManyToManyField(Genre, related_name="movies", blank=True)
+    imdb = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
 
     watchcheckin = GenericRelation("WatchCheckIn")
@@ -199,6 +200,7 @@ class Series(models.Model):
     based_on = models.ForeignKey(
         LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="series"
     )
+    imdb = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
     watchcheckin = GenericRelation("WatchCheckIn")
     # entry meta data

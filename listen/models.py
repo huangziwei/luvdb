@@ -139,6 +139,7 @@ class Track(models.Model):
     isrc = models.CharField(
         max_length=255, blank=True, null=True
     )  # International Standard Recording Code
+    wikipedia = models.URLField(blank=True, null=True)
     note = models.TextField(blank=True, null=True)
 
     # entry meta data
