@@ -8,12 +8,17 @@ User = get_user_model()
 
 
 class UserSayFeed(Feed):
-    title = "User's Say feed"
-    link = "/users/says/"
-    description = "Updates on user's says."
-
     def get_object(self, request, username):
         return User.objects.get(username=username)
+
+    def title(self, user):
+        return f"{user.username}'s Say feed at LʌvDB"
+
+    def link(self, user):
+        return reverse("write:say_list", args=[user.username])
+
+    def description(self, user):
+        return f"Latest says by {user.username} on LʌvDB"
 
     def items(self, user):
         return Say.objects.filter(user=user).order_by("-timestamp")[:10]
@@ -29,12 +34,19 @@ class UserSayFeed(Feed):
 
 
 class UserPostFeed(Feed):
-    title = "User's Post feed"
-    link = "/users/posts/"  # This should be changed to the appropriate URL.
     description = "Updates on user's posts."
 
     def get_object(self, request, username):
         return User.objects.get(username=username)
+
+    def title(self, user):
+        return f"{user.username}'s Post feed at LʌvDB"
+
+    def link(self, user):
+        return reverse("write:post_list", args=[user.username])
+
+    def description(self, user):
+        return f"Latest posts by {user.username} on LʌvDB"
 
     def items(self, user):
         return Post.objects.filter(user=user).order_by("-timestamp")[:10]
@@ -50,12 +62,17 @@ class UserPostFeed(Feed):
 
 
 class UserPinFeed(Feed):
-    title = "User's Pin feed"
-    link = "/users/pins/"  # This should be changed to the appropriate URL.
-    description = "Updates on user's pins."
-
     def get_object(self, request, username):
         return User.objects.get(username=username)
+
+    def title(self, user):
+        return f"{user.username}'s Pin feed at LʌvDB"
+
+    def link(self, user):
+        return reverse("write:pin_list", args=[user.username])
+
+    def description(self, user):
+        return f"Latest pins by {user.username} on LʌvDB"
 
     def items(self, user):
         return Pin.objects.filter(user=user).order_by("-timestamp")[:10]
