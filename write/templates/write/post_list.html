@@ -12,7 +12,9 @@
                         {% if object.username == request.user.username %}
                             <a class="btn btn-sm btn-primary" href="{% url 'write:post_create' %}">New</a>
                         {% endif %}
-                        <a class="btn btn-sm btn-success" href="{% url 'write:user_post_feed' object.username %}">RSS</a>
+                        {% if object.is_public %}
+                            <a class="btn btn-sm btn-success" href="{% url 'write:user_post_feed' object.username %}">RSS</a>
+                        {% endif %}
                     </div>
                 </div>
                 {% for post in post_list %}
