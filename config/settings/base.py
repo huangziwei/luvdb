@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.syndication",
     "whitenoise.runserver_nostatic",  # 3rd party
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",

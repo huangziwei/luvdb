@@ -10,9 +10,12 @@
                     <h5>
                         <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a> said
                     </h5>
-                    {% if object.username == request.user.username %}
-                        <a class="btn btn-sm btn-primary" href="{% url 'write:say_create' %}">New</a>
-                    {% endif %}
+                    <div>
+                        {% if object.username == request.user.username %}
+                            <a class="btn btn-sm btn-primary" href="{% url 'write:say_create' %}">New</a>
+                        {% endif %}
+                        <a class="btn btn-sm btn-success" href="{% url 'write:user_say_feed' object.username %}">RSS</a>
+                    </div>
                 </div>
                 {% for say in say_list %}
                     <div class="activity-item mb-3">

@@ -10,9 +10,12 @@
                     <h5>
                         <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a> pinned
                     </h5>
+                    <div>
                     {% if object.username == request.user.username %}
                         <a class="btn btn-sm btn-primary" href="{% url 'write:pin_create' %}">New</a>
                     {% endif %}
+                        <a class="btn btn-sm btn-success" href="{% url 'write:user_pin_feed' object.username %}">RSS</a>
+                     </div>
                 </div>
                 {% for pin in pin_list %}
                     <!--Pin-->
