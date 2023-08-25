@@ -146,7 +146,7 @@
                     <!--LuvLists that included this movie-->
                     <div class="bg-light p-3 mt-3">
                         <h5>Lists</h5>
-                        <ul>
+                        <ul class='mb-0'>
                             {% for content_in_list in lists_containing_movie %}
                                 <li>
                                     <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
