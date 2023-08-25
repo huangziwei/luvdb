@@ -146,7 +146,7 @@
                     </div>
                 {% endif %}
                 {% if object.bookinstance_set.count != 0 %}
-                    <div class="bg-light p-3">
+                    <div class="bg-light p-3 mb-3">
                         {% if object.bookinstance_set.count < 2 %}
                             {% if object.bookinstance_set.first.instance.id %}
                                 <h5>Instance</h5>
@@ -186,7 +186,7 @@
                     </div>
                 {% endif %}
                 <!--Book Stats-->
-                <div class="bg-light p-3 mt-3">
+                <div class="bg-light p-3 mb-3">
                     <h5>Statistics</h5>
                     <div>
                         <strong class="text-muted">To Read:</strong> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=to_read">{{ to_read_count }}</a>
@@ -199,7 +199,7 @@
                     </div>
                 </div>
                 {% if object.internet_archive_url %}
-                    <div class="bg-light p-3 mt-3">
+                    <div class="bg-light p-3 mb-3">
                         <h5>Read on</h5>
                         <div>
                             <a href="{{ object.internet_archive_url }}">Internet Archive</a>
