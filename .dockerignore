@@ -3,3 +3,4 @@ fly.toml
 .luvdb
 db.sqlite3*
 *.png
+.github/

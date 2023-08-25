@@ -10,3 +10,4 @@ data.json
 Dockerfile
 config/settings/development_psql.py
 *.sql
+.github/

@@ -6,9 +6,23 @@
 
 <sup id="f1">[1]</sup> Most of the code in this repository, including this README, has been written by ChatGPT-4, prompted and modified by me.
 
-## Sneak Peek
+## Screenshots
 
-You can explore LʌvDB at [luvdb.com](https://luvdb.com). This instance is not currently accepting new registrations (and probably never will). To familiarize yourself with the app, you may visit some of the following pages:
+#### Activity Feed (Home Page)
+
+![activity_feed](.github/screenshots/activity_feed.png)
+
+#### Recent page of the Read App
+
+![read_recent](.github/screenshots/read_recent.png)
+
+#### Book Detail of the Read App
+
+![book_detail](.github/screenshots/book_detail.png)
+
+#### Live Sneak Peek
+
+You can also explore LʌvDB at [luvdb.com](https://luvdb.com). This instance is not currently accepting new registrations (and probably never will). To familiarize yourself with the app, you may visit some of the following pages:
 
 - [Read](https://luvdb.com/read/recent/)
 - [Watch](https://luvdb.com/watch/recent/)
