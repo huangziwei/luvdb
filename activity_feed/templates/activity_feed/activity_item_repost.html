@@ -97,6 +97,14 @@
                                 </div>
                             {% endfor %}
                         {% endif %}
+                        {% if activity.content_object.original_activity.content_object.content_object.publisher %}
+                        <div>
+                            <span class="text-muted">Publisher:</span>
+                            <a href="{% url 'read:publisher_detail' activity.content_object.original_activity.content_object.content_object.publisher.id %}">
+                                {{ activity.content_object.original_activity.content_object.content_object.publisher.name }}
+                            </a>
+                        </div>
+                        {% endif %}
                         <div>
                             {% if activity.content_object.original_activity.content_object.content_object.publication_date %}
                                 <span class="text-muted">Date:</span>{{ activity.content_object.original_activity.content_object.content_object.publication_date }}
