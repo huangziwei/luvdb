@@ -1,4 +1,5 @@
 {% extends "pages/base.html" %}
+{% load markdownify %}
 {% block title %}{{ object.name }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -21,7 +22,7 @@
                 </span>
                 {% if object.note %}
                 <div class="text-muted">
-                    {{ object.note}}
+                    {{ object.note | markdownify }}
                 </div>
                 {% endif %}
                 <!--Read-->
