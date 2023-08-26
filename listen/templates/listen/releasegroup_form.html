@@ -1,0 +1,60 @@
+{% load crispy_forms_tags %}
+<form method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-12">{{ form.title|as_crispy_field }}</div>
+    </div>
+    <h2>Releases in Group</h2>
+    {{ releases.management_form }}
+    <div id="releaseInGroupDiv">
+        {% for form in releases %}
+            {{ form.id }}
+            <div class="row{% if forloop.last %} empty-form{% endif %}"
+                 {% if forloop.last %}style="display: none;"{% endif %}>
+                <div class="col-md-12">{{ form.release_url|as_crispy_field }}</div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button id="addMore" type="button" class="btn btn-outline-dark">Add More</button>
+    </div>
+</form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let formsetNum = {{ releases|length }};
+        let emptyForm = document.querySelector('.empty-form').cloneNode(true);
+    
+        function updateFormIndices() {
+            let forms = document.querySelectorAll('#releaseInGroupDiv .row:not(.empty-form)');
+            forms.forEach((form, index) => {
+                form.querySelectorAll('input, select, textarea').forEach(input => {
+                    if (input.name) {
+                        input.name = input.name.replace(/releaseingroup_set-\d+-/, `releaseingroup_set-${index}-`);
+                    }
+                    if (input.id) {
+                        input.id = input.id.replace(/releaseingroup_set-\d+-/, `releaseingroup_set-${index}-`);
+                    }
+                });
+            });
+        }
+    
+        document.querySelector('#addMore').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            let newForm = emptyForm.cloneNode(true);
+            newForm.classList.remove('empty-form');
+            newForm.style.display = '';
+    
+            document.querySelector('#releaseInGroupDiv').appendChild(newForm);
+    
+            formsetNum++;
+            document.querySelector('#id_releaseingroup_set-TOTAL_FORMS').value = formsetNum;
+    
+            // Update all the form indices
+            updateFormIndices();
+        });
+    
+    });
+    
+</script>

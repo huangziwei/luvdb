@@ -1,0 +1,12 @@
+{% extends "pages/base.html" %}  website layout -->
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class='col-7'>
+                <h2>New Release Group</h2>
+                {% include "listen/releasegroup_form.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

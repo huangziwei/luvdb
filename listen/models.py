@@ -436,3 +436,40 @@ class Podcast(models.Model):
 
     def model_name(self):
         return "Podcast"
+
+
+class ReleaseGroup(models.Model):
+    title = models.CharField(max_length=100)
+    releases = models.ManyToManyField(
+        Release, through="ReleaseInGroup", related_name="release_group"
+    )
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="releasegroup_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="releasegroup_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("listen:releasegroup_detail", args=[str(self.id)])
+
+
+class ReleaseInGroup(models.Model):
+    release = models.ForeignKey(Release, on_delete=models.CASCADE)
+    group = models.ForeignKey(ReleaseGroup, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["release__release_date"]
+
+    def __str__(self):
+        return f"{self.group.title}: {self.release.title}"

@@ -36,10 +36,9 @@
                                 <li>
                                     <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a>
                                     {% if book.subtitle %}: {{ book.subtitle }}{% endif %}
-                                    (
-                                    {% if book.publisher %}{{ book.publisher }},{% endif %}
-                                    {% if book.format %}{{ book.format }},{% endif %}
-                                    {{ book.publication_date }})
+                                    {# djlint:off #}
+                                    ({% if book.publisher %}{{ book.publisher }}, {% endif %}{% if book.format %}{{ book.format }},{% endif %}{{ book.publication_date }})
+                                    {# djlint:on #}
                                 </li>
                             {% endfor %}
                         </ul>

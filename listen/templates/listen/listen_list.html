@@ -156,6 +156,9 @@
                         <a href="{% url "listen:release_create" %}" class="text-muted">Release</a>
                     </div>
                     <div>
+                        <a href="{% url "listen:releasegroup_create" %}" class="text-muted">Release Group</a>
+                    </div>
+                    <div>
                         <a href="{% url 'listen:podcast_create' %}" class="text-muted">Podcast</a>
                     </div>
                 </div>
@@ -173,6 +176,7 @@
                     <div>
                         <span class="text-muted">Podcasts</span>: {{ podcasts_count }}
                     </div>
+                    
                 </div>
                 {% if genres %}
                     <div class="bg-light p-3 mb-3">

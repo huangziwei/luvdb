@@ -6,6 +6,7 @@ from .models import (
     ListenCheckIn,
     Podcast,
     Release,
+    ReleaseGroup,
     ReleaseRole,
     ReleaseTrack,
     Track,
@@ -59,10 +60,15 @@ class PodcastAdmin(admin.ModelAdmin):
     list_display = ["title", "updated_at"]
 
 
+class ReleaseGroupAdmin(admin.ModelAdmin):
+    list_display = ["title"]
+
+
 admin.site.register(Label)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(Track, TrackAdmin)
 admin.site.register(Release, ReleaseAdmin)
+admin.site.register(ReleaseGroup, ReleaseGroupAdmin)
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Podcast, PodcastAdmin)
 

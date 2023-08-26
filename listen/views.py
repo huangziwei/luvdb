@@ -35,6 +35,8 @@ from write.models import Comment, ContentInList
 from .forms import (
     ListenCheckInForm,
     ReleaseForm,
+    ReleaseGroupForm,
+    ReleaseInGroupFormSet,
     ReleaseRoleFormSet,
     ReleaseTrackFormSet,
     TrackForm,
@@ -42,7 +44,17 @@ from .forms import (
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import Genre, Label, ListenCheckIn, Podcast, Release, Track, Work
+from .models import (
+    Genre,
+    Label,
+    ListenCheckIn,
+    Podcast,
+    Release,
+    ReleaseGroup,
+    ReleaseInGroup,
+    Track,
+    Work,
+)
 
 User = get_user_model()
 
@@ -1490,3 +1502,87 @@ class GenericCheckInUserListView(ListView):
         context["status"] = self.request.GET.get("status", "")
 
         return context
+
+
+#################
+# Release Group #
+#################
+
+
+class ReleaseGroupCreateView(LoginRequiredMixin, CreateView):
+    model = ReleaseGroup
+    form_class = ReleaseGroupForm
+    template_name = "listen/releasegroup_create.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["releases"] = ReleaseInGroupFormSet(self.request.POST)
+        else:
+            data["releases"] = ReleaseInGroupFormSet(
+                queryset=ReleaseInGroup.objects.none()
+            )
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        releases = context["releases"]
+
+        print("Formset data before validation:", releases.data)  # Debugging print
+
+        if releases.is_valid():
+            print("Formset cleaned_data:", releases.cleaned_data)  # Debugging print
+            with transaction.atomic():
+                form.instance.created_by = self.request.user
+                self.object = form.save()
+                releases.instance = self.object
+                releases.save()
+        else:
+            print("Formset errors:", releases.errors)  # Debugging print
+            return self.form_invalid(
+                form
+            )  # If there are formset errors, re-render the form.
+        return super().form_valid(form)
+
+
+class ReleaseGroupDetailView(DetailView):
+    model = ReleaseGroup
+    template_name = "listen/releasegroup_detail.html"
+
+
+class ReleaseGroupUpdateView(LoginRequiredMixin, UpdateView):
+    model = ReleaseGroup
+    form_class = ReleaseGroupForm
+    template_name = "listen/releasegroup_update.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["releases"] = ReleaseInGroupFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["releases"] = ReleaseInGroupFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        releases = context["releases"]
+
+        print(
+            "Formset data before validation for updating:", releases.data
+        )  # Debugging print
+
+        if releases.is_valid():
+            print(
+                "Formset cleaned_data for updating:", releases.cleaned_data
+            )  # Debugging print
+            self.object = form.save()
+            releases.instance = self.object
+            releases.save()
+        else:
+            print("Formset errors:", releases.errors)  # Print out the formset errors.
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("listen:releasegroup_detail", kwargs={"pk": self.object.pk})

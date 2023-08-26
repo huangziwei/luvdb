@@ -11,6 +11,8 @@ from .models import (
     ListenCheckIn,
     Person,
     Release,
+    ReleaseGroup,
+    ReleaseInGroup,
     ReleaseRole,
     ReleaseTrack,
     Role,
@@ -335,3 +337,58 @@ class ListenCheckInForm(forms.ModelForm):
         super(ListenCheckInForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
         self.fields["content"].required = False
+
+
+#################
+# Release Group #
+#################
+
+
+class ReleaseGroupForm(forms.ModelForm):
+    class Meta:
+        model = ReleaseGroup
+        fields = ["title"]
+
+
+class ReleaseInGroupForm(forms.ModelForm):
+    release_url = forms.URLField()
+
+    class Meta:
+        model = ReleaseInGroup
+        fields = ["release_url"]
+        exclude = ["release_group"]
+
+    def clean_release_url(self):
+        release_url = self.cleaned_data.get("release_url")
+        if not release_url:  # if the field is empty, just return it
+            return release_url
+        release_id = re.findall(r"release/(\d+)", release_url)
+        if not release_id:
+            raise forms.ValidationError("Invalid Release URL")
+        try:
+            release = Release.objects.get(pk=release_id[0])
+        except Release.DoesNotExist:
+            raise forms.ValidationError("Release does not exist")
+        self.instance.release = release  # save the release instance directly
+        return release_url
+
+    def clean(self):
+        cleaned_data = super().clean()
+        release_url = cleaned_data.get("release_url")
+        if not release_url:  # if the release_url field is empty
+            self.cleaned_data["DELETE"] = True  # mark the form for deletion
+        return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(ReleaseInGroupForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk and self.instance.release:
+            self.fields[
+                "release_url"
+            ].initial = f"{settings.ROOT_URL}/listen/release/{self.instance.release.pk}"
+        self.fields["release_url"].required = False
+        self.fields["release_url"].label = "URL"
+
+
+ReleaseInGroupFormSet = forms.inlineformset_factory(
+    ReleaseGroup, ReleaseInGroup, form=ReleaseInGroupForm, extra=2, can_delete=True
+)

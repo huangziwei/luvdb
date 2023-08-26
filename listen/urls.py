@@ -20,6 +20,9 @@ from .views import (
     PodcastDetailView,
     ReleaseCreateView,
     ReleaseDetailView,
+    ReleaseGroupCreateView,
+    ReleaseGroupDetailView,
+    ReleaseGroupUpdateView,
     ReleaseUpdateView,
     TrackAutocomplete,
     TrackCreateView,
@@ -112,4 +115,20 @@ urlpatterns = [
     # genre
     path("genre/<slug:slug>/", GenreDetailView.as_view(), name="genre_detail"),
     path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),
+    # release group
+    path(
+        "releasegroup/create/",
+        ReleaseGroupCreateView.as_view(),
+        name="releasegroup_create",
+    ),
+    path(
+        "releasegroup/<int:pk>/",
+        ReleaseGroupDetailView.as_view(),
+        name="releasegroup_detail",
+    ),
+    path(
+        "releasegroup/<int:pk>/update/",
+        ReleaseGroupUpdateView.as_view(),
+        name="releasegroup_update",
+    ),
 ]
