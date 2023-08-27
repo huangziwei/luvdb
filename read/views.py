@@ -193,8 +193,6 @@ class WorkUpdateView(LoginRequiredMixin, UpdateView):
             if workroles.is_valid():
                 workroles.instance = self.object
                 workroles.save()
-            else:
-                print(workroles.errors)  # print out formset errors
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -284,8 +282,6 @@ class InstanceCreateView(LoginRequiredMixin, CreateView):
             if instanceroles.is_valid():
                 instanceroles.instance = self.object
                 instanceroles.save()
-            else:
-                print(instanceroles.errors)  # print out formset errors
         return super().form_valid(form)
 
 
@@ -319,8 +315,6 @@ class InstanceUpdateView(LoginRequiredMixin, UpdateView):
             if instanceroles.is_valid():
                 instanceroles.instance = self.object
                 instanceroles.save()
-            else:
-                print(instanceroles.errors)  # print out formset errors
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -333,8 +327,6 @@ class InstanceDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        roles_by_name = defaultdict(list)
-
         grouped_roles = {}
         for role in self.object.instancerole_set.all():
             if role.role.name not in grouped_roles:
@@ -526,8 +518,6 @@ class BookDetailView(DetailView):
             book_check_in = form.save(commit=False)
             book_check_in.user = request.user  # Set the user manually here
             book_check_in.save()
-        else:
-            print("read_checkin_in_detail:", form.errors)
 
         return redirect(self.object.get_absolute_url())
 
@@ -572,10 +562,7 @@ class BookUpdateView(LoginRequiredMixin, UpdateView):
                     if bookroles.is_valid():
                         bookroles.instance = self.object
                         bookroles.save()
-                    else:
-                        print(
-                            "BookRoles form errors: ", bookroles.errors
-                        )  # print form errors
+
                     if bookinstances.is_valid():
                         bookinstances.instance = self.object
                         bookinstances.save()
@@ -662,8 +649,7 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
             if issueinstances.is_valid():
                 issueinstances.instance = self.object
                 issueinstances.save()
-            else:
-                print(issueinstances.errors)  # print out formset errors
+
         return super().form_valid(form)
 
 
@@ -776,8 +762,6 @@ class IssueDetailView(DetailView):
             book_check_in = form.save(commit=False)
             book_check_in.user = request.user  # Set the user manually here
             book_check_in.save()
-        else:
-            print("read_checkin_in_detail:", form.errors)
 
         return redirect(self.object.get_absolute_url())
 
@@ -824,8 +808,7 @@ class IssueUpdateView(LoginRequiredMixin, UpdateView):
             if issueinstances.is_valid():
                 issueinstances.instance = self.object
                 issueinstances.save()
-            else:
-                print(issueinstances.errors)  # print out formset errors
+
         return super().form_valid(form)
 
 
@@ -1379,17 +1362,13 @@ class BookSeriesCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         books = context["books"]
 
-        print("Formset data before validation:", books.data)  # Debugging print
-
         if books.is_valid():
-            print("Formset cleaned_data:", books.cleaned_data)  # Debugging print
             with transaction.atomic():
                 form.instance.created_by = self.request.user
                 self.object = form.save()
                 books.instance = self.object
                 books.save()
         else:
-            print("Formset errors:", books.errors)  # Debugging print
             return self.form_invalid(
                 form
             )  # If there are formset errors, re-render the form.
@@ -1398,7 +1377,7 @@ class BookSeriesCreateView(LoginRequiredMixin, CreateView):
 
 class BookSeriesDetailView(DetailView):
     model = BookSeries
-    template_name = "read/series_detail.html"  # Update this
+    template_name = "read/series_detail.html"
 
 
 class BookSeriesUpdateView(LoginRequiredMixin, UpdateView):
@@ -1418,19 +1397,10 @@ class BookSeriesUpdateView(LoginRequiredMixin, UpdateView):
         context = self.get_context_data()
         books = context["books"]
 
-        print(
-            "Formset data before validation for updating:", books.data
-        )  # Debugging print
-
         if books.is_valid():
-            print(
-                "Formset cleaned_data for updating:", books.cleaned_data
-            )  # Debugging print
             self.object = form.save()
             books.instance = self.object
             books.save()
-        else:
-            print("Formset errors:", books.errors)  # Print out the formset errors.
         return super().form_valid(form)
 
     def get_success_url(self):
