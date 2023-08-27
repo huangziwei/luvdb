@@ -350,7 +350,7 @@ class StudioAutocomplete(autocomplete.Select2QuerySetView):
         qs = Studio.objects.all()
 
         if self.q:
-            qs = qs.filter(name__icontains=self.q)
+            qs = qs.filter(Q(name__icontains=self.q)|Q(other_names__icontains=self.q))
 
             return qs
 

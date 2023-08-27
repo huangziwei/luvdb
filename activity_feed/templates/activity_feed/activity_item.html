@@ -385,6 +385,17 @@
                         </div>
                     {% endfor %}
                 {% endif %}
+                {% if activity.content_object.content_object.studios.exists %}
+                <div>
+                    {# djlint:off #}
+                    <span class="text-muted">Studio{% if activity.content_object.content_object.studios.count > 1 %}s{% endif %}:</span>
+                    {# djlint:on #}
+                    {% for studio in activity.content_object.content_object.studios.all %}
+                        {% if not forloop.first %}/{% endif %}
+                        <a href="{% url 'watch:studio_detail' studio.id %}">{{ studio.name }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 <div>
                     {% if activity.content_object.content_object.release_date %}
                         <span class="text-muted">Date:</span>{{ activity.content_object.content_object.release_date }}
