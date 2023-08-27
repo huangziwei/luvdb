@@ -12,7 +12,13 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views import View
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    ListView,
+    TemplateView,
+    UpdateView,
+)
 
 from activity_feed.models import Activity, Follow
 from entity.models import Person
@@ -27,8 +33,13 @@ from read.models import Work as LitWork
 from watch.models import Movie, Series, WatchCheckIn
 from write.models import Pin, Post, Repost, Say
 
-from .forms import CustomUserChangeForm, CustomUserCreationForm
-from .models import InvitationCode
+from .forms import (
+    CustomUserChangeForm,
+    CustomUserCreationForm,
+    EmailRequestForm,
+    InvitationRequestForm,
+)
+from .models import InvitationCode, InvitationRequest
 
 TIME_RESTRICTION = 30  # time restriction for generating invitation codes
 JOINING_TIME_RESTRICTION = 30
@@ -573,3 +584,36 @@ def export_game_data(request):
     ] = f'attachment; filename="{request.user.username}_games_data.json"'
 
     return response
+
+
+class RequestInvitationView(View):
+    def post(self, request):
+        email = request.POST.get("email")
+        if email:
+            InvitationRequest.objects.get_or_create(email=email)
+            return redirect("accounts:invitation_requested", email=email)
+        return redirect("login")
+
+
+class InvitationRequestedView(View):
+    template_name = "accounts/invitation_requested.html"
+    form_class = InvitationRequestForm
+
+    def get(self, request, email):
+        invitation_request, created = InvitationRequest.objects.get_or_create(
+            email=email
+        )
+        form = self.form_class(instance=invitation_request)
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, email):
+        invitation_request = get_object_or_404(InvitationRequest, email=email)
+        form = self.form_class(request.POST, instance=invitation_request)
+        if form.is_valid():
+            form.save()
+            return redirect("accounts:invitation_requested_success")
+        return render(request, self.template_name, {"form": form})
+
+
+class InvitationRequestedSuccessView(TemplateView):
+    template_name = "accounts/invitation_requested_success.html"

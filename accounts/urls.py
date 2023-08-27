@@ -6,9 +6,11 @@ from .views import (
     FollowerListView,
     FollowingListView,
     GenerateInvitationCodeView,
+    InvitationRequestedSuccessView,
+    InvitationRequestedView,
     PersonalActivityFeedView,
+    RequestInvitationView,
     SignUpView,
-    export_game_data,
     export_user_data,
     redirect_to_profile,
     search_view,
@@ -42,4 +44,19 @@ urlpatterns = [
     ),
     path("profile", view=redirect_to_profile, name="profile"),
     path("exportdata/", export_user_data, name="export_user_data"),
+    path(
+        "request-invitation/",
+        RequestInvitationView.as_view(),
+        name="request_invitation",
+    ),
+    path(
+        "invitation-requested/<str:email>/",
+        InvitationRequestedView.as_view(),
+        name="invitation_requested",
+    ),
+    path(
+        "invitation-requested-success/",
+        InvitationRequestedSuccessView.as_view(),
+        name="invitation_requested_success",
+    ),
 ]

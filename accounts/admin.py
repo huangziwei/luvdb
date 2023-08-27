@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CustomUser, InvitationCode
+from .models import CustomUser, InvitationCode, InvitationRequest
 
 
 class InvitationCodeAdmin(admin.ModelAdmin):
@@ -11,5 +11,10 @@ class CustomUserAdmin(admin.ModelAdmin):
     list_display = ("username", "display_name", "invited_by")
 
 
+class InvitationRequestAdmin(admin.ModelAdmin):
+    list_display = ("email", "created_at", "is_invited", "about_me")
+
+
 admin.site.register(InvitationCode, InvitationCodeAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(InvitationRequest, InvitationRequestAdmin)

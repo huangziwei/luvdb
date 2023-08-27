@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
-from .models import CustomUser, InvitationCode
+from .models import CustomUser, InvitationCode, InvitationRequest
 
 User = get_user_model()
 
@@ -80,3 +80,26 @@ class CustomUserChangeForm(UserChangeForm):
     def __init__(self, *args, **kwargs):
         super(CustomUserChangeForm, self).__init__(*args, **kwargs)
         del self.fields["password"]
+
+
+class EmailRequestForm(forms.ModelForm):
+    class Meta:
+        model = InvitationRequest
+        fields = ["email"]
+        widgets = {
+            "email": forms.TextInput(attrs={"placeholder": "Email Address"}),
+        }
+
+
+class InvitationRequestForm(forms.ModelForm):
+    class Meta:
+        model = InvitationRequest
+        fields = ["email", "about_me"]
+        widgets = {
+            "email": forms.TextInput(attrs={"placeholder": "Email Address"}),
+            "about_me": forms.Textarea(
+                attrs={
+                    "placeholder": "Tell us more about you, and why you want to join."
+                }
+            ),
+        }

@@ -110,3 +110,13 @@ def create_follow_activity(sender, instance, created, **kwargs):
             activity_type="follow",
             content_object=instance,
         )
+
+
+class InvitationRequest(models.Model):
+    email = models.EmailField(unique=True)
+    about_me = models.TextField(null=True, blank=True)
+    is_invited = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email

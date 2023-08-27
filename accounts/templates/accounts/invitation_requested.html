@@ -1,0 +1,14 @@
+{% extends "pages/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class='col-7'>
+  <h1>Invitation Requested</h1>
+  <p>Thank you for your interest, your email is now on the waiting list! While I can't guarantee an invite since this is just a hobby project in its Alpha stage, I'd love to hear more about you, or why you want to join. Feel free to share some details below.</p>
+  <form method="post" action="">
+    {% csrf_token %}
+    {{ form.email|as_crispy_field }}
+    {{ form.about_me|as_crispy_field }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock %}

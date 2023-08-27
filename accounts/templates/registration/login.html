@@ -7,8 +7,18 @@
             <div class="col-sm-7 left-column">
                 <h1>Welcome</h1>
                 <p>
-                    Mark the things you <ruby>LOVE<rp>(</rp><rt>/lʌv/</rt><rp>)</rp></ruby>.
+                    <ruby>LʌvDB<rp>(</rp><rt>luvdb.com</rt><rp>)</rp></ruby> is the database of the things you <ruby>LOVE<rp>(</rp><rt>/lʌv/</rt><rp>)</rp></ruby>.
                 </p>
+                {% if not user.is_authenticated %}
+                    <h4>Request Invitation</h4>
+                    <form method="post" action="{% url 'accounts:request_invitation' %}" class="d-flex">
+                        {% csrf_token %}
+                        <div class="form-group mb-2">
+                            <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
+                        </div>
+                        <button class="btn btn-primary ms-2 mb-2" type="submit">Submit</button>
+                    </form>
+                {% endif %}
             </div>
             <!-- Right column -->
             {% if not user.is_authenticated %}
