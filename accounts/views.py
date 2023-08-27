@@ -389,6 +389,7 @@ def search_view(request):
                 | Q(other_titles__icontains=query)
                 | Q(releaserole__person__name__icontains=query)
                 | Q(releaserole__alt_name__icontains=query)
+                | Q(catalog_number__icontains=query)
             ).distinct()  # Update with your real query
             podcast_results = Podcast.objects.filter(
                 Q(title__icontains=query)
