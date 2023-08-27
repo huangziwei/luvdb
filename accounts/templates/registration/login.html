@@ -11,17 +11,16 @@
                 </p>
                 {% if not user.is_authenticated %}
                 <div class="col-10">
-                    <h4>Request An Invitation</h4>
+                    <h6 class="mb-2">Request an Invite</h6>
                     <form method="post" action="{% url 'accounts:request_invitation' %}" class="d-flex">
                         {% csrf_token %}
-                        <div class="form-group mb-2">
-                            <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
+                        <div class="form-group mb-2 col-10">
+                            <input type="email" class="form-control" name="email" placeholder="Provide an email to request an invite." required>
                         </div>
                         <button class="btn btn-primary ms-2 mb-2" type="submit">Submit</button>
                     </form>
                     <small class="text-muted">
-                        <div>I'm not interested in collecting your email, and it's not required for registration. </div>
-                        <div>If you're concerned about privacy (you should), I highly recommend using services like "Hide My Email" from iCloud+ or similar alternatives.</div>
+                        <div>I have no interest in collecting your emails, and it's not a requirement for registration. Rest assured, your email will be deleted after 30 days, regardless of whether you receive an invite or not. If privacy is a concern for you (and it should be), I strongly recommend using services like "Hide My Email" from iCloud+ or other similar alternatives.</div>
                     </small>
                 </div>
                 {% endif %}

@@ -87,7 +87,9 @@ class EmailRequestForm(forms.ModelForm):
         model = InvitationRequest
         fields = ["email"]
         widgets = {
-            "email": forms.TextInput(attrs={"placeholder": "Email Address"}),
+            "email": forms.TextInput(
+                attrs={"placeholder": "Request an invitation: enter an Email Address"}
+            ),
         }
 
 
