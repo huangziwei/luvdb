@@ -362,6 +362,7 @@ def search_view(request):
                 Q(title__icontains=query)
                 | Q(isbn_10__icontains=query)
                 | Q(isbn_13__icontains=query)
+                | Q(eisbn_13__icontains=query)
                 | Q(asin__icontains=query)
                 | Q(bookrole__person__name__icontains=query)
                 | Q(bookrole__alt_name__icontains=query)
