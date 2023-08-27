@@ -10,6 +10,7 @@
                     <ruby>LʌvDB<rp>(</rp><rt>luvdb.com</rt><rp>)</rp></ruby> is the database of the things you <ruby>LOVE<rp>(</rp><rt>/lʌv/</rt><rp>)</rp></ruby>.
                 </p>
                 {% if not user.is_authenticated %}
+                <div class="col-10">
                     <h4>Request An Invitation</h4>
                     <form method="post" action="{% url 'accounts:request_invitation' %}" class="d-flex">
                         {% csrf_token %}
@@ -18,6 +19,11 @@
                         </div>
                         <button class="btn btn-primary ms-2 mb-2" type="submit">Submit</button>
                     </form>
+                    <small class="text-muted">
+                        <div>I'm not interested in collecting your email, and it's not required for registration. </div>
+                        <div>If you're concerned about privacy (you should), I highly recommend using services like "Hide My Email" from iCloud+ or similar alternatives.</div>
+                    </small>
+                </div>
                 {% endif %}
             </div>
             <!-- Right column -->
