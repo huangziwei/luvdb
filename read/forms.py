@@ -406,7 +406,7 @@ class ReadCheckInForm(forms.ModelForm):
 class BookSeriesForm(forms.ModelForm):
     class Meta:
         model = BookSeries
-        fields = ["title"]
+        fields = ["title", "description"]
 
 
 class BookInSeriesForm(forms.ModelForm):
