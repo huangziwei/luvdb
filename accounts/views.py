@@ -140,10 +140,10 @@ class AccountDetailView(DetailView):
         # Then, filter the latest check-ins for each category
         reading = latest_read_checkins.filter(
             status__in=["reading", "rereading"]
-        ).order_by("-timestamp")[:6]
+        ).order_by("-timestamp")[:15]
         read = latest_read_checkins.filter(
             status__in=["finished_reading", "reread"]
-        ).order_by("-timestamp")[:6]
+        ).order_by("-timestamp")[:15]
         to_read = latest_read_checkins.filter(status="to_read").order_by("-timestamp")[
             :6
         ]
@@ -169,16 +169,16 @@ class AccountDetailView(DetailView):
         # Then, filter the latest check-ins for each category and limit the results
         looping = latest_listen_checkins.filter(status="looping").order_by(
             "-timestamp"
-        )[:6]
+        )[:15]
         listened = latest_listen_checkins.filter(status="listened").order_by(
             "-timestamp"
-        )[:6]
+        )[:15]
         to_listen = latest_listen_checkins.filter(status="to_listen").order_by(
             "-timestamp"
-        )[:6]
+        )[:15]
         subscribed = latest_listen_checkins.filter(status="subscribed").order_by(
             "-timestamp"
-        )[:6]
+        )[:15]
 
         context["looping"] = looping
         context["listened"] = listened
@@ -203,13 +203,13 @@ class AccountDetailView(DetailView):
         # Then, filter the latest check-ins for each category and limit the results
         watching = latest_watch_checkins.filter(
             status__in=["watching", "rewatching"]
-        ).order_by("-timestamp")[:6]
+        ).order_by("-timestamp")[:15]
         watched = latest_watch_checkins.filter(
             status__in=["watched", "rewatched"]
-        ).order_by("-timestamp")[:6]
+        ).order_by("-timestamp")[:15]
         to_watch = latest_watch_checkins.filter(status="to_watch").order_by(
             "-timestamp"
-        )[:6]
+        )[:15]
 
         context["watching"] = watching
         context["watched"] = watched
@@ -229,12 +229,12 @@ class AccountDetailView(DetailView):
         # Then, filter the latest check-ins for each category and limit the results
         playing = latest_play_checkins.filter(
             status__in=["playing", "replaying"]
-        ).order_by("-timestamp")[:6]
+        ).order_by("-timestamp")[:15]
         played = latest_play_checkins.filter(
             status__in=["played", "replayed"]
-        ).order_by("-timestamp")[:6]
+        ).order_by("-timestamp")[:15]
         to_play = latest_play_checkins.filter(status="to_play").order_by("-timestamp")[
-            :6
+            :15
         ]
 
         context["playing"] = playing
