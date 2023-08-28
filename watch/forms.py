@@ -11,13 +11,16 @@ from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
 from .models import (
+    Collection,
     Episode,
     EpisodeCast,
     EpisodeRole,
     Movie,
     MovieCast,
+    MovieInCollection,
     MovieRole,
     Series,
+    SeriesInCollection,
     SeriesRole,
     WatchCheckIn,
 )
@@ -381,3 +384,87 @@ class WatchCheckInForm(forms.ModelForm):
         super(WatchCheckInForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
         self.fields["content"].required = False
+
+
+class CollectionForm(forms.ModelForm):
+    class Meta:
+        model = Collection
+        fields = ["title", "description"]
+
+
+class MovieInCollectionForm(forms.ModelForm):
+    movie_url = forms.URLField()
+
+    class Meta:
+        model = MovieInCollection
+        fields = ["movie_url", "order"]
+        exclude = ["collection"]
+
+    def clean_movie_url(self):
+        movie_url = self.cleaned_data.get("movie_url")
+        if not movie_url:
+            return movie_url
+        movie_id = re.findall(r"movie/(\d+)", movie_url)
+        if not movie_id:
+            raise forms.ValidationError("Invalid Movie URL")
+        try:
+            movie = Movie.objects.get(pk=movie_id[0])
+        except Movie.DoesNotExist:
+            raise forms.ValidationError("Movie does not exist")
+        self.instance.movie = movie
+        return movie_url
+
+    def __init__(self, *args, **kwargs):
+        super(MovieInCollectionForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk and self.instance.movie:
+            self.fields[
+                "movie_url"
+            ].initial = f"{settings.ROOT_URL}/watch/movie/{self.instance.movie.pk}"
+        self.fields["movie_url"].required = False
+        self.fields["order"].required = False
+
+
+MovieInCollectionFormSet = forms.inlineformset_factory(
+    Collection, MovieInCollection, form=MovieInCollectionForm, extra=2, can_delete=True
+)
+
+
+class SeriesInCollectionForm(forms.ModelForm):
+    series_url = forms.URLField()
+
+    class Meta:
+        model = SeriesInCollection
+        fields = ["series_url", "order"]
+        exclude = ["collection"]
+
+    def clean_series_url(self):
+        series_url = self.cleaned_data.get("series_url")
+        if not series_url:
+            return series_url
+        series_id = re.findall(r"series/(\d+)", series_url)
+        if not series_id:
+            raise forms.ValidationError("Invalid Series URL")
+        try:
+            series = Series.objects.get(pk=series_id[0])
+        except Series.DoesNotExist:
+            raise forms.ValidationError("Series does not exist")
+        self.instance.series = series
+        return series_url
+
+    def __init__(self, *args, **kwargs):
+        super(SeriesInCollectionForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk and self.instance.series:
+            self.fields[
+                "series_url"
+            ].initial = f"{settings.ROOT_URL}/watch/series/{self.instance.series.pk}"
+        self.fields["series_url"].required = False
+        self.fields["order"].required = False
+
+
+SeriesInCollectionFormSet = forms.inlineformset_factory(
+    Collection,
+    SeriesInCollection,
+    form=SeriesInCollectionForm,
+    extra=2,
+    can_delete=True,
+)

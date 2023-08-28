@@ -1,6 +1,9 @@
 from django.urls import path
 
 from .views import (
+    CollectionCreateView,
+    CollectionDetailView,
+    CollectionUpdateView,
     EpisodeCastDetailView,
     EpisodeCreateView,
     EpisodeDetailView,
@@ -141,4 +144,18 @@ urlpatterns = [
     ),
     # genre
     path("genre/<slug:name>/", GenreDetailView.as_view(), name="genre_detail"),
+    # collection
+    path(
+        "collection/create/", CollectionCreateView.as_view(), name="collection_create"
+    ),
+    path(
+        "collection/<int:pk>/",
+        CollectionDetailView.as_view(),
+        name="collection_detail",
+    ),
+    path(
+        "collection/<int:pk>/update/",
+        CollectionUpdateView.as_view(),
+        name="collection_update",
+    ),
 ]

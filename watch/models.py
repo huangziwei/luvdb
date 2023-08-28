@@ -407,3 +407,47 @@ class WatchCheckIn(models.Model):
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
+
+
+class Collection(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="collection_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="collection_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("watch:collection_detail", args=[str(self.id)])
+
+
+class ContentInCollection(models.Model):
+    collection = models.ForeignKey(
+        Collection, related_name="contents", on_delete=models.CASCADE
+    )
+    order = models.PositiveIntegerField(null=True, blank=True)
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    comment = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.collection.title}: {self.content_object}"

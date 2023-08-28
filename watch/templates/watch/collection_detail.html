@@ -1,0 +1,133 @@
+{% extends "pages/base.html" %}
+{% load static %}
+{% load markdownify %}
+{% load linkify %}
+{% load crispy_forms_tags %}
+{% load url_filters %}
+{% block title %}{{ object.title }}{% endblock title %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class='col-12 col-md-8'>
+                <h2>{{ object.title }}</h2>
+                <div class="mb-3">{{ object.description | markdownify }}</div>
+                
+                <div class='mt-3'>
+                    <h3>Movies in Collection</h3>
+                    {% for movie_in_collection in object.movieincollection_set.all %}
+                        <!--Movie Collection Item-->
+                        <div class="bg-light p-3 mb-3">
+                            <span class="sticky-note">{{ movie_in_collection.order }}</span>
+                            <div class="bg-white p-3 d-flex">
+                                <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                    {% if movie_in_collection.movie.poster %}
+                                        <img src="{{ movie_in_collection.movie.poster.url }}"
+                                             alt="{{ movie_in_collection.movie.title }} cover"
+                                             style="width: 100%"
+                                             class="img-fluid">
+                                    {% else %}
+                                        <div class="no-cover-text">No Cover</div>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <a href="{% url 'watch:movie_detail' movie_in_collection.movie.pk %}"
+                                       class="text-decoration-none hover-username">
+                                        <h5>{{ movie_in_collection.movie.title }}</h5>
+                                    </a>
+                                    <div>
+                                        {% if movie_in_collection.movie.release_date %}
+                                            <div>Release Date: {{ movie_in_collection.movie.release_date }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="bg-light p-3 mb-3">
+                            <div class="bg-white p-3">
+                                <div class="flex-grow-1">
+                                    <p>No movies in this collection yet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class='mt-3'>
+                    <h3>Series in Collection</h3>
+                    {% for series_in_collection in object.seriesincollection_set.all %}
+                        <!--Series Collection Item-->
+                        <div class="bg-light p-3 mb-3">
+                            <span class="sticky-note">{{ series_in_collection.order }}</span>
+                            <div class="bg-white p-3 d-flex">
+                                <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                    {% if series_in_collection.series.poster %}
+                                        <img src="{{ series_in_collection.series.poster.url }}"
+                                             alt="{{ series_in_collection.series.title }} cover"
+                                             style="width: 100%"
+                                             class="img-fluid">
+                                    {% else %}
+                                        <div class="no-cover-text">No Cover</div>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <a href="{% url 'watch:series_detail' series_in_collection.series.pk %}"
+                                       class="text-decoration-none hover-username">
+                                        <h5>{{ series_in_collection.series.title }}</h5>
+                                    </a>
+                                    <div>
+                                        {% if series_in_collection.series.release_date %}
+                                            <div>Release Date: {{ series_in_collection.series.release_date }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="bg-light p-3 mb-3">
+                            <div class="bg-white p-3">
+                                <div class="flex-grow-1">
+                                    <p>No series in this collection yet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="col-12 col-md-4">
+                {% if user.is_authenticated %}
+                    <div class="bg-light p-3">
+                        <a href="{% url 'watch:collection_update' object.id %}"
+                           class='fs-6 text-secondary'>Edit Collection</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .sticky-note {
+        position: relative;
+        top: -1em;
+        display: inline-block;
+        padding: 0 10px;
+        background: #e3e3e3;
+        color: #a1a1a1;
+        line-height: 18px;
+        border-radius: 0 0 4px 4px;
+      }
+    .no-cover-text {
+        width: 100%;
+        height: 100%;
+        background-color: #ddd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+{% endblock %}

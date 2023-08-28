@@ -24,17 +24,23 @@ from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
 
 from .forms import (
+    CollectionForm,
     EpisodeCastFormSet,
     EpisodeForm,
     EpisodeRoleFormSet,
     MovieCastFormSet,
     MovieForm,
+    MovieInCollection,
+    MovieInCollectionFormSet,
     MovieRoleFormSet,
     SeriesForm,
+    SeriesInCollection,
+    SeriesInCollectionFormSet,
     SeriesRoleFormSet,
     WatchCheckInForm,
 )
 from .models import (
+    Collection,
     Episode,
     EpisodeCast,
     EpisodeRole,
@@ -350,7 +356,7 @@ class StudioAutocomplete(autocomplete.Select2QuerySetView):
         qs = Studio.objects.all()
 
         if self.q:
-            qs = qs.filter(Q(name__icontains=self.q)|Q(other_names__icontains=self.q))
+            qs = qs.filter(Q(name__icontains=self.q) | Q(other_names__icontains=self.q))
 
             return qs
 
@@ -1160,3 +1166,89 @@ class GenreAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__icontains=self.q)
 
         return qs
+
+
+##############
+# Collection #
+##############
+
+
+class CollectionCreateView(LoginRequiredMixin, CreateView):
+    model = Collection
+    form_class = CollectionForm
+    template_name = "watch/collection_create.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["movies"] = MovieInCollectionFormSet(self.request.POST)
+            data["series"] = SeriesInCollectionFormSet(self.request.POST)
+        else:
+            data["movies"] = MovieInCollectionFormSet(
+                queryset=MovieInCollection.objects.none()
+            )
+            data["series"] = SeriesInCollectionFormSet(
+                queryset=SeriesInCollection.objects.none()
+            )
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        movies = context["movies"]
+        series = context["series"]
+
+        if movies.is_valid() and series.is_valid():
+            with transaction.atomic():
+                form.instance.created_by = self.request.user
+                self.object = form.save()
+                movies.instance = self.object
+                movies.save()
+                series.instance = self.object
+                series.save()
+        else:
+            return self.form_invalid(form)
+        return super().form_valid(form)
+
+
+class CollectionDetailView(DetailView):
+    model = Collection
+    template_name = "watch/collection_detail.html"
+
+
+class CollectionUpdateView(LoginRequiredMixin, UpdateView):
+    model = Collection
+    form_class = CollectionForm
+    template_name = "watch/collection_update.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["movies"] = MovieInCollectionFormSet(
+                self.request.POST, instance=self.object
+            )
+            data["series"] = SeriesInCollectionFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["movies"] = MovieInCollectionFormSet(instance=self.object)
+            data["series"] = SeriesInCollectionFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        movies = context["movies"]
+        series = context["series"]
+
+        if movies.is_valid() and series.is_valid():
+            with transaction.atomic():
+                self.object = form.save()
+                movies.instance = self.object
+                movies.save()
+                series.instance = self.object
+                series.save()
+        else:
+            return self.form_invalid(form)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("watch:collection_detail", kwargs={"pk": self.object.pk})
