@@ -82,6 +82,15 @@
                                             {% endfor %}
                                         </p>
                                     {% endif %}
+                                    {% if collections %}
+                                        <p>
+                                            <span class="text-muted">Collections:</span>
+                                            {% for collection in collections %}
+                                                <a href="{% url 'watch:collection_detail' collection.id %}">{{ collection.title }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
                                     <p>
                                         <span class="text-muted">Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View Cast</a>
                                     </p>

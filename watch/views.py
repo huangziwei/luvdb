@@ -25,17 +25,15 @@ from write.models import Comment, ContentInList
 
 from .forms import (
     CollectionForm,
+    ContentInCollection,
+    ContentInCollectionFormSet,
     EpisodeCastFormSet,
     EpisodeForm,
     EpisodeRoleFormSet,
     MovieCastFormSet,
     MovieForm,
-    MovieInCollection,
-    MovieInCollectionFormSet,
     MovieRoleFormSet,
     SeriesForm,
-    SeriesInCollection,
-    SeriesInCollectionFormSet,
     SeriesRoleFormSet,
     WatchCheckInForm,
 )
@@ -111,6 +109,15 @@ class MovieDetailView(DetailView):
         movie = get_object_or_404(Movie, pk=self.kwargs["pk"])
 
         content_type = ContentType.objects.get_for_model(Movie)
+        content_in_collections = ContentInCollection.objects.filter(
+            content_type=content_type, object_id=movie.id
+        )
+        collections = [
+            content_in_collection.collection
+            for content_in_collection in content_in_collections
+        ]
+        context["collections"] = collections
+
         context["checkin_form"] = WatchCheckInForm(
             initial={
                 "content_type": content_type.id,
@@ -481,6 +488,15 @@ class SeriesDetailView(DetailView):
         context = super().get_context_data(**kwargs)
 
         content_type = ContentType.objects.get_for_model(Series)
+        content_in_collections = ContentInCollection.objects.filter(
+            content_type=content_type, object_id=self.object.id
+        )
+        collections = [
+            content_in_collection.collection
+            for content_in_collection in content_in_collections
+        ]
+        context["collections"] = collections
+
         context["checkin_form"] = WatchCheckInForm(
             initial={
                 "content_type": content_type.id,
@@ -1181,32 +1197,28 @@ class CollectionCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
-            data["movies"] = MovieInCollectionFormSet(self.request.POST)
-            data["series"] = SeriesInCollectionFormSet(self.request.POST)
+            data["contents"] = ContentInCollectionFormSet(self.request.POST)
         else:
-            data["movies"] = MovieInCollectionFormSet(
-                queryset=MovieInCollection.objects.none()
-            )
-            data["series"] = SeriesInCollectionFormSet(
-                queryset=SeriesInCollection.objects.none()
+            data["contents"] = ContentInCollectionFormSet(
+                queryset=ContentInCollection.objects.none()
             )
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
-        movies = context["movies"]
-        series = context["series"]
+        contents = context["contents"]
 
-        if movies.is_valid() and series.is_valid():
-            with transaction.atomic():
-                form.instance.created_by = self.request.user
-                self.object = form.save()
-                movies.instance = self.object
-                movies.save()
-                series.instance = self.object
-                series.save()
-        else:
-            return self.form_invalid(form)
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            self.object = form.save(commit=False)
+            self.object.save()
+
+            if contents.is_valid():
+                contents.instance = self.object
+                contents.save()
+            else:
+                return self.form_invalid(form)
+
         return super().form_valid(form)
 
 
@@ -1223,31 +1235,25 @@ class CollectionUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
-            data["movies"] = MovieInCollectionFormSet(
-                self.request.POST, instance=self.object
-            )
-            data["series"] = SeriesInCollectionFormSet(
+            data["contents"] = ContentInCollectionFormSet(
                 self.request.POST, instance=self.object
             )
         else:
-            data["movies"] = MovieInCollectionFormSet(instance=self.object)
-            data["series"] = SeriesInCollectionFormSet(instance=self.object)
+            data["contents"] = ContentInCollectionFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
-        movies = context["movies"]
-        series = context["series"]
+        contents = context["contents"]
 
-        if movies.is_valid() and series.is_valid():
-            with transaction.atomic():
-                self.object = form.save()
-                movies.instance = self.object
-                movies.save()
-                series.instance = self.object
-                series.save()
-        else:
-            return self.form_invalid(form)
+        with transaction.atomic():
+            self.object = form.save()
+
+            if contents.is_valid():
+                contents.instance = self.object
+                contents.save()
+            else:
+                return self.form_invalid(form)
         return super().form_valid(form)
 
     def get_success_url(self):

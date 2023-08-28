@@ -12,15 +12,14 @@ from django.urls import reverse_lazy
 
 from .models import (
     Collection,
+    ContentInCollection,
     Episode,
     EpisodeCast,
     EpisodeRole,
     Movie,
     MovieCast,
-    MovieInCollection,
     MovieRole,
     Series,
-    SeriesInCollection,
     SeriesRole,
     WatchCheckIn,
 )
@@ -392,79 +391,57 @@ class CollectionForm(forms.ModelForm):
         fields = ["title", "description"]
 
 
-class MovieInCollectionForm(forms.ModelForm):
-    movie_url = forms.URLField()
+class ContentInCollectionForm(forms.ModelForm):
+    content_url = forms.URLField()
 
     class Meta:
-        model = MovieInCollection
-        fields = ["movie_url", "order"]
+        model = ContentInCollection
+        fields = ["content_url", "order"]
         exclude = ["collection"]
 
-    def clean_movie_url(self):
-        movie_url = self.cleaned_data.get("movie_url")
-        if not movie_url:
-            return movie_url
-        movie_id = re.findall(r"movie/(\d+)", movie_url)
-        if not movie_id:
-            raise forms.ValidationError("Invalid Movie URL")
+    def clean_content_url(self):
+        content_url = self.cleaned_data.get("content_url")
+        if not content_url:
+            return content_url
+
+        # Extracting movie or series ID from the URL
+        content_id = re.findall(r"(movie|series)/(\d+)", content_url)
+        if not content_id:
+            raise forms.ValidationError("Invalid URL")
+
+        content_type, object_id = content_id[0]
         try:
-            movie = Movie.objects.get(pk=movie_id[0])
-        except Movie.DoesNotExist:
-            raise forms.ValidationError("Movie does not exist")
-        self.instance.movie = movie
-        return movie_url
+            if content_type == "movie":
+                content_object = Movie.objects.get(pk=object_id)
+            elif content_type == "series":
+                content_object = Series.objects.get(pk=object_id)
+        except (Movie.DoesNotExist, Series.DoesNotExist):
+            raise forms.ValidationError("Content does not exist")
+
+        self.instance.content_object = content_object
+        return content_url
+
+    def clean(self):
+        cleaned_data = super().clean()
+        content_url = cleaned_data.get("content_url")
+        if not content_url:  # if the content_url field is empty
+            self.cleaned_data["DELETE"] = True  # mark the form instance for deletion
+        return cleaned_data
 
     def __init__(self, *args, **kwargs):
-        super(MovieInCollectionForm, self).__init__(*args, **kwargs)
-        if self.instance and self.instance.pk and self.instance.movie:
+        super(ContentInCollectionForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk and self.instance.content_object:
             self.fields[
-                "movie_url"
-            ].initial = f"{settings.ROOT_URL}/watch/movie/{self.instance.movie.pk}"
-        self.fields["movie_url"].required = False
+                "content_url"
+            ].initial = f"{settings.ROOT_URL}/watch/{self.instance.content_type.model}/{self.instance.content_object.pk}"
+        self.fields["content_url"].required = False
         self.fields["order"].required = False
 
 
-MovieInCollectionFormSet = forms.inlineformset_factory(
-    Collection, MovieInCollection, form=MovieInCollectionForm, extra=2, can_delete=True
-)
-
-
-class SeriesInCollectionForm(forms.ModelForm):
-    series_url = forms.URLField()
-
-    class Meta:
-        model = SeriesInCollection
-        fields = ["series_url", "order"]
-        exclude = ["collection"]
-
-    def clean_series_url(self):
-        series_url = self.cleaned_data.get("series_url")
-        if not series_url:
-            return series_url
-        series_id = re.findall(r"series/(\d+)", series_url)
-        if not series_id:
-            raise forms.ValidationError("Invalid Series URL")
-        try:
-            series = Series.objects.get(pk=series_id[0])
-        except Series.DoesNotExist:
-            raise forms.ValidationError("Series does not exist")
-        self.instance.series = series
-        return series_url
-
-    def __init__(self, *args, **kwargs):
-        super(SeriesInCollectionForm, self).__init__(*args, **kwargs)
-        if self.instance and self.instance.pk and self.instance.series:
-            self.fields[
-                "series_url"
-            ].initial = f"{settings.ROOT_URL}/watch/series/{self.instance.series.pk}"
-        self.fields["series_url"].required = False
-        self.fields["order"].required = False
-
-
-SeriesInCollectionFormSet = forms.inlineformset_factory(
+ContentInCollectionFormSet = forms.inlineformset_factory(
     Collection,
-    SeriesInCollection,
-    form=SeriesInCollectionForm,
+    ContentInCollection,
+    form=ContentInCollectionForm,
     extra=2,
     can_delete=True,
 )
