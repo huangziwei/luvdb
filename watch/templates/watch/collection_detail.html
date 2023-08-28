@@ -13,7 +13,6 @@
                 <div class="mb-3">{{ object.description | markdownify }}</div>
                 
                 <div class='mt-3'>
-                    <h3>Contents in Collection</h3>
                     {% for content_in_collection in object.contents.all %}                        <!--Content Collection Item-->
                         <div class="bg-light p-3 mb-3">
                             <span class="sticky-note">{{ content_in_collection.order }}</span>

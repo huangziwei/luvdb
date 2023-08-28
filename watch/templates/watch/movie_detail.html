@@ -84,7 +84,7 @@
                                     {% endif %}
                                     {% if collections %}
                                         <p>
-                                            <span class="text-muted">Collections:</span>
+                                            <span class="text-muted">Collection{% if collections.count > 1 %}s{% endif %}:</span>
                                             {% for collection in collections %}
                                                 <a href="{% url 'watch:collection_detail' collection.id %}">{{ collection.title }}</a>
                                                 {% if not forloop.last %}/{% endif %}
