@@ -7,12 +7,16 @@ from django.http import Http404
 from django.urls import include, path
 
 from accounts.views import home
+from entity.sitemaps import PersonSiteMap
 from listen.sitemaps import ReleaseSiteMap
 from play.sitemaps import GameSiteMap
-from read.sitemaps import BookSiteMap
+from read.sitemaps import BookSiteMap, InstanceSiteMap, LitWorkSiteMap
 from watch.sitemaps import MovieSiteMap, SeriesSiteMap
 
 sitemaps = {
+    "entity": PersonSiteMap,
+    "litworks": LitWorkSiteMap,
+    "instances": InstanceSiteMap,
     "books": BookSiteMap,
     "games": GameSiteMap,
     "movies": MovieSiteMap,
