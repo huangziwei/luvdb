@@ -5,86 +5,58 @@
         <div class="col-md-12">{{ form.title|as_crispy_field }}</div>
         <div class="col-md-12">{{ form.description|as_crispy_field }}</div>
     </div>
-    <h2>Movies in Collection</h2>
-    {{ movies.management_form }}
-    <div id="movieInCollectionDiv">
-        {% for form in movies %}
+    <h2>Books in Series</h2>
+    {{ books.management_form }}
+    <div id="bookInSeriesDiv">
+        {% for form in books %}
             {{ form.id }}
             <div class="row{% if forloop.last %} empty-form{% endif %}"
                  {% if forloop.last %}style="display: none;"{% endif %}>
-                <div class="col-md-8">{{ form.movie_url|as_crispy_field }}</div>
-                <div class="col-md-4">{{ form.order|as_crispy_field }}</div>
-            </div>
-        {% endfor %}
-    </div>
-    <h2>Series in Collection</h2>
-    {{ series.management_form }}
-    <div id="seriesInCollectionDiv">
-        {% for form in series %}
-            {{ form.id }}
-            <div class="row{% if forloop.last %} empty-form{% endif %}"
-                 {% if forloop.last %}style="display: none;"{% endif %}>
-                <div class="col-md-8">{{ form.series_url|as_crispy_field }}</div>
+                <div class="col-md-8">{{ form.book_url|as_crispy_field }}</div>
                 <div class="col-md-4">{{ form.order|as_crispy_field }}</div>
             </div>
         {% endfor %}
     </div>
     <div class="d-flex justify-content-between">
         <button type="submit" class="btn btn-primary">Submit</button>
-        <button id="addMoreMovies" type="button" class="btn btn-outline-dark">Add More Movies</button>
-        <button id="addMoreSeries" type="button" class="btn btn-outline-dark">Add More Series</button>
+        <button id="addMore" type="button" class="btn btn-outline-dark">Add More</button>
     </div>
 </form>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        let formsetNumMovies = {{ movies|length }};
-        let formsetNumSeries = {{ series|length }};
-        let emptyFormMovies = document.querySelector('#movieInCollectionDiv .empty-form').cloneNode(true);
-        let emptyFormSeries = document.querySelector('#seriesInCollectionDiv .empty-form').cloneNode(true);
+        let formsetNum = {{ books|length }};
+        let emptyForm = document.querySelector('.empty-form').cloneNode(true);
     
-        function updateFormIndices(container, prefix) {
-            let forms = container.querySelectorAll('.row:not(.empty-form)');
+        function updateFormIndices() {
+            let forms = document.querySelectorAll('#bookInSeriesDiv .row:not(.empty-form)');
             forms.forEach((form, index) => {
                 form.querySelectorAll('input, select, textarea').forEach(input => {
                     if (input.name) {
-                        input.name = input.name.replace(new RegExp(`${prefix}-\\d+-`, 'g'), `${prefix}-${index}-`);
+                        input.name = input.name.replace(/bookinseries_set-\d+-/, `bookinseries_set-${index}-`);
                     }
                     if (input.id) {
-                        input.id = input.id.replace(new RegExp(`${prefix}-\\d+-`, 'g'), `${prefix}-${index}-`);
+                        input.id = input.id.replace(/bookinseries_set-\d+-/, `bookinseries_set-${index}-`);
                     }
                 });
             });
         }
     
-        document.querySelector('#addMoreMovies').addEventListener('click', function(e) {
+        document.querySelector('#addMore').addEventListener('click', function(e) {
             e.preventDefault();
             
-            let newForm = emptyFormMovies.cloneNode(true);
+            let newForm = emptyForm.cloneNode(true);
             newForm.classList.remove('empty-form');
             newForm.style.display = '';
     
-            document.querySelector('#movieInCollectionDiv').appendChild(newForm);
+            document.querySelector('#bookInSeriesDiv').appendChild(newForm);
     
-            formsetNumMovies++;
-            document.querySelector('#id_movieincollection_set-TOTAL_FORMS').value = formsetNumMovies;
+            formsetNum++;
+            document.querySelector('#id_bookinseries_set-TOTAL_FORMS').value = formsetNum;
     
-            updateFormIndices(document.querySelector('#movieInCollectionDiv'), 'movieincollection_set');
-        });
-
-        document.querySelector('#addMoreSeries').addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            let newForm = emptyFormSeries.cloneNode(true);
-            newForm.classList.remove('empty-form');
-            newForm.style.display = '';
-    
-            document.querySelector('#seriesInCollectionDiv').appendChild(newForm);
-    
-            formsetNumSeries++;
-            document.querySelector('#id_seriesincollection_set-TOTAL_FORMS').value = formsetNumSeries;
-    
-            updateFormIndices(document.querySelector('#seriesInCollectionDiv'), 'seriesincollection_set');
+            // Update all the form indices
+            updateFormIndices();
         });
     
     });
+    
 </script>
