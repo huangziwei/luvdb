@@ -55,6 +55,23 @@
                         </div>
                     {% endfor %}
                 {% endif %}
+                {% if reposts %}
+                    <hr>
+                    <h3>Reposts</h3>
+                    {% for repost in reposts %}
+                        <div class="item mb-3">
+                            <p>
+                                <a href="{% url 'accounts:detail' repost.user.username %}">{{ repost.user.display_name | default:repost.user.username }}</a> reposted:
+                            </p>
+                            <p>{{ repost.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</p>
+                            <p>
+                                <small>
+                                    <a href="{% url 'write:repost_detail' repost.id %}" class='text-muted'>{{ repost.timestamp }}</a>
+                                </small>
+                            </p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
                 {% if not user %}
                     <hr>
                     <h3>Users</h3>

@@ -401,8 +401,11 @@ class TagListView(ListView):
         context["users"] = User.objects.filter(
             bio__icontains=tag
         )  # these are the users with this tag in their bio
+        context["reposts"] = reposts = Repost.objects.filter(tags__name=tag).order_by(
+            "-timestamp"
+        )
         all_tags = set()
-        for obj in chain(posts, says, pins):
+        for obj in chain(posts, says, pins, reposts):
             for t in obj.tags.all():
                 all_tags.add(t)
         context["all_tags"] = all_tags
@@ -437,8 +440,12 @@ class TagUserListView(ListView):
         context["pins"] = pins = Pin.objects.filter(tags__name=tag, user=user).order_by(
             "-timestamp"
         )
+        context["reposts"] = reposts = Repost.objects.filter(
+            tags__name=tag, user=user
+        ).order_by("-timestamp")
+
         all_tags = set()
-        for obj in chain(posts, says, pins):
+        for obj in chain(posts, says, pins, reposts):
             for t in obj.tags.all():
                 all_tags.add(t)
         context["all_tags"] = all_tags
