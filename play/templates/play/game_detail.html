@@ -170,15 +170,15 @@
                     <!--LuvLists that included this game-->
                     <div class="bg-light p-3 mb-3">
                         <h5>Lists</h5>
-                        <ul class='mb-0'>
+                        <div class='mb-0'>
                             {% for content_in_list in lists_containing_game %}
-                                <li>
+                                <div>
                                     <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
-                                </li>
+                                </div>
                             {% empty %}
-                                <p>This game is not included in any LuvLists.</p>
+                                <div>This game is not included in any LuvLists.</div>
                             {% endfor %}
-                        </ul>
+                        </div>
                     </div>
                 {% endif %}
             </div>
