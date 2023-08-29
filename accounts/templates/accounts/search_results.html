@@ -78,7 +78,7 @@
                     {% endif %}
                     <hr>
                 {% endif %}
-                {% if litwork_results or litinstance_results or book_results or periodical_results %}
+                {% if litwork_results or litinstance_results or book_results or periodical_results or book_series %}
                     <h3 class="mb-4">Read</h3>
                     {% if litwork_results %}
                         <h4>Works</h4>
@@ -123,6 +123,16 @@
                             </p>
                         {% empty %}
                             <p>No periodical results found.</p>
+                        {% endfor %}
+                    {% endif %}
+                    {% if book_series %}
+                        <h4>Book Series</h4>
+                        {% for series in book_series %}
+                            <p>
+                                <a href="{% url 'read:series_detail' series.id %}">{{ series.title|truncatechars:50 }}</a>
+                            </p>
+                        {% empty %}
+                            <p>No book series results found.</p>
                         {% endfor %}
                     {% endif %}
                     <hr>

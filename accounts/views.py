@@ -26,7 +26,7 @@ from listen.models import ListenCheckIn, Podcast, Release, Track
 from listen.models import Work as MusicWork
 from play.models import Game, GameCast, GameCheckIn, GameRole
 from play.models import Work as GameWork
-from read.models import Book
+from read.models import Book, BookSeries
 from read.models import Instance as LitInstance
 from read.models import Periodical, ReadCheckIn
 from read.models import Work as LitWork
@@ -326,6 +326,7 @@ def search_view(request):
     litinstance_results = []
     book_results = []
     periodical_results = []
+    book_series = []
     # play
     gamework_results = []
     game_results = []
@@ -382,6 +383,9 @@ def search_view(request):
             periodical_results = Periodical.objects.filter(
                 title__icontains=query
             ).distinct()  # Update with your real query
+            book_series = BookSeries.objects.filter(
+                Q(title__icontains=query)
+            ).distinct()
 
         if model in ["all", "listen"]:
             musicwork_results = MusicWork.objects.filter(
@@ -465,6 +469,7 @@ def search_view(request):
             "litinstance_results": litinstance_results,
             "book_results": book_results,
             "periodical_results": periodical_results,
+            "book_series": book_series,
             # play
             "gamework_results": gamework_results,
             "game_results": game_results,
