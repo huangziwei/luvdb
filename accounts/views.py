@@ -360,18 +360,21 @@ def search_view(request):
         if model in ["all", "read"]:
             litwork_results = LitWork.objects.filter(
                 Q(title__icontains=query)
+                | Q(subtitle__icontains=query)
                 | Q(workrole__person__name__icontains=query)
                 | Q(workrole__alt_name__icontains=query)
                 | Q(publication_date__icontains=query)
             ).distinct()
             litinstance_results = LitInstance.objects.filter(
                 Q(title__icontains=query)
+                | Q(subtitle__icontains=query)
                 | Q(instancerole__person__name__icontains=query)
                 | Q(instancerole__alt_name__icontains=query)
                 | Q(publication_date__icontains=query)
             ).distinct()
             book_results = Book.objects.filter(
                 Q(title__icontains=query)
+                | Q(subtitle__icontains=query)
                 | Q(isbn_10__icontains=query)
                 | Q(isbn_13__icontains=query)
                 | Q(eisbn_13__icontains=query)
