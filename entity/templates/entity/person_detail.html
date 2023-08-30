@@ -229,7 +229,7 @@
                 {% endif %}
                 <!--Watch-->
                 {% if movies or series or movies_as_director or series_as_director or movies_as_writer or series_as_writer %}
-                    <h3>Filmography</h3>
+                    <h3 class="mt-2">Filmography</h3>
                     <div class="row">
                         <!--As cast-->
                         {% if movies.count != 0 or series.count != 0 %}
@@ -321,7 +321,7 @@
                 {% endif %}
                 <!--Play-->
                 {% if gameworks_as_writer or gameworks_as_artist or gameworks_as_musician or games_as_cast%}
-                    <h3>Gameography</h3>
+                    <h3 class="mt-2">Gameography</h3>
                     {% if gameworks_as_writer or gameworks_as_artist or gameworks_as_musician %}
                     <div class="row">
                         {% if gameworks_as_writer %}

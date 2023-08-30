@@ -28,7 +28,7 @@
                     </div>
                 {% endif %}
                 {% if grouped_instances %}
-                    <h3 class="mt-3">Instances</h3>
+                    <h3 class="mt-2">Instances</h3>
                     {% with grouped_length=grouped_instances|length %}
                         {% for lang, instances in grouped_instances.items %}
                             {% if grouped_length > 1 %}
@@ -76,7 +76,7 @@
                     {% endwith %}
                 {% endif %}
                 {% if adaptations %}
-                    <h3>Adaptations</h3>
+                    <h3 class="mt-2">Adaptations</h3>
                     <ul>
                         {% for adaptation in adaptations %}
                             <li>
