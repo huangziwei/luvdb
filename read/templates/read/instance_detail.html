@@ -28,6 +28,12 @@
                         {{ object.publication_date }}
                     </div>
                 {% endif %}
+                {% if object.notes %}
+                    <div>
+                        <span class="text-muted">Notes:</span>
+                        {{ object.notes }}
+                    </div>
+                {% endif %}
                 {% if books %}
                     <div class="mt-3">
                         <h3>Books</h3>
