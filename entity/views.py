@@ -304,7 +304,11 @@ class PersonDetailView(DetailView):
             GameWork.objects.filter(workrole__person=person).distinct().count()
         )
         context["games_count"] = (
-            Game.objects.filter(gameroles__person=person).distinct().count()
+            Game.objects.filter(
+                Q(gameroles__person=person) | Q(gamecasts__person=person)
+            )
+            .distinct()
+            .count()
         )
 
         return context
