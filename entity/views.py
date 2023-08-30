@@ -200,19 +200,19 @@ class PersonDetailView(DetailView):
 
         context["movies_as_writer"] = (
             Movie.objects.filter(
-                movieroles__person=person, movieroles__role__name="Writer"
+                movieroles__person=person, movieroles__role__name="Screenwriter"
             )
             .distinct()
             .order_by("release_date")
         )
 
         written_series = Series.objects.filter(
-            seriesroles__person=person, seriesroles__role__name="Writer"
+            seriesroles__person=person, seriesroles__role__name="Screenwriter"
         ).distinct()
 
         episode_series_writer = (
             Episode.objects.filter(
-                episoderoles__person=person, episoderoles__role__name="Writer"
+                episoderoles__person=person, episoderoles__role__name="Screenwriter"
             )
             .values("series__id", "series__title")
             .annotate(episode_count=Count("id"))
