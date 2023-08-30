@@ -42,6 +42,7 @@ class WorkForm(forms.ModelForm):
                 url=reverse_lazy("read:genre-autocomplete")
             ),
             "publication_date": forms.TextInput(),
+            "notes": forms.Textarea(attrs={"rows": 3}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -122,6 +123,7 @@ class InstanceForm(forms.ModelForm):
             ),
             "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
             "publication_date": forms.TextInput(),
+            "notes": forms.Textarea(attrs={"rows": 3}),
         }
 
     def __init__(self, *args, **kwargs):

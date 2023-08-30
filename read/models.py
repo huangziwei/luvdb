@@ -285,6 +285,7 @@ class Instance(models.Model):
         max_length=255, blank=True, null=True
     )  # 1st ed., revised ed., etc.
     wikipedia = models.URLField(max_length=200, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
