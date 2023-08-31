@@ -339,120 +339,153 @@ def search_view(request):
     movie_results = []
     series_results = []
 
+    search_terms = query.split()
+
     if query:
         if model in ["all", "write"]:
-            user_results = User.objects.filter(
-                Q(username__icontains=query)
-                | Q(display_name__icontains=query)
-                | Q(bio__icontains=query)
-            )
-            post_results = Post.objects.filter(
-                Q(title__icontains=query) | Q(content__icontains=query)
-            ).distinct()
-            say_results = Say.objects.filter(content__icontains=query).distinct()
-            pin_results = Pin.objects.filter(
-                Q(title__icontains=query)
-                | Q(content__icontains=query)
-                | Q(url__icontains=query)
-            ).distinct()
-            repost_results = Repost.objects.filter(content__icontains=query).distinct()
+            user_results = User.objects.all()
+            post_results = Post.objects.all()
+            say_results = Say.objects.all()
+            pin_results = Pin.objects.all()
+            repost_results = Repost.objects.all()
+
+            for term in search_terms:
+                user_results = user_results.filter(
+                    Q(username__icontains=term)
+                    | Q(display_name__icontains=term)
+                    | Q(bio__icontains=term)
+                )
+                post_results = post_results.filter(
+                    Q(title__icontains=term) | Q(content__icontains=term)
+                ).distinct()
+                say_results = say_results.filter(content__icontains=term).distinct()
+                pin_results = pin_results.filter(
+                    Q(title__icontains=term)
+                    | Q(content__icontains=term)
+                    | Q(url__icontains=term)
+                ).distinct()
+                repost_results = repost_results.filter(
+                    content__icontains=term
+                ).distinct()
 
         if model in ["all", "read"]:
-            litwork_results = LitWork.objects.filter(
-                Q(title__icontains=query)
-                | Q(subtitle__icontains=query)
-                | Q(workrole__person__name__icontains=query)
-                | Q(workrole__alt_name__icontains=query)
-                | Q(publication_date__icontains=query)
-            ).distinct()
-            litinstance_results = LitInstance.objects.filter(
-                Q(title__icontains=query)
-                | Q(subtitle__icontains=query)
-                | Q(instancerole__person__name__icontains=query)
-                | Q(instancerole__alt_name__icontains=query)
-                | Q(publication_date__icontains=query)
-            ).distinct()
-            book_results = Book.objects.filter(
-                Q(title__icontains=query)
-                | Q(subtitle__icontains=query)
-                | Q(isbn_10__icontains=query)
-                | Q(isbn_13__icontains=query)
-                | Q(eisbn_13__icontains=query)
-                | Q(asin__icontains=query)
-                | Q(bookrole__person__name__icontains=query)
-                | Q(bookrole__alt_name__icontains=query)
-                | Q(publication_date__icontains=query)
-            ).distinct()
-            periodical_results = Periodical.objects.filter(
-                title__icontains=query
-            ).distinct()  # Update with your real query
-            book_series = BookSeries.objects.filter(
-                Q(title__icontains=query)
-            ).distinct()
+            litwork_results = LitWork.objects.all()
+            litinstance_results = LitInstance.objects.all()
+            book_results = Book.objects.all()
+            periodical_results = Periodical.objects.all()
+            book_series = BookSeries.objects.all()
+
+            for term in search_terms:
+                litwork_results = litwork_results.filter(
+                    Q(title__icontains=term)
+                    | Q(subtitle__icontains=term)
+                    | Q(workrole__person__name__icontains=term)
+                    | Q(workrole__alt_name__icontains=term)
+                    | Q(publication_date__icontains=term)
+                ).distinct()
+                litinstance_results = litinstance_results.filter(
+                    Q(title__icontains=term)
+                    | Q(subtitle__icontains=term)
+                    | Q(instancerole__person__name__icontains=term)
+                    | Q(instancerole__alt_name__icontains=term)
+                    | Q(publication_date__icontains=term)
+                ).distinct()
+                book_results = book_results.filter(
+                    Q(title__icontains=term)
+                    | Q(subtitle__icontains=term)
+                    | Q(isbn_10__icontains=term)
+                    | Q(isbn_13__icontains=term)
+                    | Q(eisbn_13__icontains=term)
+                    | Q(asin__icontains=term)
+                    | Q(bookrole__person__name__icontains=term)
+                    | Q(bookrole__alt_name__icontains=term)
+                    | Q(publication_date__icontains=term)
+                ).distinct()
+                periodical_results = periodical_results.filter(
+                    title__icontains=term
+                ).distinct()
+                book_series = book_series.filter(Q(title__icontains=term)).distinct()
 
         if model in ["all", "listen"]:
-            musicwork_results = MusicWork.objects.filter(
-                Q(title__icontains=query)
-                | Q(other_titles__icontains=query)
-                | Q(workrole__person__name__icontains=query)
-                | Q(workrole__alt_name__icontains=query)
-            ).distinct()  # Update with your real query
-            track_results = Track.objects.filter(
-                Q(title__icontains=query)
-                | Q(other_titles__icontains=query)
-                | Q(trackrole__person__name__icontains=query)
-                | Q(trackrole__alt_name__icontains=query)
-            ).distinct()  # Update with your real query
-            release_results = Release.objects.filter(
-                Q(title__icontains=query)
-                | Q(other_titles__icontains=query)
-                | Q(releaserole__person__name__icontains=query)
-                | Q(releaserole__alt_name__icontains=query)
-                | Q(catalog_number__icontains=query)
-            ).distinct()  # Update with your real query
-            podcast_results = Podcast.objects.filter(
-                Q(title__icontains=query)
-            ).distinct()
+            musicwork_results = MusicWork.objects.all()
+            track_results = Track.objects.all()
+            release_results = Release.objects.all()
+            podcast_results = Podcast.objects.all()
+
+            for term in search_terms:
+                musicwork_results = musicwork_results.filter(
+                    Q(title__icontains=term)
+                    | Q(other_titles__icontains=term)
+                    | Q(workrole__person__name__icontains=term)
+                    | Q(workrole__alt_name__icontains=term)
+                ).distinct()
+                track_results = track_results.filter(
+                    Q(title__icontains=term)
+                    | Q(other_titles__icontains=term)
+                    | Q(trackrole__person__name__icontains=term)
+                    | Q(trackrole__alt_name__icontains=term)
+                ).distinct()
+                release_results = release_results.filter(
+                    Q(title__icontains=term)
+                    | Q(other_titles__icontains=term)
+                    | Q(releaserole__person__name__icontains=term)
+                    | Q(releaserole__alt_name__icontains=term)
+                    | Q(catalog_number__icontains=term)
+                ).distinct()
+                podcast_results = podcast_results.filter(
+                    Q(title__icontains=term)
+                ).distinct()
 
         if model in ["all", "play"]:
-            gamework_results = GameWork.objects.filter(
-                Q(title__icontains=query)
-                | Q(workrole__person__name__icontains=query)
-                | Q(workrole__alt_name__icontains=query)
-                | Q(first_release_date=query)
-            ).distinct()
-            game_results = Game.objects.filter(
-                Q(title__icontains=query)
-                | Q(developers__name__icontains=query)
-                | Q(platforms__name__icontains=query)
-                | Q(release_date__icontains=query)
-                | Q(gameroles__person__name__icontains=query)
-                | Q(gameroles__alt_name__icontains=query)
-            ).distinct()  # Update with your real query
+            gamework_results = GameWork.objects.all()
+            game_results = Game.objects.all()
+
+            for term in search_terms:
+                gamework_results = gamework_results.filter(
+                    Q(title__icontains=term)
+                    | Q(workrole__person__name__icontains=term)
+                    | Q(workrole__alt_name__icontains=term)
+                    | Q(first_release_date=query)
+                ).distinct()
+                game_results = game_results.filter(
+                    Q(title__icontains=term)
+                    | Q(developers__name__icontains=term)
+                    | Q(platforms__name__icontains=term)
+                    | Q(release_date__icontains=term)
+                    | Q(gameroles__person__name__icontains=term)
+                    | Q(gameroles__alt_name__icontains=term)
+                ).distinct()
 
         if model in ["all", "watch"]:
-            movie_results = Movie.objects.filter(
-                Q(title__icontains=query)
-                | Q(other_titles__icontains=query)
-                | Q(movieroles__person__name__icontains=query)
-                | Q(movieroles__alt_name__icontains=query)
-                | Q(moviecasts__person__name__icontains=query)
-                | Q(moviecasts__character_name__icontains=query)
-                | Q(release_date__icontains=query)
-            ).distinct()
-            series_results = Series.objects.filter(
-                Q(title__icontains=query)
-                | Q(other_titles__icontains=query)
-                | Q(seriesroles__person__name__icontains=query)
-                | Q(seriesroles__alt_name__icontains=query)
-                | Q(episodes__episodecasts__person__name__icontains=query)
-                | Q(episodes__episodecasts__character_name__icontains=query)
-            ).distinct()
+            movie_results = Movie.objects.all()
+            series_results = Series.objects.all()
+
+            for term in search_terms:
+                movie_results = movie_results.filter(
+                    Q(title__icontains=term)
+                    | Q(other_titles__icontains=term)
+                    | Q(movieroles__person__name__icontains=term)
+                    | Q(movieroles__alt_name__icontains=term)
+                    | Q(moviecasts__person__name__icontains=term)
+                    | Q(moviecasts__character_name__icontains=term)
+                    | Q(release_date__icontains=term)
+                ).distinct()
+                series_results = series_results.filter(
+                    Q(title__icontains=term)
+                    | Q(other_titles__icontains=term)
+                    | Q(seriesroles__person__name__icontains=term)
+                    | Q(seriesroles__alt_name__icontains=term)
+                    | Q(episodes__episodecasts__person__name__icontains=term)
+                    | Q(episodes__episodecasts__character_name__icontains=term)
+                ).distinct()
 
         if model in ["all", "person"]:
-            person_results = Person.objects.filter(
-                Q(name__icontains=query) | Q(other_names__icontains=query)
-            ).distinct()
+            person_results = Person.objects.all()
+
+            for term in search_terms:
+                person_results = person_results.filter(
+                    Q(name__icontains=term) | Q(other_names__icontains=term)
+                ).distinct()
 
     return render(
         request,

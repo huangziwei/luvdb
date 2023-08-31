@@ -41,7 +41,7 @@
                                         <a href="{% url "read:instance_detail" instance_data.instance.id %}">{{ instance_data.instance.title }}</a>
                                         {% if instance_data.instance.subtitle %}: {{ instance_data.instance.subtitle }}{% endif %}
                                         {# djlint:off #}
-                                        ({% if instance_data.instance.edition %}{{ instance_data.instance.edition }},{% endif %}{{ instance_data.instance.publication_date }})
+                                        ({% if instance_data.instance.edition %}{{ instance_data.instance.edition }}, {% endif %}{{ instance_data.instance.publication_date }})
                                         {# djlint:on #}
                                         {% for item in instance_data.items %}
                                             <ul>
