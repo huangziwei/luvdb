@@ -433,20 +433,22 @@ class Book(models.Model):
                 output_size = (500, 500)
                 img.thumbnail(output_size)
 
-                # Save the image to a BytesIO object
-                temp_file = BytesIO()
-                img.save(temp_file, format=img.format)
-                temp_file.seek(0)
+            # Save the image to a BytesIO object
+            temp_file = BytesIO()
+            img.save(temp_file, format="WEBP")
+            temp_file.seek(0)
 
-                # remove the original image
-                self.cover.delete(save=False)
+            # Generate new name for the webp image
+            webp_name = os.path.splitext(self.cover.name)[0] + ".webp"
 
-                # Save the BytesIO object to the FileField
-                self.cover.save(
-                    self.cover.name, ContentFile(temp_file.read()), save=False
-                )
+            # remove the original image
+            self.cover.delete(save=False)
+
+            # Save the BytesIO object to the FileField
+            self.cover.save(webp_name, ContentFile(temp_file.read()), save=False)
 
             img.close()
+            self.cover.close()
 
         # Convert the publication_date to a standard format if it's not None or empty
         if self.publication_date:
@@ -686,20 +688,22 @@ class Issue(models.Model):
                 output_size = (500, 500)
                 img.thumbnail(output_size)
 
-                # Save the image to a BytesIO object
-                temp_file = BytesIO()
-                img.save(temp_file, format=img.format)
-                temp_file.seek(0)
+            # Save the image to a BytesIO object
+            temp_file = BytesIO()
+            img.save(temp_file, format="WEBP")
+            temp_file.seek(0)
 
-                # remove the original image
-                self.cover.delete(save=False)
+            # Generate new name for the webp image
+            webp_name = os.path.splitext(self.cover.name)[0] + ".webp"
 
-                # Save the BytesIO object to the FileField
-                self.cover.save(
-                    self.cover.name, ContentFile(temp_file.read()), save=False
-                )
+            # remove the original image
+            self.cover.delete(save=False)
+
+            # Save the BytesIO object to the FileField
+            self.cover.save(webp_name, ContentFile(temp_file.read()), save=False)
 
             img.close()
+            self.cover.close()
 
         # Convert the publication_date to a standard format if it's not None or empty
         if self.publication_date:
