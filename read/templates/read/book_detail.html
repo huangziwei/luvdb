@@ -71,7 +71,7 @@
                                         <p>
                                             <span class="text-muted">Series:</span>
                                             {% for bookinseries in object.bookinseries_set.all %}
-                                                <a href="{% url 'read:series_detail' bookinseries.series.id %}">{{ bookinseries.series.title }}</a>
+                                                <a href="{% url 'read:series_detail' bookinseries.series.id %}">{{ bookinseries.series.title }}</a> #{{ bookinseries.order }}
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
                                         </p>

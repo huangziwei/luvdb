@@ -33,6 +33,7 @@
                                        class="text-decoration-none hover-username">
                                         <h5>{{ book_in_series.book.title }}</h5>
                                     </a>
+                                    {% if book_in_series.book.subtitle %}<div class="mb-2 text-muted">{{ book_in_series.book.subtitle }}</div>{% endif %}
                                     {% regroup book_in_series.book.bookrole_set.all by role as roles_list %}
                                     {% for role in roles_list %}
                                         <div>
