@@ -56,11 +56,7 @@
                                             </a>
                                         </p>
                                     {% endif %}
-                                    {% if object.format %}
-                                        <p>
-                                            <span class="text-muted">Format:</span> {{ object.format }}
-                                        </p>
-                                    {% endif %}
+                                    
                                     {% if object.publication_date %}
                                         <p>
                                             <span class="text-muted">Date:</span> {{ object.publication_date }}
@@ -86,6 +82,11 @@
                                             <span class="text-muted">More Metadata</span>
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
+                                            {% if object.format %}
+                                                <p>
+                                                    <span class="text-muted">Format:</span> {{ object.format }}
+                                                </p>
+                                            {% endif %}
                                             {% if object.length %}
                                                 <p>
                                                     <span class="text-muted">Length:</span> {{ object.length }}

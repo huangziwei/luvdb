@@ -2,7 +2,7 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-sm-7 left-column">
+            <div class="col-12 left-column">
                 <h2>Searching: "{{ query }}"</h2>
                 <div>
                     <span class="text-muted">in {{ execution_time|floatformat:5 }} seconds</span>
@@ -14,10 +14,8 @@
                         <p>
                             <a href="{% url 'accounts:detail' username=user.username %}">{{ user.display_name | default:user.username }}</a>
                         </p>
-                    {% empty %}
-                        <p>No user results found.</p>
                     {% endfor %}
-                    {% comment %} <hr> {% endcomment %}
+                    <hr>
                 {% endif %}
                 {% if post_results or say_results or pin_results or repost_results %}
                     <h3 class="mb-4">Write</h3>
@@ -28,8 +26,6 @@
                                 <a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a>
                                 ({{ post.user.display_name | default:post.user.username }}, {{ post.timestamp|date:"Y.m.d" }})
                             </p>
-                        {% empty %}
-                            <p>No post results found.</p>
                         {% endfor %}
                     {% endif %}
                     {% if say_results %}
@@ -39,8 +35,6 @@
                                 <a href="{% url 'write:say_detail' say.id %}">{{ say.content|truncatechars:50 }}</a>
                                 ({{ say.user.display_name | default:say.user.username }}, {{ say.timestamp|date:"Y.m.d" }})
                             </p>
-                        {% empty %}
-                            <p>No say results found.</p>
                         {% endfor %}
                     {% endif %}
                     {% if pin_results %}
@@ -50,8 +44,6 @@
                                 <a href="{% url 'write:pin_detail' pin.id %}">{{ pin.title|truncatechars:50 }}</a>
                                 ({{ pin.user.display_name | default:pin.user.username }}, {{ pin.timestamp|date:"Y.m.d" }})
                             </p>
-                        {% empty %}
-                            <p>No pin results found.</p>
                         {% endfor %}
                     {% endif %}
                     {% if repost_results %}
@@ -61,8 +53,6 @@
                                 <a href="{% url 'write:repost_detail' repost.id %}">{{ repost.content|truncatechars:50 }}</a>
                                 ({{ repost.user.display_name | default:repost.user.username }}, {{ repost.timestamp|date:"Y.m.d" }})
                             </p>
-                        {% empty %}
-                            <p>No repost results found.</p>
                         {% endfor %}
                     {% endif %}
                     <hr>
@@ -75,99 +65,112 @@
                             <p>
                                 <a href="{% url 'entity:person_detail' person.id %}">{{ person.name|truncatechars:50 }}</a>
                             </p>
-                        {% empty %}
-                            <p>No person results found.</p>
                         {% endfor %}
                     {% endif %}
                     <hr>
                 {% endif %}
                 {% if litwork_results or litinstance_results or book_results or periodical_results or book_series %}
                     <h3 class="mb-4">Read</h3>
-                    {% if litwork_results %}
-                        <h4>Works</h4>
-                        {% for work in litwork_results %}
-                            <p>
-                                <a href="{% url 'read:work_detail' work.id %}">{{ work.title|truncatechars:50 }}</a>
-                                ({{ work.publication_date }})
-                            </p>
-                        {% empty %}
-                            <p>No work results found.</p>
-                        {% endfor %}
-                    {% endif %}
-                    {% if litinstance_results %}
-                        <h4>Instances</h4>
-                        {% for instance in litinstance_results %}
-                            <p>
-                                <a href="{% url 'read:instance_detail' instance.id %}">{{ instance.title|truncatechars:50 }}</a>
-                                ({{ instance.publication_date }})
-                            </p>
-                        {% empty %}
-                            <p>No instance results found.</p>
-                        {% endfor %}
-                    {% endif %}
-                    {% if book_results %}
-                        <h4>Book</h4>
-                        {% for book in book_results %}
-                            <p>
-                                <a href="{% url 'read:book_detail' book.id %}">{{ book.title|truncatechars:50 }}</a>{% if book.subtitle %}: {{book.subtitle|truncatechars:50}}{% endif %}
-                                {# djlint:off #}
-                                ({% if book.format %}{{ book.format }},{% endif %}{{ book.publication_date }})
-                                {# djlint:on #}
-                            </p>
-                        {% empty %}
-                            <p>No Book results found.</p>
-                        {% endfor %}
-                    {% endif %}
-                    {% if periodical_results %}
-                        <h4>Periodicals</h4>
-                        {% for periodical in periodical_results %}
-                            <p>
-                                <a href="{% url 'read:periodical_detail' periodical.id %}">{{ periodical.title|truncatechars:50 }}</a>
-                            </p>
-                        {% empty %}
-                            <p>No periodical results found.</p>
-                        {% endfor %}
-                    {% endif %}
-                    {% if book_series %}
-                        <h4>Book Series</h4>
-                        {% for series in book_series %}
-                            <p>
-                                <a href="{% url 'read:series_detail' series.id %}">{{ series.title|truncatechars:50 }}</a>
-                            </p>
-                        {% empty %}
-                            <p>No book series results found.</p>
-                        {% endfor %}
-                    {% endif %}
+                    <div class="row">
+                        {% if litwork_results %}
+                        <div class="col-md-4">
+                            <h4>Works</h4>
+                            {% for work in litwork_results %}
+                                <p>
+                                    <a href="{% url 'read:work_detail' work.id %}">{{ work.title|truncatechars:50 }}</a>
+                                    ({{ work.publication_date }})
+                                </p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if litinstance_results %}
+                        <div class="col-md-4">
+                            <h4>Instances</h4>
+                            {% for instance in litinstance_results %}
+                                <p>
+                                    <a href="{% url 'read:instance_detail' instance.id %}">{{ instance.title|truncatechars:50 }}</a>
+                                    ({{ instance.publication_date }})
+                                </p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if book_results %}
+                        <div class="col-md-4">
+                            <h4>Book</h4>
+                            {% for book in book_results %}
+                                <p>
+                                    <a href="{% url 'read:book_detail' book.id %}">{{ book.title|truncatechars:50 }}</a>
+                                    {# djlint:off #}
+                                    ({% if book.format %}{{ book.format }}, {% endif %}{{ book.publication_date }})
+                                    {# djlint:on #}
+                                </p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    
+                    <div class="row">
+                        {% if periodical_results %}
+                        <div class="col-md-4">
+                            <h4>Periodicals</h4>
+                            {% for periodical in periodical_results %}
+                                <p>
+                                    <a href="{% url 'read:periodical_detail' periodical.id %}">{{ periodical.title|truncatechars:50 }}</a>
+                                </p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        {% if book_series %}
+                        <div class="col-md-4">
+                            <h4>Book Series</h4>
+                            {% for series in book_series %}
+                                <p>
+                                    <a href="{% url 'read:series_detail' series.id %}">{{ series.title|truncatechars:50 }}</a>
+                                </p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
                     <hr>
                 {% endif %}
                 {% if game_results or gamework_results %}
+                <div class="row">
                     <h3 class="mb-4">Play</h3>
+                    
                     {% if gamework_results %}
+                    <div class="col-4">
                         <h4>Works</h4>
                         {% for gamework in gamework_results %}
                             <p>
                                 <a href="{% url 'play:work_detail' gamework.id %}">{{ gamework.title|truncatechars:50 }}</a>
                                 ({{ gamework.first_release_date }})
                             </p>
-                        {% empty %}
-                            <p>No gamework results found.</p>
                         {% endfor %}
+                    </div>
                     {% endif %}
                     {% if game_results %}
+                    <div class="col-4">
                         <h4>Games</h4>
                         {% for game in game_results %}
                             <p>
                                 <a href="{% url 'play:game_detail' game.id %}">{{ game.title|truncatechars:50 }}</a>
                                 ({{ game.release_date }})
                             </p>
-                        {% empty %}
-                            <p>No game results found.</p>
                         {% endfor %}
+                    </div>
                     {% endif %}
                     <hr>
+                </div>
                 {% endif %}
+            
                 {% if musicwork_results or track_results or release_results or podcast_results %}
+                <div class="row">
                     <h3 class="mb-4">Listen</h3>
+                    <div class="col-4">
                     {% if musicwork_results %}
                         <h4>Works</h4>
                         {% for work in musicwork_results %}
@@ -175,10 +178,10 @@
                                 <a href="{% url 'listen:work_detail' work.id %}">{{ work.title|truncatechars:50 }}</a>
                                 ({{ work.release_date }})
                             </p>
-                        {% empty %}
-                            <p>No work results found.</p>
                         {% endfor %}
                     {% endif %}
+                    </div>
+                    <div class="col-4">
                     {% if track_results %}
                         <h4>Tracks</h4>
                         {% for track in track_results %}
@@ -186,10 +189,10 @@
                                 <a href="{% url 'listen:track_detail' track.id %}">{{ track.title|truncatechars:50 }}</a>
                                 ({{ track.release_date }})
                             </p>
-                        {% empty %}
-                            <p>No track results found.</p>
                         {% endfor %}
                     {% endif %}
+                    </div>
+                    <div class="col-4">
                     {% if release_results %}
                         <h4>Releases</h4>
                         {% for release in release_results %}
@@ -197,25 +200,28 @@
                                 <a href="{% url 'listen:release_detail' release.id %}">{{ release.title|truncatechars:50 }}</a>
                                 ({{ release.release_date }})
                             </p>
-                        {% empty %}
-                            <p>No release results found.</p>
                         {% endfor %}
                     {% endif %}
-
+                    </div>
+                    <div class="col-4">
                     {% if podcast_results %}
                         <h4>Podcasts</h4>
                         {% for podcast in podcast_results %}
                             <p>
                                 <a href="{% url 'listen:podcast_detail' podcast.id %}">{{ podcast.title|truncatechars:50 }}</a>
                             </p>
-                        {% empty %}
-                            <p>No podcast results found.</p>
                         {% endfor %}
                     {% endif %}
+                    </div>
                     <hr>
+                </div>
                 {% endif %}
+                
+                
                 {% if movie_results or series_results %}
+                <div class="row">
                     <h3 class="mb-4">Watch</h3>
+                    <div class="col-4">
                     {% if movie_results %}
                         <h4>Movies</h4>
                         {% for movie in movie_results %}
@@ -223,10 +229,10 @@
                                 <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title|truncatechars:50 }}</a>
                                 ({{ movie.release_date }})
                             </p>
-                        {% empty %}
-                            <p>No movie results found.</p>
                         {% endfor %}
                     {% endif %}
+                    </div>
+                    <div class="col-4">
                     {% if series_results %}
                         <h4>Series</h4>
                         {% for serie in series_results %}
@@ -234,11 +240,11 @@
                                 <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title|truncatechars:50 }}</a>
                                 ({{ serie.release_date }})
                             </p>
-                        {% empty %}
-                            <p>No series results found.</p>
                         {% endfor %}
                     {% endif %}
+                    </div>
                     <hr>
+                </div>
                 {% endif %}
             </div>
         </div>

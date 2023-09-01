@@ -472,16 +472,28 @@ def filter_write(query, search_terms):
     repost_results = Repost.objects.all()
 
     for term in search_terms:
-        post_results = post_results.filter(
-            Q(title__icontains=term) | Q(content__icontains=term)
-        ).distinct()
-        say_results = say_results.filter(content__icontains=term).distinct()
-        pin_results = pin_results.filter(
-            Q(title__icontains=term)
-            | Q(content__icontains=term)
-            | Q(url__icontains=term)
-        ).distinct()
-        repost_results = repost_results.filter(content__icontains=term).distinct()
+        post_results = (
+            post_results.filter(Q(title__icontains=term) | Q(content__icontains=term))
+            .distinct()
+            .order_by("timestamp")
+        )
+        say_results = (
+            say_results.filter(content__icontains=term).distinct().order_by("timestamp")
+        )
+        pin_results = (
+            pin_results.filter(
+                Q(title__icontains=term)
+                | Q(content__icontains=term)
+                | Q(url__icontains=term)
+            )
+            .distinct()
+            .order_by("timestamp")
+        )
+        repost_results = (
+            repost_results.filter(content__icontains=term)
+            .distinct()
+            .order_by("timestamp")
+        )
 
     return post_results, say_results, pin_results, repost_results
 
@@ -494,34 +506,46 @@ def filter_read(query, search_terms):
     book_series = BookSeries.objects.all()
 
     for term in search_terms:
-        litwork_results = litwork_results.filter(
-            Q(title__icontains=term)
-            | Q(subtitle__icontains=term)
-            | Q(workrole__person__name__icontains=term)
-            | Q(workrole__person__other_names__icontains=term)
-            | Q(workrole__alt_name__icontains=term)
-            | Q(publication_date__icontains=term)
-        ).distinct()
-        litinstance_results = litinstance_results.filter(
-            Q(title__icontains=term)
-            | Q(subtitle__icontains=term)
-            | Q(instancerole__person__name__icontains=term)
-            | Q(instancerole__person__other_names__icontains=term)
-            | Q(instancerole__alt_name__icontains=term)
-            | Q(publication_date__icontains=term)
-        ).distinct()
-        book_results = book_results.filter(
-            Q(title__icontains=term)
-            | Q(subtitle__icontains=term)
-            | Q(isbn_10__icontains=term)
-            | Q(isbn_13__icontains=term)
-            | Q(eisbn_13__icontains=term)
-            | Q(asin__icontains=term)
-            | Q(bookrole__person__name__icontains=term)
-            | Q(bookrole__person__other_names__icontains=term)
-            | Q(bookrole__alt_name__icontains=term)
-            | Q(publication_date__icontains=term)
-        ).distinct()
+        litwork_results = (
+            litwork_results.filter(
+                Q(title__icontains=term)
+                | Q(subtitle__icontains=term)
+                | Q(workrole__person__name__icontains=term)
+                | Q(workrole__person__other_names__icontains=term)
+                | Q(workrole__alt_name__icontains=term)
+                | Q(publication_date__icontains=term)
+            )
+            .distinct()
+            .order_by("publication_date")
+        )
+        litinstance_results = (
+            litinstance_results.filter(
+                Q(title__icontains=term)
+                | Q(subtitle__icontains=term)
+                | Q(instancerole__person__name__icontains=term)
+                | Q(instancerole__person__other_names__icontains=term)
+                | Q(instancerole__alt_name__icontains=term)
+                | Q(publication_date__icontains=term)
+            )
+            .distinct()
+            .order_by("publication_date")
+        )
+        book_results = (
+            book_results.filter(
+                Q(title__icontains=term)
+                | Q(subtitle__icontains=term)
+                | Q(isbn_10__icontains=term)
+                | Q(isbn_13__icontains=term)
+                | Q(eisbn_13__icontains=term)
+                | Q(asin__icontains=term)
+                | Q(bookrole__person__name__icontains=term)
+                | Q(bookrole__person__other_names__icontains=term)
+                | Q(bookrole__alt_name__icontains=term)
+                | Q(publication_date__icontains=term)
+            )
+            .distinct()
+            .order_by("publication_date")
+        )
         periodical_results = periodical_results.filter(title__icontains=term).distinct()
         book_series = book_series.filter(Q(title__icontains=term)).distinct()
 
@@ -541,28 +565,40 @@ def filter_listen(query, search_terms):
     podcast_results = Podcast.objects.all()
 
     for term in search_terms:
-        musicwork_results = musicwork_results.filter(
-            Q(title__icontains=term)
-            | Q(other_titles__icontains=term)
-            | Q(workrole__person__name__icontains=term)
-            | Q(workrole__person__other_names__icontains=term)
-            | Q(workrole__alt_name__icontains=term)
-        ).distinct()
-        track_results = track_results.filter(
-            Q(title__icontains=term)
-            | Q(other_titles__icontains=term)
-            | Q(trackrole__person__name__icontains=term)
-            | Q(trackrole__person__other_names__icontains=term)
-            | Q(trackrole__alt_name__icontains=term)
-        ).distinct()
-        release_results = release_results.filter(
-            Q(title__icontains=term)
-            | Q(other_titles__icontains=term)
-            | Q(releaserole__person__name__icontains=term)
-            | Q(releaserole__person__other_names__icontains=term)
-            | Q(releaserole__alt_name__icontains=term)
-            | Q(catalog_number__icontains=term)
-        ).distinct()
+        musicwork_results = (
+            musicwork_results.filter(
+                Q(title__icontains=term)
+                | Q(other_titles__icontains=term)
+                | Q(workrole__person__name__icontains=term)
+                | Q(workrole__person__other_names__icontains=term)
+                | Q(workrole__alt_name__icontains=term)
+            )
+            .distinct()
+            .order_by("release_date")
+        )
+        track_results = (
+            track_results.filter(
+                Q(title__icontains=term)
+                | Q(other_titles__icontains=term)
+                | Q(trackrole__person__name__icontains=term)
+                | Q(trackrole__person__other_names__icontains=term)
+                | Q(trackrole__alt_name__icontains=term)
+            )
+            .distinct()
+            .order_by("release_date")
+        )
+        release_results = (
+            release_results.filter(
+                Q(title__icontains=term)
+                | Q(other_titles__icontains=term)
+                | Q(releaserole__person__name__icontains=term)
+                | Q(releaserole__person__other_names__icontains=term)
+                | Q(releaserole__alt_name__icontains=term)
+                | Q(catalog_number__icontains=term)
+            )
+            .distinct()
+            .order_by("release_date")
+        )
         podcast_results = podcast_results.filter(Q(title__icontains=term)).distinct()
 
     return musicwork_results, track_results, release_results, podcast_results
@@ -573,25 +609,33 @@ def filter_play(query, search_terms):
     game_results = Game.objects.all()
 
     for term in search_terms:
-        gamework_results = gamework_results.filter(
-            Q(title__icontains=term)
-            | Q(workrole__person__name__icontains=term)
-            | Q(workrole__person__other_names__icontains=term)
-            | Q(workrole__alt_name__icontains=term)
-            | Q(first_release_date=query)
-        ).distinct()
-        game_results = game_results.filter(
-            Q(title__icontains=term)
-            | Q(developers__name__icontains=term)
-            | Q(platforms__name__icontains=term)
-            | Q(release_date__icontains=term)
-            | Q(gameroles__person__name__icontains=term)
-            | Q(gameroles__person__other_names__icontains=term)
-            | Q(gameroles__alt_name__icontains=term)
-            | Q(gamecasts__person__name__icontains=term)
-            | Q(gamecasts__person__other_names__icontains=term)
-            | Q(gamecasts__character_name__icontains=term)
-        ).distinct()
+        gamework_results = (
+            gamework_results.filter(
+                Q(title__icontains=term)
+                | Q(workrole__person__name__icontains=term)
+                | Q(workrole__person__other_names__icontains=term)
+                | Q(workrole__alt_name__icontains=term)
+                | Q(first_release_date=query)
+            )
+            .distinct()
+            .order_by("first_release_date")
+        )
+        game_results = (
+            game_results.filter(
+                Q(title__icontains=term)
+                | Q(developers__name__icontains=term)
+                | Q(platforms__name__icontains=term)
+                | Q(release_date__icontains=term)
+                | Q(gameroles__person__name__icontains=term)
+                | Q(gameroles__person__other_names__icontains=term)
+                | Q(gameroles__alt_name__icontains=term)
+                | Q(gamecasts__person__name__icontains=term)
+                | Q(gamecasts__person__other_names__icontains=term)
+                | Q(gamecasts__character_name__icontains=term)
+            )
+            .distinct()
+            .order_by("release_date")
+        )
     return gamework_results, game_results
 
 
@@ -600,27 +644,35 @@ def filter_watch(query, search_terms):
     series_results = Series.objects.all()
 
     for term in search_terms:
-        movie_results = movie_results.filter(
-            Q(title__icontains=term)
-            | Q(other_titles__icontains=term)
-            | Q(movieroles__person__name__icontains=term)
-            | Q(movieroles__person__other_names__icontains=term)
-            | Q(movieroles__alt_name__icontains=term)
-            | Q(moviecasts__person__name__icontains=term)
-            | Q(moviecasts__person__other_names__icontains=term)
-            | Q(moviecasts__character_name__icontains=term)
-            | Q(release_date__icontains=term)
-        ).distinct()
-        series_results = series_results.filter(
-            Q(title__icontains=term)
-            | Q(other_titles__icontains=term)
-            | Q(seriesroles__person__name__icontains=term)
-            | Q(seriesroles__person__other_names__icontains=term)
-            | Q(seriesroles__alt_name__icontains=term)
-            | Q(episodes__episodecasts__person__name__icontains=term)
-            | Q(episodes__episodecasts__person__other_names__icontains=term)
-            | Q(episodes__episodecasts__character_name__icontains=term)
-        ).distinct()
+        movie_results = (
+            movie_results.filter(
+                Q(title__icontains=term)
+                | Q(other_titles__icontains=term)
+                | Q(movieroles__person__name__icontains=term)
+                | Q(movieroles__person__other_names__icontains=term)
+                | Q(movieroles__alt_name__icontains=term)
+                | Q(moviecasts__person__name__icontains=term)
+                | Q(moviecasts__person__other_names__icontains=term)
+                | Q(moviecasts__character_name__icontains=term)
+                | Q(release_date__icontains=term)
+            )
+            .distinct()
+            .order_by("release_date")
+        )
+        series_results = (
+            series_results.filter(
+                Q(title__icontains=term)
+                | Q(other_titles__icontains=term)
+                | Q(seriesroles__person__name__icontains=term)
+                | Q(seriesroles__person__other_names__icontains=term)
+                | Q(seriesroles__alt_name__icontains=term)
+                | Q(episodes__episodecasts__person__name__icontains=term)
+                | Q(episodes__episodecasts__person__other_names__icontains=term)
+                | Q(episodes__episodecasts__character_name__icontains=term)
+            )
+            .distinct()
+            .order_by("release_date")
+        )
 
     return movie_results, series_results
 
