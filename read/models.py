@@ -665,9 +665,47 @@ class Issue(models.Model):
 
     @property
     def checkin_count(self):
-        return (
-            self.readcheckin_set.count()
-        )  # adjust this if your related name is different
+        return self.readcheckin_set.count()
+
+    def save(self, *args, **kwargs):
+        # If the instance already exists in the database
+        if self.pk:
+            # Get the existing instance from the database
+            old_instance = Issue.objects.get(pk=self.pk)
+            # If the cover has been updated
+            if old_instance.cover != self.cover:
+                # Delete the old cover
+                old_instance.cover.delete(save=False)
+
+        super().save(*args, **kwargs)
+
+        if self.cover:
+            img = Image.open(self.cover.open(mode="rb"))
+
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
+                img.thumbnail(output_size)
+
+                # Save the image to a BytesIO object
+                temp_file = BytesIO()
+                img.save(temp_file, format=img.format)
+                temp_file.seek(0)
+
+                # remove the original image
+                self.cover.delete(save=False)
+
+                # Save the BytesIO object to the FileField
+                self.cover.save(
+                    self.cover.name, ContentFile(temp_file.read()), save=False
+                )
+
+            img.close()
+
+        # Convert the publication_date to a standard format if it's not None or empty
+        if self.publication_date:
+            self.publication_date = standardize_date(self.publication_date)
+
+        super().save(*args, **kwargs)
 
 
 class IssueInstance(models.Model):
