@@ -1149,6 +1149,28 @@ class PodcastCreateView(View):
                 return render(request, self.template_name)
 
 
+class PodcastUpdateView(UpdateView):
+    model = Podcast
+    template_name = "listen/podcast_update.html"
+    fields = [
+        "title",
+        "subtitle",
+        "cover",
+        "description",
+        "publisher",
+        "genres",
+        "rss_feed_url",
+        "website_url",
+        "language",
+        "copyright",
+        "explicit",
+        "author",
+    ]
+
+    def get_success_url(self):
+        return reverse_lazy("listen:podcast_detail", kwargs={"pk": self.object.pk})
+
+
 class PodcastDetailView(DetailView):
     model = Podcast
     template_name = "listen/podcast_detail.html"

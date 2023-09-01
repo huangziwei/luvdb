@@ -466,12 +466,13 @@ class Podcast(models.Model):
             img.save(temp_file, format="WEBP")
             temp_file.seek(0)
 
+            # Generate new name for the webp image
+            webp_name = os.path.splitext(self.cover.name)[0] + ".webp"
+
             # Remove the original image.
             self.cover.delete(save=False)
 
             # Save the BytesIO object to the FileField.
-            # Generate new name for the webp image
-            webp_name = ".".join(self.cover.name.split(".")[:-1]) + ".webp"
             self.cover.save(webp_name, ContentFile(temp_file.read()), save=False)
 
             img.close()

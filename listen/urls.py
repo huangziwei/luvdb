@@ -9,15 +9,14 @@ from .views import (
     LabelCreateView,
     LabelDetailView,
     LabelUpdateView,
-    ListenCheckInAllListView,
     ListenCheckInDeleteView,
     ListenCheckInDetailView,
-    ListenCheckInListView,
     ListenCheckInUpdateView,
     ListenCheckInUserListView,
     ListenListView,
     PodcastCreateView,
     PodcastDetailView,
+    PodcastUpdateView,
     ReleaseCreateView,
     ReleaseDetailView,
     ReleaseGroupCreateView,
@@ -57,6 +56,9 @@ urlpatterns = [
     # podcast
     path("podcast/create/", PodcastCreateView.as_view(), name="podcast_create"),
     path("podcast/<int:pk>/", PodcastDetailView.as_view(), name="podcast_detail"),
+    path(
+        "podcast/<int:pk>/update/", PodcastUpdateView.as_view(), name="podcast_update"
+    ),
     # autocomplete views
     path(
         "label-autocomplete/",
