@@ -1,3 +1,4 @@
+import time
 from datetime import timedelta
 
 from django.contrib import messages
@@ -309,6 +310,8 @@ def home(request, *args, **kwargs):
 
 
 def search_view(request):
+    start_time = time.time()
+
     query = request.GET.get("q")
     model = request.GET.get("model", "all")
 
@@ -342,19 +345,23 @@ def search_view(request):
     search_terms = query.split()
 
     if query:
-        if model in ["all", "write"]:
+        if model in ["all", "user"]:
             user_results = User.objects.all()
-            post_results = Post.objects.all()
-            say_results = Say.objects.all()
-            pin_results = Pin.objects.all()
-            repost_results = Repost.objects.all()
 
             for term in search_terms:
                 user_results = user_results.filter(
                     Q(username__icontains=term)
                     | Q(display_name__icontains=term)
                     | Q(bio__icontains=term)
-                )
+                ).distinct()
+
+        if model in ["all", "write"]:
+            post_results = Post.objects.all()
+            say_results = Say.objects.all()
+            pin_results = Pin.objects.all()
+            repost_results = Repost.objects.all()
+
+            for term in search_terms:
                 post_results = post_results.filter(
                     Q(title__icontains=term) | Q(content__icontains=term)
                 ).distinct()
@@ -499,6 +506,8 @@ def search_view(request):
                     Q(name__icontains=term) | Q(other_names__icontains=term)
                 ).distinct()
 
+    execution_time = time.time() - start_time
+
     return render(
         request,
         "accounts/search_results.html",
@@ -529,6 +538,8 @@ def search_view(request):
             # watch
             "movie_results": movie_results,
             "series_results": series_results,
+            # other
+            "execution_time": execution_time,
         },
     )
 

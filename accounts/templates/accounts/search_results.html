@@ -4,6 +4,9 @@
         <div class="row">
             <div class="col-sm-7 left-column">
                 <h2>Searching: "{{ query }}"</h2>
+                <div>
+                    <span class="text-muted">in {{ execution_time|floatformat:5 }} seconds</span>
+                </div>
                 <hr>
                 {% if user_results %}
                     <h4>Users</h4>
