@@ -588,6 +588,9 @@ def filter_play(query, search_terms):
             | Q(gameroles__person__name__icontains=term)
             | Q(gameroles__person__other_names__icontains=term)
             | Q(gameroles__alt_name__icontains=term)
+            | Q(gamecasts__person__name__icontains=term)
+            | Q(gamecasts__person__other_names__icontains=term)
+            | Q(gamecasts__character_name__icontains=term)
         ).distinct()
     return gamework_results, game_results
 
