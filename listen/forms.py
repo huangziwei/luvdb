@@ -9,13 +9,11 @@ from django.urls import reverse_lazy
 
 from .models import (
     ListenCheckIn,
-    Person,
     Release,
     ReleaseGroup,
     ReleaseInGroup,
     ReleaseRole,
     ReleaseTrack,
-    Role,
     Track,
     TrackRole,
     Work,
