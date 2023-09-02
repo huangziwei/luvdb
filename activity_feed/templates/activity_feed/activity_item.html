@@ -193,11 +193,10 @@
             </span>
             {% if activity.content_object.progress %}
                 <span class="badge text-bg-warning me-1">
-                    Progress: {{ activity.content_object.progress }}
                     {% if activity.content_object.progress_type == "PG" %}
-                        Page
+                        On page {{ activity.content_object.progress }}
                     {% else %}
-                        %
+                        At {{ activity.content_object.progress }}%
                     {% endif %}
                 </span>
             {% endif %}
@@ -316,7 +315,7 @@
             </div>
             {% if activity.content_object.progress %}
                 <span class="badge text-bg-warning me-1">
-                    Progress: {{ activity.content_object.progress }}
+                    {{ activity.content_object.progress }}
                     {% if activity.content_object.progress_type == "TM" %}Times{% endif %}
                 </span>
             {% endif %}
@@ -573,7 +572,7 @@
             </div>
             {% if activity.content_object.progress %}
                 <span class="badge text-bg-warning me-1">
-                    Played Time: {{ activity.content_object.progress }}
+                    At {{ activity.content_object.progress }}
                     {% if activity.content_object.progress_type == "TT" %}
                         {# djlint:off #}
                         Hour{% if checkin.progress != 1 %}s{% endif %}
