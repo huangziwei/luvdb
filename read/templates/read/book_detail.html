@@ -56,13 +56,6 @@
                                             </a>
                                         </p>
                                     {% endif %}
-                                    
-                                    {% if object.publication_date %}
-                                        <p>
-                                            <span class="text-muted">Date:</span> {{ object.publication_date }}
-                                        </p>
-                                    {% endif %}
-                                    <!--add series here-->
                                     {% if object.bookinseries_set.all %}
                                         <p>
                                             <span class="text-muted">Series:</span>
@@ -70,6 +63,11 @@
                                                 <a href="{% url 'read:series_detail' bookinseries.series.id %}">{{ bookinseries.series.title }}</a> #{{ bookinseries.order }}
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
+                                        </p>
+                                    {% endif %}
+                                    {% if object.publication_date %}
+                                        <p>
+                                            <span class="text-muted">Date:</span> {{ object.publication_date }}
                                         </p>
                                     {% endif %}
                                     <div class="my-3">
