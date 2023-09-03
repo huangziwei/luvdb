@@ -146,17 +146,13 @@
                 {% endif %}
                 {% if object.bookinstance_set.count != 0 %}
                     <div class="bg-light p-3 mb-3">
-                        {% if object.bookinstance_set.count < 2 %}
+                        {% if object.bookinstance_set.count == 1 %}
                             {% if object.bookinstance_set.first.instance.id %}
-                                <h5>Instance</h5>
+                                <h5>Work</h5>
                                 <p>
-                                    {# djlint:off #}
-                                    <a href="{% url 'read:instance_detail' object.bookinstance_set.first.instance.id %}">
-                                        {{ object.bookinstance_set.first.alt_title|default:object.bookinstance_set.first.instance.title }}
-                                        {% if object.bookinstance_set.first.instance.publication_date %}
-                                        </a>({{ object.bookinstance_set.first.instance.publication_date }})
-                                    {% endif %}
-                                    {# djlint:on #}
+                                    <a class="text-muted" href="{% url 'read:work_detail' object.bookinstance_set.first.instance.work.id %}">
+                                        Other Editions
+                                    </a>
                                 </p>
                             {% endif %}
                         {% else %}
@@ -168,7 +164,7 @@
                                         <div class="related-instance">
                                             <p>
                                                 {{book_instance.order}}.
-                                                <a href="{% url 'read:instance_detail' book_instance.instance.id %}">
+                                                <a href="{% url 'read:work_detail' book_instance.instance.work.id %}">
                                                     {{ book_instance.alt_title|default:book_instance.instance.title }}
                                                 </a>
                                                 {# djlint:off #}
