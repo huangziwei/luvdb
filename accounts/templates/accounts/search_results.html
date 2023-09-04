@@ -110,7 +110,6 @@
                     <h3 class="mb-4">Watch</h3>
                     {% if movie_results %}
                     <div class="col-4">
-                    
                         <h4>Movies</h4>
                         {% for movie in movie_results %}
                             <p>
@@ -118,7 +117,6 @@
                                 ({{ movie.release_date }})
                             </p>
                         {% endfor %}
-                   
                     </div>
                     {% endif %}
 
@@ -142,8 +140,8 @@
                 {% if musicwork_results or track_results or release_results or podcast_results %}
                 <div class="row">
                     <h3 class="mb-4">Listen</h3>
-                    <div class="col-4">
                     {% if musicwork_results %}
+                    <div class="col-4">
                         <h4>Works</h4>
                         {% for work in musicwork_results %}
                             <p>
@@ -151,10 +149,10 @@
                                 ({{ work.release_date }})
                             </p>
                         {% endfor %}
-                    {% endif %}
                     </div>
-                    <div class="col-4">
+                    {% endif %}
                     {% if track_results %}
+                    <div class="col-4">
                         <h4>Tracks</h4>
                         {% for track in track_results %}
                             <p>
@@ -162,10 +160,10 @@
                                 ({{ track.release_date }})
                             </p>
                         {% endfor %}
-                    {% endif %}
                     </div>
-                    <div class="col-4">
+                    {% endif %}
                     {% if release_results %}
+                    <div class="col-4">
                         <h4>Releases</h4>
                         {% for release in release_results %}
                             <p>
@@ -173,18 +171,19 @@
                                 ({{ release.release_date }})
                             </p>
                         {% endfor %}
-                    {% endif %}
                     </div>
-                    <div class="col-4">
+                    {% endif %}
                     {% if podcast_results %}
+                    <div class="col-4">
+                    
                         <h4>Podcasts</h4>
                         {% for podcast in podcast_results %}
                             <p>
                                 <a href="{% url 'listen:podcast_detail' podcast.id %}">{{ podcast.title|truncatechars:50 }}</a>
                             </p>
                         {% endfor %}
-                    {% endif %}
                     </div>
+                    {% endif %}
                     <hr class="mt-3">
                 </div>
                 {% endif %}
