@@ -43,9 +43,10 @@ class PersonDetailView(DetailView):
         person = self.object
         # read
         # context["read_works"] = person.read_works.all().order_by("publication_date")
+        roles_as_author = ["Author", "Ghost Writer", "Created by", "Novelization by"]
         context["read_works"] = (
             LitWork.objects.filter(
-                Q(workrole__role__name="Author", workrole__person=person)
+                Q(workrole__role__name__in=roles_as_author, workrole__person=person)
             )
             .distinct()
             .order_by("publication_date")
