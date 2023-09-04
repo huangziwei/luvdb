@@ -108,8 +108,9 @@
                 {% if movie_results or series_results %}
                 <div class="row">
                     <h3 class="mb-4">Watch</h3>
-                    <div class="col-4">
                     {% if movie_results %}
+                    <div class="col-4">
+                    
                         <h4>Movies</h4>
                         {% for movie in movie_results %}
                             <p>
@@ -117,10 +118,12 @@
                                 ({{ movie.release_date }})
                             </p>
                         {% endfor %}
-                    {% endif %}
+                   
                     </div>
-                    <div class="col-4">
+                    {% endif %}
+
                     {% if series_results %}
+                    <div class="col-4">
                         <h4>Series</h4>
                         {% for serie in series_results %}
                             <p>
@@ -128,8 +131,8 @@
                                 ({{ serie.release_date }})
                             </p>
                         {% endfor %}
-                    {% endif %}
                     </div>
+                    {% endif %}
                     <hr class="mt-3">
                 </div>
                 {% endif %}
