@@ -85,6 +85,21 @@
                                     <p>
                                         <span class="text-muted">Cast:</span> <a href="{% url 'watch:series_cast_detail' object.id %}">View All Cast</a>
                                     </p>
+                                    {% if object.description %}
+                                    <div class="my-3">
+                                        <p class="text-muted"
+                                           type="button"
+                                           data-bs-toggle="collapse"
+                                           data-bs-target="#detailsCollapse"
+                                           aria-expanded="false"
+                                           aria-controls="detailsCollapse">
+                                            <span class="text-muted">More Details</span>
+                                        </p>
+                                        <div class="collapse" id="detailsCollapse">
+                                            <div class="card card-body">{{ object.description|markdownify }}</div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <!-- End of series-card -->

@@ -13,13 +13,9 @@
                             <li>
                                 <a href="{% url 'read:work_detail' work.id %}">{{ work.title }}</a>
                                 {% if work.authors.exists %}
-                                    (
-                                    {% for author in work.authors %}
-                                        {{ author.name }}
-                                        {% if not forloop.last %},{% endif %}
-                                    {% endfor %}
-                                    ,
-                                    {{ work.publication_date }})
+                                    {# djlint:off #}
+                                    ({% for author in work.authors %}{{ author.name }}{% if not forloop.last %}, {% endif %}{% endfor %}, {{ work.publication_date }})
+                                    {# djlint:on #}
                                 {% endif %}
                             </li>
                         {% empty %}
