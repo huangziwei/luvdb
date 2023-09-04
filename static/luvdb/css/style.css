@@ -148,7 +148,9 @@ a[href$="/s"] {
     position: relative;
     display: inline-block;
     color: inherit;
-    line-height: 1;
+    line-height: 1.5;
+    vertical-align: bottom;
+    overflow: hidden;
 }
 
 a[href$="/spoiler"]::after,
@@ -157,8 +159,9 @@ a[href$="/s"]::after {
     position: absolute;
     left: 0;
     top: 0;
+    bottom: 0;
     width: 100%;
-    height: 1.1em;
+    height: 100%;
     background: #000;
 }
 
@@ -173,7 +176,7 @@ a[href$="/s"].revealed {
     text-decoration: none;
     left: 0;
     top: 0;
-    height: 1.1em;
+    height: 100%;
     background: #dddddd;
 }
 
