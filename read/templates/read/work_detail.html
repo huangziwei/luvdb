@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load language_name %}
+{% load markdownify %}
 {% block title %}{{ object.title }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -24,7 +25,7 @@
                 {% if object.notes %}
                     <div>
                         <span class="text-muted">Notes:</span>
-                        {{ object.notes }}
+                        {{ object.notes | markdownify}}
                     </div>
                 {% endif %}
                 {% if grouped_instances %}
