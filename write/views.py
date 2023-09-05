@@ -186,6 +186,7 @@ class SayListView(ListView):
             tag_sizes[tag] = min_size + scaling_factor * tag_counter[tag]
 
         context["all_tags"] = tag_sizes
+        context["no_citation_css"] = True
 
         return context
 
@@ -272,6 +273,7 @@ class PinListView(ListView):
             tag_sizes[tag] = min_size + scaling_factor * tag_counter[tag]
 
         context["all_tags"] = tag_sizes
+        context["no_citation_css"] = True
 
         return context
 
