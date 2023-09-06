@@ -95,6 +95,7 @@ class PersonDetailView(DetailView):
             "Orchestra",
             "Choir",
             "Ensemble",
+            "Trumpeter",
         ]
 
         context["LPs_as_performer"] = Release.objects.filter(
