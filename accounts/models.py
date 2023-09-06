@@ -29,6 +29,9 @@ class InvitationCode(models.Model):
             self.code = get_random_string(8)
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.code
+
 
 class CustomUser(AbstractUser):
     """Custom user model."""
