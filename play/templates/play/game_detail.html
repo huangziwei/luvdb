@@ -50,7 +50,7 @@
                                     {% endfor %}
                                     {% if object.developers.count != 0 %}
                                         <p>
-                                            <span class="text-muted">Developers:</span>
+                                            <span class="text-muted">Developer{% if object.developers.count > 1 %}s{% endif %}:</span>
                                             {% for developer in object.developers.all %}
                                                 <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
@@ -59,7 +59,7 @@
                                     {% endif %}
                                     {% if object.publishers.count != 0 %}
                                         <p>
-                                            <span class="text-muted">Publishers:</span>
+                                            <span class="text-muted">Publisher{% if object.publishers.count > 1 %}s{% endif %}:</span>
                                             {% for publisher in object.publishers.all %}
                                                 <a href="{% url 'play:publisher_detail' publisher.id %}">{{ publisher.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
@@ -68,7 +68,7 @@
                                     {% endif %}
                                     {% if object.platforms.count != 0 %}
                                         <p>
-                                            <span class="text-muted">Platforms:</span>
+                                            <span class="text-muted">Platform{% if object.platforms.count > 1 %}s{% endif %}:</span>
                                             {% for platform in object.platforms.all %}
                                                 <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
