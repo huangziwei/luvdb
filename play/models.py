@@ -124,6 +124,7 @@ class Work(models.Model):  # Renamed from Book
     )
     genres = models.ManyToManyField(Genre, related_name="play_works", blank=True)
     wikipedia = models.URLField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -193,7 +194,7 @@ class Game(models.Model):
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
-    description = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
     website = models.CharField(max_length=100, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_game_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False, null=True, blank=True)

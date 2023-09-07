@@ -8,7 +8,6 @@
     {{ form.release_date|as_crispy_field }}
     {{ form.rating|as_crispy_field }}
     {{ form.wikipedia|as_crispy_field }}
-    {{ form.description|as_crispy_field }}
     <div class="mb-3">
         {{ form.work|as_crispy_field }}
         <a href="{% url 'play:work_create' %}?next={{ request.path }}"
@@ -33,6 +32,7 @@
            class="text-secondary"
            target="_blank">Add a new platform?</a>
     </div>
+    {{ form.notes|as_crispy_field }}
     {{ gameroles.management_form|crispy }}
     <div id="game-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this Game</strong>

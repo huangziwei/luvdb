@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load markdownify %}
 {% block title %}{{ object.title }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -74,29 +75,14 @@
                                             {% endfor %}
                                         </p>
                                     {% endif %}
+                                    <p>
+                                        <span class="text-muted">Crew and Cast:</span> <a href="{% url 'play:game_cast_detail' object.id %}">View All</a>
+                                    </p>
                                     {% if object.release_date %}
                                         <p>
                                             <span class="text-muted">Release Date:</span> {{ object.release_date }}
                                         </p>
-                                    {% endif %}
-                                    {% if object.rating %}
-                                        <p>
-                                            <span class="text-muted">Rating:</span> {{ object.rating }}
-                                        </p>
-                                    {% endif %}
-                                    {% if object.website %}
-                                        <p>
-                                            <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
-                                        </p>
-                                    {% endif %}
-                                    {% if object.description %}
-                                        <p>
-                                            <span class="text-muted">Description:</span> {{ object.description }}
-                                        </p>
-                                    {% endif %}
-                                    <p>
-                                        <span class="text-muted">Cast:</span> <a href="{% url 'play:game_cast_detail' object.id %}">View Cast</a>
-                                    </p>
+                                    {% endif %}    
                                     <!--add series here-->
                                     {% if object.gameinseries_set.all %}
                                         <p>
@@ -107,6 +93,33 @@
                                             {% endfor %}
                                         </p>
                                     {% endif %}
+
+                                    <div class="my-3">
+                                        <p class="text-muted"
+                                           type="button"
+                                           data-bs-toggle="collapse"
+                                           data-bs-target="#detailsCollapse"
+                                           aria-expanded="false"
+                                           aria-controls="detailsCollapse">
+                                            <span class="text-muted">More Metadata</span>
+                                        </p>
+                                        <div class="collapse" id="detailsCollapse">
+                                            {% if object.rating %}
+                                                <p>
+                                                    <span class="text-muted">Rating:</span> {{ object.rating }}
+                                                </p>
+                                            {% endif %}
+                                            {% if object.website %}
+                                                <p>
+                                                    <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
+                                                </p>
+                                            {% endif %}
+                                            {% if object.notes %}
+                                                <span class="text-muted">Notes:</span>
+                                                <div class="card card-body">{{ object.notes|markdownify }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- End of game-card -->
