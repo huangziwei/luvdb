@@ -24,8 +24,7 @@
                 </div>
                 {% if object.notes %}
                     <div>
-                        <span class="text-muted">Notes:</span>
-                        {{ object.notes | markdownify}}
+                        <span class="text-muted">Notes: </span>{{ object.notes | markdownify}}
                     </div>
                 {% endif %}
                 {% if grouped_instances %}
