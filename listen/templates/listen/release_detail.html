@@ -63,14 +63,14 @@
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    {% if object.release_date %}
-                                        <div class="mb-1">
-                                            <span class="text-muted">Date:</span> {{ object.release_date }}
-                                        </div>
-                                    {% endif %}
                                     {% if object.catalog_number %}
                                         <div class="mb-1">
                                             <span class="text-muted">Catalog number:</span> {{ object.catalog_number }}
+                                        </div>
+                                    {% endif %}
+                                    {% if object.release_date %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Date:</span> {{ object.release_date }}
                                         </div>
                                     {% endif %}
                                     <div class="my-3">
