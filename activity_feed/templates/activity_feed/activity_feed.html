@@ -241,11 +241,11 @@
         const closingTagsRegex = /<\/([a-z]+)>/gi;
         const result = [];
         let match;
-        
+    
         while (match = regex.exec(html)) {
             result.push(match[1]);
         }
-        
+    
         while (match = closingTagsRegex.exec(html)) {
             const closeTagName = match[1];
             const index = result.lastIndexOf(closeTagName);
@@ -253,68 +253,65 @@
                 result.splice(index, 1);
             }
         }
-        
+    
         return result;
     }
     
     function getHtmlTruncationPoint(html, plainTextTruncationPoint) {
-        // Start from the plainTextTruncationPoint
         let point = plainTextTruncationPoint;
-    
-        // Move the point forward until a "<" character is found or until we've checked the entire string
         while (point < html.length && html[point] !== '<') {
             point++;
         }
-        
-        // If we've reached the end of the string without finding a "<", return the original plainTextTruncationPoint
         return (point === html.length) ? plainTextTruncationPoint : point;
     }
-
+    
     document.addEventListener("DOMContentLoaded", function() {
         const threshold = 300;
         const elements = document.querySelectorAll('.truncatable-text');
     
         elements.forEach(el => {
-            const paragraphs = Array.from(el.querySelectorAll('p'));
-            let totalChars = 0;
-            let breakAtParagraphIndex = -1;
-            let breakAtCharIndex = -1;
+            let allTextContent = '';
+            el.childNodes.forEach(child => {
+                allTextContent += child.textContent;
+            });
     
-            for (let i = 0; i < paragraphs.length; i++) {
-                totalChars += paragraphs[i].textContent.length;
-                if (totalChars > threshold && breakAtParagraphIndex === -1) {
-                    breakAtParagraphIndex = i;
-                    breakAtCharIndex = threshold - (totalChars - paragraphs[i].textContent.length);
-                }
-            }
+            if (allTextContent.length > threshold) {
+                let totalChars = 0;
+                let truncatedElement = el.cloneNode(true);
     
-            if (breakAtParagraphIndex !== -1) {
-                const paragraph = paragraphs[breakAtParagraphIndex];
-                const truncatedText = smartTruncate(paragraph.textContent, breakAtCharIndex);
-                const originalHTML = paragraph.innerHTML;
+                const iterateNodes = function(node) {
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        totalChars += node.textContent.length;
     
-                const truncatePosInPlainText = paragraph.textContent.lastIndexOf(truncatedText) + truncatedText.length;
-                const truncatePosInHTML = getHtmlTruncationPoint(originalHTML, truncatePosInPlainText);
+                        if (totalChars > threshold) {
+                            node.textContent = smartTruncate(node.textContent, threshold - (totalChars - node.textContent.length));
+                            return false;
+                        }
+                    } else if (node.nodeType === Node.ELEMENT_NODE) {
+                        for (let i = 0; i < node.childNodes.length; i++) {
+                            if (!iterateNodes(node.childNodes[i])) {
+                                while (node.childNodes[i + 1]) {
+                                    node.removeChild(node.childNodes[i + 1]);
+                                }
+                                return false;
+                            }
+                        }
+                    }
     
-                const preHTML = originalHTML.substr(0, truncatePosInHTML);
-                const postHTML = originalHTML.substr(truncatePosInHTML);
+                    return true;
+                };
     
-                const openTags = getOpenTags(preHTML);
-                const closeTags = openTags.map(tag => `</${tag}>`).reverse().join('');
-                const openTagsStr = openTags.map(tag => `<${tag}>`).join('');
+                iterateNodes(truncatedElement);
     
-                paragraph.innerHTML = `${preHTML}${closeTags}<span class="truncated-ellipsis">...</span><span class="truncated-more-content" style="display: none;">${openTagsStr}${postHTML}</span>`;
-                
-                // Wrap the following paragraphs in a div
                 const moreContentDiv = document.createElement('div');
                 moreContentDiv.classList.add('truncated-more-content');
                 moreContentDiv.style.display = 'none';
-
-                for (let i = breakAtParagraphIndex + 1; i < paragraphs.length; i++) {
-                    moreContentDiv.appendChild(paragraphs[i].cloneNode(true)); // Append a copy of the paragraph to the div
-                    paragraphs[i].remove(); // Remove the original paragraph from the DOM
-                }
-                
+                el.childNodes.forEach(child => {
+                    moreContentDiv.appendChild(child.cloneNode(true));
+                });
+    
+                el.innerHTML = "";
+                el.appendChild(truncatedElement);
                 el.appendChild(moreContentDiv);
     
                 const showMoreLink = document.createElement('a');
@@ -324,20 +321,13 @@
                 el.appendChild(showMoreLink);
     
                 showMoreLink.addEventListener('click', function() {
-                    const moreContentElems = el.querySelectorAll('.truncated-more-content');
-                    const ellipsisElem = el.querySelector('.truncated-ellipsis');
-                                    
                     if (this.textContent === '(Show More)') {
-                        moreContentElems.forEach(elem => {
-                            elem.style.display = elem.tagName === 'DIV' ? 'block' : 'inline'; // Display div as block and spans as inline
-                        });
-                        ellipsisElem.style.display = 'none';
+                        moreContentDiv.style.display = 'block';
+                        truncatedElement.style.display = 'none';
                         this.textContent = '(Show Less)';
                     } else {
-                        moreContentElems.forEach(elem => {
-                            elem.style.display = 'none';
-                        });
-                        ellipsisElem.style.display = 'inline';
+                        moreContentDiv.style.display = 'none';
+                        truncatedElement.style.display = 'block';
                         this.textContent = '(Show More)';
                     }
                 });
