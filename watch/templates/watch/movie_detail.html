@@ -57,11 +57,6 @@
                                             {% endfor %}
                                         </p>
                                     {% endif %}
-                                    {% if object.release_date %}
-                                        <p>
-                                            <span class="text-muted">Date:</span> {{ object.release_date }}
-                                        </p>
-                                    {% endif %}
                                     {% if object.website %}
                                         <p>
                                             <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
@@ -93,8 +88,13 @@
                                         </p>
                                     {% endif %}
                                     <p>
-                                        <span class="text-muted">Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View Cast</a>
+                                        <span class="text-muted">Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View All</a>
                                     </p>
+                                    {% if object.release_date %}
+                                        <p>
+                                            <span class="text-muted">Date:</span> {{ object.release_date }}
+                                        </p>
+                                    {% endif %}
 
                                     {% if object.description %}
                                     <div class="my-3">
