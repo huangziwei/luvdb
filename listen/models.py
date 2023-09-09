@@ -80,9 +80,8 @@ class Work(models.Model):
     persons = models.ManyToManyField(
         Person, through="WorkRole", related_name="listen_works"
     )
-    release_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
+    release_date = models.CharField(max_length=10, blank=True, null=True) 
+    recorded_date = models.CharField(max_length=10, blank=True, null=True)
     genres = models.ManyToManyField(Genre, related_name="listen_works", blank=True)
     wikipedia = models.URLField(blank=True, null=True)
     note = models.TextField(blank=True, null=True)
@@ -130,9 +129,9 @@ class Track(models.Model):
     work = models.ForeignKey(
         Work, on_delete=models.SET_NULL, null=True, blank=True, related_name="tracks"
     )
-    release_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
+    release_date = models.CharField(max_length=10, blank=True, null=True)
+    recorded_date = models.CharField(max_length=10, blank=True, null=True)
+
     genres = models.ManyToManyField(Genre, related_name="tracks", blank=True)
 
     length = models.CharField(max_length=10, blank=True, null=True)  # HH:MM:SS

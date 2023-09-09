@@ -1,15 +1,16 @@
 {% load crispy_forms_tags %}
 <form method="post">
     {% csrf_token %}
-    {{ form.title | as_crispy_field }}
-    {{ form.subtitle | as_crispy_field }}
-    {{ form.other_titles | as_crispy_field }}
-    {{ form.release_date | as_crispy_field }}
-    {{ form.length | as_crispy_field }}
-    {{ form.isrc | as_crispy_field }}
-    {{ form.genres | as_crispy_field }}
-    {{ form.wikipedia | as_crispy_field }}
-    {{ form.note | as_crispy_field }}
+    {{ form.title|as_crispy_field }}
+    {{ form.subtitle|as_crispy_field }}
+    {{ form.other_titles|as_crispy_field }}
+    {{ form.release_date|as_crispy_field }}
+    {{ form.recorded_date|as_crispy_field }}
+    {{ form.length|as_crispy_field }}
+    {{ form.isrc|as_crispy_field }}
+    {{ form.genres|as_crispy_field }}
+    {{ form.wikipedia|as_crispy_field }}
+    {{ form.note|as_crispy_field }}
     {{ trackroles.management_form|crispy }}
     <div id="track-role-formset" class="bg-light p-2 mb-3">
         <strong>Entities related to this track</strong>
@@ -20,19 +21,19 @@
                     {{ form.id }}
                     {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
                     <div class="col-md-4 mb-3">
-                        {{ form.person | as_crispy_field }}
+                        {{ form.person|as_crispy_field }}
                         <a href="{% url 'entity:person_create' %}?next={{ request.path }}"
                            class="text-secondary"
                            target="_blank">Add a new entity?</a>
                     </div>
                     <div class="col-md-3 mb-3">
-                        {{ form.role | as_crispy_field }}
-                        {{ form.domain | as_crispy_field }}
+                        {{ form.role|as_crispy_field }}
+                        {{ form.domain|as_crispy_field }}
                         <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
                            class="text-secondary"
                            target="_blank">Add a new role?</a>
                     </div>
-                    <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.alt_name|as_crispy_field }}</div>
                 </div>
             </div>
         {% endfor %}

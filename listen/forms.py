@@ -32,6 +32,7 @@ class WorkForm(forms.ModelForm):
         help_texts = {
             "title": "Enter the work's title in its original language. ",
             "release_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
+            "recorded_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. ",
         }
 
         widgets = {
@@ -44,6 +45,7 @@ class WorkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["release_date"].label = "First Release Date"
+        self.fields["recorded_date"].label = "First Recorded Date"
         self.fields[
             "other_titles"
         ].help_text = (
@@ -109,6 +111,7 @@ class TrackForm(forms.ModelForm):
         help_texts = {
             "title": "Enter the track's title. ",
             "release_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
+            "recorded_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. ",
             "length": "Enter the track's length, e.g. 3:45",
         }
         widgets = {
