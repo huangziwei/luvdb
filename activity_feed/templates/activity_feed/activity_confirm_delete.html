@@ -2,7 +2,7 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-sm-7 left-column">
+            <div class="col-12 col-md-7 left-column">
                 {% if object.activity_type == "repost" or object.activity_type == "say" %}
                     <h3>Delete this {{ object.content_type.model|title }}</h3>
                     <p>Are you sure you want to delete this {{ object.content_type.model|title }} ?</p>
