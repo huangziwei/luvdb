@@ -268,7 +268,7 @@ p img {
     transition: max-width 0.3s ease;
 }
 
-p img:active {
+p:hover img {
     max-width: 100%;
 }
 
