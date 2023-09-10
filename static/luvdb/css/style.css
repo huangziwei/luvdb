@@ -87,8 +87,6 @@ blockquote:last-child {
         width: 75%;
         /* or any size you want on mobile */
     }
-
-
 }
 
 .no-cover-text {
@@ -265,8 +263,13 @@ pre {
 }
 
 p img {
-    max-width: 100%;
+    max-width: 50%;
     height: auto;
+    transition: max-width 0.3s ease;
+}
+
+p img:active {
+    max-width: 100%;
 }
 
 iframe {
