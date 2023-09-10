@@ -59,7 +59,7 @@
                                         </span>
                                     {% endif %}
                                 </div>
-                                <div class="mt-2">{{ checkin.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                                <div class="mt-2">{{ checkin.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
                                 <div class="d-flex flex-row bg-light p-3 mt-2">
                                     <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                         {% if checkin.content_object.poster %}

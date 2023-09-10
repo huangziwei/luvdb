@@ -21,7 +21,7 @@
    class="link-secondary">{{ pin.url|root_url }}</a>)
                             {% if pin.content %}
                                 <blockquote>
-                                    {{ pin.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}
+                                    {{ pin.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
                                 </blockquote>
                             {% endif %}
                         </div>

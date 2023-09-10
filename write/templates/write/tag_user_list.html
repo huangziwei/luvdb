@@ -18,7 +18,7 @@
                             <div class="mb-2">
                                 <a href="{% url 'accounts:detail' say.user.username %}">{{ say.user.display_name | default:say.user.username }}</a> said:
                             </div>
-                            <div class="mb-2">{{ say.content | linkify_tags:say.user | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                            <div class="mb-2">{{ say.content | linkify_tags:say.user | linkify_mentions | truncatechars:300 | markdownify }}</div>
                             <div>
                                 <a href="{% url 'write:say_detail' say.id %}" class='text-muted'>{{ say.timestamp|date:"Y.m.d H:i" }}</a>
                             </div>
@@ -33,7 +33,7 @@
                             <h5>
                                 <a href="{{ pin.get_absolute_url }}">{{ pin.title }}</a>
                             </h5>
-                            <div>{{ pin.content | linkify_tags:pin.user | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                            <div>{{ pin.content | linkify_tags:pin.user | linkify_mentions | truncatechars:300 | markdownify }}</div>
                             <p>
                                 <div>
                                     <a href="{% url 'write:pin_detail' pin.id %}" class='text-muted'>{{ pin.timestamp | date:"Y.m.d H:i" }}</a>
@@ -50,7 +50,7 @@
                             <h5>
                                 <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                             </h5>
-                            <div>{{ post.content | linkify_tags:post.user | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                            <div>{{ post.content | linkify_tags:post.user | linkify_mentions | truncatechars:300 | markdownify }}</div>
                             <p>
                                 <small><span class='text-muted'>{{ post.timestamp | date:"Y.m.d H:i" }}</span></small>
                             </p>

@@ -77,7 +77,7 @@
    class="text-decoration-none text-secondary">{{ content.content_object.url|root_url }}</a>)
                                         </div>
                                         {% if content.content_object.content %}
-                                            <div>{{ content.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                                            <div>{{ content.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
                                         {% endif %}
                                     </div>
                                     <span class="d-flex mt-2">
@@ -106,7 +106,7 @@
                                             <a href="{% url 'write:post_detail' content.content_object.id %}"
                                                class="text-decoration-none">{{ content.content_object.title }}</a>
                                         </div>
-                                        <div>{{ content.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                                        <div>{{ content.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
                                     </div>
                                     <span class="d-flex mt-2">
                                         <p class='me-2 text-secondary mb-2'>
@@ -134,7 +134,7 @@
                                             <a href="{% url 'write:repost_detail' content.content_object.id %}"
                                                class="text-decoration-none">{{ content.content_object.title }}</a>
                                         </div>
-                                        <div>{{ content.content_object.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                                        <div>{{ content.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
                                     </div>
                                     <span class="d-flex mt-2">
                                         <p class='me-2 text-secondary mb-2'>

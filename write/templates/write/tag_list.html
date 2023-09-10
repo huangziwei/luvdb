@@ -30,7 +30,7 @@
                             <h5>
                                 <a href="{{ pin.get_absolute_url }}">{{ pin.title }}</a>
                             </h5>
-                            <div>{{ pin.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                            <div>{{ pin.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
                             <p>
                                 <small>
                                     By <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.display_name | default:pin.user.username }}</a> on
@@ -48,7 +48,7 @@
                             <h5>
                                 <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                             </h5>
-                            <div>{{ post.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</div>
+                            <div>{{ post.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
                             <p>
                                 <small>By {{ post.user }} on <span class='text-muted'>{{ post.timestamp }}</span></small>
                             </p>
@@ -63,7 +63,7 @@
                             <p>
                                 <a href="{% url 'accounts:detail' repost.user.username %}">{{ repost.user.display_name | default:repost.user.username }}</a> reposted:
                             </p>
-                            <p>{{ repost.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300 }}</p>
+                            <p>{{ repost.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</p>
                             <p>
                                 <small>
                                     <a href="{% url 'write:repost_detail' repost.id %}" class='text-muted'>{{ repost.timestamp }}</a>
