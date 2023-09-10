@@ -263,7 +263,7 @@ pre {
 }
 
 p img {
-    max-width: 50%;
+    max-width: 49%;
     height: auto;
     transition: max-width 0.3s ease;
 }
