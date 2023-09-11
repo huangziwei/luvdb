@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load markdownify %}
 {% load linkify %}
+{% load url_filters %}
 {% block content %}
     <div class="container">
         <div class="row">
@@ -9,16 +10,14 @@
                 {% if says %}
                     <h3>Says</h3>
                     {% for say in says %}
-                        <div class="item mb-3">
-                            <p>
+                        <div class="item mb-4">
+                            <div class="mb-2">
                                 <a href="{% url 'accounts:detail' say.user.username %}">{{ say.user.display_name | default:say.user.username }}</a> said:
-                            </p>
-                            <p>{{ say.content | linkify_tags | linkify_mentions | markdownify }}</p>
-                            <p>
-                                <small>
-                                    <a href="{% url 'write:say_detail' say.id %}" class='text-muted'>{{ say.timestamp }}</a>
-                                </small>
-                            </p>
+                            </div>
+                            <div class="mb-2">{{ say.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                            <div class="mb-2">
+                                <a href="{% url 'write:say_detail' say.id %}" class='text-muted'>{{ say.timestamp|timesince }} ago</a>
+                            </div>
                         </div>
                     {% endfor %}
                 {% endif %}
@@ -27,16 +26,27 @@
                     <h3>Pins</h3>
                     {% for pin in pins %}
                         <div class="item mb-3">
-                            <h5>
-                                <a href="{{ pin.get_absolute_url }}">{{ pin.title }}</a>
-                            </h5>
-                            <div>{{ pin.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
-                            <p>
-                                <small>
-                                    By <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.display_name | default:pin.user.username }}</a> on
-                                    <a href="{% url 'write:pin_detail' pin.id %}" class='text-muted'>{{ pin.timestamp }}</a>
-                                </small>
-                            </p>
+                            <div class='mb-2'>
+                                <a href="{% url 'accounts:detail' pin.user.username %}">
+                                    {{ pin.user.display_name | default:pin.user.username }}
+                                </a> pinned:
+                            </div>
+                            <div class="mb-2">
+                                <div class="bg-light p-3">
+                                    <a href="{{ pin.url }}">{{ pin.title }}</a>
+                                    <a href="{% url 'write:pins_from_url' pin.url|root_url %}"
+                                       class="link-secondary">({{ pin.url|root_url }})</a>
+                                </div>
+                                {% if pin.content %}
+                                    <div class="mt-2">{{ pin.content | linkify_tags:pin.user | linkify_mentions | markdownify }}</div>
+                                {% endif %}
+                            </div>                            
+                            <span class="d-flex">
+                                <div class='me-2 text-secondary'>
+                                    <a href="{% url 'write:pin_list' pin.user.username %}"
+                                       class="text-muted">{{ pin.timestamp|timesince }} ago</a>
+                                </div>
+                            </span>
                         </div>
                     {% endfor %}
                 {% endif %}
@@ -50,7 +60,7 @@
                             </h5>
                             <div>{{ post.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
                             <p>
-                                <small>By {{ post.user }} on <span class='text-muted'>{{ post.timestamp }}</span></small>
+                                <small>By {{ post.user }} <span class='text-muted'>{{ post.timestamp|timesince }} ago</span></small>
                             </p>
                         </div>
                     {% endfor %}
@@ -66,7 +76,7 @@
                             <p>{{ repost.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</p>
                             <p>
                                 <small>
-                                    <a href="{% url 'write:repost_detail' repost.id %}" class='text-muted'>{{ repost.timestamp }}</a>
+                                    <a href="{% url 'write:repost_detail' repost.id %}" class='text-muted'>{{ repost.timestamp|timesince }} ago</a>
                                 </small>
                             </p>
                         </div>

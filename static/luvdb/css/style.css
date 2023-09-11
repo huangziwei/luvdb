@@ -268,7 +268,8 @@ p img {
     transition: max-width 0.3s ease;
 }
 
-p:hover img {
+p:hover img,
+p img:focus {
     max-width: 100%;
 }
 
