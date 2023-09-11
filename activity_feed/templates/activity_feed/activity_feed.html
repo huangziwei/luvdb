@@ -227,7 +227,7 @@
 <script>
     function smartTruncate(str, maxLength) {
         if (str.length <= maxLength) return str;
-    
+
         if (str.includes(" ")) {
             let truncated = str.substr(0, maxLength);
             return truncated.substr(0, Math.min(truncated.length, truncated.lastIndexOf(' ')));
@@ -235,56 +235,29 @@
             return str.substr(0, maxLength);
         }
     }
-    
-    function getOpenTags(html) {
-        const regex = /<([a-z]+)(?=[\s>])[^<]*?(?<!\/)>/gi;
-        const closingTagsRegex = /<\/([a-z]+)>/gi;
-        const result = [];
-        let match;
-    
-        while (match = regex.exec(html)) {
-            result.push(match[1]);
-        }
-    
-        while (match = closingTagsRegex.exec(html)) {
-            const closeTagName = match[1];
-            const index = result.lastIndexOf(closeTagName);
-            if (index !== -1) {
-                result.splice(index, 1);
-            }
-        }
-    
-        return result;
-    }
-    
-    function getHtmlTruncationPoint(html, plainTextTruncationPoint) {
-        let point = plainTextTruncationPoint;
-        while (point < html.length && html[point] !== '<') {
-            point++;
-        }
-        return (point === html.length) ? plainTextTruncationPoint : point;
-    }
-    
+
     document.addEventListener("DOMContentLoaded", function() {
         const threshold = 300;
         const elements = document.querySelectorAll('.truncatable-text');
-    
+
         elements.forEach(el => {
             let allTextContent = '';
             el.childNodes.forEach(child => {
                 allTextContent += child.textContent;
             });
-    
+
             if (allTextContent.length > threshold) {
                 let totalChars = 0;
                 let truncatedElement = el.cloneNode(true);
-    
+                let isTruncated = false;
+
                 const iterateNodes = function(node) {
                     if (node.nodeType === Node.TEXT_NODE) {
                         totalChars += node.textContent.length;
-    
+
                         if (totalChars > threshold) {
                             node.textContent = smartTruncate(node.textContent, threshold - (totalChars - node.textContent.length));
+                            isTruncated = true;
                             return false;
                         }
                     } else if (node.nodeType === Node.ELEMENT_NODE) {
@@ -297,44 +270,52 @@
                             }
                         }
                     }
-    
                     return true;
                 };
-    
+
                 iterateNodes(truncatedElement);
-    
+
                 const moreContentDiv = document.createElement('div');
                 moreContentDiv.classList.add('truncated-more-content');
                 moreContentDiv.style.display = 'none';
                 el.childNodes.forEach(child => {
                     moreContentDiv.appendChild(child.cloneNode(true));
                 });
-    
-                el.innerHTML = "";
-                el.appendChild(truncatedElement);
-                el.appendChild(moreContentDiv);
-    
-                const showMoreLink = document.createElement('a');
-                showMoreLink.href = "javascript:void(0);";
-                showMoreLink.textContent = '(Show More)';
-                showMoreLink.classList.add('show-more-link');
-                el.appendChild(showMoreLink);
-    
-                showMoreLink.addEventListener('click', function() {
-                    if (this.textContent === '(Show More)') {
-                        moreContentDiv.style.display = 'block';
-                        truncatedElement.style.display = 'none';
-                        this.textContent = '(Show Less)';
-                    } else {
-                        moreContentDiv.style.display = 'none';
-                        truncatedElement.style.display = 'block';
-                        this.textContent = '(Show More)';
-                    }
-                });
+
+                // Check if truncation actually happened
+                if (isTruncated && truncatedElement.innerHTML.trim() !== moreContentDiv.innerHTML.trim()) {
+                    el.innerHTML = "";
+                    el.appendChild(truncatedElement);
+                    el.appendChild(moreContentDiv);
+
+                    const showMoreLink = document.createElement('a');
+                    showMoreLink.href = "javascript:void(0);";
+                    showMoreLink.textContent = '(Show More)';
+                    showMoreLink.classList.add('show-more-link');
+                    el.appendChild(showMoreLink);
+
+                    showMoreLink.addEventListener('click', function() {
+                        if (this.textContent === '(Show More)') {
+                            moreContentDiv.style.display = 'block';
+                            truncatedElement.style.display = 'none';
+                            this.textContent = '(Show Less)';
+                        } else {
+                            moreContentDiv.style.display = 'none';
+                            truncatedElement.style.display = 'block';
+                            this.textContent = '(Show More)';
+                        }
+                    });
+                    console.log(truncatedElement.innerHTML !== moreContentDiv.innerHTML);
+                    console.log(truncatedElement.innerHTML);
+                    console.log(moreContentDiv.innerHTML);
+                    console.log("Truncated HTML length:", truncatedElement.innerHTML.trim().length);
+                    console.log("More Content HTML length:", moreContentDiv.innerHTML.trim().length);
+                } else {
+                    console.log('No truncation needed');
+                }
             }
         });
     });
-    
 </script>
 <style>
     .show-more-link {
