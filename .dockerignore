@@ -4,3 +4,6 @@ fly.toml
 db.sqlite3*
 *.png
 .github/
+*.sql
+datadump_anonymized.json
+anonymize_datadump.py

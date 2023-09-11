@@ -48,9 +48,11 @@ echo "DEBUG=True" >> .env
 DJANGO_SETTINGS_MODULE=config.settings.development python manage.py makemigrations
 DJANGO_SETTINGS_MODULE=config.settings.development python manage.py migrate
 
-# Creating super user
-DJANGO_SETTINGS_MODULE=config.settings.development python manage.py createsuperuser
+# Load datadump with an anonymous superuser
+DJANGO_SETTINGS_MODULE=config.settings.development python manage.py loaddata datadump_anonymized.json
 
 # Starting server
 DJANGO_SETTINGS_MODULE=config.settings.development python manage.py runserver
 ```
+
+I will update the datadump_anonymized periodically (cover and poster images are not included), you can login with username "anonymous" and the password is also "anonymous". If you want to use your own data, you can create a super user and start adding data manually.
