@@ -48,8 +48,10 @@ echo "DEBUG=True" >> .env
 DJANGO_SETTINGS_MODULE=config.settings.development python manage.py makemigrations
 DJANGO_SETTINGS_MODULE=config.settings.development python manage.py migrate
 
-# Load datadump with an anonymous superuser
+# Load datadump with an anonymous superuser 
 DJANGO_SETTINGS_MODULE=config.settings.development python manage.py loaddata datadump_anonymized.json
+# or create your own superuser and start with zero
+# DJANGO_SETTINGS_MODULE=config.settings.development python manage.py createsuperuser
 
 # Starting server
 DJANGO_SETTINGS_MODULE=config.settings.development python manage.py runserver
