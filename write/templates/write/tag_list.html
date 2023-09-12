@@ -58,7 +58,7 @@
                             <h5>
                                 <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                             </h5>
-                            <div>{{ post.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
+                            <div>{{ post.content | linkify_tags | linkify_mentions | markdownify }}</div>
                             <p>
                                 <small>By {{ post.user }} <span class='text-muted'>{{ post.timestamp|timesince }} ago</span></small>
                             </p>
@@ -73,7 +73,7 @@
                             <p>
                                 <a href="{% url 'accounts:detail' repost.user.username %}">{{ repost.user.display_name | default:repost.user.username }}</a> reposted:
                             </p>
-                            <p>{{ repost.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</p>
+                            <p>{{ repost.content | linkify_tags | linkify_mentions | markdownify }}</p>
                             <p>
                                 <small>
                                     <a href="{% url 'write:repost_detail' repost.id %}" class='text-muted'>{{ repost.timestamp|timesince }} ago</a>

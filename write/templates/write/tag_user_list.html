@@ -16,7 +16,7 @@
                     <h3>Says</h3>
                     {% for say in says %}
                         <div class="item mb-4">
-                            <div class="mb-2">{{ say.content | linkify_tags:say.user | linkify_mentions | truncatechars:300 | markdownify }}</div>
+                            <div class="mb-2">{{ say.content | linkify_tags:say.user | linkify_mentions | markdownify }}</div>
                             <div>
                                 <a href="{% url 'write:say_detail' say.id %}" class='text-muted'>{{ say.timestamp|timesince }} ago</a>
                             </div>
@@ -53,7 +53,7 @@
                             <h5>
                                 <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                             </h5>
-                            <div>{{ post.content | linkify_tags:post.user | linkify_mentions | truncatechars:300 | markdownify }}</div>
+                            <div>{{ post.content | linkify_tags:post.user | linkify_mentions | markdownify }}</div>
                             <p>
                                 <small><span class='text-muted'>{{ post.timestamp | date:"Y.m.d H:i" }}</span></small>
                             </p>
