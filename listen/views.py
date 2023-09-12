@@ -607,6 +607,25 @@ class ReleaseDetailView(DetailView):
 
         context["lists_containing_release"] = lists_containing_release
 
+        # Fetch the latest check-in from the current user for this book
+        if self.request.user.is_authenticated:
+            latest_user_checkin = (
+                ListenCheckIn.objects.filter(
+                    content_type=content_type.id,
+                    object_id=self.object.id,
+                    user=self.request.user,
+                )
+                .order_by("-timestamp")
+                .first()
+            )
+            if latest_user_checkin is not None:
+                context["latest_user_status"] = latest_user_checkin.status
+            else:
+                context["latest_user_status"] = "to_listen"
+        else:
+            context["latest_user_status"] = "to_listen"
+
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -1090,14 +1109,6 @@ def parse_podcast(rss_feed_url):
     return podcast_info
 
 
-# def create_podcast_from_feed(rss_feed_url):
-#     """
-#     Create Podcast and PodcastEpisode from the given RSS feed URL.
-#     """
-#     podcast_info = parse_podcast(rss_feed_url)
-#     podcast = Podcast.objects.create(**podcast_info)
-#     return podcast
-
 
 def create_or_update_podcast_from_feed(rss_feed_url):
     """
@@ -1181,7 +1192,6 @@ class PodcastDetailView(DetailView):
         # Calculate the time difference
         if self.object.last_updated:
             time_diff = timezone.now() - self.object.last_updated
-            print("time_diff", time_diff)
             if time_diff < timedelta(days=1):
                 context["recently_updated"] = True
             else:
@@ -1270,6 +1280,25 @@ class PodcastDetailView(DetailView):
         )
 
         context["lists_containing_release"] = lists_containing_release
+        
+        # Fetch the latest check-in from the current user for this book
+        if self.request.user.is_authenticated:
+            latest_user_checkin = (
+                ListenCheckIn.objects.filter(
+                    content_type=content_type.id,
+                    object_id=self.object.id,
+                    user=self.request.user,
+                )
+                .order_by("-timestamp")
+                .first()
+            )
+            if latest_user_checkin is not None:
+                context["latest_user_status"] = latest_user_checkin.status
+                print(latest_user_checkin.status)
+            else:
+                context["latest_user_status"] = "to_listen"
+        else:
+            context["latest_user_status"] = "to_listen"
 
         return context
 

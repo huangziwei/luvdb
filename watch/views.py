@@ -208,6 +208,25 @@ class MovieDetailView(DetailView):
                 (movie_role.person, alt_name_or_person_name)
             )
         context["roles"] = roles
+
+        # Fetch the latest check-in from the current user for this book
+        if self.request.user.is_authenticated:
+            latest_user_checkin = (
+                WatchCheckIn.objects.filter(
+                    content_type=content_type.id,
+                    object_id=self.object.id,
+                    user=self.request.user,
+                )
+                .order_by("-timestamp")
+                .first()
+            )
+            if latest_user_checkin is not None:
+                context["latest_user_status"] = latest_user_checkin.status
+            else:
+                context["latest_user_status"] = "to_watch"
+        else:
+            context["latest_user_status"] = "to_watch"
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -579,6 +598,24 @@ class SeriesDetailView(DetailView):
         )
 
         context["lists_containing_series"] = lists_containing_series
+
+        # Fetch the latest check-in from the current user for this book
+        if self.request.user.is_authenticated:
+            latest_user_checkin = (
+                WatchCheckIn.objects.filter(
+                    content_type=content_type.id,
+                    object_id=self.object.id,
+                    user=self.request.user,
+                )
+                .order_by("-timestamp")
+                .first()
+            )
+            if latest_user_checkin is not None:
+                context["latest_user_status"] = latest_user_checkin.status
+            else:
+                context["latest_user_status"] = "to_watch"
+        else:
+            context["latest_user_status"] = "to_watch"
 
         return context
 

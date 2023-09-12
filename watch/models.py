@@ -404,8 +404,6 @@ class WatchCheckIn(models.Model):
                 activity_type="watch-check-in",
                 content_object=self,
             )
-        else:
-            print("Not creating activity")
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)

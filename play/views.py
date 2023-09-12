@@ -259,6 +259,24 @@ class GameDetailView(DetailView):
 
         context["lists_containing_game"] = lists_containing_game
 
+        # Fetch the latest check-in from the current user for this book
+        if self.request.user.is_authenticated:
+            latest_user_checkin = (
+                GameCheckIn.objects.filter(
+                    game=self.object,
+                    user=self.request.user,
+                )
+                .order_by("-timestamp")
+                .first()
+            )
+            if latest_user_checkin is not None:
+                context["latest_user_status"] = latest_user_checkin.status
+            else:
+                context["latest_user_status"] = "to_play"
+        else:
+            context["latest_user_status"] = "to_play"
+     
+
         return context
 
     def post(self, request, *args, **kwargs):

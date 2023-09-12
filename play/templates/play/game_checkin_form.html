@@ -154,7 +154,8 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         // Set default status and progress type values
-        setStatus(event, 'to_play');
+        var default_status = '{{ latest_user_status }}' || 'to_play';
+        setStatus(event, default_status);
         setProgressType(event, 'TT');
     });
 </script>

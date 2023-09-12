@@ -144,6 +144,7 @@
         }
         document.getElementById('statusInput').value = status;
         updateStatusButton(status);
+        console.log('Status set to ' + status);
     }
     
     function setProgressType(event, type, contentType) {
@@ -185,7 +186,8 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         // Set default status and progress type values
-        setStatus(event, 'to_listen');
+        var default_status = '{{ latest_user_status }}' || 'to_listen';
+        setStatus(event, default_status);
         setProgressType(event, 'TT');
     });
 </script>
