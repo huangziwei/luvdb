@@ -102,7 +102,6 @@ class Publisher(Entity):
     """
 
     # publisher meta data
-    history = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     website = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
@@ -112,6 +111,7 @@ class Publisher(Entity):
     closed_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
         if self.location:

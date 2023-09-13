@@ -32,18 +32,18 @@ class GameInSeriesInline(admin.TabularInline):
 class DeveloperAdmin(admin.ModelAdmin):
     list_display = [
         "name",
-        "history",
         "location",
         "website",
         "founded_date",
         "closed_date",
+        "notes",
     ]
     search_fields = ["name"]
 
 
 @admin.register(Platform)
 class PlatformAdmin(admin.ModelAdmin):
-    list_display = ["name", "history", "website", "release_date", "discontinued_date"]
+    list_display = ["name", "notes", "website", "release_date", "discontinued_date"]
     search_fields = ["name"]
 
 

@@ -360,12 +360,13 @@ class DeveloperCreateView(LoginRequiredMixin, CreateView):
     fields = [
         "name",
         "other_names",
-        "history",
         "location",
         "website",
         "wikipedia",
         "founded_date",
         "closed_date",
+        "notes",
+
     ]
     template_name = "play/developer_create.html"
 
@@ -394,12 +395,12 @@ class DeveloperUpdateView(LoginRequiredMixin, UpdateView):
     fields = [
         "name",
         "other_names",
-        "history",
         "location",
         "website",
         "wikipedia",
         "founded_date",
         "closed_date",
+        "notes",
     ]
     template_name = "play/developer_update.html"
 
@@ -857,12 +858,12 @@ class GamePublisherCreateView(LoginRequiredMixin, CreateView):
     fields = [
         "name",
         "other_names",
-        "history",
         "location",
         "website",
         "wikipedia",
         "founded_date",
         "closed_date",
+        "notes",
     ]
     template_name = "play/gamepublisher_create.html"
 
@@ -891,12 +892,12 @@ class GamePublisherUpdateView(LoginRequiredMixin, UpdateView):
     fields = [
         "name",
         "other_names",
-        "history",
         "location",
         "website",
         "wikipedia",
         "founded_date",
         "closed_date",
+        "notes",
     ]
     template_name = "play/gamepublisher_update.html"
 

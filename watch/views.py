@@ -317,12 +317,13 @@ class StudioCreateView(LoginRequiredMixin, CreateView):
     fields = [
         "name",
         "other_names",
-        "history",
         "location",
         "website",
         "wikipedia",
         "founded_date",
         "closed_date",
+        "notes",
+
     ]
     template_name = "watch/studio_create.html"
 
@@ -345,12 +346,13 @@ class StudioUpdateView(LoginRequiredMixin, UpdateView):
     fields = [
         "name",
         "other_names",
-        "history",
         "location",
         "website",
         "wikipedia",
         "founded_date",
         "closed_date",
+        "notes",
+
     ]
     template_name = "watch/studio_update.html"
 

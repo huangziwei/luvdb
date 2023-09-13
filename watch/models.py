@@ -33,12 +33,12 @@ def rename_movie_poster(instance, filename):
 
 
 class Studio(Entity):
-    history = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=100, blank=True, null=True)
     website = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
     founded_date = models.CharField(max_length=10, blank=True, null=True)
     closed_date = models.CharField(max_length=10, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
         if self.location:

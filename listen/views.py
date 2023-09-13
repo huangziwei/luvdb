@@ -67,12 +67,12 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
     fields = [
         "name",
         "other_names",
-        "history",
         "location",
         "website",
         "wikipedia",
         "founded_date",
         "closed_date",
+        "notes",
     ]
     template_name = "listen/label_create.html"
 
@@ -100,12 +100,12 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
     fields = [
         "name",
         "other_names",
-        "history",
         "location",
         "website",
         "wikipedia",
         "founded_date",
         "closed_date",
+        "notes",
     ]
     template_name = "listen/label_update.html"
 

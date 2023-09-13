@@ -68,12 +68,13 @@ class PublisherCreateView(LoginRequiredMixin, CreateView):
     fields = [
         "name",
         "other_names",
-        "history",
         "location",
         "website",
         "wikipedia",
         "founded_date",
         "closed_date",
+        "notes",
+
     ]
     template_name = "read/publisher_create.html"
 
@@ -101,12 +102,12 @@ class PublisherUpdateView(LoginRequiredMixin, UpdateView):
     fields = [
         "name",
         "other_names",
-        "history",
         "location",
         "website",
         "wikipedia",
         "founded_date",
         "closed_date",
+        "notes",
     ]
     template_name = "read/publisher_update.html"
 

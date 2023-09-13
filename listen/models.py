@@ -42,7 +42,7 @@ class Label(Entity):
     """
 
     # publisher meta data
-    history = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     website = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
