@@ -36,7 +36,7 @@
                                     <h4>{{ object.title }}</h4>
                                 </span>
                                 {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
-                                {% if object.other_titles %}<p class='text-muted'>Other titles: {{ object.other_titles }}</p>{% endif %}
+                                {% if object.other_titles %}<p class='text-muted'>{{ object.other_titles }}</p>{% endif %}
                                 {% if object.romanized_title %}<p class='text-muted'>{{ object.romanized_title }}</p>{% endif %}
                                 <div class="game-meta">
                                     {% for role, persons_altname_tuples in grouped_roles.items %}

@@ -8,7 +8,7 @@
             <h2>{{ object.title }}</h2>
             {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
             {% if object.other_titles %}
-                <p class='text-muted'>Other titles: {{ object.other_titles }} </p>
+                <p class='text-muted'>{{ object.other_titles }} </p>
             {% endif %}
 
             {% for role, persons_altname_tuples in grouped_roles.items %}
