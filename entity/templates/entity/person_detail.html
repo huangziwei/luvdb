@@ -20,9 +20,9 @@
                     {% if object.death_date %}{{ object.death_date }}{% endif %}
                     {% if object.death_place %}({{ object.death_place }}){% endif %}
                 </span>
-                {% if object.note %}
+                {% if object.notes %}
                 <div class="text-muted">
-                    {{ object.note | markdownify }}
+                    {{ object.notes | markdownify }}
                 </div>
                 {% endif %}
                 <!--Read-->

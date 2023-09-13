@@ -18,7 +18,7 @@ class PersonForm(forms.ModelForm):
             "death_place",
             "wikipedia",
             "website",
-            "note",
+            "notes",
         ]
         help_texts = {
             "name": "Enter the person's or the group's most-used name in their original language. ",
@@ -29,7 +29,7 @@ class PersonForm(forms.ModelForm):
             "death_place": "Enter the place of death or dissolution in its original language.",
             "wikipedia": "Enter the person's or the group's Wikipedia URL.",
             "website": "Enter the person's or the group's website URL.",
-            "note": "Enter any additional information about the person or the group.",
+            "notes": "Enter any additional information about the person or the group.",
         }
         widgets = {
             "other_names": forms.TextInput(),  # Use TextInput to make it a single line input

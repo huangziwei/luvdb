@@ -84,7 +84,7 @@ class Work(models.Model):
     recorded_date = models.CharField(max_length=10, blank=True, null=True)
     genres = models.ManyToManyField(Genre, related_name="listen_works", blank=True)
     wikipedia = models.URLField(blank=True, null=True)
-    note = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -139,7 +139,7 @@ class Track(models.Model):
         max_length=255, blank=True, null=True
     )  # International Standard Recording Code
     wikipedia = models.URLField(blank=True, null=True)
-    note = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -236,7 +236,7 @@ class Release(models.Model):
     apple_music_url = models.URLField(blank=True, null=True)
     kkbox_url = models.URLField(blank=True, null=True)
     youtube_url = models.URLField(blank=True, null=True)
-    note = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     # Entry metadata
     created_at = models.DateTimeField(auto_now_add=True)
