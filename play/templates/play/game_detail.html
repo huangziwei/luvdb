@@ -57,24 +57,6 @@
                                             {% endfor %}
                                         </p>
                                     {% endif %}
-                                    {% if object.publishers.count != 0 %}
-                                        <p>
-                                            <span class="text-muted">Publisher{% if object.publishers.count > 1 %}s{% endif %}:</span>
-                                            {% for publisher in object.publishers.all %}
-                                                <a href="{% url 'play:publisher_detail' publisher.id %}">{{ publisher.name }}</a>
-                                                {% if not forloop.last %}/{% endif %}
-                                            {% endfor %}
-                                        </p>
-                                    {% endif %}
-                                    {% if object.platforms.count != 0 %}
-                                        <p>
-                                            <span class="text-muted">Platform{% if object.platforms.count > 1 %}s{% endif %}:</span>
-                                            {% for platform in object.platforms.all %}
-                                                <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
-                                                {% if not forloop.last %}/{% endif %}
-                                            {% endfor %}
-                                        </p>
-                                    {% endif %}
                                     <p>
                                         <span class="text-muted">Crew and Cast:</span> <a href="{% url 'play:game_cast_detail' object.id %}">View All</a>
                                     </p>
@@ -104,6 +86,24 @@
                                             <span class="text-muted">More Metadata</span>
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
+                                            {% if object.publishers.count != 0 %}
+                                                <p>
+                                                    <span class="text-muted">Publisher{% if object.publishers.count > 1 %}s{% endif %}:</span>
+                                                    {% for publisher in object.publishers.all %}
+                                                        <a href="{% url 'play:publisher_detail' publisher.id %}">{{ publisher.name }}</a>
+                                                        {% if not forloop.last %}/{% endif %}
+                                                    {% endfor %}
+                                                </p>
+                                            {% endif %}
+                                            {% if object.platforms.count != 0 %}
+                                                <p>
+                                                    <span class="text-muted">Platform{% if object.platforms.count > 1 %}s{% endif %}:</span>
+                                                    {% for platform in object.platforms.all %}
+                                                        <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
+                                                        {% if not forloop.last %}/{% endif %}
+                                                    {% endfor %}
+                                                </p>
+                                            {% endif %}
                                             {% if object.rating %}
                                                 <p>
                                                     <span class="text-muted">Rating:</span> {{ object.rating }}
