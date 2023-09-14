@@ -1,3 +1,5 @@
+from calendar import Calendar
+
 import pytz
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -6,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, Q
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -148,6 +151,12 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
 
         context["games_released_today"] = games_released_today
 
+        # Add calendar context
+        cal = Calendar()
+        today = timezone.localtime(timezone.now()).date()
+        context["calendar"] = cal.monthdayscalendar(today.year, today.month)
+        context["current_date"] = now.strftime("%Y-%m-%d")
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -262,3 +271,160 @@ def unblock_view(request, user_id):
         # Depending on your requirements, you may want to re-establish follow relationships here.
 
         return redirect("accounts:detail", username=user_to_unblock.username)
+
+
+class CalendarActivityFeedView(ActivityFeedView):
+    def get_queryset(self):
+        selected_date = self.kwargs.get("selected_date")
+        try:
+            filter_date = timezone.datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            # Handle date parsing error
+            return super().get_queryset()
+
+        user = self.request.user
+        following_users = user.following.all().values_list("followed", flat=True)
+        return (
+            super()
+            .get_queryset()
+            .filter(
+                user__in=list(following_users) + [user.id], timestamp__date=filter_date
+            )
+            .order_by("-timestamp")
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["say_form"] = ActivityFeedSayForm()
+        context["feed_type"] = "public"
+        context["no_citation_css"] = True
+        # Add date to the context
+        selected_date_str = self.kwargs.get("selected_date")
+
+        # Convert selected_date_str to a datetime object, using the user's timezone
+        selected_date = timezone.datetime.strptime(selected_date_str, "%Y-%m-%d").date()
+        selected_datetime = timezone.make_aware(
+            timezone.datetime.combine(selected_date, timezone.datetime.min.time())
+        )
+        selected_datetime = timezone.localtime(
+            selected_datetime, pytz.timezone(self.request.user.timezone)
+        )
+
+        # Get month and day of selected_date
+        selected_month_day = selected_datetime.strftime(".%m.%d")
+        selected_month_day_dash = selected_datetime.strftime("-%m-%d")
+
+        # Query for people born or died on this day
+        born_today = Person.objects.filter(
+            Q(birth_date__contains=selected_month_day)
+            | Q(birth_date__contains=selected_month_day_dash)
+        ).order_by("birth_date")
+
+        died_today = Person.objects.filter(
+            Q(death_date__contains=selected_month_day)
+            | Q(death_date__contains=selected_month_day_dash)
+        ).order_by("death_date")
+
+        # Calculate age at birth or death
+        for person in born_today:
+            birth_year = int(
+                person.birth_date.split("-" if "-" in person.birth_date else ".")[0]
+            )
+            person.since = selected_datetime.year - birth_year
+
+        for person in died_today:
+            death_year = int(
+                person.death_date.split("-" if "-" in person.death_date else ".")[0]
+            )
+            person.since = selected_datetime.year - death_year
+
+        context["born_today"] = born_today
+        context["died_today"] = died_today
+
+        # Query for books published on this day
+        books_published_today = Book.objects.filter(
+            Q(publication_date__contains=selected_month_day)
+            | Q(publication_date__contains=selected_month_day_dash)
+        ).order_by("publication_date")
+
+        # Calculate years since publication
+        for book in books_published_today:
+            publication_year = int(
+                book.publication_date.split(
+                    "-" if "-" in book.publication_date else "."
+                )[0]
+            )
+            book.since = selected_datetime.year - publication_year
+            book.authors = book.bookrole_set.filter(role__name="Author").values(
+                "person__name", "alt_name"
+            )
+
+        context["books_published_today"] = books_published_today
+
+        # Query for movies released on this day
+        movies_released_today = Movie.objects.filter(
+            Q(release_date__contains=selected_month_day)
+            | Q(release_date__contains=selected_month_day_dash)
+        ).order_by("release_date")
+
+        # Calculate years since release
+        for movie in movies_released_today:
+            release_year = int(
+                movie.release_date.split("-" if "-" in movie.release_date else ".")[0]
+            )
+            movie.since = selected_datetime.year - release_year
+
+        context["movies_released_today"] = movies_released_today
+
+        # Query for series released on this day
+        series_released_today = Series.objects.filter(
+            Q(release_date__contains=selected_month_day)
+            | Q(release_date__contains=selected_month_day_dash)
+        ).order_by("release_date")
+
+        # Calculate years since release
+        for serie in series_released_today:
+            release_year = int(
+                serie.release_date.split("-" if "-" in serie.release_date else ".")[0]
+            )
+            serie.since = selected_datetime.year - release_year
+
+        context["series_released_today"] = series_released_today
+
+        # Query for music released on this day
+        music_released_today = Release.objects.filter(
+            Q(release_date__contains=selected_month_day)
+            | Q(release_date__contains=selected_month_day_dash)
+        ).order_by("release_date")
+
+        # Calculate years since release
+        for music in music_released_today:
+            release_year = int(
+                music.release_date.split("-" if "-" in music.release_date else ".")[0]
+            )
+            music.since = selected_datetime.year - release_year
+
+        context["music_released_today"] = music_released_today
+
+        # Query for music released on this day
+        games_released_today = Game.objects.filter(
+            Q(release_date__contains=selected_month_day)
+            | Q(release_date__contains=selected_month_day_dash)
+        ).order_by("release_date")
+
+        # Calculate years since release
+        for game in games_released_today:
+            release_year = int(
+                game.release_date.split("-" if "-" in game.release_date else ".")[0]
+            )
+            game.since = selected_datetime.year - release_year
+
+        context["games_released_today"] = games_released_today
+
+        # Add calendar context
+        cal = Calendar()
+        today = timezone.localtime(timezone.now()).date()
+        context["calendar"] = cal.monthdayscalendar(today.year, today.month)
+        context["selected_date"] = selected_datetime.strftime("%Y-%m-%d")
+
+        return context
