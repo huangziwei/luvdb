@@ -465,6 +465,9 @@ class RepostCreateView(LoginRequiredMixin, CreateView):
         repost.user = self.request.user
         repost.original_activity = original_activity
         repost.content_object = original_activity.content_object
+        # Check if the original activity is a repost and set original_repost accordingly
+        if original_activity.content_type.model == "repost":
+            repost.original_repost = original_activity.content_object
         repost.save()
         return redirect("activity_feed:activity_feed")
 
