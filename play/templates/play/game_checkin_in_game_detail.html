@@ -24,12 +24,6 @@
                         {% endif %}
                     </span>
                 {% endif %}
-                <span>
-                    <a class="text-secondary"
-                       href="{% url 'play:game_checkin_list' game.id checkin.user.username %}">
-                        {{ checkin.timestamp|date:"Y.m.d H:i" }}
-                    </a>
-                </span>
             </div>
             {% if checkin.content %}
                 <div class="checkin bg-light p-3 mb-3">

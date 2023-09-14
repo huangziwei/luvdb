@@ -60,7 +60,8 @@ class GamePublisher(Entity):
 
 
 class Platform(Entity):
-    website = models.CharField(max_length=100, blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    wikipedia = models.URLField(blank=True, null=True)
     release_date = models.CharField(max_length=10, blank=True, null=True)
     discontinued_date = models.CharField(max_length=10, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)

@@ -6,24 +6,25 @@
                 <h2>
                     {{ platform.name }}
                 </h2>
-                {% if object.other_names %}
+                {% if platform.other_names %}
                 <div class="text-muted">
-                    {{ object.other_names}}
+                    {{ platform.other_names }}
                 </div>
                 {% endif %}
-                {% if platform.games.count != 0 %}
+                {% if sorted_games %}
                     <h3>Game releases</h3>
                     <ul>
-                        {% for game in platform.games.all %}
+                        {% for game in sorted_games %}
                             <li>
                                 <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
-                                (Released on {{ platform.name }},
-                                {{ game.release_date }})
+                                ({{ game.release_date }})
                             </li>
                         {% empty %}
                             <li>No games have been released on this platform.</li>
                         {% endfor %}
                     </ul>
+                {% else %}
+                    <p>No games have been released on this platform.</p>
                 {% endif %}
             </div>
         </div>

@@ -275,7 +275,6 @@ class GameDetailView(DetailView):
                 context["latest_user_status"] = "to_play"
         else:
             context["latest_user_status"] = "to_play"
-     
 
         return context
 
@@ -366,7 +365,6 @@ class DeveloperCreateView(LoginRequiredMixin, CreateView):
         "founded_date",
         "closed_date",
         "notes",
-
     ]
     template_name = "play/developer_create.html"
 
@@ -443,7 +441,12 @@ class PlatformCreateView(LoginRequiredMixin, CreateView):
 class PlatformDetailView(DetailView):
     model = Platform
     template_name = "play/platform_detail.html"
-    context_object_name = "platform"  # Default is "object"
+    context_object_name = "platform"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["sorted_games"] = self.object.games.all().order_by("release_date")
+        return context
 
 
 class PlatformUpdateView(LoginRequiredMixin, UpdateView):
