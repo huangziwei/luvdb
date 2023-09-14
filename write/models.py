@@ -105,19 +105,7 @@ class Repost(models.Model):
             return None
 
     def get_reposts(self):
-        reposts_based_on_self = Repost.objects.filter(original_repost=self)
-        reposts_based_on_original_activity = Repost.objects.filter(
-            original_activity=self.original_activity
-        ).exclude(id=self.id)
-
-        final_queryset = reposts_based_on_self | reposts_based_on_original_activity
-        print("Reposts based on self: ", reposts_based_on_self)
-        print(
-            "Reposts based on original_activity: ", reposts_based_on_original_activity
-        )
-        print("Final queryset: ", final_queryset)
-
-        return final_queryset
+        return Repost.objects.filter(original_repost=self).exclude(id=self.id)
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
