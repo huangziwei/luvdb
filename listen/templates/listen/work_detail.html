@@ -7,7 +7,17 @@
             <!--Left columns-->
             <div class="col-sm-8">
                 <h2>{{ object.title }}</h2>
-                {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
+                {% if object.subtitle or object.other_titles %}
+                <p class='d-flex'>
+                    {% if object.subtitle and object.other_titles %}
+                        <span class='text-secondary'>{{ object.subtitle }} / {{ object.other_titles }}</span>
+                    {% elif object.subtitle %}
+                        <span class='text-secondary'>{{ object.subtitle }}</span>
+                    {% elif object.other_titles %}
+                        <span class='text-secondary'>{{ object.other_titles }}</span>
+                    {% endif %}
+                </p>
+                {% endif %}
                 {% for role, persons_altname_tuples in grouped_roles.items %}
                     <div>
                         <span class="text-muted">{{ role }}:</span>
