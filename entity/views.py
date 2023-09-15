@@ -6,7 +6,7 @@ from django.utils.html import format_html
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
-from listen.models import Release, Track
+from listen.models import Audiobook, Release, Track
 from listen.models import Work as ListenWork
 from play.models import Game
 from play.models import Work as GameWork
@@ -56,6 +56,11 @@ class PersonDetailView(DetailView):
             instancerole__role__name="Translator", instancerole__person=person
         ).order_by("publication_date")
         context["as_translator"] = as_translator
+
+        as_narrator = Audiobook.objects.filter(
+            audiobookrole__role__name="Narrator", audiobookrole__person=person
+        ).order_by("release_date")
+        context["as_narrator"] = as_narrator
 
         writings = Book.objects.filter(
             Q(bookrole__role__name="Introduction")
@@ -180,6 +185,10 @@ class PersonDetailView(DetailView):
         context["releases_count"] = (
             Release.objects.filter(releaserole__person=person).distinct().count()
         )
+        context["audiobooks_count"] = (
+            Audiobook.objects.filter(audiobookrole__person=person).distinct().count()
+        )
+
         # watch
         ## as casts
         context["movies"] = (

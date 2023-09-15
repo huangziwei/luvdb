@@ -26,7 +26,7 @@
                 </div>
                 {% endif %}
                 <!--Read-->
-                {% if read_works or as_translator or as_editor or as_annotator or writings %}
+                {% if read_works or as_translator or as_editor or as_annotator or writings or as_narrator %}
                     <h3 class="mt-2">Bibliography</h3>
                     {% if read_works %}
                         <div class="row">
@@ -99,6 +99,22 @@
                                         {% for instance in as_annotator.all %}
                                             <li>
                                                 <a href="{% url 'read:instance_detail' instance.pk %}">{{ instance.title }}</a> ({{ instance.publication_date }})
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if as_narrator %}
+                        <div class="row">
+                            {% if as_narrator.count != 0 %}
+                                <div class="col-md-6 mt-2">
+                                    <h4>As Narrator</h4>
+                                    <ul>
+                                        {% for audiobook in as_narrator.all %}
+                                            <li>
+                                                <a href="{% url 'listen:audiobook_detail' audiobook.pk %}">{{ audiobook.title }}</a> ({{ audiobook.release_date }})
                                             </li>
                                         {% endfor %}
                                     </ul>
@@ -490,7 +506,7 @@
                     </div>
                     {% endif %}
 
-                    {% if listenworks_count != 0 or tracks_count != 0 or releases_count != 0%}
+                    {% if listenworks_count != 0 or tracks_count != 0 or releases_count != 0 or audiobooks_count != 0%}
                     <div class="mb-3">
                         <h6>Listen</h6>
                         {% if listenworks_count != 0 %}
@@ -506,6 +522,11 @@
                         {% if releases_count != 0 %}
                         <div>
                             <span class="text-muted">Releases</span>: {{ releases_count }}
+                        </div>
+                        {% endif %}
+                        {% if audiobooks_count != 0%}
+                        <div>
+                            <span class="text-muted">Audiobooks</span>: {{ audiobooks_count }}
                         </div>
                         {% endif %}
                     </div>

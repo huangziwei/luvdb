@@ -420,12 +420,12 @@ class AudiobookForm(forms.ModelForm):
                 url=reverse_lazy("read:publisher-autocomplete")
             ),
             "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
-            "publication_date": forms.TextInput(),
+            "release_date": forms.TextInput(),
         }
         help_texts = {
             "format": "e.g. paperback, hardcover, ebook, etc.",
             "length": "e.g. 300 pages, 10:20:33, etc.",
-            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For books published before common era, use negative numbers, e.g. `-100`.",
+            "release_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For books published before common era, use negative numbers, e.g. `-100`.",
         }
 
     def __init__(self, *args, **kwargs):
