@@ -23,7 +23,7 @@ from django.views.generic import (
 
 from activity_feed.models import Activity, Follow
 from entity.models import Person
-from listen.models import ListenCheckIn, Podcast, Release, Track
+from listen.models import Audiobook, ListenCheckIn, Podcast, Release, Track
 from listen.models import Work as MusicWork
 from play.models import Game, GameCast, GameCheckIn, GameRole
 from play.models import Work as GameWork
@@ -564,6 +564,7 @@ def filter_listen(query, search_terms):
     track_results = Track.objects.all()
     release_results = Release.objects.all()
     podcast_results = Podcast.objects.all()
+    audiobook_results = Audiobook.objects.all()
 
     for term in search_terms:
         musicwork_results = (
@@ -602,8 +603,21 @@ def filter_listen(query, search_terms):
             .order_by("release_date")
         )
         podcast_results = podcast_results.filter(Q(title__icontains=term)).distinct()
+        audiobook_results = audiobook_results.filter(
+            Q(title__icontains=term)
+            | Q(audiobookrole__person__name__icontains=term)
+            | Q(audiobookrole__person__other_names__icontains=term)
+            | Q(release_date__icontains=term)
+            | Q(publisher__name__icontains=term)
+        ).distinct()
 
-    return musicwork_results, track_results, release_results, podcast_results
+    return (
+        musicwork_results,
+        track_results,
+        release_results,
+        podcast_results,
+        audiobook_results,
+    )
 
 
 def filter_play(query, search_terms):
@@ -719,6 +733,7 @@ def search_view(request):
     track_results = []
     release_results = []
     podcast_results = []
+    audiobook_results = []
     # watch
     movie_results = []
     series_results = []
@@ -749,6 +764,7 @@ def search_view(request):
                 track_results,
                 release_results,
                 podcast_results,
+                audiobook_results,
             ) = filter_listen(query, search_terms)
 
         if model in ["all", "play"]:
@@ -789,6 +805,7 @@ def search_view(request):
             "track_results": track_results,
             "release_results": release_results,
             "podcast_results": podcast_results,
+            "audiobook_results": audiobook_results,
             # watch
             "movie_results": movie_results,
             "series_results": series_results,
