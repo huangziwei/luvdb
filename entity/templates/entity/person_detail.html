@@ -118,7 +118,12 @@
                                     <ul>
                                         {% for single in singles_as_performer %}
                                             <li>
-                                                <a href="{% url 'listen:release_detail' single.pk %}">{{ single.title }}</a> ({{ single.release_date }})
+                                                {% if single.release_group.exists %}
+                                                    <a href="{% url 'listen:releasegroup_detail' single.release_group.first.id %}">{{ single.title }}</a>
+                                                {% else %}
+                                                    <a href="{% url 'listen:release_detail' single.pk %}">{{ single.title }}</a>
+                                                {% endif %}
+                                                ({{ single.release_date }})
                                             </li>
                                         {% empty %}
                                             <li>This person has no singles.</li>
@@ -132,7 +137,12 @@
                                     <ul>
                                         {% for ep in EPs_as_performer %}
                                             <li>
-                                                <a href="{% url 'listen:release_detail' ep.pk %}">{{ ep.title }}</a> ({{ ep.release_date }})
+                                                {% if ep.release_group.exists %}
+                                                    <a href="{% url 'listen:releasegroup_detail' ep.release_group.first.id %}">{{ ep.title }}</a>
+                                                {% else %}
+                                                    <a href="{% url 'listen:release_detail' ep.pk %}">{{ ep.title }}</a>
+                                                {% endif %}
+                                                ({{ ep.release_date }})
                                             </li>
                                         {% empty %}
                                             <li>This person has no EPs.</li>
@@ -146,7 +156,12 @@
                                     <ul>
                                         {% for lp in LPs_as_performer %}
                                             <li>
-                                                <a href="{% url 'listen:release_detail' lp.pk %}">{{ lp.title }}</a> ({{ lp.release_date }})
+                                                {% if lp.release_group.exists %}
+                                                    <a href="{% url 'listen:releasegroup_detail' lp.release_group.first.id %}">{{ lp.title }}</a>
+                                                {% else %}
+                                                    <a href="{% url 'listen:release_detail' lp.pk %}">{{ lp.title }}</a>
+                                                {% endif %}
+                                                ({{ lp.release_date }})
                                             </li>
                                         {% empty %}
                                             <li>This person has no LPs.</li>
@@ -156,6 +171,7 @@
                             {% endif %}
                         </div>
                     {% endif %}
+                
                     {% if works_as_lyricist or works_as_composer %}
                         <div class='row'>
                             <h4 class="mt-2">Works</h4>

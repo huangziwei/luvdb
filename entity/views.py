@@ -98,21 +98,58 @@ class PersonDetailView(DetailView):
             "Trumpeter",
         ]
 
-        context["LPs_as_performer"] = Release.objects.filter(
+        def get_releases_by_type_and_group(releases):
+            # Group the releases by their ReleaseGroup and sort them by release_date within each group
+            release_by_group = {}
+            for release in releases:
+                group = (
+                    release.release_group.first()
+                )  # Assuming a release can only belong to one group
+                if group:
+                    release_by_group.setdefault(group, []).append(release)
+
+            for group, group_releases in release_by_group.items():
+                release_by_group[group] = sorted(
+                    group_releases, key=lambda r: r.release_date
+                )[
+                    0
+                ]  # Keep the oldest release
+
+            # For releases that do not belong to any group, treat them as individual "groups"
+            individual_releases = [r for r in releases if not r.release_group.exists()]
+            for release in individual_releases:
+                release_by_group[
+                    release
+                ] = release  # Individual releases are their own "group"
+
+            # Sort the final release list by release date
+            final_releases = sorted(
+                release_by_group.values(), key=lambda r: r.release_date
+            )
+
+            return final_releases
+
+        LP_releases = Release.objects.filter(
             releaserole__role__name__in=roles_as_performer,
             releaserole__person=person,
             release_type__in=["LP", "Box Set"],
         ).order_by("release_date")
-        context["EPs_as_performer"] = Release.objects.filter(
+        EP_releases = Release.objects.filter(
             releaserole__role__name__in=roles_as_performer,
             releaserole__person=person,
             release_type="EP",
         ).order_by("release_date")
-        context["singles_as_performer"] = Release.objects.filter(
+        single_releases = Release.objects.filter(
             releaserole__role__name__in=roles_as_performer,
             releaserole__person=person,
             release_type="Single",
         ).order_by("release_date")
+
+        context["LPs_as_performer"] = get_releases_by_type_and_group(LP_releases)
+        context["EPs_as_performer"] = get_releases_by_type_and_group(EP_releases)
+        context["singles_as_performer"] = get_releases_by_type_and_group(
+            single_releases
+        )
 
         context["tracks_as_singer"] = Track.objects.filter(
             trackrole__role__name="Singer", trackrole__person=person

@@ -17,7 +17,7 @@
                         {% regroup oldest_release.release.releaserole_set.all by role as roles_list %}
                         {% for role in roles_list %}
                             <div>
-                                {{ role.grouper }}{% if role.list|length > 1 %}s{% endif %}:
+                                <span class="text-muted">{{ role.grouper }}{% if role.list|length > 1 %}s{% endif %}</span>:
                                 {% for release_role in role.list %}
                                     {% if not forloop.first %}, {% endif %}
                                     <a href="{% url 'entity:person_detail' release_role.person.id %}">
@@ -28,7 +28,7 @@
                         {% endfor %}
                         {% if oldest_release.release.label %}
                             <div>
-                                Label: 
+                                <span class="text-muted">Label</span>: 
                                 {% for label in oldest_release.release.label.all %}
                                     <a href="{% url 'listen:label_detail' label.id %}">
                                         {{ label.name }}
@@ -38,7 +38,7 @@
                             </div>
                         {% endif %}
                         {% if oldest_release.release.release_date %}
-                            <div>First Release Date: {{ oldest_release.release.release_date }}</div>
+                            <div><span class="text-muted">First Release Date</span>: {{ oldest_release.release.release_date }}</div>
                         {% endif %}
                     </div>
                 {% endif %}
@@ -68,7 +68,7 @@
                                     {% regroup release_in_group.release.releaserole_set.all by role as roles_list %}
                                     {% for role in roles_list %}
                                         <div>
-                                            {{ role.grouper }}{% if role.list|length > 1 %}s{% endif %}:
+                                            <span class="text-muted">{{ role.grouper }}{% if role.list|length > 1 %}s{% endif %}</span>:
                                             {% for release_role in role.list %}
                                                 {% if not forloop.first %}, {% endif %}
                                                 <a href="{% url 'entity:person_detail' release_role.person.id %}">
@@ -79,7 +79,7 @@
                                     {% endfor %}
                                     {% if release_in_group.release.label %}
                                         <div>
-                                            Label: 
+                                            <span class="text-muted">Label</span>: 
                                             {% for label in release_in_group.release.label.all %}
                                                 <a href="{% url 'listen:label_detail' label.id %}">
                                                     {{ label.name }}
@@ -89,7 +89,7 @@
                                         </div>
                                     {% endif %}
                                     {% if release_in_group.release.release_date %}
-                                        <div>Date: {{ release_in_group.release.release_date }}</div>
+                                        <div><span class="text-muted">Date</span>: {{ release_in_group.release.release_date }}</div>
                                     {% endif %}
                                 </div>
                             </div>
