@@ -171,6 +171,9 @@ class AccountDetailView(DetailView):
         looping = latest_listen_checkins.filter(status="looping").order_by(
             "-timestamp"
         )[:15]
+        listening = latest_listen_checkins.filter(status="listening").order_by(
+            "-timestamp"
+        )[:15]
         listened = latest_listen_checkins.filter(status="listened").order_by(
             "-timestamp"
         )[:15]
@@ -182,6 +185,7 @@ class AccountDetailView(DetailView):
         )[:15]
 
         context["looping"] = looping
+        context["listening"] = listening
         context["listened"] = listened
         context["to_listen"] = to_listen
         context["subscribed"] = subscribed
