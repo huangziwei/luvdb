@@ -9,11 +9,13 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.files.base import ContentFile
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.text import slugify
 from PIL import Image
 
 from activity_feed.models import Activity
 from entity.models import Entity, Person, Role
+from read.models import Book, Instance, LanguageField, Publisher, standardize_date
 from write.models import create_mentions_notifications, handle_tags
 
 
@@ -80,7 +82,7 @@ class Work(models.Model):
     persons = models.ManyToManyField(
         Person, through="WorkRole", related_name="listen_works"
     )
-    release_date = models.CharField(max_length=10, blank=True, null=True) 
+    release_date = models.CharField(max_length=10, blank=True, null=True)
     recorded_date = models.CharField(max_length=10, blank=True, null=True)
     genres = models.ManyToManyField(Genre, related_name="listen_works", blank=True)
     wikipedia = models.URLField(blank=True, null=True)
@@ -516,3 +518,164 @@ class ReleaseInGroup(models.Model):
 
     def __str__(self):
         return f"{self.group.title}: {self.release.title}"
+
+
+# class Audiobook(Book):
+#     release_date = models.TextField(blank=True, null=True)
+#     listencheckin = GenericRelation("ListenCheckIn")
+
+#     def save(self, *args, **kwargs):
+#         # Your custom save logic for Audiobook
+#         if self.release_date:
+#             self.release_date = standardize_date(self.release_date)
+
+#         # Call the parent class's save method
+#         super().save(*args, **kwargs)
+
+#     def get_absolute_url(self):
+#         return reverse("listen:audiobook_detail", args=[str(self.id)])
+
+
+class Audiobook(models.Model):
+    """
+    A Audiobook entity of an Instance
+    """
+
+    # book meta data
+    title = models.CharField(max_length=255)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
+    cover = models.ImageField(upload_to=rename_release_cover, null=True, blank=True)
+    cover_sens = models.BooleanField(default=False, null=True, blank=True)
+    persons = models.ManyToManyField(
+        Person, through="AudiobookRole", related_name="audiobooks"
+    )
+    instances = models.ManyToManyField(
+        Instance, through="AudiobookInstance", related_name="audiobooks"
+    )
+    publisher = models.ForeignKey(
+        Publisher,
+        on_delete=models.SET_NULL,
+        related_name="audiobooks",
+        null=True,
+        blank=True,
+    )
+    language = LanguageField(max_length=8, blank=True, null=True)
+    release_date = models.TextField(blank=True, null=True)
+    wikipedia = models.URLField(max_length=200, blank=True, null=True)
+    details = models.TextField(blank=True, null=True)
+
+    # novel, novella, short story, poem, etc.
+    format = models.CharField(
+        max_length=255, blank=True, null=True
+    )  # hardcover, paperback, etc.
+    length = models.CharField(
+        max_length=255, blank=True, null=True
+    )  # e.g. 300 pages, 10:00:00, etc.
+
+    internet_archive_url = models.URLField(max_length=200, blank=True, null=True)
+    listencheckin = GenericRelation("ListenCheckIn")
+
+    # entry meta data
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="audiobooks_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="audiobooks_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("listen:audiobook_detail", args=[str(self.id)])
+    
+    def model_name(self):
+        return "Audiobook"
+
+    @property
+    def checkin_count(self):
+        return (
+            self.listencheckin_set.count()
+        )  # adjust this if your related name is different
+
+    def save(self, *args, **kwargs):
+        # If the instance already exists in the database
+        if self.pk:
+            # Get the existing instance from the database
+            old_instance = Audiobook.objects.get(pk=self.pk)
+            # If the cover has been updated
+            if old_instance.cover != self.cover:
+                # Delete the old cover
+                old_instance.cover.delete(save=False)
+
+        super().save(*args, **kwargs)
+
+        if self.cover:
+            img = Image.open(self.cover.open(mode="rb"))
+
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
+                img.thumbnail(output_size)
+
+            # Save the image to a BytesIO object
+            temp_file = BytesIO()
+            img.save(temp_file, format="WEBP")
+            temp_file.seek(0)
+
+            # Generate new name for the webp image
+            webp_name = os.path.splitext(self.cover.name)[0] + ".webp"
+
+            # remove the original image
+            self.cover.delete(save=False)
+
+            # Save the BytesIO object to the FileField
+            self.cover.save(webp_name, ContentFile(temp_file.read()), save=False)
+
+            img.close()
+            self.cover.close()
+
+        # Convert the release_date to a standard format if it's not None or empty
+        if self.release_date:
+            self.release_date = standardize_date(self.release_date)
+
+        super().save(*args, **kwargs)
+
+
+class AudiobookRole(models.Model):
+    audiobook = models.ForeignKey(Audiobook, on_delete=models.CASCADE)
+    person = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_query_name="book_roles",
+    )
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    alt_name = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.audiobook} - {self.alt_name or self.person.name} - {self.role}"
+
+
+class AudiobookInstance(models.Model):
+    audiobook = models.ForeignKey(Audiobook, on_delete=models.CASCADE)
+    instance = models.ForeignKey(
+        Instance, on_delete=models.CASCADE, null=True, blank=True
+    )
+    order = models.PositiveIntegerField(
+        null=True, blank=True, default=1
+    )  # Ordering of the works in a book
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.audiobook} - {self.instance} - {self.order}"

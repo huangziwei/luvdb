@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class='col-12 col-md-8'>
-                {% if objects.trending_releases or objects.trending_podcasts %}
+                {% if objects.trending_releases or objects.trending_podcasts or objects.recent_audiobooks %}
                     <div class="mb-3">
                         <h2>Trending</h2>
                         {% if objects.trending_releases %}
@@ -71,9 +71,41 @@
                                 {% endfor %}
                             </div>
                         {% endif %}
+                        {% if objects.trending_audiobooks %}
+                            <h4>Audiobooks</h4>
+                            <div class="row">
+                                {% for audiobook in objects.trending_audiobooks %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'listen:audiobook_detail' audiobook.pk %}">
+                                            {% if audiobook.cover %}
+                                                {% if audiobook.cover_sens %}
+                                                    <img src="{{ audiobook.cover.url }}"
+                                                         alt="{{ audiobook.title }} cover"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ audiobook.cover.url }}"
+                                                         alt="{{ audiobook.title }}"
+                                                         class="img-fluid">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ audiobook.title }}</div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No trending audiobooks to display.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 {% endif %}
-                {% if objects.recent_releases or objects.recent_podcasts %}
+                {% if objects.recent_releases or objects.recent_podcasts or objects.recent_audiobooks %}
                     <div>
                         <h2>Recently Added</h2>
                         {% if objects.recent_releases %}
@@ -140,6 +172,38 @@
                                 {% endfor %}
                             </div>
                         {% endif %}
+                        {% if objects.recent_audiobooks %}
+                            <h4>Audiobooks</h4>
+                            <div class="row">
+                                {% for audiobook in objects.recent_audiobooks %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'listen:audiobook_detail' audiobook.pk %}">
+                                            {% if audiobook.cover %}
+                                                {% if audiobook.cover_sens %}
+                                                    <img src="{{ audiobook.cover.url }}"
+                                                         alt="{{ audiobook.title }} cover"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ audiobook.cover.url }}"
+                                                         alt="{{ audiobook.title }}"
+                                                         class="img-fluid">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ audiobook.title }}</div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No recent audiobook to display.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>
@@ -161,6 +225,9 @@
                     <div>
                         <a href="{% url 'listen:podcast_create' %}" class="text-muted">Podcast</a>
                     </div>
+                    <div>
+                        <a href="{% url 'listen:audiobook_create' %}" class="text-muted">Audiobook</a>
+                    </div>
                 </div>
                 <div class="bg-light p-3 mb-3">
                     <h5>Statistics</h5>
@@ -175,8 +242,10 @@
                     </div>
                     <div>
                         <span class="text-muted">Podcasts</span>: {{ podcasts_count }}
-                    </div>
-                    
+                    </div>              
+                    <div>
+                        <span class="text-muted">Audiobooks</span>: {{ audiobooks_count }}
+                    </div>                    
                 </div>
                 {% if genres %}
                     <div class="bg-light p-3 mb-3">

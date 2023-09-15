@@ -1,6 +1,9 @@
 from django.urls import path
 
 from .views import (
+    AudiobookCreateView,
+    AudiobookDetailView,
+    AudiobookUpdateView,
     GenericCheckInAllListView,
     GenericCheckInListView,
     GenreAutocomplete,
@@ -93,6 +96,18 @@ urlpatterns = [
         name="podcast_checkin_list",
     ),
     path(
+        "audiobook/<int:object_id>/checkins/",
+        view=GenericCheckInAllListView.as_view(),
+        kwargs={"model_name": "audiobook"},
+        name="audiobook_checkin_all_list",
+    ),
+    path(
+        "audiobook/<int:object_id>/<str:username>/checkins/",
+        view=GenericCheckInListView.as_view(),
+        kwargs={"model_name": "audiobook"},
+        name="audiobook_checkin_list",
+    ),
+    path(
         "checkin/<int:pk>/",
         ListenCheckInDetailView.as_view(),
         name="listen_checkin_detail",
@@ -132,5 +147,13 @@ urlpatterns = [
         "releasegroup/<int:pk>/update/",
         ReleaseGroupUpdateView.as_view(),
         name="releasegroup_update",
+    ),
+    # audiobook
+    path("audiobook/create/", AudiobookCreateView.as_view(), name="audiobook_create"),
+    path("audiobook/<int:pk>/", AudiobookDetailView.as_view(), name="audiobook_detail"),
+    path(
+        "audiobook/<int:pk>/update/",
+        AudiobookUpdateView.as_view(),
+        name="audiobook_update",
     ),
 ]

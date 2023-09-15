@@ -1,6 +1,9 @@
 from django.contrib import admin
 
 from .models import (
+    Audiobook,
+    AudiobookInstance,
+    AudiobookRole,
     Genre,
     Label,
     ListenCheckIn,
@@ -64,6 +67,21 @@ class ReleaseGroupAdmin(admin.ModelAdmin):
     list_display = ["title"]
 
 
+class AudiobookRoleInline(admin.TabularInline):
+    model = AudiobookRole
+    extra = 1
+
+
+class AudiobookInstanceInline(admin.TabularInline):
+    model = AudiobookInstance
+    extra = 1
+
+
+class AudiobookAdmin(admin.ModelAdmin):
+    list_display = ["title", "updated_at"]
+    inlines = [AudiobookRoleInline, AudiobookInstanceInline]
+
+
 admin.site.register(Label)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(Track, TrackAdmin)
@@ -71,6 +89,7 @@ admin.site.register(Release, ReleaseAdmin)
 admin.site.register(ReleaseGroup, ReleaseGroupAdmin)
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Podcast, PodcastAdmin)
+admin.site.register(Audiobook, AudiobookAdmin)
 
 
 @admin.register(ListenCheckIn)

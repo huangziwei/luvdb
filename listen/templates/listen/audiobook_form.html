@@ -1,0 +1,78 @@
+{% load crispy_forms_tags %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.title|as_crispy_field }}
+    {{ form.subtitle|as_crispy_field }}
+    {{ form.cover|as_crispy_field }}
+    {{ form.cover_sens|as_crispy_field }}
+    <div class="mb-3">
+        {{ form.publisher|as_crispy_field }}
+        <a href="{% url 'read:publisher_create' %}?next={{ request.path }}"
+           class="text-secondary"
+           target="_blank">Add a new publisher?</a>
+    </div>
+    {{ form.language|as_crispy_field }}
+    {{ form.details|as_crispy_field }}
+    {{ form.release_date|as_crispy_field }}
+    {{ form.format|as_crispy_field }}
+    {{ form.length|as_crispy_field }}
+    {{ form.wikipedia|as_crispy_field }}
+    {{ audiobookroles.management_form|crispy }}
+    <div id="book-role-formset" class="bg-light p-3 mb-3">
+        <strong>Entities related to this audiobook</strong>
+        <p class='text-muted'>E.g. Authors, Editors, Designers, etc.</p>
+        {% for form in audiobookroles %}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4">
+                        {{ form.person | as_crispy_field }}
+                        <a href="{% url 'entity:person_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new entity?</a>
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.role | as_crispy_field }}
+                        {{ form.domain | as_crispy_field }}
+                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new role?</a>
+                    </div>
+                    <div class="col-md-3">{{ form.alt_name | as_crispy_field }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {{ audiobookinstances.management_form|crispy }}
+    <div id="book-instance-formset" class="bg-light p-3 mb-3">
+        <strong>Instances related to this audiobook</strong>
+        <p class='text-muted'>
+            An "Instance" is any representation of a literature work, e.g. the original version, revised version, or translation, etc.
+        </p>
+        {% for form in audiobookinstances %}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    <div class="col-md-9">
+                        {{ form.instance | as_crispy_field }}
+                        <a href="{% url 'read:instance_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new instance?</a>
+                    </div>
+                    <div class="col-md-2">{{ form.order | as_crispy_field }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+</form>
+{% if form.errors %}
+    <div class="alert alert-danger mt-5">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}<li>{{ field }}: {{ error }}</li>{% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

@@ -33,6 +33,9 @@ from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
 
 from .forms import (
+    AudiobookForm,
+    AudiobookInstanceFormSet,
+    AudiobookRoleFormSet,
     ListenCheckInForm,
     ReleaseForm,
     ReleaseGroupForm,
@@ -45,6 +48,7 @@ from .forms import (
     WorkRoleFormSet,
 )
 from .models import (
+    Audiobook,
     Genre,
     Label,
     ListenCheckIn,
@@ -887,6 +891,7 @@ class ListenListView(ListView):
     def get_queryset(self):
         recent_releases = Release.objects.all().order_by("-created_at")[:12]
         recent_podcasts = Podcast.objects.all().order_by("-created_at")[:12]
+        recent_audiobooks = Audiobook.objects.all().order_by("-created_at")[:12]
         recent_date = timezone.now() - timedelta(days=7)
 
         release_content_type = ContentType.objects.get_for_model(Release)
@@ -933,12 +938,36 @@ class ListenListView(ListView):
             .exclude(checkins=0)
             .order_by("-latest_checkin")[:12]
         )
+        audiobook_content_type = ContentType.objects.get_for_model(Audiobook)
+        trending_audiobooks = (
+            Audiobook.objects.annotate(
+                checkins=Count(
+                    "listencheckin",
+                    filter=Q(
+                        listencheckin__content_type=audiobook_content_type,
+                        listencheckin__timestamp__gte=recent_date,
+                    ),
+                    distinct=True,
+                ),
+                latest_checkin=Max(
+                    "listencheckin__timestamp",
+                    filter=Q(
+                        listencheckin__content_type=audiobook_content_type,
+                        listencheckin__timestamp__gte=recent_date,
+                    ),
+                ),
+            )
+            .exclude(checkins=0)
+            .order_by("-latest_checkin")[:12]
+        )
 
         return {
             "recent_releases": recent_releases,
             "trending_releases": trending_releases,
             "recent_podcasts": recent_podcasts,
             "trending_podcasts": trending_podcasts,
+            "recent_audiobooks": recent_audiobooks,
+            "trending_audiobooks": trending_audiobooks,
         }
 
     def get_context_data(self, **kwargs):
@@ -954,6 +983,7 @@ class ListenListView(ListView):
         context["tracks_count"] = Track.objects.count()
         context["releases_count"] = Release.objects.count()
         context["podcasts_count"] = Podcast.objects.count()
+        context["audiobooks_count"] = Audiobook.objects.count()
         return context
 
 
@@ -1354,6 +1384,8 @@ class GenericCheckInListView(ListView):
             return Release
         elif self.kwargs["model_name"] == "podcast":
             return Podcast
+        elif self.kwargs["model_name"] == "audiobook":
+            return Audiobook
         else:
             return None
 
@@ -1441,6 +1473,8 @@ class GenericCheckInAllListView(ListView):
             return Release
         elif self.kwargs["model_name"] == "podcast":
             return Podcast
+        elif self.kwargs["model_name"] == "audiobook":
+            return Audiobook
         else:
             return None
 
@@ -1674,3 +1708,244 @@ class ReleaseGroupUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("listen:releasegroup_detail", kwargs={"pk": self.object.pk})
+
+
+#############
+# Audiobook #
+#############
+class AudiobookCreateView(LoginRequiredMixin, CreateView):
+    model = Audiobook
+    form_class = AudiobookForm
+    template_name = "listen/audiobook_create.html"
+
+    def get_success_url(self):
+        return reverse_lazy("listen:audiobook_detail", kwargs={"pk": self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["audiobookroles"] = AudiobookRoleFormSet(
+                self.request.POST, instance=self.object
+            )
+            data["audiobookinstances"] = AudiobookInstanceFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["audiobookroles"] = AudiobookRoleFormSet(instance=self.object)
+            data["audiobookinstances"] = AudiobookInstanceFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        audiobookroles = context["audiobookroles"]
+        audiobookinstances = context["audiobookinstances"]
+
+        # Manually check validity of each form in the formset.
+        if not all(
+            audiobookrole_form.is_valid() for audiobookrole_form in audiobookroles
+        ):
+            return self.form_invalid(form)
+
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if audiobookroles.is_valid():
+                audiobookroles.instance = self.object
+                audiobookroles.save()
+            if audiobookinstances.is_valid():
+                audiobookinstances.instance = self.object
+                audiobookinstances.save()
+        return super().form_valid(form)
+
+
+class AudiobookDetailView(DetailView):
+    model = Audiobook
+    template_name = "listen/audiobook_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["content_type"] = "audiobook"
+        audiobook = get_object_or_404(Audiobook, pk=self.kwargs["pk"])
+
+        roles = {}
+        for audiobook_role in audiobook.audiobookrole_set.all():
+            if audiobook_role.role.name not in roles:
+                roles[audiobook_role.role.name] = []
+            alt_name_or_person_name = (
+                audiobook_role.alt_name or audiobook_role.person.name
+            )
+            roles[audiobook_role.role.name].append(
+                (audiobook_role.person, alt_name_or_person_name)
+            )
+        context["roles"] = roles
+
+        content_type = ContentType.objects.get_for_model(Audiobook)
+        context["checkin_form"] = ListenCheckInForm(
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": self.request.user.id,
+            }
+        )
+
+        # Fetch the latest check-in from each user.
+        latest_checkin_subquery = ListenCheckIn.objects.filter(
+            content_type=content_type.id,
+            object_id=self.object.id,
+            user=OuterRef("user"),
+        ).order_by("-timestamp")
+        checkins = (
+            ListenCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        ).order_by("-timestamp")[:5]
+
+        context["checkins"] = checkins
+
+        # Release check-in status counts, considering only latest check-in per user
+        latest_checkin_status_subquery = (
+            ListenCheckIn.objects.filter(
+                content_type=content_type.id,
+                object_id=self.object.id,
+                user=OuterRef("user"),
+            )
+            .order_by("-timestamp")
+            .values("status")[:1]
+        )
+        latest_checkins = (
+            ListenCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
+            .values("user", "latest_checkin_status")
+            .distinct()
+        )
+
+        to_listen_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] == "to_listen"
+        )
+        listening_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["looping", "relistening"]
+        )
+        listened_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["listened", "relistened"]
+        )
+
+        # Add status counts to context
+        context.update(
+            {
+                "to_listen_count": to_listen_count,
+                "listening_count": listening_count,
+                "listened_count": listened_count,
+            }
+        )
+
+        # Get the ContentType for the Issue model
+        release_content_type = ContentType.objects.get_for_model(Release)
+
+        # Query ContentInList instances that have the release as their content_object
+        lists_containing_release = ContentInList.objects.filter(
+            content_type=release_content_type, object_id=self.object.id
+        )
+
+        context["lists_containing_release"] = lists_containing_release
+
+        # Fetch the latest check-in from the current user for this book
+        if self.request.user.is_authenticated:
+            latest_user_checkin = (
+                ListenCheckIn.objects.filter(
+                    content_type=content_type.id,
+                    object_id=self.object.id,
+                    user=self.request.user,
+                )
+                .order_by("-timestamp")
+                .first()
+            )
+            if latest_user_checkin is not None:
+                context["latest_user_status"] = latest_user_checkin.status
+            else:
+                context["latest_user_status"] = "to_listen"
+        else:
+            context["latest_user_status"] = "to_listen"
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        content_type = ContentType.objects.get_for_model(Audiobook)
+        form = ListenCheckInForm(
+            data=request.POST,
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": request.user.id,
+                "comments_enabled": True,
+            },
+        )
+        if form.is_valid():
+            audiobook_check_in = form.save(commit=False)
+            audiobook_check_in.user = request.user  # Set the user manually here
+            audiobook_check_in.save()
+
+        return redirect(self.object.get_absolute_url())
+
+
+class AudiobookUpdateView(LoginRequiredMixin, UpdateView):
+    model = Audiobook
+    form_class = AudiobookForm
+    template_name = "listen/audiobook_update.html"
+
+    def get_success_url(self):
+        return reverse_lazy("listen:audiobook_detail", kwargs={"pk": self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["audiobookroles"] = AudiobookRoleFormSet(
+                self.request.POST, instance=self.object
+            )
+            data["audiobookinstances"] = AudiobookInstanceFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["audiobookroles"] = AudiobookRoleFormSet(instance=self.object)
+            data["audiobookinstances"] = AudiobookInstanceFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        audiobookroles = context["audiobookroles"]
+        audiobookinstances = context["audiobookinstances"]
+
+        # Manually check validity of each form in the formset.
+        if not all(bookrole_form.is_valid() for bookrole_form in audiobookroles):
+            return self.form_invalid(form)
+
+        with transaction.atomic():
+            form.instance.updated_by = self.request.user
+            if self.request.method == "POST":
+                form = AudiobookForm(
+                    self.request.POST, self.request.FILES, instance=self.object
+                )
+                if form.is_valid():
+                    self.object = form.save()
+                    if audiobookroles.is_valid():
+                        audiobookroles.instance = self.object
+                        audiobookroles.save()
+
+                    if audiobookinstances.is_valid():
+                        audiobookinstances.instance = self.object
+                        audiobookinstances.save()
+
+        return super().form_valid(form)

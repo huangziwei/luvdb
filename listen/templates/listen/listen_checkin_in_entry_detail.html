@@ -39,6 +39,9 @@
                     {% elif checkin.content_type.model == 'podcast' %}
                         <a href="{% url 'listen:podcast_checkin_list' checkin.content_object.id checkin.user.username %}"
                            class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
+                    {% elif checkin.content_type.model == 'audiobook' %}
+                        <a href="{% url 'listen:audiobook_checkin_list' checkin.content_object.id checkin.user.username %}"
+                            class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
                     {% endif %}
                 </span>
                 {% if checkin.comments_enabled %}

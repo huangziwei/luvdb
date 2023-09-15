@@ -382,16 +382,40 @@
                         {% endif %}
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <a href="{% url 'listen:release_detail' activity.content_object.original_activity.content_object.content_object.id %}"
-                           class="text-decoration-none hover-username">
-                            <h6>{{ activity.content_object.original_activity.content_object.content_object.title }}</h6>
-                        </a>
+                        
+                        {% if activity.content_object.original_activity.content_object.content_object.model_name == "Release" %}
+                            <a href="{% url 'listen:release_detail' activity.content_object.original_activity.content_object.content_object.id %}"
+                            class="text-decoration-none hover-username">
+                                <h5>{{ activity.content_object.original_activity.content_object.content_object.title }}</h5>
+                            </a>
+                        {% elif activity.content_object.original_activity.content_object.content_object.model_name == "Podcast" %}
+                            <a href="{% url 'listen:podcast_detail' activity.content_object.content_object.id %}"
+                            class="text-decoration-none hover-username">
+                                <h5>{{ activity.content_object.content_object.title }}</h5>
+                            </a>
+                            <div class="text-muted">{{ activity.content_object.content_object.description|truncatechars:600 }}</div>
+                        {% elif activity.content_object.original_activity.content_object.content_object.model_name == "Audiobook" %}
+                            <a href="{% url 'listen:audiobook_detail' activity.content_object.original_activity.content_object.content_object.id %}"
+                            class="text-decoration-none hover-username">
+                                <h5>{{ activity.content_object.original_activity.content_object.content_object.title }}</h5>
+                            </a>
+                        {% endif %}
                         {% regroup activity.content_object.original_activity.content_object.content_object.releaserole_set.all by role as roles_list %}
                         {% for role in roles_list %}
                             <div>
-                                <span class="text-muted">{{ role.grouper.name }}
-                                    {% if role.list|length > 1 %}s{% endif %}
-                                :</span>
+                                <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                {% for release_role in role.list %}
+                                    {% if not forloop.first %}/{% endif %}
+                                    <a href="{% url 'entity:person_detail' release_role.person.id %}">
+                                        {{ release_role.alt_name | default:release_role.person.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        {% regroup activity.content_object.original_activity.content_object.content_object.audiobookrole_set.all by role as roles_list %}
+                        {% for role in roles_list %}
+                            <div>
+                                <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                 {% for release_role in role.list %}
                                     {% if not forloop.first %}/{% endif %}
                                     <a href="{% url 'entity:person_detail' release_role.person.id %}">
@@ -409,6 +433,14 @@
                                 {% if not forloop.first %},{% endif %}
                                 <a href="{% url 'listen:label_detail' label.id %}">{{ label.name }}</a>
                             {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if activity.content_object.original_activity.content_object.content_object.publisher %}
+                        <div>
+                            {# djlint:off #}
+                            <span class="text-muted">Publisher:</span>
+                            {# djlint:on #}
+                            <a href="{% url 'read:publisher_detail' activity.content_object.original_activity.content_object.content_object.publisher.id %}">{{ activity.content_object.original_activity.content_object.content_object.publisher.name }}</a>
                         </div>
                         {% endif %}
                         {% if activity.content_object.original_activity.content_object.content_object.catalog_number %}

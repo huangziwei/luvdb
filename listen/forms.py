@@ -8,6 +8,9 @@ from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
 from .models import (
+    Audiobook,
+    AudiobookInstance,
+    AudiobookRole,
     ListenCheckIn,
     Release,
     ReleaseGroup,
@@ -285,7 +288,7 @@ class ReleaseTrackForm(forms.ModelForm):
         cleaned_data = super().clean()
         instance = cleaned_data.get("track")
         if self.instance and not instance:  # if the instance field is empty
-            self.instance.delete()  # delete the BookInstance instance
+            self.instance.delete()  # delete the AudiobookInstance instance
         return cleaned_data
 
 
@@ -392,4 +395,123 @@ class ReleaseInGroupForm(forms.ModelForm):
 
 ReleaseInGroupFormSet = forms.inlineformset_factory(
     ReleaseGroup, ReleaseInGroup, form=ReleaseInGroupForm, extra=2, can_delete=True
+)
+
+
+#############
+# Audiobook #
+#############
+class AudiobookForm(forms.ModelForm):
+    class Meta:
+        model = Audiobook
+        exclude = [
+            "created_by",
+            "updated_by",
+            "works",
+            "instances",
+            "persons",
+        ]
+        fields = "__all__"
+        widgets = {
+            "instance": autocomplete.ModelSelect2(
+                url=reverse_lazy("read:instance-autocomplete")
+            ),
+            "publisher": autocomplete.ModelSelect2(
+                url=reverse_lazy("read:publisher-autocomplete")
+            ),
+            "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
+            "publication_date": forms.TextInput(),
+        }
+        help_texts = {
+            "format": "e.g. paperback, hardcover, ebook, etc.",
+            "length": "e.g. 300 pages, 10:20:33, etc.",
+            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For books published before common era, use negative numbers, e.g. `-100`.",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(AudiobookForm, self).__init__(*args, **kwargs)
+        self.fields["cover_sens"].label = "Is the cover sensitive or explicit?"
+
+
+class AudiobookRoleForm(forms.ModelForm):
+    domain = forms.CharField(initial="read", widget=forms.HiddenInput())
+
+    class Meta:
+        model = AudiobookRole
+        fields = ("person", "role", "domain", "alt_name")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        person = cleaned_data.get("person")
+        role = cleaned_data.get("role")
+
+        # if the person field is filled but the role field is not
+        if person and not role:
+            raise ValidationError("Role is required when Person is filled.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.person is None:  # if the person field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
+
+
+AudiobookRoleFormSet = inlineformset_factory(
+    Audiobook,
+    AudiobookRole,
+    form=AudiobookRoleForm,
+    extra=10,
+    can_delete=True,
+    labels={"person": "Entity"},
+    widgets={
+        "person": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:person-autocomplete"),
+            attrs={
+                "data-create-url": reverse_lazy("entity:person_create"),
+                "data-placeholder": "Type to search",
+            },
+        ),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:role-autocomplete"),
+            forward=["domain"],  # forward the domain field to the RoleAutocomplete view
+            attrs={"data-create-url": reverse_lazy("entity:role_create")},
+        ),
+    },
+)
+
+
+class AudiobookInstanceForm(forms.ModelForm):
+    class Meta:
+        model = AudiobookInstance
+        fields = ["instance", "order"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        instance = cleaned_data.get("instance")
+        if self.instance and not instance:  # if the instance field is empty
+            self.instance.delete()  # delete the AudiobookInstance instance
+        return cleaned_data
+
+
+AudiobookInstanceFormSet = inlineformset_factory(
+    Audiobook,
+    AudiobookInstance,
+    form=AudiobookInstanceForm,
+    extra=100,
+    can_delete=True,
+    widgets={
+        "instance": autocomplete.ModelSelect2(
+            url=reverse_lazy("read:instance-autocomplete"),
+            attrs={
+                "data-create-url": reverse_lazy("read:instance_create"),
+                "data-placeholder": "Type to search",
+            },
+        ),
+    },
 )

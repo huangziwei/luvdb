@@ -11,6 +11,8 @@
                             <a href="{% url 'listen:release_detail' object.id %}">{{ object.title }}</a>
                         {% elif  model_name == "podcast" %}
                             <a href="{% url 'listen:podcast_detail' object.id %}">{{ object.title }}</a>
+                        {% elif  model_name == "audiobook" %}
+                            <a href="{% url 'listen:audiobook_detail' object.id %}">{{ object.title }}</a>
                         {% endif %}
                     </h4>
                     <span class='d-flex'>
@@ -24,11 +26,17 @@
                         <div class="me-3">
                             <a href="?status=&order={{ order }}"
                                class="btn btn-sm btn-outline-dark mb-1">All</a>
-                            <a href="?status=to_read&order={{ order }}"
+                            <a href="?status=to_listen&order={{ order }}"
                                class="btn btn-sm btn-info mb-1">To Listen</a>
                             {% if model_name == "release" %}
                                <a href="?status=looping&order={{ order }}"
                                class="btn btn-sm btn-primary mb-1">Looping</a>
+                               <a href="?status=listened&order={{ order }}"
+                               class="btn btn-sm btn-success mb-1">Listened</a>
+                            {% endif %}
+                            {% if model_name == "audiobook" %}
+                               <a href="?status=listening&order={{ order }}"
+                               class="btn btn-sm btn-primary mb-1">Listening</a>
                                <a href="?status=listened&order={{ order }}"
                                class="btn btn-sm btn-success mb-1">Listened</a>
                             {% endif %}

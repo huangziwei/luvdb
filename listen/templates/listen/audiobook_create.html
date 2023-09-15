@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block title %}New Book{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7 left-column">
+                <h3>Create a new Audiobook entry</h3>
+                {% include "listen/audiobook_form.html" %}
+            </div>
+            <div class="col-12 col-md-5 right-column">
+                <div class="bg-light p-3">
+                    <h4>Guide to Creating a Audiobook</h4>
+                    <h5>Audiobook: The Audio Entity</h5>
+                    <p>
+                        An audiobook represents the tangible item, a specific audio copy of an Instance. This is where you log details about the individual volume in hand. If you need to create an Instance first, go to the <a href="{% url "read:instance_create" %}">Instance</a> section.
+                    </p>
+                    <h5>What to Include in an Audiobook</h5>
+                    <p>
+                        Log specifics about the physical object, such as covers, publisher, ISBN, etc. Linking it to the corresponding Instance will create a complete record from the conceptual Work to the actual Audioook.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript"
+            src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+    {{ form.media }}
+    <script type="text/javascript"
+            src="{% static 'js/generalFormsetHandler.js' %}"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    
+        // Call the function for book-role-formset and book-work-formset
+        window.handleFormset('#book-role-formset', 'add-book-role');
+        window.handleFormset('#book-instance-formset', 'add-book-instance');
+    });
+    
+    $(document).ready(function() {
+        $('select:not([name="model"])').removeClass('form-select');
+    });
+    
+    </script>
+{% endblock content %}

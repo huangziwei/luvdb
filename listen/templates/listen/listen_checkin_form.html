@@ -22,6 +22,16 @@
                             id="status-listened"
                             onclick="setStatus(event, 'listened')">Listened</button>
                 {% endif %}
+                {% if content_type == "audiobook" %}
+                    <button type="button"
+                            class="btn btn-sm btn-light status-button"
+                            id="status-listening"
+                            onclick="setStatus(event, 'listening')">Listening</button>
+                    <button type="button"
+                            class="btn btn-sm btn-light status-button"
+                            id="status-listened"
+                            onclick="setStatus(event, 'listened')">Listened</button>
+                {% endif %}
                 {% if content_type == "podcast" %}
                     <button type="button"
                             class="btn btn-sm btn-light status-button"
@@ -39,12 +49,28 @@
                             data-bs-toggle="dropdown"
                             aria-expanded="false">More</button>
                     <ul class="dropdown-menu" aria-labelledby="status-more">
+                        {% if content_type == "audiobook" %}
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-paused"
+                               href="#"
+                               onclick="setStatus(event, 'paused')">Paused</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-abandoned"
+                               href="#"
+                               onclick="setStatus(event, 'abandoned')">Abandoned</a>
+                        </li>
+                        {% endif %}
+                        {% if content_type == "podcast" %}
                         <li>
                             <a class="dropdown-item status-dropdown-item"
                                id="status-unsubscribed"
                                href="#"
                                onclick="setStatus(event, 'unsubscribed')">Unsubscribed</a>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -73,6 +99,25 @@
                     </ul>
                 </div>
             </div>
+        {% elif content_type == "audiobook" %}
+        <div class="col-md-4 col-sm-12">
+            <!-- Progress and Progress Type -->
+            <div class="input-group input-group-sm mb-3">
+                <input type="number" class="form-control" id="progressInput" name="progress">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        id="progressTypeBtn">Minutes</button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item"
+                           href="#"
+                           onclick="setProgressType(event,'TT', '{{ content_type }}')">Minutes</a>
+                    </li>
+                </ul>
+            </div>
+        </div>        
         {% elif content_type == "podcast" %}
             <div class="col-md-4 col-sm-12">
                 <!-- Progress and Progress Type -->
@@ -96,6 +141,7 @@
                     </ul>
                 </div>
             </div>
+        
         {% endif %}
     </div>
     <!-- Hidden input fields to hold status and progress_type values -->
@@ -129,6 +175,7 @@
     var status_mapping = {
         "to_listen": "status-to-listen",
         "looping": "status-looping",
+        "listening": "status-listening", 
         "listened": "status-listened",
         "subscribed": "status-subscribed", 
         "paused": "status-paused",

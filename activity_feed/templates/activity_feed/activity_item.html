@@ -486,12 +486,17 @@
                        class="text-decoration-none hover-username">
                         <h5>{{ activity.content_object.content_object.title }}</h5>
                     </a>
-                {% else %}
+                {% elif activity.content_object.content_type.model == "podcast" %}
                     <a href="{% url 'listen:podcast_detail' activity.content_object.content_object.id %}"
                        class="text-decoration-none hover-username">
                         <h5>{{ activity.content_object.content_object.title }}</h5>
                     </a>
                     <div class="text-muted">{{ activity.content_object.content_object.description|truncatechars:600 }}</div>
+                {% elif activity.content_object.content_type.model == "audiobook" %}
+                    <a href="{% url 'listen:audiobook_detail' activity.content_object.content_object.id %}"
+                       class="text-decoration-none hover-username">
+                        <h5>{{ activity.content_object.content_object.title }}</h5>
+                    </a>
                 {% endif %}
                 {% regroup activity.content_object.content_object.releaserole_set.all by role as roles_list %}
                 {% for role in roles_list %}
@@ -503,6 +508,20 @@
                             {% if not forloop.first %}/{% endif %}
                             <a href="{% url 'entity:person_detail' release_role.person.id %}">
                                 {{ release_role.alt_name | default:release_role.person.name }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                {% regroup activity.content_object.content_object.audiobookrole_set.all by role as roles_list %}
+                {% for role in roles_list %}
+                    <div>
+                        {# djlint:off #}
+                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                        {# djlint:on #}
+                        {% for audiobook_role in role.list %}
+                            {% if not forloop.first %}/{% endif %}
+                            <a href="{% url 'entity:person_detail' audiobook_role.person.id %}">
+                                {{ audiobook_role.alt_name | default:audiobook_role.person.name }}
                             </a>
                         {% endfor %}
                     </div>

@@ -66,7 +66,13 @@
                                     <h5>{{ object.content_object.title }}</h5>
                                 </a>
                                 <div class="text-muted">{{ object.content_object.description | truncatechars:600 }}</div>
+                            {% elif object.content_type.model == 'audiobook' %}
+                                <a href="{% url 'listen:audiobook_detail' object.content_object.id %}"
+                                   class="text-decoration-none hover-username">
+                                    <h5>{{ object.content_object.title }}</h5>
+                                </a>
                             {% endif %}
+
                             {% regroup object.content_object.releaserole_set.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
