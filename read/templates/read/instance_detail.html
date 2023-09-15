@@ -70,6 +70,22 @@
                         </ul>
                     </div>
                 {% endif %}
+                {% if audiobooks %}
+                    <div class="mt-3">
+                        <h3>Audiobooks</h3>
+                        <ul>
+                            {% for audiobook in audiobooks %}
+                                <li>
+                                    <a href="{% url 'listen:audiobook_detail' audiobook.pk %}">{{ audiobook.title }}</a>
+                                    {% if audiobook.subtitle %}: {{ audiobook.subtitle }}{% endif %}
+                                    {# djlint:off #}
+                                    ({% if audiobook.publisher %}{{ audiobook.publisher }}, {% endif %}{% if audiobook.format %}{{ audiobook.format }},{% endif %}{{ audiobook.release_date }})
+                                    {# djlint:on #}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
             <!--Right columns-->
             <div class="col-sm-4">

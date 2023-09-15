@@ -74,7 +74,6 @@ class PublisherCreateView(LoginRequiredMixin, CreateView):
         "founded_date",
         "closed_date",
         "notes",
-
     ]
     template_name = "read/publisher_create.html"
 
@@ -218,10 +217,23 @@ class WorkDetailView(DetailView):
             books = instance.books.all().order_by("publication_date")
             for book in books:
                 book.type = "book"
+
             issues = instance.issues.all().order_by("publication_date")
             for issue in issues:
                 issue.type = "issue"
-            items = sorted(list(books) + list(issues), key=lambda x: x.publication_date)
+
+            audiobooks = instance.audiobooks.all().order_by("release_date")
+            for audiobook in audiobooks:  # newly added
+                audiobook.type = "audiobook"
+
+            def sorting_key(item):
+                if item.type == "audiobook":
+                    return item.release_date
+                return item.publication_date
+
+            items = sorted(
+                list(books) + list(issues) + list(audiobooks), key=sorting_key
+            )
             language_grouped_instances[lang].append(
                 {"instance": instance, "items": items}
             )
@@ -337,6 +349,7 @@ class InstanceDetailView(DetailView):
         context["grouped_roles"] = grouped_roles
         context["books"] = self.object.books.all().order_by("publication_date")
         context["issues"] = self.object.issues.all().order_by("publication_date")
+        context["audiobooks"] = self.object.audiobooks.all().order_by("release_date")
         return context
 
 
@@ -1427,7 +1440,12 @@ class GenreDetailView(DetailView):
         works_with_authors = []
         for work in works:
             authors = Person.objects.filter(
-                read_workrole_set__work=work, read_workrole_set__role__name__in=["Author", "Created By", "Novelization By"]
+                read_workrole_set__work=work,
+                read_workrole_set__role__name__in=[
+                    "Author",
+                    "Created By",
+                    "Novelization By",
+                ],
             )
             work.authors = authors
             works_with_authors.append(work)

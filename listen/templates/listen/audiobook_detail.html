@@ -144,13 +144,13 @@
                            class='fs-6 text-secondary'>Edit book data</a>
                     </div>
                 {% endif %}
-                {% if object.bookinstance_set.count != 0 %}
+                {% if object.audiobookinstance_set.count != 0 %}
                     <div class="bg-light p-3 mb-3">
-                        {% if object.bookinstance_set.count == 1 %}
-                            {% if object.bookinstance_set.first.instance.id %}
+                        {% if object.audiobookinstance_set.count == 1 %}
+                            {% if object.audiobookinstance_set.first.instance.id %}
                                 <h5>Work</h5>
                                 <p>
-                                    <a class="text-muted" href="{% url 'read:work_detail' object.bookinstance_set.first.instance.work.id %}">
+                                    <a class="text-muted" href="{% url 'read:work_detail' object.audiobookinstance_set.first.instance.work.id %}">
                                         Other Editions
                                     </a>
                                 </p>
