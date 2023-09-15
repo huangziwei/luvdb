@@ -508,11 +508,11 @@
                     </div>
                 {% endfor %}
                 <div>
-                    {% if activity.content_object.content_object.labels %}
+                    {% if activity.content_object.content_object.label %}
                         {# djlint:off #}
-                        <span class="text-muted">Label{% if activity.content_object.content_object.labels.list|length > 1 %}s{% endif %}:</span>
+                        <span class="text-muted">Label{% if activity.content_object.content_object.label.list|length > 1 %}s{% endif %}:</span>
                         {# djlint:on #}
-                        {% for developer in activity.content_object.content_object.labels.all %}
+                        {% for developer in activity.content_object.content_object.label.all %}
                             {% if not forloop.first %},{% endif %}
                             <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
                         {% endfor %}

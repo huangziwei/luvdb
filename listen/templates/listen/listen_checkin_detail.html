@@ -81,11 +81,23 @@
                                     {% endfor %}
                                 </div>
                             {% endfor %}
+                            {% if object.content_object.label %}
+                                <div>
+                                    <span class="text-muted">Label:</span>
+                                    {% for label in object.content_object.label.all %}
+                                        <a href="{% url 'listen:label_detail' label.id %}">
+                                            {{ label.name }}
+                                            {% if not forloop.last %}/{% endif %}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if object.content_object.release_date %}
                             <div>
-                                {% if object.content_object.release_date %}
-                                    <span class="text-muted">Date:</span>{{ object.content_object.release_date }}
-                                {% endif %}
+                                <span class="text-muted">Date:</span>{{ object.content_object.release_date }}
                             </div>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>

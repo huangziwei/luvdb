@@ -10,7 +10,7 @@
                     All Playing Check-Ins from
                     <a href="{% url 'accounts:detail' profile_user.username %}"> {{ profile_user.display_name|default:profile_user.username }}</a>
                 </h4>
-                <span class='d-flex'>
+                <span class='d-flex mb-3'>
                     <div class="me-3">
                         <a href="?order=timestamp&status={{ status }}"
                            class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
