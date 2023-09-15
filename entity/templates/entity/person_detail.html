@@ -30,7 +30,7 @@
                     <h3 class="mt-2">Bibliography</h3>
                     {% if read_works %}
                         <div class="row">
-                            <div class="col-12 mt-2">
+                            <div class="col-12">
                                 <h4>Works</h4>
                                 <ul>
                                     {% for work in read_works %}
@@ -108,7 +108,7 @@
                     {% endif %}
                 {% endif %}
                 <!--Listen-->
-                {% if LPs_as_performer or EPs_as_performer or singles_as_performer or works_as_lyricist or works_as_composer or tracks_as_singer or  tracks_as_arranger or tracks_as_producer %}
+                {% if LPs_as_performer or EPs_as_performer or singles_as_performer or works_as_lyricist or works_as_composer or tracks_as_singer or  tracks_as_arranger or tracks_as_producer or releases_as_liner_notes_writer %}
                     <h3 class="mt-2">Discography</h3>
                     {% if LPs_as_performer or EPs_as_performer or singles_as_performer %}
                         <div class="row">
@@ -235,6 +235,24 @@
                                         {% for track in tracks_as_producer %}
                                             <li>
                                                 <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if releases_as_liner_notes_writer %}
+                        <div class="row">
+                            <h4>Releases</h4>
+                            {% if releases_as_liner_notes_writer %}
+                                <div class="col-md-4">
+                                    <h5>Liner Notes</h5>
+                                    <ul>
+                                        {% for release in releases_as_liner_notes_writer %}
+                                            <li>
+                                                <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a> ({{ release.release_date }})
                                             </li>
                                         {% endfor %}
                                     </ul>

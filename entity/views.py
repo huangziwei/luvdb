@@ -151,6 +151,10 @@ class PersonDetailView(DetailView):
             single_releases
         )
 
+        context["releases_as_liner_notes_writer"] = Release.objects.filter(
+            releaserole__role__name="Liner Notes", releaserole__person=person
+        ).order_by("release_date")
+
         context["tracks_as_singer"] = Track.objects.filter(
             trackrole__role__name="Singer", trackrole__person=person
         ).order_by("release_date")
