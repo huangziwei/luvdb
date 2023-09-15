@@ -1427,7 +1427,7 @@ class GenreDetailView(DetailView):
         works_with_authors = []
         for work in works:
             authors = Person.objects.filter(
-                read_workrole_set__work=work, read_workrole_set__role__name="Author"
+                read_workrole_set__work=work, read_workrole_set__role__name__in=["Author", "Created By", "Novelization By"]
             )
             work.authors = authors
             works_with_authors.append(work)

@@ -12,11 +12,9 @@
                         {% for work in works %}
                             <li>
                                 <a href="{% url 'read:work_detail' work.id %}">{{ work.title }}</a>
-                                {% if work.authors.exists %}
-                                    {# djlint:off #}
-                                    ({% for author in work.authors %}{{ author.name }}{% if not forloop.last %}, {% endif %}{% endfor %}, {{ work.publication_date }})
-                                    {# djlint:on #}
-                                {% endif %}
+                                {# djlint:off #}
+                                ({% for author in work.authors %}{{ author.name }}{% if not forloop.last %} / {% endif %}{% endfor %}, {{ work.publication_date }})
+                                {# djlint:on #}
                             </li>
                         {% empty %}
                             <li>No works in this genre.</li>
