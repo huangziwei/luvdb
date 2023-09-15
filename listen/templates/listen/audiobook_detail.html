@@ -141,7 +141,7 @@
                 {% if user.is_authenticated %}
                     <div class="bg-light p-3 mb-3">
                         <a href="{% url 'listen:audiobook_update' object.id %}"
-                           class='fs-6 text-secondary'>Edit book data</a>
+                           class='fs-6 text-secondary'>Edit audiobook data</a>
                     </div>
                 {% endif %}
                 {% if object.audiobookinstance_set.count != 0 %}
@@ -193,14 +193,6 @@
                         <strong>Listened:</strong> <a href="{% url 'listen:audiobook_checkin_all_list' object.id %}?status=listened">{{ listened_count }}</a>
                     </div>
                 </div>
-                {% if object.internet_archive_url %}
-                    <div class="bg-light p-3 mb-3">
-                        <h5>Read on</h5>
-                        <div>
-                            <a href="{{ object.internet_archive_url }}">Internet Archive</a>
-                        </div>
-                    </div>
-                {% endif %}
                 {% if object.wikipedia %}
                     <div class="bg-light p-3 mb-3">
                         <h5>Links</h5>
@@ -209,17 +201,17 @@
                         </div>
                     </div>
                 {% endif %}
-                {% if lists_containing_book.count != 0 %}
+                {% if lists_containing_audiobook.count != 0 %}
                     <!--LuvLists that included this book-->
                     <div class="bg-light p-3 mt-3">
                         <h5>Lists</h5>
                         <div class='mb-0'>
-                            {% for content_in_list in lists_containing_book %}
+                            {% for content_in_list in lists_containing_audiobook %}
                                 <div>
                                     <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
                                 </div>
                             {% empty %}
-                                <div>This book is not included in any LuvLists.</div>
+                                <div>This audiobook is not included in any LuvLists.</div>
                             {% endfor %}
                         </div>
                     </div>

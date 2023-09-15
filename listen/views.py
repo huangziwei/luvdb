@@ -1852,14 +1852,14 @@ class AudiobookDetailView(DetailView):
         )
 
         # Get the ContentType for the Issue model
-        release_content_type = ContentType.objects.get_for_model(Release)
+        audiobook_content_type = ContentType.objects.get_for_model(Audiobook)
 
-        # Query ContentInList instances that have the release as their content_object
-        lists_containing_release = ContentInList.objects.filter(
-            content_type=release_content_type, object_id=self.object.id
+        # Query ContentInList instances that have the audiobook as their content_object
+        lists_containing_audiobook = ContentInList.objects.filter(
+            content_type=audiobook_content_type, object_id=self.object.id
         )
 
-        context["lists_containing_release"] = lists_containing_release
+        context["lists_containing_audiobook"] = lists_containing_audiobook
 
         # Fetch the latest check-in from the current user for this book
         if self.request.user.is_authenticated:
