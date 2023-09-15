@@ -32,6 +32,21 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
+
+                {% if object.audiobooks.count != 0 %}
+                    <h3>Audiobooks</h3>
+                    <ul>
+                        {% for audiobook in object.audiobooks.all %}
+                            <li>
+                                <a href="{% url 'listen:audiobook_detail' audiobook.pk %}">{{ audiobook.title }}</a>
+                                ({{ audiobook.release_date }})
+                            </li>
+                        {% empty %}
+                            <li>This publisher has no audiobooks.</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
             </div>
             <!--manage entry-->
             <div class="col-sm-4">

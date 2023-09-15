@@ -87,6 +87,20 @@
                                     {% endfor %}
                                 </div>
                             {% endfor %}
+                            {% regroup object.content_object.audiobookrole_set.all by role as roles_list %}
+                            {% for role in roles_list %}
+                                <div>
+                                    {# djlint:off #}
+                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                    {# djlint:on #}
+                                    {% for audiobook_role in role.list %}
+                                        {% if not forloop.first %}/{% endif %}
+                                        <a href="{% url 'entity:person_detail' audiobook_role.person.id %}">
+                                            {{ audiobook_role.alt_name | default:audiobook_role.person.name }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
                             {% if object.content_object.label %}
                                 <div>
                                     <span class="text-muted">Label:</span>
@@ -98,12 +112,19 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
+                            {% if object.content_object.publisher %}
+                                <div>
+                                    <span class="text-muted">Publisher:</span>
+                                        <a href="{% url 'read:publisher_detail' object.content_object.publisher.id %}">
+                                            {{ object.content_object.publisher.name }}
+                                        </a>
+                                </div>
+                            {% endif %}
                             {% if object.content_object.release_date %}
                             <div>
                                 <span class="text-muted">Date:</span>{{ object.content_object.release_date }}
                             </div>
                             {% endif %}
-
                         </div>
                     </div>
                 </div>
@@ -116,6 +137,9 @@
                             {% elif object.content_type.model == 'podcast' %}
                                 <a href="{% url 'listen:podcast_checkin_list' object.content_object.id object.user.username %}"
                                    class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                            {% elif object.content_type.model == 'audiobook' %}
+                                <a href="{% url 'listen:audiobook_checkin_list' object.content_object.id object.user.username %}"
+                                    class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
                             {% endif %}
                         </p>
                         {% if object.user == request.user %}
