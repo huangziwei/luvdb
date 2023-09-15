@@ -625,7 +625,6 @@ class ReleaseDetailView(DetailView):
         else:
             context["latest_user_status"] = "to_listen"
 
-
         return context
 
     def post(self, request, *args, **kwargs):
@@ -795,17 +794,15 @@ class ListenCheckInListView(ListView):
             release = model.objects.get(pk=object_id)  # Get the object details
             context["object"] = release
 
-            roles = {}
-            for release_role in release.releaserole_set.all():
-                if release_role.role.name not in roles:
-                    roles[release_role.role.name] = []
-                alt_name_or_person_name = (
-                    release_role.alt_name or release_role.person.name
-                )
-                roles[release_role.role.name].append(
-                    (release_role.person, alt_name_or_person_name)
-                )
-            context["roles"] = roles
+        roles = {}
+        for release_role in release.releaserole_set.all():
+            if release_role.role.name not in roles:
+                roles[release_role.role.name] = []
+            alt_name_or_person_name = release_role.alt_name or release_role.person.name
+            roles[release_role.role.name].append(
+                (release_role.person, alt_name_or_person_name)
+            )
+        context["roles"] = roles
 
         context["model_name"] = self.kwargs.get("model_name", "release")
 
@@ -1109,7 +1106,6 @@ def parse_podcast(rss_feed_url):
     return podcast_info
 
 
-
 def create_or_update_podcast_from_feed(rss_feed_url):
     """
     Create or update Podcast and PodcastEpisode from the given RSS feed URL.
@@ -1280,7 +1276,7 @@ class PodcastDetailView(DetailView):
         )
 
         context["lists_containing_release"] = lists_containing_release
-        
+
         # Fetch the latest check-in from the current user for this book
         if self.request.user.is_authenticated:
             latest_user_checkin = (
@@ -1418,6 +1414,20 @@ class GenericCheckInListView(ListView):
 
         context["model_name"] = self.kwargs.get("model_name", "release")
 
+        if context["model_name"] == "release":
+            release = model.objects.get(pk=object_id)  # Get the object details
+            roles = {}
+            for release_role in release.releaserole_set.all():
+                if release_role.role.name not in roles:
+                    roles[release_role.role.name] = []
+                alt_name_or_person_name = (
+                    release_role.alt_name or release_role.person.name
+                )
+                roles[release_role.role.name].append(
+                    (release_role.person, alt_name_or_person_name)
+                )
+            context["roles"] = roles
+
         return context
 
 
@@ -1477,19 +1487,32 @@ class GenericCheckInAllListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        object_id = self.kwargs["object_id"]
         model = self.get_model()
         if model is not None:
-            context["object"] = model.objects.get(
-                pk=self.kwargs["object_id"]
-            )  # Get the object details
+            context["object"] = model.objects.get(pk=object_id)
 
-        context["order"] = self.request.GET.get(
-            "order", "-timestamp"
-        )  # Default is '-timestamp'
+        context["order"] = self.request.GET.get("order", "-timestamp")
 
         context["status"] = self.request.GET.get("status", "")
         context["model_name"] = self.kwargs.get("model_name", "release")
+
+        context["model_name"] = self.kwargs.get("model_name", "release")
+
+        if context["model_name"] == "release":
+            release = model.objects.get(pk=object_id)  # Get the object details
+            roles = {}
+            for release_role in release.releaserole_set.all():
+                if release_role.role.name not in roles:
+                    roles[release_role.role.name] = []
+                alt_name_or_person_name = (
+                    release_role.alt_name or release_role.person.name
+                )
+                roles[release_role.role.name].append(
+                    (release_role.person, alt_name_or_person_name)
+                )
+            context["roles"] = roles
+
         return context
 
 
@@ -1551,6 +1574,20 @@ class GenericCheckInUserListView(ListView):
         )  # Default is '-timestamp'
 
         context["status"] = self.request.GET.get("status", "")
+
+        context["model_name"] = self.kwargs.get("model_name", "release")
+        if context["model_name"] == "release":
+            roles = {}
+            for release_role in release.releaserole_set.all():
+                if release_role.role.name not in roles:
+                    roles[release_role.role.name] = []
+                alt_name_or_person_name = (
+                    release_role.alt_name or release_role.person.name
+                )
+                roles[release_role.role.name].append(
+                    (release_role.person, alt_name_or_person_name)
+                )
+            context["roles"] = roles
 
         return context
 
