@@ -41,7 +41,7 @@
                 <!-- Assumption: 'checkins' is the context variable containing the check-ins for the user -->
                 {% if profile_user.is_public  or request.user.is_authenticated %}
                     {% for checkin in checkins %}
-                        <div class="col-sm-12 mt-3">
+                        <div class="checkin bg-light p-3 mb-3">
                             <div class="activity-item mb-3"
                                  data-activity-type="{{ checkin.activity_type }}">
                                 <div class="d-flex flex-wrap align-items-center">
