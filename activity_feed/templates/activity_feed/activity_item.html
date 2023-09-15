@@ -507,22 +507,29 @@
                         {% endfor %}
                     </div>
                 {% endfor %}
+                {% if activity.content_object.content_object.label %}
                 <div>
-                    {% if activity.content_object.content_object.label %}
-                        {# djlint:off #}
-                        <span class="text-muted">Label{% if activity.content_object.content_object.label.list|length > 1 %}s{% endif %}:</span>
-                        {# djlint:on #}
-                        {% for developer in activity.content_object.content_object.label.all %}
-                            {% if not forloop.first %},{% endif %}
-                            <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
-                        {% endfor %}
-                    {% endif %}
+                    {# djlint:off #}
+                    <span class="text-muted">Label{% if activity.content_object.content_object.label.list|length > 1 %}s{% endif %}:</span>
+                    {# djlint:on #}
+                    {% for label in activity.content_object.content_object.label.all %}
+                        {% if not forloop.first %},{% endif %}
+                        <a href="{% url 'listen:label_detail' label.id %}">{{ label.name }}</a>
+                    {% endfor %}
                 </div>
+                {% endif %}
+                {% if activity.content_object.content_object.catalog_number %}
                 <div>
-                    {% if activity.content_object.content_object.release_date %}
-                        <span class="text-muted">Date:</span>{{ activity.content_object.content_object.release_date }}
-                    {% endif %}
+                    <span class="text-muted">Catalog Number:</span>
+                    {{activity.content_object.content_object.catalog_number}}
                 </div>
+                {% endif %}
+                {% if activity.content_object.content_object.release_date %}
+                <div>
+                    <span class="text-muted">Date:</span>{{ activity.content_object.content_object.release_date }}
+                </div>
+                {% endif %}
+
             </div>
         </div>
         <div class="d-flex mt-2">
