@@ -7,9 +7,14 @@
                     {{ platform.name }}
                 </h2>
                 {% if platform.other_names %}
-                <div class="text-muted">
-                    {{ platform.other_names }}
-                </div>
+                    <div class="text-muted">
+                        {{ platform.other_names }}
+                    </div>
+                {% endif %}
+                {% if platform.notes %}
+                    <div class="mt-3">
+                        {{ platform.notes }}
+                    </div>
                 {% endif %}
                 {% if sorted_games %}
                     <h3>Game releases</h3>
@@ -25,6 +30,24 @@
                     </ul>
                 {% else %}
                     <p>No games have been released on this platform.</p>
+                {% endif %}
+            </div>
+
+            <div class="col-sm-4">
+                <!--Related Work / Edit -->
+                {% if user.is_authenticated %}
+                <div class="bg-light p-3 mb-3">
+                    <div>
+                        <a href="{% url 'play:platform_update' object.pk %}" class='fs-6 text-secondary'>Edit Platform</a>
+                    </div>
+                </div>
+                {% endif %}
+    
+                {% if object.wikipedia %}
+                <div class="bg-light p-3">
+                    <h5>Links</h5>
+                    <div><a href="{{object.wikipedia}}">Wikipedia</a></div>
+                </div>
                 {% endif %}
             </div>
         </div>

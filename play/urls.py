@@ -27,6 +27,7 @@ from .views import (
     PlatformAutocomplete,
     PlatformCreateView,
     PlatformDetailView,
+    PlatformUpdateView,
     PlayListView,
     WorkAutocomplete,
     WorkCreateView,
@@ -71,6 +72,11 @@ urlpatterns = [
     # platform
     path("platform/create/", PlatformCreateView.as_view(), name="platform_create"),
     path("platform/<int:pk>/", PlatformDetailView.as_view(), name="platform_detail"),
+    path(
+        "platform/<int:pk>/update/",
+        PlatformUpdateView.as_view(),
+        name="platform_update",
+    ),
     # autocomplete
     path(
         "developer-autocomplete/",

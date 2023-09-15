@@ -421,6 +421,8 @@ class PlatformCreateView(LoginRequiredMixin, CreateView):
         "name",
         "other_names",
         "website",
+        "wikipedia",
+        "notes",
     ]
     template_name = "play/platform_create.html"
 
@@ -455,6 +457,8 @@ class PlatformUpdateView(LoginRequiredMixin, UpdateView):
         "name",
         "other_names",
         "website",
+        "wikipedia",
+        "notes",
     ]
     template_name = (
         "play/platform_update.html"  # Change the template name as per your requirement
