@@ -10,6 +10,12 @@
            class="text-secondary"
            target="_blank">Add a new company?</a>
     </div>
+    <div class="mb-3">
+        {{ form.distributors|as_crispy_field }}
+        <a href="{% url 'entity:company_create' %}?next={{ request.path }}"
+           class="text-secondary"
+           target="_blank">Add a new company?</a>
+    </div>
     {{ form.description|as_crispy_field }}
     {{ form.release_date|as_crispy_field }}
     {{ form.genres|as_crispy_field }}

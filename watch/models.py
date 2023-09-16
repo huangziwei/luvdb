@@ -60,6 +60,7 @@ class Movie(models.Model):
     other_titles = models.TextField(blank=True, null=True)
     studios_deprecated = models.ManyToManyField(Studio, related_name="movies")
     studios = models.ManyToManyField(Company, related_name="movies")
+    distributors = models.ManyToManyField(Company, related_name="movies_distributed")
     persons = models.ManyToManyField(Person, through="MovieRole", related_name="movies")
     casts = models.ManyToManyField(
         Person, through="MovieCast", related_name="movies_cast"
@@ -187,6 +188,7 @@ class Series(models.Model):
     other_titles = models.TextField(blank=True, null=True)
     studios_deprecated = models.ManyToManyField(Studio, related_name="series")
     studios = models.ManyToManyField(Company, related_name="series")
+    distributors = models.ManyToManyField(Company, related_name="series_distributed")
     persons = models.ManyToManyField(
         Person, through="SeriesRole", related_name="series"
     )

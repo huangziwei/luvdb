@@ -48,6 +48,17 @@
                                             {% endfor %}
                                         </p>
                                     {% endif %}
+                                    {% if object.distributors.count != 0 %}
+                                        <p>
+                                            {# djlint:off #}
+                                            <span class="text-muted">Studio{% if object.distributors.count > 1 %}s{% endif %}:</span>
+                                            {# djlint:on #}
+                                            {% for studio in object.distributors.all %}
+                                                <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
                                     {% if object.website %}
                                         <p>
                                             <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>

@@ -34,6 +34,9 @@ class MovieForm(forms.ModelForm):
             "studios": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("entity:company-autocomplete")
             ),
+            "distributors": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("entity:company-autocomplete")
+            ),
             "based_on": autocomplete.ModelSelect2(
                 url=reverse_lazy("read:work-autocomplete")
             ),
@@ -47,6 +50,7 @@ class MovieForm(forms.ModelForm):
         super(MovieForm, self).__init__(*args, **kwargs)
         self.fields["studios_deprecated"].required = False
         self.fields["studios"].required = False
+        self.fields["distributors"].required = False
         self.fields["genres"].required = False
         self.fields[
             "other_titles"
@@ -164,6 +168,9 @@ class SeriesForm(forms.ModelForm):
             "studios": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("entity:company-autocomplete")
             ),
+            "distributors": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("entity:company-autocomplete")
+            ),
             "based_on": autocomplete.ModelSelect2(
                 url=reverse_lazy("read:work-autocomplete")
             ),
@@ -177,6 +184,7 @@ class SeriesForm(forms.ModelForm):
         super(SeriesForm, self).__init__(*args, **kwargs)
         self.fields["studios_deprecated"].required = False
         self.fields["studios"].required = False
+        self.fields["distributors"].required = False
         self.fields["genres"].required = False
         self.fields[
             "other_titles"
