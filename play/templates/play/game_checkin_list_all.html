@@ -81,7 +81,7 @@
                                     <p>
                                         <strong>Developers:</strong>
                                         {% for developer in game.developers.all %}
-                                            <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
+                                            <a href="{% url 'play:company_detail' developer.id %}">{{ developer.name }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
                                     </p>
@@ -90,7 +90,7 @@
                                     <p>
                                         <strong>Publishers:</strong>
                                         {% for publisher in game.publishers.all %}
-                                            <a href="{% url 'play:publisher_detail' publisher.id %}">{{ publisher.name }}</a>
+                                            <a href="{% url 'play:company_detail' publisher.id %}">{{ publisher.name }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
                                     </p>

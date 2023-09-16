@@ -320,7 +320,7 @@
                                             {# djlint:on #}
                                             {% for developer in repost.original_activity.content_object.game.developers.all %}
                                                 {% if not forloop.first %},{% endif %}
-                                                <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
+                                                <a href="{% url 'play:company_detail' developer.id %}">{{ developer.name }}</a>
                                             {% endfor %}
                                         {% endif %}
                                     </div>

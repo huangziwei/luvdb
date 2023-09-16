@@ -59,6 +59,20 @@ class GamePublisher(Entity):
         return self.name
 
 
+class GameCompany(Entity):
+    location = models.CharField(max_length=100, blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    wikipedia = models.URLField(blank=True, null=True)
+    founded_date = models.CharField(max_length=10, blank=True, null=True)
+    closed_date = models.CharField(max_length=10, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        if self.location:
+            return f"{self.location}: {self.name}"
+        return self.name
+
+
 class Platform(Entity):
     website = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
@@ -96,7 +110,7 @@ class Work(models.Model):  # Renamed from Book
     persons = models.ManyToManyField(
         Person, through="WorkRole", related_name="play_works"
     )
-    developers = models.ManyToManyField(Developer, related_name="play_works")
+    developers = models.ManyToManyField(GameCompany, related_name="play_works")
 
     first_release_date = models.CharField(
         max_length=10, blank=True, null=True
@@ -185,8 +199,8 @@ class Game(models.Model):
         Work, on_delete=models.CASCADE, null=True, blank=True, related_name="games"
     )
 
-    developers = models.ManyToManyField(Developer, related_name="games")
-    publishers = models.ManyToManyField(GamePublisher, related_name="games")
+    developers = models.ManyToManyField(GameCompany, related_name="developed_games")
+    publishers = models.ManyToManyField(GameCompany, related_name="published_games")
 
     persons = models.ManyToManyField(Person, through="GameRole", related_name="games")
     casts = models.ManyToManyField(

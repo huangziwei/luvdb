@@ -32,17 +32,7 @@ from .forms import (
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import (
-    Developer,
-    Game,
-    GameCheckIn,
-    GamePublisher,
-    GameRole,
-    GameSeries,
-    Genre,
-    Platform,
-    Work,
-)
+from .models import Game, GameCheckIn, GameCompany, GameSeries, Genre, Platform, Work
 
 User = get_user_model()
 
@@ -354,8 +344,8 @@ class GameCastDetailView(DetailView):
         return context
 
 
-class DeveloperCreateView(LoginRequiredMixin, CreateView):
-    model = Developer
+class GameCompanyCreateView(LoginRequiredMixin, CreateView):
+    model = GameCompany
     fields = [
         "name",
         "other_names",
@@ -366,7 +356,7 @@ class DeveloperCreateView(LoginRequiredMixin, CreateView):
         "closed_date",
         "notes",
     ]
-    template_name = "play/developer_create.html"
+    template_name = "play/company_create.html"
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -374,7 +364,7 @@ class DeveloperCreateView(LoginRequiredMixin, CreateView):
         return form
 
     def get_success_url(self):
-        return reverse_lazy("play:developer_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("play:company_detail", kwargs={"pk": self.object.pk})
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -382,14 +372,14 @@ class DeveloperCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class DeveloperDetailView(DetailView):
-    model = Developer
-    template_name = "play/developer_detail.html"
-    context_object_name = "developer"
+class GameCompanyDetailView(DetailView):
+    model = GameCompany
+    template_name = "play/company_detail.html"
+    context_object_name = "company"
 
 
-class DeveloperUpdateView(LoginRequiredMixin, UpdateView):
-    model = Developer
+class GameCompanyUpdateView(LoginRequiredMixin, UpdateView):
+    model = GameCompany
     fields = [
         "name",
         "other_names",
@@ -400,7 +390,7 @@ class DeveloperUpdateView(LoginRequiredMixin, UpdateView):
         "closed_date",
         "notes",
     ]
-    template_name = "play/developer_update.html"
+    template_name = "play/company_update.html"
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -408,7 +398,7 @@ class DeveloperUpdateView(LoginRequiredMixin, UpdateView):
         return form
 
     def get_success_url(self):
-        return reverse_lazy("play:developer_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("play:company_detail", kwargs={"pk": self.object.pk})
 
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
@@ -477,36 +467,20 @@ class PlatformUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class DeveloperAutocomplete(autocomplete.Select2QuerySetView):
+class GameCompanyAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated:
-            return Developer.objects.none()
+            return GameCompany.objects.none()
 
-        qs = Developer.objects.all()
+        qs = GameCompany.objects.all()
 
         if self.q:
             qs = qs.filter(Q(name__icontains=self.q) | Q(other_names__icontains=self.q))
 
             return qs
 
-        return Developer.objects.none()
-
-
-class GamePublisherAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated:
-            return GamePublisher.objects.none()
-
-        qs = GamePublisher.objects.all()
-
-        if self.q:
-            qs = qs.filter(Q(name__icontains=self.q) | Q(other_names__icontains=self.q))
-
-            return qs
-
-        return GamePublisher.objects.none()
+        return GameCompany.objects.none()
 
 
 class PlatformAutocomplete(autocomplete.Select2QuerySetView):
@@ -858,67 +832,6 @@ class GameSeriesUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("play:series_detail", kwargs={"pk": self.object.pk})
-
-
-class GamePublisherCreateView(LoginRequiredMixin, CreateView):
-    model = GamePublisher
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "website",
-        "wikipedia",
-        "founded_date",
-        "closed_date",
-        "notes",
-    ]
-    template_name = "play/gamepublisher_create.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["other_names"].widget = forms.TextInput()
-        return form
-
-    def get_success_url(self):
-        return reverse_lazy("play:publisher_detail", kwargs={"pk": self.object.pk})
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        form.instance.updated_by = self.request.user
-        return super().form_valid(form)
-
-
-class GamePublisherDetailView(DetailView):
-    model = GamePublisher
-    template_name = "play/gamepublisher_detail.html"
-    context_object_name = "gamepublisher"
-
-
-class GamePublisherUpdateView(LoginRequiredMixin, UpdateView):
-    model = GamePublisher
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "website",
-        "wikipedia",
-        "founded_date",
-        "closed_date",
-        "notes",
-    ]
-    template_name = "play/gamepublisher_update.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["other_names"].widget = forms.TextInput()
-        return form
-
-    def get_success_url(self):
-        return reverse_lazy("play:publisher_detail", kwargs={"pk": self.object.pk})
-
-    def form_valid(self, form):
-        form.instance.updated_by = self.request.user
-        return super().form_valid(form)
 
 
 #########

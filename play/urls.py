@@ -1,10 +1,6 @@
 from django.urls import path
 
 from .views import (
-    DeveloperAutocomplete,
-    DeveloperCreateView,
-    DeveloperDetailView,
-    DeveloperUpdateView,
     GameCastDetailView,
     GameCheckInAllListView,
     GameCheckInDeleteView,
@@ -12,12 +8,12 @@ from .views import (
     GameCheckInListView,
     GameCheckInUpdateView,
     GameCheckInUserListView,
+    GameCompanyAutocomplete,
+    GameCompanyCreateView,
+    GameCompanyDetailView,
+    GameCompanyUpdateView,
     GameCreateView,
     GameDetailView,
-    GamePublisherAutocomplete,
-    GamePublisherCreateView,
-    GamePublisherDetailView,
-    GamePublisherUpdateView,
     GameSeriesCreateView,
     GameSeriesDetailView,
     GameSeriesUpdateView,
@@ -47,27 +43,13 @@ urlpatterns = [
     path("game/create/", GameCreateView.as_view(), name="game_create"),
     path("game/<int:pk>/", GameDetailView.as_view(), name="game_detail"),
     path("game/<int:pk>/update/", GameUpdateView.as_view(), name="game_update"),
-    # developer
-    path("developer/create/", DeveloperCreateView.as_view(), name="developer_create"),
-    path("developer/<int:pk>/", DeveloperDetailView.as_view(), name="developer_detail"),
+    # company
+    path("company/create/", GameCompanyCreateView.as_view(), name="company_create"),
+    path("company/<int:pk>/", GameCompanyDetailView.as_view(), name="company_detail"),
     path(
-        "developer/<int:pk>/update/",
-        DeveloperUpdateView.as_view(),
-        name="developer_update",
-    ),
-    # publisher
-    path(
-        "publisher/create/", GamePublisherCreateView.as_view(), name="publisher_create"
-    ),
-    path(
-        "publisher/<int:pk>/",
-        GamePublisherDetailView.as_view(),
-        name="publisher_detail",
-    ),
-    path(
-        "publisher/<int:pk>/update/",
-        GamePublisherUpdateView.as_view(),
-        name="publisher_update",
+        "company/<int:pk>/update/",
+        GameCompanyUpdateView.as_view(),
+        name="company_update",
     ),
     # platform
     path("platform/create/", PlatformCreateView.as_view(), name="platform_create"),
@@ -79,19 +61,14 @@ urlpatterns = [
     ),
     # autocomplete
     path(
-        "developer-autocomplete/",
-        DeveloperAutocomplete.as_view(),
-        name="developer-autocomplete",
+        "company-autocomplete/",
+        GameCompanyAutocomplete.as_view(),
+        name="company-autocomplete",
     ),
     path(
         "platform-autocomplete/",
         PlatformAutocomplete.as_view(),
         name="platform-autocomplete",
-    ),
-    path(
-        "publisher-autocomplete/",
-        GamePublisherAutocomplete.as_view(),
-        name="publisher-autocomplete",
     ),
     path("work-autocomplete/", WorkAutocomplete.as_view(), name="work-autocomplete"),
     path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),

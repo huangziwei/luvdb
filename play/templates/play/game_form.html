@@ -16,15 +16,15 @@
     </div>
     <div class="mb-3">
         {{ form.developers|as_crispy_field }}
-        <a href="{% url 'play:developer_create' %}?next={{ request.path }}"
+        <a href="{% url 'play:company_create' %}?next={{ request.path }}"
            class="text-secondary"
-           target="_blank">Add a new developer?</a>
+           target="_blank">Add a new game company?</a>
     </div>
     <div class="mb-3">
         {{ form.publishers|as_crispy_field }}
-        <a href="{% url 'play:publisher_create' %}?next={{ request.path }}"
+        <a href="{% url 'play:company_create' %}?next={{ request.path }}"
            class="text-secondary"
-           target="_blank">Add a new game publisher?</a>
+           target="_blank">Add a new game company?</a>
     </div>
     <div class="mb-3">
         {{ form.platforms|as_crispy_field }}

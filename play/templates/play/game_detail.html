@@ -58,7 +58,7 @@
                                         <p>
                                             <span class="text-muted">Developer{% if object.developers.count > 1 %}s{% endif %}:</span>
                                             {% for developer in object.developers.all %}
-                                                <a href="{% url 'play:developer_detail' developer.id %}">{{ developer.name }}</a>
+                                                <a href="{% url 'play:company_detail' developer.id %}">{{ developer.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
                                         </p>
@@ -96,7 +96,7 @@
                                                 <p>
                                                     <span class="text-muted">Publisher{% if object.publishers.count > 1 %}s{% endif %}:</span>
                                                     {% for publisher in object.publishers.all %}
-                                                        <a href="{% url 'play:publisher_detail' publisher.id %}">{{ publisher.name }}</a>
+                                                        <a href="{% url 'play:company_detail' publisher.id %}">{{ publisher.name }}</a>
                                                         {% if not forloop.last %}/{% endif %}
                                                     {% endfor %}
                                                 </p>

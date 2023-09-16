@@ -26,7 +26,7 @@ class WorkForm(forms.ModelForm):
         fields = "__all__"
         widgets = {
             "developers": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("play:developer-autocomplete")
+                url=reverse_lazy("play:company-autocomplete")
             ),
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("play:genre-autocomplete")
@@ -105,13 +105,13 @@ class GameForm(forms.ModelForm):
                 url=reverse_lazy("play:work-autocomplete")
             ),
             "developers": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("play:developer-autocomplete")
+                url=reverse_lazy("play:company-autocomplete")
             ),
             "platforms": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("play:platform-autocomplete")
             ),
             "publishers": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("play:publisher-autocomplete")
+                url=reverse_lazy("play:company-autocomplete")
             ),
             "other_titles": forms.TextInput(),
             "rating": forms.TextInput(),

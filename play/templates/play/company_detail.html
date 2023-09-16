@@ -36,8 +36,8 @@
             <div class="col-sm-4">
                 <div class="bg-light p-3 mb-3">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'play:developer_update' object.pk %}"
-                           class='fs-6 text-secondary'>Edit Developer</a>
+                        <a href="{% url 'play:company_update' object.pk %}"
+                           class='fs-6 text-secondary'>Edit Game Company</a>
                     {% endif %}
                 </div>
                 <div class="bg-light p-3 mb-3">
