@@ -60,7 +60,7 @@
                                     {% if object.distributors.count != 0 %}
                                         <p>
                                             {# djlint:off #}
-                                            <span class="text-muted">Studio{% if object.distributors.count > 1 %}s{% endif %}:</span>
+                                            <span class="text-muted">Distributor{% if object.distributors.count > 1 %}s{% endif %}:</span>
                                             {# djlint:on #}
                                             {% for studio in object.distributors.all %}
                                                 <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
