@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load markdownify %}
 {% block title %}{{ object.name }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -7,14 +8,228 @@
                 <h2>
                     {{ object.name }}
                 </h2>
-                {% if object.other_names %}
+                {% if object.other_names %}<div class="text-muted">{{ object.other_names }}</div>{% endif %}
+                <span class="text-secondary">
+                    {% if object.founded_date %}
+                        {{ object.founded_date }}
+                        -
+                    {% endif %}
+                    {% if object.closed_date %}{{ object.closed_date }}{% endif %}
+                </span>
+                {% if object.notes %}
                 <div class="text-muted">
-                    {{ object.other_names}}
+                    {{ object.notes | markdownify }}
                 </div>
                 {% endif %}
-                <div class="row">
-
+                <!-- read -->
+                {% if object.books.count != 0 or object.audiobooks.count != 0%}
+                <div class="row mt-3">
+                    <h4 class="mb-0">As Book Publisher</h4>
+                    {% if object.books.count != 0 %}
+                    <div class="col-md-6 mt-2">
+                        <h5>Books</h5>
+                        <ul>
+                            {% for book in object.books.all %}
+                                <li>
+                                    <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a> 
+                                    ({% if book.format %}{{ book.format }},{% endif %}
+                                    {{ book.publication_date }})
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}                    
+    
+                    {% if object.audiobooks.count != 0 %}
+                    <div class="col-md-6 mt-2">
+                        <h5>Audiobooks</h5>
+                        <ul>
+                            {% for audiobook in object.audiobooks.all %}
+                                <li>
+                                    <a href="{% url 'listen:audiobook_detail' audiobook.pk %}">{{ audiobook.title }}</a>
+                                    ({{ audiobook.release_date }})
+                                </li>
+                            {% empty %}
+                                <li>This publisher has no audiobooks.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
                 </div>
+                {% endif %}
+                <!-- watch 1-->
+                {% if movies_as_production_company or  series_as_production_company%}
+                <div class="row mt-3">
+                    <h4 class="mb-0">As Production Company</h4>
+                    {% if movies_as_production_company.count != 0 %}
+                    <div class="col-md-6 mt-2">
+                        <h5>Movies</h5>
+                        <ul>
+                            {% for movie in movies_as_production_company %}
+                                <li>
+                                    <a href="{% url 'watch:movie_detail' movie.pk %}">{{ movie.title }}</a> 
+                                    ({{ movie.release_date }})
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}                    
+    
+                    {% if series_as_production_company.count != 0 %}
+                    <div class="col-md-6 mt-2">
+                        <h5>Series</h5>
+                        <ul>
+                            {% for serie in series_as_production_company %}
+                                <li>
+                                    <a href="{% url 'watch:series_detail' serie.pk %}">{{ serie.title }}</a>
+                                    ({{ serie.release_date }})
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                {% if movies_as_distributor or  series_as_distributor%}
+                <div class="row mt-3">
+                    <h4 class="mb-0">As Distribution Company</h4>
+                    {% if movies_as_distributor.count != 0 %}
+                    <div class="col-md-6 mt-2">
+                        <h5>Movies</h5>
+                        <ul>
+                            {% for movie in movies_as_distributor %}
+                                <li>
+                                    <a href="{% url 'watch:movie_detail' movie.pk %}">{{ movie.title }}</a> 
+                                    ({{ movie.release_date }})
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}                    
+    
+                    {% if series_as_distributor.count != 0 %}
+                    <div class="col-md-6 mt-2">
+                        <h5>Series</h5>
+                        <ul>
+                            {% for serie in series_as_distributor %}
+                                <li>
+                                    <a href="{% url 'watch:series_detail' serie.pk %}">{{ serie.title }}</a>
+                                    ({{ serie.release_date }})
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- listen 1-->
+                {% if singles or EPs or LPs or boxsets %}
+                <div class="row mt-3">
+                    <h4 class="mb-0">As Record Label</h4>
+                    {% if singles or EPs %}
+                    <div class="row">
+                        {% if singles.count != 0 %}
+                        <div class="col-md-6 mt-2">
+                            <h5>Singles</h5>
+                            <ul>
+                                {% for single in singles.all %}
+                                    <li>
+                                        <a href="{% url 'listen:release_detail' single.pk %}">{{ single.title }}</a> 
+                                        ({{ single.release_date }})
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}                    
+        
+                        {% if EPs.count != 0 %}
+                        <div class="col-md-6 mt-2">
+                            <h5>EPs</h5>
+                            <ul>
+                                {% for EP in EPs.all %}
+                                    <li>
+                                        <a href="{% url 'listen:release_detail' EP.pk %}">{{ EP.title }}</a> 
+                                        ({{ EP.release_date }})
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %} 
+                    </div>
+                    {% endif %}
+                    {% if LPs or boxsets %}
+                    <!-- listen 2-->
+                    <div class="row">
+                        {% if LPs.count != 0 %}
+                        <div class="col-md-6 mt-2">
+                            <h5>LPs</h5>
+                            <ul>
+                                {% for LP in LPs.all %}
+                                    <li>
+                                        <a href="{% url 'listen:release_detail' LP.pk %}">{{ LP.title }}</a> 
+                                        ({{ LP.release_date }})
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}                    
+        
+                        {% if boxsets.count != 0 %}
+                        <div class="col-md-6 mt-2">
+                            <h5>Box Sets</h5>
+                            <ul>
+                                {% for boxset in boxsets.all %}
+                                    <li>
+                                        <a href="{% url 'listen:release_detail' boxset.pk %}">{{ boxset.title }}</a> 
+                                        ({{ boxset.release_date }})
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %} 
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                <!-- play -->
+                {% if games_as_developer or games_as_publisher%}
+                <div class="row mt-3">
+                    {% if games_as_developer.count != 0 %}
+                    <div class="col-md-6">
+                        <h5>As Game Developer</h5>
+                        <ul>
+                            {% for game in games_as_developer %}
+                                <li>
+                                    <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
+                                    ({% for platform in game.platforms.all %}{{ platform }}{% if not forloop.last %}/{% endif %}{% endfor %},
+                                    {{ game.release_date }})
+                                </li>
+                            {% empty %}
+                                <li>This company has not developed any games.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}   
+                    {% if games_as_publisher.count != 0 %}
+                    <div class="col-md-6">
+                        <h5>As Game Publisher</h5>
+                        <ul>
+                            {% for game in games_as_publisher %}
+                                <li>
+                                    <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
+                                    ({% for platform in game.platforms.all %}{{ platform }}{% if not forloop.last %}/{% endif %}{% endfor %},
+                                    {{ game.release_date }})
+                                </li>
+                            {% empty %}
+                                <li>This company has not published any games.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}                 
+                </div>
+                {% endif %}
             </div>
             <!-- manage entry -->
             <div class="col-sm-4">

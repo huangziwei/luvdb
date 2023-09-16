@@ -492,6 +492,53 @@ class CompanyDetailView(DetailView):
     template_name = "entity/company_detail.html"
     context_object_name = "company"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        company = self.object
+
+        # listen
+        context["LPs"] = Release.objects.filter(
+            label=company, release_type="LP"
+        ).order_by("-release_date")
+
+        context["EPs"] = Release.objects.filter(
+            label=company, release_type="EP"
+        ).order_by("-release_date")
+
+        context["singles"] = Release.objects.filter(
+            label=company, release_type="Single"
+        ).order_by("-release_date")
+
+        context["boxsets"] = Release.objects.filter(
+            label=company, release_type="Box Set"
+        ).order_by("-release_date")
+
+        # watch
+        context["movies_as_production_company"] = Movie.objects.filter(
+            studios=company
+        ).order_by("-release_date")
+        context["movies_as_distributor"] = Movie.objects.filter(
+            distributors=company
+        ).order_by("-release_date")
+
+        context["series_as_production_company"] = Series.objects.filter(
+            studios=company
+        ).order_by("-release_date")
+        context["series_as_distributor"] = Series.objects.filter(
+            distributors=company
+        ).order_by("-release_date")
+
+        # play
+        context["games_as_developer"] = Game.objects.filter(
+            developers=company
+        ).order_by("-release_date")
+        context["games_as_publisher"] = Game.objects.filter(
+            publishers=company
+        ).order_by("-release_date")
+
+        return context
+
 
 class CompanyUpdateView(LoginRequiredMixin, UpdateView):
     model = Company
