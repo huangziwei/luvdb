@@ -492,16 +492,6 @@ class CompanyDetailView(DetailView):
     template_name = "entity/company_detail.html"
     context_object_name = "company"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["games_as_developer"] = Game.objects.filter(
-            developers=self.object
-        ).order_by("release_date")
-        context["games_as_publisher"] = Game.objects.filter(
-            publishers=self.object
-        ).order_by("release_date")
-        return context
-
 
 class CompanyUpdateView(LoginRequiredMixin, UpdateView):
     model = Company
