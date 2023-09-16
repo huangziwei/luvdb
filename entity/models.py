@@ -83,3 +83,17 @@ class Role(models.Model):
     def save(self, *args, **kwargs):
         self.name = " ".join([word.capitalize() for word in self.name.split()])
         return super(Role, self).save(*args, **kwargs)
+
+
+class Company(Entity):
+    location = models.CharField(max_length=100, blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    wikipedia = models.URLField(blank=True, null=True)
+    founded_date = models.CharField(max_length=10, blank=True, null=True)
+    closed_date = models.CharField(max_length=10, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        if self.location:
+            return f"{self.location}: {self.name}"
+        return self.name

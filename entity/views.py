@@ -1,4 +1,5 @@
 from dal import autocomplete
+from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Q
 from django.urls import reverse_lazy
@@ -16,7 +17,7 @@ from read.models import Work as LitWork
 from watch.models import Episode, Movie, Series
 
 from .forms import PersonForm
-from .models import Person, Role
+from .models import Company, Person, Role
 
 
 # Create your views here.
@@ -456,3 +457,90 @@ class RoleAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__icontains=self.q)
 
         return qs
+
+
+class CompanyCreateView(LoginRequiredMixin, CreateView):
+    model = Company
+    fields = [
+        "name",
+        "other_names",
+        "location",
+        "website",
+        "wikipedia",
+        "founded_date",
+        "closed_date",
+        "notes",
+    ]
+    template_name = "entity/company_create.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
+
+    def get_success_url(self):
+        return reverse_lazy("play:company_detail", kwargs={"pk": self.object.pk})
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+
+
+class CompanyDetailView(DetailView):
+    model = Company
+    template_name = "entity/company_detail.html"
+    context_object_name = "company"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["games_as_developer"] = Game.objects.filter(
+            developers=self.object
+        ).order_by("release_date")
+        context["games_as_publisher"] = Game.objects.filter(
+            publishers=self.object
+        ).order_by("release_date")
+        return context
+
+
+class CompanyUpdateView(LoginRequiredMixin, UpdateView):
+    model = Company
+    fields = [
+        "name",
+        "other_names",
+        "location",
+        "website",
+        "wikipedia",
+        "founded_date",
+        "closed_date",
+        "notes",
+    ]
+    template_name = "entity/company_update.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["other_names"].widget = forms.TextInput()
+        return form
+
+    def get_success_url(self):
+        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
+
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+
+
+class CompanyAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Company.objects.none()
+
+        qs = Company.objects.all()
+
+        if self.q:
+            qs = qs.filter(Q(name__icontains=self.q) | Q(other_names__icontains=self.q))
+
+            return qs
+
+        return Company.objects.none()
