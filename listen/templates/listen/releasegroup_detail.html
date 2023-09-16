@@ -30,7 +30,7 @@
                             <div>
                                 <span class="text-muted">Label</span>: 
                                 {% for label in oldest_release.release.label.all %}
-                                    <a href="{% url 'listen:label_detail' label.id %}">
+                                    <a href="{% url 'entity:company_detail' label.id %}">
                                         {{ label.name }}
                                         {% if not forloop.last %}/{% endif %}
                                     </a>
@@ -81,7 +81,7 @@
                                         <div>
                                             <span class="text-muted">Label</span>: 
                                             {% for label in release_in_group.release.label.all %}
-                                                <a href="{% url 'listen:label_detail' label.id %}">
+                                                <a href="{% url 'entity:company_detail' label.id %}">
                                                     {{ label.name }}
                                                     {% if not forloop.last %}/{% endif %}
                                                 </a>

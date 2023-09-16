@@ -18,7 +18,7 @@ from langcodes import Language
 from PIL import Image
 
 from activity_feed.models import Activity
-from entity.models import Entity, Person, Role
+from entity.models import Company, Entity, Person, Role
 from write.models import create_mentions_notifications, handle_tags
 
 
@@ -340,8 +340,15 @@ class Book(models.Model):
     instances = models.ManyToManyField(
         Instance, through="BookInstance", related_name="books"
     )
-    publisher = models.ForeignKey(
+    publisher_deprecated = models.ForeignKey(
         Publisher,
+        on_delete=models.SET_NULL,
+        related_name="books",
+        null=True,
+        blank=True,
+    )
+    publisher = models.ForeignKey(
+        Company,
         on_delete=models.SET_NULL,
         related_name="books",
         null=True,

@@ -13,7 +13,7 @@ from django.utils.text import slugify
 from PIL import Image
 
 from activity_feed.models import Activity
-from entity.models import Entity, Person, Role
+from entity.models import Company, Entity, Person, Role
 from write.models import create_mentions_notifications, handle_tags
 
 
@@ -110,7 +110,10 @@ class Work(models.Model):  # Renamed from Book
     persons = models.ManyToManyField(
         Person, through="WorkRole", related_name="play_works"
     )
-    developers = models.ManyToManyField(GameCompany, related_name="play_works")
+    developers_deprecated = models.ManyToManyField(
+        GameCompany, related_name="play_works_deprecated"
+    )
+    developers = models.ManyToManyField(Company, related_name="play_works")
 
     first_release_date = models.CharField(
         max_length=10, blank=True, null=True
@@ -199,8 +202,15 @@ class Game(models.Model):
         Work, on_delete=models.CASCADE, null=True, blank=True, related_name="games"
     )
 
-    developers = models.ManyToManyField(GameCompany, related_name="developed_games")
-    publishers = models.ManyToManyField(GameCompany, related_name="published_games")
+    developers_deprecated = models.ManyToManyField(
+        GameCompany, related_name="developed_games_deprecated"
+    )
+    publishers_deprecated = models.ManyToManyField(
+        GameCompany, related_name="published_games_deprecated"
+    )
+
+    developers = models.ManyToManyField(Company, related_name="developed_games")
+    publishers = models.ManyToManyField(Company, related_name="published_games")
 
     persons = models.ManyToManyField(Person, through="GameRole", related_name="games")
     casts = models.ManyToManyField(

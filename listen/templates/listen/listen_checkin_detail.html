@@ -105,7 +105,7 @@
                                 <div>
                                     <span class="text-muted">Label:</span>
                                     {% for label in object.content_object.label.all %}
-                                        <a href="{% url 'listen:label_detail' label.id %}">
+                                        <a href="{% url 'entity:company_detail' label.id %}">
                                             {{ label.name }}
                                             {% if not forloop.last %}/{% endif %}
                                         </a>
@@ -115,7 +115,7 @@
                             {% if object.content_object.publisher %}
                                 <div>
                                     <span class="text-muted">Publisher:</span>
-                                        <a href="{% url 'read:publisher_detail' object.content_object.publisher.id %}">
+                                        <a href="{% url 'entity:company_detail' object.content_object.publisher.id %}">
                                             {{ object.content_object.publisher.name }}
                                         </a>
                                 </div>

@@ -26,7 +26,7 @@ class WorkForm(forms.ModelForm):
         fields = "__all__"
         widgets = {
             "developers": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("play:company-autocomplete")
+                url=reverse_lazy("entity:company-autocomplete")
             ),
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("play:genre-autocomplete")
@@ -36,6 +36,7 @@ class WorkForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(WorkForm, self).__init__(*args, **kwargs)
+        self.fields["developers_deprecated"].required = False
         self.fields["developers"].required = False
         self.fields["genres"].required = False
         self.fields[
@@ -105,13 +106,13 @@ class GameForm(forms.ModelForm):
                 url=reverse_lazy("play:work-autocomplete")
             ),
             "developers": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("play:company-autocomplete")
+                url=reverse_lazy("entity:company-autocomplete")
             ),
             "platforms": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("play:platform-autocomplete")
             ),
             "publishers": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("play:company-autocomplete")
+                url=reverse_lazy("entity:company-autocomplete")
             ),
             "other_titles": forms.TextInput(),
             "rating": forms.TextInput(),
@@ -119,6 +120,8 @@ class GameForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(GameForm, self).__init__(*args, **kwargs)
+        self.fields["developers_deprecated"].required = False
+        self.fields["platforms_deprecated"].required = False
         self.fields["developers"].required = False
         self.fields["platforms"].required = False
         self.fields["publishers"].required = False

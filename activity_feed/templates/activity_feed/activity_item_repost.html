@@ -99,7 +99,7 @@
                         {% if activity.content_object.original_activity.content_object.content_object.publisher %}
                         <div>
                             <span class="text-muted">Publisher:</span>
-                            <a href="{% url 'read:publisher_detail' activity.content_object.original_activity.content_object.content_object.publisher.id %}">
+                            <a href="{% url 'entity:company_detail' activity.content_object.original_activity.content_object.content_object.publisher.id %}">
                                 {{ activity.content_object.original_activity.content_object.content_object.publisher.name }}
                             </a>
                         </div>
@@ -210,7 +210,7 @@
                             {# djlint:on #}
                             {% for studio in activity.content_object.original_activity.content_object.content_object.studios.all %}
                                 {% if not forloop.first %}/{% endif %}
-                                <a href="{% url 'watch:studio_detail' studio.id %}">{{ studio.name }}</a>
+                                <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
                             {% endfor %}
                         </div>
                         {% endif %}
@@ -431,7 +431,7 @@
                             {# djlint:on #}
                             {% for label in activity.content_object.original_activity.content_object.content_object.label.all %}
                                 {% if not forloop.first %},{% endif %}
-                                <a href="{% url 'listen:label_detail' label.id %}">{{ label.name }}</a>
+                                <a href="{% url 'entity:company_detail' label.id %}">{{ label.name }}</a>
                             {% endfor %}
                         </div>
                         {% endif %}
@@ -440,7 +440,7 @@
                             {# djlint:off #}
                             <span class="text-muted">Publisher:</span>
                             {# djlint:on #}
-                            <a href="{% url 'read:publisher_detail' activity.content_object.original_activity.content_object.content_object.publisher.id %}">{{ activity.content_object.original_activity.content_object.content_object.publisher.name }}</a>
+                            <a href="{% url 'entity:company_detail' activity.content_object.original_activity.content_object.content_object.publisher.id %}">{{ activity.content_object.original_activity.content_object.content_object.publisher.name }}</a>
                         </div>
                         {% endif %}
                         {% if activity.content_object.original_activity.content_object.content_object.catalog_number %}

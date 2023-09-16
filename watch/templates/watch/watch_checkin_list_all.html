@@ -84,7 +84,7 @@
                                     <p>
                                         <strong>Studio:</strong>
                                         {% for studio in object.studios.all %}
-                                            <a href="{% url 'watch:studio_detail' studio.id %}">{{ studio.name }}</a>
+                                            <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
                                     </p>

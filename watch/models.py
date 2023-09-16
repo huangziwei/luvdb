@@ -13,7 +13,7 @@ from django.utils.text import slugify
 from PIL import Image
 
 from activity_feed.models import Activity
-from entity.models import Entity, Person, Role
+from entity.models import Company, Entity, Person, Role
 from read.models import LanguageField
 from read.models import Work as LitWork
 from write.models import create_mentions_notifications, handle_tags
@@ -58,7 +58,8 @@ class Movie(models.Model):
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
-    studios = models.ManyToManyField(Studio, related_name="movies")
+    studios_deprecated = models.ManyToManyField(Studio, related_name="movies")
+    studios = models.ManyToManyField(Company, related_name="movies")
     persons = models.ManyToManyField(Person, through="MovieRole", related_name="movies")
     casts = models.ManyToManyField(
         Person, through="MovieCast", related_name="movies_cast"

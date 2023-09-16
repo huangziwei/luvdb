@@ -523,22 +523,6 @@ class ReleaseInGroup(models.Model):
         return f"{self.group.title}: {self.release.title}"
 
 
-# class Audiobook(Book):
-#     release_date = models.TextField(blank=True, null=True)
-#     listencheckin = GenericRelation("ListenCheckIn")
-
-#     def save(self, *args, **kwargs):
-#         # Your custom save logic for Audiobook
-#         if self.release_date:
-#             self.release_date = standardize_date(self.release_date)
-
-#         # Call the parent class's save method
-#         super().save(*args, **kwargs)
-
-#     def get_absolute_url(self):
-#         return reverse("listen:audiobook_detail", args=[str(self.id)])
-
-
 class Audiobook(models.Model):
     """
     A Audiobook entity of an Instance
@@ -555,8 +539,15 @@ class Audiobook(models.Model):
     instances = models.ManyToManyField(
         Instance, through="AudiobookInstance", related_name="audiobooks"
     )
-    publisher = models.ForeignKey(
+    publisher_deprecated = models.ForeignKey(
         Publisher,
+        on_delete=models.SET_NULL,
+        related_name="audiobooks",
+        null=True,
+        blank=True,
+    )
+    publisher_deprecated = models.ForeignKey(
+        Company,
         on_delete=models.SET_NULL,
         related_name="audiobooks",
         null=True,

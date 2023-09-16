@@ -88,7 +88,7 @@ class PublisherCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("read:publisher_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
 
 
 class PublisherDetailView(DetailView):
@@ -121,7 +121,7 @@ class PublisherUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("read:publisher_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
 
 
 ##########

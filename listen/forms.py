@@ -206,7 +206,7 @@ class ReleaseForm(forms.ModelForm):
                 url=reverse_lazy("listen:track-autocomplete")
             ),
             "label": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("listen:label-autocomplete")
+                url=reverse_lazy("entity:company-autocomplete")
             ),
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("listen:genre-autocomplete")
@@ -224,6 +224,7 @@ class ReleaseForm(forms.ModelForm):
         super(ReleaseForm, self).__init__(*args, **kwargs)
         self.fields["cover_sens"].label = "Is the cover sensitive or explicit?"
         self.fields["label"].required = False
+        self.fields["label_deprecated"].required = False
 
 
 class ReleaseRoleForm(forms.ModelForm):
@@ -417,7 +418,7 @@ class AudiobookForm(forms.ModelForm):
                 url=reverse_lazy("read:instance-autocomplete")
             ),
             "publisher": autocomplete.ModelSelect2(
-                url=reverse_lazy("read:publisher-autocomplete")
+                url=reverse_lazy("entity:company-autocomplete")
             ),
             "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
             "release_date": forms.TextInput(),
@@ -431,6 +432,8 @@ class AudiobookForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AudiobookForm, self).__init__(*args, **kwargs)
         self.fields["cover_sens"].label = "Is the cover sensitive or explicit?"
+        self.fields["publisher"].required = False
+        self.fields["publisher_deprecated"].required = False
 
 
 class AudiobookRoleForm(forms.ModelForm):

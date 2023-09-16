@@ -50,7 +50,7 @@
                                     {% if object.publisher %}
                                         <p>
                                             <span class="text-muted">Publisher:</span>
-                                            <a href="{% url 'read:publisher_detail' object.publisher.id %}">
+                                            <a href="{% url 'entity:company_detail' object.publisher.id %}">
                                                 {% if object.publisher.location %}{{ object.publisher.location }}:{% endif %}
                                                 {{ object.publisher.name }}
                                             </a>
