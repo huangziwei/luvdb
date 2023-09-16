@@ -162,7 +162,7 @@ class SeriesForm(forms.ModelForm):
         fields = "__all__"
         widgets = {
             "studios": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("watch:studio-autocomplete")
+                url=reverse_lazy("entity:company-autocomplete")
             ),
             "based_on": autocomplete.ModelSelect2(
                 url=reverse_lazy("read:work-autocomplete")
@@ -175,6 +175,7 @@ class SeriesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SeriesForm, self).__init__(*args, **kwargs)
+        self.fields["studios_deprecated"].required = False
         self.fields["studios"].required = False
         self.fields["genres"].required = False
         self.fields[

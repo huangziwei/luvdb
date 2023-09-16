@@ -479,7 +479,7 @@ class CompanyCreateView(LoginRequiredMixin, CreateView):
         return form
 
     def get_success_url(self):
-        return reverse_lazy("play:company_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user

@@ -185,7 +185,8 @@ class Series(models.Model):
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
-    studios = models.ManyToManyField(Studio, related_name="series")
+    studios_deprecated = models.ManyToManyField(Studio, related_name="series")
+    studios = models.ManyToManyField(Company, related_name="series")
     persons = models.ManyToManyField(
         Person, through="SeriesRole", related_name="series"
     )
