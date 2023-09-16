@@ -8,9 +8,9 @@
     {{ form.cover_sens|as_crispy_field }}
     <div class="mb-3">
         {{ form.label|as_crispy_field }}
-        <a href="{% url 'listen:label_create' %}?next={{ request.path }}"
+        <a href="{% url 'entity:company_create' %}?next={{ request.path }}"
            class="text-secondary"
-           target="_blank">Add a new label?</a>
+           target="_blank">Add a new company?</a>
     </div>
     {{ form.release_date|as_crispy_field }}
     {{ form.release_length|as_crispy_field }}

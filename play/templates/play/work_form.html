@@ -8,7 +8,7 @@
     {{ form.genres|as_crispy_field }}
     <div class="mb-3">
         {{ form.developers|as_crispy_field }}
-        <a href="{% url 'play:company_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new developer?</a>                   
+        <a href="{% url 'entity:company_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new developer?</a>                   
     </div>
     {{ form.wikipedia|as_crispy_field}}
     {{ form.notes|as_crispy_field }}

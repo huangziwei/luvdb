@@ -546,7 +546,7 @@ class Audiobook(models.Model):
         null=True,
         blank=True,
     )
-    publisher_deprecated = models.ForeignKey(
+    publisher = models.ForeignKey(
         Company,
         on_delete=models.SET_NULL,
         related_name="audiobooks",

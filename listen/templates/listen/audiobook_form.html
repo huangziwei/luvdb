@@ -7,9 +7,9 @@
     {{ form.cover_sens|as_crispy_field }}
     <div class="mb-3">
         {{ form.publisher|as_crispy_field }}
-        <a href="{% url 'read:publisher_create' %}?next={{ request.path }}"
+        <a href="{% url 'entity:company_create' %}?next={{ request.path }}"
            class="text-secondary"
-           target="_blank">Add a new publisher?</a>
+           target="_blank">Add a new company?</a>
     </div>
     {{ form.language|as_crispy_field }}
     {{ form.details|as_crispy_field }}

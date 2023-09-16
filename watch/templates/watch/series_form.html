@@ -6,9 +6,9 @@
     {{ form.poster|as_crispy_field }}
     <div class="mb-3">
         {{ form.studios|as_crispy_field }}
-        <a href="{% url 'watch:studio_create' %}?next={{ request.path }}"
+        <a href="{% url 'entity:company_create' %}?next={{ request.path }}"
            class="text-secondary"
-           target="_blank">Add a new studio?</a>
+           target="_blank">Add a new company?</a>
     </div>
     {{ form.description|as_crispy_field }}
     {{ form.release_date|as_crispy_field }}
