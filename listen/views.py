@@ -987,6 +987,38 @@ class ListenListView(ListView):
         return context
 
 
+class ListenListAllView(ListView):
+    template_name = "listen/listen_list_all.html"
+    context_object_name = "objects"
+
+    def get_queryset(self):
+        releases = Release.objects.all().order_by("-created_at")
+        podcasts = Podcast.objects.all().order_by("-created_at")
+        audiobooks = Audiobook.objects.all().order_by("-created_at")
+
+        return {
+            "releases": releases,
+            "podcasts": podcasts,
+            "audiobooks": audiobooks,
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Include genres with at least one movie or series
+        context["genres"] = (
+            Genre.objects.filter(Q(listen_works__isnull=False))
+            .order_by("name")
+            .distinct()
+        )
+
+        context["works_count"] = Work.objects.count()
+        context["tracks_count"] = Track.objects.count()
+        context["releases_count"] = Release.objects.count()
+        context["podcasts_count"] = Podcast.objects.count()
+        context["audiobooks_count"] = Audiobook.objects.count()
+        return context
+
+
 class ListenCheckInUserListView(ListView):
     """
     All latest check-ins from a given user of all audio tracks and albums.

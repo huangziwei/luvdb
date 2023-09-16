@@ -1043,6 +1043,32 @@ class ReadListView(ListView):
         return context
 
 
+class ReadListAllView(ListView):
+    template_name = "read/read_list_all.html"
+    context_object_name = "objects"
+
+    def get_queryset(self):
+        return {
+            "books": Book.objects.all().order_by("-created_at"),
+            "issues": Issue.objects.all().order_by("-created_at"),
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["genres"] = (
+            Genre.objects.filter(Q(read_works__isnull=False))
+            .order_by("name")
+            .distinct()
+        )
+        # Additional context for the statistics
+        context["works_count"] = Work.objects.count()
+        context["instances_count"] = Instance.objects.count()
+        context["books_count"] = Book.objects.count()
+        context["periodicals_count"] = Periodical.objects.count()
+        context["issues_count"] = Issue.objects.count()
+        return context
+
+
 ###########
 # Checkin #
 ###########

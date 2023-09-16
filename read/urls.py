@@ -31,6 +31,7 @@ from .views import (
     ReadCheckInDeleteView,
     ReadCheckInDetailView,
     ReadCheckInUpdateView,
+    ReadListAllView,
     ReadListView,
     WorkAutocomplete,
     WorkCreateView,
@@ -42,6 +43,7 @@ app_name = "read"
 urlpatterns = [
     # read
     path("recent/", view=ReadListView.as_view(), name="read_list"),
+    path("all/", view=ReadListAllView.as_view(), name="read_list_all"),
     # checkin
     path(
         "book/<int:book_id>/checkin/create/",

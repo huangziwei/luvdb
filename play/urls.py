@@ -24,6 +24,7 @@ from .views import (
     PlatformCreateView,
     PlatformDetailView,
     PlatformUpdateView,
+    PlayListAllView,
     PlayListView,
     WorkAutocomplete,
     WorkCreateView,
@@ -35,6 +36,7 @@ app_name = "play"
 urlpatterns = [
     # play
     path("recent/", PlayListView.as_view(), name="play_list"),
+    path("all/", PlayListAllView.as_view(), name="play_list_all"),
     # work
     path("work/create/", WorkCreateView.as_view(), name="work_create"),
     path("work/<int:pk>/", WorkDetailView.as_view(), name="work_detail"),

@@ -323,7 +323,6 @@ class StudioCreateView(LoginRequiredMixin, CreateView):
         "founded_date",
         "closed_date",
         "notes",
-
     ]
     template_name = "watch/studio_create.html"
 
@@ -352,7 +351,6 @@ class StudioUpdateView(LoginRequiredMixin, UpdateView):
         "founded_date",
         "closed_date",
         "notes",
-
     ]
     template_name = "watch/studio_update.html"
 
@@ -449,6 +447,29 @@ class WatchListView(TemplateView):
         context["series"] = Series.objects.all().order_by("-created_at")[:12]
         context["trending_movies"] = trending_movies
         context["trending_series"] = trending_series
+
+        # Include genres with at least one movie or series
+        context["genres"] = (
+            Genre.objects.filter(Q(movies__isnull=False) | Q(series__isnull=False))
+            .order_by("name")
+            .distinct()
+        )
+
+        context["movies_count"] = Movie.objects.count()
+        context["series_count"] = Series.objects.count()
+        context["episodes_count"] = Episode.objects.count()
+
+        return context
+
+
+class WatchListAllView(TemplateView):
+    template_name = "watch/watch_list_all.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["movies"] = Movie.objects.all().order_by("-created_at")
+        context["series"] = Series.objects.all().order_by("-created_at")
 
         # Include genres with at least one movie or series
         context["genres"] = (

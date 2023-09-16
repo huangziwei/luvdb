@@ -14,7 +14,7 @@ from django.utils.text import slugify
 from PIL import Image
 
 from activity_feed.models import Activity
-from entity.models import Entity, Person, Role
+from entity.models import Company, Entity, Person, Role
 from read.models import Book, Instance, LanguageField, Publisher, standardize_date
 from write.models import create_mentions_notifications, handle_tags
 
@@ -197,7 +197,10 @@ class Release(models.Model):
     tracks = models.ManyToManyField(
         Track, through="ReleaseTrack", related_name="releases"
     )
-    label = models.ManyToManyField(Label, related_name="releases")
+    label_deprecated = models.ManyToManyField(
+        Label, related_name="releases_deprecated", db_column="label"
+    )
+    label = models.ManyToManyField(Company, related_name="releases")
     genres = models.ManyToManyField(Genre, related_name="releases", blank=True)
     discogs = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
@@ -596,7 +599,7 @@ class Audiobook(models.Model):
 
     def get_absolute_url(self):
         return reverse("listen:audiobook_detail", args=[str(self.id)])
-    
+
     def model_name(self):
         return "Audiobook"
 

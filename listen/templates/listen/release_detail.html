@@ -56,7 +56,7 @@
                                         <div class="mb-1">
                                             <span class="text-muted">Label:</span>
                                             {% for label in object.label.all %}
-                                                <a href="{% url 'listen:label_detail' label.id %}">
+                                                <a href="{% url 'entity:company_detail' label.id %}">
                                                     {{ label.name }}
                                                     {% if not forloop.last %}/{% endif %}
                                                 </a>

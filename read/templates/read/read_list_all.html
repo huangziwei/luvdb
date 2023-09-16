@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Read{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class='col-12 col-md-8'>
+                {% if objects.books or objects.issues %}
+                    <div>
+                        {% if objects.books %}
+                            <h4>Books</h4>
+                            <div class="row">
+                                {% for book in objects.books %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'read:book_detail' book.pk %}">
+                                            {% if book.cover %}
+                                                {% if book.cover_sens %}
+                                                    <img src="{{ book.cover.url }}"
+                                                         alt="{{ book.title }} cover"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ book.title }}</div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No recent books.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if objects.issues %}
+                            <h4>Periodicals / Issues</h4>
+                            <div class="row">
+                                {% for issue in objects.issues %}
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <a href="{% url 'read:issue_detail' issue.periodical.id issue.id %}">
+                                            {% if issue.cover %}
+                                                {% if issue.cover_sens %}
+                                                    <img src="{{ issue.cover.url }}"
+                                                         alt="{{ issue.title }} cover"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ issue.cover.url }}" alt="{{ issue.title }}" class="img-fluid">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder"
+                                                     style="background: grey;
+                                                            width: 100%;
+                                                            height:100%;
+                                                            color:white;
+                                                            text-align: center">{{ issue.title }}</div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                {% empty %}
+                                    <p>No recent books.</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class='col-12 col-md-4'>
+                <div class="bg-light p-3 mb-3">
+                    <h5>Add New</h5>
+                    <div>
+                        <a href="{% url "read:work_create" %}" class="text-muted">Work</a>
+                    </div>
+                    <div>
+                        <a href="{% url "read:instance_create" %}" class="text-muted">Instance</a>
+                    </div>
+                    <div>
+                        <a href="{% url "read:book_create" %}" class="text-muted">Book</a>
+                    </div>
+                    <div>
+                        <a href="{% url "read:series_create" %}" class="text-muted">Book Series</a>
+                    </div>
+                    <div>
+                        <a href="{% url "read:periodical_create" %}" class="text-muted">Periodical</a>
+                    </div>
+                </div>
+                <div class="bg-light p-3 mb-3">
+                    <h5>Statistics</h5>
+                    <div>
+                        <span class="text-muted">Works</span>: {{ works_count }}
+                    </div>
+                    <div>
+                        <span class="text-muted">Instances</span>: {{ instances_count }}
+                    </div>
+                    <div>
+                        <span class="text-muted">Books</span>: {{ books_count }}
+                    </div>
+                    <div>
+                        <span class="text-muted">Periodicals</span>: {{ periodicals_count }}
+                    </div>
+                    <div>
+                        <span class="text-muted">Issues</span>: {{ issues_count }}
+                    </div>
+                </div>
+                {% if genres %}
+                    <div class="bg-light p-3 mb-3">
+                        <h5>Genres</h5>
+                        <div class='d-flex flex-wrap'>
+                            {% for genre in genres %}
+                                <a href="{% url 'read:genre_detail' genre.slug %}" class="me-2">{{ genre.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

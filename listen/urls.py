@@ -16,6 +16,7 @@ from .views import (
     ListenCheckInDetailView,
     ListenCheckInUpdateView,
     ListenCheckInUserListView,
+    ListenListAllView,
     ListenListView,
     PodcastCreateView,
     PodcastDetailView,
@@ -129,6 +130,7 @@ urlpatterns = [
     ),
     # recent
     path("recent/", ListenListView.as_view(), name="listen_list"),
+    path("all/", ListenListAllView.as_view(), name="listen_list_all"),
     # genre
     path("genre/<slug:slug>/", GenreDetailView.as_view(), name="genre_detail"),
     path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),

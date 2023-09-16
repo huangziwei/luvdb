@@ -785,6 +785,42 @@ class PlayListView(ListView):
         return context
 
 
+class PlayListAllView(ListView):
+    model = Game
+    template_name = "play/play_list_all.html"
+
+    def get_queryset(self):
+        # Getting recent games
+        games = Game.objects.all().order_by("-created_at")
+
+        return {
+            "games": games,
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Existing game list based on the model's creation date
+        context["games"] = Game.objects.all().order_by("-created_at")
+
+        # Get the genres
+        context["genres"] = (
+            Genre.objects.filter(Q(play_works__isnull=False))
+            .order_by("name")
+            .distinct()
+        )
+
+        # Get the recent and trending games
+        queryset = self.get_queryset()
+        context["games"] = queryset["games"]
+
+        # Additional context for the statistics
+        context["works_count"] = Work.objects.count()
+        context["games_count"] = Game.objects.count()
+
+        return context
+
+
 class GameSeriesCreateView(LoginRequiredMixin, CreateView):
     model = GameSeries
     form_class = GameSeriesForm

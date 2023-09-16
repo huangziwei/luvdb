@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Person, Role
+from .models import Company, Person, Role
 
 
 @admin.register(Person)
@@ -33,3 +33,10 @@ class RoleAdmin(admin.ModelAdmin):
     list_display = ["name", "domain"]
     search_fields = ["name", "domain"]
     list_filter = ["domain"]
+
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ["name", "location", "website", "wikipedia"]
+    search_fields = ["name", "location", "website"]
+    list_filter = ["location"]

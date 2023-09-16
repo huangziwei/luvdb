@@ -29,6 +29,7 @@ from .views import (
     WatchCheckInDeleteView,
     WatchCheckInDetailView,
     WatchCheckInUpdateView,
+    WatchListAllView,
     WatchListView,
 )
 
@@ -36,6 +37,7 @@ app_name = "watch"
 urlpatterns = [
     # play
     path("recent/", WatchListView.as_view(), name="watch_list"),
+    path("all/", WatchListAllView.as_view(), name="watch_list_all"),
     # movie
     path("movie/create/", MovieCreateView.as_view(), name="movie_create"),
     path(
