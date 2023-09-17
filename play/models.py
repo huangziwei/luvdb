@@ -382,6 +382,8 @@ class GameCheckIn(models.Model):
 class GameSeries(models.Model):
     # data
     title = models.CharField(max_length=100)
+    other_titles = models.TextField(blank=True, null=True)
+    wikipedia = models.URLField(blank=True, null=True)
     games = models.ManyToManyField(Game, through="GameInSeries", related_name="series")
     description = models.TextField(null=True, blank=True)
 

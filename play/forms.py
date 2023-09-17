@@ -272,7 +272,16 @@ class GameCheckInForm(forms.ModelForm):
 class GameSeriesForm(forms.ModelForm):
     class Meta:
         model = GameSeries
-        fields = ["title"]
+        fields = ["title", "other_titles", "description", "wikipedia"]
+        widgets = {
+            "other_titles": forms.TextInput(),
+            "description": forms.Textarea(
+                attrs={
+                    "rows": 3,
+                    "id": "text-input",
+                }
+            ),
+        }
 
 
 class GameInSeriesForm(forms.ModelForm):
