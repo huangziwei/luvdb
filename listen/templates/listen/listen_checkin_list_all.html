@@ -31,14 +31,20 @@
                             {% if model_name == "release" %}
                                <a href="?status=looping&order={{ order }}"
                                class="btn btn-sm btn-primary mb-1">Looping</a>
-                               <a href="?status=listened&order={{ order }}"
-                               class="btn btn-sm btn-success mb-1">Listened</a>
+                               <a href="?status=listened_relistened&order={{ order }}"
+                               class="btn btn-sm btn-success mb-1">(Re)Listened</a>
+                               <a href="?status=abandoned&order={{ order }}"
+                               class="btn btn-sm btn-danger mb-1">Abandoned</a>
                             {% endif %}
                             {% if model_name == "audiobook" %}
                                <a href="?status=listening&order={{ order }}"
-                               class="btn btn-sm btn-primary mb-1">Listening</a>
+                               class="btn btn-sm btn-primary mb-1">(Re)Listening</a>
                                <a href="?status=listened&order={{ order }}"
-                               class="btn btn-sm btn-success mb-1">Listened</a>
+                               class="btn btn-sm btn-success mb-1">(Re)Listened</a>
+                               <a href="?status=paused&order={{ order }}"
+                               class="btn btn-sm btn-warning mb-1">Paused</a>
+                               <a href="?status=abandoned&order={{ order }}"
+                               class="btn btn-sm btn-danger mb-1">Abandoned</a>
                             {% endif %}
                             {% if model_name == "podcast" %}
                                 <a href="?status=subscribed&order={{ order }}"
