@@ -29,18 +29,6 @@
                             data-bs-toggle="dropdown"
                             aria-expanded="false">More</button>
                     <ul class="dropdown-menu" aria-labelledby="status-more">
-                        <li>
-                            <a class="dropdown-item status-dropdown-item"
-                               id="status-paused"
-                               href="#"
-                               onclick="setStatus(event, 'paused')">Paused</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item status-dropdown-item"
-                               id="status-abandoned"
-                               href="#"
-                               onclick="setStatus(event,'abandoned')">Abandoned</a>
-                        </li>
                         {% if model_name != "movie" %}
                             <li>
                                 <a class="dropdown-item status-dropdown-item"
@@ -55,6 +43,19 @@
                                href="#"
                                onclick="setStatus(event,'rewatched')">Rewatched</a>
                         </li>
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-paused"
+                               href="#"
+                               onclick="setStatus(event, 'paused')">Paused</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-abandoned"
+                               href="#"
+                               onclick="setStatus(event,'abandoned')">Abandoned</a>
+                        </li>
+                        
                     </ul>
                 </div>
             </div>
