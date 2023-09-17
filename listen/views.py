@@ -1563,8 +1563,6 @@ class GenericCheckInAllListView(ListView):
         context["status"] = self.request.GET.get("status", "")
         context["model_name"] = self.kwargs.get("model_name", "release")
 
-        context["model_name"] = self.kwargs.get("model_name", "release")
-
         if context["model_name"] == "release":
             release = model.objects.get(pk=object_id)  # Get the object details
             roles = {}

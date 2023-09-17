@@ -49,7 +49,33 @@
                             data-bs-toggle="dropdown"
                             aria-expanded="false">More</button>
                     <ul class="dropdown-menu" aria-labelledby="status-more">
+                        {% if content_type == "release" %}
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-relistened"
+                               href="#"
+                               onclick="setStatus(event, 'relistened')">Relistened</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-abandoned"
+                               href="#"
+                               onclick="setStatus(event, 'abandoned')">Abandoned</a>
+                        </li>
+                        {% endif %}
                         {% if content_type == "audiobook" %}
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-relistening"
+                               href="#"
+                               onclick="setStatus(event, 'relistening')">Relistening</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-relistened"
+                               href="#"
+                               onclick="setStatus(event, 'relistened')">Relistened</a>
+                        </li>
                         <li>
                             <a class="dropdown-item status-dropdown-item"
                                id="status-paused"
@@ -182,6 +208,8 @@
         "abandoned": "status-abandoned",
         "unsubscribed": "status-unsubscribed", 
         "sampled": "status-sampled", 
+        "relistening": "status-relistening",
+        "relistened": "status-relistened",
     };
 
     function setStatus(event, status) {
