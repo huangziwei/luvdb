@@ -9,6 +9,25 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-7 left-column">
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'accounts:detail' object.user.username %}" class='me-1'>
+                        {{ object.user.display_name | default:object.user.username }}
+                    </a>
+                    <span class="me-2">checked in</span>
+                    <!--badge: checkin status-->
+                    <span class="badge {{ object.status|get_status_class }} me-1">{{ object.get_status_display }}</span>
+                    {% if object.progress %}
+                        <span class="badge text-bg-warning me-2">
+                            Progress: {{ object.progress }}
+                            {% if object.progress_type == "TT" %}
+                                Total Time
+                            {% else %}
+                                %
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="mt-2">{{ object.content | linkify_tags | linkify_mentions | markdownify }}</div>
                 <div class="bg-light p-3 mt-2">
                     <div class="d-flex flex-row bg-light mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -33,7 +52,7 @@
                                class="text-decoration-none hover-username">
                                 <h5>{{ object.game.title }}</h5>
                             </a>
-                            {% regroup object.game.gamerole_set.all by role as roles_list %}
+                            {% regroup object.game.gameroles.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
                                     {# djlint:off #}
@@ -77,29 +96,14 @@
                         </div>
                     </div>
                 </div>
-                <div class='mt-4'>
-                    <div class="d-flex align-items-center">
-                        <a href="{% url 'accounts:detail' object.user.username %}" class='me-1'>
-                            {{ object.user.display_name | default:object.user.username }}
-                        </a>
-                        <span class="me-2">checked in</span>
-                        <!--badge: checkin status-->
-                        <span class="badge {{ object.status|get_status_class }} me-1">{{ object.get_status_display }}</span>
-                        {% if object.progress %}
-                            <span class="badge text-bg-warning me-2">
-                                Progress: {{ object.progress }}
-                                {% if object.progress_type == "TT" %}
-                                    Total Time
-                                {% else %}
-                                    %
-                                {% endif %}
-                            </span>
-                        {% endif %}
-                    </div>
-                    <div class="mt-2">{{ object.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                <div class='mt-2'>
                     <span class="d-flex mt-2">
-                        <p class='me-2 text-secondary mb-2'>{{ object.timestamp|date:"Y.m.d H:i" }}</p>
-                        {% if object.author == request.user %}
+                        <p class='me-2 text-secondary mb-2'>
+                            <a href="{% url 'play:game_checkin_list' object.game.id object.user.username %}" class="text-muted">
+                                {{ object.timestamp|date:"Y.m.d H:i" }}
+                            </a>
+                        </p>
+                        {% if object.user == request.user %}
                             <a href="{% url "play:game_checkin_update" object.pk %}" class="me-2">Edit</a>
                             <a href="{% url "play:game_checkin_delete" object.pk %}" class="me-2">Delete</a>
                         {% endif %}
