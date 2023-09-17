@@ -1,3 +1,4 @@
+import re
 import time
 from datetime import timedelta
 
@@ -708,6 +709,11 @@ def filter_person(query, search_terms):
     return person_results
 
 
+def parse_query(query):
+    pattern = r"\"[^\"]+\"|\'[^\']+\'|“[^”]+”|‘[^’]+’|\S+"
+    return [term.strip("\"'“”‘’") for term in re.findall(pattern, query)]
+
+
 def search_view(request):
     start_time = time.time()
 
@@ -742,7 +748,7 @@ def search_view(request):
     movie_results = []
     series_results = []
 
-    search_terms = query.split()
+    search_terms = parse_query(query)
 
     if query:
         if model in ["all", "user"]:

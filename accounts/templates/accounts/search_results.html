@@ -4,8 +4,14 @@
         <div class="row">
             <div class="col-12 left-column">
                 <h2>Searching: "{{ query }}"</h2>
-                <div>
-                    <span class="text-muted">in {{ execution_time|floatformat:5 }} seconds</span>
+                <div class="search-timing">
+                    <span class="text-muted">in <span class="execution-time">{{ execution_time|floatformat:5 }}</span> seconds.</span> 
+                    {% if execution_time > 0.01 %}
+                    <span class="text-muted slow-search-hint">
+                        <i class="bg-warning text-white" style="display:inline-block; width:16px; height:16px; border-radius:50%; text-align:center; line-height:16px;">!</i>
+                        Too slow? Searching with quotes (e.g. "<span class="query-example">{{ query }}</span>") will make this search faster.
+                    </span>
+                    {% endif %}
                 </div>
                 <hr>
 
