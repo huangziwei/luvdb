@@ -69,35 +69,44 @@
                             <span class='d-flex align-items-start'>
                                 <h4>{{ object.title }}</h4>
                             </span>
-                            {% if object.romanized_title %}<p class='text-muted'>{{ object.romanized_title }}</p>{% endif %}
+                            {% if object.other_titles %}<p class='text-muted'>{{ object.other_titles }}</p>{% endif %}
                             <div class="movie-meta">
                                 {% for role_name, person_altname_tuples in roles.items %}
-                                    <p>
-                                        <strong>{{ role_name }}:</strong>
+                                    <div class="mb-1">
+                                        <span class="text-muted">{{ role_name }}:</span>
                                         {% for person, alt_name in person_altname_tuples %}
                                             <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
-                                    </p>
+                                    </div>
                                 {% endfor %}
-                                {% if object.studios %}
-                                    <p>
-                                        <strong>Studio:</strong>
+                                {% if object.studios.exists %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Studio:</span>
                                         {% for studio in object.studios.all %}
                                             <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
-                                    </p>
+                                    </div>
+                                {% endif %}
+                                {% if object.distributors.exsits %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Distributors:</span>
+                                        {% for distributor in object.distributors.all %}
+                                            <a href="{% url 'entity:company_detail' distributor.id %}">{{ distributor.name }}</a>
+                                            {% if not forloop.last %}/{% endif %}
+                                        {% endfor %}
+                                    </div>
                                 {% endif %}
                                 {% if object.release_date %}
-                                    <p>
-                                        <strong>Release Date:</strong> {{ object.release_date }}
-                                    </p>
+                                    <div class="mb-1">
+                                        <span class="text-muted">Release Date:</span> {{ object.release_date }}
+                                    </div>
                                 {% endif %}
                                 {% if object.website %}
-                                    <p>
-                                        <strong>Website:</strong> <a href="{{ object.website }}">{{ object.website }}</a>
-                                    </p>
+                                    <div class="mb-1">
+                                        <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>

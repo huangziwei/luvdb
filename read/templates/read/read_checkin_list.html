@@ -57,7 +57,7 @@
                                 </span>
                             {% endif %}
                         </p>
-                        {% if checkin.content %}<p>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</p>{% endif %}
+                        {% if checkin.content %}<div>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>{% endif %}
                         <div class="d-flex mt-3">
                             <span class="me-2">
                                 <a href="{% url 'read:read_checkin_detail' checkin.id %}"
@@ -82,10 +82,10 @@
                         </div>
                     </div>
                 {% empty %}
-                    <p>No check-ins yet.</p>
+                    <div class="mb-1">No check-ins yet.</p>
                 {% endfor %}
             {% else %}
-                <p>This user's check-ins are private.</p>
+                <div class="mb-1">This user's check-ins are private.</p>
             {% endif %}
         </div>
         <!--right column-->
@@ -121,79 +121,67 @@
                             <div class="book-meta">
                                 {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
                                 {% for role_name, person_altname_tuples in roles.items %}
-                                    <p>
-                                        <strong>{{ role_name }}:</strong>
+                                    <div class="mb-1">
+                                        <span class="text-muted">{{ role_name }}:</span>
                                         {% for person, alt_name in person_altname_tuples %}
                                             <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
-                                    </p>
+                                    </div>
                                 {% endfor %}
                                 {% if object.publisher %}
-                                    <p>
-                                        <strong>Publisher:</strong>
+                                    <div class="mb-1">
+                                        <span class="text-muted">Publisher:</span>
                                         <a href="{% url 'entity:company_detail' object.publisher.id %}">
                                             {% if object.publisher.location %}{{ object.publisher.location }}:{% endif %}
                                             {{ object.publisher.name }}
                                         </a>
-                                    </p>
+                                    </div>
                                 {% endif %}
                                 {% if object.format %}
-                                    <p>
-                                        <strong>Format:</strong> {{ object.format }}
-                                    </p>
+                                    <div class="mb-1">
+                                        <span class="text-muted">Format:</span> {{ object.format }}
+                                    </div>
                                 {% endif %}
                                 {% if object.publication_date %}
-                                    <p>
-                                        <strong>Date:</strong> {{ object.publication_date }}
-                                    </p>
+                                    <div class="mb-1">
+                                        <span class="text-muted">Date:</span> {{ object.publication_date }}
+                                    </div>
                                 {% endif %}
                                 <!--add series here-->
                                 {% if object.bookinseries_set.all %}
-                                    <p>
-                                        <strong>Series:</strong>
+                                    <div class="mb-1">
+                                        <span class="text-muted">Series:</span>
                                         {% for bookinseries in object.bookinseries_set.all %}
                                             <a href="{% url 'read:series_detail' bookinseries.series.id %}">{{ bookinseries.series.title }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
-                                    </p>
-                                {% endif %}
-                                <div class="my-3">
-                                    <p class="text-muted"
-                                       type="button"
-                                       data-bs-toggle="collapse"
-                                       data-bs-target="#detailsCollapse"
-                                       aria-expanded="false"
-                                       aria-controls="detailsCollapse">
-                                        <strong>More Metadata</strong>
-                                    </p>
-                                    <div class="collapse" id="detailsCollapse">
-                                        {% if object.pages %}
-                                            <p>
-                                                <strong>Pages:</strong> {{ object.pages }}
-                                            </p>
-                                        {% endif %}
-                                        {% if object.isbn_10 %}
-                                            <p>
-                                                <strong>ISBN-10:</strong> {{ object.isbn_10 }}
-                                            </p>
-                                        {% endif %}
-                                        {% if object.isbn_13 %}
-                                            <p>
-                                                <strong>ISBN-13:</strong> {{ object.isbn_13 }}
-                                            </p>
-                                        {% endif %}
-                                        {% if object.asin %}
-                                            <p>
-                                                <strong>ASIN:</strong> {{ object.asin }}
-                                            </p>
-                                        {% endif %}
-                                        {% if object.details %}
-                                            <strong>Details:</strong>
-                                            <div class="card card-body">{{ object.details|markdownify }}</div>
-                                        {% endif %}
                                     </div>
-                                </div>
+                                {% endif %}
+                                {% if object.pages %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Pages:</span> {{ object.pages }}
+                                    </div>
+                                {% endif %}
+                                {% if object.isbn_10 %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">ISBN-10:</span> {{ object.isbn_10 }}
+                                    </div>
+                                {% endif %}
+                                {% if object.isbn_13 %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">ISBN-13:</span> {{ object.isbn_13 }}
+                                    </div>
+                                {% endif %}
+                                {% if object.asin %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">ASIN:</span> {{ object.asin }}
+                                    </div>
+                                {% endif %}
+                                {% if object.details %}
+                                    <span class="text-muted">Details:</span>
+                                    <div class="card card-body">{{ object.details|markdownify }}</div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

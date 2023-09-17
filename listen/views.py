@@ -746,144 +746,6 @@ class ListenCheckInDeleteView(LoginRequiredMixin, DeleteView):
         )
 
 
-class ListenCheckInListView(ListView):
-    model = ListenCheckIn
-    template_name = "listen/listen_checkin_list.html"
-    context_object_name = "checkins"
-
-    def get_model(self):
-        return Release
-
-    def get_queryset(self):
-        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
-        status = self.request.GET.get("status", "")
-        profile_user = get_object_or_404(
-            User, username=self.kwargs["username"]
-        )  # Get user from url param
-        model = self.get_model()
-        if model is None:
-            checkins = ListenCheckIn.objects.none()
-        else:
-            content_type = ContentType.objects.get_for_model(model)
-            object_id = self.kwargs["release_id"]  # Get object id from url param
-            checkins = ListenCheckIn.objects.filter(
-                user=profile_user, content_type=content_type, object_id=object_id
-            )
-
-        if status:
-            checkins = checkins.filter(status=status)
-
-        return checkins.order_by(order)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
-        status = self.request.GET.get("status", "")  # Added status
-        profile_user = get_object_or_404(User, username=self.kwargs["username"])
-        context["profile_user"] = profile_user
-        context["order"] = order
-        context["status"] = status  # Add status to context
-
-        model = self.get_model()
-        if model is None:
-            context["checkins"] = ListenCheckIn.objects.none()
-            context["object"] = None
-        else:
-            content_type = ContentType.objects.get_for_model(model)
-            object_id = self.kwargs["release_id"]  # Get object id from url param
-            context[
-                "checkins"
-            ] = self.get_queryset()  # Use the queryset method to handle status filter
-            release = model.objects.get(pk=object_id)  # Get the object details
-            context["object"] = release
-
-        roles = {}
-        for release_role in release.releaserole_set.all():
-            if release_role.role.name not in roles:
-                roles[release_role.role.name] = []
-            alt_name_or_person_name = release_role.alt_name or release_role.person.name
-            roles[release_role.role.name].append(
-                (release_role.person, alt_name_or_person_name)
-            )
-        context["roles"] = roles
-
-        context["model_name"] = self.kwargs.get("model_name", "release")
-
-        return context
-
-
-class ListenCheckInAllListView(ListView):
-    model = ListenCheckIn
-    template_name = "listen/release_checkin_list_all.html"
-    context_object_name = "checkins"
-
-    def get_model(self):
-        return Release
-
-    def get_queryset(self):
-        model = self.get_model()
-        if model is None:
-            return ListenCheckIn.objects.none()
-
-        content_type = ContentType.objects.get_for_model(model)
-        object_id = self.kwargs["release_id"]  # Get object id from url param
-
-        latest_checkin_subquery = ListenCheckIn.objects.filter(
-            content_type=content_type, object_id=object_id, user=OuterRef("user")
-        ).order_by("-timestamp")
-
-        checkins = (
-            ListenCheckIn.objects.filter(content_type=content_type, object_id=object_id)
-            .annotate(
-                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
-            )
-            .filter(timestamp=F("latest_checkin"))
-        )
-
-        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
-        if order == "timestamp":
-            checkins = checkins.order_by("timestamp")
-        else:
-            checkins = checkins.order_by("-timestamp")
-
-        status = self.request.GET.get("status", "")
-        if status:
-            checkins = checkins.filter(status=status)
-
-        return checkins
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        object_id = self.kwargs["release_id"]
-
-        model = self.get_model()
-        if model is not None:
-            release = model.objects.get(pk=object_id)  # Get the object details
-            context["object"] = release
-
-            roles = {}
-            for release_role in release.releaserole_set.all():
-                if release_role.role.name not in roles:
-                    roles[release_role.role.name] = []
-                alt_name_or_person_name = (
-                    release_role.alt_name or release_role.person.name
-                )
-                roles[release_role.role.name].append(
-                    (release_role.person, alt_name_or_person_name)
-                )
-            context["roles"] = roles
-
-        context["order"] = self.request.GET.get(
-            "order", "-timestamp"
-        )  # Default is '-timestamp'
-
-        context["status"] = self.request.GET.get("status", "")
-        context["model_name"] = self.kwargs.get("model_name", "release")
-
-        return context
-
-
 class ListenListView(ListView):
     template_name = "listen/listen_list.html"
     context_object_name = "objects"
@@ -1476,7 +1338,7 @@ class GenericCheckInListView(ListView):
                 pk=object_id
             )  # Get the object details
 
-        context["model_name"] = self.kwargs.get("model_name", "release")
+        context["model_name"] = content_type.model
 
         if context["model_name"] == "release":
             release = model.objects.get(pk=object_id)  # Get the object details
@@ -1489,6 +1351,19 @@ class GenericCheckInListView(ListView):
                 )
                 roles[release_role.role.name].append(
                     (release_role.person, alt_name_or_person_name)
+                )
+            context["roles"] = roles
+        elif context["model_name"] == "audiobook":
+            audiobook = model.objects.get(pk=object_id)  # Get the object details
+            roles = {}
+            for audiobook_role in audiobook.audiobookrole_set.all():
+                if audiobook_role.role.name not in roles:
+                    roles[audiobook_role.role.name] = []
+                alt_name_or_person_name = (
+                    audiobook_role.alt_name or audiobook_role.person.name
+                )
+                roles[audiobook_role.role.name].append(
+                    (audiobook_role.person, alt_name_or_person_name)
                 )
             context["roles"] = roles
 
@@ -1574,6 +1449,19 @@ class GenericCheckInAllListView(ListView):
                 )
                 roles[release_role.role.name].append(
                     (release_role.person, alt_name_or_person_name)
+                )
+            context["roles"] = roles
+        elif context["model_name"] == "audiobook":
+            audiobook = model.objects.get(pk=object_id)  # Get the object details
+            roles = {}
+            for audiobook_role in audiobook.audiobookrole_set.all():
+                if audiobook_role.role.name not in roles:
+                    roles[audiobook_role.role.name] = []
+                alt_name_or_person_name = (
+                    audiobook_role.alt_name or audiobook_role.person.name
+                )
+                roles[audiobook_role.role.name].append(
+                    (audiobook_role.person, alt_name_or_person_name)
                 )
             context["roles"] = roles
 

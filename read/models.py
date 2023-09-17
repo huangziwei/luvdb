@@ -714,6 +714,9 @@ class Issue(models.Model):
         if self.publication_date:
             self.publication_date = standardize_date(self.publication_date)
 
+        if self.title is None:
+            self.title = f"Vol. {self.volume} Nr. {self.number}"
+
         super().save(*args, **kwargs)
 
 

@@ -39,83 +39,60 @@
                                 <div class="book-meta">
                                     {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
                                     {% for role_name, person_altname_tuples in roles.items %}
-                                        <p>
+                                        <div class="mb-2">
                                             <span class="text-muted">{{ role_name }}:</span>
                                             {% for person, alt_name in person_altname_tuples %}
                                                 <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
                                     {% endfor %}
                                     {% if object.publisher %}
-                                        <p>
+                                        <div class="mb-2">
                                             <span class="text-muted">Publisher:</span>
                                             <a href="{% url 'entity:company_detail' object.publisher.id %}">
                                                 {% if object.publisher.location %}{{ object.publisher.location }}:{% endif %}
                                                 {{ object.publisher.name }}
                                             </a>
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if object.bookinseries_set.all %}
-                                        <p>
+                                        <div class="mb-2">
                                             <span class="text-muted">Series:</span>
                                             {% for bookinseries in object.bookinseries_set.all %}
                                                 <a href="{% url 'read:series_detail' bookinseries.series.id %}">{{ bookinseries.series.title }}</a> #{{ bookinseries.order }}
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
+                                    {% endif %}
+                                    {% if object.length %}
+                                        <div class="mb-2">
+                                            <span class="text-muted">Length:</span> {{ object.length }}
+                                        </div>
                                     {% endif %}
                                     {% if object.release_date %}
-                                        <p>
+                                        <div class="mb-2">
                                             <span class="text-muted">Date:</span> {{ object.release_date }}
-                                        </p>
+                                        </div>
                                     {% endif %}
+                                    {% if object.details %}
                                     <div class="my-3">
-                                        <p class="text-muted"
+                                        <div class="text-muted"
                                            type="button"
                                            data-bs-toggle="collapse"
                                            data-bs-target="#detailsCollapse"
                                            aria-expanded="false"
                                            aria-controls="detailsCollapse">
-                                            <span class="text-muted">More Metadata</span>
-                                        </p>
+                                            <span class="text-muted">Detail</span>
+                                        </div>
                                         <div class="collapse" id="detailsCollapse">
-                                            {% if object.format %}
-                                                <p>
-                                                    <span class="text-muted">Format:</span> {{ object.format }}
-                                                </p>
-                                            {% endif %}
-                                            {% if object.length %}
-                                                <p>
-                                                    <span class="text-muted">Length:</span> {{ object.length }}
-                                                </p>
-                                            {% endif %}
-                                            {% if object.isbn_10 %}
-                                                <p>
-                                                    <span class="text-muted">ISBN-10:</span> {{ object.isbn_10 }}
-                                                </p>
-                                            {% endif %}
-                                            {% if object.isbn_13 %}
-                                                <p>
-                                                    <span class="text-muted">ISBN-13:</span> {{ object.isbn_13 }}
-                                                </p>
-                                            {% endif %}
-                                            {% if object.eisbn_13 %}
-                                                <p>
-                                                    <span class="text-muted">E-ISBN-13:</span> {{ object.eisbn_13 }}
-                                                </p>
-                                            {% endif %}
-                                            {% if object.asin %}
-                                                <p>
-                                                    <span class="text-muted">ASIN:</span> {{ object.asin }}
-                                                </p>
-                                            {% endif %}
-                                            {% if object.details %}
+                                            
                                                 <span class="text-muted">Details:</span>
                                                 <div class="card card-body">{{ object.details|markdownify }}</div>
-                                            {% endif %}
+                                            
                                         </div>
                                     </div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <!-- End of book-card -->

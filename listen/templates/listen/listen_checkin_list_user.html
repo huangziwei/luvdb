@@ -42,7 +42,7 @@
                 {% if profile_user.is_public  or request.user.is_authenticated %}
                     {% for checkin in checkins %}
                         <div class="checkin bg-light p-3 mb-3">
-                            <div class="activity-item mb-3"
+                            <div class="activity-item"
                                  data-activity-type="{{ checkin.activity_type }}">
                                 <div class="d-flex flex-wrap align-items-center">
                                     <a href="{% url 'accounts:detail' checkin.user.username %}"
@@ -104,6 +104,11 @@
                                         <div class="text-muted">
                                             {{ checkin.content_object.description | truncatechars:300 }}
                                         </div>
+                                        {% elif checkin.content_type.model == "audiobook" %}
+                                        <a href="{% url 'listen:audiobook_detail' checkin.content_object.id %}"
+                                           class="text-decoration-none hover-username">
+                                            <h5>{{ checkin.content_object.title }}</h5>
+                                        </a>
                                         {% endif %}
                                         {% regroup checkin.content_object.releaserole_set.all by role as roles_list %}
                                         {% for role in roles_list %}
@@ -121,13 +126,29 @@
                                                 {% endfor %}
                                             </div>
                                         {% endfor %}
+                                        {% regroup checkin.content_object.audiobookrole_set.all by role as roles_list %}
+                                        {% for role in roles_list %}
+                                            <div>
+                                                {# djlint:off #}
+                                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                                {# djlint:on #}
+                                                {% for audiobook_role in role.list %}
+                                                    {% if not forloop.first %}
+                                                        /
+                                                    {% endif %}
+                                                    <a href="{% url 'entity:person_detail' audiobook_role.person.id %}">
+                                                        {{ audiobook_role.alt_name | default:audiobook_role.person.name }}
+                                                    </a>
+                                                {% endfor %}
+                                            </div>
+                                        {% endfor %}
                                         <div>
-                                            {% if checkin.content_object.release_date %}Year: {{ checkin.content_object.release_date|slice:":4" }}{% endif %}
+                                            {% if checkin.content_object.release_date %}Date: {{ checkin.content_object.release_date }}{% endif %}
                                         </div>
                                     </div>
                                 </div>
-                                <div class="d-flex mt-3">
-                                    <p class="me-2">
+                                <div class="d-flex">
+                                    <div class="me-2">
                                         {% if checkin.content_type.model == 'release' %}
                                             <a href="{% url 'listen:release_checkin_list' checkin.content_object.id checkin.user.username %}"
                                                 class="text-decoration-none text-secondary">
@@ -138,27 +159,32 @@
                                                 class="text-decoration-none text-secondary">
                                                 {{ checkin.timestamp|date:"Y.m.d H:i" }}
                                             </a>
+                                        {% elif checkin.content_type.model == 'audiobook' %}
+                                            <a href="{% url 'listen:audiobook_checkin_list' checkin.content_object.id checkin.user.username %}"
+                                                class="text-decoration-none text-secondary">
+                                                {{ checkin.timestamp|date:"Y.m.d H:i" }}
+                                            </a>    
                                         {% endif %}
-                                    </p>
+                                    </div>
                                     {% if checkin.comments_enabled %}
-                                        <p class="ms-2 me-2">
+                                        <div class="ms-2 me-2">
                                             <a href="{% url 'listen:listen_checkin_detail' checkin.id %}"
                                                class="text-decoration-none">Reply</a>
-                                        </p>
+                                        </div>
                                     {% endif %}
-                                    <p class="ms-2 me-2">
+                                    <div class="ms-2 me-2">
                                         <a href="{% url 'listen:listen_checkin_detail' checkin.id %}?repost=true"
                                            class="text-decoration-none">Repost</a>
-                                    </p>
+                                    </div>
                                     {% if checkin.user == request.user %}
-                                        <p class="ms-2 me-2">
+                                        <div class="ms-2 me-2">
                                             <a href="{% url 'listen:listen_checkin_update' checkin.id %}"
                                                class="text-decoration-none">Edit</a>
-                                        </p>
-                                        <p class="ms-2 me-2">
+                                        </div>
+                                        <div class="ms-2 me-2">
                                             <a href="{% url 'listen:listen_checkin_delete' checkin.id %}"
                                                class="text-decoration-none">Delete</a>
-                                        </p>
+                                        </div>
                                     {% endif %}
                                 </div>
                             </div>

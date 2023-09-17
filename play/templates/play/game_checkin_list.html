@@ -119,7 +119,7 @@
                             {% if game.other_titles %}<p class='text-muted'>{{ game.other_titles }}</p>{% endif %}
                             <div class="game-meta">
                                 {% for role, persons_altname_tuples in grouped_roles.items %}
-                                    <div>
+                                    <div class="mb-1">
                                         <span class="text-muted">{{ role }}:</span>
                                         {% for person, name in persons_altname_tuples %}
                                             <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
@@ -128,7 +128,7 @@
                                     </div>
                                 {% endfor %}
                                 {% if game.developers %}
-                                    <div>
+                                    <div class="mb-1">
                                         <span class="text-muted">Developers:</span>
                                         {% for developer in game.developers.all %}
                                             <a href="{% url 'play:company_detail' developer.id %}">{{ developer.name }}</a>
@@ -137,7 +137,7 @@
                                     </div>
                                 {% endif %}
                                 {% if game.publishers %}
-                                    <div>
+                                    <div class="mb-1">
                                         <span class="text-muted">Publishers:</span>
                                         {% for publisher in game.publishers.all %}
                                             <a href="{% url 'play:company_detail' publisher.id %}">{{ publisher.name }}</a>
@@ -146,7 +146,7 @@
                                     </div>
                                 {% endif %}
                                 {% if game.platforms %}
-                                    <div>
+                                    <div class="mb-1">
                                         <span class="text-muted">Platforms:</span>
                                         {% for platform in game.platforms.all %}
                                             <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
@@ -155,12 +155,12 @@
                                     </div>
                                 {% endif %}
                                 {% if game.release_date %}
-                                    <div>
+                                    <div class="mb-1">
                                         <span class="text-muted">Release Date:</span> {{ game.release_date }}
                                     </div>
                                 {% endif %}
                                 {% if game.website %}
-                                    <div>
+                                    <div class="mb-1">
                                         <span class="text-muted">Website:</span> <a href="{{ game.website }}">{{ game.website }}</a>
                                     </div>
                                 {% endif %}

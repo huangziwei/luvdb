@@ -80,6 +80,10 @@
                                     <span class="badge text-bg-warning me-1">
                                         EP: {{ checkin.progress }}
                                     </span>
+                                {% elif checkin.content_type.model == "audiobook" %}
+                                    <span class="badge text-bg-warning me-1">
+                                        {{ checkin.progress }}
+                                    </span>
                                 {% endif %}
                             {% endif %}   
                         </p>
@@ -175,38 +179,31 @@
                                         <span class="text-muted">Date:</span> {{ object.release_date }}
                                     </div>
                                 {% endif %}
-                                <div class="my-3">
-                                    <div class="text-muted mb-1"
-                                         type="button"
-                                         data-bs-toggle="collapse"
-                                         data-bs-target="#detailsCollapse"
-                                         aria-expanded="false"
-                                         aria-controls="detailsCollapse">
-                                        <span class="text-muted">More Metadata</span>
+                                {% if object.release_type %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Type:</span> {{ object.release_type }}
                                     </div>
-                                    <div class="collapse" id="detailsCollapse">
-                                        {% if object.release_type %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Type:</span> {{ object.release_type }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.release_format %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Format:</span> {{ object.release_format }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.release_region %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Region:</span> {{ object.release_region }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.release_length %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Length:</span> {{ object.release_length }}
-                                            </div>
-                                        {% endif %}
+                                {% endif %}
+                                {% if object.release_format %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Format:</span> {{ object.release_format }}
                                     </div>
-                                </div>
+                                {% endif %}
+                                {% if object.release_region %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Region:</span> {{ object.release_region }}
+                                    </div>
+                                {% endif %}
+                                {% if object.release_length %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Length:</span> {{ object.release_length }}
+                                    </div>
+                                {% endif %}
+                                {% if object.length %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Length:</span> {{ object.length }}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

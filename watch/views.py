@@ -1067,11 +1067,35 @@ class GenericCheckInListView(ListView):
             context[
                 "checkins"
             ] = self.get_queryset()  # Use the queryset method to handle status filter
-            context["object"] = model.objects.get(
-                pk=object_id
-            )  # Get the object details
 
         context["model_name"] = self.kwargs.get("model_name", "movie")
+
+        if self.kwargs["model_name"] == "movie":
+            movie = model.objects.get(pk=object_id)
+            roles = {}
+            for movie_role in movie.movieroles.all():
+                if movie_role.role.name not in roles:
+                    roles[movie_role.role.name] = []
+                alt_name_or_person_name = movie_role.alt_name or movie_role.person.name
+                roles[movie_role.role.name].append(
+                    (movie_role.person, alt_name_or_person_name)
+                )
+            context["roles"] = roles
+            context["object"] = movie
+        elif self.kwargs["model_name"] == "series":
+            series = model.objects.get(pk=object_id)
+            roles = {}
+            for series_role in series.seriesroles.all():
+                if series_role.role.name not in roles:
+                    roles[series_role.role.name] = []
+                alt_name_or_person_name = (
+                    series_role.alt_name or series_role.person.name
+                )
+                roles[series_role.role.name].append(
+                    (series_role.person, alt_name_or_person_name)
+                )
+            context["roles"] = roles
+            context["object"] = series
 
         return context
 
@@ -1143,6 +1167,31 @@ class GenericCheckInAllListView(ListView):
 
         context["status"] = self.request.GET.get("status", "")
         context["model_name"] = self.kwargs.get("model_name", "movie")
+
+        if context["model_name"] == "movie":
+            movie = model.objects.get(pk=self.kwargs["object_id"])
+            roles = {}
+            for movie_role in movie.movieroles.all():
+                if movie_role.role.name not in roles:
+                    roles[movie_role.role.name] = []
+                alt_name_or_person_name = movie_role.alt_name or movie_role.person.name
+                roles[movie_role.role.name].append(
+                    (movie_role.person, alt_name_or_person_name)
+                )
+
+        elif context["model_name"] == "series":
+            series = model.objects.get(pk=self.kwargs["object_id"])
+            roles = {}
+            for series_role in series.seriesroles.all():
+                if series_role.role.name not in roles:
+                    roles[series_role.role.name] = []
+                alt_name_or_person_name = (
+                    series_role.alt_name or series_role.person.name
+                )
+                roles[series_role.role.name].append(
+                    (series_role.person, alt_name_or_person_name)
+                )
+        context["roles"] = roles
         return context
 
 

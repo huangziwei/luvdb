@@ -116,43 +116,44 @@
                                         {% endfor %}
                                     </div>
                                 {% endif %}
+                                {% if object.publisher %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Publisher:</span>
+                                            <a href="{% url 'entity:company_detail' object.publisher.id %}">
+                                                {{ object.publisher.name }}
+                                            </a>
+                                    </div>
+                                {% endif %}
+                                {% if object.release_type %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Type:</span> {{ object.release_type }}
+                                    </div>
+                                {% endif %}
+                                {% if object.release_format %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Format:</span> {{ object.release_format }}
+                                    </div>
+                                {% endif %}
+                                {% if object.release_region %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Region:</span> {{ object.release_region }}
+                                    </div>
+                                {% endif %}
+                                {% if object.release_length %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Length:</span> {{ object.release_length }}
+                                    </div>
+                                {% endif %}
+                                {% if object.length %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Length:</span> {{ object.length }}
+                                    </div>
+                                {% endif %}
                                 {% if object.release_date %}
                                     <div class="mb-1">
                                         <span class="text-muted">Date:</span> {{ object.release_date }}
                                     </div>
                                 {% endif %}
-                                <div class="my-3">
-                                    <div class="text-muted mb-1"
-                                         type="button"
-                                         data-bs-toggle="collapse"
-                                         data-bs-target="#detailsCollapse"
-                                         aria-expanded="false"
-                                         aria-controls="detailsCollapse">
-                                        <span class="text-muted">More Metadata</span>
-                                    </div>
-                                    <div class="collapse" id="detailsCollapse">
-                                        {% if object.release_type %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Type:</span> {{ object.release_type }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.release_format %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Format:</span> {{ object.release_format }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.release_region %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Region:</span> {{ object.release_region }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.release_length %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Length:</span> {{ object.release_length }}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
