@@ -1,32 +1,108 @@
-{% extends "base.html" %} 
-{% block title %}{{ object.title }}{% endblock %}
+{% extends "base.html" %}
+{% block title %}{{ object.title }}{% endblock title %}
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class='col-12 col-md-8'>
-            <h2>{{ object.title }}</h2>
-            <p>{{ object.description }}</p>
-
-            <div class='mt-3'>
-                {% for game_in_series in object.gameinseries_set.all %}
-                    <p>
-                        <span>{{ game_in_series.order }}.</span>
-                        <a href="{% url 'play:game_detail' game_in_series.game.pk %}">{{ game_in_series.game.title }}</a>
-                        <span>({{ game_in_series.game.release_date }})</span>
-                    </p>
-                {% empty %}
-                    <p>No games in this series yet.</p>
-                {% endfor %}
-                </div>
-        </div>
-
-        <div class="col-12 col-md-4">
-                {% if user.is_authenticated %}
-                <div class="bg-light p-3">
-                    <a href="{% url 'play:series_update' object.id %}" class='fs-6 text-secondary'>Edit Game Series</a>
-                </div>
+    <div class="container">
+        <div class="row">
+            <div class='col-12 col-md-8'>
+                <h2>{{ object.title }}</h2>
+                {% if object.description %}
+                <div class="mb-3">{{ object.description }}</div>
                 {% endif %}
+                <div class='mt-3'>
+                    {% for game_in_series in object.gameinseries_set.all %}
+                        <!--Game Series Item-->
+                        <div class="bg-light p-3 mb-3">
+                            <span class="sticky-note">{{ game_in_series.order }}</span>
+                            <div class="bg-white p-3 d-flex">
+                                <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                    {% if game_in_series.game.cover %}
+                                        <img src="{{ game_in_series.game.cover.url }}"
+                                             alt="{{ game_in_series.game.title }} cover"
+                                             style="width: 100%"
+                                             class="img-fluid">
+                                    {% else %}
+                                        <div class="no-cover-text">No Cover</div>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <a href="{% url 'play:game_detail' game_in_series.game.pk %}"
+                                       class="text-decoration-none hover-username">
+                                        <h5>{{ game_in_series.game.title }}</h5>
+                                    </a>
+                                    {% if game_in_series.game.subtitle %}
+                                        <div class="mb-2 text-muted">{{ game_in_series.game.subtitle }}</div>
+                                    {% endif %}
+                                    {% regroup game_in_series.game.gameroles.all by role as roles_list %}
+                                    {% for role in roles_list %}
+                                        <div>
+                                            {{ role.grouper }}{% if role.list|length > 1 %}s{% endif %}:
+                                            {% for game_role in role.list %}
+                                                {% if not forloop.first %}, {% endif %}
+                                                <a href="{% url 'entity:person_detail' game_role.person.id %}">
+                                                    {{ game_role.alt_name | default:game_role.person.name }}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                    <!-- Display Developers -->
+                                    <div>
+                                        Developers: 
+                                        {% for developer in game_in_series.game.developers.all %}
+                                            {% if not forloop.first %}, {% endif %}
+                                            <a href="{% url 'entity:company_detail' developer.id %}">
+                                                {{ developer.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                    <div>
+                                        {% if game_in_series.game.release_date %}
+                                            <div>Date: {{ game_in_series.game.release_date }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="bg-light p-3 mb-3">
+                            <div class="bg-white p-3">
+                                <div class="flex-grow-1">
+                                    <p>No games in this series yet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="col-12 col-md-4">
+                {% if user.is_authenticated %}
+                    <div class="bg-light p-3">
+                        <a href="{% url 'play:series_update' object.id %}"
+                           class='fs-6 text-secondary'>Edit Game Series</a>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
-</div>
+
+    <style>
+    .sticky-note {
+        position: relative;
+        top: -1em;
+        display: inline-block;
+        padding: 0 10px;
+        background: #e3e3e3;
+        color: #a1a1a1;
+        line-height: 18px;
+        border-radius: 0 0 4px 4px;
+      }
+    .no-cover-text {
+        width: 100%;
+        height: 100%;
+        background-color: #ddd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
 {% endblock %}

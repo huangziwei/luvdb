@@ -383,6 +383,7 @@ class GameSeries(models.Model):
     # data
     title = models.CharField(max_length=100)
     games = models.ManyToManyField(Game, through="GameInSeries", related_name="series")
+    description = models.TextField(null=True, blank=True)
 
     # meta
     created_by = models.ForeignKey(
