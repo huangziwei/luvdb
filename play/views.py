@@ -598,7 +598,7 @@ class GameCheckInListView(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get the context
         context = super().get_context_data(**kwargs)
-
+        game = get_object_or_404(Game, pk=self.kwargs["game_id"])
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
         status = self.request.GET.get("status")  # Get status from query params
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
@@ -620,8 +620,16 @@ class GameCheckInListView(ListView):
 
         context["checkins"] = checkins.order_by(order)
 
+        grouped_roles = {}
+        for role in game.gameroles.all():
+            if role.role.name not in grouped_roles:
+                grouped_roles[role.role.name] = []
+            alt_name_or_person_name = role.alt_name or role.person.name
+            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+        context["grouped_roles"] = grouped_roles
+
         # Get the game details
-        context["game"] = get_object_or_404(Game, pk=self.kwargs["game_id"])
+        context["game"] = game
         return context
 
 
@@ -664,12 +672,21 @@ class GameCheckInAllListView(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get the context
         context = super().get_context_data(**kwargs)
-
+        game = get_object_or_404(Game, pk=self.kwargs["game_id"])
         # Get the game details
-        context["game"] = get_object_or_404(Game, pk=self.kwargs["game_id"])
+        context["game"] = game
         context["order"] = self.request.GET.get(
             "order", "-timestamp"
         )  # Default is '-timestamp'
+
+        grouped_roles = {}
+        for role in game.gameroles.all():
+            if role.role.name not in grouped_roles:
+                grouped_roles[role.role.name] = []
+            alt_name_or_person_name = role.alt_name or role.person.name
+            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+        context["grouped_roles"] = grouped_roles
+
         return context
 
 
