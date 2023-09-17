@@ -821,5 +821,6 @@ def search_view(request):
             "series_results": series_results,
             # other
             "execution_time": execution_time,
+            "terms": search_terms,
         },
     )
