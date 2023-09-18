@@ -68,31 +68,45 @@
                 {% endif %}
                 <!--Related instances / Edit -->
                 {% if object.issueinstance_set.count != 0 %}
-                    <div class="bg-light p-3">
-                        <!-- Related instances or issues etc. -->
-                        <div class="row">
+                <div class="bg-light p-3">
+                    <!-- Related instances or issues etc. -->
+                    <div class="row">
+                        <div class="d-flex align-items-center">
                             <h5>Table of Content</h5>
-                            <!--list all related instances by order-->
-                            <div class="col-sm-12">
-                                {% for issueinstance in object.issueinstance_set.all %}
-                                    <div class="related-instance">
-                                        <p>
-                                            <a href="{% url 'read:instance_detail' issueinstance.instance.id %}">
-                                                {{ issueinstance.alt_title|default:issueinstance.instance.title }}
-                                            </a>
-                                            {# djlint:off #}
-                                            ({% for role in issueinstance.instance.instancerole_set.all %}{% if role.role.name == "Author" %}{{ role.alt_name|default:role.person.name }},{% endif %}{% endfor %}
-                                            {{ issueinstance.publication_date|default:issueinstance.instance.publication_date }})
-                                            {# djlint:on #}
-                                        </p>
+                            <a class="text-muted mb-2 ms-1" type="button" data-bs-toggle="collapse" data-bs-target=".creditCollapse" aria-expanded="false" aria-controls="creditCollapse">
+                                (Show Credits)
+                            </a>
+                        </div>
+                        <!--list all related instances by order-->
+                        <div class="col-sm-12">
+                            {% for issueinstance in object.issueinstance_set.all %}
+                                <div class="related-instance">
+                                    <div>
+                                        <a href="{% url 'read:instance_detail' issueinstance.instance.id %}">
+                                            {{ issueinstance.alt_title|default:issueinstance.instance.title }}
+                                        </a>
                                     </div>
-                                {% empty %}
-                                    <p>No related instances found.</p>
-                                {% endfor %}
-                            </div>
+                                    <!-- Hidden credit section -->
+                                    <div class="collapse creditCollapse mb-2">
+                                        <div class="ms-4">
+                                            {% for role in issueinstance.instance.instancerole_set.all %}
+                                                {% if role.role.name == "Author" %}
+                                                    <a href="{% url 'entity:person_detail' role.person.id %}" class="text-muted">{{ role.alt_name|default:role.person.name }}</a>{% if not forloop.last %},{% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            ({{ issueinstance.publication_date|default:issueinstance.instance.publication_date }})
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <p>No related instances found.</p>
+                            {% endfor %}
                         </div>
                     </div>
-                {% endif %}
+                </div>
+            {% endif %}
+            
+
                 <!--Issue Stats -->
                 <div class="bg-light p-3 mt-3">
                     <h5>Statistics</h5>
