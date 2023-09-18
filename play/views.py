@@ -202,6 +202,25 @@ class GameDetailView(DetailView):
 
         context["checkins"] = checkins
 
+        # Get the count of check-ins for each user for this game
+        user_checkin_counts = (
+            GameCheckIn.objects.filter(game=self.object)
+            .values("user__username")
+            .annotate(total_checkins=Count("id")-1)
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            item["user__username"]: item["total_checkins"]
+            for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with total_checkins for each user
+        for checkin in context["checkins"]:
+            checkin.total_checkins = user_checkin_count_dict.get(
+                checkin.user.username, 0
+            )
+
         # Game check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
             GameCheckIn.objects.filter(game=self.object, user=OuterRef("user"))

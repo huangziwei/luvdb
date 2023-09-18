@@ -32,16 +32,25 @@
                 <div class="checkin bg-light p-3 mb-3">{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
             {% endif %}
             <div class="d-flex mb-4">
-                <span class="me-2">
+                <span class="me-2 d-inline-block">
                     {% if checkin.content_type.model == 'release' %}
                         <a href="{% url 'listen:release_checkin_list' checkin.content_object.id checkin.user.username %}"
-                           class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
+                           class="text-decoration-none text-secondary">
+                           <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
+                           <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 1 %}({{ checkin.total_checkins }} More){% endif %}</span>
+                        </a>
                     {% elif checkin.content_type.model == 'podcast' %}
                         <a href="{% url 'listen:podcast_checkin_list' checkin.content_object.id checkin.user.username %}"
-                           class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
+                           class="text-decoration-none text-secondary">
+                           <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
+                           <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 1 %}({{ checkin.total_checkins }} More){% endif %}</span>
+                        </a>
                     {% elif checkin.content_type.model == 'audiobook' %}
                         <a href="{% url 'listen:audiobook_checkin_list' checkin.content_object.id checkin.user.username %}"
-                            class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
+                            class="text-decoration-none text-secondary">
+                            <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
+                            <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 1 %}({{ checkin.total_checkins }} More){% endif %}</span> 
+                        </a>
                     {% endif %}
                 </span>
                 {% if checkin.comments_enabled %}

@@ -446,6 +446,27 @@ class BookDetailView(DetailView):
 
         context["checkins"] = checkins
 
+        # Get the count of check-ins for each user for this series
+        user_checkin_counts = (
+            ReadCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .values("user__username")
+            .annotate(total_checkins=Count("id") - 1)
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            item["user__username"]: item["total_checkins"]
+            for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with total_checkins for each user
+        for checkin in context["checkins"]:
+            checkin.total_checkins = user_checkin_count_dict.get(
+                checkin.user.username, 0
+            )
+
         # Book check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
             ReadCheckIn.objects.filter(
@@ -704,6 +725,27 @@ class IssueDetailView(DetailView):
             )
             .filter(timestamp=F("latest_checkin"))
         ).order_by("-timestamp")[:5]
+
+        # Get the count of check-ins for each user for this series
+        user_checkin_counts = (
+            ReadCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .values("user__username")
+            .annotate(total_checkins=Count("id") - 1)
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            item["user__username"]: item["total_checkins"]
+            for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with total_checkins for each user
+        for checkin in checkins:
+            checkin.total_checkins = user_checkin_count_dict.get(
+                checkin.user.username, 0
+            )
 
         # Issue check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
