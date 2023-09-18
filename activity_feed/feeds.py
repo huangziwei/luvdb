@@ -31,7 +31,7 @@ class UserActivityFeed(Feed):
         return f"Latest activities by {user.username} on LʌvDB"
 
     def items(self, user):
-        return Activity.objects.filter(user=user).order_by("-timestamp")[:100]
+        return Activity.objects.filter(user=user).order_by("-timestamp")[:25]
 
     def item_title(self, activity):
         related_object = activity.content_object
@@ -90,3 +90,6 @@ class UserActivityFeed(Feed):
             return reverse(url_name, args=[related_object.pk])
         else:
             return reverse(url_name, args=[related_object.followed.username])
+
+    def item_pubdate(self, activity):
+        return activity.content_object.timestamp

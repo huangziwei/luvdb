@@ -28,7 +28,7 @@ class UserSayFeed(Feed):
         return f"Latest says by {user.username} on LʌvDB"
 
     def items(self, user):
-        return Say.objects.filter(user=user).order_by("-timestamp")[:10]
+        return Say.objects.filter(user=user).order_by("-timestamp")[:25]
 
     def item_title(self, say):
         return say.content[:50]  # Taking the first 50 characters.
@@ -38,6 +38,9 @@ class UserSayFeed(Feed):
 
     def item_link(self, say):
         return reverse("write:say_detail", args=[say.pk])
+
+    def item_pubdate(self, say):
+        return say.timestamp
 
 
 class UserPostFeed(Feed):
@@ -60,7 +63,7 @@ class UserPostFeed(Feed):
         return f"Latest posts by {user.username} on LʌvDB"
 
     def items(self, user):
-        return Post.objects.filter(user=user).order_by("-timestamp")[:10]
+        return Post.objects.filter(user=user).order_by("-timestamp")[:25]
 
     def item_title(self, post):
         return post.title  # Assuming 'Post' model has a 'title' field.
@@ -70,6 +73,9 @@ class UserPostFeed(Feed):
 
     def item_link(self, post):
         return reverse("write:post_detail", args=[post.pk])
+
+    def item_pubdate(self, post):
+        return post.timestamp
 
 
 class UserPinFeed(Feed):
@@ -92,7 +98,7 @@ class UserPinFeed(Feed):
         return f"Latest pins by {user.username} on LʌvDB"
 
     def items(self, user):
-        return Pin.objects.filter(user=user).order_by("-timestamp")[:10]
+        return Pin.objects.filter(user=user).order_by("-timestamp")[:25]
 
     def item_title(self, pin):
         return pin.title  # Assuming 'Pin' model has a 'title' field.
@@ -102,3 +108,6 @@ class UserPinFeed(Feed):
 
     def item_link(self, pin):
         return reverse("write:pin_detail", args=[pin.pk])
+
+    def item_pubdate(self, pin):
+        return pin.timestamp
