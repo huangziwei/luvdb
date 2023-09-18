@@ -34,7 +34,7 @@
                 <span class="me-2 d-inline-block">
                     <a href="{% url 'play:game_checkin_list' checkin.game.id checkin.user.username %}" class="text-decoration-none text-secondary d-inline-block">
                         <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
-                        <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 1 %}({{ checkin.total_checkins }} More){% endif %}</span>
+                        <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 0 %}({{ checkin.total_checkins }} More){% endif %}</span>
                     </a>
                 </span>                
                 {% if checkin.comments_enabled %}
