@@ -161,6 +161,13 @@
                         {% empty %}
                             <div>No related tracks found.</div>
                         {% endfor %}
+                        {% if object.releasetrack_set.exists %}
+                        <hr>
+                        <div>
+                            <a href="{% url 'listen:release_credit' object.id %}"
+                               class='fs-6 text-secondary'>View All Credits</a>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 <!--Release Stats-->

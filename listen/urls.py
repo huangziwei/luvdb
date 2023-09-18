@@ -22,6 +22,7 @@ from .views import (
     PodcastDetailView,
     PodcastUpdateView,
     ReleaseCreateView,
+    ReleaseCreditDetailView,
     ReleaseDetailView,
     ReleaseGroupCreateView,
     ReleaseGroupDetailView,
@@ -56,6 +57,11 @@ urlpatterns = [
     path("release/<int:pk>/", ReleaseDetailView.as_view(), name="release_detail"),
     path(
         "release/<int:pk>/update/", ReleaseUpdateView.as_view(), name="release_update"
+    ),
+    path(
+        "release/<int:pk>/credits/",
+        ReleaseCreditDetailView.as_view(),
+        name="release_credit",
     ),
     # podcast
     path("podcast/create/", PodcastCreateView.as_view(), name="podcast_create"),

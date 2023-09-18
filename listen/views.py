@@ -40,9 +40,12 @@ from .forms import (
     ReleaseForm,
     ReleaseGroupForm,
     ReleaseInGroupFormSet,
+    ReleaseRole,
     ReleaseRoleFormSet,
+    ReleaseTrack,
     ReleaseTrackFormSet,
     TrackForm,
+    TrackRole,
     TrackRoleFormSet,
     WorkForm,
     WorkRoleFormSet,
@@ -704,6 +707,50 @@ class ReleaseUpdateView(LoginRequiredMixin, UpdateView):
                         releasetracks.save()
 
         return super().form_valid(form)
+
+
+class ReleaseCreditDetailView(DetailView):
+    model = Release
+    template_name = "listen/credit_detail.html"
+    context_object_name = "release"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get the Release object
+        release = self.get_object()
+
+        # Aggregate Release level credits
+        release_roles = ReleaseRole.objects.filter(release=release)
+        release_credits = {role.role: [] for role in release_roles}
+
+        for release_role in release_roles:
+            release_credits[release_role.role].append(release_role.person)
+
+        # Aggregate Track level credits
+        release_tracks = ReleaseTrack.objects.filter(release=release).order_by(
+            "disk", "order"
+        )
+        track_credits = {}
+
+        for release_track in release_tracks:
+            disk = release_track.disk  # Access disk attribute
+            order = release_track.order  # Access order attribute
+
+            track_roles = TrackRole.objects.filter(track=release_track.track)
+            track_credits[(release_track.track, disk, order)] = {
+                role.role: [] for role in track_roles
+            }
+
+            for track_role in track_roles:
+                track_credits[(release_track.track, disk, order)][
+                    track_role.role
+                ].append(track_role.person)
+
+        context["release_credits"] = release_credits
+        context["track_credits"] = track_credits
+
+        return context
 
 
 class ListenCheckInDetailView(DetailView):
