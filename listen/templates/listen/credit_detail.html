@@ -8,9 +8,9 @@
 
             <!-- Release Level Credits -->
             <h4>Release Credits</h4>
-            <div class="mb-2">
+            <div class="mb-3">
                 {% for role, persons_list in release_credits.items %}
-                    <div class="ms-4 mb-3">
+                    <div class="ms-4 mb-1">
                         <span class="text-muted">{{ role.name }}:</span>
                         {% for release_role in persons_list %}
                             <a href="{% url 'entity:person_detail' release_role.id %}">{{ release_role.name }}</a>
