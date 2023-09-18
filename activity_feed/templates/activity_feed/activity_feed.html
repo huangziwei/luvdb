@@ -28,7 +28,14 @@
                         </span>
                     </form>
                 {% elif feed_type == "personal" %}
-                    <h3>{{ feed_user.display_name | default:feed_user.username }}'s Feed</h3>
+                    <div class="d-flex justify-content-between mb-3">
+                        <h3>{{ feed_user.display_name | default:feed_user.username }}'s Feed</h3>
+                        <div>
+                            {% if feed_user.is_public %}
+                                <a class="btn btn-sm btn-success" href="{% url 'accounts:user_activity_feed' feed_user.username %}">RSS</a>
+                            {% endif %}
+                         </div>
+                    </div>
                 {% endif %}
                 {% include "activity_feed/activity_filter.html" %}
                 {% for activity in page_obj %}

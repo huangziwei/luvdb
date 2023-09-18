@@ -8,12 +8,6 @@ from .models import Pin, Post, Say
 User = get_user_model()
 
 
-class PrivateFeedError(Exception):
-    """Exception raised when trying to access a private feed."""
-
-    pass
-
-
 class UserSayFeed(Feed):
     def __call__(self, request, *args, **kwargs):
         user = self.get_object(request, *args, **kwargs)

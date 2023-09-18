@@ -1,5 +1,7 @@
 from django.urls import path
 
+from activity_feed.feeds import UserActivityFeed
+
 from .views import (
     AccountDetailView,
     AccountUpdateView,
@@ -32,6 +34,7 @@ urlpatterns = [
         view=PersonalActivityFeedView.as_view(),
         name="feed",
     ),
+    path("u/<str:username>/feed/rss", UserActivityFeed(), name="user_activity_feed"),
     path(
         "u/<str:username>/following/",
         FollowingListView.as_view(),
