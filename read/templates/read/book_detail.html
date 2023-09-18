@@ -154,27 +154,42 @@
                                 </p>
                             {% endif %}
                         {% else %}
-                            <div class="row">
-                                <h5>Table of Content</h5>
-                                <!--list all related instances by order-->
-                                <div class="col-sm-12">
-                                    {% for book_instance in object.bookinstance_set.all %}
-                                        <div class="related-instance">
-                                            <p>
-                                                {{book_instance.order}}.
-                                                <a href="{% url 'read:work_detail' book_instance.instance.work.id %}">
-                                                    {{ book_instance.alt_title|default:book_instance.instance.title }}
-                                                </a>
-                                                {# djlint:off #}
-                                                ({{ book_instance.publication_date|default:book_instance.instance.publication_date }})
-                                                {# djlint:on #}
-                                            </p>
-                                        </div>
-                                    {% empty %}
-                                        <p>No related instances found.</p>
-                                    {% endfor %}
-                                </div>
+                        <div class="row">
+                            <div class="d-flex align-items-center">
+                                <h5 class="mb-0">Table of Content</h5>
+                                <a class="text-muted mb-0 ms-1" type="button" data-bs-toggle="collapse" data-bs-target=".creditCollapse" aria-expanded="false" aria-controls="creditCollapse">
+                                    (Show Credits)
+                                </a>
                             </div>
+                            <!--list all related instances by order-->
+                            <div class="col-sm-12">
+                                {% for book_instance in object.bookinstance_set.all %}
+                                    <div class="related-instance">
+                                        <div>
+                                            {{book_instance.order}}.
+                                            <a href="{% url 'read:work_detail' book_instance.instance.work.id %}">
+                                                {{ book_instance.alt_title|default:book_instance.instance.title }}
+                                            </a>
+                                        </div>
+                                        <!-- Hidden credit section -->
+                                        <div class="collapse creditCollapse mb-2">
+                                            <div class="ms-4">
+                                                <!-- Assuming you have a way to access the roles related to book_instance -->
+                                                {% for role in book_instance.instance.instancerole_set.all %}
+                                                    {% if role.role.name == "Author" %}
+                                                        <a href="{% url 'entity:person_detail' role.person.id %}" class="text-muted">{{ role.alt_name|default:role.person.name }}</a>{% if not forloop.last %},{% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                ({{ book_instance.publication_date|default:book_instance.instance.publication_date }})
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <p>No related instances found.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
                         {% endif %}
                     </div>
                 {% endif %}
