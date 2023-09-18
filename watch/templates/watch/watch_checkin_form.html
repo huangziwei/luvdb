@@ -68,7 +68,7 @@
                            class="form-control"
                            id="progressInput"
                            name="progress"
-                           placeholder="Wachted more than once?">
+                           placeholder="Watched more than once?">
                 {% endif %}
                 {% if model_name == "series" %}
                     <input type="text"
@@ -144,7 +144,7 @@
     function setProgressType(event, type) {
         event.preventDefault();
         document.getElementById('progressTypeInput').value = type;
-        document.getElementById('progressTypeBtn').textContent = type == 'PG' ? 'Page' : '%';
+        document.getElementById('progressTypeBtn').textContent = type == 'TM' ? 'Times' : 'Episode';
     }
 
     function updateStatusButton(status) {
