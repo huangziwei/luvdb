@@ -31,9 +31,9 @@
                         {% if object.content_type.model == "release" %}
                             <span class="badge text-bg-warning me-1">
                                 Loop: {{ object.progress }}
-                                {% if object.progress_type == "TM" %}
+                                {% if object.progress_type == "LT" %}
                                     Times
-                                {% else %}
+                                {% elif object.progress_type == "TT" %}
                                     Minutes
                                 {% endif %}
                             </span>
