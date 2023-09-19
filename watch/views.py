@@ -1021,6 +1021,13 @@ class WatchCheckInDetailView(DetailView):
         context["app_label"] = self.object._meta.app_label
         context["object_type"] = self.object._meta.model_name.lower()
 
+        checkin_count = WatchCheckIn.objects.filter(
+            user=self.object.user,
+            content_type=ContentType.objects.get_for_model(self.object.content_object),
+            object_id=self.object.content_object.id,
+        ).count()
+        context["checkin_count"] = checkin_count - 1
+
         return context
 
 

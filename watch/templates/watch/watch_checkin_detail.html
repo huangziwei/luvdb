@@ -113,10 +113,18 @@
                         <p class='me-2 text-secondary mb-2'>
                             {% if object.content_type.model == "movie" %}
                                 <a href="{% url 'watch:movie_checkin_list' object.content_object.id object.user.username %}"
-                                   class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                                   class="text-muted">
+                                    {% if checkin_count > 0 %}
+                                        {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
+                                    {% endif %}
+                                </a>
                             {% else %}
                                 <a href="{% url 'watch:series_checkin_list' object.content_object.id object.user.username %}"
-                                   class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                                   class="text-muted">
+                                    {% if checkin_count > 0 %}
+                                        {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
+                                    {% endif %}
+                                </a>
                             {% endif %}
                         </p>
                         {% if object.user == request.user %}

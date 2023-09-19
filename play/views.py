@@ -573,6 +573,12 @@ class GameCheckInDetailView(DetailView):
         context["app_label"] = self.object._meta.app_label
         context["object_type"] = self.object._meta.model_name.lower()
 
+        checkin_count = GameCheckIn.objects.filter(
+            user=self.object.user,
+            game=self.object.game.id,
+        ).count()
+        context["checkin_count"] = checkin_count - 1
+
         return context
 
 
