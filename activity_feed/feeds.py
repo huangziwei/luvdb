@@ -3,25 +3,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.syndication.views import Feed
 from django.http import Http404
 from django.urls import reverse
-from django.utils.feedgenerator import Rss201rev2Feed
 
 from .models import Activity
 
 User = get_user_model()
 
 
-class StyledRssFeed(Rss201rev2Feed):
-    def write(self, outfile, encoding):
-        outfile.write('<?xml version="1.0" encoding="%s"?>' % encoding)
-        outfile.write(
-            '<?xml-stylesheet type="text/xsl" href="/static/luvdb/css/rss-style.xsl" ?>'
-        )  # Update the href to point to your XSLT file
-        super().write(outfile, encoding)
-
-
 class UserActivityFeed(Feed):
-    feed_type = StyledRssFeed
-
     def __call__(self, request, *args, **kwargs):
         user = self.get_object(request, *args, **kwargs)
         if not user.is_public:
