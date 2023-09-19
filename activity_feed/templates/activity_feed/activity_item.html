@@ -447,13 +447,13 @@
                 </span>
             </div>
             {% if activity.content_object.progress %}
-                {% if object.content_type.model == "release" %}
+                {% if activity.content_object.content_type.model == "release" %}
                     <span class="badge text-bg-warning me-1">
                         Loop: {{ activity.content_object.progress }}
-                        {% if activity.content_object.progress_type == "TM" %}
-                            Time{% if checkin.progress != 1 %}s{% endif %}
-                        {% else %}
-                            Minute{% if checkin.progress != 1 %}s{% endif %}
+                        {% if activity.content_object.progress_type == "LT" %}
+                            Times
+                        {% elif activity.content_object.progress_type == "TT" %}
+                            Minutes
                         {% endif %}
                     </span>
                 {% elif activity.content_object.content_type.model == "podcast" %}
