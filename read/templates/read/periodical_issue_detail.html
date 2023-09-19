@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% block meta %}
+    <meta property="og:title" content="{{ issue.title }}">
+    {% if object.description %}
+        <meta property="og:description" content="{{ issue.description|truncatewords:150 }}">
+    {% else %}
+        <meta property="og:description" content="Check out {{ issue.title }} on luvdb.com">
+    {% endif %}
+    <meta property="og:image" content="{{ issue.cover.url }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="book">
+{% endblock meta %}
 {% block title %}Vol. {{ issue.volume }} Nr. {{ issue.number }} - {{ issue.periodical.title }}{% endblock %}
 {% block content %}
     <div class="container">

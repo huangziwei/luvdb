@@ -4,6 +4,17 @@
 {% load linkify %}
 {% load crispy_forms_tags %}
 {% load parse_activity_type %}
+{% block meta %}
+    <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Check-in on {{ object.content_object.title }}">
+    {% if object.description %}
+        <meta property="og:description" content="{{ object.description|truncatewords:150 }}">
+    {% else %}
+        <meta property="og:description" content="Check out {{ object.user.display_name | default:object.user.username }}'s Check-in on {{ object.content_object.title }} on luvdb.com">
+    {% endif %}
+    <meta property="og:image" content="{{ object.content_object.poster.url }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="book">
+{% endblock meta %}
 {% block title %}Check In{% endblock %}
 {% block content %}
     <div class="container">

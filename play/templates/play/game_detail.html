@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load markdownify %}
+{% block meta %}
+    <meta property="og:title" content="{{ object.title }}">
+    {% if object.description %}
+        <meta property="og:description" content="{{ object.description|truncatewords:150 }}">
+    {% else %}
+        <meta property="og:description" content="Check out {{ object.title }} on luvdb.com">
+    {% endif %}
+    <meta property="og:image" content="{{ object.cover.url }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="game">
+{% endblock meta %}
 {% block title %}{{ object.title }}{% endblock %}
 {% block content %}
     <div class="container">

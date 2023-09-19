@@ -39,14 +39,20 @@ class UserActivityFeed(Feed):
             activity.content_type_id
         ).model_class()
         model_name = related_model.__name__.lower()
-        if hasattr(related_object, "title"):
-            return related_object.title
-        elif hasattr(related_object, "content"):
-            return related_object.content[:300]
+        if model_name == "say":
+            return related_object.content
+        elif model_name == "post":
+            return f'{related_object.user.username} posted "{related_object.title}"'
+        elif model_name == "pin":
+            return f'{related_object.user.username} pinned "{related_object.title}"'
         elif model_name == "follow":
             return f"{related_object.follower.username} followed {related_object.followed.username}"
+        elif "checkin" in model_name and "game" not in model_name:
+            return f"{related_object.user.username} checked in to {related_object.content_object.title}"
+        elif "checkin" in model_name and "game" in model_name:
+            return f"{related_object.user.username} checked in to {related_object.game.title}"
         else:
-            return related_object.followed.username
+            return str(related_object)
 
     def item_description(self, activity):
         related_object = activity.content_object
