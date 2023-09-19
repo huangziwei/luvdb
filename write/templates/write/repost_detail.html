@@ -194,16 +194,24 @@
                                 <!--badge: checkin status-->
                                 <span class="badge {{ repost.original_activity.content_object.status|get_status_class }} me-1">{{ repost.original_activity.content_object.get_status_display }}</span>
                                 {% if repost.original_activity.content_object.progress %}
-                                    <span class="badge text-bg-warning me-1">
-                                        Loop: {{ repost.original_activity.content_object.progress }}
-                                        {# djlint:off #}
-                                        {% if repost.original_activity.content_object.progress_type == "TT" %}
-                                            Minute{% if checkin.progress != 1 %}s{% endif %}
-                                        {% else %}
-                                            Time{% if checkin.progress != 1 %}s{% endif %}
-                                        {% endif %}
-                                        {# djlint:on #}
-                                    </span>
+                                    {% if object.content_type.model == "release" %}
+                                        <span class="badge text-bg-warning me-1">
+                                            Loop: {{ repost.original_activity.content_object.progress }}
+                                            {% if repost.original_activity.content_object.progress_type == "TM" %}
+                                                Times
+                                            {% else %}
+                                                Minutes
+                                            {% endif %}
+                                        </span>
+                                    {% elif repost.original_activity.content_object.content_type.model == "podcast" %}
+                                        <span class="badge text-bg-warning me-1">
+                                            {{ repost.original_activity.content_object.progress }}
+                                        </span>
+                                    {% elif repost.original_activity.content_object.content_type.model == "audiobook" %}
+                                        <span class="badge text-bg-warning me-1">
+                                            At {{ repost.original_activity.content_object.progress }}
+                                        </span>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             <div class="mt-2">

@@ -63,9 +63,13 @@
                                                     Minutes
                                                 {% endif %}
                                             </span>
-                                        {% elif checkin.content_type.model == "podcast" %}
+                                        {% elif object.content_type.model == "podcast" %}
                                             <span class="badge text-bg-warning me-1">
-                                                EP: {{ checkin.progress }}
+                                                {{ object.progress }}
+                                            </span>
+                                        {% elif object.content_type.model == "audiobook" %}
+                                            <span class="badge text-bg-warning me-1">
+                                                At {{ object.progress }}
                                             </span>
                                         {% endif %}
                                     {% endif %}   
