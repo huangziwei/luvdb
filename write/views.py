@@ -3,12 +3,10 @@ from collections import Counter
 from itertools import chain
 from urllib.parse import urlparse
 
-from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import PermissionDenied
-from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
@@ -18,7 +16,6 @@ from django.views.generic import (
     ListView,
     UpdateView,
 )
-from django.views.generic.edit import FormView
 
 from activity_feed.models import Activity
 from listen.models import ListenCheckIn
@@ -386,6 +383,8 @@ class TagListView(ListView):
 
     def get_queryset(self):
         tag = self.kwargs["tag"]
+
+        # Initialize querysets
         posts = Post.objects.filter(tags__name=tag)
         says = Say.objects.filter(tags__name=tag)
         pins = Pin.objects.filter(tags__name=tag)
@@ -409,6 +408,10 @@ class TagListView(ListView):
             )
         )
         sorted_list = sorted(combined_list, key=lambda x: x.timestamp, reverse=True)
+
+        # Filter out items from non-public profiles if the user is not logged in
+        if not self.request.user.is_authenticated:
+            sorted_list = [item for item in sorted_list if item.user.is_public]
 
         # Add model names to each object
         for obj in sorted_list:
@@ -436,6 +439,19 @@ class TagListView(ListView):
 
 class TagUserListView(ListView):
     template_name = "write/tag_user_list.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Get the User object
+        self.user = get_object_or_404(
+            get_user_model(), username=self.kwargs["username"]
+        )
+
+        # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
+        if not self.user.is_public and not request.user.is_authenticated:
+            return redirect("{}?next={}".format(reverse("login"), request.path))
+
+        # Otherwise, proceed as normal
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         tag = self.kwargs["tag"]
