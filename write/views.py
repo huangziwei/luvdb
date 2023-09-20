@@ -21,6 +21,10 @@ from django.views.generic import (
 from django.views.generic.edit import FormView
 
 from activity_feed.models import Activity
+from listen.models import ListenCheckIn
+from play.models import GameCheckIn
+from read.models import ReadCheckIn
+from watch.models import WatchCheckIn
 
 from .forms import (
     CommentForm,
@@ -385,32 +389,48 @@ class TagListView(ListView):
         posts = Post.objects.filter(tags__name=tag)
         says = Say.objects.filter(tags__name=tag)
         pins = Pin.objects.filter(tags__name=tag)
-        return list(chain(posts, says, pins))
+        read_checkins = ReadCheckIn.objects.filter(tags__name=tag)
+        watch_checkins = WatchCheckIn.objects.filter(tags__name=tag)
+        listen_checkins = ListenCheckIn.objects.filter(tags__name=tag)
+        game_checkins = GameCheckIn.objects.filter(tags__name=tag)
+        reposts = Repost.objects.filter(tags__name=tag)
+
+        # Combine all querysets into a single list and sort by timestamp
+        combined_list = list(
+            chain(
+                posts,
+                says,
+                pins,
+                read_checkins,
+                watch_checkins,
+                listen_checkins,
+                game_checkins,
+                reposts,
+            )
+        )
+        sorted_list = sorted(combined_list, key=lambda x: x.timestamp, reverse=True)
+
+        # Add model names to each object
+        for obj in sorted_list:
+            obj.model_name = obj.__class__.__name__.lower()
+
+        return sorted_list
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tag = self.kwargs["tag"]
         context["tag"] = tag
-        context["posts"] = posts = Post.objects.filter(tags__name=tag).order_by(
-            "-timestamp"
-        )
-        context["says"] = says = Say.objects.filter(tags__name=tag).order_by(
-            "-timestamp"
-        )
-        context["pins"] = pins = Pin.objects.filter(tags__name=tag).order_by(
-            "-timestamp"
-        )
         context["users"] = User.objects.filter(
             bio__icontains=tag
         )  # these are the users with this tag in their bio
-        context["reposts"] = reposts = Repost.objects.filter(tags__name=tag).order_by(
-            "-timestamp"
-        )
+
+        # Get all tags from the sorted list
         all_tags = set()
-        for obj in chain(posts, says, pins, reposts):
+        for obj in self.object_list:
             for t in obj.tags.all():
                 all_tags.add(t)
         context["all_tags"] = all_tags
+
         return context
 
 

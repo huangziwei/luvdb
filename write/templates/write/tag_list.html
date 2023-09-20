@@ -2,6 +2,466 @@
 {% load markdownify %}
 {% load linkify %}
 {% load url_filters %}
+{% load parse_activity_type %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7 left-column">
+                <h2>Entries with tag "{{ tag }}"</h2>
+                {% for item in object_list %}
+                    <div class="item mb-4">
+                        {% if item.model_name == "say" %}
+                            <!-- Render Say -->
+                            <div class="item mb-4">
+                                <div class="mb-2">
+                                    <a href="{% url 'accounts:detail' item.user.username %}">{{ item.user.display_name | default:item.user.username }}</a> 
+                                    <span class="me-1 text-muted">said</span>
+                                </div>
+                                <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                <div class="mb-2">
+                                    <a href="{% url 'write:say_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                </div>
+                            </div>
+                        {% elif item.model_name == "pin" %}
+                            <div class="item mb-4">
+                                <div class='mb-2'>
+                                    <a href="{% url 'accounts:detail' item.user.username %}">
+                                        {{ item.user.display_name | default:item.user.username }}
+                                    </a> 
+                                    <span class="me-1 text-muted">pinned</span>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="bg-light p-3">
+                                        <a href="{{ item.url }}">{{ item.title }}</a>
+                                        <a href="{% url 'write:pins_from_url' item.url|root_url %}"
+                                        class="link-secondary">({{ item.url|root_url }})</a>
+                                    </div>
+                                    {% if item.content %}
+                                        <div class="mt-2">{{ item.content | linkify_tags:item.user | linkify_mentions | markdownify }}</div>
+                                    {% endif %}
+                                </div>                            
+                                <div class="mb-2">
+                                    <a href="{% url 'write:pin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                </div>
+                            </div>
+                        {% elif item.model_name == "post" %}
+                            <div class="item mb-4">
+                                <div class='mb-2'>
+                                    <a href="{% url 'accounts:detail' item.user.username %}">{{ item.user.display_name | default:item.user.username }}</a> 
+                                    <span class="me-1 text-muted">posted</span>
+                                </div>
+                                <div class="mb-2">
+                                    <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
+                                </div>
+                                <div class="bg-light p-3 mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300}}</div>
+                                <div class="mb-2">
+                                    <a href="{% url 'write:post_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                </div>
+                            </div>
+                        {% elif item.model_name == "repost" %}
+                            <div class="item mb-4">
+                                <div class="mb-2">
+                                    <a href="{% url 'accounts:detail' item.user.username %}">{{ item.user.display_name | default:item.user.username }}</a> 
+                                    <span class="me-1 text-muted">reposted</span>
+                                </div>
+                                <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                <div class="mb-2">
+                                    <a href="{% url 'write:repost_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                </div>
+                            </div>
+                        {% elif "checkin" in item.model_name %}
+                            <div class="item mb-4">
+                                <div class="d-flex flex-wrap align-items-center mb-2">
+                                    <a href="{% url 'accounts:detail' item.user.username %}" 
+                                        class="text-decoration-none me-1">{{ item.user.display_name | default:item.user.username }}</a>
+                                    <span class="me-1 text-muted">checked in</span>
+                                    <!--badge: checkin status-->
+                                    <div class="d-flex align-items-center me-1">
+                                        <span class="badge {{ item.status|get_status_class }} me-1">
+                                            {{ item.get_status_display }}
+                                        </span>
+                                    </div>
+                                    {% if item.progress %}
+                                        <span class="badge text-bg-warning me-1">
+                                            {% if item.progress_type == "PG" %}
+                                                On page {{ item.progress }}
+                                            {% elif item.progress_type == "PC" %}
+                                                At {{ item.progress }}%
+                                            {% elif item.progress_type == "LT" %}
+                                                Loops: {{ item.progress }} Times
+                                            {% elif item.progress_type == "TT" %}
+                                                {{ item.progress }} Minutes
+                                            {% elif item.progress_type == "EP" %}
+                                                {{ item.progress }}
+
+                                            {% endif %}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if item.model_name == "readcheckin" %}
+
+                                <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                <div class="d-flex flex-row bg-light p-3 mt-2">
+                                    <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                        {% if item.content_object.cover %}
+                                            {% if item.content_object.cover_sens %}
+                                                <img src="{{ item.content_object.cover.url }}"
+                                                     alt="{{ item.content_object.title }} cover"
+                                                     style="width: 100%"
+                                                     class="img-fluid blur"
+                                                     onclick="this.classList.toggle('blur')">
+                                            {% else %}
+                                                <img src="{{ item.content_object.cover.url }}"
+                                                     alt="{{ item.content_object.title }} cover"
+                                                     style="width: 100%">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="no-cover-text">No Cover</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        {% if item.content_type.model == 'book' %}
+                                            <a href=" {% url 'read:book_detail' item.content_object.id %} "
+                                               class="text-decoration-none hover-username">
+                                                <h5>{{ item.content_object.title }}</h5>
+                                            </a>
+                                        {% elif item.content_type.model == 'issue' %}
+                                            <h5>{{ item.content_object.periodical.title }}</h5>
+                                            <a href=" {% url 'read:issue_detail' item.content_object.periodical.id item.content_object.id %} "
+                                               class="text-decoration-none hover-username">
+                                                <h6>{{ item.content_object.title }}</h6>
+                                            </a>
+                                        {% endif %}
+                                        {% if item.content_type.model == 'book' %}
+                                            {% regroup item.content_object.bookrole_set.all by role as roles_list %}
+                                            {% for role in roles_list %}
+                                                <div>
+                                                    {# djlint:off #}
+                                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                                    {# djlint:on #}
+                                                    {% for book_role in role.list %}
+                                                        {% if not forloop.first %}/{% endif %}
+                                                        <a href="{% url 'entity:person_detail' book_role.person.id %}">
+                                                            {{ book_role.alt_name | default:book_role.person.name }}
+                                                        </a>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% if item.content_object.publisher %}
+                                        <div>
+                                            <span class="text-muted">Publisher:</span>
+                                            <a href="{% url 'entity:company_detail' item.content_object.publisher.id %}">
+                                                {{ item.content_object.publisher.name }}
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                        <div>
+                                            {% if item.content_object.publication_date %}
+                                                <span class="text-muted">Date:</span>{{ item.content_object.publication_date }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <a href="{% url 'read:read_checkin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                </div>
+
+                                {% elif item.model_name == "watchcheckin" %}
+                                    <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                    <div class="d-flex flex-row bg-light p-3 mb-2">
+                                        <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                            {% if item.content_object.poster %}
+                                                {% if item.content_object.poster_sens %}
+                                                    <img src="{{ item.content_object.poster.url }}"
+                                                         alt="{{ item.content_object.title }} cover"
+                                                         style="width: 100%"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ item.content_object.poster.url }}"
+                                                         alt="{{ item.content_object.title }} cover"
+                                                         style="width: 100%">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="no-cover-text">No Cover</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            {% if item.content_type.model == 'movie' %}
+                                                <a href=" {% url 'watch:movie_detail' item.content_object.id %} "
+                                                   class="text-decoration-none hover-username">
+                                                    <h5>{{ item.content_object.title }}</h5>
+                                                </a>
+                                            {% elif item.content_type.model == 'series' %}
+                                                <a href=" {% url 'watch:series_detail' item.content_object.id %} "
+                                                   class="text-decoration-none hover-username">
+                                                    <h5>{{ item.content_object.title }}</h5>
+                                                </a>
+                                            {% endif %}
+                                            {% if item.content_type.model == 'movie' %}
+                                                {% regroup item.content_object.movieroles.all by role as roles_list %}
+                                                {% for role in roles_list %}
+                                                    <div>
+                                                        {# djlint:off #}
+                                                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                                        {# djlint:on #}
+                                                        {% for movie_role in role.list %}
+                                                            {% if not forloop.first %}/{% endif %}
+                                                            <a href="{% url 'entity:person_detail' movie_role.person.id %}">
+                                                                {{ movie_role.alt_name | default:movie_role.person.name }}
+                                                            </a>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endfor %}
+                                            {% elif item.content_type.model == 'series' %}
+                                                {% regroup item.content_object.seriesroles.all by role as roles_list %}
+                                                {% for role in roles_list %}
+                                                    <div>
+                                                        {# djlint:off #}
+                                                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                                        {# djlint:on #}
+                                                        {% for series_role in role.list %}
+                                                            {% if not forloop.first %}/{% endif %}
+                                                            <a href="{% url 'entity:person_detail' series_role.person.id %}">
+                                                                {{ series_role.alt_name | default:series_role.person.name }}
+                                                            </a>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
+                                            {% if item.content_object.studios.exists %}
+                                            <div>
+                                                {# djlint:off #}
+                                                <span class="text-muted">Studio{% if item.content_object.studios.count > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                {% for studio in item.content_object.studios.all %}
+                                                    {% if not forloop.first %}/{% endif %}
+                                                    <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                            <div>
+                                                {% if item.content_object.release_date %}
+                                                    <span class="text-muted">Date:</span>{{ item.content_object.release_date }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <a href="{% url 'watch:watch_checkin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                    </div>
+                                {% elif item.model_name == "listencheckin" %}
+                                    <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                    <div class="d-flex flex-row bg-light p-3 mb-2">
+                                        <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                            {% if item.content_object.cover %}
+                                                {% if item.content_object.cover_sens %}
+                                                    <img src="{{ item.content_object.cover.url }}"
+                                                        alt="{{ item.content_object.title }} cover"
+                                                        style="width: 100%"
+                                                        class="img-fluid blur"
+                                                        onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ item.content_object.cover.url }}"
+                                                        alt="{{ item.content_object.title }} cover"
+                                                        style="width: 100%">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="no-cover-text">No Cover</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            {% if item.content_type.model == "release" %}
+                                                <a href="{% url 'listen:release_detail' item.content_object.id %}"
+                                                class="text-decoration-none hover-username">
+                                                    <h5>{{ item.content_object.title }}</h5>
+                                                </a>
+                                            {% elif item.content_type.model == "podcast" %}
+                                                <a href="{% url 'listen:podcast_detail' item.content_object.id %}"
+                                                class="text-decoration-none hover-username">
+                                                    <h5>{{ item.content_object.title }}</h5>
+                                                </a>
+                                                <div class="text-muted">{{ item.content_object.description|truncatechars:600 }}</div>
+                                            {% elif item.content_type.model == "audiobook" %}
+                                                <a href="{% url 'listen:audiobook_detail' item.content_object.id %}"
+                                                class="text-decoration-none hover-username">
+                                                    <h5>{{ item.content_object.title }}</h5>
+                                                </a>
+                                            {% endif %}
+                                            {% regroup item.content_object.releaserole_set.all by role as roles_list %}
+                                            {% for role in roles_list %}
+                                                <div>
+                                                    {# djlint:off #}
+                                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                                    {# djlint:on #}
+                                                    {% for release_role in role.list %}
+                                                        {% if not forloop.first %}/{% endif %}
+                                                        <a href="{% url 'entity:person_detail' release_role.person.id %}">
+                                                            {{ release_role.alt_name | default:release_role.person.name }}
+                                                        </a>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                            {% regroup item.content_object.audiobookrole_set.all by role as roles_list %}
+                                            {% for role in roles_list %}
+                                                <div>
+                                                    {# djlint:off #}
+                                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                                    {# djlint:on #}
+                                                    {% for audiobook_role in role.list %}
+                                                        {% if not forloop.first %}/{% endif %}
+                                                        <a href="{% url 'entity:person_detail' audiobook_role.person.id %}">
+                                                            {{ audiobook_role.alt_name | default:audiobook_role.person.name }}
+                                                        </a>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                            {% if item.content_object.label %}
+                                            <div>
+                                                {# djlint:off #}
+                                                <span class="text-muted">Label{% if item.content_object.label.list|length > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                {% for label in item.content_object.label.all %}
+                                                    {% if not forloop.first %},{% endif %}
+                                                    <a href="{% url 'entity:company_detail' label.id %}">{{ label.name }}</a>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                            {% if item.content_object.publisher %}
+                                            <div>
+                                                {# djlint:off #}
+                                                <span class="text-muted">Publisher{% if item.content_object.publisher.list|length > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                <a href="{% url 'entity:company_detail' item.content_object.publisher.id %}">{{ item.content_object.publisher.name }}</a>
+                                            </div>
+                                            {% endif %}
+                                            {% if item.content_object.catalog_number %}
+                                            <div>
+                                                <span class="text-muted">Catalog Number:</span>
+                                                {{item.content_object.catalog_number}}
+                                            </div>
+                                            {% endif %}
+                                            {% if item.content_object.release_date %}
+                                            <div>
+                                                <span class="text-muted">Date:</span>{{ item.content_object.release_date }}
+                                            </div>
+                                            {% endif %}
+                            
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <a href="{% url 'listen:listen_checkin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                    </div>
+                                    
+                                {% elif item.model_name == "gamecheckin" %}
+                                    <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                    <div class="d-flex flex-row bg-light p-3 mb-2">
+                                        <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                            {% if item.game.cover %}
+                                                {% if item.game.cover_sens %}
+                                                    <img src="{{ item.game.cover.url }}"
+                                                         alt="{{ item.game.title }} cover"
+                                                         style="width: 100%"
+                                                         class="img-fluid blur"
+                                                         onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ item.game.cover.url }}"
+                                                         alt="{{ item.game.title }} cover"
+                                                         style="width: 100%">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="no-cover-text">No Cover</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <a href="{% url 'play:game_detail' item.game.id %}"
+                                               class="text-decoration-none hover-username">
+                                                <h5>{{ item.game.title }}</h5>
+                                            </a>
+                                            {% regroup item.game.gamerole_set.all by role as roles_list %}
+                                            {% for role in roles_list %}
+                                                <div>
+                                                    {# djlint:off #}
+                                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                                    {# djlint:on #}
+                                                    {% for game_role in role.list %}
+                                                        {% if not forloop.first %}/{% endif %}
+                                                        <a href="{% url 'entity:person_detail' game_role.person.id %}">
+                                                            {{ game_role.alt_name | default:game_role.person.name }}
+                                                        </a>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                            <div>
+                                                {% if item.game.developers.exists %}
+                                                    {# djlint:off #}
+                                                    <span class="text-muted">Developer{% if item.game.developers.count > 1 %}s{% endif %}:</span>
+                                                    {# djlint:on #}
+                                                    {% for developer in item.game.developers.all %}
+                                                        {% if not forloop.first %}/{% endif %}
+                                                        <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                {% if item.game.publishers.exists %}
+                                                    {# djlint:off #}
+                                                    <span class="text-muted">Publisher
+                                                        {% if item.game.publishers.count > 1 %}s{% endif %}:</span>
+                                                    {# djlint:on #}
+                                                    {% for publisher in item.game.publishers.all %}
+                                                        {% if not forloop.first %}/{% endif %}
+                                                        <a href="{% url 'entity:company_detail' publisher.id %}">{{ publisher.name }}</a>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                {% if item.game.platforms.exists %}
+                                                    {# djlint:off #}
+                                                    <span class="text-muted">Platform{% if item.game.platforms.list|length > 1 %}s{% endif %}:</span>
+                                                    {# djlint:on #}
+                                                    {% for platform in item.game.platforms.all %}
+                                                        {% if not forloop.first %},{% endif %}
+                                                        <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                {% if item.game.release_date %}
+                                                    <span class="text-muted">Date:</span>{{ item.game.release_date }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <a href="{% url 'play:game_checkin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                    </div>
+                                {% endif %}
+                                
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-sm-5 right-column">
+                <!-- All tags on the page -->
+                <div class="bg-light p-3">
+                    <span>
+                        {% for tag in all_tags %}
+                            <a href="{% url 'write:tag_list' tag.name %}" class="text-success me-2">#{{ tag.name }}</a>
+                        {% endfor %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% comment %} {% extends "base.html" %}
+{% load markdownify %}
+{% load linkify %}
+{% load url_filters %}
 {% block content %}
     <div class="container">
         <div class="row">
@@ -104,4 +564,4 @@
             </div>
         </div>
     </div>
-{% endblock %}
+{% endblock %} {% endcomment %}
