@@ -282,3 +282,15 @@ a {
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
+
+/* For Chrome */
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    margin-left: -35px;
+}
+
+
+/* For Edge */
+input[type="date"] i::-ms-clear {
+    display: none !important;
+}
