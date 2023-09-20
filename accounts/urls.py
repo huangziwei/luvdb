@@ -15,6 +15,7 @@ from .views import (
     SignUpView,
     export_user_data,
     get_followed_usernames,
+    get_user_tags,
     redirect_to_profile,
     search_view,
 )
@@ -66,4 +67,5 @@ urlpatterns = [
     path(
         "get_followed_usernames/", get_followed_usernames, name="get_followed_usernames"
     ),
+    path("get_user_tags/", get_user_tags, name="get_user_tags"),
 ]

@@ -6,8 +6,9 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
-from django.db.models import OuterRef, Q, Subquery
+from django.db.models import Count, OuterRef, Q, Subquery
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -33,7 +34,7 @@ from read.models import Instance as LitInstance
 from read.models import Periodical, ReadCheckIn
 from read.models import Work as LitWork
 from watch.models import Movie, Series, WatchCheckIn
-from write.models import Pin, Post, Repost, Say
+from write.models import Comment, Pin, Post, Repost, Say, Tag
 
 from .forms import (
     CustomUserChangeForm,
@@ -834,3 +835,46 @@ def get_followed_usernames(request):
         )
     )
     return JsonResponse({"usernames": usernames})
+
+
+@login_required
+def get_user_tags(request):
+    user = request.user
+
+    # Get ContentType for each model
+    comment_ct = ContentType.objects.get_for_model(Comment)
+    repost_ct = ContentType.objects.get_for_model(Repost)
+    post_ct = ContentType.objects.get_for_model(Post)
+    say_ct = ContentType.objects.get_for_model(Say)
+    pin_ct = ContentType.objects.get_for_model(Pin)
+    readcheckin_ct = ContentType.objects.get_for_model(ReadCheckIn)
+    listencheckin_ct = ContentType.objects.get_for_model(ListenCheckIn)
+    watchcheckin_ct = ContentType.objects.get_for_model(WatchCheckIn)
+    gamecheckin_ct = ContentType.objects.get_for_model(GameCheckIn)
+
+    # Combine all content types into a list
+    all_cts = [comment_ct, repost_ct, post_ct, say_ct, pin_ct, readcheckin_ct, listencheckin_ct, watchcheckin_ct, gamecheckin_ct,]
+
+    # Initialize an empty list to store unique tags
+    unique_tags = []
+
+    # Loop through each ContentType and get tags
+    for ct in all_cts:
+        tags = (
+            Tag.objects.filter(
+                **{
+                    f"{ct.model.lower()}__user": user,  # Dynamic field name based on model
+                    f"{ct.model.lower()}__tags__isnull": False,  # Ensure tags field is not empty
+                }
+            )
+            .values("name")
+            .annotate(tag_count=Count("name"))
+            .order_by("-tag_count")
+        )
+
+        # Add tags to unique_tags list if not already present
+        for tag in tags:
+            if tag["name"] not in unique_tags:
+                unique_tags.append(tag["name"])
+
+    return JsonResponse({"tags": unique_tags})

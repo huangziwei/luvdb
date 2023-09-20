@@ -92,35 +92,76 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 document.addEventListener("DOMContentLoaded", function() {
     let usernames = [];
+    let tags = [];
 
+    // Fetch usernames
     fetch("/get_followed_usernames/")
     .then(response => response.json())
     .then(data => {
         usernames = data.usernames;
     });
 
+    // Fetch tags
+    fetch("/get_user_tags/")
+    .then(response => response.json())
+    .then(data => {
+        tags = data.tags;
+    });
+
     const textInput = document.getElementById("text-input");
 
     textInput.addEventListener("keyup", function(e) {
         const value = textInput.value;
+        let lastSymbol = null;
+        let lastPos = -1;
+
+        // Check for '@' and '#'
         const lastAt = value.lastIndexOf('@');
-        
-        // Remove dropdown if "@" is removed
-        if (lastAt === -1) {
+        const lastHash = value.lastIndexOf('#');
+
+        if (lastAt > lastHash) {
+            lastSymbol = '@';
+            lastPos = lastAt;
+        } else if (lastHash > lastAt) {
+            lastSymbol = '#';
+            lastPos = lastHash;
+        }
+
+        // Remove dropdown if last symbol is removed
+        if (lastPos === -1) {
             const existingDropdown = document.getElementById("autocomplete-dropdown");
             if (existingDropdown) {
                 existingDropdown.remove();
             }
-            return; // Exit the function
+            return;
         }
 
-        const filter = value.slice(lastAt + 1).toLowerCase();
-        const filteredUsernames = usernames.filter(username => username.toLowerCase().startsWith(filter));
-        showDropdown(filteredUsernames, filter, lastAt + 1); // Pass the position of the last '@' symbol
+        const filter = value.slice(lastPos + 1).toLowerCase();
+        let filteredItems = [];
+
+        if (lastSymbol === '@') {
+            filteredItems = usernames.filter(username => username.toLowerCase().startsWith(filter));
+        } else if (lastSymbol === '#') {
+            filteredItems = tags.filter(tag => tag.toLowerCase().startsWith(filter));
+        }
+
+        showDropdown(filteredItems, filter, lastPos + 1, lastSymbol); // Pass the position of the last symbol
     });
     
 
     textInput.addEventListener("keydown", function(e) {
+        let lastSymbol = null;
+        const value = textInput.value;
+        const lastAt = value.lastIndexOf('@');
+        const lastHash = value.lastIndexOf('#');
+        const dropdown = document.getElementById("autocomplete-dropdown");
+    
+        if (lastAt > lastHash) {
+            lastSymbol = '@';
+        } else if (lastHash > lastAt) {
+            lastSymbol = '#';
+        }
+    
         if (e.key === "ArrowDown") {
             currentSelection++;
             highlightSelection();
@@ -128,58 +169,105 @@ document.addEventListener("DOMContentLoaded", function() {
             currentSelection--;
             highlightSelection();
         } else if (e.key === "Enter") {
-            e.preventDefault();
-            selectUsername();
+            if (dropdown && lastSymbol) {  // Only prevent default if dropdown is visible and a symbol is present
+                e.preventDefault();
+                selectItem(lastSymbol);
+            }
+            // If dropdown is not visible or no symbol, the default "Enter" behavior will occur, creating a line break.
         }
     });
+    
+    
 });
 
 // Declare currentSelection at the top of your script
 let currentSelection = -1;
 
 function getCaretCoordinates(element, upToChar) {
-    const { selectionStart } = element;
-    const { offsetWidth, scrollHeight } = element;
+    const text = element.value.substring(0, upToChar);
+    const textBeforeNewline = text.lastIndexOf('\n') >= 0 ? text.substring(text.lastIndexOf('\n')) : text;
+    const lines = text.split('\n').length;
+
     const computed = window.getComputedStyle(element);
     const lineHeight = parseFloat(computed.lineHeight);
     const paddingLeft = parseFloat(computed.paddingLeft);
     const paddingTop = parseFloat(computed.paddingTop);
 
-    const lines = element.value.substring(0, upToChar).split("\n").length;
-    const charactersInLine = element.value.substring(0, upToChar).split("\n")[lines - 1].length;
+    const charactersInLine = textBeforeNewline.length;
 
-    const x = paddingLeft + (charactersInLine * offsetWidth / element.cols);
+    const x = paddingLeft + charactersInLine * 7; // Approximation, you might want to adjust this
     const y = paddingTop + ((lines - 1) * lineHeight);
 
     return { x, y };
 }
 
+let lastScrollTop = 0; // Variable to store the last scroll position
+
 function highlightSelection() {
-    const options = document.querySelectorAll("#autocomplete-dropdown div");
-    options.forEach((option, index) => {
-        if (index === currentSelection) {
-            option.style.color = "rgb(13, 110, 253)"; // Highlight background
-        } else {
-            option.style.backgroundColor = ""; // Reset background
-        }
+    const dropdown = document.getElementById("autocomplete-dropdown");
+    if (!dropdown) return;
+
+    const options = dropdown.querySelectorAll("div");
+    if (options.length === 0) return;
+
+    // Reset all options to default background
+    options.forEach(option => {
+        option.style.backgroundColor = "white";
     });
+
+    // Adjust current selection within bounds
+    if (currentSelection < 0) {
+        currentSelection = 0;
+    } else if (currentSelection >= options.length) {
+        currentSelection = options.length - 1;
+    }
+
+    // Highlight the current selection
+    const selectedOption = options[currentSelection];
+    selectedOption.style.color = "rgb(13, 110, 253)";
+    selectedOption.style.paddingLeft = "5px";
+
+    // Scroll the dropdown to make the selected option visible
+    const optionHeight = selectedOption.offsetHeight;
+    const scrollTop = dropdown.scrollTop;
+    const scrollBottom = scrollTop + dropdown.clientHeight;
+
+    if (selectedOption.offsetTop < scrollTop) {
+        dropdown.scrollTop = selectedOption.offsetTop;
+    } else if (selectedOption.offsetTop + optionHeight > scrollBottom) {
+        dropdown.scrollTop = selectedOption.offsetTop + optionHeight - dropdown.clientHeight;
+    }
+
+    lastScrollTop = dropdown.scrollTop; // Store the last scroll position
 }
 
+// Call this function after any operation that might reset the dropdown scroll position
+function restoreScrollPosition() {
+    const dropdown = document.getElementById("autocomplete-dropdown");
+    if (dropdown) {
+        dropdown.scrollTop = lastScrollTop;
+    }
+}
 
-function selectUsername() {
-    const options = document.querySelectorAll("#autocomplete-dropdown div");
+function selectItem(symbol) {
+    const dropdown = document.getElementById("autocomplete-dropdown");
+    if (!dropdown) return;
+
+    const options = dropdown.querySelectorAll("div");
     if (currentSelection >= 0 && currentSelection < options.length) {
-        const selectedUsername = options[currentSelection].innerText;
+        const selectedItem = options[currentSelection].innerText;
         const textInput = document.getElementById("text-input");
         const value = textInput.value;
-        const lastAt = value.lastIndexOf('@');
-        textInput.value = value.slice(0, lastAt) + '@' + selectedUsername + ' ';
-        document.getElementById("autocomplete-dropdown").remove();
+        const lastSymbolPos = value.lastIndexOf(symbol);
+        textInput.value = value.slice(0, lastSymbolPos) + symbol + selectedItem + ' ';
+        dropdown.remove();
+        console.log("removed dropdown");
         currentSelection = -1;
     }
 }
 
-function showDropdown(items, typedLetters = "", lastAtPosition) {
+function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
+    if (items.length === 0) return; 
     // Remove existing dropdown if any
     const existingDropdown = document.getElementById("autocomplete-dropdown");
     if (existingDropdown) {
@@ -194,7 +282,7 @@ function showDropdown(items, typedLetters = "", lastAtPosition) {
     // Get textarea element and its position
     const textInput = document.getElementById("text-input");
     const textAreaRect = textInput.getBoundingClientRect();
-    const { x, y } = getCaretCoordinates(textInput, lastAtPosition); // Pass the position of the last '@' symbol
+    const { x, y } = getCaretCoordinates(textInput, lastPos); // Pass the position of the last '@' symbol
 
     // Get line height from computed styles
     const computed = window.getComputedStyle(textInput);
@@ -207,12 +295,13 @@ function showDropdown(items, typedLetters = "", lastAtPosition) {
     items.forEach((item, index) => {
         const option = document.createElement("div");
         option.innerText = item;
+        option.style.height = "25px"; // Set the height for each item
         if (index === currentSelection) {
             option.style.color = "rgb(13, 110, 253)"; // Updated background color
-            option.style.padding = "0"; // Added padding
+            option.style.paddingLeft = "5px"; // Added padding
         } else {
-            option.style.backgroundColor = ""; // Reset background
-            option.style.padding = "0"; // Reset padding
+            option.style.color = ""; // Reset background
+            option.style.paddingLeft = "5px"; // Reset padding
         }
         option.addEventListener("click", function() {
             // Append selected username to textarea
@@ -223,5 +312,6 @@ function showDropdown(items, typedLetters = "", lastAtPosition) {
     });
 
     document.body.appendChild(dropdown);
+    restoreScrollPosition(); // Restore the last scroll position
 }
 

@@ -288,3 +288,13 @@ input[type="date"]::-webkit-inner-spin-button,
 input[type="date"]::-webkit-calendar-picker-indicator {
     margin-left: -35px;
 }
+
+#autocomplete-dropdown {
+    background-color: white;
+    border: 1px solid #ccc;
+    max-height: 125px;
+    /* Assuming each item is 25px tall */
+    overflow-y: auto;
+    width: 200px;
+    /* Set a fixed width, or make it dynamic */
+}
