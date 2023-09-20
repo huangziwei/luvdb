@@ -113,6 +113,8 @@
                             <a href="{% url 'play:game_checkin_list' object.game.id object.user.username %}" class="text-muted">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
+                                {% else %}
+                                    {{ object.timestamp|date:"Y.m.d H:i" }}
                                 {% endif %}
                             </a>
                         </p>

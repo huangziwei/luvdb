@@ -103,6 +103,8 @@
                                    class="text-muted">
                                     {% if checkin_count > 0 %}
                                         {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
+                                    {% else %}
+                                        {{ object.timestamp|date:"Y.m.d H:i" }}
                                     {% endif %}
                                 </a>
                             {% elif object.content_type.model == 'issue' %}
@@ -110,6 +112,8 @@
                                    class="text-muted">
                                     {% if checkin_count > 0 %}
                                         {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
+                                    {% else %}
+                                        {{ object.timestamp|date:"Y.m.d H:i" }} 
                                     {% endif %}
                                 </a>
                             {% endif %}

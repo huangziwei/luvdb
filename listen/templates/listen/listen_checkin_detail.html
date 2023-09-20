@@ -150,6 +150,8 @@
                                    class="text-muted">
                                     {% if checkin_count > 0 %}
                                         {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
+                                    {% else %}
+                                        {{ object.timestamp|date:"Y.m.d H:i" }}
                                     {% endif %}
                                 </a>
                             {% elif object.content_type.model == 'podcast' %}
@@ -157,13 +159,19 @@
                                    class="text-muted">
                                     {% if checkin_count > 0 %}
                                         {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
-                                    {% endif %}                                </a>
+                                    {% else %}
+                                        {{ object.timestamp|date:"Y.m.d H:i" }}
+                                    {% endif %}                                
+                                </a>
                             {% elif object.content_type.model == 'audiobook' %}
                                 <a href="{% url 'listen:audiobook_checkin_list' object.content_object.id object.user.username %}"
                                     class="text-muted">
                                     {% if checkin_count > 0 %}
                                         {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
-                                    {% endif %}                                </a>
+                                    {% else %}
+                                        {{ object.timestamp|date:"Y.m.d H:i" }}
+                                    {% endif %}                                
+                                </a>
                             {% endif %}
                         </p>
                         {% if object.user == request.user %}

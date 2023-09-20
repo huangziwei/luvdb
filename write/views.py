@@ -441,36 +441,55 @@ class TagUserListView(ListView):
         tag = self.kwargs["tag"]
         username = self.kwargs["username"]
         user = User.objects.get(username=username)
+
         posts = Post.objects.filter(tags__name=tag, user=user)
         says = Say.objects.filter(tags__name=tag, user=user)
         pins = Pin.objects.filter(tags__name=tag, user=user)
-        return list(chain(posts, says, pins))
+        reposts = Repost.objects.filter(tags__name=tag, user=user)
+        read_checkins = ReadCheckIn.objects.filter(tags__name=tag, user=user)
+        watch_checkins = WatchCheckIn.objects.filter(tags__name=tag, user=user)
+        listen_checkins = ListenCheckIn.objects.filter(tags__name=tag, user=user)
+        game_checkins = GameCheckIn.objects.filter(tags__name=tag, user=user)
+        reposts = Repost.objects.filter(tags__name=tag, user=user)
+
+        # Combine all querysets into a single list and sort by timestamp
+        combined_list = list(
+            chain(
+                posts,
+                says,
+                pins,
+                read_checkins,
+                watch_checkins,
+                listen_checkins,
+                game_checkins,
+                reposts,
+            )
+        )
+        sorted_list = sorted(combined_list, key=lambda x: x.timestamp, reverse=True)
+
+        # Add model names to each object
+        for obj in sorted_list:
+            obj.model_name = obj.__class__.__name__.lower()
+
+        return sorted_list
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tag = self.kwargs["tag"]
         username = self.kwargs["username"]
         user = User.objects.get(username=username)
+
         context["tag"] = tag
         context["user"] = user  # the user whose tags we are viewing
-        context["posts"] = posts = Post.objects.filter(
-            tags__name=tag, user=user
-        ).order_by("-timestamp")
-        context["says"] = says = Say.objects.filter(tags__name=tag, user=user).order_by(
-            "-timestamp"
-        )
-        context["pins"] = pins = Pin.objects.filter(tags__name=tag, user=user).order_by(
-            "-timestamp"
-        )
-        context["reposts"] = reposts = Repost.objects.filter(
-            tags__name=tag, user=user
-        ).order_by("-timestamp")
 
+        # Get all tags from the sorted list
         all_tags = set()
-        for obj in chain(posts, says, pins, reposts):
+        for obj in self.object_list:
             for t in obj.tags.all():
                 all_tags.add(t)
+
         context["all_tags"] = all_tags
+
         return context
 
 

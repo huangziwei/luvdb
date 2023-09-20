@@ -15,7 +15,7 @@
                     </a> reposted:
                 </div>
                 {% if repost.content %}
-                    <div class="mt-2">{{ repost.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                    <div class="mt-2">{{ repost.content | linkify_tags:repost.user | linkify_mentions | markdownify }}</div>
                 {% endif %}
                 <div class="bg-light mt-2 p-3">
                     {% if repost.original_activity %}
@@ -43,7 +43,7 @@
                                 {% endif %}
                             </div>
                             <div class="mt-2">
-                                {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
+                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user | linkify_mentions | truncatechars:300 | markdownify }}
                             </div>
                             <div class="d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -121,7 +121,7 @@
                                 {% endif %}
                             </div>
                             <div class="mt-2">
-                                {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
+                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user | linkify_mentions | truncatechars:300 | markdownify }}
                             </div>
                             <div class="d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -215,7 +215,7 @@
                                 {% endif %}
                             </div>
                             <div class="mt-2">
-                                {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
+                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user | linkify_mentions | truncatechars:300 | markdownify }}
                             </div>
                             <div class="d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -290,7 +290,7 @@
                                 {% endif %}
                             </div>
                             <div class="mt-2">
-                                {{ repost.original_activity.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
+                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user | linkify_mentions | truncatechars:300 | markdownify }}
                             </div>
                             <div class="d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -357,33 +357,33 @@
                                 </p>
                             </div>
                         {% else %}
-                            <p>
+                            <div class="mb-2">
                                 <a href="{% url 'accounts:detail' repost.original_activity.user.username %}"
                                    class="text-decoration-none hover-username">
                                     {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
                                     <span class="username">@{{ repost.original_activity.user.username }}</span>
                                 </a>
                                 {{ repost.original_activity.activity_type | parse_activity_type }}:
-                            </p>
+                            </div>
                             {% if repost.original_activity.activity_type == "post" %}
-                                <p>
+                                <div class="mb-2">
                                     <a href="{% url 'write:post_detail' repost.original_activity.content_object.id %}"
                                        class="text-decoration-none">{{ repost.original_activity.content_object.title }}</a>
-                                </p>
+                                </div>
                             {% elif repost.original_activity.activity_type == "pin" %}
-                                <p>
+                                <div class="mb-2">
                                     <a href="{{ repost.original_activity.content_object.url }}"
                                        class="text-decoration-none">{{ repost.original_activity.content_object.title }}</a> ({{ repost.original_activity.content_object.url | root_url }})
-                                </p>
+                                </div>
                             {% endif %}
                             <div class="bg-light">
-                                <div>
-                                    {{ repost.original_activity.content_object.content  | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
+                                <div class="mb-2">
+                                    {{ repost.original_activity.content_object.content  | linkify_tags:repost.original_activity.user | linkify_mentions | truncatechars:300 | markdownify }}
                                 </div>
-                                <p>
+                                <div>
                                     <a href="{{ repost.original_activity.content_object.get_absolute_url }}"
                                        class="text-decoration-none text-secondary">{{ repost.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a>
-                                </p>
+                                </div>
                             </div>
                         {% endif %}
                     {% else %}
