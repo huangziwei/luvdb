@@ -31,10 +31,10 @@ class UserSayFeed(Feed):
         return Say.objects.filter(user=user).order_by("-timestamp")[:25]
 
     def item_title(self, say):
-        return say.content[:50]  # Taking the first 50 characters.
+        return say.content  # Taking the first 50 characters.
 
     def item_description(self, say):
-        return say.content
+        return None
 
     def item_link(self, say):
         return reverse("write:say_detail", args=[say.pk])
