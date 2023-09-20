@@ -1,9 +1,16 @@
+from itertools import chain
+
 from django.contrib.auth import get_user_model
 from django.contrib.syndication.views import Feed
 from django.http import Http404
 from django.urls import reverse
 
-from .models import Pin, Post, Say
+from listen.models import ListenCheckIn
+from play.models import GameCheckIn
+from read.models import ReadCheckIn
+from watch.models import WatchCheckIn
+
+from .models import Pin, Post, Repost, Say
 
 User = get_user_model()
 
@@ -111,3 +118,108 @@ class UserPinFeed(Feed):
 
     def item_pubdate(self, pin):
         return pin.timestamp
+
+
+class TagListFeed(Feed):
+    request = None  # Initialize request to None
+
+    def __call__(self, request, *args, **kwargs):
+        self.request = request  # Capture the request object
+        return super().__call__(request, *args, **kwargs)
+
+    def get_object(self, request, tag):
+        return tag
+
+    def title(self, tag):
+        return f"Tag feed for {tag} at LʌvDB"
+
+    def link(self, tag):
+        return reverse("write:tag_list", args=[tag])
+
+    def description(self, tag):
+        return f"Latest activities tagged with {tag} on LʌvDB"
+
+    def items(self, tag):
+        # Initialize querysets
+        posts = Post.objects.filter(tags__name=tag)
+        says = Say.objects.filter(tags__name=tag)
+        pins = Pin.objects.filter(tags__name=tag)
+        read_checkins = ReadCheckIn.objects.filter(tags__name=tag)
+        watch_checkins = WatchCheckIn.objects.filter(tags__name=tag)
+        listen_checkins = ListenCheckIn.objects.filter(tags__name=tag)
+        game_checkins = GameCheckIn.objects.filter(tags__name=tag)
+        reposts = Repost.objects.filter(tags__name=tag)
+
+        # Combine all querysets into a single list and sort by timestamp
+        combined_list = list(
+            chain(
+                posts,
+                says,
+                pins,
+                read_checkins,
+                watch_checkins,
+                listen_checkins,
+                game_checkins,
+                reposts,
+            )
+        )
+        sorted_list = sorted(combined_list, key=lambda x: x.timestamp, reverse=True)
+
+        # Filter out items from non-public profiles if the user is not logged in
+        if not self.request.user.is_authenticated:
+            sorted_list = [item for item in sorted_list if item.user.is_public]
+
+        return sorted_list[:25]
+
+    def item_title(self, item):
+        model_name = item.__class__.__name__.lower()
+        if model_name == "say":
+            return item.content
+        elif model_name == "post":
+            return f'{item.user.username} posted "{item.title}"'
+        elif model_name == "pin":
+            return f'{item.user.username} pinned "{item.title}"'
+        elif model_name == "follow":
+            return f"{item.follower.username} followed {item.followed.username}"
+        elif model_name == "gamecheckin":
+            return f"{item.user.username} checked in to {item.game.title}"
+        elif "checkin" in model_name and "game" not in model_name:
+            return f"{item.user.username} checked in to {item.content_object.title}"
+        else:
+            return str(item)
+
+    def item_description(self, item):
+        model_name = item.__class__.__name__.lower()
+        if model_name == "say":
+            return None
+        if hasattr(item, "content"):
+            return item.content
+        elif model_name == "follow":
+            return f"{item.follower.username} followed {item.followed.username}"
+        else:
+            return str(item)
+
+    def item_link(self, item):
+        model_name = item.__class__.__name__.lower()
+        mapping = {
+            "say": "write:say_detail",
+            "post": "write:post_detail",
+            "pin": "write:pin_detail",
+            "repost": "write:repost_detail",
+            "gamecheckin": "play:game_checkin_detail",
+            "readcheckin": "read:read_checkin_detail",
+            "watchcheckin": "watch:watch_checkin_detail",
+            "listencheckin": "listen:listen_checkin_detail",
+            "follow": "accounts:detail",
+        }
+        url_name = mapping.get(model_name)
+        if url_name is None:
+            raise ValueError(f"Unknown model name: {model_name}")
+
+        if model_name != "follow":
+            return reverse(url_name, args=[item.pk])
+        else:
+            return reverse(url_name, args=[item.followed.username])
+
+    def item_pubdate(self, item):
+        return item.timestamp

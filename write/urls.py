@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 
-from .feeds import UserPinFeed, UserPostFeed, UserSayFeed
+from .feeds import TagListFeed, UserPinFeed, UserPostFeed, UserSayFeed
 from .views import (
     CommentCreateView,
     CommentDeleteView,
@@ -92,6 +92,7 @@ urlpatterns = [
         TagUserListView.as_view(),
         name="tag_user_list",
     ),
+    path("tag/<str:tag>/rss", TagListFeed(), name="tag_list_feed"),
     # luvlist
     path("luvlist/create/", LuvListCreateView.as_view(), name="luvlist_create"),
     path("luvlist/<int:pk>/", LuvListDetailView.as_view(), name="luvlist_detail"),
