@@ -17,7 +17,7 @@
                                     <a href="{% url 'accounts:detail' item.user.username %}">{{ item.user.display_name | default:item.user.username }}</a> 
                                     <span class="me-1 text-muted">said</span>
                                 </div>
-                                <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                <div class="mb-2">{{ item.content | linkify_tags:item.user | linkify_mentions | markdownify }}</div>
                                 <div class="mb-2">
                                     <a href="{% url 'write:say_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                 </div>
@@ -53,7 +53,7 @@
                                 <div class="mb-2">
                                     <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
                                 </div>
-                                <div class="bg-light p-3 mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify | truncatechars:300}}</div>
+                                <div class="bg-light p-3 mb-2">{{ item.content | linkify_tags:item.user | linkify_mentions | markdownify | truncatechars:300}}</div>
                                 <div class="mb-2">
                                     <a href="{% url 'write:post_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                 </div>
@@ -64,7 +64,7 @@
                                     <a href="{% url 'accounts:detail' item.user.username %}">{{ item.user.display_name | default:item.user.username }}</a> 
                                     <span class="me-1 text-muted">reposted</span>
                                 </div>
-                                <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                <div class="mb-2">{{ item.content | linkify_tags:item.user | linkify_mentions | markdownify }}</div>
                                 <div class="mb-2">
                                     <a href="{% url 'write:repost_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                 </div>
@@ -101,7 +101,7 @@
                                 
                                 {% if item.model_name == "readcheckin" %}
 
-                                <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                <div class="mb-2">{{ item.content | linkify_tags:item.user | linkify_mentions | markdownify }}</div>
                                 <div class="d-flex flex-row bg-light p-3 mt-2">
                                     <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                         {% if item.content_object.cover %}
@@ -169,7 +169,7 @@
                                 </div>
 
                                 {% elif item.model_name == "watchcheckin" %}
-                                    <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                    <div class="mb-2">{{ item.content | linkify_tags:item.user | linkify_mentions | markdownify }}</div>
                                     <div class="d-flex flex-row bg-light p-3 mb-2">
                                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                             {% if item.content_object.poster %}
@@ -253,7 +253,7 @@
                                         <a href="{% url 'watch:watch_checkin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                     </div>
                                 {% elif item.model_name == "listencheckin" %}
-                                    <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                    <div class="mb-2">{{ item.content | linkify_tags:item.user | linkify_mentions | markdownify }}</div>
                                     <div class="d-flex flex-row bg-light p-3 mb-2">
                                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                             {% if item.content_object.cover %}
@@ -356,7 +356,7 @@
                                     </div>
                                     
                                 {% elif item.model_name == "gamecheckin" %}
-                                    <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                    <div class="mb-2">{{ item.content | linkify_tags:item.user | linkify_mentions | markdownify }}</div>
                                     <div class="d-flex flex-row bg-light p-3 mb-2">
                                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                             {% if item.game.cover %}
