@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
 from django.db.models import OuterRef, Q, Subquery
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -824,3 +824,13 @@ def search_view(request):
             "terms": search_terms,
         },
     )
+
+
+@login_required
+def get_followed_usernames(request):
+    usernames = list(
+        Follow.objects.filter(follower=request.user).values_list(
+            "followed__username", flat=True
+        )
+    )
+    return JsonResponse({"usernames": usernames})

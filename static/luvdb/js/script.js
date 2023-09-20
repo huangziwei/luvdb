@@ -89,3 +89,139 @@ window.addEventListener('DOMContentLoaded', (event) => {
     // const markdownImages = document.querySelectorAll('p img');
     // resizeImages(markdownImages);
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    let usernames = [];
+
+    fetch("/get_followed_usernames/")
+    .then(response => response.json())
+    .then(data => {
+        usernames = data.usernames;
+    });
+
+    const textInput = document.getElementById("text-input");
+
+    textInput.addEventListener("keyup", function(e) {
+        const value = textInput.value;
+        const lastAt = value.lastIndexOf('@');
+        
+        // Remove dropdown if "@" is removed
+        if (lastAt === -1) {
+            const existingDropdown = document.getElementById("autocomplete-dropdown");
+            if (existingDropdown) {
+                existingDropdown.remove();
+            }
+            return; // Exit the function
+        }
+
+        const filter = value.slice(lastAt + 1).toLowerCase();
+        const filteredUsernames = usernames.filter(username => username.toLowerCase().startsWith(filter));
+        showDropdown(filteredUsernames, filter, lastAt + 1); // Pass the position of the last '@' symbol
+    });
+    
+
+    textInput.addEventListener("keydown", function(e) {
+        if (e.key === "ArrowDown") {
+            currentSelection++;
+            highlightSelection();
+        } else if (e.key === "ArrowUp") {
+            currentSelection--;
+            highlightSelection();
+        } else if (e.key === "Enter") {
+            e.preventDefault();
+            selectUsername();
+        }
+    });
+});
+
+// Declare currentSelection at the top of your script
+let currentSelection = -1;
+
+function getCaretCoordinates(element, upToChar) {
+    const { selectionStart } = element;
+    const { offsetWidth, scrollHeight } = element;
+    const computed = window.getComputedStyle(element);
+    const lineHeight = parseFloat(computed.lineHeight);
+    const paddingLeft = parseFloat(computed.paddingLeft);
+    const paddingTop = parseFloat(computed.paddingTop);
+
+    const lines = element.value.substring(0, upToChar).split("\n").length;
+    const charactersInLine = element.value.substring(0, upToChar).split("\n")[lines - 1].length;
+
+    const x = paddingLeft + (charactersInLine * offsetWidth / element.cols);
+    const y = paddingTop + ((lines - 1) * lineHeight);
+
+    return { x, y };
+}
+
+function highlightSelection() {
+    const options = document.querySelectorAll("#autocomplete-dropdown div");
+    options.forEach((option, index) => {
+        if (index === currentSelection) {
+            option.style.color = "rgb(13, 110, 253)"; // Highlight background
+        } else {
+            option.style.backgroundColor = ""; // Reset background
+        }
+    });
+}
+
+
+function selectUsername() {
+    const options = document.querySelectorAll("#autocomplete-dropdown div");
+    if (currentSelection >= 0 && currentSelection < options.length) {
+        const selectedUsername = options[currentSelection].innerText;
+        const textInput = document.getElementById("text-input");
+        const value = textInput.value;
+        const lastAt = value.lastIndexOf('@');
+        textInput.value = value.slice(0, lastAt) + '@' + selectedUsername + ' ';
+        document.getElementById("autocomplete-dropdown").remove();
+        currentSelection = -1;
+    }
+}
+
+function showDropdown(items, typedLetters = "", lastAtPosition) {
+    // Remove existing dropdown if any
+    const existingDropdown = document.getElementById("autocomplete-dropdown");
+    if (existingDropdown) {
+        existingDropdown.remove();
+    }
+
+    // Create dropdown
+    const dropdown = document.createElement("div");
+    dropdown.id = "autocomplete-dropdown";
+    dropdown.style.position = "absolute";
+
+    // Get textarea element and its position
+    const textInput = document.getElementById("text-input");
+    const textAreaRect = textInput.getBoundingClientRect();
+    const { x, y } = getCaretCoordinates(textInput, lastAtPosition); // Pass the position of the last '@' symbol
+
+    // Get line height from computed styles
+    const computed = window.getComputedStyle(textInput);
+    const lineHeight = parseFloat(computed.lineHeight);
+    
+    // Position dropdown
+    dropdown.style.left = `${textAreaRect.left + x}px`;
+    dropdown.style.top = `${textAreaRect.top + y + lineHeight}px`;
+
+    items.forEach((item, index) => {
+        const option = document.createElement("div");
+        option.innerText = item;
+        if (index === currentSelection) {
+            option.style.color = "rgb(13, 110, 253)"; // Updated background color
+            option.style.padding = "0"; // Added padding
+        } else {
+            option.style.backgroundColor = ""; // Reset background
+            option.style.padding = "0"; // Reset padding
+        }
+        option.addEventListener("click", function() {
+            // Append selected username to textarea
+            textInput.value += item + " ";
+            dropdown.remove();
+        });
+        dropdown.appendChild(option);
+    });
+
+    document.body.appendChild(dropdown);
+}
+

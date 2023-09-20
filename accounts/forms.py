@@ -71,7 +71,7 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = User
-        fields = ("display_name", "username", "bio", "is_public", "timezone")
+        fields = ("username", "display_name", "bio", "is_public", "timezone")
         help_texts = {
             "is_public": "Enable this option to make your profile visible to everyone, including non-logged-in users. If disabled, only logged-in users will have access to view your profile.",
             "timezone": "Set your preferred timezone. This will adjust the display of all timestamps to match your local date and time.",

@@ -1,9 +1,11 @@
 import pytz
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+from django.http import JsonResponse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 
@@ -123,3 +125,13 @@ class InvitationRequest(models.Model):
 
     def __str__(self):
         return self.email
+
+
+@login_required
+def get_followed_usernames(request):
+    usernames = list(
+        Follow.objects.filter(follower=request.user).values_list(
+            "followed__username", flat=True
+        )
+    )
+    return JsonResponse({"usernames": usernames})

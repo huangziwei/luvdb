@@ -50,3 +50,55 @@ document.getElementById('text-input').addEventListener('keydown', function(e) {
         }
     }
 });
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    let usernames = [];
+
+    // Fetch usernames when the page loads
+    fetch("/get_followed_usernames/")
+    .then(response => response.json())
+    .then(data => {
+        usernames = data.usernames;
+    });
+
+    const textInput = document.getElementById("text-input");
+
+    textInput.addEventListener("keyup", function(e) {
+        const value = textInput.value;
+        const lastChar = value.charAt(value.length - 1);
+
+        if (lastChar === '@') {
+            // Show usernames in some kind of dropdown
+            showDropdown(usernames);
+        }
+    });
+
+    function showDropdown(items) {
+        // Remove existing dropdown if any
+        const existingDropdown = document.getElementById("autocomplete-dropdown");
+        if (existingDropdown) {
+            existingDropdown.remove();
+        }
+    
+        // Create dropdown
+        const dropdown = document.createElement("div");
+        dropdown.id = "autocomplete-dropdown";
+        dropdown.style.position = "absolute";
+    
+        items.forEach(item => {
+            const option = document.createElement("div");
+            option.innerText = item;
+            option.addEventListener("click", function() {
+                // Append selected username to textarea
+                const textInput = document.getElementById("text-input");
+                textInput.value += item + " ";
+                dropdown.remove();
+            });
+            dropdown.appendChild(option);
+        });
+    
+        document.body.appendChild(dropdown);
+    }
+    
+});

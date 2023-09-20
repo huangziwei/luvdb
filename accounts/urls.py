@@ -14,6 +14,7 @@ from .views import (
     RequestInvitationView,
     SignUpView,
     export_user_data,
+    get_followed_usernames,
     redirect_to_profile,
     search_view,
 )
@@ -61,5 +62,8 @@ urlpatterns = [
         "invitation-requested-success/",
         InvitationRequestedSuccessView.as_view(),
         name="invitation_requested_success",
+    ),
+    path(
+        "get_followed_usernames/", get_followed_usernames, name="get_followed_usernames"
     ),
 ]
