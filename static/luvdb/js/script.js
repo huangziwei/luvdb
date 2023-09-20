@@ -185,21 +185,40 @@ let currentSelection = -1;
 
 function getCaretCoordinates(element, upToChar) {
     const text = element.value.substring(0, upToChar);
-    const textBeforeNewline = text.lastIndexOf('\n') >= 0 ? text.substring(text.lastIndexOf('\n')) : text;
-    const lines = text.split('\n').length;
-
+    const mirrorDiv = document.createElement('div');
     const computed = window.getComputedStyle(element);
     const lineHeight = parseFloat(computed.lineHeight);
-    const paddingLeft = parseFloat(computed.paddingLeft);
-    const paddingTop = parseFloat(computed.paddingTop);
 
-    const charactersInLine = textBeforeNewline.length;
+    // Set up the mirror div's styles to match the textarea
+    mirrorDiv.style.width = computed.width;
+    mirrorDiv.style.height = computed.height;
+    mirrorDiv.style.font = computed.font;
+    mirrorDiv.style.whiteSpace = 'pre-wrap';
+    mirrorDiv.style.wordWrap = 'break-word';
+    mirrorDiv.style.padding = computed.padding;
+    mirrorDiv.style.border = computed.border;
+    mirrorDiv.style.visibility = 'hidden';
+    mirrorDiv.style.position = 'absolute';
+    mirrorDiv.style.zIndex = '-9999';
+    mirrorDiv.textContent = text;
 
-    const x = paddingLeft + charactersInLine * 7; // Approximation, you might want to adjust this
-    const y = paddingTop + ((lines - 1) * lineHeight);
+    document.body.appendChild(mirrorDiv);
 
-    return { x, y };
+    const span = document.createElement('span');
+    span.textContent = element.value.substring(upToChar) || '.';  // Use '.' as a placeholder for empty space
+    mirrorDiv.appendChild(span);
+
+    const coordinates = {
+        x: span.offsetLeft,
+        y: span.offsetTop
+    };
+
+    document.body.removeChild(mirrorDiv);
+
+    return coordinates;
 }
+
+
 
 let lastScrollTop = 0; // Variable to store the last scroll position
 
