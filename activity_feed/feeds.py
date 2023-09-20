@@ -60,6 +60,10 @@ class UserActivityFeed(Feed):
             activity.content_type_id
         ).model_class()
         model_name = related_model.__name__.lower()
+
+        if model_name == "say":
+            return None
+
         if hasattr(related_object, "content"):
             return related_object.content
         elif model_name == "follow":
