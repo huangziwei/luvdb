@@ -65,7 +65,7 @@ class UserActivityFeed(Feed):
             return None
 
         if hasattr(related_object, "content"):
-            return related_object.content
+            return related_object.content[:300]
         elif model_name == "follow":
             return f"{related_object.follower.username} followed {related_object.followed.username}"
         else:
