@@ -93,6 +93,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 document.addEventListener("DOMContentLoaded", function() {
     let usernames = [];
     let tags = [];
+    let lastDropdownTriggerPos = -1;
 
     // Fetch usernames
     fetch("/get_followed_usernames/")
@@ -127,13 +128,23 @@ document.addEventListener("DOMContentLoaded", function() {
             lastPos = lastHash;
         }
 
-        // Remove dropdown if last symbol is removed
-        if (lastPos === -1) {
+        // Update lastDropdownTriggerPos when a dropdown is shown
+        if (lastPos !== -1) {
+            lastDropdownTriggerPos = lastPos;
+        }
+
+        // Check the current last @ or # in the text
+        const currentLastAt = textInput.value.lastIndexOf('@');
+        const currentLastHash = textInput.value.lastIndexOf('#');
+        const currentLastPos = Math.max(currentLastAt, currentLastHash);
+        
+        // Remove dropdown if the last trigger symbol is different from the current last symbol
+        if (lastDropdownTriggerPos == currentLastPos) {
             const existingDropdown = document.getElementById("autocomplete-dropdown");
             if (existingDropdown) {
                 existingDropdown.remove();
             }
-            return;
+            lastDropdownTriggerPos = -1; // Reset the last dropdown trigger position
         }
 
         const filter = value.slice(lastPos + 1).toLowerCase();
@@ -280,7 +291,6 @@ function selectItem(symbol) {
         const lastSymbolPos = value.lastIndexOf(symbol);
         textInput.value = value.slice(0, lastSymbolPos) + symbol + selectedItem + ' ';
         dropdown.remove();
-        console.log("removed dropdown");
         currentSelection = -1;
     }
 }
