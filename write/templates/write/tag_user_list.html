@@ -7,12 +7,20 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-7 left-column">
-                <h2>
-                    Entries with tag "{{ tag }}"
-                    {% if user %}
-                        by <a href="{% url 'accounts:detail' user.username %}">{{ user.display_name | default:user.username }}</a>
+                
+                <div class="d-flex justify-content-between mb-3">
+                    <h2>
+                        Entries with tag "{{ tag }}"
+                        {% if user %}
+                            by <a href="{% url 'accounts:detail' user.username %}">{{ user.display_name | default:user.username }}</a>
+                        {% endif %}
+                    </h2>
+                    {% if user.is_public %}
+                        <div>
+                            <a class="btn btn-sm btn-success" href="{% url 'write:tag_user_list_feed' user tag %}">RSS</a>
+                        </div>
                     {% endif %}
-                </h2>
+                </div>
                 
                 {% for item in object_list %}
                     <div class="item mb-4">
