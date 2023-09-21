@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
+    
     const toggleButton = document.getElementById('darkModeToggle');
+    toggleButton.style.display = "inline-block";
+
+
     const htmlElement = document.documentElement;
     const bgLightElements = document.querySelectorAll('.bg-light');
     const bgWhiteElements = document.querySelectorAll('.bg-white');
