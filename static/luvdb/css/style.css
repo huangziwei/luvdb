@@ -95,11 +95,15 @@ blockquote:last-child {
     font-size: 1.2em;
 }
 
+
+
+
 .select2-selection__rendered {
     line-height: normal !important;
     padding: 0.6em 1.5em 0em 0.8em !important;
     vertical-align: middle !important;
 }
+
 
 .activity-filter.selected {
     background-color: #979797 !important;
@@ -376,4 +380,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 [data-bs-theme='dark'] .navbar {
     background-color: #333;
     /* or whatever your dark mode navbar color is */
+}
+
+[data-bs-theme='dark'] .select2-container--default .select2-selection,
+[data-bs-theme='dark'] .select2-container--default .select2-search--dropdown .select2-search__field {
+    background-color: rgb(33, 37, 41) !important;
+    border-color: rgb(73, 80, 87) !important;
+}
+
+[data-bs-theme='dark'] .select2-container--default .select2-dropdown,
+[data-bs-theme='dark'] .select2-search--dropdown,
+[data-bs-theme='dark'] .select2-container--default .select2-results>.select2-results__options {
+    background-color: rgb(33, 37, 41) !important;
+    border-color: rgb(73, 80, 87) !important;
 }
