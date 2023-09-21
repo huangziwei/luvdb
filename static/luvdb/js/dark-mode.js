@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
             bgWhiteElements.forEach(el => el.classList.replace('bg-dark', "bg-white"));
             btnLightElements.forEach(el => el.classList.replace('btn-dark-highlight', 'btn-light'));
             bioElements.forEach(el => el.style.backgroundColor = '#fff6ed'); // Original color for bio
-            faIcons.forEach(el => el.setAttribute('fill', '#000')); // Original color for FontAwesome icons
+            faIcons.forEach(el => el.setAttribute('fill', '#6C757D')); // Original color for FontAwesome icons
             stickyNoteElements.forEach(el => el.classList.remove('bg-dark'));
 
         }
