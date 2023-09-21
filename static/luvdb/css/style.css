@@ -317,22 +317,51 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 
 /* dark mode */
-
+/* 
 .bg-dark-highlight,
 .btn-dark-highlight {
     background-color: #333 !important;
 
+} */
+
+/* Light / dark Mode */
+
+
+:root {
+    --bg-default: #ffffff;
+    --bg-highlight: #ccc;
+    --text-default: #000000;
 }
 
-/* Light Mode */
+[data-bs-theme="dark"] {
+    --bg-default: #333333;
+    --bg-highlight: #444444;
+    --text-default: #ffffff;
+}
+
+[data-bs-theme="dark"] .bg-light {
+    background-color: var(--bg-default) !important;
+    color: #fff !important;
+    --bg-highlight: #444444 !important;
+    --text-default: #ffffff !important;
+    --bs-btn-border-color: #444444 !important;
+
+}
+
+[data-bs-theme="dark"] .btn-light {
+    background-color: var(--bg-default) !important;
+    --bg-highlight: #444444;
+    color: #a09e9e !important;
+    --bs-btn-border-color: #444444 !important;
+
+}
+
 .selected-button {
     background-color: #000 !important;
-    /* You can choose your own color */
     color: white !important;
 }
 
-/* Dark Mode */
-[data-bs-theme='dark'] .selected-button {
+[data-bs-theme="dark"] .selected-button {
     background-color: #000 !important;
     color: white !important;
 }
