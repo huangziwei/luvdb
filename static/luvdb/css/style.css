@@ -346,7 +346,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 [data-bs-theme="dark"] .bg-light {
     background-color: var(--bg-default) !important;
-    color: #fff !important;
     --bg-highlight: #444444 !important;
     --text-default: #ffffff !important;
     --bs-btn-border-color: #444444 !important;
