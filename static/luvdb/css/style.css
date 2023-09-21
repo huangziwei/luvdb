@@ -102,8 +102,14 @@ blockquote:last-child {
 }
 
 .activity-filter.selected {
-    background-color: #777777;
-    color: #fff;
+    background-color: #979797 !important;
+    color: #fff !important;
+}
+
+/* Dark Mode */
+[data-bs-theme='dark'] .activity-filter.selected {
+    background-color: #000 !important;
+    color: white !important;
 }
 
 .notification-default {
@@ -315,4 +321,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .bg-dark-highlight,
 .btn-dark-highlight {
     background-color: #333 !important;
+
+}
+
+/* Light Mode */
+.selected-button {
+    background-color: #000 !important;
+    /* You can choose your own color */
+    color: white !important;
+}
+
+/* Dark Mode */
+[data-bs-theme='dark'] .selected-button {
+    background-color: #000 !important;
+    color: white !important;
 }

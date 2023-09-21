@@ -126,31 +126,31 @@
     function setProgressType(event, type) {
         event.preventDefault();
         document.getElementById('progressTypeInput').value = type;
-        document.getElementById('progressTypeBtn').textContent = type == 'PG' ? 'Page' : '%';
+        document.getElementById('progressTypeBtn').textContent = type == 'TT' ? 'Hours' : '-';
     }
-
+    
     function updateStatusButton(status) {
-        var status_buttons = document.getElementsByClassName('status-button');
-        for (var i = 0; i < status_buttons.length; i++) {
-            status_buttons[i].classList.remove('btn-dark');
-            status_buttons[i].classList.add('btn-light');
-        }
-        var status_dropdown_items = document.getElementsByClassName('status-dropdown-item');
-        for (var i = 0; i < status_dropdown_items.length; i++) {
-            status_dropdown_items[i].classList.remove('active');
-        }
-
+        // Get all status buttons and dropdown items
+        const statusButtons = document.querySelectorAll('.status-button');
+        const statusDropdownItems = document.querySelectorAll('.status-dropdown-item');
+    
+        // Remove 'selected-button' class from all status buttons and dropdown items
+        statusButtons.forEach(button => button.classList.remove('selected-button'));
+        statusDropdownItems.forEach(item => item.classList.remove('selected-button'));
+    
+        // If the status exists in the mapping, update the corresponding button
         if (status_mapping[status]) {
-            var button_id = status_mapping[status];
-            var button = document.getElementById(button_id);
+            const buttonId = status_mapping[status];
+            const button = document.getElementById(buttonId);
+    
             if (button) {
+                // Add 'selected-button' class to the button
+                button.classList.add('selected-button');
+    
+                // If the button is a dropdown item, also update the main dropdown button
                 if (button.classList.contains('dropdown-item')) {
-                    button.classList.add('active');
-                    document.getElementById('status-more').classList.remove('btn-light');
-                    document.getElementById('status-more').classList.add('btn-dark');
-                } else {
-                    button.classList.remove('btn-light');
-                    button.classList.add('btn-dark');
+                    const moreButton = document.getElementById('status-more');
+                    moreButton.classList.add('selected-button');
                 }
             }
         }
