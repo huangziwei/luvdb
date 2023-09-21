@@ -829,12 +829,17 @@ def search_view(request):
 
 @login_required
 def get_followed_usernames(request):
-    usernames = list(
-        Follow.objects.filter(follower=request.user).values_list(
-            "followed__username", flat=True
-        )
+    follows = Follow.objects.filter(follower=request.user).values(
+        "followed__username", "followed__display_name"
     )
-    return JsonResponse({"usernames": usernames})
+    usernames_with_display_names = [
+        {
+            "username": follow["followed__username"],
+            "display_name": follow["followed__display_name"],
+        }
+        for follow in follows
+    ]
+    return JsonResponse({"usernames_with_display_names": usernames_with_display_names})
 
 
 @login_required
@@ -853,7 +858,17 @@ def get_user_tags(request):
     gamecheckin_ct = ContentType.objects.get_for_model(GameCheckIn)
 
     # Combine all content types into a list
-    all_cts = [comment_ct, repost_ct, post_ct, say_ct, pin_ct, readcheckin_ct, listencheckin_ct, watchcheckin_ct, gamecheckin_ct,]
+    all_cts = [
+        comment_ct,
+        repost_ct,
+        post_ct,
+        say_ct,
+        pin_ct,
+        readcheckin_ct,
+        listencheckin_ct,
+        watchcheckin_ct,
+        gamecheckin_ct,
+    ]
 
     # Initialize an empty list to store unique tags
     unique_tags = []

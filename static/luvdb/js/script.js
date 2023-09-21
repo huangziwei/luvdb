@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch("/get_followed_usernames/")
     .then(response => response.json())
     .then(data => {
-        usernames = data.usernames;
+        usernames = data.usernames_with_display_names;
     });
 
     // Fetch tags
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
             let filteredItems = [];
 
             if (lastSymbol === '@') {
-                filteredItems = usernames.filter(username => username.toLowerCase().startsWith(filter));
+                filteredItems = usernames.filter(user => user.username.toLowerCase().startsWith(filter) || (user.display_name && user.display_name.toLowerCase().startsWith(filter)));
             } else if (lastSymbol === '#') {
                 filteredItems = tags.filter(tag => tag.toLowerCase().startsWith(filter));
             }
@@ -339,7 +339,14 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
 
     items.forEach((item, index) => {
         const option = document.createElement("div");
-        option.innerText = item;
+        let displayText;
+        if (lastSymbol === '@') {
+            displayText = item.display_name ? `${item.display_name} (${item.username})` : item.username;
+        } else if (lastSymbol === '#') {
+            displayText = item;  // Assuming 'item' is a string for tags
+        }
+
+        option.innerText = displayText;
         option.style.height = "25px"; // Set the height for each item
         if (index === currentSelection) {
             option.style.color = "rgb(13, 110, 253)"; // Updated background color
@@ -350,7 +357,7 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
         }
         option.addEventListener("click", function() {
             // Append selected username to textarea
-            textInput.value += item + " ";
+            textInput.value += item.username + " ";
             dropdown.remove();
         });
         dropdown.appendChild(option);

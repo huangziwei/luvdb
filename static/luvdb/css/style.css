@@ -314,7 +314,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     max-height: 125px;
     /* Assuming each item is 25px tall */
     overflow-y: auto;
-    width: 200px;
+    width: 300px;
     /* Set a fixed width, or make it dynamic */
 }
 
