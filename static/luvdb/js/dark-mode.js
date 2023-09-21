@@ -21,13 +21,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (theme === 'dark') {
             htmlElement.setAttribute('data-bs-theme', 'dark');
             bgLightElements.forEach(el => el.classList.add('bg-dark-highlight'));
-            btnLightElements.forEach(el => el.classList.replace('btn-light', 'btn-dark'));
+            btnLightElements.forEach(el => el.classList.replace('btn-light', 'btn-dark-highlight'));
             bioElements.forEach(el => el.style.backgroundColor = '#333'); // Dark mode compatible color for bio
             faIcons.forEach(el => el.setAttribute('fill', '#ccc')); // Dark mode color for FontAwesome icons
         } else {
             htmlElement.removeAttribute('data-bs-theme');
             bgLightElements.forEach(el => el.classList.remove('bg-dark-highlight'));
-            btnLightElements.forEach(el => el.classList.replace('btn-dark', 'btn-light'));
+            btnLightElements.forEach(el => el.classList.replace('btn-dark-highlight', 'btn-light'));
             bioElements.forEach(el => el.style.backgroundColor = '#fff6ed'); // Original color for bio
             faIcons.forEach(el => el.setAttribute('fill', '#000')); // Original color for FontAwesome icons
         }

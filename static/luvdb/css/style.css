@@ -312,6 +312,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* dark mode */
 
-.bg-dark-highlight {
+.bg-dark-highlight,
+.btn-dark-highlight {
     background-color: #333 !important;
 }

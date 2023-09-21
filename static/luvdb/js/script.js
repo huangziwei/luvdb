@@ -240,10 +240,19 @@ function highlightSelection() {
     const options = dropdown.querySelectorAll("div");
     if (options.length === 0) return;
 
+    const isDarkMode = document.documentElement.getAttribute("data-bs-theme") === "dark";
+
     // Reset all options to default background
     options.forEach(option => {
-        option.style.backgroundColor = "white";
+        if (isDarkMode) {
+            option.classList.add("bg-dark");
+            option.classList.remove("bg-light"); // Remove this if you don't use bg-light in light mode
+        } else {
+            option.classList.remove("bg-dark");
+            option.classList.add("bg-light"); // Add this if you use bg-light in light mode
+        }
     });
+
 
     // Adjust current selection within bounds
     if (currentSelection < 0) {
@@ -307,7 +316,14 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
     const dropdown = document.createElement("div");
     dropdown.id = "autocomplete-dropdown";
     dropdown.style.position = "absolute";
-
+    const isDarkMode = document.documentElement.getAttribute("data-bs-theme") === "dark";
+    if (isDarkMode) {
+        dropdown.classList.add("bg-dark");
+        dropdown.classList.remove("bg-light"); // Remove this if you don't use bg-light in light mode
+    } else {
+        dropdown.classList.remove("bg-dark");
+        dropdown.classList.add("bg-light"); // Add this if you use bg-light in light mode
+    }
     // Get textarea element and its position
     const textInput = document.getElementById("text-input");
     const textAreaRect = textInput.getBoundingClientRect();
