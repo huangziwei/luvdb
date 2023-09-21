@@ -273,6 +273,10 @@ p img:focus {
     max-width: 100%;
 }
 
+a img {
+    border: 1px solid #ddd;
+}
+
 iframe {
     max-width: 100%;
     width: 100%;
@@ -282,6 +286,11 @@ a {
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
+
+.bio {
+    background-color: #fff6ed;
+}
+
 
 /* For Chrome */
 input[type="date"]::-webkit-inner-spin-button,
@@ -297,4 +306,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     overflow-y: auto;
     width: 200px;
     /* Set a fixed width, or make it dynamic */
+}
+
+
+
+/* dark mode */
+
+.bg-dark-highlight {
+    background-color: #333 !important;
 }

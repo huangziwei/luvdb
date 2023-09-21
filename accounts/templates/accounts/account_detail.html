@@ -457,7 +457,7 @@
             </div>
             <!-- Right column -->
             <div class="col-md-4 col-sm-12 order-1 order-sm-1 order-md-2">
-                <div class="p-3" style="background-color:#fff6ed;">
+                <div class="bio p-3">
                     <div class="d-flex align-items-end">
                         {% if object.display_name %}<h4 class="mb-0">{{ object.display_name }}</h4>{% endif %}
                         <div>@{{ object.username }}</div>
@@ -466,7 +466,7 @@
                         <span class="text-muted">Since {{ object.date_joined|date:"Y.m.d" }}</span>
                     </p>
                     {% if object.bio %}
-                        <div style="color:#666;">{{ object.bio | linkify_tags | linkify_mentions | markdownify }}</div>
+                        <div>{{ object.bio | linkify_tags | linkify_mentions | markdownify }}</div>
                     {% endif %}
                     {% if object == request.user %}
                         <div class='d-flex '>
