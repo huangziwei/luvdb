@@ -3,9 +3,10 @@
 <html lang="en">
     <head>
         <meta http-equiv="content-language" content="en-us">
+        <meta name="theme-color" content="#F6F7F9">
         <meta charset="utf-8">
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="description"
               content="LʌvDB is a database of the things you love.">
         <meta name="keywords" content="lʌvdb, luvdb">
@@ -64,11 +65,15 @@
             }
             const savedTheme = localStorage.getItem('theme') || getSystemPreferredTheme();
             if (savedTheme === 'dark') {
-              document.documentElement.setAttribute('data-bs-theme', 'dark');
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+                metaThemeColor.setAttribute("content", "#F6F7F9"); 
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+                metaThemeColor.setAttribute("content", "#333"); 
             }
-          </script>          
+        </script>          
     </head>
-    <body>
+    <body style="padding-top: env(safe-area-inset-top, 0);">
         <header class='mb-3'>
             {% include "navbar.html" %}
         </header>

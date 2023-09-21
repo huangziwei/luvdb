@@ -70,7 +70,7 @@ blockquote:last-child {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    padding: 5px;
+    padding: 2px;
     /* creates the gray border effect */
 }
 
@@ -339,6 +339,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     --text-default: #ffffff;
 }
 
+
 [data-bs-theme="dark"] .bg-light {
     background-color: var(--bg-default) !important;
     color: #fff !important;
@@ -364,4 +365,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 [data-bs-theme="dark"] .selected-button {
     background-color: #000 !important;
     color: white !important;
+}
+
+.navbar {
+    padding-top: env(safe-area-inset-top, 0);
+    width: 100%;
+    top: 0;
+}
+
+[data-bs-theme='dark'] .navbar {
+    background-color: #333;
+    /* or whatever your dark mode navbar color is */
 }

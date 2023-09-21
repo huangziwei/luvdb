@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const htmlElement = document.documentElement;
     const bgLightElements = document.querySelectorAll('.bg-light');
     const bgWhiteElements = document.querySelectorAll('.bg-white');
-    const btnLightElements = document.querySelectorAll('.btn-light');
     const bioElements = document.querySelectorAll('.bio');
     const stickyNoteElements = document.querySelectorAll('.sticky-note');
     const faIcons = document.querySelectorAll('.fa-icon path');
+    const metaThemeColor = document.querySelector("meta[name=theme-color]");
 
     // Load saved theme from localStorage
     const savedTheme = localStorage.getItem('theme') || getSystemPreferredTheme();
@@ -26,15 +26,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function applyTheme(theme) {
         if (theme === 'dark') {
             htmlElement.setAttribute('data-bs-theme', 'dark');
-            bgLightElements.forEach(el => el.classList.add('bg-dark-highlight'));
-            bgWhiteElements.forEach(el => el.classList.replace('bg-white', 'bg-dark'));
+            metaThemeColor.setAttribute("content", "#333");
+            // bgLightElements.forEach(el => el.classList.add('bg-dark-highlight'));
+            // bgWhiteElements.forEach(el => el.classList.replace('bg-white', 'bg-dark'));
             bioElements.forEach(el => el.style.backgroundColor = '#333'); // Dark mode compatible color for bio
             faIcons.forEach(el => el.setAttribute('fill', '#ccc')); // Dark mode color for FontAwesome icons
             stickyNoteElements.forEach(el => el.classList.add('bg-dark'));
+            
         } else {
             htmlElement.removeAttribute('data-bs-theme');
-            bgLightElements.forEach(el => el.classList.remove('bg-dark-highlight'));
-            bgWhiteElements.forEach(el => el.classList.replace('bg-dark', "bg-white"));
+            metaThemeColor.setAttribute("content", "#F6F7F9");
+            // bgLightElements.forEach(el => el.classList.remove('bg-dark-highlight'));
+            // bgWhiteElements.forEach(el => el.classList.replace('bg-dark', "bg-white"));
             bioElements.forEach(el => el.style.backgroundColor = '#fff6ed'); // Original color for bio
             faIcons.forEach(el => el.setAttribute('fill', '#6C757D')); // Original color for FontAwesome icons
             stickyNoteElements.forEach(el => el.classList.remove('bg-dark'));
