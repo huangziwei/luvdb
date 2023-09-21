@@ -26,8 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function applyTheme(theme) {
         if (theme === 'dark') {
             htmlElement.setAttribute('data-bs-theme', 'dark');
-            metaThemeColor.setAttribute("content", "#333");
-            // bgLightElements.forEach(el => el.classList.add('bg-dark-highlight'));
+            metaThemeColor.setAttribute("content", "#333"); 
+
+            bgLightElements.forEach(el => el.classList.add('bg-dark-highlight'));
             // bgWhiteElements.forEach(el => el.classList.replace('bg-white', 'bg-dark'));
             bioElements.forEach(el => el.style.backgroundColor = '#333'); // Dark mode compatible color for bio
             faIcons.forEach(el => el.setAttribute('fill', '#ccc')); // Dark mode color for FontAwesome icons
@@ -35,8 +36,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } else {
             htmlElement.removeAttribute('data-bs-theme');
-            metaThemeColor.setAttribute("content", "#F6F7F9");
-            // bgLightElements.forEach(el => el.classList.remove('bg-dark-highlight'));
+            bgLightElements.forEach(el => el.classList.remove('bg-dark-highlight'));
+            metaThemeColor.setAttribute("content", "#F6F7F9"); 
             // bgWhiteElements.forEach(el => el.classList.replace('bg-dark', "bg-white"));
             bioElements.forEach(el => el.style.backgroundColor = '#fff6ed'); // Original color for bio
             faIcons.forEach(el => el.setAttribute('fill', '#6C757D')); // Original color for FontAwesome icons

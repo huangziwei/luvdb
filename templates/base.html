@@ -4,6 +4,7 @@
     <head>
         <meta http-equiv="content-language" content="en-us">
         <meta name="theme-color" content="#333">
+        <meta name="theme-color" content="#F6F7F9" media="(prefers-color-scheme: light)">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -64,12 +65,13 @@
               return 'light';
             }
             const savedTheme = localStorage.getItem('theme') || getSystemPreferredTheme();
+            const metaThemeColor = document.querySelector("meta[name='theme-color']");
             if (savedTheme === 'dark') {
                 document.documentElement.setAttribute('data-bs-theme', 'dark');
-                metaThemeColor.setAttribute("content", "#F6F7F9"); 
+                metaThemeColor.setAttribute("content", "#333"); 
             } else {
                 document.documentElement.setAttribute('data-bs-theme', 'light');
-                metaThemeColor.setAttribute("content", "#333"); 
+                metaThemeColor.setAttribute("content", "#F6F7F9"); 
             }
         </script>          
     </head>
