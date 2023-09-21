@@ -394,3 +394,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: rgb(33, 37, 41) !important;
     border-color: rgb(73, 80, 87) !important;
 }
+
+[data-bs-theme='dark'] .select2-selection__rendered {
+    line-height: normal !important;
+    padding: 0.6em 1.5em 0em 0.8em !important;
+    vertical-align: middle !important;
+    color: rgb(173, 181, 189) !important;
+}
+
+[data-bs-theme='dark'] .select2-selection__choice {
+    background-color: rgb(51, 51, 51) !important;
+    border-color: rgb(51, 51, 51) !important;
+}
