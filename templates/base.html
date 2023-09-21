@@ -56,11 +56,17 @@
             <link rel="stylesheet" href="{% static 'css/citation.css' %}">
         {% endif %}
         <script>
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.documentElement.setAttribute('data-bs-theme', 'dark');
+            function getSystemPreferredTheme() {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                return 'dark';
+              }
+              return 'light';
             }
-        </script>
+            const savedTheme = localStorage.getItem('theme') || getSystemPreferredTheme();
+            if (savedTheme === 'dark') {
+              document.documentElement.setAttribute('data-bs-theme', 'dark');
+            }
+          </script>          
     </head>
     <body>
         <header class='mb-3'>

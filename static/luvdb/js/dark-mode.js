@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const faIcons = document.querySelectorAll('.fa-icon path');
 
     // Load saved theme from localStorage
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem('theme') || getSystemPreferredTheme();
     applyTheme(savedTheme);
 
     toggleButton.addEventListener('click', function() {
@@ -41,4 +41,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         }
     }
+
+    function getSystemPreferredTheme() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      }
 });

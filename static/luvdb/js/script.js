@@ -110,84 +110,84 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     const textInput = document.getElementById("text-input");
+    if (textInput !== null) {
+        textInput.addEventListener("keyup", function(e) {
+            const value = textInput.value;
+            let lastSymbol = null;
+            let lastPos = -1;
 
-    textInput.addEventListener("keyup", function(e) {
-        const value = textInput.value;
-        let lastSymbol = null;
-        let lastPos = -1;
+            // Check for '@' and '#'
+            const lastAt = value.lastIndexOf('@');
+            const lastHash = value.lastIndexOf('#');
 
-        // Check for '@' and '#'
-        const lastAt = value.lastIndexOf('@');
-        const lastHash = value.lastIndexOf('#');
+            if (lastAt > lastHash) {
+                lastSymbol = '@';
+                lastPos = lastAt;
+            } else if (lastHash > lastAt) {
+                lastSymbol = '#';
+                lastPos = lastHash;
+            }
 
-        if (lastAt > lastHash) {
-            lastSymbol = '@';
-            lastPos = lastAt;
-        } else if (lastHash > lastAt) {
-            lastSymbol = '#';
-            lastPos = lastHash;
-        }
+            // Update lastDropdownTriggerPos when a dropdown is shown
+            if (lastPos !== -1) {
+                lastDropdownTriggerPos = lastPos;
+            }
 
-        // Update lastDropdownTriggerPos when a dropdown is shown
-        if (lastPos !== -1) {
-            lastDropdownTriggerPos = lastPos;
-        }
+            // Check the current last @ or # in the text
+            const currentLastAt = textInput.value.lastIndexOf('@');
+            const currentLastHash = textInput.value.lastIndexOf('#');
+            const currentLastPos = Math.max(currentLastAt, currentLastHash);
+            
+            // Remove dropdown if the last trigger symbol is different from the current last symbol
+            if (lastDropdownTriggerPos == currentLastPos) {
+                const existingDropdown = document.getElementById("autocomplete-dropdown");
+                if (existingDropdown) {
+                    existingDropdown.remove();
+                }
+                lastDropdownTriggerPos = -1; // Reset the last dropdown trigger position
+            }
 
-        // Check the current last @ or # in the text
-        const currentLastAt = textInput.value.lastIndexOf('@');
-        const currentLastHash = textInput.value.lastIndexOf('#');
-        const currentLastPos = Math.max(currentLastAt, currentLastHash);
+            const filter = value.slice(lastPos + 1).toLowerCase();
+            let filteredItems = [];
+
+            if (lastSymbol === '@') {
+                filteredItems = usernames.filter(username => username.toLowerCase().startsWith(filter));
+            } else if (lastSymbol === '#') {
+                filteredItems = tags.filter(tag => tag.toLowerCase().startsWith(filter));
+            }
+
+            showDropdown(filteredItems, filter, lastPos + 1, lastSymbol); // Pass the position of the last symbol
+        });
         
-        // Remove dropdown if the last trigger symbol is different from the current last symbol
-        if (lastDropdownTriggerPos == currentLastPos) {
-            const existingDropdown = document.getElementById("autocomplete-dropdown");
-            if (existingDropdown) {
-                existingDropdown.remove();
+
+        textInput.addEventListener("keydown", function(e) {
+            let lastSymbol = null;
+            const value = textInput.value;
+            const lastAt = value.lastIndexOf('@');
+            const lastHash = value.lastIndexOf('#');
+            const dropdown = document.getElementById("autocomplete-dropdown");
+        
+            if (lastAt > lastHash) {
+                lastSymbol = '@';
+            } else if (lastHash > lastAt) {
+                lastSymbol = '#';
             }
-            lastDropdownTriggerPos = -1; // Reset the last dropdown trigger position
-        }
-
-        const filter = value.slice(lastPos + 1).toLowerCase();
-        let filteredItems = [];
-
-        if (lastSymbol === '@') {
-            filteredItems = usernames.filter(username => username.toLowerCase().startsWith(filter));
-        } else if (lastSymbol === '#') {
-            filteredItems = tags.filter(tag => tag.toLowerCase().startsWith(filter));
-        }
-
-        showDropdown(filteredItems, filter, lastPos + 1, lastSymbol); // Pass the position of the last symbol
-    });
-    
-
-    textInput.addEventListener("keydown", function(e) {
-        let lastSymbol = null;
-        const value = textInput.value;
-        const lastAt = value.lastIndexOf('@');
-        const lastHash = value.lastIndexOf('#');
-        const dropdown = document.getElementById("autocomplete-dropdown");
-    
-        if (lastAt > lastHash) {
-            lastSymbol = '@';
-        } else if (lastHash > lastAt) {
-            lastSymbol = '#';
-        }
-    
-        if (e.key === "ArrowDown") {
-            currentSelection++;
-            highlightSelection();
-        } else if (e.key === "ArrowUp") {
-            currentSelection--;
-            highlightSelection();
-        } else if (e.key === "Enter") {
-            if (dropdown && lastSymbol) {  // Only prevent default if dropdown is visible and a symbol is present
-                e.preventDefault();
-                selectItem(lastSymbol);
+        
+            if (e.key === "ArrowDown") {
+                currentSelection++;
+                highlightSelection();
+            } else if (e.key === "ArrowUp") {
+                currentSelection--;
+                highlightSelection();
+            } else if (e.key === "Enter") {
+                if (dropdown && lastSymbol) {  // Only prevent default if dropdown is visible and a symbol is present
+                    e.preventDefault();
+                    selectItem(lastSymbol);
+                }
+                // If dropdown is not visible or no symbol, the default "Enter" behavior will occur, creating a line break.
             }
-            // If dropdown is not visible or no symbol, the default "Enter" behavior will occur, creating a line break.
-        }
-    });
-    
+        });
+    }
     
 });
 
