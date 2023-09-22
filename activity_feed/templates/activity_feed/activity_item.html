@@ -263,7 +263,8 @@
                 {% endif %}
                 {% if activity.content_object.content_object.publication_date %}
                 <div>
-                    <span class="text-muted">Date:</span>{{ activity.content_object.content_object.publication_date }}
+                    <span class="text-muted">Date:</span>
+                    {{ activity.content_object.content_object.publication_date }}
                 </div>
                 {% endif %}
             </div>
@@ -702,7 +703,8 @@
                 </div>
                 {% if activity.content_object.game.release_date %}
                 <div>
-                    <span class="text-muted">Date:</span>{{ activity.content_object.game.release_date }}
+                    <span class="text-muted">Date:</span>
+                    {{ activity.content_object.game.release_date }}
                 </div>
                 {% endif %}
 
