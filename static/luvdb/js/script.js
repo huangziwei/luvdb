@@ -96,14 +96,14 @@ document.addEventListener("DOMContentLoaded", function() {
     let lastDropdownTriggerPos = -1;
 
     // Fetch usernames
-    fetch("/get_followed_usernames/")
+    fetch("/u/get_followed_usernames/")
     .then(response => response.json())
     .then(data => {
         usernames = data.usernames_with_display_names;
     });
 
     // Fetch tags
-    fetch("/get_user_tags/")
+    fetch("/u/get_user_tags/")
     .then(response => response.json())
     .then(data => {
         tags = data.tags;

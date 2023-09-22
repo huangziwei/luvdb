@@ -472,7 +472,7 @@
                         <div class='d-flex '>
                             <!-- Action buttons -->
                             <a class="btn btn-primary btn-sm mt-3 me-1"
-                               href="{% url 'accounts:update' %}"
+                               href="{% url 'accounts:update' object.username %}"
                                role="button">Update Profile</a>
                             <div class="dropdown mt-3">
                                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
@@ -498,15 +498,11 @@
                             </div>
                         </div>
                         {% if messages %}
-                            <div class="messages"
-                                 style="border: 1px solid #ccc;
-                                        padding: 10px;
-                                        border-radius: 5px;
-                                        background-color: #f0f0f0;
-                                        margin-top: 1em">
+                            <div class="messages rounded p-3 mt-3 bg-light" style="border: 1px solid var(--bs-gray-300);">
                                 {% for message in messages %}
-                                    <p {% if message.tags %}class="{{ message.tags }}"{% endif %}
-                                       style="margin: 0">{{ message|safe }}</p>
+                                    <p class="mb-0 {% if message.tags %}{{ message.tags }}{% endif %}">
+                                        {{ message|safe }}
+                                    </p>
                                 {% endfor %}
                             </div>
                         {% endif %}

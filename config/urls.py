@@ -37,23 +37,22 @@ def custom_admin_login(request):
 urlpatterns = [
     path("admin/login/", custom_admin_login, name="custom_admin_login"),
     path("admin/", admin.site.urls),
-    path("", home, name="home"),  # Updated home view
-    path("", include("accounts.urls")),
+    path("u/", include("accounts.urls")),
     path("entity/", include("entity.urls")),
-    path("write/", include("write.urls")),
     path("read/", include("read.urls")),
     path("play/", include("play.urls")),
     path("listen/", include("listen.urls")),
     path("watch/", include("watch.urls")),
-    path("feed/", include("activity_feed.urls")),
-    path("", include("notify.urls")),
+    path("", include("activity_feed.urls")),
+    path("", include("write.urls")),
+    path("notify/", include("notify.urls")),
     path(
         "sitemap.xml",
         sitemap,
         {"sitemaps": sitemaps},
         name="django.contrib.sitemaps.views.sitemap",
     ),
-    path("", include("django.contrib.auth.urls")),  # Moved to the end
+    path("auth/", include("django.contrib.auth.urls")),  # Moved to the end
 ]
 
 if settings.DEBUG:

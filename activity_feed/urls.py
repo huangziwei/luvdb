@@ -19,7 +19,7 @@ urlpatterns = [
         name="activity_delete",
     ),
     path(
-        "<str:selected_date>/",
+        "calendar/<str:selected_date>/",
         CalendarActivityFeedView.as_view(),
         name="calendar_activity_feed",
     ),
