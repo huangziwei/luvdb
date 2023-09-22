@@ -36,8 +36,6 @@ TEMPLATE_404 = "404.html"
 
 ROOT_URL = "https://luvdb.com"
 
-# CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "https://luvdb.com",
-    "http://luvdb.com",
 ]

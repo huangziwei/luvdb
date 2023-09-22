@@ -391,8 +391,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 [data-bs-theme='dark'] .navbar {
     background-color: #333;
-    /* or whatever your dark mode navbar color is */
 }
+
+[data-bs-theme='dark'] .bg-white {
+    background-color: rgb(33, 37, 41) !important;
+    ;
+}
+
 
 [data-bs-theme='dark'] .select2-container--default .select2-selection,
 [data-bs-theme='dark'] .select2-container--default .select2-search--dropdown .select2-search__field {
