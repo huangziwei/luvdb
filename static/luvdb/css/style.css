@@ -45,9 +45,12 @@ a {
 }
 
 p:last-child,
-blockquote:last-child {
+blockquote:last-child,
+ol:last-child,
+li:last-child {
     margin-bottom: 0;
 }
+
 
 /* dal bootstrap css fix */
 .select2-container {
