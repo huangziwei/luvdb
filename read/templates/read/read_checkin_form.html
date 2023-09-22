@@ -9,21 +9,21 @@
             <!--Status-->
             <div class="btn-group" role="group" aria-label="Status">
                 <button type="button"
-                        class="btn btn-sm btn-light status-button"
+                        class="btn btn-sm btn-outline-secondary status-button"
                         id="status-to-read"
                         onclick="setStatus(event, 'to_read')">To Read</button>
                 <button type="button"
-                        class="btn btn-sm btn-light status-button"
+                        class="btn btn-sm btn-outline-secondary status-button"
                         id="status-reading"
                         onclick="setStatus(event, 'reading')">Reading</button>
                 <button type="button"
-                        class="btn btn-sm btn-light status-button"
+                        class="btn btn-sm btn-outline-secondary status-button"
                         id="status-read"
                         onclick="setStatus(event, 'finished_reading')">Read</button>
                 <div class="btn-group" role="group">
                     <button id="status-more"
                             type="button"
-                            class="btn btn-sm btn-light dropdown-toggle status-button"
+                            class="btn btn-sm btn-outline-secondary dropdown-toggle status-button"
                             data-bs-toggle="dropdown"
                             aria-expanded="false">More</button>
                     <ul class="dropdown-menu" aria-labelledby="status-more">
@@ -126,7 +126,7 @@
     function setProgressType(event, type) {
         event.preventDefault();
         document.getElementById('progressTypeInput').value = type;
-        document.getElementById('progressTypeBtn').textContent = type == 'TT' ? 'Hours' : '-';
+        document.getElementById('progressTypeBtn').textContent = type == 'PG' ? 'Pages' : '%';
     }
     
     function updateStatusButton(status) {

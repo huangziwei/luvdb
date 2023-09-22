@@ -9,43 +9,43 @@
             <!--Status-->
             <div class="btn-group" role="group" aria-label="Status">
                 <button type="button"
-                        class="btn btn-sm btn-light status-button"
+                        class="btn btn-sm btn-outline-secondary status-button"
                         id="status-to-listen"
                         onclick="setStatus(event, 'to_listen')">To Listen</button>
                 {% if content_type == "release" %}
                     <button type="button"
-                            class="btn btn-sm btn-light status-button"
+                            class="btn btn-sm btn-outline-secondary status-button"
                             id="status-looping"
                             onclick="setStatus(event, 'looping')">Looping</button>
                     <button type="button"
-                            class="btn btn-sm btn-light status-button"
+                            class="btn btn-sm btn-outline-secondary status-button"
                             id="status-listened"
                             onclick="setStatus(event, 'listened')">Listened</button>
                 {% endif %}
                 {% if content_type == "audiobook" %}
                     <button type="button"
-                            class="btn btn-sm btn-light status-button"
+                            class="btn btn-sm btn-outline-secondary status-button"
                             id="status-listening"
                             onclick="setStatus(event, 'listening')">Listening</button>
                     <button type="button"
-                            class="btn btn-sm btn-light status-button"
+                            class="btn btn-sm btn-outline-secondary status-button"
                             id="status-listened"
                             onclick="setStatus(event, 'listened')">Listened</button>
                 {% endif %}
                 {% if content_type == "podcast" %}
                     <button type="button"
-                            class="btn btn-sm btn-light status-button"
+                            class="btn btn-sm btn-outline-secondary status-button"
                             id="status-subscribed"
                             onclick="setStatus(event, 'subscribed')">Subscribed</button>
                     <button type="button"
-                            class="btn btn-sm btn-light status-button"
+                            class="btn btn-sm btn-outline-secondary status-button"
                             id="status-sampled"
                             onclick="setStatus(event, 'sampled')">Sampled</button>
                 {% endif %}
                 <div class="btn-group" role="group">
                     <button id="status-more"
                             type="button"
-                            class="btn btn-sm btn-light dropdown-toggle status-button"
+                            class="btn btn-sm btn-outline-secondary dropdown-toggle status-button"
                             data-bs-toggle="dropdown"
                             aria-expanded="false">More</button>
                     <ul class="dropdown-menu" aria-labelledby="status-more">
@@ -221,7 +221,7 @@
     function setProgressType(event, type) {
         event.preventDefault();
         document.getElementById('progressTypeInput').value = type;
-        document.getElementById('progressTypeBtn').textContent = type == 'TT' ? 'Hours' : '-';
+        document.getElementById('progressTypeBtn').textContent = type == 'TT' ? 'Minues' : 'Loop Times';
     }
     
     function updateStatusButton(status) {
