@@ -330,17 +330,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 
-
-/* dark mode */
-/* 
-.bg-dark-highlight,
-.btn-dark-highlight {
-    background-color: #333 !important;
-
-} */
-
 /* Light / dark Mode */
-
 
 :root {
     --bg-default: #ffffff;
@@ -422,4 +412,75 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 [data-bs-theme='dark'] .select2-selection__choice {
     background-color: rgb(51, 51, 51) !important;
     border-color: rgb(51, 51, 51) !important;
+}
+
+/* pull-to-refresh */
+.hidden {
+    display: none;
+}
+
+#refresh-box {
+    position: fixed;
+    top: 35px;
+    /* Adjusted position */
+    left: 0;
+    right: 0;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+}
+
+
+.loader {
+    position: relative;
+    margin: 0 auto;
+    width: 50px;
+}
+
+.circular-loader {
+    animation: rotate 2s linear infinite;
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.loader-path {
+    stroke-dasharray: 150, 200;
+    stroke-dashoffset: -10;
+    animation: dash 1.5s ease-in-out infinite;
+    stroke: rgb(51, 51, 51);
+    /* Default color for light mode */
+}
+
+[data-bs-theme='dark'] .loader-path {
+    stroke: rgb(246, 247, 249);
+    /* Color for dark mode */
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
+    }
+
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
+    }
 }

@@ -66,28 +66,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
       // Update the iframe height when the window is resized
       window.addEventListener('resize', updateIframeHeight);
 
-    // // dark mode toggle
-    // document.getElementById('btnSwitch').addEventListener('click',()=>{
-    //     if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
-    //         document.documentElement.setAttribute('data-bs-theme','light')
-    //     }
-    //     else {
-    //         document.documentElement.setAttribute('data-bs-theme','dark')
-    //     }
-    // })
-    
-
-    // // Function to resize images
-    // function resizeImages(imgElements) {
-    //     for (let img of imgElements) {
-    //         img.style.maxWidth = "100%";
-    //         img.style.height = "auto";
-    //     }
-    // }
-
-    // // Resize images inside <p> tags
-    // const markdownImages = document.querySelectorAll('p img');
-    // resizeImages(markdownImages);
 });
 
 document.addEventListener("DOMContentLoaded", function() {

@@ -43,6 +43,13 @@
                 {% endfor %}
                 {% if page_obj.paginator.num_pages > 1 %}
                     <hr>
+                    <div id="refresh-box" class="hidden">
+                        <div class="loader">
+                            <svg class="circular-loader" viewBox="25 25 50 50">
+                                <circle class="loader-path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+                            </svg>
+                        </div>
+                    </div>                                        
                     <div class="pagination">
                         <span class="step-links">
                             {% for i in page_obj.paginator.page_range %}
