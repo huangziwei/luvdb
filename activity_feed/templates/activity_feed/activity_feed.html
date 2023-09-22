@@ -24,7 +24,7 @@
                         {{ say_form.content|as_crispy_field }}
                         <span class="d-flex justify-content-between mb-0">
                             <button type="submit" class="btn btn-primary btn-sm " style="height: 30px">Add Say</button>
-                            <div class="mb-0">{{ say_form.comments_enabled|as_crispy_field }}</div>
+                            <div class="mb-1">{{ say_form.comments_enabled|as_crispy_field }}</div>
                         </span>
                     </form>
                 {% elif feed_type == "personal" %}

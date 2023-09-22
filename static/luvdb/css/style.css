@@ -346,14 +346,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     /* --bs-body-bg: #080808; */
 }
 
+/* .bg-light {
+    box-shadow: 0 2px 4px rgba(18, 18, 18, 0.1);
+} */
 
 [data-bs-theme="dark"] .bg-light {
     background-color: var(--bg-default) !important;
     --bg-highlight: #444444 !important;
     --text-default: #ffffff !important;
     --bs-btn-border-color: #444444 !important;
-
+    /* box-shadow: 0 2px 4px rgba(160, 160, 160, 0.1); */
 }
+
 
 [data-bs-theme="dark"] .btn-light {
     background-color: var(--bg-default) !important;
@@ -413,6 +417,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: rgb(51, 51, 51) !important;
     border-color: rgb(51, 51, 51) !important;
 }
+
+/* [data-bs-theme='dark'] .btn-primary {
+    background-color: rgb(83, 146, 241);
+} */
 
 /* pull-to-refresh */
 .hidden {

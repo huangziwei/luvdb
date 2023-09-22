@@ -459,8 +459,8 @@
             <div class="col-md-4 col-sm-12 order-1 order-sm-1 order-md-2">
                 <div class="bio p-3">
                     <div class="d-flex align-items-end">
-                        {% if object.display_name %}<h4 class="mb-0">{{ object.display_name }}</h4>{% endif %}
-                        <div>@{{ object.username }}</div>
+                        {% if object.display_name %}<h4 class="mb-0 h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">{{ object.display_name }}</h4>{% endif %}
+                        <div class="h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">@{{ object.username }}</div>
                     </div>
                     <p>
                         <span class="text-muted">Since {{ object.date_joined|date:"Y.m.d" }}</span>

@@ -7,23 +7,30 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-7 left-column">
-                <h2>{{ object.title }}</h2>
+            <div class="col-12 col-md-7 left-column h-entry">
+                <h2 class="p-name">{{ object.title }}</h2>
                 <span class="d-flex">
                     <p class='me-2'>
                         by
-                        <a href="{% url 'accounts:detail' object.user.username %}">{{ object.user.display_name|default:object.user.username }}</a>
+                        <a href="{% url 'accounts:detail' object.user.username %}"
+                            class="p-author h-card">
+                            {{ object.user.display_name|default:object.user.username }}
+                        </a>
                     </p>
                     <p class='me-2 text-secondary'>
                         <a href="{% url 'write:post_list' object.user.username %}"
-                           class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                           class="text-muted u-url">
+                           <time class="dt-published" datetime="{{object.timestamp}}">
+                                {{ object.timestamp|date:"Y.m.d H:i" }}
+                           </time>
+                        </a>
                     </p>
                     {% if object.user == request.user %}
                         <a href="{% url "write:post_update" object.pk %}" class="me-2">Edit</a>
                         <a href="{% url "write:post_delete" object.pk %}" class="me-2">Delete</a>
                     {% endif %}
                 </span>
-                <div>{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify }}</div>
+                <div class="e-content">{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify }}</div>
                 <br>
                 <button id="show-comments"
                         class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>

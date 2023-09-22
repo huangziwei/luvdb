@@ -255,6 +255,7 @@ MARKDOWNIFY = {
             "mark",
             "time",
             "iframe",
+            "link",
         ],
         "WHITELIST_ATTRS": [
             "src",
@@ -266,6 +267,7 @@ MARKDOWNIFY = {
             "target",
             "height",
             "width",
+            "rel",
         ],
         "WHITELIST_STYLES": [
             "color",
