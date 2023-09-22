@@ -394,9 +394,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 
 [data-bs-theme='dark'] .select2-container--default .select2-selection,
-[data-bs-theme='dark'] .select2-container--default .select2-search--dropdown .select2-search__field {
+[data-bs-theme='dark'] .select2-container--default .select2-search--dropdown .select2-search__field,
+[data-bs-theme='dark'] .select2-container--default .select2-search--inline .select2-search__field {
     background-color: rgb(33, 37, 41) !important;
     border-color: rgb(73, 80, 87) !important;
+    color: #adb5bd !important;
 }
 
 [data-bs-theme='dark'] .select2-container--default .select2-dropdown,

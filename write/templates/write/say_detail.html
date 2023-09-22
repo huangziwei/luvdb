@@ -7,7 +7,7 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-7 left-column">
+            <div class="col-12 col-md-7 left-column h-entry">
                 <div>
                     <div class="d-flex mb-2">
                         <a href="{% url 'accounts:detail' object.user.username %}" class='me-1 p-author h-card'>
@@ -18,7 +18,9 @@
                     <span class="d-flex mt-2">
                         <p class='me-2 text-secondary mb-2'>
                             <a href="{% url "write:say_list" object.user.username %}"
-                               class="text-muted u-url">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                               class="text-muted u-url">
+                               {{ object.timestamp|date:"Y.m.d H:i" }}
+                            </a>
                         </p>
                         {% if object.user == request.user %}
                             <a href="{% url "write:say_update" object.pk %}" class="me-2">Edit</a>
