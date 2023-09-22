@@ -52,10 +52,10 @@
               crossorigin="anonymous">
         <!-- Internal Stylesheets -->
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
-        <link rel="stylesheet" href="{% static 'css/pygments.css' %}">
-        <link rel="stylesheet" href="{% static 'css/admonition.css' %}">
+        <link rel="stylesheet" href="{% static 'css/pygments.css' %}" defer>
+        <link rel="stylesheet" href="{% static 'css/admonition.css' %}" defer>
         {% if not no_citation_css %}
-            <link rel="stylesheet" href="{% static 'css/citation.css' %}">
+            <link rel="stylesheet" href="{% static 'css/citation.css' %}" defer>
         {% endif %}
         <script>
             function getSystemPreferredTheme() {
