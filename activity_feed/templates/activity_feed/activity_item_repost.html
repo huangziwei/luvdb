@@ -104,11 +104,13 @@
                             </a>
                         </div>
                         {% endif %}
+                        {% if activity.content_object.original_activity.content_object.content_object.publication_date %}
                         <div>
-                            {% if activity.content_object.original_activity.content_object.content_object.publication_date %}
-                                <span class="text-muted">Date:</span>{{ activity.content_object.original_activity.content_object.content_object.publication_date }}
-                            {% endif %}
+                            <span class="text-muted">Date:</span>
+                            {{ activity.content_object.original_activity.content_object.content_object.publication_date }}
                         </div>
+                        {% endif %}
+
                     </div>
                 </div>
                 <div class="mt-2">
@@ -214,11 +216,13 @@
                             {% endfor %}
                         </div>
                         {% endif %}
+                        {% if activity.content_object.original_activity.content_object.content_object.release_date %}
                         <div>
-                            {% if activity.content_object.original_activity.content_object.content_object.release_date %}
-                                <span class="text-muted">Date:</span>{{ activity.content_object.original_activity.content_object.content_object.release_date|slice:":4" }}
-                            {% endif %}
+                            <span class="text-muted">Date:</span>
+                            {{ activity.content_object.original_activity.content_object.content_object.release_date|slice:":4" }}
                         </div>
+                        {% endif %}
+
                     </div>
                 </div>
                 <div class="mt-2">
@@ -293,37 +297,39 @@
                                 {% endfor %}
                             </div>
                         {% endfor %}
+                        {% if activity.content_object.original_activity.content_object.game.developers %}
                         <div>
-                            {% if activity.content_object.original_activity.content_object.game.developers %}
-                                {# djlint:off #}
-                                <span class="text-muted">Developer
-                                    {% if activity.content_object.original_activity.content_object.game.developers.list|length > 1 %}s{% endif %}:
-                                </span>
-                                {# djlint:on #}
-                                {% for developer in activity.content_object.original_activity.content_object.game.developers.all %}
-                                    {% if not forloop.first %},{% endif %}
-                                    <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
-                                {% endfor %}
-                            {% endif %}
+                            {# djlint:off #}
+                            <span class="text-muted">Developer
+                                {% if activity.content_object.original_activity.content_object.game.developers.list|length > 1 %}s{% endif %}:
+                            </span>
+                            {# djlint:on #}
+                            {% for developer in activity.content_object.original_activity.content_object.game.developers.all %}
+                                {% if not forloop.first %},{% endif %}
+                                <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
+                            {% endfor %}
                         </div>
+                        {% endif %}
+
+                        {% if activity.content_object.original_activity.content_object.game.platforms %}
                         <div>
-                            {% if activity.content_object.original_activity.content_object.game.platforms %}
-                                {# djlint:off #}
-                                <span class="text-muted">Platform
-                                    {% if activity.content_object.original_activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:
-                                </span>
-                                {# djlint:on #}
-                                {% for platform in activity.content_object.original_activity.content_object.game.platforms.all %}
-                                    {% if not forloop.first %},{% endif %}
-                                    <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
-                                {% endfor %}
-                            {% endif %}
+                            {# djlint:off #}
+                            <span class="text-muted">Platform
+                                {% if activity.content_object.original_activity.content_object.game.platforms.list|length > 1 %}s{% endif %}:
+                            </span>
+                            {# djlint:on #}
+                            {% for platform in activity.content_object.original_activity.content_object.game.platforms.all %}
+                                {% if not forloop.first %},{% endif %}
+                                <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
+                            {% endfor %}
                         </div>
+                        {% endif %}
+                        {% if activity.content_object.original_activity.content_object.game.release_date %}
                         <div>
-                            {% if activity.content_object.original_activity.content_object.game.release_date %}
-                                <span class="text-muted">Date:</span>{{ activity.content_object.original_activity.content_object.game.release_date }}
-                            {% endif %}
+                            <span class="text-muted">Date:</span>
+                            {{ activity.content_object.original_activity.content_object.game.release_date }}
                         </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="mt-2">
@@ -459,7 +465,8 @@
                         {% endif %}
                         {% if activity.content_object.original_activity.content_object.content_object.release_date %}
                         <div>
-                            <span class="text-muted">Date:</span>{{ activity.content_object.original_activity.content_object.content_object.release_date }}
+                            <span class="text-muted">Date:</span>
+                            {{ activity.content_object.original_activity.content_object.content_object.release_date }}
                         </div>
                         {% endif %}
 
