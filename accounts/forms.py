@@ -71,14 +71,25 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = User
-        fields = ("username", "display_name", "bio", "is_public", "timezone")
+        fields = (
+            "username",
+            "display_name",
+            "bio",
+            "is_public",
+            "pure_text_mode",
+            "timezone",
+        )
         help_texts = {
             "is_public": "Enable this option to make your profile visible to everyone, including non-logged-in users. If disabled, only logged-in users will have access to view your profile.",
+            "pure_text_mode": "Enable this option to disable displaying images of the site.",
             "timezone": "Set your preferred timezone. This will adjust the display of all timestamps to match your local date and time.",
         }
 
     def __init__(self, *args, **kwargs):
         super(CustomUserChangeForm, self).__init__(*args, **kwargs)
+        self.fields["is_public"].label = "Everyone can view my profile"
+        self.fields["pure_text_mode"].label = "Don't display images"
+
         del self.fields["password"]
 
 
