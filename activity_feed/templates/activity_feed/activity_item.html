@@ -219,7 +219,7 @@
                         {% else %}
                             <img src="{{ activity.content_object.content_object.cover.url }}"
                                 alt="{{ activity.content_object.content_object.title }} cover"
-                                class="cover-placeholder"
+                                class="img-fluid cover-border"
                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ activity.content_object.content_object.title }}</div>';">
                         {% endif %}
                     {% else %}
@@ -344,7 +344,7 @@
                         {% else %}
                             <img src="{{ activity.content_object.content_object.poster.url }}"
                                 alt="{{ activity.content_object.content_object.title }} cover"
-                                class="cover-placeholder"
+                                class="img-fluid cover-border"
                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ activity.content_object.content_object.title }}</div>';">
                         {% endif %}
                     {% else %}
@@ -498,7 +498,7 @@
                         {% else %}
                             <img src="{{ activity.content_object.content_object.cover.url }}"
                                 alt="{{ activity.content_object.content_object.title }} cover"
-                                class="listen-cover-placeholder"
+                                class="img-fluid cover-border"
                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ activity.content_object.content_object.title }}</div>';">
                         {% endif %}
                     {% else %}
@@ -660,7 +660,7 @@
                         {% else %}
                             <img src="{{ activity.content_object.game.cover.url }}"
                                 alt="{{ activity.content_object.game.title }} cover"
-                                class="cover-placeholder"
+                                class="img-fluid cover-border"
                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ activity.content_object.game.title }}</div>';">
                         {% endif %}
                     {% else %}

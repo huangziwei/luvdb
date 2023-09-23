@@ -83,6 +83,10 @@ li:last-child {
     height: auto;
 }
 
+.cover-border {
+    border: 2px solid #ddd;
+}
+
 .listen-cover-placeholder {
     border: 2px solid #ddd;
     background-color: #eee;

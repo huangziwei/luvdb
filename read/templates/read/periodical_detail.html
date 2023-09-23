@@ -45,7 +45,7 @@
                                             {% else %}
                                                 <img src="{{ issue.cover.url }}"
                                                         alt="{{ issue.title }}"
-                                                        class="img-fluid"
+                                                        class="img-fluid cover-border"
                                                         onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ issue.periodical.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>';">
                                             {% endif %}
                                         {% else %}
