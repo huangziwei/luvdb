@@ -746,7 +746,9 @@ class ReleaseCreditDetailView(DetailView):
         release_credits = {role.role: [] for role in release_roles}
 
         for release_role in release_roles:
-            release_credits[release_role.role].append(release_role.person)
+            alt_name_or_person_name = release_role.alt_name or release_role.person.name
+
+            release_credits[release_role.role].append((release_role.person, alt_name_or_person_name))
 
         # Aggregate Track level credits
         release_tracks = ReleaseTrack.objects.filter(release=release).order_by(
@@ -764,9 +766,10 @@ class ReleaseCreditDetailView(DetailView):
             }
 
             for track_role in track_roles:
+                alt_name_or_person_name = track_role.alt_name or track_role.person.name
                 track_credits[(release_track.track, disk, order)][
                     track_role.role
-                ].append(track_role.person)
+                ].append((track_role.person, alt_name_or_person_name))
 
         context["release_credits"] = release_credits
         context["track_credits"] = track_credits

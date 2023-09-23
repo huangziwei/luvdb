@@ -9,11 +9,11 @@
             <!-- Release Level Credits -->
             <h4>Release Credits</h4>
             <div class="mb-3">
-                {% for role, persons_list in release_credits.items %}
+                {% for role, persons_altname_tuples in release_credits.items %}
                     <div class="ms-4 mb-1">
                         <span class="text-muted">{{ role.name }}:</span>
-                        {% for release_role in persons_list %}
-                            <a href="{% url 'entity:person_detail' release_role.id %}">{{ release_role.name }}</a>
+                        {% for person, name in persons_altname_tuples %}
+                            <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
                             {% if not forloop.last %}/{% endif %}
                         {% endfor %}
                     </div>
@@ -31,11 +31,11 @@
                             <strong>{{ track_data.1 }}.{{ track_data.2 }}</strong>
                             <a href="{% url 'listen:track_detail' track_data.0.id %}">{{ track_data.0.title }}</a>
                             <div class="mb-3">
-                                {% for role, persons in roles_dict.items %}
+                                {% for role, persons_altname_tuples in roles_dict.items %}
                                     <div class="ms-4 mb-1">
                                         <span class="text-muted">{{ role.name }}:</span>
-                                        {% for track_role in persons %}
-                                            <a href="{% url 'entity:person_detail' track_role.id %}">{{ track_role.name }}</a>
+                                        {% for person, name in persons_altname_tuples %}
+                                            <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
                                     </div>
