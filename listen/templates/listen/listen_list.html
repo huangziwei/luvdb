@@ -25,7 +25,8 @@
                                                     {% else %}
                                                         <img src="{{ release.cover.url }}"
                                                              alt="{{ release.title }}"
-                                                             class="img-fluid">
+                                                             class="img-fluid"
+                                                             onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ release.title }}</div>';">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="listen-cover-placeholder bg-light">{{ release.title }}</div>

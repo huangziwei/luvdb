@@ -32,19 +32,24 @@
                         <!--poster-box-->
                         <div class="col-12 col-lg-auto mb-3 mb-lg-0">
                             <div class="watch-cover-box">
-                                {% if object.poster %}
-                                    {% if object.poster_sens %}
-                                        <img src="{{ object.poster.url }}"
-                                             alt="{{ object.title }} poster"
-                                             class="img-fluid blur"
-                                             onclick="this.classList.toggle('blur')">
-                                    {% else %}
-                                        <img src="{{ object.poster.url }}"
-                                             alt="{{ object.title }} poster"
-                                             class="img-fluid">
-                                    {% endif %}
+                                {% if user.pure_text_mode %}
+                                    <div class="cover-placeholder bg-light">{{ object.title }}</div>
                                 {% else %}
-                                    <p class="no-poster-text">No Poster</p>
+                                    {% if object.poster %}
+                                        {% if object.poster_sens %}
+                                            <img src="{{ object.poster.url }}"
+                                                alt="{{ object.title }} poster"
+                                                class="img-fluid blur"
+                                                onclick="this.classList.toggle('blur')">
+                                        {% else %}
+                                            <img src="{{ object.poster.url }}"
+                                                alt="{{ object.title }} poster"
+                                                class="cover-placeholder img-fluid"
+                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ movie.title }}</div>';">
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="cover-placeholder bg-light">{{ object.title }}</div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>

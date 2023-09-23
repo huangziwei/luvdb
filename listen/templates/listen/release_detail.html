@@ -26,19 +26,24 @@
                         <!--cover-box-->
                         <div class="col-12 col-lg-auto mb-3 mb-lg-0 mt-1">
                             <div class="listen-cover-box">
-                                {% if object.cover %}
-                                    {% if object.cover_sens %}
-                                        <img src="{{ object.cover.url }}"
-                                             alt="{{ object.title }} cover"
-                                             class="cover-image blur img-fluid"
-                                             onclick="this.classList.toggle('blur')">
-                                    {% else %}
-                                        <img src="{{ object.cover.url }}"
-                                             alt="{{ object.title }} cover"
-                                             class="img-fluid">
-                                    {% endif %}
+                                {% if user.pure_text_mode %}
+                                    <div class="listen-cover-placeholder bg-light">{{ object.title }}</div>
                                 {% else %}
-                                    <div class="no-cover-text">No Cover</div>
+                                    {% if object.cover %}
+                                        {% if object.cover_sens %}
+                                            <img src="{{ object.cover.url }}"
+                                                alt="{{ object.title }} cover"
+                                                class="img-fluid blur"
+                                                onclick="this.classList.toggle('blur')">
+                                        {% else %}
+                                            <img src="{{ object.cover.url }}"
+                                                alt="{{ object.title }} cover"
+                                                class="listen-cover-placeholder img-fluid"
+                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ movie.title }}</div>';">
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="listen-cover-placeholder bg-light">{{ object.title }}</div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>

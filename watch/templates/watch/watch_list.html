@@ -12,25 +12,25 @@
                             <div class="row">
                                 {% for movie in trending_movies %}
                                     <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-                                        <a href="{% url 'watch:movie_detail' movie.pk %}">
-                                            {% if movie.poster %}
-                                                {% if movie.poster_sens %}
-                                                    <img src="{{ movie.poster.url }}"
-                                                         alt="{{ movie.title }} poster"
-                                                         class="img-fluid blur"
-                                                         onclick="this.classList.toggle('blur')">
-                                                {% else %}
-                                                    <img src="{{ movie.poster.url }}"
-                                                         alt="{{ movie.title }}"
-                                                         class="img-fluid">
-                                                {% endif %}
+                                        <a href="{% url 'watch:movie_detail' movie.id %}">
+                                            {% if user.pure_text_mode %}
+                                                <div class="cover-placeholder bg-light">{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>
                                             {% else %}
-                                                <div class="cover-placeholder"
-                                                     style="background: grey;
-                                                            width: 100%;
-                                                            height:100%;
-                                                            color:white;
-                                                            text-align: center">{{ movie.title }}</div>
+                                                {% if movie.poster %}
+                                                    {% if movie.poster_sens %}
+                                                        <img src="{{ movie.poster.url }}"
+                                                                alt="{{ movie.title }} poster"
+                                                                class="img-fluid blur"
+                                                                onclick="this.classList.toggle('blur')">
+                                                    {% else %}
+                                                        <img src="{{ movie.poster.url }}"
+                                                                alt="{{ movie.title }}"
+                                                                class="img-fluid"
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>';">
+                                                    {% endif %}
+                                                {% else %}
+                                                    <div class="cover-placeholder bg-light">{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>
+                                                {% endif %}
                                             {% endif %}
                                         </a>
                                     </div>
@@ -45,24 +45,24 @@
                                 {% for series in trending_series %}
                                     <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
                                         <a href="{% url 'watch:series_detail' series.pk %}">
-                                            {% if series.poster %}
-                                                {% if series.poster_sens %}
-                                                    <img src="{{ series.poster.url }}"
-                                                         alt="{{ series.title }} poster"
-                                                         class="img-fluid blur"
-                                                         onclick="this.classList.toggle('blur')">
-                                                {% else %}
-                                                    <img src="{{ series.poster.url }}"
-                                                         alt="{{ series.title }}"
-                                                         class="img-fluid">
-                                                {% endif %}
+                                            {% if user.pure_text_mode %}
+                                                <div class="cover-placeholder bg-light">{{ series.title }}{% if series.subtitle %}: {{series.subtitle}}{% endif %}</div>
                                             {% else %}
-                                                <div class="cover-placeholder"
-                                                     style="background: grey;
-                                                            width: 100%;
-                                                            height:100%;
-                                                            color:white;
-                                                            text-align: center">{{ series.title }}</div>
+                                                {% if series.poster %}
+                                                    {% if series.poster_sens %}
+                                                        <img src="{{ series.poster.url }}"
+                                                                alt="{{ series.title }} poster"
+                                                                class="img-fluid blur"
+                                                                onclick="this.classList.toggle('blur')">
+                                                    {% else %}
+                                                        <img src="{{ series.poster.url }}"
+                                                                alt="{{ series.title }}"
+                                                                class="img-fluid"
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ series.title }}{% if series.subtitle %}: {{series.subtitle}}{% endif %}</div>';">
+                                                    {% endif %}
+                                                {% else %}
+                                                    <div class="cover-placeholder bg-light">{{ series.title }}{% if series.subtitle %}: {{series.subtitle}}{% endif %}</div>
+                                                {% endif %}
                                             {% endif %}
                                         </a>
                                     </div>
@@ -82,24 +82,24 @@
                                 {% for movie in movies %}
                                     <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
                                         <a href="{% url 'watch:movie_detail' movie.pk %}">
-                                            {% if movie.poster %}
-                                                {% if movie.poster_sens %}
-                                                    <img src="{{ movie.poster.url }}"
-                                                         alt="{{ movie.title }} poster"
-                                                         class="poster-image blur"
-                                                         onclick="this.classList.toggle('blur')">
-                                                {% else %}
-                                                    <img src="{{ movie.poster.url }}"
-                                                         alt="{{ movie.title }}"
-                                                         class="img-fluid">
-                                                {% endif %}
+                                            {% if user.pure_text_mode %}
+                                                <div class="cover-placeholder bg-light">{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>
                                             {% else %}
-                                                <div class="poster-placeholder"
-                                                     style="background: grey;
-                                                            width: 100%;
-                                                            height:100%;
-                                                            color:white;
-                                                            text-align: center">{{ movie.title }}</div>
+                                                {% if movie.poster %}
+                                                    {% if movie.poster_sens %}
+                                                        <img src="{{ movie.poster.url }}"
+                                                                alt="{{ movie.title }} poster"
+                                                                class="img-fluid blur"
+                                                                onclick="this.classList.toggle('blur')">
+                                                    {% else %}
+                                                        <img src="{{ movie.poster.url }}"
+                                                                alt="{{ movie.title }}"
+                                                                class="img-fluid"
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>';">
+                                                    {% endif %}
+                                                {% else %}
+                                                    <div class="cover-placeholder bg-light">{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>
+                                                {% endif %}
                                             {% endif %}
                                         </a>
                                     </div>
@@ -114,24 +114,24 @@
                                 {% for serie in series %}
                                     <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
                                         <a href="{% url 'watch:series_detail' serie.pk %}">
-                                            {% if serie.poster %}
-                                                {% if serie.poster_sens %}
-                                                    <img src="{{ serie.poster.url }}"
-                                                         alt="{{ serie.title }} poster"
-                                                         class="poster-image blur"
-                                                         onclick="this.classList.toggle('blur')">
-                                                {% else %}
-                                                    <img src="{{ serie.poster.url }}"
-                                                         alt="{{ serie.title }}"
-                                                         class="img-fluid">
-                                                {% endif %}
+                                            {% if user.pure_text_mode %}
+                                                <div class="cover-placeholder bg-light">{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>
                                             {% else %}
-                                                <div class="poster-placeholder"
-                                                     style="background: grey;
-                                                            width: 100%;
-                                                            height:100%;
-                                                            color:white;
-                                                            text-align: center">{{ serie.title }}</div>
+                                                {% if serie.poster %}
+                                                    {% if serie.poster_sens %}
+                                                        <img src="{{ serie.poster.url }}"
+                                                                alt="{{ serie.title }} poster"
+                                                                class="img-fluid blur"
+                                                                onclick="this.classList.toggle('blur')">
+                                                    {% else %}
+                                                        <img src="{{ serie.poster.url }}"
+                                                                alt="{{ serie.title }}"
+                                                                class="img-fluid"
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>';">
+                                                    {% endif %}
+                                                {% else %}
+                                                    <div class="cover-placeholder bg-light">{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>
+                                                {% endif %}
                                             {% endif %}
                                         </a>
                                     </div>

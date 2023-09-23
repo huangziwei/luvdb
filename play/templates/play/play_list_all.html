@@ -8,22 +8,24 @@
                     {% for game in games %}
                         <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
                             <a href="{% url 'play:game_detail' game.pk %}">
-                                {% if game.cover %}
-                                    {% if game.cover_sens %}
-                                        <img src="{{ game.cover.url }}"
-                                             alt="{{ game.title }} cover"
-                                             class="img-fluid blur"
-                                             onclick="this.classList.toggle('blur')">
-                                    {% else %}
-                                        <img src="{{ game.cover.url }}" alt="{{ game.title }}" class="img-fluid">
-                                    {% endif %}
+                                {% if user.pure_text_mode %}
+                                    <div class="cover-placeholder bg-light">{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>
                                 {% else %}
-                                    <div class="cover-placeholder"
-                                         style="background: grey;
-                                                width: 100%;
-                                                height:100%;
-                                                color:white;
-                                                text-align: center">{{ game.title }}</div>
+                                    {% if game.cover %}
+                                        {% if game.cover_sens %}
+                                            <img src="{{ game.cover.url }}"
+                                                    alt="{{ game.title }} cover"
+                                                    class="img-fluid blur"
+                                                    onclick="this.classList.toggle('blur')">
+                                        {% else %}
+                                            <img src="{{ game.cover.url }}"
+                                                    alt="{{ game.title }}"
+                                                    class="img-fluid"
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>';">
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="cover-placeholder bg-light">{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>
+                                    {% endif %}
                                 {% endif %}
                             </a>
                         </div>

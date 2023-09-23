@@ -51,7 +51,7 @@ class CustomUser(AbstractUser):
     display_name = models.CharField(max_length=100, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     is_public = models.BooleanField(default=False)
-    pure_text_mode = models.BooleanField(default=True)
+    pure_text_mode = models.BooleanField(default=False)
     timezone = models.CharField(
         max_length=50, choices=[(tz, tz) for tz in pytz.all_timezones], default="UTC"
     )

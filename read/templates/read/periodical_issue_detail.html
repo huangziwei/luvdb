@@ -23,19 +23,24 @@
                         <!--cover-box-->
                         <div class="col-12 col-lg-auto mb-3 mb-lg-0">
                             <div class="read-cover-box">
-                                {% if issue.cover %}
-                                    {% if issue.cover_sens %}
-                                        <img src="{{ issue.cover.url }}"
-                                             alt="{{ issue.title }} cover"
-                                             class="img-fluid blur"
-                                             onclick="this.classList.toggle('blur')">
-                                    {% else %}
-                                        <img src="{{ issue.cover.url }}"
-                                             alt="{{ issue.title }} cover"
-                                             class="img-fluid">
-                                    {% endif %}
+                                {% if user.pure_text_mode %}
+                                    <div class="cover-placeholder bg-light">{{ issue.periodical.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>
                                 {% else %}
-                                    <div class="no-cover-text">No Cover</div>
+                                    {% if issue.cover %}
+                                        {% if issue.cover_sens %}
+                                            <img src="{{ issue.cover.url }}"
+                                                    alt="{{ issue.title }} cover"
+                                                    class="img-fluid blur"
+                                                    onclick="this.classList.toggle('blur')">
+                                        {% else %}
+                                            <img src="{{ issue.cover.url }}"
+                                                    alt="{{ issue.title }}"
+                                                    class="img-fluid"
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ issue.periodical.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>';">
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="cover-placeholder bg-light">{{ issue.periodical.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>

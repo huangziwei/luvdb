@@ -32,29 +32,26 @@
                     <div class="row">
                         {% for issue in periodical.issues.all %}
                             <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
-                                <a href="{% url 'read:issue_detail' periodical.id issue.id %}">
-                                    {% if issue.cover %}
-                                        {% if issue.cover_sens %}
-                                            <img src="{{ issue.cover.url }}"
-                                                 alt="{{ issue.title }} cover"
-                                                 class="img-fluid blur"
-                                                 onclick="this.classList.toggle('blur')">
-                                        {% else %}
-                                            <img src="{{ issue.cover.url }}" alt="{{ issue.title }}" class="img-fluid">
-                                        {% endif %}
+                                <a href="{% url 'read:issue_detail' issue.periodical.id issue.id %}">
+                                    {% if user.pure_text_mode %}
+                                        <div class="cover-placeholder bg-light">{{ issue.periodical.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>
                                     {% else %}
-                                        <div class="cover-placeholder"
-                                             style="background: grey;
-                                                    width: 100%;
-                                                    height:100%;
-                                                    color:white;
-                                                    text-align: center">{{ issue.title }}</div>
+                                        {% if issue.cover %}
+                                            {% if issue.cover_sens %}
+                                                <img src="{{ issue.cover.url }}"
+                                                        alt="{{ issue.title }} cover"
+                                                        class="img-fluid blur"
+                                                        onclick="this.classList.toggle('blur')">
+                                            {% else %}
+                                                <img src="{{ issue.cover.url }}"
+                                                        alt="{{ issue.title }}"
+                                                        class="img-fluid"
+                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ issue.periodical.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>';">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="cover-placeholder bg-light">{{ issue.periodical.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>
+                                        {% endif %}
                                     {% endif %}
-                                    <div class="issue-title text-center mt-2">
-                                        {% if issue.volume %}Vol. {{ issue.volume }}{% endif %}
-                                        {% if issue.number %}Nr. {{ issue.number }}{% endif %}
-                                        {% if issue.publication_date %}({{ issue.publication_date }}){% endif %}
-                                    </div>
                                 </a>
                             </div>
                         {% empty %}
