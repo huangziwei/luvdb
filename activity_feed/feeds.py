@@ -39,7 +39,7 @@ class UserActivityFeed(Feed):
             activity.content_type_id
         ).model_class()
         model_name = related_model.__name__.lower()
-        if model_name == "say":
+        if model_name == "say" or model_name == "repost":
             return related_object.content
         elif model_name == "post":
             return f'{related_object.user.username} posted "{related_object.title}"'
@@ -61,11 +61,11 @@ class UserActivityFeed(Feed):
         ).model_class()
         model_name = related_model.__name__.lower()
 
-        if model_name == "say":
+        if model_name == "say" or model_name == "repost":
             return None
 
         if hasattr(related_object, "content"):
-            return related_object.content[:300]
+            return related_object.content
         elif model_name == "follow":
             return f"{related_object.follower.username} followed {related_object.followed.username}"
         else:
