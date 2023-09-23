@@ -21,6 +21,7 @@ from .views import (
     PostDetailView,
     PostListView,
     PostUpdateView,
+    RandomizerDetailView,
     RepostCreateView,
     RepostDeleteView,
     RepostDetailView,
@@ -115,4 +116,5 @@ urlpatterns = [
         content_detail_redirect,
         name="content_detail_redirect",
     ),
+    path("luvlist/<int:pk>/random/", RandomizerDetailView.as_view(), name="randomizer"),
 ]

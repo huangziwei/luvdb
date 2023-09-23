@@ -32,7 +32,7 @@ from .forms import (
     RepostForm,
     SayForm,
 )
-from .models import Comment, ContentInList, LuvList, Pin, Post, Repost, Say
+from .models import Comment, ContentInList, LuvList, Pin, Post, Randomizer, Repost, Say
 
 User = get_user_model()
 
@@ -700,3 +700,18 @@ def content_detail_redirect(request, content_id):
         return redirect(
             "write:luvlist_detail", content.luv_list.id
         )  # or redirect to some default
+
+
+class RandomizerDetailView(DetailView):
+    model = LuvList
+    template_name = "write/randomizer_detail.html"
+    context_object_name = "luv_list"
+
+    def get_object(self):
+        return get_object_or_404(LuvList, id=self.kwargs["pk"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        randomizer, created = Randomizer.objects.get_or_create(luv_list=self.object)
+        context["item"] = randomizer.generate_item()
+        return context

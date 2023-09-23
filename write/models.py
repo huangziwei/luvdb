@@ -1,3 +1,5 @@
+import json
+import random
 import re
 
 from django.contrib.auth import get_user_model
@@ -9,6 +11,7 @@ from django.db.models import Q
 from django.db.models.signals import post_delete, pre_delete
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils import timezone
 
 from activity_feed.models import Activity
 from notify.models import Notification
@@ -385,3 +388,46 @@ class ContentInList(models.Model):
 
     def __str__(self):
         return f"{self.luv_list.title}: {self.content_object}"
+
+
+class Randomizer(models.Model):
+    luv_list = models.OneToOneField(
+        LuvList, related_name="randomizer", on_delete=models.CASCADE
+    )
+    last_generated_item = models.ForeignKey(
+        ContentInList,
+        related_name="randomized_in",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    last_generated_date = models.DateField(null=True, blank=True)
+    randomized_order = models.TextField(
+        null=True, blank=True
+    )  # Store the randomized order as a JSON string
+
+    def generate_item(self):
+        today = timezone.now().date()
+
+        if self.last_generated_date == today:
+            return self.last_generated_item
+
+        if not self.randomized_order:
+            items = list(self.luv_list.contents.all())
+            random_order = [item.id for item in random.sample(items, len(items))]
+            self.randomized_order = json.dumps(random_order)
+        else:
+            random_order = json.loads(self.randomized_order)
+
+        if not random_order:
+            return None
+
+        next_item_id = random_order.pop(0)
+        next_item = ContentInList.objects.get(id=next_item_id)
+
+        self.last_generated_item = next_item
+        self.last_generated_date = today
+        self.randomized_order = json.dumps(random_order if random_order else None)
+
+        self.save()
+        return next_item
