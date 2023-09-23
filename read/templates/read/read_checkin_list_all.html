@@ -24,7 +24,7 @@
                         <div class="me-3">|</div>
                         <div class="me-3">
                             <a href="?status=&order={{ order }}"
-                               class="btn btn-sm btn-outline-dark mb-1">All</a>
+                               class="btn btn-sm btn-outline-secondary mb-1">All</a>
                             <a href="?status=to_read&order={{ order }}"
                                class="btn btn-sm btn-info mb-1">To Read</a>
                             <a href="?status=reading_rereading&order={{ order }}"
@@ -49,19 +49,24 @@
                     <!--cover-box-->
                     <div class="col-12 mb-3">
                         <div style='width:50%'>
-                            {% if object.cover %}
-                                {% if object.cover_sens %}
-                                    <img src="{{ object.cover.url }}"
-                                         alt="{{ object.title }} cover"
-                                         class="blur img-fluid"
-                                         onclick="this.classList.toggle('blur')">
-                                {% else %}
-                                    <img src="{{ object.cover.url }}"
-                                         alt="{{ object.title }} cover"
-                                         class="img-fluid">
-                                {% endif %}
+                            {% if user.pure_text_mode %}
+                                <div class="cover-placeholder bg-light">{{ object.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>
                             {% else %}
-                                <div class="no-cover-text">No Cover</div>
+                                {% if object.cover %}
+                                    {% if object.cover_sens %}
+                                        <img src="{{ object.cover.url }}"
+                                                alt="{{ object.title }} cover"
+                                                class="img-fluid blur"
+                                                onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ object.cover.url }}"
+                                                alt="{{ object.title }}"
+                                                class="img-fluid"
+                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';">
+                                    {% endif %}
+                                {% else %}
+                                    <div class="cover-placeholder bg-light">{{ object.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>

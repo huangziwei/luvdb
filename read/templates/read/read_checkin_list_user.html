@@ -21,7 +21,7 @@
                         <div class="me-3">|</div>
                         <div class="me-3">
                             <a href="?status=&order={{ order }}"
-                               class="btn btn-sm btn-outline-dark mb-1">All</a>
+                               class="btn btn-sm btn-outline-secondary mb-1">All</a>
                             <a href="?status=to_read&order={{ order }}"
                                class="btn btn-sm btn-info mb-1">To Read</a>
                             <a href="?status=reading_rereading&order={{ order }}"
@@ -65,20 +65,28 @@
                                     <div class="mt-2">{{ checkin.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
                                     <div class="d-flex flex-row bg-light p-3 mt-2">
                                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                            {% if checkin.content_object.cover %}
-                                                {% if checkin.content_object.cover_sens %}
-                                                    <img src="{{ checkin.content_object.cover.url }}"
-                                                         alt="{{ checkin.content_object.title }} cover"
-                                                         style="width: 100%"
-                                                         class="img-fluid blur"
-                                                         onclick="this.classList.toggle('blur')">
+                                            {% if user.pure_text_mode %}
+                                                {% if checkin.content_object.title %}
+                                                    <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>
                                                 {% else %}
-                                                    <img src="{{ checkin.content_object.cover.url }}"
-                                                         alt="{{ checkin.content_object.title }} cover"
-                                                         style="width: 100%">
+                                                    <div class="cover-placeholder bg-light">{{ checkin.content_object.periodical.title }} Vol. {{checkin.content_object.volume}} Nr. {{checkin.content_object.number}}</div>
                                                 {% endif %}
                                             {% else %}
-                                                <div class="no-cover-text">No Cover</div>
+                                                {% if checkin.content_object.cover %}
+                                                    {% if checkin.content_object.cover_sens %}
+                                                        <img src="{{ checkin.content_object.cover.url }}"
+                                                                alt="{{ checkin.content_object.title }} cover"
+                                                                class="img-fluid blur"
+                                                                onclick="this.classList.toggle('blur')">
+                                                    {% else %}
+                                                        <img src="{{ checkin.content_object.cover.url }}"
+                                                                alt="{{ checkin.content_object.title }}"
+                                                                class="img-fluid"
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>';">
+                                                    {% endif %}
+                                                {% else %}
+                                                    <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>
+                                                {% endif %}
                                             {% endif %}
                                         </div>
                                         <div class="flex-grow-1 ms-3">
