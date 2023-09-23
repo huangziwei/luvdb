@@ -7,7 +7,9 @@
     {% else %}
         <meta property="og:description" content="Check out {{ issue.title }} on luvdb.com">
     {% endif %}
-    <meta property="og:image" content="{{ issue.cover.url }}">
+    {% if object.cover %}
+        <meta property="og:image" content="{{ object.cover.url }}">
+    {% endif %}
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:type" content="book">
 {% endblock meta %}

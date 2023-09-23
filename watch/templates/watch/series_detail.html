@@ -8,7 +8,9 @@
     {% else %}
         <meta property="og:description" content="Check out {{ object.title }} on luvdb.com">
     {% endif %}
-    <meta property="og:image" content="{{ object.poster.url }}">
+    {% if object.poster %}
+        <meta property="og:image" content="{{ object.poster.url }}">
+    {% endif %}
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:type" content="video.tv_show">
 {% endblock meta %}

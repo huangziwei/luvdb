@@ -7,9 +7,12 @@
         <meta property="og:description" content="{{ object.description|truncatewords:150 }}">
     {% else %}
         <meta property="og:description" content="Check out {{ object.title }} on luvdb.com">
-    {% endif %}    <meta property="og:type" content="video.movie" />
+    {% endif %}    
+    <meta property="og:type" content="video.movie" />
     <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-    <meta property="og:image" content="{% if object.poster %}{{ object.poster.url }}{% endif %}" />
+    {% if object.poster %}
+        <meta property="og:image" content="{{ object.poster.url }}" />
+    {% endif %}
     <meta property="og:release_date" content="{{ object.release_date }}" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="video.movie">
