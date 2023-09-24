@@ -62,7 +62,7 @@
             font-size: 1.2rem;
         }
         a {
-            color: #000;
+            color: rgb(110,168,254);
             text-decoration: none;
         }
     </style>
@@ -101,35 +101,41 @@
             <div class="col-md-8">
                 <div class="card mb-3">
                     <div class="card-body text-center">
-                        <h4 class="card-title mb-3">
-                            <a href="{% url 'write:luvlist_detail' luv_list.id %}">
-                                {{ luv_list.title }}
-                            </a>
-                        </h4>
                         {% if item %}
                             <h1 class="mb-3">
                                 {% if item.content_object.model_name == "Release" %}
-                                    <a href="{% url 'listen:release_detail' item.content_object.id %}">
+                                    <a href="{% url 'listen:release_detail' item.content_object.id %}" style="text-decoration: underline;">
                                         {{ item.content_object.title }}
-                                    </a>
+                                    </a> 
+                                    ({{item.content_object.release_date|slice:":4"}})
                                 {% elif item.content_object.model_name == "Book" %}
-                                    <a href="{% url 'read:book_detail' item.content_object.id %}">
+                                    <a href="{% url 'read:book_detail' item.content_object.id %}" style="text-decoration: underline;">
                                         {{ item.content_object.title }}
                                     </a>
+                                    ({{item.content_object.publication_date|slice:":4"}})
                                 {% elif item.content_object.model_name == "Movie" %}
-                                    <a href="{% url 'watch:movie_detail' item.content_object.id %}">
+                                    <a href="{% url 'watch:movie_detail' item.content_object.id %}" style="text-decoration: underline;">
                                         {{ item.content_object.title }}
                                     </a>    
+                                    ({{item.content_object.release_date|slice:":4"}})
                                 {% elif item.content_object.model_name == "Series" %}
-                                    <a href="{% url 'watch:series_detail' item.content_object.id %}">
+                                    <a href="{% url 'watch:series_detail' item.content_object.id %}" style="text-decoration: underline;">
                                         {{ item.content_object.title }}
                                     </a>   
+                                    ({{item.content_object.release_date|slice:":4"}})
                                 {% elif item.content_object.model_name == "Game" %}
-                                    <a href="{% url 'play:game_detail' item.content_object.id %}">
+                                    <a href="{% url 'play:game_detail' item.content_object.id %}" style="text-decoration: underline;">
                                         {{ item.content_object.title }}
-                                    </a>                                                                        
+                                    </a>                         
+                                    ({{item.content_object.release_date|slice:":4"}})
                                 {% endif %}
                             </h1>
+                            <h4 class="card-title mt-3 mb-3">
+                                <span>from</span>
+                                <a href="{% url 'write:luvlist_detail' luv_list.id %}" style="text-decoration: underline;">
+                                    {{ luv_list.title }}
+                                </a>
+                            </h4>
                             {% if item.content_object.cover %}
                                 <img src="{{item.content_object.cover.url}}" alt="" class="mb-3 img-fluid">
                                 <br>
@@ -158,13 +164,14 @@
                         {% else %}
                             <p class="card-text">No more items to show.</p>
                         {% endif %}
+                        
                     </div>
                 </div>
 
                 <div class="card mb-3">
                     <div class="card-body text-center">
                         {% if user.is_authenticated %}
-                            <p class="card-text">Welcome, {{ user.display_name | default:user.username }}!</p>
+                            <p class="card-text">Welcome back, {{ user.display_name | default:user.username }}!</p>
                             <span class="d-flex justify-content-center">
                                 <a href="{% url 'logout' %}?next={{ request.path }}" class="btn btn-sm btn-danger me-2">Logout</a>
                                 <button id="refreshButton" class="btn btn-sm btn-outline-secondary" style="display:none;">Refresh</button>
