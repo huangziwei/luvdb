@@ -1,6 +1,7 @@
 import json
 import random
 import re
+from datetime import datetime, timedelta
 
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -394,9 +395,7 @@ class Randomizer(models.Model):
     luv_list = models.ForeignKey(
         LuvList, related_name="randomizers", on_delete=models.CASCADE
     )
-    user = models.ForeignKey(
-        User, null=True, blank=True, on_delete=models.SET_NULL
-    )  # Add this line
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     last_generated_item = models.ForeignKey(
         ContentInList,
         related_name="randomized_in",
@@ -404,24 +403,30 @@ class Randomizer(models.Model):
         null=True,
         blank=True,
     )
-    last_generated_date = models.DateField(null=True, blank=True)
-    randomized_order = models.TextField(
+    last_generated_datetime = models.DateTimeField(
         null=True, blank=True
-    )  # Store the randomized order as a JSON string
+    )  # Changed from DateField to DateTimeField
+    randomized_order = models.TextField(null=True, blank=True)
+    interval_in_seconds = models.IntegerField(
+        default=86400
+    )  # New field for interval in seconds
 
     @classmethod
     def get_randomizer(cls, luv_list, user=None):
         return cls.objects.get_or_create(luv_list=luv_list, user=user)[0]
 
     def generate_item(self):
-        today = timezone.now().date()
+        now = timezone.now()
 
-        # Get the current items in the LuvList
+        if (
+            self.last_generated_datetime
+            and (now - self.last_generated_datetime).total_seconds()
+            < self.interval_in_seconds
+        ):
+            return self.last_generated_item
+
         current_items = list(self.luv_list.contents.all())
         current_item_ids = {item.id for item in current_items}
-
-        if self.last_generated_date == today:
-            return self.last_generated_item
 
         if not self.randomized_order:
             random_order = [
@@ -429,18 +434,13 @@ class Randomizer(models.Model):
             ]
         else:
             random_order = json.loads(self.randomized_order)
-
-            # Remove any item IDs that are no longer in the LuvList
             random_order = [
                 item_id for item_id in random_order if item_id in current_item_ids
             ]
-
-            # Add any new item IDs to the random_order
             new_item_ids = current_item_ids - set(random_order)
             random_order.extend(random.sample(list(new_item_ids), len(new_item_ids)))
 
         if not random_order:
-            # Reset the list if it's empty
             random_order = [
                 item.id for item in random.sample(current_items, len(current_items))
             ]
@@ -449,7 +449,7 @@ class Randomizer(models.Model):
         next_item = ContentInList.objects.get(id=next_item_id)
 
         self.last_generated_item = next_item
-        self.last_generated_date = today
+        self.last_generated_datetime = now  # Update to use DateTime
         self.randomized_order = json.dumps(random_order if random_order else None)
 
         self.save()
