@@ -120,6 +120,12 @@ li:last-child {
     overflow: hidden;
 }
 
+[data-bs-theme="dark"] .cover-placeholder {
+    border: 2px solid #ddd;
+    /* background-color: #aaaaaa; */
+    color: var(--text-default);
+}
+
 @media screen and (max-width: 768px) {
 
     /* adjust '768px' according to your requirement */
