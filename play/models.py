@@ -288,6 +288,9 @@ class Game(models.Model):
     def get_absolute_url(self):
         return reverse("play:game_detail", args=[str(self.id)])
 
+    def model_name(self):
+        return "Game"
+
 
 class GameRole(models.Model):
     """

@@ -409,15 +409,28 @@ class Randomizer(models.Model):
     def generate_item(self):
         today = timezone.now().date()
 
+        # Get the current items in the LuvList
+        current_items = list(self.luv_list.contents.all())
+        current_item_ids = {item.id for item in current_items}
+
         if self.last_generated_date == today:
             return self.last_generated_item
 
         if not self.randomized_order:
-            items = list(self.luv_list.contents.all())
-            random_order = [item.id for item in random.sample(items, len(items))]
-            self.randomized_order = json.dumps(random_order)
+            random_order = [
+                item.id for item in random.sample(current_items, len(current_items))
+            ]
         else:
             random_order = json.loads(self.randomized_order)
+
+            # Remove any item IDs that are no longer in the LuvList
+            random_order = [
+                item_id for item_id in random_order if item_id in current_item_ids
+            ]
+
+            # Add any new item IDs to the random_order
+            new_item_ids = current_item_ids - set(random_order)
+            random_order.extend(random.sample(list(new_item_ids), len(new_item_ids)))
 
         if not random_order:
             return None

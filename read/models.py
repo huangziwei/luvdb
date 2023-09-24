@@ -415,6 +415,9 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse("read:book_detail", args=[str(self.id)])
 
+    def model_name(self):
+        return "Book"
+
     @property
     def checkin_count(self):
         return (

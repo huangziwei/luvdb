@@ -44,10 +44,22 @@
                                     <a href="{% url 'listen:release_detail' item.content_object.id %}">
                                         {{ item.content_object.title }}
                                     </a>
-                                {% elif item.content_object.model_name == "book" %}
+                                {% elif item.content_object.model_name == "Book" %}
                                     <a href="{% url 'read:book_detail' item.content_object.id %}">
                                         {{ item.content_object.title }}
                                     </a>
+                                {% elif item.content_object.model_name == "Movie" %}
+                                    <a href="{% url 'watch:movie_detail' item.content_object.id %}">
+                                        {{ item.content_object.title }}
+                                    </a>    
+                                {% elif item.content_object.model_name == "Series" %}
+                                    <a href="{% url 'watch:series_detail' item.content_object.id %}">
+                                        {{ item.content_object.title }}
+                                    </a>   
+                                {% elif item.content_object.model_name == "Game" %}
+                                    <a href="{% url 'play:game_detail' item.content_object.id %}">
+                                        {{ item.content_object.title }}
+                                    </a>                                                                        
                                 {% endif %}
                             </h2>
                             {% if item.content_object.cover %}
@@ -74,6 +86,9 @@
                                     </svg>
                                 </a>
                                 {% endif %}
+                            {% endif %}
+                            {% if item.content_object.poster %}
+                                <img src="{{item.content_object.poster.url}}" alt="" class="mb-3">
                             {% endif %}
                         {% else %}
                             <p class="card-text">No more items to show.</p>

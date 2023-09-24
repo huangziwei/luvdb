@@ -704,7 +704,7 @@ def content_detail_redirect(request, content_id):
 
 class RandomizerDetailView(DetailView):
     model = LuvList
-    template_name = "write/randomizer_detail.html"
+    template_name = "write/luvlist_randomizer.html"
     context_object_name = "luv_list"
 
     def get_object(self):
