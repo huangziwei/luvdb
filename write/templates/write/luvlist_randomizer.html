@@ -69,6 +69,7 @@
     <script>
         // Auto-detect system theme
         const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+        const metaThemeColor = document.querySelector("meta[name='theme-color']");
         const dynamicStyles = document.getElementById("dynamic-styles");
         function setTheme() {
             if (prefersDarkScheme.matches) {
@@ -78,6 +79,7 @@
                         color: #fff;
                     }
                 `;
+                metaThemeColor.setAttribute("content", "#343a40"); 
             } else {
                 dynamicStyles.innerHTML += `
                     body {
@@ -85,6 +87,7 @@
                         color: #000;
                     }
                 `;
+                metaThemeColor.setAttribute("content", "#f8f9fa"); 
             }
         }
 
@@ -184,9 +187,9 @@
                 <div class="card mb-3">
                     <div class="card-body text-center">
                         <p class="card-text ">
-                            Inspired by <a class="" href="https://1001albumsgenerator.com/">One Album A Day</a>, <br>
+                            Inspired by <a class="" href="https://1001albumsgenerator.com/" style="text-decoration: underline;">One Album A Day</a>, <br>
                             <!--heart color should be red-->
-                            with <span style="color: red;">&#9829;</span> from <a href="https://luvdb.com">LʌvDB</a>
+                            with <span style="color: red;">&#9829;</span> from <a href="https://luvdb.com" style="text-decoration: underline;">LʌvDB</a>
                         </p>
                     </div>
             </div>
