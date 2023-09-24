@@ -391,9 +391,12 @@ class ContentInList(models.Model):
 
 
 class Randomizer(models.Model):
-    luv_list = models.OneToOneField(
-        LuvList, related_name="randomizer", on_delete=models.CASCADE
+    luv_list = models.ForeignKey(
+        LuvList, related_name="randomizers", on_delete=models.CASCADE
     )
+    user = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.SET_NULL
+    )  # Add this line
     last_generated_item = models.ForeignKey(
         ContentInList,
         related_name="randomized_in",
@@ -405,6 +408,10 @@ class Randomizer(models.Model):
     randomized_order = models.TextField(
         null=True, blank=True
     )  # Store the randomized order as a JSON string
+
+    @classmethod
+    def get_randomizer(cls, luv_list, user=None):
+        return cls.objects.get_or_create(luv_list=luv_list, user=user)[0]
 
     def generate_item(self):
         today = timezone.now().date()
@@ -433,7 +440,10 @@ class Randomizer(models.Model):
             random_order.extend(random.sample(list(new_item_ids), len(new_item_ids)))
 
         if not random_order:
-            return None
+            # Reset the list if it's empty
+            random_order = [
+                item.id for item in random.sample(current_items, len(current_items))
+            ]
 
         next_item_id = random_order.pop(0)
         next_item = ContentInList.objects.get(id=next_item_id)

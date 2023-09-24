@@ -712,6 +712,10 @@ class RandomizerDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        randomizer, created = Randomizer.objects.get_or_create(luv_list=self.object)
+        luv_list = self.get_object()
+
+        user = self.request.user if self.request.user.is_authenticated else None
+
+        randomizer = Randomizer.get_randomizer(luv_list, user)
         context["item"] = randomizer.generate_item()
         return context
