@@ -175,6 +175,12 @@
                             <p class="card-text">Welcome back, {{ user.display_name | default:user.username }}!</p>
                             <p class="card-text">
                                 <small>Next update will be at {{ next_generated_datetime | date:"Y-m-d H:i:s" }}</small>
+                                <span class="text-muted">
+                                    <i class="bg-secondary text-white clickable-icon" style="display:inline-block; width:16px; height:16px; border-radius:50%; text-align:center; line-height:16px; cursor: pointer;" data-bs-toggle="collapse" href="#explanationText" role="button" aria-expanded="false" aria-controls="explanationText">!</i>
+                                    <div class="collapse" id="explanationText" style="margin-top: 5px;">
+                                        The new item will be triggered by the first visit 24 hours after the last.
+                                    </div>
+                                </span>
                             </p>
                             <span class="d-flex justify-content-center">
                                 <a href="{% url 'logout' %}?next={{ request.path }}" class="btn btn-sm btn-danger me-2">Logout</a>
@@ -188,7 +194,14 @@
                         </p>
                         <p class="card-text">
                             <small>Next update will be at {{ next_generated_datetime | date:"Y-m-d H:i:s" }}</small>
+                            <span class="text-muted">
+                                <i class="bg-secondary text-white clickable-icon" style="display:inline-block; width:16px; height:16px; border-radius:50%; text-align:center; line-height:16px; cursor: pointer;" data-bs-toggle="collapse" href="#explanationText" role="button" aria-expanded="false" aria-controls="explanationText">!</i>
+                                <div class="collapse" id="explanationText" style="margin-top: 5px;">
+                                    The new item will be triggered by the first visit 24 hours after the last.
+                                </div>
+                            </span>
                         </p>
+                        
                         <span class="d-flex justify-content-center">
                             <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-sm btn-primary me-2">Login</a>
                             <button id="refreshButton" class="btn btn-sm btn-outline-secondary" style="display:none;">Refresh</button>
@@ -221,5 +234,6 @@
             }
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
