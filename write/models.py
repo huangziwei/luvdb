@@ -3,6 +3,7 @@ import random
 import re
 from datetime import datetime, timedelta
 
+import pytz
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -403,13 +404,9 @@ class Randomizer(models.Model):
         null=True,
         blank=True,
     )
-    last_generated_datetime = models.DateTimeField(
-        null=True, blank=True
-    )  # Changed from DateField to DateTimeField
+    last_generated_datetime = models.DateTimeField(null=True, blank=True)
     randomized_order = models.TextField(null=True, blank=True)
-    interval_in_seconds = models.IntegerField(
-        default=86400
-    )  # New field for interval in seconds
+    interval_in_seconds = models.IntegerField(default=86400)
 
     @classmethod
     def get_randomizer(cls, luv_list, user=None):
@@ -418,11 +415,23 @@ class Randomizer(models.Model):
     def generate_item(self):
         now = timezone.now()
 
-        if (
-            self.last_generated_datetime
-            and (now - self.last_generated_datetime).total_seconds()
-            < self.interval_in_seconds
-        ):
+        # Determine the timezone to use
+        if self.user:
+            user_tz = pytz.timezone(
+                self.user.timezone
+            )  # Assuming you have a timezone field on your User model
+        else:
+            user_tz = pytz.UTC  # Universal timezone for public randomizer
+
+        today = timezone.localtime(now, user_tz).date()
+        last_generated_date = None
+
+        if self.last_generated_datetime:
+            last_generated_date = timezone.localtime(
+                self.last_generated_datetime, user_tz
+            ).date()
+
+        if last_generated_date == today:
             return self.last_generated_item
 
         current_items = list(self.luv_list.contents.all())
@@ -449,7 +458,7 @@ class Randomizer(models.Model):
         next_item = ContentInList.objects.get(id=next_item_id)
 
         self.last_generated_item = next_item
-        self.last_generated_datetime = now  # Update to use DateTime
+        self.last_generated_datetime = now
         self.randomized_order = json.dumps(random_order if random_order else None)
 
         self.save()

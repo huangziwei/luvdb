@@ -4,6 +4,7 @@ from datetime import timedelta
 from itertools import chain
 from urllib.parse import urlparse
 
+import pytz
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
@@ -720,12 +721,36 @@ class RandomizerDetailView(DetailView):
 
         randomizer = Randomizer.get_randomizer(luv_list, user)
         context["item"] = randomizer.generate_item()
-        # next_generated_datetime will be in 24 hours
-        if randomizer.last_generated_datetime:
-            context[
-                "next_generated_datetime"
-            ] = randomizer.last_generated_datetime + timedelta(days=1)
+
+        # Determine the timezone to use
+        if user:
+            user_tz = pytz.timezone(
+                user.timezone
+            )  # Make sure user.timezone is a valid timezone string
         else:
-            context["next_generated_datetime"] = timezone.now() + timedelta(days=1)
+            user_tz = pytz.UTC  # Universal timezone for public randomizer
+
+        # Calculate next midnight in the given timezone
+        now = timezone.now()
+        local_now = timezone.localtime(now, user_tz)
+        next_midnight = local_now.replace(
+            hour=0, minute=0, second=0, microsecond=0
+        ) + timedelta(days=1)
+        next_midnight_utc = next_midnight.astimezone(
+            pytz.UTC
+        )  # Directly use astimezone
+
+        context["next_generated_datetime"] = next_midnight_utc
+
+        # Calculate time until next renewal
+        time_until_renewal = next_midnight_utc - now
+        context["time_until_renewal"] = format_timedelta_to_hms(time_until_renewal)
 
         return context
+
+
+def format_timedelta_to_hms(td):
+    total_seconds = int(td.total_seconds())
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f"{hours:02}:{minutes:02}:{seconds:02}"
