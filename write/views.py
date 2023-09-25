@@ -744,13 +744,6 @@ class RandomizerDetailView(DetailView):
 
         # Calculate time until next renewal
         time_until_renewal = next_midnight_utc - now
-        context["time_until_renewal"] = format_timedelta_to_hms(time_until_renewal)
+        context["time_until_renewal"] = time_until_renewal
 
         return context
-
-
-def format_timedelta_to_hms(td):
-    total_seconds = int(td.total_seconds())
-    hours, remainder = divmod(total_seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    return f"{hours:02}:{minutes:02}:{seconds:02}"

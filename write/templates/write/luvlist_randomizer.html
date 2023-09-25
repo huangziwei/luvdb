@@ -174,13 +174,10 @@
                         {% if user.is_authenticated %}
                             <p class="card-text">Welcome back, {{ user.display_name | default:user.username }}!</p>
                             <p class="card-text">
-                                <small>Next update will be at {{ next_generated_datetime | date:"Y-m-d H:i:s" }}</small>
-                                <span class="text-muted">
-                                    <i class="bg-secondary text-white clickable-icon" style="display:inline-block; width:16px; height:16px; border-radius:50%; text-align:center; line-height:16px; cursor: pointer;" data-bs-toggle="collapse" href="#explanationText" role="button" aria-expanded="false" aria-controls="explanationText">!</i>
-                                    <div class="collapse" id="explanationText" style="margin-top: 5px;">
-                                        {{ time_until_renewal }} away.
-                                    </div>
-                                </span>
+                                <small id="countdown" style="display:none;">Next update in </small>
+                                <noscript>
+                                    <small>Next update will be at {{ next_generated_datetime | date:"Y-m-d H:i:s" }}</small>
+                                </noscript>
                             </p>
                             <span class="d-flex justify-content-center">
                                 <a href="{% url 'logout' %}?next={{ request.path }}" class="btn btn-sm btn-danger me-2">Logout</a>
@@ -193,13 +190,10 @@
                             Log in for your personalized list.
                         </p>
                         <p class="card-text">
-                            <small>Next update will be at {{ next_generated_datetime | date:"Y-m-d H:i:s" }}</small>
-                            <span class="text-muted">
-                                <i class="bg-secondary text-white clickable-icon" style="display:inline-block; width:16px; height:16px; border-radius:50%; text-align:center; line-height:16px; cursor: pointer;" data-bs-toggle="collapse" href="#explanationText" role="button" aria-expanded="false" aria-controls="explanationText">!</i>
-                                <div class="collapse" id="explanationText" style="margin-top: 5px;">
-                                    {{ time_until_renewal }} away.
-                                </div>
-                            </span>
+                            <small id="countdown" style="display:none;">Next update in </small>
+                            <noscript>
+                                <small>Next update will be at {{ next_generated_datetime | date:"Y-m-d H:i:s" }}</small>
+                            </noscript>
                         </p>
                         
                         <span class="d-flex justify-content-center">
@@ -233,6 +227,30 @@
                 });
             }
         }
+
+        // Your initial time_until_renewal in seconds
+        // You can set this value dynamically using Django template variables if needed
+        let timeUntilRenewal = {{ time_until_renewal.total_seconds|default:0 }};
+        document.getElementById('countdown').style.display = 'inline'
+
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            return `${h}:${m}:${s}`;
+        }
+
+        function updateCountdown() {
+            if (timeUntilRenewal <= 0) {
+                document.getElementById('countdown').textContent = "Refresh the page to see update.";
+            } else {
+                document.getElementById('countdown').textContent = "Next update in " + formatTime(timeUntilRenewal);
+                timeUntilRenewal--;
+            }
+        }
+
+        // Update the countdown every second
+        setInterval(updateCountdown, 1000);
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
