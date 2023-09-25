@@ -10,7 +10,7 @@
                             <h4>Movies</h4>
                             <div class="row">
                                 {% for movie in movies %}
-                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                    <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'watch:movie_detail' movie.pk %}">
                                             {% if movie.poster %}
                                                 {% if movie.poster_sens %}
@@ -42,7 +42,7 @@
                             <h4>Series</h4>
                             <div class="row">
                                 {% for serie in series %}
-                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                    <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'watch:series_detail' serie.pk %}">
                                             {% if serie.poster %}
                                                 {% if serie.poster_sens %}

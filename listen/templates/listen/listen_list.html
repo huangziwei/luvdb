@@ -11,7 +11,7 @@
                             <h4>Music</h4>
                             <div class="row">
                                 {% for release in objects.trending_releases %}
-                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                    <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'listen:release_detail' release.pk %}">
                                             {% if user.pure_text_mode %}
                                                 <div class="listen-cover-placeholder bg-light">{{ release.title }}</div>
@@ -43,7 +43,7 @@
                             <h4>Podcast</h4>
                             <div class="row">
                                 {% for podcast in objects.trending_podcasts %}
-                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                    <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'listen:podcast_detail' podcast.pk %}">
                                             {% if user.pure_text_mode %}
                                                 <div class="listen-cover-placeholder bg-light">{{ podcast.title }}</div>
@@ -74,7 +74,7 @@
                             <h4>Audiobooks</h4>
                             <div class="row">
                                 {% for audiobook in objects.trending_audiobooks %}
-                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                    <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'listen:audiobook_detail' audiobook.pk %}">
                                             {% if user.pure_text_mode %}
                                                 <div class="listen-cover-placeholder bg-light">{{ audiobook.title }}</div>
@@ -110,7 +110,7 @@
                             <h4>Music</h4>
                             <div class="row">
                                 {% for release in objects.recent_releases %}
-                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                    <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'listen:release_detail' release.pk %}">
                                             {% if user.pure_text_mode %}
                                                 <div class="listen-cover-placeholder bg-light">{{ release.title }}</div>
@@ -141,7 +141,7 @@
                             <h4>Podcasts</h4>
                             <div class="row">
                                 {% for podcast in objects.recent_podcasts %}
-                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                    <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'listen:podcast_detail' podcast.pk %}">
                                             {% if user.pure_text_mode %}
                                                 <div class="listen-cover-placeholder bg-light">{{ podcast.title }}</div>
@@ -172,7 +172,7 @@
                             <h4>Audiobooks</h4>
                             <div class="row">
                                 {% for audiobook in objects.recent_audiobooks %}
-                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                    <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'listen:audiobook_detail' audiobook.pk %}">
                                             {% if user.pure_text_mode %}
                                                 <div class="listen-cover-placeholder bg-light">{{ audiobook.title }}</div>

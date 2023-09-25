@@ -9,7 +9,7 @@
                         <h2>Trending</h2>
                         <div class="row">
                             {% for game in trending_games %}
-                                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                     <a href="{% url 'play:game_detail' game.pk %}">
                                         {% if user.pure_text_mode %}
                                             <div class="cover-placeholder bg-light">{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>
@@ -41,7 +41,7 @@
                 <h2>Recently Added</h2>
                 <div class="row">
                     {% for game in recent_games %}
-                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                             <a href="{% url 'play:game_detail' game.pk %}">
                                 {% if user.pure_text_mode %}
                                     <div class="cover-placeholder bg-light">{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>

@@ -42,7 +42,7 @@
                                 <div class="mt-3 me-3 d-flex overflow-auto">
                                     <div class="rotate text-muted">Reading</div>
                                     {% for item in reading %}
-                                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-1 me-2">
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                         {% if item.content_type.model == 'book' %}
                                                 <a href="{% url 'read:book_checkin_list' item.content_object.id item.user.username %}">
                                                     {% if user.pure_text_mode %}
@@ -94,7 +94,7 @@
                                 <div class="mt-3 me-3 d-flex overflow-auto">
                                     <div class="rotate text-muted">Read</div>
                                     {% for item in read %}
-                                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-1 me-2">
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                             {% if item.content_type.model == 'book' %}
                                                 <a href="{% url 'read:book_checkin_list' item.content_object.id item.user.username %}">
                                                     {% if user.pure_text_mode %}
@@ -163,7 +163,7 @@
                                 <div class="mt-3 me-3 d-flex overflow-auto">
                                     <div class="rotate text-muted">Watching</div>
                                     {% for item in watching %}
-                                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-1 me-2">
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                             {% if item.content_type.model == 'movie' %}
                                                 <a href="{% url 'watch:movie_checkin_list' item.content_object.id item.user.username %}">
                                                     {% if user.pure_text_mode %}
@@ -219,7 +219,7 @@
                                 <div class="mt-3 me-3 d-flex overflow-auto">
                                     <div class="rotate text-muted">Watched</div>
                                     {% for item in watched %}
-                                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-1 me-2">
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                             {% if item.content_type.model == 'movie' %}
                                                 <a href="{% url 'watch:movie_checkin_list' item.content_object.id item.user.username %}">
                                                     {% if user.pure_text_mode %}
@@ -288,7 +288,7 @@
                                 <div class="mt-3 me-3 d-flex overflow-auto">
                                     <div class="rotate text-muted">Listening</div>
                                     {% for item in listening %}
-                                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                             <a href="{% url 'listen:audiobook_checkin_list' item.content_object.id item.user.username %}">
                                                 {% if user.pure_text_mode %}
                                                     <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -320,7 +320,7 @@
                                 <div class="mt-3 me-3 d-flex overflow-auto">
                                     <div class="rotate text-muted">Looping</div>
                                     {% for item in looping %}
-                                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-1 me-2">
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                             <a href="{% url 'listen:release_checkin_list' item.content_object.id item.user.username %}">
                                                 {% if user.pure_text_mode %}
                                                     <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -352,7 +352,7 @@
                                 <div class="mt-3 me-3 d-flex overflow-auto">
                                     <div class="rotate text-muted">Listend</div>
                                     {% for item in listened %}
-                                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-1 me-2">
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                         {% if item.content_object.model_name == "Release" %}
                                             <a href="{% url 'listen:release_checkin_list' item.content_object.id item.user.username %}">
                                                 {% if user.pure_text_mode %}
@@ -408,7 +408,7 @@
                                 <div class="mt-3 me-3 d-flex overflow-auto">
                                     <div class="rotate text-muted">Subscribed</div>
                                     {% for item in subscribed %}
-                                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-1 me-2">
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                             <a href="{% url 'listen:podcast_checkin_list' item.content_object.id item.user.username %}">
                                                 {% if user.pure_text_mode %}
                                                     <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -453,7 +453,7 @@
                                 <div class="mt-3 me-3 d-flex overflow-auto">
                                     <div class="rotate text-muted">Playing</div>
                                     {% for item in playing %}
-                                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-1 me-2">
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                             <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
                                                 {% if user.pure_text_mode %}
                                                     <div class="cover-placeholder bg-light">{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>
@@ -485,7 +485,7 @@
                                 <div class="mt-3 me-3 d-flex overflow-auto">
                                     <div class="rotate text-muted">Played</div>
                                     {% for item in played %}
-                                        <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-1 me-2">
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                             <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
                                                 {% if user.pure_text_mode %}
                                                     <div class="cover-placeholder bg-light">{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>

@@ -31,7 +31,7 @@
                     <h3>Issues</h3>
                     <div class="row">
                         {% for issue in periodical.issues.all %}
-                            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                            <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                 <a href="{% url 'read:issue_detail' issue.periodical.id issue.id %}">
                                     {% if user.pure_text_mode %}
                                         <div class="cover-placeholder bg-light">{{ issue.periodical.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>
