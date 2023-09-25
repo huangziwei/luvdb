@@ -1,5 +1,6 @@
 import random
 from collections import Counter
+from datetime import timedelta
 from itertools import chain
 from urllib.parse import urlparse
 
@@ -718,4 +719,10 @@ class RandomizerDetailView(DetailView):
 
         randomizer = Randomizer.get_randomizer(luv_list, user)
         context["item"] = randomizer.generate_item()
+        # context["last_generated_datetime"] = randomizer.last_generated_datetime
+        # next_generated_datetime will be in 24 hours
+        context[
+            "next_generated_datetime"
+        ] = randomizer.last_generated_datetime + timedelta(days=1)
+
         return context

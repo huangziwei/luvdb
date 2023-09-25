@@ -65,6 +65,7 @@
             color: rgb(110,168,254);
             text-decoration: none;
         }
+
     </style>
     <script>
         // Auto-detect system theme
@@ -172,6 +173,9 @@
                     <div class="card-body text-center">
                         {% if user.is_authenticated %}
                             <p class="card-text">Welcome back, {{ user.display_name | default:user.username }}!</p>
+                            <p class="card-text">
+                                <small>Next update will be at {{ next_generated_datetime | date:"Y-m-d H:i:s" }}</small>
+                            </p>
                             <span class="d-flex justify-content-center">
                                 <a href="{% url 'logout' %}?next={{ request.path }}" class="btn btn-sm btn-danger me-2">Logout</a>
                                 <button id="refreshButton" class="btn btn-sm btn-outline-secondary" style="display:none;">Refresh</button>
@@ -181,6 +185,9 @@
                             Viewing today's public, random item. 
                             <br>
                             Log in for your personalized list.
+                        </p>
+                        <p class="card-text">
+                            <small>Next update will be at {{ next_generated_datetime | date:"Y-m-d H:i:s" }}</small>
                         </p>
                         <span class="d-flex justify-content-center">
                             <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-sm btn-primary me-2">Login</a>
