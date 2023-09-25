@@ -26,6 +26,8 @@ STATUS_CLASSES = {
     "finished_reading": "text-bg-success",
     "rereading": "text-bg-primary",
     "reread": "text-bg-success",
+    "afterthought": "text-bg-success",
+    "skimmed": "text-bg-success",
     # Watching Status
     "to_watch": "text-bg-info",
     "watching": "text-bg-primary",

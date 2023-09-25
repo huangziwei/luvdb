@@ -51,6 +51,19 @@
                                href="#"
                                onclick="setStatus(event,'reread')">Reread</a>
                         </li>
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                                id="status-sampled"
+                                href="#"
+                                onclick="setStatus(event,'sampled')">Sampled
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-afterthought"
+                               href="#"
+                               onclick="setStatus(event,'afterthought')">Afterthought</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -74,6 +87,9 @@
                     </li>
                     <li>
                         <a class="dropdown-item" href="#" onclick="setProgressType(event,'PC')">%</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="setProgressType(event,'CH')">Chapter</a>
                     </li>
                 </ul>
             </div>
@@ -115,6 +131,8 @@
         "abandoned": "status-abandoned",
         "rereading": "status-rereading",
         "reread": "status-reread",
+        "sampled": "status-sampled",
+        "afterthought": "status-afterthought",
     };
 
     function setStatus(event, status) {

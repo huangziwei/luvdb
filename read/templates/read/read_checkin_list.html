@@ -39,6 +39,10 @@
                        class="btn btn-sm btn-warning mb-1">Paused</a>
                     <a href="?status=abandoned&order={{ order }}"
                        class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                    <a href="?status=sampled&order={{ order}}"
+                       class="btn btn-sm btn-primary mb-1">Sampled</a>
+                    <a href="?status=afterthought&order={{ order}}"
+                       class="btn btn-sm btn-success mb-1">Afterthought</a>
                 </div>
             </span>
             {% if profile_user.is_public or request.user.is_authenticated %}
@@ -51,6 +55,8 @@
                                 <span class="badge text-bg-warning me-2">
                                     {% if checkin.progress_type == "PG" %}
                                         On page {{ checkin.progress }}
+                                    {% elif checkin.progress_type == "CH" %}
+                                        Chapter {{ checkin.progress }}
                                     {% else %}
                                         At {{ checkin.progress }}%
                                     {% endif %}

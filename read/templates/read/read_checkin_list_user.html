@@ -5,7 +5,7 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-7">
+            <div class="col-12 col-md-8">
                 <div class="col-sm-12">
                     <h4>
                         All Reading Check-Ins from
@@ -32,6 +32,10 @@
                                class="btn btn-sm btn-warning mb-1">Paused</a>
                             <a href="?status=abandoned&order={{ order }}"
                                class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                            <a href="?status=sampled&order={{ order}}"
+                               class="btn btn-sm btn-primary mb-1">Sampled</a>
+                            <a href="?status=afterthought&order={{ order}}"
+                               class="btn btn-sm btn-success mb-1">Afterthought</a>
                         </div>
                     </span>
                 </div>

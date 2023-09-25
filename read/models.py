@@ -523,7 +523,9 @@ class ReadCheckIn(models.Model):
         ("abandoned", "Abandoned"),
         ("rereading", "Rereading"),
         ("reread", "Reread"),
-        ("afterthoughts", "Afterthoughts"),
+        ("afterthought", "Afterthought"),
+        ("sampled", "Sampled"),
+        ("skimmed", "Skimmed"),
     ]
     status = models.CharField(max_length=255, choices=STATUS_CHOICES)
     share_to_feed = models.BooleanField(default=False)
@@ -534,9 +536,11 @@ class ReadCheckIn(models.Model):
     progress = models.IntegerField(null=True, blank=True)
     PAGE = "PG"
     PERCENTAGE = "PC"
+    CHAPTER = "CH"
     PROGRESS_TYPE_CHOICES = [
         (PAGE, "Page"),
         (PERCENTAGE, "Percentage"),
+        (CHAPTER, "Chapter"),
     ]
     progress_type = models.CharField(
         max_length=2,
