@@ -64,7 +64,7 @@
                                 </p>
                                 <div class="game-meta">
                                     {% for role, persons_altname_tuples in grouped_roles.items %}
-                                        <div>
+                                        <div class="mb-1">
                                             <span class="text-muted">{{ role }}:</span>
                                             {% for person, name in persons_altname_tuples %}
                                                 <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
@@ -73,7 +73,7 @@
                                         </div>
                                     {% endfor %}
                                     {% if object.developers.count != 0 %}
-                                        <div>
+                                        <div class="mb-1">
                                             <span class="text-muted">Developer{% if object.developers.count > 1 %}s{% endif %}:</span>
                                             {% for developer in object.developers.all %}
                                                 <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
@@ -82,7 +82,7 @@
                                         </div>
                                     {% endif %}
                                     {% if object.publishers.count != 0 %}
-                                        <div>
+                                        <div class="mb-1">
                                             <span class="text-muted">Publisher{% if object.publishers.count > 1 %}s{% endif %}:</span>
                                             {% for publisher in object.publishers.all %}
                                                 <a href="{% url 'entity:company_detail' publisher.id %}">{{ publisher.name }}</a>
@@ -91,7 +91,7 @@
                                         </div>
                                     {% endif %}
                                     {% if object.platforms.count != 0 %}
-                                        <div>
+                                        <div class="mb-1">
                                             <span class="text-muted">Platform{% if object.platforms.count > 1 %}s{% endif %}:</span>
                                             {% for platform in object.platforms.all %}
                                                 <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
@@ -99,17 +99,17 @@
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <div>
+                                    <div class="mb-1">
                                         <span class="text-muted">Crew and Cast:</span> <a href="{% url 'play:game_cast_detail' object.id %}">View All</a>
                                     </div>
                                     {% if object.release_date %}
-                                        <div>
+                                        <div class="mb-1">
                                             <span class="text-muted">Release Date:</span> {{ object.release_date }}
                                         </div>
                                     {% endif %}    
                                     <!--add series here-->
                                     {% if object.gameinseries_set.all %}
-                                        <div>
+                                        <div class="mb-1">
                                             <span class="text-muted">Series:</span>
                                             {% for gameinseries in object.gameinseries_set.all %}
                                                 <a href="{% url 'play:series_detail' gameinseries.series.id %}">{{ gameinseries.series.title }}</a>

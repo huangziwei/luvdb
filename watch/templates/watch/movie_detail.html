@@ -65,16 +65,16 @@
                                 {% if object.other_titles %}<p class='text-muted'>{{ object.other_titles }}</p>{% endif %}
                                 <div class="movie-meta">
                                     {% for role_name, person_altname_tuples in roles.items %}
-                                        <p>
+                                        <div class="mb-1">
                                             <span class="text-muted">{{ role_name }}:</span>
                                             {% for person, alt_name in person_altname_tuples %}
                                                 <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
                                     {% endfor %}
                                     {% if object.studios.count != 0 %}
-                                        <p>
+                                        <div class="mb-1">
                                             {# djlint:off #}
                                             <span class="text-muted">Studio{% if object.studios.count > 1 %}s{% endif %}:</span>
                                             {# djlint:on #}
@@ -82,10 +82,10 @@
                                                 <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if object.distributors.count != 0 %}
-                                        <p>
+                                        <div class="mb-1">
                                             {# djlint:off #}
                                             <span class="text-muted">Distributor{% if object.distributors.count > 1 %}s{% endif %}:</span>
                                             {# djlint:on #}
@@ -93,20 +93,20 @@
                                                 <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if object.website %}
-                                        <p>
+                                        <div class="mb-1">
                                             <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if object.based_on %}
-                                        <p>
+                                        <div class="mb-1">
                                             <span class="text-muted">Based on:</span> <a href="{% url "read:work_detail" object.based_on.id %}">{{ object.based_on.title }}</a> ({{ object.based_on.publication_date }})
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if object.genres %}
-                                        <p>
+                                        <div class="mb-1">
                                             {# djlint:off #}
                                             <span class="text-muted">Genre{% if object.genres.count > 1 %}s{% endif %}:</span>
                                             {# djlint:on #}
@@ -114,24 +114,24 @@
                                                 <a href="{% url 'watch:genre_detail' genre.name %}">{{ genre.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if collections %}
-                                        <p>
+                                        <div class="mb-1">
                                             <span class="text-muted">Collection{% if collections.count > 1 %}s{% endif %}:</span>
                                             {% for collection in collections %}
                                                 <a href="{% url 'watch:collection_detail' collection.id %}">{{ collection.title }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
                                     {% endif %}
-                                    <p>
+                                    <div class="mb-1">
                                         <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View All</a>
-                                    </p>
+                                    </div>
                                     {% if object.release_date %}
-                                        <p>
+                                        <div class="mb-1">
                                             <span class="text-muted">Date:</span> {{ object.release_date }}
-                                        </p>
+                                        </div>
                                     {% endif %}
 
                                     {% if object.description %}

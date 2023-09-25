@@ -28,13 +28,13 @@
                         <a href="{% url 'watch:movie_checkin_list' checkin.content_object.id checkin.user.username %}"
                            class="text-decoration-none text-secondary">
                            <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
-                           <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 1 %}({{ checkin.total_checkins }} more){% endif %}</span>
+                           <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 0 %}({{ checkin.total_checkins }} more){% endif %}</span>
                         </a>
                     {% elif model_name == "series" %}
                         <a href="{% url 'watch:series_checkin_list' checkin.content_object.id checkin.user.username %}"
                            class="text-decoration-none text-secondary">
                            <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
-                           <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 1 %}({{ checkin.total_checkins }} more){% endif %}</span>
+                           <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 0 %}({{ checkin.total_checkins }} more){% endif %}</span>
                         </a>
                     {% endif %}
                 </span>
