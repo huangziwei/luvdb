@@ -10,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -719,10 +720,12 @@ class RandomizerDetailView(DetailView):
 
         randomizer = Randomizer.get_randomizer(luv_list, user)
         context["item"] = randomizer.generate_item()
-        # context["last_generated_datetime"] = randomizer.last_generated_datetime
         # next_generated_datetime will be in 24 hours
-        context[
-            "next_generated_datetime"
-        ] = randomizer.last_generated_datetime + timedelta(days=1)
+        if randomizer.last_generated_datetime:
+            context[
+                "next_generated_datetime"
+            ] = randomizer.last_generated_datetime + timedelta(days=1)
+        else:
+            context["next_generated_datetime"] = timezone.now() + timedelta(days=1)
 
         return context
