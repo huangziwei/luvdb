@@ -14,9 +14,7 @@
                     <div>
                         By <a href="{% url 'accounts:detail' object.user.username %}">{{ object.user.display_name | default:object.user.username }}</a>
                     </div>
-                    {% if random_content %}
-                    <a href="{% url 'write:content_detail_redirect' random_content.id %}" class="btn btn-primary btn-sm">Surprise me!</a>
-                    {% endif %}
+                    <a href="{% url 'write:randomizer' object.id %}" class="btn btn-primary btn-sm">Surprise me!</a>
                 </div>
 
                 <div class="mb-3">{{ object.description | markdownify }}</div>
