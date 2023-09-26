@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class='col-12 col-md-8'>
-                <div class="row">
+                <div class="row ps-2 pe-2">
                     {% for game in games %}
                         <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                             <a href="{% url 'play:game_detail' game.pk %}">

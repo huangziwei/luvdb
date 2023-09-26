@@ -136,12 +136,12 @@
                                     ({{item.content_object.release_date|slice:":4"}})
                                 {% endif %}
                             </h1>
-                            <h4 class="card-title mt-3 mb-3">
+                            <div class="mt-3 mb-3">
                                 <span>from</span>
                                 <a href="{% url 'write:luvlist_detail' luv_list.id %}" style="text-decoration: underline;">
                                     {{ luv_list.title }}
                                 </a>
-                            </h4>
+                            </div>
                             {% if item.content_object.cover %}
                                 <img src="{{item.content_object.cover.url}}" alt="" class="mb-3 img-fluid">
                                 <br>

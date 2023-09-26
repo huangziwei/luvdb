@@ -9,7 +9,7 @@
                         <h2>Trending</h2>
                         {% if trending_movies %}
                             <h4>Movies</h4>
-                            <div class="row">
+                            <div class="row ps-2 pe-2">
                                 {% for movie in trending_movies %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'watch:movie_detail' movie.id %}">
@@ -41,7 +41,7 @@
                         {% endif %}
                         {% if trending_series %}
                             <h4>Series</h4>
-                            <div class="row">
+                            <div class="row ps-2 pe-2">
                                 {% for series in trending_series %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'watch:series_detail' series.pk %}">
@@ -78,7 +78,7 @@
                         <h2>Recently Added</h2>
                         {% if movies %}
                             <h4>Movies</h4>
-                            <div class="row">
+                            <div class="row ps-2 pe-2">
                                 {% for movie in movies %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'watch:movie_detail' movie.pk %}">
@@ -110,7 +110,7 @@
                         {% endif %}
                         {% if series %}
                             <h4>Series</h4>
-                            <div class="row">
+                            <div class="row ps-2 pe-2">
                                 {% for serie in series %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'watch:series_detail' serie.pk %}">

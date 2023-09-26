@@ -9,7 +9,7 @@
                     <div>
                         {% if objects.releases %}
                             <h4>Music</h4>
-                            <div class="row">
+                            <div class="row ps-2 pe-2">
                                 {% for release in objects.releases %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'listen:release_detail' release.pk %}">
@@ -40,7 +40,7 @@
                         {% endif %}
                         {% if objects.podcasts %}
                             <h4>Podcasts</h4>
-                            <div class="row">
+                            <div class="row ps-2 pe-2">
                                 {% for podcast in objects.podcasts %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'listen:podcast_detail' podcast.pk %}">
@@ -71,7 +71,7 @@
                         {% endif %}
                         {% if objects.audiobooks %}
                             <h4>Audiobooks</h4>
-                            <div class="row">
+                            <div class="row ps-2 pe-2">
                                 {% for audiobook in objects.audiobooks %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'listen:audiobook_detail' audiobook.pk %}">

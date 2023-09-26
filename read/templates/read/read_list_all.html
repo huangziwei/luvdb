@@ -8,7 +8,7 @@
                     <div>
                         {% if objects.books %}
                             <h4>Books</h4>
-                            <div class="row">
+                            <div class="row ps-2 pe-2">
                                 {% for book in objects.books %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'read:book_detail' book.pk %}">
@@ -40,7 +40,7 @@
                         {% endif %}
                         {% if objects.issues %}
                             <h4>Periodicals / Issues</h4>
-                            <div class="row">
+                            <div class="row ps-2 pe-2">
                                 {% for issue in objects.issues %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
                                         <a href="{% url 'read:issue_detail' issue.periodical.id issue.id %}">
