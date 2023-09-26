@@ -94,6 +94,11 @@
 
         setTheme();
         prefersDarkScheme.addEventListener("change", setTheme);
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Your existing JavaScript code here
+            document.getElementById('countdown').style.display = 'inline';
+        });
     </script>
 </head>
 <body>
@@ -231,7 +236,6 @@
         // Your initial time_until_renewal in seconds
         // You can set this value dynamically using Django template variables if needed
         let timeUntilRenewal = {{ time_until_renewal.total_seconds|default:0 }};
-        document.getElementById('countdown').style.display = 'inline'
 
         function formatTime(seconds) {
             const h = Math.floor(seconds / 3600);
