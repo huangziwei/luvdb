@@ -26,11 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function applyTheme(theme) {
         if (theme === 'dark') {
             htmlElement.setAttribute('data-bs-theme', 'dark');
-            metaThemeColor.setAttribute("content", "#333"); 
+            metaThemeColor.setAttribute("content", "#2B3035"); 
 
             bgLightElements.forEach(el => el.classList.add('bg-dark-highlight'));
             // bgWhiteElements.forEach(el => el.classList.replace('bg-white', 'bg-dark'));
-            bioElements.forEach(el => el.style.backgroundColor = '#333'); // Dark mode compatible color for bio
+            bioElements.forEach(el => el.style.backgroundColor = '#2B3035'); // Dark mode compatible color for bio
             faIcons.forEach(el => el.setAttribute('fill', '#ccc')); // Dark mode color for FontAwesome icons
             stickyNoteElements.forEach(el => el.classList.add('bg-dark'));
             

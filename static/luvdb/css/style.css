@@ -275,7 +275,7 @@ a[href$="/s"].revealed {
     left: 0;
     top: 0;
     height: 100%;
-    background: rgb(33, 37, 41);
+    background: var(--bs-body-bg);
 }
 
 /* popup footnote */
@@ -415,14 +415,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     --bg-default: #ffffff;
     --bg-highlight: #ccc;
     --text-default: #000000;
-    /* --bs-body-bg: #ffffff; */
+    --bs-body-bg: #ffffff;
 }
 
 [data-bs-theme="dark"] {
-    --bg-default: #333333;
-    --bg-highlight: #444444;
+    --bg-default: #2B3035;
+    --bg-highlight: #2B3035;
     --text-default: #c3c1c1;
-    /* --bs-body-bg: #080808; */
+    --bs-body-bg: #18191A;
 }
 
 /* .bg-light {
@@ -431,18 +431,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 [data-bs-theme="dark"] .bg-light {
     background-color: var(--bg-default) !important;
-    --bg-highlight: #444444 !important;
+    --bg-highlight: #2B3035 !important;
     --text-default: #ffffff !important;
-    --bs-btn-border-color: #444444 !important;
+    --bs-btn-border-color: #2B3035 !important;
     /* box-shadow: 0 2px 4px rgba(160, 160, 160, 0.1); */
 }
 
 
 [data-bs-theme="dark"] .btn-light {
     background-color: var(--bg-default) !important;
-    --bg-highlight: #444444;
+    --bg-highlight: #2B3035;
     color: #a09e9e !important;
-    --bs-btn-border-color: #444444 !important;
+    --bs-btn-border-color: #2B3035 !important;
 
 }
 
@@ -462,12 +462,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     top: 0;
 }
 
-[data-bs-theme='dark'] .navbar {
-    background-color: #333;
-}
 
 [data-bs-theme='dark'] .bg-white {
-    background-color: rgb(33, 37, 41) !important;
+    background-color: var(--bs-body-bg) !important;
     ;
 }
 
@@ -475,7 +472,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 [data-bs-theme='dark'] .select2-container--default .select2-selection,
 [data-bs-theme='dark'] .select2-container--default .select2-search--dropdown .select2-search__field,
 [data-bs-theme='dark'] .select2-container--default .select2-search--inline .select2-search__field {
-    background-color: rgb(33, 37, 41) !important;
+    background-color: var(--bs-body-bg) !important;
     border-color: rgb(73, 80, 87) !important;
     color: #adb5bd !important;
 }
@@ -483,7 +480,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 [data-bs-theme='dark'] .select2-container--default .select2-dropdown,
 [data-bs-theme='dark'] .select2-search--dropdown,
 [data-bs-theme='dark'] .select2-container--default .select2-results>.select2-results__options {
-    background-color: rgb(33, 37, 41) !important;
+    background-color: var(--bs-body-bg) !important;
     border-color: rgb(73, 80, 87) !important;
 }
 
