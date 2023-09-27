@@ -3,6 +3,7 @@
 {% load markdownify %}
 {% load parse_activity_type %}
 {% block content %}
+<div class="container">
     <div class="row">
         <div class="col-12 col-md-8">
             <div class="row">
@@ -41,8 +42,8 @@
                 <!-- Assumption: 'checkins' is the context variable containing the check-ins for the user -->
                 {% if profile_user.is_public  or request.user.is_authenticated %}
                     {% for checkin in checkins %}
-                        <div class="checkin bg-light p-3 mb-3">
-                            <div class="activity-item"
+                    <div class="col-sm-12 mt-4">
+                        <div class="activity-item mb-3"
                                  data-activity-type="{{ checkin.activity_type }}">
                                 <div class="d-flex flex-wrap align-items-center">
                                     <a href="{% url 'accounts:detail' checkin.user.username %}"
@@ -202,4 +203,5 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock content %}
