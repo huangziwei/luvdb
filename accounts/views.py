@@ -634,6 +634,7 @@ def filter_play(query, search_terms):
         gamework_results = (
             gamework_results.filter(
                 Q(title__icontains=term)
+                | Q(other_titles__icontains=term)
                 | Q(workrole__person__name__icontains=term)
                 | Q(workrole__person__other_names__icontains=term)
                 | Q(workrole__alt_name__icontains=term)
@@ -645,6 +646,7 @@ def filter_play(query, search_terms):
         game_results = (
             game_results.filter(
                 Q(title__icontains=term)
+                | Q(other_titles__icontains=term)
                 | Q(developers__name__icontains=term)
                 | Q(platforms__name__icontains=term)
                 | Q(release_date__icontains=term)
