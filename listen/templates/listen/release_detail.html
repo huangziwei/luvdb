@@ -155,15 +155,15 @@
                 <hr>
             </div>
             <!--Right columns-->
-            <div class="col-sm-4">
+            <div class="d-flex flex-column col-sm-4">
                 <!--Related tracks / Edit -->
                 {% if user.is_authenticated %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         <a href="{% url 'listen:release_update' object.pk %}"
                            class='fs-6 text-secondary'>Edit Release</a>
                     </div>
                 {% endif %}
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <h5>Tracklist</h5>
                     <!--list all related tracks by order-->
                     <div class="col-sm-12">
@@ -190,7 +190,7 @@
                     </div>
                 </div>
                 <!--Release Stats-->
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <h5>Statistics</h5>
                     <div>
                         <strong>To Listen:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a>
@@ -204,7 +204,7 @@
                 </div>
                 <!--Listen on-->
                 {% if object.apple_music_url or object.spotify_url or  object.kkbox_url or object.spotify_url or object.youtube_url %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <h5>Listen on</h5>
                         {% if object.apple_music_url %}
                             <div>
@@ -229,7 +229,7 @@
                     </div>
                 {% endif %}
                 {% if object.wikipedia or object.discogs %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <h5>Links</h5>
                         {% if object.discogs %}
                         <div>
@@ -245,7 +245,7 @@
                 {% endif %}
                 {% if lists_containing_release.count != 0 %}
                     <!--LuvLists that included this release-->
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <h5>Lists</h5>
                         <div class='mb-0'>
                             {% for content_in_list in lists_containing_release %}

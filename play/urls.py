@@ -8,10 +8,6 @@ from .views import (
     GameCheckInListView,
     GameCheckInUpdateView,
     GameCheckInUserListView,
-    GameCompanyAutocomplete,
-    GameCompanyCreateView,
-    GameCompanyDetailView,
-    GameCompanyUpdateView,
     GameCreateView,
     GameDetailView,
     GameSeriesCreateView,
@@ -45,14 +41,6 @@ urlpatterns = [
     path("game/create/", GameCreateView.as_view(), name="game_create"),
     path("game/<int:pk>/", GameDetailView.as_view(), name="game_detail"),
     path("game/<int:pk>/update/", GameUpdateView.as_view(), name="game_update"),
-    # company
-    path("company/create/", GameCompanyCreateView.as_view(), name="company_create"),
-    path("company/<int:pk>/", GameCompanyDetailView.as_view(), name="company_detail"),
-    path(
-        "company/<int:pk>/update/",
-        GameCompanyUpdateView.as_view(),
-        name="company_update",
-    ),
     # platform
     path("platform/create/", PlatformCreateView.as_view(), name="platform_create"),
     path("platform/<int:pk>/", PlatformDetailView.as_view(), name="platform_detail"),
@@ -62,11 +50,6 @@ urlpatterns = [
         name="platform_update",
     ),
     # autocomplete
-    path(
-        "company-autocomplete/",
-        GameCompanyAutocomplete.as_view(),
-        name="company-autocomplete",
-    ),
     path(
         "platform-autocomplete/",
         PlatformAutocomplete.as_view(),

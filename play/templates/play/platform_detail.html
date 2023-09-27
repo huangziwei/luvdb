@@ -33,10 +33,10 @@
                 {% endif %}
             </div>
 
-            <div class="col-sm-4">
+            <div class="d-flex flex-column col-sm-4">
                 <!--Related Work / Edit -->
                 {% if user.is_authenticated %}
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                     <div>
                         <a href="{% url 'play:platform_update' object.pk %}" class='fs-6 text-secondary'>Edit Platform</a>
                     </div>
@@ -44,7 +44,7 @@
                 {% endif %}
     
                 {% if object.wikipedia %}
-                <div class="bg-light p-3">
+                <div class="bg-light p-3 order-1 order-sm-2">
                     <h5>Links</h5>
                     <div><a href="{{object.wikipedia}}">Wikipedia</a></div>
                 </div>

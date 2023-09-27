@@ -232,15 +232,17 @@
                 {% endif %}
             </div>
             <!-- manage entry -->
-            <div class="col-sm-4">
-                <div class="bg-light p-3 mb-3">
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'entity:company_update' object.pk %}"
+            <div class="d-flex flex-column col-sm-4">
+                {% if user.is_authenticated %}
+                <div class="bg-light p-3 mb-3 order-2 order-sm-1">
+                    <a href="{% url 'entity:company_update' object.pk %}"
                            class='fs-6 text-secondary'>Edit Company</a>
-                    {% endif %}
                 </div>
-                <div class="bg-light p-3 mb-3">
-                    <h5 class="mt-3">Link</h5>
+                {% endif %}
+
+                {% if object.wikipedia or object.website %}
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                    <h5>Link</h5>
                     {% if object.wikipedia %}
                         <div>
                             <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>
@@ -252,6 +254,7 @@
                         </div>
                     {% endif %}
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

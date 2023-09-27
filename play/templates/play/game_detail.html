@@ -165,15 +165,15 @@
                 <hr>
             </div>
             <!--right columns-->
-            <div class="col-sm-4">
+            <div class="d-flex flex-column col-sm-4">
                 <!--Related works / Edit -->
                 {% if user.is_authenticated %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         <a href="{% url 'play:game_update' object.pk %}"
                            class='fs-6 text-secondary'>Edit game data</a>
                     </div>
                 {% endif %}
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     {% if object.work.id %}
                         <h5>Work</h5>
                         <p>
@@ -183,7 +183,7 @@
                     {% endif %}
                 </div>
                 <!--stats-->
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <h5>Statistics</h5>
                     <div>
                         <strong class="text-muted">To Play:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=to_play">{{ to_play_count }}</a>
@@ -196,7 +196,7 @@
                     </div>
                 </div>
                 {% if object.wikipedia %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <h5>Links</h5>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
@@ -205,7 +205,7 @@
                 {% endif %}
                 {% if lists_containing_game.count != 0 %}
                     <!--LuvLists that included this game-->
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <h5>Lists</h5>
                         <div class='mb-0'>
                             {% for content_in_list in lists_containing_game %}
@@ -218,7 +218,9 @@
                         </div>
                     </div>
                 {% endif %}
+
             </div>
+
         </div>
     </div>
 {% endblock content %}

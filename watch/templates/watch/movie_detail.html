@@ -169,16 +169,16 @@
                 <hr>
             </div>
             <!--right columns-->
-            <div class="col-sm-4">
+            <div class="d-flex flex-column col-sm-4">
                 <!--Related works / Edit -->
                 {% if user.is_authenticated %}
-                    <div class="bg-light p-3">
+                    <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         <a href="{% url 'watch:movie_update' object.pk %}"
                            class='fs-6 text-secondary'>Edit movie data</a>
                     </div>
                 {% endif %}
                 <!--stats-->
-                <div class="bg-light p-3 mt-3">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <h5>Statistics</h5>
                     <div>
                         <strong class="text-muted">To Watch:</strong> <a href="{% url 'watch:movie_checkin_all_list' object.id %}?status=to_watch">{{ to_watch_count }}</a>
@@ -191,7 +191,7 @@
                     </div>
                 </div>
                 {% if object.wikipedia or object.imdb %}
-                    <div class="bg-light p-3 mt-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <h5>Links</h5>
                         {% if object.imdb %}
                         <div>
@@ -207,7 +207,7 @@
                 {% endif %}
                 {% if lists_containing_movie.count != 0 %}
                     <!--LuvLists that included this movie-->
-                    <div class="bg-light p-3 mt-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <h5>Lists</h5>
                         <div class='mb-0'>
                             {% for content_in_list in lists_containing_movie %}

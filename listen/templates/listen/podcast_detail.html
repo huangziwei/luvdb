@@ -171,14 +171,14 @@
                 <hr>
             </div>
             <!--Right columns-->
-            <div class="col-sm-4">
+            <div class="d-flex flex-column col-sm-4">
                 {% if user.is_authenticated %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         <a href="{% url 'listen:release_update' object.pk %}"
                            class='fs-6 text-secondary'>Edit Podcast</a>
                     </div>
                 {% endif %}
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <h5>Links</h5>
                     {% if podcast.website_url %}
                         <div>
@@ -192,7 +192,7 @@
                     {% endif %}
                 </div>
                 <!--Stats-->
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <h5>Statistics</h5>
                     <div>
                         <strong>To Listen:</strong> <a href="{% url 'listen:podcast_checkin_all_list' podcast.id %}?status=to_listen">{{ to_listen_count }}</a>

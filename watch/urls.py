@@ -21,10 +21,6 @@ from .views import (
     SeriesCreateView,
     SeriesDetailView,
     SeriesUpdateView,
-    StudioAutocomplete,
-    StudioCreateView,
-    StudioDetailView,
-    StudioUpdateView,
     WatchCheckInCreateView,
     WatchCheckInDeleteView,
     WatchCheckInDetailView,
@@ -72,16 +68,7 @@ urlpatterns = [
         EpisodeUpdateView.as_view(),
         name="episode_update",
     ),
-    # studio
-    path("studio/create/", StudioCreateView.as_view(), name="studio_create"),
-    path("studio/<int:pk>/", StudioDetailView.as_view(), name="studio_detail"),
-    path("studio/<int:pk>/update/", StudioUpdateView.as_view(), name="studio_update"),
     # autocomplete
-    path(
-        "studio-autocomplete/",
-        StudioAutocomplete.as_view(),
-        name="studio-autocomplete",
-    ),
     path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),
     # checkin
     path(
