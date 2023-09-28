@@ -4,8 +4,7 @@
     <div class="container">
         <div class="row">
             <div class='col-7'>
-                <h2>Are you sure you want to delete {{ object.title }}?</h2>
-                <p>Created by: {{ object.user }}</p>
+                <h2>Are you sure you want to delete "{{ object.title }}"?</h2>
                 <form method="POST">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Confirm Delete</button>
