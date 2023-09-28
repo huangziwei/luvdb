@@ -97,7 +97,6 @@ class PersonDetailView(DetailView):
             "Performer",
             "Drummer",
             "Double-bassist",
-            "Arranger",
             "Orchestra",
             "Choir",
             "Ensemble",
