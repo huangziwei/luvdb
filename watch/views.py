@@ -216,7 +216,7 @@ class MovieDetailView(DetailView):
         # Query ContentInList instances that have the movie as their content_object
         lists_containing_movie = ContentInList.objects.filter(
             content_type=movie_content_type, object_id=self.object.id
-        )
+        ).order_by("luv_list__title")
 
         context["lists_containing_movie"] = lists_containing_movie
 
@@ -660,7 +660,7 @@ class SeriesDetailView(DetailView):
         # Query ContentInList instances that have the series as their content_object
         lists_containing_series = ContentInList.objects.filter(
             content_type=series_content_type, object_id=self.object.id
-        )
+        ).order_by("luv_list__title")
 
         context["lists_containing_series"] = lists_containing_series
 

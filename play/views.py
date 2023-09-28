@@ -264,7 +264,7 @@ class GameDetailView(DetailView):
         # Query ContentInList instances that have the game as their content_object
         lists_containing_game = ContentInList.objects.filter(
             content_type=game_content_type, object_id=self.object.id
-        )
+        ).order_by("luv_list__title")
 
         context["lists_containing_game"] = lists_containing_game
 

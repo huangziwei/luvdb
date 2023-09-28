@@ -4,6 +4,8 @@
     <div class="row">
         <div class="col-md-12">{{ form.title|as_crispy_field }}</div>
         <div class="col-md-12">{{ form.description|as_crispy_field }}</div>
+        <dir class="col-md-12">{{ form.source|as_crispy_field }}</dir>
+        <dir class="col-md-12">{{ form.wikipedia|as_crispy_field }}</dir>
     </div>
     <h4>Items</h4>
     {{ contents.management_form }}

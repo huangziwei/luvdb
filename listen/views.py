@@ -631,7 +631,7 @@ class ReleaseDetailView(DetailView):
         # Query ContentInList instances that have the release as their content_object
         lists_containing_release = ContentInList.objects.filter(
             content_type=release_content_type, object_id=self.object.id
-        )
+        ).order_by("luv_list__title")
 
         context["lists_containing_release"] = lists_containing_release
 
@@ -1298,7 +1298,7 @@ class PodcastDetailView(DetailView):
         # Query ContentInList instances that have the podcast as their content_object
         lists_containing_podcast = ContentInList.objects.filter(
             content_type=podcast_content_type, object_id=self.object.id
-        )
+        ).order_by("luv_list__title")
 
         context["lists_containing_podcast"] = lists_containing_podcast
 
@@ -1897,7 +1897,7 @@ class AudiobookDetailView(DetailView):
         # Query ContentInList instances that have the audiobook as their content_object
         lists_containing_audiobook = ContentInList.objects.filter(
             content_type=audiobook_content_type, object_id=self.object.id
-        )
+        ).order_by("luv_list__title")
 
         context["lists_containing_audiobook"] = lists_containing_audiobook
 

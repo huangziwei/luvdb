@@ -355,6 +355,8 @@ def delete_say(sender, instance, **kwargs):
 class LuvList(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
+    source = models.URLField(blank=True, null=True)
+    wikipedia = models.URLField(blank=True, null=True)
 
     user = models.ForeignKey(
         User,

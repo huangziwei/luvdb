@@ -796,7 +796,7 @@ class IssueDetailView(DetailView):
         # Query ContentInList instances that have the issue as their content_object
         lists_containing_issue = ContentInList.objects.filter(
             content_type=issue_content_type, object_id=self.object.id
-        )
+        ).order_by("luv_list__title")
 
         context["lists_containing_issue"] = lists_containing_issue
 
