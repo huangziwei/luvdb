@@ -156,6 +156,7 @@
                                 <li>
                                     <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
                                 </li>
+                                {% if not forloop.last %}<hr class="m-1">{% endif %}
                             {% empty %}
                                 <p>This issue is not included in any LuvLists.</p>
                             {% endfor %}

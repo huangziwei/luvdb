@@ -212,6 +212,7 @@
                                 <div>
                                     <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
                                 </div>
+                                <hr>
                             {% empty %}
                                 <div>This game is not included in any LuvLists.</div>
                             {% endfor %}

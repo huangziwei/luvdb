@@ -204,6 +204,7 @@
                                 <div>
                                     <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
                                 </div>
+                                {% if not forloop.last %}<hr class="m-1">{% endif %}
                             {% empty %}
                                 <div>This audiobook is not included in any LuvLists.</div>
                             {% endfor %}

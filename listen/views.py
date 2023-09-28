@@ -748,7 +748,9 @@ class ReleaseCreditDetailView(DetailView):
         for release_role in release_roles:
             alt_name_or_person_name = release_role.alt_name or release_role.person.name
 
-            release_credits[release_role.role].append((release_role.person, alt_name_or_person_name))
+            release_credits[release_role.role].append(
+                (release_role.person, alt_name_or_person_name)
+            )
 
         # Aggregate Track level credits
         release_tracks = ReleaseTrack.objects.filter(release=release).order_by(
@@ -1291,14 +1293,14 @@ class PodcastDetailView(DetailView):
         )
 
         # Get the ContentType for the Issue model
-        release_content_type = ContentType.objects.get_for_model(Release)
+        podcast_content_type = ContentType.objects.get_for_model(Podcast)
 
-        # Query ContentInList instances that have the release as their content_object
-        lists_containing_release = ContentInList.objects.filter(
-            content_type=release_content_type, object_id=self.object.id
+        # Query ContentInList instances that have the podcast as their content_object
+        lists_containing_podcast = ContentInList.objects.filter(
+            content_type=podcast_content_type, object_id=self.object.id
         )
 
-        context["lists_containing_release"] = lists_containing_release
+        context["lists_containing_podcast"] = lists_containing_podcast
 
         # Fetch the latest check-in from the current user for this book
         if self.request.user.is_authenticated:
