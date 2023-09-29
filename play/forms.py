@@ -36,7 +36,6 @@ class WorkForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(WorkForm, self).__init__(*args, **kwargs)
-        self.fields["developers_deprecated"].required = False
         self.fields["developers"].required = False
         self.fields["genres"].required = False
         self.fields[
@@ -120,8 +119,6 @@ class GameForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(GameForm, self).__init__(*args, **kwargs)
-        self.fields["developers_deprecated"].required = False
-        self.fields["publishers_deprecated"].required = False
         self.fields["developers"].required = False
         self.fields["platforms"].required = False
         self.fields["publishers"].required = False

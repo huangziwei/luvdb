@@ -32,7 +32,7 @@ from .forms import (
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import Game, GameCheckIn, GameCompany, GameSeries, Genre, Platform, Work
+from .models import Game, GameCheckIn, GameSeries, Genre, Platform, Work
 
 User = get_user_model()
 
@@ -206,7 +206,7 @@ class GameDetailView(DetailView):
         user_checkin_counts = (
             GameCheckIn.objects.filter(game=self.object)
             .values("user__username")
-            .annotate(total_checkins=Count("id")-1)
+            .annotate(total_checkins=Count("id") - 1)
         )
 
         # Convert to a dictionary for easier lookup
@@ -363,77 +363,6 @@ class GameCastDetailView(DetailView):
         return context
 
 
-class GameCompanyCreateView(LoginRequiredMixin, CreateView):
-    model = GameCompany
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "website",
-        "wikipedia",
-        "founded_date",
-        "closed_date",
-        "notes",
-    ]
-    template_name = "play/company_create.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["other_names"].widget = forms.TextInput()
-        return form
-
-    def get_success_url(self):
-        return reverse_lazy("play:company_detail", kwargs={"pk": self.object.pk})
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        form.instance.updated_by = self.request.user
-        return super().form_valid(form)
-
-
-class GameCompanyDetailView(DetailView):
-    model = GameCompany
-    template_name = "play/company_detail.html"
-    context_object_name = "company"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["games_as_developer"] = Game.objects.filter(
-            developers=self.object
-        ).order_by("release_date")
-        context["games_as_publisher"] = Game.objects.filter(
-            publishers=self.object
-        ).order_by("release_date")
-        return context
-
-
-class GameCompanyUpdateView(LoginRequiredMixin, UpdateView):
-    model = GameCompany
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "website",
-        "wikipedia",
-        "founded_date",
-        "closed_date",
-        "notes",
-    ]
-    template_name = "play/company_update.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["other_names"].widget = forms.TextInput()
-        return form
-
-    def get_success_url(self):
-        return reverse_lazy("play:company_detail", kwargs={"pk": self.object.pk})
-
-    def form_valid(self, form):
-        form.instance.updated_by = self.request.user
-        return super().form_valid(form)
-
-
 class PlatformCreateView(LoginRequiredMixin, CreateView):
     model = Platform
     fields = [
@@ -494,22 +423,6 @@ class PlatformUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
-
-
-class GameCompanyAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated:
-            return GameCompany.objects.none()
-
-        qs = GameCompany.objects.all()
-
-        if self.q:
-            qs = qs.filter(Q(name__icontains=self.q) | Q(other_names__icontains=self.q))
-
-            return qs
-
-        return GameCompany.objects.none()
 
 
 class PlatformAutocomplete(autocomplete.Select2QuerySetView):

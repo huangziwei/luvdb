@@ -59,20 +59,6 @@ class GamePublisher(Entity):
         return self.name
 
 
-class GameCompany(Entity):
-    location = models.CharField(max_length=100, blank=True, null=True)
-    website = models.URLField(blank=True, null=True)
-    wikipedia = models.URLField(blank=True, null=True)
-    founded_date = models.CharField(max_length=10, blank=True, null=True)
-    closed_date = models.CharField(max_length=10, blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        if self.location:
-            return f"{self.location}: {self.name}"
-        return self.name
-
-
 class Platform(Entity):
     website = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
@@ -110,9 +96,7 @@ class Work(models.Model):  # Renamed from Book
     persons = models.ManyToManyField(
         Person, through="WorkRole", related_name="play_works"
     )
-    developers_deprecated = models.ManyToManyField(
-        GameCompany, related_name="play_works_deprecated"
-    )
+
     developers = models.ManyToManyField(Company, related_name="play_works")
 
     first_release_date = models.CharField(
@@ -200,13 +184,6 @@ class Game(models.Model):
     other_titles = models.TextField(blank=True, null=True)
     work = models.ForeignKey(
         Work, on_delete=models.CASCADE, null=True, blank=True, related_name="games"
-    )
-
-    developers_deprecated = models.ManyToManyField(
-        GameCompany, related_name="developed_games_deprecated"
-    )
-    publishers_deprecated = models.ManyToManyField(
-        GameCompany, related_name="published_games_deprecated"
     )
 
     developers = models.ManyToManyField(Company, related_name="developed_games")

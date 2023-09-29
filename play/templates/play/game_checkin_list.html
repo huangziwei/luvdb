@@ -132,7 +132,7 @@ class="text-decoration-none">Delete</a></span>
                                     <div class="mb-1">
                                         <span class="text-muted">Developers:</span>
                                         {% for developer in game.developers.all %}
-                                            <a href="{% url 'play:company_detail' developer.id %}">{{ developer.name }}</a>
+                                            <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
                                     </div>
@@ -141,7 +141,7 @@ class="text-decoration-none">Delete</a></span>
                                     <div class="mb-1">
                                         <span class="text-muted">Publishers:</span>
                                         {% for publisher in game.publishers.all %}
-                                            <a href="{% url 'play:company_detail' publisher.id %}">{{ publisher.name }}</a>
+                                            <a href="{% url 'entity:company_detail' publisher.id %}">{{ publisher.name }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
                                     </div>
