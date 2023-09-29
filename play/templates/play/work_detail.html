@@ -25,7 +25,15 @@
                     {% endfor %}
                 </div>
             {% endfor %}
-
+            {% if object.developers.count != 0 %}
+                <div class="mb-1">
+                    <span class="text-muted">Developer{% if object.developers.count > 1 %}s{% endif %}:</span>
+                    {% for developer in object.developers.all %}
+                        <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
+                        {% if not forloop.last %}/{% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div>
                 <span class="text-muted">Premiere date: </span>
                 {{ object.first_release_date }}
