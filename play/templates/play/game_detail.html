@@ -173,15 +173,15 @@
                            class='fs-6 text-secondary'>Edit game data</a>
                     </div>
                 {% endif %}
+                {% if object.work.id %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    {% if object.work.id %}
-                        <h5>Work</h5>
-                        <p>
-                            <a href={% url "play:work_detail" object.work.id %}>{{ object.work.title }}</a>
-                            {% if object.work.first_release_date %}({{ object.work.first_release_date }}){% endif %}
-                        </p>
-                    {% endif %}
+                    <h5>Work</h5>
+                    <p>
+                        <a href={% url "play:work_detail" object.work.id %}>{{ object.work.title }}</a>
+                        {% if object.work.first_release_date %}({{ object.work.first_release_date }}){% endif %}
+                    </p>
                 </div>
+                {% endif %}
                 <!--stats-->
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <h5>Statistics</h5>
