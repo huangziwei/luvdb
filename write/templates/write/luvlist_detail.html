@@ -268,9 +268,16 @@
                                                 </div>
                                             {% endfor %}
                                         {% endif %}
+                                        {% if content.content_object.release_date %}
                                         <div>
-                                            {% if content.content_object.release_date %}Date: {{ content.content_object.release_date }}{% endif %}
+                                            Date: {{ content.content_object.release_date }}
                                         </div>
+                                        {% endif %}
+                                        {% if content.content_object.region_release_dates.all %}
+                                            {% with earliest_region_release_date=content.content_object.region_release_dates.all|first %}
+                                                Date: {{earliest_region_release_date.release_date}} ({{earliest_region_release_date.region}})
+                                            {% endwith %}
+                                        {% endif %}
                                     </div>
                                 </div>
                                 {% if content.comment %}<div class="mt-3">{{ content.comment }}</div>{% endif %}

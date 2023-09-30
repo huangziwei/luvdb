@@ -154,8 +154,10 @@
                                 {% elif item.content_object.model_name == "Movie" %}
                                     <a href="{% url 'watch:movie_detail' item.content_object.id %}" style="text-decoration: underline;">
                                         {{ item.content_object.title }}
-                                    </a>    
-                                    ({{item.content_object.release_date|slice:":4"}})
+                                    </a>
+                                    {% with earliest_region_release_date=item.content_object.region_release_dates.all|first %}
+                                        ({{earliest_region_release_date.release_date|slice:":4"}})
+                                    {% endwith %}
                                 {% elif item.content_object.model_name == "Series" %}
                                     <a href="{% url 'watch:series_detail' item.content_object.id %}" style="text-decoration: underline;">
                                         {{ item.content_object.title }}
