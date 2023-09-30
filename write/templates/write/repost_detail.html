@@ -66,13 +66,13 @@
                                     {% if repost.original_activity.content_object.content_type.model == "book" %}
                                         <a href="{% url 'read:book_detail' repost.original_activity.content_object.content_object.id %}"
                                            class="text-decoration-none hover-username">
-                                            <h6>{{ repost.original_activity.content_object.content_object.title }}</h6>
+                                            <h5>{{ repost.original_activity.content_object.content_object.title }}</h5>
                                         </a>
                                     {% elif repost.original_activity.content_object.content_type.model == "issue" %}
                                         <h5>{{ repost.original_activity.content_object.content_object.periodical.title }}</h5>
                                         <a href="{% url 'read:issue_detail' repost.original_activity.content_object.content_object.periodical.id repost.original_activity.content_object.content_object.id %}"
                                            class="text-decoration-none hover-username">
-                                            <h6>{{ repost.original_activity.content_object.content_object.title }}</h6>
+                                            <h5>{{ repost.original_activity.content_object.content_object.title }}</h5>
                                         </a>
                                     {% endif %}
                                     {% regroup repost.original_activity.content_object.content_object.bookrole_set.all by role as roles_list %}
@@ -89,11 +89,20 @@
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
+                                    {% if repost.original_activity.content_object.content_object.publisher %}
                                     <div>
-                                        {% if repost.original_activity.content_object.content_object.publication_date %}
-                                            Year: {{ repost.original_activity.content_object.content_object.publication_date|slice:":4" }}
-                                        {% endif %}
+                                        Publisher:
+                                        <a href="{% url 'entity:company_detail' repost.original_activity.content_object.content_object.publisher.id %}">
+                                            {{ repost.original_activity.content_object.content_object.publisher.name }}
+                                        </a>
                                     </div>
+                                    {% endif %}
+                                    {% if repost.original_activity.content_object.content_object.publication_date %}
+                                    <div>
+                                        Date: {{ repost.original_activity.content_object.content_object.publication_date }}
+                                    </div>
+                                    {% endif %}
+
                                 </div>
                             </div>
                             <div class="mt-2">
@@ -153,8 +162,8 @@
                                             <h5>{{ repost.original_activity.content_object.content_object.title }}</h5>
                                         </a>
                                     {% endif %}
-                                    {% if repost.original_activity.content_object.content_type.model == 'book' %}
-                                        {% regroup repost.original_activity.content_object.content_object.bookrole_set.all by role as roles_list %}
+                                    {% if repost.original_activity.content_object.content_type.model == 'movie' %}
+                                        {% regroup repost.original_activity.content_object.content_object.movieroles.all by role as roles_list %}
                                         {% for role in roles_list %}
                                             <div>
                                                 {# djlint:off #}
@@ -169,6 +178,34 @@
                                             </div>
                                         {% endfor %}
                                     {% endif %}
+                                    {% if repost.original_activity.content_object.content_object.studios.exists %}
+                                    <div>
+                                        {# djlint:off #}
+                                        Studio{% if repost.original_activity.content_object.content_object.studios.count > 1 %}s{% endif %}:
+                                        {# djlint:on #}
+                                        {% for studio in repost.original_activity.content_object.content_object.studios.all %}
+                                            {% if not forloop.first %}/{% endif %}
+                                            <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    {% if repost.original_activity.content_object.content_object.distributors.exists %}
+                                    <div>
+                                        {# djlint:off #}
+                                        Distributor{% if repost.original_activity.content_object.content_object.distributors.count > 1 %}s{% endif %}:
+                                        {# djlint:on #}
+                                        {% for distributor in repost.original_activity.content_object.content_object.distributors.all %}
+                                            {% if not forloop.first %}/{% endif %}
+                                            <a href="{% url 'entity:company_detail' distributor.id %}">{{ distributor.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    {% if activity.content_object.original_activity.content_object.content_object.release_date %}
+                                    <div>
+                                        <span class="text-muted">Date:</span>
+                                        {{ activity.content_object.original_activity.content_object.content_object.release_date }}
+                                    </div>
+                                    {% endif %}
                                     {% if repost.original_activity.content_object.content_object.release_date %}
                                     <div>
                                         Date: {{ repost.original_activity.content_object.content_object.release_date }}
@@ -176,7 +213,7 @@
                                     {% endif %}
                                     {% if repost.original_activity.content_object.content_object.region_release_dates.all %}
                                         <div>
-                                            <span class="text-muted">Date:</span>
+                                            Date:
                                             {% with earliest_region_release_date=repost.original_activity.content_object.content_object.region_release_dates.all|first %}
                                                 {{ earliest_region_release_date.release_date }} ({{ earliest_region_release_date.region }})
                                             {% endwith %}
@@ -246,7 +283,7 @@
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'listen:release_detail' repost.original_activity.content_object.content_object.id %}"
                                        class="text-decoration-none hover-username">
-                                        <h6>{{ repost.original_activity.content_object.content_object.title }}</h6>
+                                        <h5>{{ repost.original_activity.content_object.content_object.title }}</h5>
                                     </a>
                                     {% regroup repost.original_activity.content_object.content_object.releaserole_set.all by role as roles_list %}
                                     {% for role in roles_list %}
@@ -262,11 +299,37 @@
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
+                                    {% if repost.original_activity.content_object.content_object.label %}
                                     <div>
-                                        {% if repost.original_activity.content_object.content_object.release_date %}
-                                            Release Date: {{ repost.original_activity.content_object.content_object.release_date }}
-                                        {% endif %}
+                                        {# djlint:off #}
+                                        Label{% if repost.original_activity.content_object.content_object.label.list|length > 1 %}s{% endif %}:
+                                        {# djlint:on #}
+                                        {% for label in repost.original_activity.content_object.content_object.label.all %}
+                                            {% if not forloop.first %},{% endif %}
+                                            <a href="{% url 'entity:company_detail' label.id %}">{{ label.name }}</a>
+                                        {% endfor %}
                                     </div>
+                                    {% endif %}
+                                    {% if repost.original_activity.content_object.content_object.publisher %}
+                                    <div>
+                                        {# djlint:off #}
+                                        Publisher{% if repost.original_activity.content_object.content_object.publisher.list|length > 1 %}s{% endif %}:
+                                        {# djlint:on #}
+                                        <a href="{% url 'entity:company_detail' repost.original_activity.content_object.content_object.publisher.id %}">{{ repost.original_activity.content_object.content_object.publisher.name }}</a>
+                                    </div>
+                                    {% endif %}
+                                    {% if repost.original_activity.content_object.content_object.catalog_number %}
+                                    <div>
+                                        Catalog Number:
+                                        {{repost.original_activity.content_object.content_object.catalog_number}}
+                                    </div>
+                                    {% endif %}
+                                    {% if repost.original_activity.content_object.content_object.release_date %}
+                                    <div>
+                                        Release Date: {{ repost.original_activity.content_object.content_object.release_date }}
+                                    </div>
+                                    {% endif %}
+
                                 </div>
                             </div>
                             <div class="mt-2">
@@ -313,7 +376,7 @@
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'play:game_detail' repost.original_activity.content_object.game.id %}"
                                        class="text-decoration-none hover-username">
-                                        <h6>{{ repost.original_activity.content_object.game.title }}</h6>
+                                        <h5>{{ repost.original_activity.content_object.game.title }}</h5>
                                     </a>
                                     {% regroup repost.original_activity.content_object.game.gamerole_set.all by role as roles_list %}
                                     {% for role in roles_list %}

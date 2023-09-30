@@ -100,11 +100,41 @@
                                     </div>
                                 {% endfor %}
                             {% endif %}
+                            {% if object.content_object.studios.exists %}
                             <div>
-                                {% if object.content_object.release_date %}
-                                    <span class="text-muted">Date:</span>{{ object.content_object.release_date }}
-                                {% endif %}
+                                {# djlint:off #}
+                                <span class="text-muted">Studio{% if object.content_object.studios.count > 1 %}s{% endif %}:</span>
+                                {# djlint:on #}
+                                {% for studio in object.content_object.studios.all %}
+                                    {% if not forloop.first %}/{% endif %}
+                                    <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
+                                {% endfor %}
                             </div>
+                            {% endif %}
+                            {% if object.content_object.distributors.exists %}
+                            <div>
+                                {# djlint:off #}
+                                <span class="text-muted">Distributor{% if object.content_object.distributors.count > 1 %}s{% endif %}:</span>
+                                {# djlint:on #}
+                                {% for distributor in object.content_object.distributors.all %}
+                                    {% if not forloop.first %}/{% endif %}
+                                    <a href="{% url 'entity:company_detail' distributor.id %}">{{ distributor.name }}</a>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% if object.content_object.release_date %}
+                            <div>
+                                <span class="text-muted">Date:</span>{{ object.content_object.release_date }}
+                            </div>
+                            {% endif %}
+                            {% if object.content_object.region_release_dates.all %}
+                            <div>
+                                <span class="text-muted">Release Date:</span>
+                                {% with earliest_region_release_date=object.content_object.region_release_dates.all|first %}
+                                    {{ earliest_region_release_date.release_date }} ({{ earliest_region_release_date.region }})
+                                {% endwith %}
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

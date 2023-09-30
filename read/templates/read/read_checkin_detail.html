@@ -87,11 +87,20 @@
                                     </div>
                                 {% endfor %}
                             {% endif %}
+                            {% if object.content_object.publisher %}
                             <div>
-                                {% if object.content_object.publication_date %}
-                                    <span class="text-muted">Date: {{ object.content_object.publication_date }}</span>
-                                {% endif %}
+                                <span class="text-muted">Publisher:</span> 
+                                <a href="{% url 'entity:company_detail' object.content_object.publisher.id %}">{{ object.content_object.publisher }}</a>
+                                
                             </div>
+                            {% endif %}
+                            {% if object.content_object.publication_date %}
+                            <div>
+                                <span class="text-muted">Date:</span>
+                                {{ object.content_object.publication_date }}
+                            </div>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>
