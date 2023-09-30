@@ -290,7 +290,7 @@
                                     <ul>
                                         {% for movie in movies %}
                                             <li>
-                                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
+                                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date }})
                                             </li>
                                         {% endfor %}
                                     </ul>
@@ -318,7 +318,7 @@
                                     <ul>
                                         {% for movie in movies_as_director %}
                                             <li>
-                                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
+                                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date }})
                                             </li>
                                         {% endfor %}
                                     </ul>
@@ -347,7 +347,7 @@
                                     <ul>
                                         {% for movie in movies_as_writer %}
                                             <li>
-                                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.release_date }})
+                                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date }})
                                             </li>
                                         {% endfor %}
                                     </ul>
@@ -433,7 +433,7 @@
                             <ul>
                                 {% for game in games_as_cast %}
                                     <li>
-                                        <a href="{% url 'play:game_detail' game.pk %}">{{ game.title }}</a> ({{ game.release_date }})
+                                        <a href="{% url 'play:game_detail' game.pk %}">{{ game.title }}</a> ({{ game.earliest_release_date }})
                                     </li>
                                 {% endfor %}
                             </ul>

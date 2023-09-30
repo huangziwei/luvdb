@@ -13,7 +13,7 @@
                         {% for movie in movies %}
                             <li>
                                 <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
-                                ({{ movie.release_date }})
+                                ({{ movie.earliest_release_date }})
                             </li>
                         {% empty %}
                             <li>No movies in this genre.</li>

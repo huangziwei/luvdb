@@ -256,11 +256,19 @@
                                                 {% endfor %}
                                             </div>
                                             {% endif %}
+                                            {% if item.content_object.release_date %}
                                             <div>
-                                                {% if item.content_object.release_date %}
-                                                    <span class="text-muted">Date:</span>{{ item.content_object.release_date }}
-                                                {% endif %}
+                                                <span class="text-muted">Date:</span>{{ item.content_object.release_date }}
                                             </div>
+                                            {% endif %}
+                                            {% if item.content_object.region_release_dates.all %}
+                                                <div>
+                                                    <span class="text-muted">Date:</span>
+                                                    {% with earliest_region_release_date=item.content_object.region_release_dates.all|first %}
+                                                        {{ earliest_region_release_date.release_date }} ({{ earliest_region_release_date.region }})
+                                                    {% endwith %}
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="mb-2">
@@ -408,45 +416,50 @@
                                                     {% endfor %}
                                                 </div>
                                             {% endfor %}
+                                            {% if item.game.developers.exists %}
                                             <div>
-                                                {% if item.game.developers.exists %}
-                                                    {# djlint:off #}
-                                                    <span class="text-muted">Developer{% if item.game.developers.count > 1 %}s{% endif %}:</span>
-                                                    {# djlint:on #}
-                                                    {% for developer in item.game.developers.all %}
-                                                        {% if not forloop.first %}/{% endif %}
-                                                        <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
-                                                    {% endfor %}
-                                                {% endif %}
+                                                {# djlint:off #}
+                                                <span class="text-muted">Developer{% if item.game.developers.count > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                {% for developer in item.game.developers.all %}
+                                                    {% if not forloop.first %}/{% endif %}
+                                                    <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
+                                                {% endfor %}
                                             </div>
+                                            {% endif %}
+                                            {% if item.game.publishers.exists %}
                                             <div>
-                                                {% if item.game.publishers.exists %}
-                                                    {# djlint:off #}
-                                                    <span class="text-muted">Publisher
-                                                        {% if item.game.publishers.count > 1 %}s{% endif %}:</span>
-                                                    {# djlint:on #}
-                                                    {% for publisher in item.game.publishers.all %}
-                                                        {% if not forloop.first %}/{% endif %}
-                                                        <a href="{% url 'entity:company_detail' publisher.id %}">{{ publisher.name }}</a>
-                                                    {% endfor %}
-                                                {% endif %}
+                                                {# djlint:off #}
+                                                <span class="text-muted">Publisher
+                                                    {% if item.game.publishers.count > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                {% for publisher in item.game.publishers.all %}
+                                                    {% if not forloop.first %}/{% endif %}
+                                                    <a href="{% url 'entity:company_detail' publisher.id %}">{{ publisher.name }}</a>
+                                                {% endfor %}
                                             </div>
+                                            {% endif %}
+
+                                            {% if item.game.platforms.exists %}
                                             <div>
-                                                {% if item.game.platforms.exists %}
-                                                    {# djlint:off #}
-                                                    <span class="text-muted">Platform{% if item.game.platforms.list|length > 1 %}s{% endif %}:</span>
-                                                    {# djlint:on #}
-                                                    {% for platform in item.game.platforms.all %}
-                                                        {% if not forloop.first %},{% endif %}
-                                                        <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
-                                                    {% endfor %}
-                                                {% endif %}
+                                                {# djlint:off #}
+                                                <span class="text-muted">Platform{% if item.game.platforms.list|length > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                {% for platform in item.game.platforms.all %}
+                                                    {% if not forloop.first %},{% endif %}
+                                                    <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
+                                                {% endfor %}
                                             </div>
+                                            {% endif %}
+                                            {% if item.game.region_release_dates.all %}
                                             <div>
-                                                {% if item.game.release_date %}
-                                                    <span class="text-muted">Date:</span>{{ item.game.release_date }}
-                                                {% endif %}
+                                                <span class="text-muted">Release Date:</span>
+                                                {% for release_date in item.game.region_release_dates.all %}                                           
+                                                    {{ release_date.release_date }} ({{ release_date.region }})
+                                                    {% if not forloop.last %}/{% endif %}
+                                                {% endfor %}
                                             </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="mb-2">

@@ -54,6 +54,7 @@
                                         </div>
                                     {% endfor %}
                                     <!-- Display Developers -->
+                                    {% if game_in_series.game.developers.all %}
                                     <div>
                                         Developers: 
                                         {% for developer in game_in_series.game.developers.all %}
@@ -63,11 +64,16 @@
                                             </a>
                                         {% endfor %}
                                     </div>
+                                    {% endif %}
+                                    {% if game_in_series.game.region_release_dates.all %}
                                     <div>
-                                        {% if game_in_series.game.release_date %}
-                                            <div>Date: {{ game_in_series.game.release_date }}</div>
-                                        {% endif %}
+                                        <span class="text-muted">Release Date:</span>
+                                        {% for release_date in game_in_series.game.region_release_dates.all %}                                           
+                                            {{ release_date.release_date }} ({{ release_date.region }})
+                                            {% if not forloop.last %}/{% endif %}
+                                        {% endfor %}
                                     </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

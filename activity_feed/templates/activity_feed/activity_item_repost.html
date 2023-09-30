@@ -229,10 +229,17 @@
                         {% if activity.content_object.original_activity.content_object.content_object.release_date %}
                         <div>
                             <span class="text-muted">Date:</span>
-                            {{ activity.content_object.original_activity.content_object.content_object.release_date|slice:":4" }}
+                            {{ activity.content_object.original_activity.content_object.content_object.release_date }}
                         </div>
                         {% endif %}
-
+                        {% if activity.content_object.original_activity.content_object.content_object.region_release_dates.all %}
+                            <div>
+                                <span class="text-muted">Date:</span>
+                                {% with earliest_region_release_date=activity.content_object.original_activity.content_object.content_object.region_release_dates.all|first %}
+                                    {{ earliest_region_release_date.release_date }} ({{ earliest_region_release_date.region }})
+                                {% endwith %}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="mt-2">
@@ -285,7 +292,7 @@
                                 {% else %}
                                     <img src="{{ activity.content_object.original_activity.content_object.game.cover.url }}"
                                         alt="{{ activity.content_object.original_activity.content_object.game.title }} cover"
-                                        class="cover-placeholder"
+                                        class="img-fluid cover-border"
                                         onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ activity.content_object.original_activity.content_object.game.title }}</div>';">
                                 {% endif %}
                             {% else %}
@@ -340,13 +347,12 @@
                         </div>
                         {% endif %}
                         {% if activity.content_object.original_activity.content_object.game.region_release_dates.all %}
-                        <div>
-                            <span class="text-muted">Date:</span>
-                            {% for release_date in activity.content_object.original_activity.content_object.game.region_release_dates.all %}                                           
-                                {{ release_date.release_date }} ({{ release_date.region }})
-                                {% if not forloop.last %}/{% endif %}
-                            {% endfor %}
-                        </div>
+                            <div>
+                                <span class="text-muted">Date:</span>
+                                {% with earliest_region_release_date=activity.content_object.original_activity.content_object.game.region_release_dates.all|first %}
+                                    {{ earliest_region_release_date.release_date }} ({{ earliest_region_release_date.region }})
+                                {% endwith %}
+                            </div>
                         {% endif %}
                     </div>
                 </div>
