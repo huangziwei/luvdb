@@ -349,7 +349,8 @@ class PersonDetailView(DetailView):
         context["games_as_cast"] = (
             Game.objects.filter(gamecasts__person=person)
             .distinct()
-            .order_by("release_date")
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
         )
 
         context["gameworks_count"] = (
