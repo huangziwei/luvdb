@@ -91,29 +91,51 @@
                                                 <h5>{{ checkin.content_object.title }}</h5>
                                             </a>
                                         {% endif %}
-                                        {% if checkin.content_type.model == 'movie' %}
-                                            {% regroup checkin.content_object.movierole_set.all by role as roles_list %}
-                                            {% for role in roles_list %}
-                                                <div>
-                                                    {{ role.grouper.name }}
-                                                    {% if role.list|length > 1 %}s{% endif %}
-                                                    :
-                                                    {% for movie_role in role.list %}
-                                                        {% if not forloop.first %}/{% endif %}
-                                                        <a href="{% url 'entity:person_detail' movie_role.person.id %}">
-                                                            {{ movie_role.alt_name | default:movie_role.person.name }}
-                                                        </a>
-                                                    {% endfor %}
-                                                </div>
-                                            {% endfor %}
+
+                                        {% regroup checkin.content_object.movieroles.all by role as roles_list %}
+                                        {% for role in roles_list %}
+                                            <div>
+                                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                                {% for movie_role in role.list %}
+                                                    {% if not forloop.first %}/{% endif %}
+                                                    <a href="{% url 'entity:person_detail' movie_role.person.id %}">
+                                                        {{ movie_role.alt_name | default:movie_role.person.name }}
+                                                    </a>
+                                                {% endfor %}
+                                            </div>
+                                        {% endfor %}
+
+                                        {% if checkin.content_object.studios.exists %}
+                                            <div class="mb-1">
+                                                Studio:
+                                                {% for studio in checkin.content_object.studios.all %}
+                                                    <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
+                                                    {% if not forloop.last %}/{% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        {% if checkin.content_object.distributors.exsits %}
+                                            <div class="mb-1">
+                                                Distributors:
+                                                {% for distributor in checkin.content_object.distributors.all %}
+                                                    <a href="{% url 'entity:company_detail' distributor.id %}">{{ distributor.name }}</a>
+                                                    {% if not forloop.last %}/{% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        
+                                        {% if checkin.content_object.release_date %}
+                                            <div>
+                                                Release Date:
+                                                {{ checkin.content_object.release_date }}
+                                            </div>
                                         {% endif %}
                                         {% if checkin.content_object.region_release_dates.all %}
                                         <div>
-                                            <span class="text-muted">Release Date:</span>
-                                            {% for region_release_date in checkin.content_object.region_release_dates.all %}                                           
-                                                {{ region_release_date.release_date }} ({{ region_release_date.region }})
-                                                {% if not forloop.last %}/{% endif %}
-                                            {% endfor %}
+                                            Release Date:
+                                            {% with earliest_region_release_date=checkin.content_object.region_release_dates.all|first %}
+                                                {{ earliest_region_release_date.release_date }} ({{ earliest_region_release_date.region }})
+                                            {% endwith %}
                                         </div>
                                         {% endif %}
                                     </div>
