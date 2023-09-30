@@ -269,6 +269,21 @@ class Game(models.Model):
         return "Game"
 
 
+class GameReleaseDate(models.Model):
+    """
+    A Release Date with region of a Game
+    """
+
+    game = models.ForeignKey(
+        Game, on_delete=models.CASCADE, related_name="region_release_dates"
+    )
+    region = models.CharField(max_length=100, blank=True, null=True)
+    release_date = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.game} - {self.region} - {self.release_date}"
+
+
 class GameRole(models.Model):
     """
     A Role of a Person in a Game

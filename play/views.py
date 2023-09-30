@@ -27,6 +27,7 @@ from .forms import (
     GameCheckInForm,
     GameForm,
     GameInSeriesFormSet,
+    GameReleaseDateFormSet,
     GameRoleFormSet,
     GameSeriesForm,
     WorkForm,
@@ -138,9 +139,13 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         if self.request.POST:
             data["gameroles"] = GameRoleFormSet(self.request.POST, instance=self.object)
             data["gamecasts"] = GameCastFormSet(self.request.POST, instance=self.object)
+            data["regionreleasedates"] = GameReleaseDateFormSet(
+                self.request.POST, instance=self.object
+            )
         else:
             data["gameroles"] = GameRoleFormSet(instance=self.object)
             data["gamecasts"] = GameCastFormSet(instance=self.object)
+            data["regionreleasedates"] = GameReleaseDateFormSet(instance=self.object)
 
         return data
 
@@ -148,12 +153,19 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         gamerole = context["gameroles"]
         gamecast = context["gamecasts"]
+        regionreleasedates = context["regionreleasedates"]
 
         # Manually check validity of each form in the formset.
         if not all(gamerole_form.is_valid() for gamerole_form in gamerole):
             return self.form_invalid(form)
 
         if not all(gamecast_form.is_valid() for gamecast_form in gamecast):
+            return self.form_invalid(form)
+
+        if not all(
+            region_release_date_form.is_valid()
+            for region_release_date_form in regionreleasedates
+        ):
             return self.form_invalid(form)
 
         with transaction.atomic():
@@ -166,6 +178,12 @@ class GameCreateView(LoginRequiredMixin, CreateView):
             if gamecast.is_valid():
                 gamecast.instance = self.object
                 gamecast.save()
+            if regionreleasedates.is_valid():
+                regionreleasedates.instance = self.object
+                regionreleasedates.save()
+            else:
+                print(regionreleasedates.errors)
+
         return super().form_valid(form)
 
 
@@ -285,6 +303,10 @@ class GameDetailView(DetailView):
         else:
             context["latest_user_status"] = "to_play"
 
+        context["ordered_release_dates"] = game.region_release_dates.all().order_by(
+            "release_date"
+        )
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -320,21 +342,32 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
         if self.request.POST:
             data["gameroles"] = GameRoleFormSet(self.request.POST, instance=self.object)
             data["gamecasts"] = GameCastFormSet(self.request.POST, instance=self.object)
+            data["regionreleasedates"] = GameReleaseDateFormSet(
+                self.request.POST, instance=self.object
+            )
         else:
             data["gameroles"] = GameRoleFormSet(instance=self.object)
             data["gamecasts"] = GameCastFormSet(instance=self.object)
+            data["regionreleasedates"] = GameReleaseDateFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         gamerole = context["gameroles"]
         gamecast = context["gamecasts"]
+        regionreleasedates = context["regionreleasedates"]
 
         # Manually check validity of each form in the formset.
         if not all(gamerole_form.is_valid() for gamerole_form in gamerole):
             return self.form_invalid(form)
 
         if not all(gamecast_form.is_valid() for gamecast_form in gamecast):
+            return self.form_invalid(form)
+
+        if not all(
+            region_release_date_form.is_valid()
+            for region_release_date_form in regionreleasedates
+        ):
             return self.form_invalid(form)
 
         with transaction.atomic():
@@ -346,6 +379,11 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
             if gamecast.is_valid():
                 gamecast.instance = self.object
                 gamecast.save()
+            if regionreleasedates.is_valid():
+                regionreleasedates.instance = self.object
+                regionreleasedates.save()
+            else:
+                print(regionreleasedates.errors)
         return super().form_valid(form)
 
 

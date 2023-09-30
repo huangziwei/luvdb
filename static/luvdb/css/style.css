@@ -26,7 +26,8 @@
 .add-release-role,
 .add-game-cast,
 .add-movie-role,
-.add-movie-cast {
+.add-movie-cast,
+.add-region-release-date {
     height: 38px !important;
     /* Adjust this value to your liking */
     width: 100% !important;

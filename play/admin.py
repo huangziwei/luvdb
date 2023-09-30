@@ -6,6 +6,7 @@ from .models import (
     GameCast,
     GameCheckIn,
     GameInSeries,
+    GameReleaseDate,
     GameRole,
     GameSeries,
     Genre,
@@ -25,6 +26,11 @@ class GameCastInline(admin.TabularInline):
 
 class GameInSeriesInline(admin.TabularInline):
     model = GameInSeries
+    extra = 0
+
+
+class GameReleaseDateInline(admin.TabularInline):
+    model = GameReleaseDate
     extra = 0
 
 
@@ -51,7 +57,12 @@ class PlatformAdmin(admin.ModelAdmin):
 class GameAdmin(admin.ModelAdmin):
     list_display = ["title", "romanized_title", "release_date", "website", "price"]
     search_fields = ["title", "romanized_title"]
-    inlines = [GameRoleInline, GameCastInline, GameInSeriesInline]
+    inlines = [
+        GameReleaseDateInline,
+        GameRoleInline,
+        GameCastInline,
+        GameInSeriesInline,
+    ]
 
 
 @admin.register(GameRole)

@@ -12,6 +12,7 @@ from .models import (
     GameCast,
     GameCheckIn,
     GameInSeries,
+    GameReleaseDate,
     GameRole,
     GameSeries,
     Work,
@@ -132,6 +133,42 @@ class GameForm(forms.ModelForm):
         ].help_text = (
             "e.g. ESRB, PEGI, CERO, OFLC, USK, GRAC, VET, DJCTQ, IARC, ACB, GSRR"
         )
+
+
+class GameReleaseDateForm(forms.ModelForm):
+    class Meta:
+        model = GameReleaseDate
+        fields = ("region", "release_date")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        region = cleaned_data.get("region")
+        release_date = cleaned_data.get("release_date")
+
+        # if the region field is filled but the release_date field is not
+        if region and not release_date:
+            raise ValidationError("Release date is required when Region is filled.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.region is None:
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
+
+
+GameReleaseDateFormSet = inlineformset_factory(
+    Game,
+    GameReleaseDate,
+    form=GameReleaseDateForm,
+    extra=15,
+    can_delete=True,
+)
 
 
 class GameRoleForm(forms.ModelForm):

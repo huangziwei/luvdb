@@ -33,6 +33,21 @@
            target="_blank">Add a new platform?</a>
     </div>
     {{ form.notes|as_crispy_field }}
+    {{ regionreleasedates.management_form|crispy }}
+    <div id="region-release-date-formset" class="bg-light p-3 mb-3">
+        <strong>Regions and release dates of this Game</strong>
+        <p class='text-muted'>E.g. North America, Europe, Japan, etc.</p>
+        {% for form in regionreleasedates %}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4 mb-3">{{ form.region | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.release_date | as_crispy_field }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
     {{ gameroles.management_form|crispy }}
     <div id="game-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this Game</strong>
