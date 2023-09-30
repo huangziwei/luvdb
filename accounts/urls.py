@@ -17,7 +17,6 @@ from .views import (
     get_followed_usernames,
     get_user_tags,
     redirect_to_profile,
-    search_view,
 )
 
 app_name = "accounts"
@@ -28,7 +27,6 @@ urlpatterns = [
         GenerateInvitationCodeView.as_view(),
         name="generate_invitation_code",
     ),
-    path("search/", search_view, name="search"),
     path("profile", view=redirect_to_profile, name="profile"),
     path("exportdata/", export_user_data, name="export_user_data"),
     path(

@@ -144,10 +144,14 @@ class="text-decoration-none">Delete</a></span>
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                                {% if object.release_date %}
-                                    <div class="mb-1">
-                                        <span class="text-muted">Release Date:</span> {{ object.release_date }}
-                                    </div>
+                                {% if object.region_release_dates.all %}
+                                <div>
+                                    <span class="text-muted">Release Date:</span>
+                                    {% for region_release_date in object.region_release_dates.all %}                                           
+                                        {{ region_release_date.release_date }} ({{ region_release_date.region }})
+                                        {% if not forloop.last %}/{% endif %}
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                                 {% if object.website %}
                                     <div class="mb-1">

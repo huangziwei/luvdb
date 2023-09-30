@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Count, Q
+from django.db.models import Count, Min, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -18,7 +18,7 @@ from entity.models import Person
 from listen.models import Release
 from play.models import Game, GameReleaseDate
 from read.models import Book
-from watch.models import Movie, Series
+from watch.models import Movie, MovieReleaseDate, Series
 from write.forms import ActivityFeedSayForm
 
 from .models import Activity, Block, Follow
@@ -92,19 +92,45 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         context["books_published_today"] = books_published_today
 
         # Query for movies released on this day
-        movies_released_today = Movie.objects.filter(
-            Q(release_date__contains=current_month_day)
-            | Q(release_date__contains=current_month_day_dash)
-        ).order_by("release_date")
+        movies_released_today = (
+            MovieReleaseDate.objects.values("movie")
+            .annotate(earliest_release=Min("release_date"))
+            .filter(
+                Q(earliest_release__contains=current_month_day)
+                | Q(earliest_release__contains=current_month_day_dash)
+            )
+            .order_by("earliest_release", "movie")
+        )
+
+        # Create a dictionary to hold the movies and their years since release
+        movies_dict = {}
 
         # Calculate years since release
-        for movie in movies_released_today:
+        for release in movies_released_today:
             release_year = int(
-                movie.release_date.split("-" if "-" in movie.release_date else ".")[0]
+                release["earliest_release"].split(
+                    "-" if "-" in release["earliest_release"] else "."
+                )[0]
             )
-            movie.since = now.year - release_year
+            since = now.year - release_year
 
-        context["movies_released_today"] = movies_released_today
+            # Retrieve the actual Movie object
+            movie = Movie.objects.get(pk=release["movie"])
+            movie.earliest_release = release["earliest_release"]
+
+            # Add or update the movie in the dictionary
+            if movie not in movies_dict:
+                movie.since = since
+                movies_dict[movie] = movie
+            else:
+                # Update the 'since' value if needed
+                if movies_dict[movie].since > since:
+                    movies_dict[movie].since = since
+
+        # Convert the dictionary values to a list
+        movies_released_today_list = list(movies_dict.values())
+
+        context["movies_released_today"] = movies_released_today_list
 
         # Query for series released on this day
         series_released_today = Series.objects.filter(
@@ -137,10 +163,15 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         context["music_released_today"] = music_released_today
 
         # Query for games with releases on this day
-        games_released_today = GameReleaseDate.objects.filter(
-            Q(release_date__contains=current_month_day)
-            | Q(release_date__contains=current_month_day_dash)
-        ).order_by("release_date", "game")
+        games_released_today = (
+            GameReleaseDate.objects.values("game")
+            .annotate(earliest_release=Min("release_date"))
+            .filter(
+                Q(earliest_release__contains=current_month_day)
+                | Q(earliest_release__contains=current_month_day_dash)
+            )
+            .order_by("earliest_release", "game")
+        )
 
         # Create a dictionary to hold the games and their years since release
         games_dict = {}
@@ -148,20 +179,24 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         # Calculate years since release
         for release in games_released_today:
             release_year = int(
-                release.release_date.split("-" if "-" in release.release_date else ".")[
-                    0
-                ]
+                release["earliest_release"].split(
+                    "-" if "-" in release["earliest_release"] else "."
+                )[0]
             )
             since = now.year - release_year
 
+            # Retrieve the actual Game object
+            game = Game.objects.get(pk=release["game"])
+            game.earliest_release = release["earliest_release"]
+
             # Add or update the game in the dictionary
-            if release.game not in games_dict:
-                release.game.since = since
-                games_dict[release.game] = release.game
+            if game not in games_dict:
+                game.since = since
+                games_dict[game] = game
             else:
                 # Update the 'since' value if needed
-                if games_dict[release.game].since > since:
-                    games_dict[release.game].since = since
+                if games_dict[game].since > since:
+                    games_dict[game].since = since
 
         # Convert the dictionary values to a list
         games_released_today_list = list(games_dict.values())
@@ -378,20 +413,45 @@ class CalendarActivityFeedView(ActivityFeedView):
 
         context["books_published_today"] = books_published_today
 
-        # Query for movies released on this day
-        movies_released_today = Movie.objects.filter(
-            Q(release_date__contains=selected_month_day)
-            | Q(release_date__contains=selected_month_day_dash)
-        ).order_by("release_date")
+        movies_released_today = (
+            MovieReleaseDate.objects.values("movie")
+            .annotate(earliest_release=Min("release_date"))
+            .filter(
+                Q(earliest_release__contains=selected_month_day)
+                | Q(earliest_release__contains=selected_month_day_dash)
+            )
+            .order_by("earliest_release", "movie")
+        )
+
+        # Create a dictionary to hold the movies and their years since release
+        movies_dict = {}
 
         # Calculate years since release
-        for movie in movies_released_today:
+        for release in movies_released_today:
             release_year = int(
-                movie.release_date.split("-" if "-" in movie.release_date else ".")[0]
+                release["earliest_release"].split(
+                    "-" if "-" in release["earliest_release"] else "."
+                )[0]
             )
-            movie.since = selected_datetime.year - release_year
+            since = selected_datetime.year - release_year
 
-        context["movies_released_today"] = movies_released_today
+            # Retrieve the actual Movie object
+            movie = Movie.objects.get(pk=release["movie"])
+            movie.earliest_release = release["earliest_release"]
+
+            # Add or update the movie in the dictionary
+            if movie not in movies_dict:
+                movie.since = since
+                movies_dict[movie] = movie
+            else:
+                # Update the 'since' value if needed
+                if movies_dict[movie].since > since:
+                    movies_dict[movie].since = since
+
+        # Convert the dictionary values to a list
+        movies_released_today_list = list(movies_dict.values())
+
+        context["movies_released_today"] = movies_released_today_list
 
         # Query for series released on this day
         series_released_today = Series.objects.filter(
@@ -423,20 +483,46 @@ class CalendarActivityFeedView(ActivityFeedView):
 
         context["music_released_today"] = music_released_today
 
-        # Query for music released on this day
-        games_released_today = Game.objects.filter(
-            Q(release_date__contains=selected_month_day)
-            | Q(release_date__contains=selected_month_day_dash)
-        ).order_by("release_date")
+        # Query for games with releases on this day
+        games_released_today = (
+            GameReleaseDate.objects.values("game")
+            .annotate(earliest_release=Min("release_date"))
+            .filter(
+                Q(earliest_release__contains=selected_month_day)
+                | Q(earliest_release__contains=selected_month_day_dash)
+            )
+            .order_by("earliest_release", "game")
+        )
+
+        # Create a dictionary to hold the games and their years since release
+        games_dict = {}
 
         # Calculate years since release
-        for game in games_released_today:
+        for release in games_released_today:
             release_year = int(
-                game.release_date.split("-" if "-" in game.release_date else ".")[0]
+                release["earliest_release"].split(
+                    "-" if "-" in release["earliest_release"] else "."
+                )[0]
             )
-            game.since = selected_datetime.year - release_year
+            since = selected_date.year - release_year
 
-        context["games_released_today"] = games_released_today
+            # Retrieve the actual Game object
+            game = Game.objects.get(pk=release["game"])
+            game.earliest_release = release["earliest_release"]
+
+            # Add or update the game in the dictionary
+            if game not in games_dict:
+                game.since = since
+                games_dict[game] = game
+            else:
+                # Update the 'since' value if needed
+                if games_dict[game].since > since:
+                    games_dict[game].since = since
+
+        # Convert the dictionary values to a list
+        games_released_today_list = list(games_dict.values())
+
+        context["games_released_today"] = games_released_today_list
 
         # Add calendar context
         cal = Calendar()

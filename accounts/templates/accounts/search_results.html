@@ -122,7 +122,7 @@
                         {% for movie in movie_results %}
                             <p>
                                 <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title|truncatechars:50 }}</a>
-                                ({{ movie.release_date }})
+                                ({{ movie.earliest_release_date }})
                             </p>
                         {% endfor %}
                     </div>
@@ -229,7 +229,7 @@
                         {% for game in game_results %}
                             <p>
                                 <a href="{% url 'play:game_detail' game.id %}">{{ game.title|truncatechars:50 }}</a>
-                                ({{ game.release_date }})
+                                ({{ game.earliest_release_date }})
                             </p>
                         {% endfor %}
                     </div>

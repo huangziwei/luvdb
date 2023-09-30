@@ -6,26 +6,27 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-7 left-column">
-                <h3>Update this Movie entry</h3>
+                <h3>Update Movie entry</h3>
                 {% include "watch/movie_form.html" %}
             </div>
         </div>
     </div>
     <script type="text/javascript"
             src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-    {{ form.media }}
     <script type="text/javascript"
             src="{% static 'js/generalFormsetHandler.js' %}"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
     
-        // Call the function for movie-role-formset
         window.handleFormset('#movie-role-formset', 'add-movie-role');
         window.handleFormset('#movie-cast-formset', 'add-movie-cast');
+        window.handleFormset('#region-release-date-formset', 'add-region-release-date');
+
     });
     
     $(document).ready(function() {
         $('select:not([name="model"])').removeClass('form-select');
     });
     </script>
+    {{ form.media }}
 {% endblock content %}

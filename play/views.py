@@ -187,8 +187,6 @@ class GameCreateView(LoginRequiredMixin, CreateView):
             if regionreleasedates.is_valid():
                 regionreleasedates.instance = self.object
                 regionreleasedates.save()
-            else:
-                print(regionreleasedates.errors)
 
         return super().form_valid(form)
 

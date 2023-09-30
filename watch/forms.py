@@ -18,6 +18,7 @@ from .models import (
     EpisodeRole,
     Movie,
     MovieCast,
+    MovieReleaseDate,
     MovieRole,
     Series,
     SeriesRole,
@@ -57,6 +58,42 @@ class MovieForm(forms.ModelForm):
         ].help_text = (
             "e.g. translated titles in different languages, separated by slashes (`/`)."
         )
+
+
+class MovieReleaseDateForm(forms.ModelForm):
+    class Meta:
+        model = MovieReleaseDate
+        fields = ("region", "release_date")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        region = cleaned_data.get("region")
+        release_date = cleaned_data.get("release_date")
+
+        # if the region field is filled but the release_date field is not
+        if region and not release_date:
+            raise ValidationError("Release date is required when Region is filled.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.region is None:
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
+
+
+MovieReleaseDateFormSet = inlineformset_factory(
+    Movie,
+    MovieReleaseDate,
+    form=MovieReleaseDateForm,
+    extra=15,
+    can_delete=True,
+)
 
 
 class MovieRoleForm(forms.ModelForm):

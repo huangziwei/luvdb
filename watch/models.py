@@ -25,9 +25,7 @@ def rename_movie_poster(instance, filename):
         filename = "default.jpg"
     _, extension = os.path.splitext(filename)
     unique_id = uuid.uuid4()
-    directory_name = (
-        f"{slugify(instance.title, allow_unicode=True)}-{instance.release_date}"
-    )
+    directory_name = f"{slugify(instance.title, allow_unicode=True)}"
     new_name = f"{unique_id}{extension}"
     return os.path.join("posters", directory_name, new_name)
 
@@ -69,9 +67,6 @@ class Movie(models.Model):
         LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="movies"
     )
 
-    release_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
     description = models.TextField(blank=True, null=True)
     website = models.CharField(max_length=100, blank=True, null=True)
     poster = models.ImageField(upload_to=rename_movie_poster, null=True, blank=True)
@@ -147,6 +142,21 @@ class Movie(models.Model):
 
     def model_name(self):
         return "Movie"
+
+
+class MovieReleaseDate(models.Model):
+    """
+    A Release Date with region of a Movie
+    """
+
+    movie = models.ForeignKey(
+        Movie, on_delete=models.CASCADE, related_name="region_release_dates"
+    )
+    region = models.CharField(max_length=100, blank=True, null=True)
+    release_date = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.movie} - {self.region} - {self.release_date}"
 
 
 class MovieRole(models.Model):

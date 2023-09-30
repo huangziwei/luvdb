@@ -194,7 +194,8 @@ class PersonDetailView(DetailView):
         context["movies"] = (
             Movie.objects.filter(moviecasts__person=person)
             .distinct()
-            .order_by("release_date")
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
         )
         context["series"] = (
             Series.objects.filter(episodes__episodecasts__person=person)
@@ -208,7 +209,8 @@ class PersonDetailView(DetailView):
                 movieroles__person=person, movieroles__role__name="Director"
             )
             .distinct()
-            .order_by("release_date")
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
         )
 
         directed_series = Series.objects.filter(
@@ -255,7 +257,8 @@ class PersonDetailView(DetailView):
                 movieroles__person=person, movieroles__role__name="Screenwriter"
             )
             .distinct()
-            .order_by("release_date")
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
         )
 
         written_series = Series.objects.filter(
@@ -515,12 +518,16 @@ class CompanyDetailView(DetailView):
         ).order_by("-release_date")
 
         # watch
-        context["movies_as_production_company"] = Movie.objects.filter(
-            studios=company
-        ).order_by("-release_date")
-        context["movies_as_distributor"] = Movie.objects.filter(
-            distributors=company
-        ).order_by("-release_date")
+        context["movies_as_production_company"] = (
+            Movie.objects.filter(studios=company)
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
+        )
+        context["movies_as_distributor"] = (
+            Movie.objects.filter(distributors=company)
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
+        )
 
         context["series_as_production_company"] = Series.objects.filter(
             studios=company

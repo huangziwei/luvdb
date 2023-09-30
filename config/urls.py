@@ -6,7 +6,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.http import Http404
 from django.urls import include, path
 
-from accounts.views import home
+from accounts.views import search_view
 from entity.sitemaps import PersonSiteMap
 from listen.sitemaps import ReleaseSiteMap
 from play.sitemaps import GameSiteMap
@@ -45,6 +45,7 @@ urlpatterns = [
     path("watch/", include("watch.urls")),
     path("", include("activity_feed.urls")),
     path("", include("write.urls")),
+    path("search/", search_view, name="search"),
     path("notify/", include("notify.urls")),
     path(
         "sitemap.xml",

@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import Count, F, Max, OuterRef, Q, Subquery
+from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -32,6 +32,7 @@ from .forms import (
     EpisodeRoleFormSet,
     MovieCastFormSet,
     MovieForm,
+    MovieReleaseDateFormSet,
     MovieRoleFormSet,
     SeriesForm,
     SeriesRoleFormSet,
@@ -69,22 +70,32 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
             data["moviecasts"] = MovieCastFormSet(
                 self.request.POST, instance=self.object
             )
+            data["regionreleasedates"] = MovieReleaseDateFormSet(
+                self.request.POST, instance=self.object
+            )
         else:
             data["movieroles"] = MovieRoleFormSet(instance=self.object)
             data["moviecasts"] = MovieCastFormSet(instance=self.object)
-
+            data["regionreleasedates"] = MovieReleaseDateFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         movierole = context["movieroles"]
         moviecast = context["moviecasts"]
+        regionreleasedates = context["regionreleasedates"]
 
         # Manually check validity of each form in the formset.
         if not all(movierole_form.is_valid() for movierole_form in movierole):
             return self.form_invalid(form)
 
         if not all(moviecast_form.is_valid() for moviecast_form in moviecast):
+            return self.form_invalid(form)
+
+        if not all(
+            region_release_date_form.is_valid()
+            for region_release_date_form in regionreleasedates
+        ):
             return self.form_invalid(form)
 
         with transaction.atomic():
@@ -97,6 +108,9 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
             if moviecast.is_valid():
                 moviecast.instance = self.object
                 moviecast.save()
+            if regionreleasedates.is_valid():
+                regionreleasedates.instance = self.object
+                regionreleasedates.save()
         return super().form_valid(form)
 
 
@@ -248,6 +262,10 @@ class MovieDetailView(DetailView):
         else:
             context["latest_user_status"] = "to_watch"
 
+        context["ordered_release_dates"] = movie.region_release_dates.all().order_by(
+            "release_date"
+        )
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -289,15 +307,20 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
             data["moviecasts"] = MovieCastFormSet(
                 self.request.POST, instance=self.object
             )
+            data["regionreleasedates"] = MovieReleaseDateFormSet(
+                self.request.POST, instance=self.object
+            )
         else:
             data["movieroles"] = MovieRoleFormSet(instance=self.object)
             data["moviecasts"] = MovieCastFormSet(instance=self.object)
+            data["regionreleasedates"] = MovieReleaseDateFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         movierole = context["movieroles"]
         moviecast = context["moviecasts"]
+        regionreleasedates = context["regionreleasedates"]
 
         # Manually check validity of each form in the formset.
         if not all(movierole_form.is_valid() for movierole_form in movierole):
@@ -306,7 +329,14 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
         if not all(moviecast_form.is_valid() for moviecast_form in moviecast):
             return self.form_invalid(form)
 
+        if not all(
+            region_release_date_form.is_valid()
+            for region_release_date_form in regionreleasedates
+        ):
+            return self.form_invalid(form)
+
         with transaction.atomic():
+            form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
             self.object = form.save()
             if movierole.is_valid():
@@ -315,6 +345,9 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
             if moviecast.is_valid():
                 moviecast.instance = self.object
                 moviecast.save()
+            if regionreleasedates.is_valid():
+                regionreleasedates.instance = self.object
+                regionreleasedates.save()
         return super().form_valid(form)
 
 
@@ -1321,7 +1354,11 @@ class GenreDetailView(DetailView):
 
         # Get all movies and series associated with this genre
         # and order them by release date
-        context["movies"] = Movie.objects.filter(genres=genre).order_by("-release_date")
+        context["movies"] = (
+            Movie.objects.filter(genres=genre)
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
+        )
         context["series"] = Series.objects.filter(genres=genre).order_by(
             "-release_date"
         )

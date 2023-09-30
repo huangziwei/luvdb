@@ -68,7 +68,7 @@
                             {% for movie in movies_as_production_company %}
                                 <li>
                                     <a href="{% url 'watch:movie_detail' movie.pk %}">{{ movie.title }}</a> 
-                                    ({{ movie.release_date }})
+                                    ({{ movie.earliest_release_date }})
                                 </li>
                             {% endfor %}
                         </ul>
@@ -101,7 +101,7 @@
                             {% for movie in movies_as_distributor %}
                                 <li>
                                     <a href="{% url 'watch:movie_detail' movie.pk %}">{{ movie.title }}</a> 
-                                    ({{ movie.release_date }})
+                                    ({{ movie.earliest_release_date }})
                                 </li>
                             {% endfor %}
                         </ul>

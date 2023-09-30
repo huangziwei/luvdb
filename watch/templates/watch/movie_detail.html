@@ -13,7 +13,7 @@
     {% if object.poster %}
         <meta property="og:image" content="{{ object.poster.url }}" />
     {% endif %}
-    <meta property="og:release_date" content="{{ object.release_date }}" />
+    <meta property="og:earlist_release_date" content="{{ object.earlist_release_date }}" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="video.movie">
     {% if object.genres %}
@@ -128,13 +128,8 @@
                                     <div class="mb-1">
                                         <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View All</a>
                                     </div>
-                                    {% if object.release_date %}
-                                        <div class="mb-1">
-                                            <span class="text-muted">Date:</span> {{ object.release_date }}
-                                        </div>
-                                    {% endif %}
-
-                                    {% if object.description %}
+                                    
+                                    {% if object.description or ordered_release_dates%}
                                     <div class="my-3">
                                         <p class="text-muted"
                                            type="button"
@@ -145,7 +140,17 @@
                                             <span class="text-muted">More Details</span>
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
-                                            <div class="card card-body">{{ object.description|markdownify }}</div>
+                                            {% if ordered_release_dates %}
+                                                <span class="text-muted">Release Date:</span>
+                                                {% for release_date in ordered_release_dates %}
+                                                    {{ release_date.release_date }} ({{ release_date.region }})
+                                                    {% if not forloop.last %}/{% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                            {% if object.description %}
+                                                <span class="text-muted">Details:</span>
+                                                <div class="card card-body">{{ object.description|markdownify }}</div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     {% endif %}

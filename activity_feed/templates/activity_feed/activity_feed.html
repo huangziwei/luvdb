@@ -133,7 +133,7 @@
                                         <li class="list-group-item">
                                             <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
                                             {# djlint:off #}
-                                            ({{ movie.release_date|slice:":4" }}{% if movie.since == 0 %}, today{% else %}, {{ movie.since }} years ago{% endif %})
+                                            ({{ movie.earliest_release|slice:":4" }}{% if movie.since == 0 %}, today{% else %}, {{ movie.since }} years ago{% endif %})
                                             {# djlint:on #}
                                         </li>
                                     {% endfor %}
@@ -191,7 +191,7 @@
                                         <li class="list-group-item">
                                             <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
                                             {# djlint:off #}
-                                            ({{ game.release_date|slice:":4" }}{% if game.since == 0 %}, today{% else %}, {{ game.since }} years ago{% endif %})
+                                            ({{ game.earliest_release|slice:":4" }}{% if game.since == 0 %}, today{% else %}, {{ game.since }} years ago{% endif %})
                                             {# djlint:on #}
                                         </li>
                                     {% endfor %}

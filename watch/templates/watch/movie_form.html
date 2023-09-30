@@ -17,7 +17,7 @@
            target="_blank">Add a new company?</a>
     </div>
     {{ form.description|as_crispy_field }}
-    {{ form.release_date|as_crispy_field }}
+    {% comment %} {{ form.release_date|as_crispy_field }} {% endcomment %}
     {{ form.genres|as_crispy_field }}
     <div class="mb-3">
         {{ form.based_on|as_crispy_field }}
@@ -27,9 +27,24 @@
     </div>
     {{ form.imdb|as_crispy_field }}
     {{ form.wikipedia|as_crispy_field }}
+    {{ regionreleasedates.management_form|crispy }}
+    <div id="region-release-date-formset" class="bg-light p-3 mb-3">
+        <strong>Regions and release dates of this Movie</strong>
+        <p class='text-muted'>E.g. US, Germany, Japan, etc.</p>
+        {% for form in regionreleasedates %}
+            <div class="form-wrapper" data-existing-record>
+                <div class="row">
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4 mb-3">{{ form.region | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.release_date | as_crispy_field }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
     {{ movieroles.management_form|crispy }}
     <div id="movie-role-formset" class="bg-light p-3 mb-3">
-        <strong>Entities related to this Game</strong>
+        <strong>Entities related to this Movie</strong>
         <p class='text-muted'>E.g. Directors, Writers, Designers, etc.</p>
         {% for form in movieroles %}
             <div class="form-wrapper">

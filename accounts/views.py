@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
-from django.db.models import Count, OuterRef, Q, Subquery
+from django.db.models import Count, Min, OuterRef, Q, Subquery
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -649,7 +649,6 @@ def filter_play(query, search_terms):
                 | Q(other_titles__icontains=term)
                 | Q(developers__name__icontains=term)
                 | Q(platforms__name__icontains=term)
-                | Q(release_date__icontains=term)
                 | Q(gameroles__person__name__icontains=term)
                 | Q(gameroles__person__other_names__icontains=term)
                 | Q(gameroles__alt_name__icontains=term)
@@ -658,7 +657,8 @@ def filter_play(query, search_terms):
                 | Q(gamecasts__character_name__icontains=term)
             )
             .distinct()
-            .order_by("release_date")
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
         )
     return gamework_results, game_results
 
@@ -678,10 +678,10 @@ def filter_watch(query, search_terms):
                 | Q(moviecasts__person__name__icontains=term)
                 | Q(moviecasts__person__other_names__icontains=term)
                 | Q(moviecasts__character_name__icontains=term)
-                | Q(release_date__icontains=term)
             )
             .distinct()
-            .order_by("release_date")
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
         )
         series_results = (
             series_results.filter(

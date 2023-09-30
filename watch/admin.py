@@ -7,6 +7,7 @@ from .models import (
     Genre,
     Movie,
     MovieCast,
+    MovieReleaseDate,
     MovieRole,
     Series,
     SeriesRole,
@@ -22,6 +23,11 @@ class MovieRoleInline(admin.TabularInline):
 
 class MovieCastInline(admin.TabularInline):
     model = MovieCast
+    extra = 1
+
+
+class MovieReleaseDateInline(admin.TabularInline):
+    model = MovieReleaseDate
     extra = 1
 
 
@@ -41,10 +47,9 @@ class EpisodeCastInline(admin.TabularInline):
 
 
 class MovieAdmin(admin.ModelAdmin):
-    inlines = (MovieRoleInline, MovieCastInline)
-    list_display = ("title", "release_date")
+    inlines = (MovieRoleInline, MovieCastInline, MovieReleaseDateInline)
+    list_display = ("title",)
     search_fields = ["title"]
-    list_filter = ["release_date"]
 
 
 class SeriesAdmin(admin.ModelAdmin):
