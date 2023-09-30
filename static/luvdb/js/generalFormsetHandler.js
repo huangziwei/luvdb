@@ -20,6 +20,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 shouldHide = index > 0 && !hasInputData;
             }
 
+            if (formsetId === "#release-track-formset") {
+                shouldHide = index > 0 && !hasSelectedOption;
+            }
+
             if (shouldHide) {
                 row.style.visibility = 'hidden';
                 row.style.height = '0';
@@ -32,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Add the "+" button to the last visible row only
         var buttonDiv = document.createElement('div');
-        buttonDiv.className = 'col-md-1 mb-5';
+        buttonDiv.className = 'col-md-1 mb-3';
         var innerDiv = document.createElement('div');
         innerDiv.className = 'mb-1';
         var label = document.createElement('label');
