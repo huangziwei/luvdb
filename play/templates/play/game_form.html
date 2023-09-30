@@ -5,7 +5,6 @@
     {{ form.subtitle|as_crispy_field }}
     {{ form.other_titles|as_crispy_field }}
     {{ form.cover|as_crispy_field }}
-    {{ form.release_date|as_crispy_field }}
     {{ form.rating|as_crispy_field }}
     {{ form.wikipedia|as_crispy_field }}
     <div class="mb-3">
@@ -38,7 +37,7 @@
         <strong>Regions and release dates of this Game</strong>
         <p class='text-muted'>E.g. North America, Europe, Japan, etc.</p>
         {% for form in regionreleasedates %}
-            <div class="form-wrapper">
+            <div class="form-wrapper" data-existing-record>
                 <div class="row">
                     {{ form.id }}
                     {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}

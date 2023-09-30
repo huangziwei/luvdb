@@ -23,9 +23,7 @@ def rename_game_cover(instance, filename):
         filename = "default.jpg"
     _, extension = os.path.splitext(filename)
     unique_id = uuid.uuid4()
-    directory_name = (
-        f"{slugify(instance.title, allow_unicode=True)}-{instance.release_date}"
-    )
+    directory_name = f"{slugify(instance.title, allow_unicode=True)}"
     new_name = f"{unique_id}{extension}"
     return os.path.join("covers", directory_name, new_name)
 
@@ -193,9 +191,6 @@ class Game(models.Model):
     casts = models.ManyToManyField(
         Person, through="GameCast", related_name="games_cast"
     )
-    release_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
     notes = models.TextField(blank=True, null=True)
     website = models.CharField(max_length=100, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_game_cover, null=True, blank=True)

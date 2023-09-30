@@ -55,7 +55,7 @@ class PlatformAdmin(admin.ModelAdmin):
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ["title", "romanized_title", "release_date", "website", "price"]
+    list_display = ["title", "romanized_title", "website", "price"]
     search_fields = ["title", "romanized_title"]
     inlines = [
         GameReleaseDateInline,

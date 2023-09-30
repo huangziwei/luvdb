@@ -101,9 +101,15 @@
                                                 {% endfor %}
                                             </div>
                                         {% endfor %}
+                                        {% if checkin.game.region_release_dates.all %}
                                         <div>
-                                            {% if checkin.game.release_date %}Year: {{ checkin.game.release_date|slice:":4" }}{% endif %}
+                                            <span class="text-muted">Release Date:</span>
+                                            {% for release_date in checkin.game.region_release_dates.all %}                                           
+                                                {{ release_date.release_date|slice:":4" }} ({{ release_date.region }})
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
                                         </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="d-flex mt-3">

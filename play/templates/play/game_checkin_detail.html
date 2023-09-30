@@ -99,11 +99,15 @@
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                            <div>
-                                {% if object.game.release_date %}
-                                    <span class="text-muted">Date:</span>{{ object.game.release_date }}
-                                {% endif %}
-                            </div>
+                            {% if object.game.region_release_dates.all %}
+                                <div>
+                                    <span class="text-muted">Release Date:</span>
+                                    {% for release_date in object.game.region_release_dates.all %}                                           
+                                        {{ release_date.release_date }} ({{ release_date.region }})
+                                        {% if not forloop.last %}/{% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

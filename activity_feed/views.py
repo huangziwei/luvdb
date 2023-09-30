@@ -16,7 +16,7 @@ from django.views.generic import DeleteView, ListView
 
 from entity.models import Person
 from listen.models import Release
-from play.models import Game
+from play.models import Game, GameReleaseDate
 from read.models import Book
 from watch.models import Movie, Series
 from write.forms import ActivityFeedSayForm
@@ -136,20 +136,37 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
 
         context["music_released_today"] = music_released_today
 
-        # Query for music released on this day
-        games_released_today = Game.objects.filter(
+        # Query for games with releases on this day
+        games_released_today = GameReleaseDate.objects.filter(
             Q(release_date__contains=current_month_day)
             | Q(release_date__contains=current_month_day_dash)
-        ).order_by("release_date")
+        ).order_by("release_date", "game")
+
+        # Create a dictionary to hold the games and their years since release
+        games_dict = {}
 
         # Calculate years since release
-        for game in games_released_today:
+        for release in games_released_today:
             release_year = int(
-                game.release_date.split("-" if "-" in game.release_date else ".")[0]
+                release.release_date.split("-" if "-" in release.release_date else ".")[
+                    0
+                ]
             )
-            game.since = now.year - release_year
+            since = now.year - release_year
 
-        context["games_released_today"] = games_released_today
+            # Add or update the game in the dictionary
+            if release.game not in games_dict:
+                release.game.since = since
+                games_dict[release.game] = release.game
+            else:
+                # Update the 'since' value if needed
+                if games_dict[release.game].since > since:
+                    games_dict[release.game].since = since
+
+        # Convert the dictionary values to a list
+        games_released_today_list = list(games_dict.values())
+
+        context["games_released_today"] = games_released_today_list
 
         # Add calendar context
         cal = Calendar()

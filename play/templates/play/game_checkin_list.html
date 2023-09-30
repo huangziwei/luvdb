@@ -155,10 +155,14 @@ class="text-decoration-none">Delete</a></span>
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                                {% if game.release_date %}
-                                    <div class="mb-1">
-                                        <span class="text-muted">Release Date:</span> {{ game.release_date }}
-                                    </div>
+                                {% if game.region_release_dates.all %}
+                                <div>
+                                    <span class="text-muted">Release Date:</span>
+                                    {% for release_date in game.region_release_dates.all %}                                           
+                                        {{ release_date.release_date }} ({{ release_date.region }})
+                                        {% if not forloop.last %}/{% endif %}
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                                 {% if game.website %}
                                     <div class="mb-1">

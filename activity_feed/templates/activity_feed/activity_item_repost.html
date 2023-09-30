@@ -339,10 +339,13 @@
                             {% endfor %}
                         </div>
                         {% endif %}
-                        {% if activity.content_object.original_activity.content_object.game.release_date %}
+                        {% if activity.content_object.original_activity.content_object.game.region_release_dates.all %}
                         <div>
                             <span class="text-muted">Date:</span>
-                            {{ activity.content_object.original_activity.content_object.game.release_date }}
+                            {% for release_date in activity.content_object.original_activity.content_object.game.region_release_dates.all %}                                           
+                                {{ release_date.release_date }} ({{ release_date.region }})
+                                {% if not forloop.last %}/{% endif %}
+                            {% endfor %}
                         </div>
                         {% endif %}
                     </div>
