@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import Count, F, Max, OuterRef, Q, Subquery
+from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -88,7 +88,13 @@ class WorkDetailView(DetailView):
             grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
         context["grouped_roles"] = grouped_roles
 
-        context["games"] = work.games.all().order_by("release_date")
+        games = (
+            work.games.all()
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
+        )
+
+        context["games"] = games
         return context
 
 
