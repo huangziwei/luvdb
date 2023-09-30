@@ -204,7 +204,7 @@
                                 <li>
                                     <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
                                     ({% for platform in game.platforms.all %}{{ platform }}{% if not forloop.last %}/{% endif %}{% endfor %},
-                                    {{ game.release_date }})
+                                    {% if game.earliest_release_date %}{{ game.earliest_release_date }}{% endif %})
                                 </li>
                             {% empty %}
                                 <li>This company has not developed any games.</li>
@@ -220,7 +220,7 @@
                                 <li>
                                     <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
                                     ({% for platform in game.platforms.all %}{{ platform }}{% if not forloop.last %}/{% endif %}{% endfor %},
-                                    {{ game.release_date }})
+                                    {% if game.earliest_release_date %}{{ game.earliest_release_date }}{% endif %})
                                 </li>
                             {% empty %}
                                 <li>This company has not published any games.</li>

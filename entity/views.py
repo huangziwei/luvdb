@@ -1,7 +1,7 @@
 from dal import autocomplete
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count, Q
+from django.db.models import Count, Min, Q
 from django.urls import reverse_lazy
 from django.utils.html import format_html
 from django.views.generic.detail import DetailView
@@ -529,12 +529,16 @@ class CompanyDetailView(DetailView):
         ).order_by("-release_date")
 
         # play
-        context["games_as_developer"] = Game.objects.filter(
-            developers=company
-        ).order_by("-release_date")
-        context["games_as_publisher"] = Game.objects.filter(
-            publishers=company
-        ).order_by("-release_date")
+        context["games_as_developer"] = (
+            Game.objects.filter(developers=company)
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
+        )
+        context["games_as_publisher"] = (
+            Game.objects.filter(publishers=company)
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
+        )
 
         return context
 

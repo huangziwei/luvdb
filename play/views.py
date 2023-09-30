@@ -439,7 +439,9 @@ class PlatformDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["sorted_games"] = self.object.games.all().order_by("release_date")
+        context["sorted_games"] = self.object.games.all().annotate(
+            earliest_release_date=Min("region_release_dates__release_date")
+            ).order_by("earliest_release_date")
         return context
 
 

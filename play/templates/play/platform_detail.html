@@ -22,7 +22,8 @@
                         {% for game in sorted_games %}
                             <li>
                                 <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
-                                ({{ game.release_date }})
+                                ({% if game.earliest_release_date %}{{ game.earliest_release_date }}{% endif %})
+
                             </li>
                         {% empty %}
                             <li>No games have been released on this platform.</li>
