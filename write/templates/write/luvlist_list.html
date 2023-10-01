@@ -6,6 +6,21 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-8 left-column">
+                <div class="d-flex mb-3">
+                    <span class="me-3">
+                        <a href="{% url 'write:say_list' object.username %}">Says</a>
+                    </span>
+                    <span class="me-3">
+                        <a href="{% url 'write:post_list' object.username %}">Posts</a>
+                    </span>
+                    <span class="me-3">
+                        <a href="{% url 'write:pin_list' object.username %}">Pins</a>
+                    </span>
+                    <span class="me-3">
+                        <a href="{% url 'write:luvlist_list' object.username %}">Lists</a>
+                    </span>
+                </div>
+                <hr>
                 <div class="d-flex justify-content-between mb-3">
                     <h5>
                         <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a>'s Lists
