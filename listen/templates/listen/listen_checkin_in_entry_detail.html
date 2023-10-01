@@ -5,7 +5,7 @@
 <div class="col-sm-11 mt-3">
     {% for checkin in checkins %}
         {% if checkin.user.is_public or request.user.is_authenticated %}
-            <div class="d-flex justify-content-start align-items-center mb-3">
+            <div class="d-flex justify-content-start align-items-center mb-2">
                 <span class='me-2'>
                     <a href="{% url 'accounts:detail' checkin.user.username %}">
                         {{ checkin.user.display_name|default:checkin.user.username }}
@@ -33,7 +33,7 @@
                 {% endif %}
             </div>
             {% if checkin.content %}
-                <div class="checkin bg-light p-3 mb-3">{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
             {% endif %}
             <div class="d-flex mb-4">
                 <span class="me-2 d-inline-block">

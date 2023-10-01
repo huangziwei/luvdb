@@ -110,22 +110,20 @@
                         </div>
                     </div>
                 </div>
-                <div class='mt-2'>
-                    <span class="d-flex mt-2">
-                        <p class='me-2 text-secondary mb-2'>
-                            <a href="{% url 'play:game_checkin_list' object.game.id object.user.username %}" class="text-muted">
-                                {% if checkin_count > 0 %}
-                                    {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
-                                {% else %}
-                                    {{ object.timestamp|date:"Y.m.d H:i" }}
-                                {% endif %}
-                            </a>
-                        </p>
-                        {% if object.user == request.user %}
-                            <a href="{% url "play:game_checkin_update" object.pk %}" class="me-2">Edit</a>
-                            <a href="{% url "play:game_checkin_delete" object.pk %}" class="me-2">Delete</a>
-                        {% endif %}
-                    </span>
+                <div class="d-flex mt-2">
+                    <p class='me-2 text-secondary mb-2'>
+                        <a href="{% url 'play:game_checkin_list' object.game.id object.user.username %}" class="text-muted">
+                            {% if checkin_count > 0 %}
+                                {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
+                            {% else %}
+                                {{ object.timestamp|date:"Y.m.d H:i" }}
+                            {% endif %}
+                        </a>
+                    </p>
+                    {% if object.user == request.user %}
+                        <a href="{% url "play:game_checkin_update" object.pk %}" class="me-2">Edit</a>
+                        <a href="{% url "play:game_checkin_delete" object.pk %}" class="me-2">Delete</a>
+                    {% endif %}
                 </div>
                 <button id="show-comments"
                         class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>

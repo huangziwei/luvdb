@@ -36,7 +36,7 @@
                         </span>
                     {% endif %}
                 </div>
-                <div class="mt-3 mb-3">{{ object.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                <div class="mt-2">{{ object.content | linkify_tags | linkify_mentions | markdownify }}</div>
                 <div class="bg-light p-3 mt-2">
                     <div class="d-flex flex-row bg-light mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -138,34 +138,32 @@
                         </div>
                     </div>
                 </div>
-                <div class='mt-4'>
-                    <span class="d-flex mt-2">
-                        <p class='me-2 text-secondary mb-2'>
-                            {% if object.content_type.model == "movie" %}
-                                <a href="{% url 'watch:movie_checkin_list' object.content_object.id object.user.username %}"
-                                   class="text-muted">
-                                    {% if checkin_count > 0 %}
-                                        {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
-                                    {% else %}
-                                        {{ object.timestamp|date:"Y.m.d H:i" }}
-                                    {% endif %}
-                                </a>
-                            {% else %}
-                                <a href="{% url 'watch:series_checkin_list' object.content_object.id object.user.username %}"
-                                   class="text-muted">
-                                    {% if checkin_count > 0 %}
-                                        {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
-                                    {% else %}
-                                        {{ object.timestamp|date:"Y.m.d H:i" }}
-                                    {% endif %}
-                                </a>
-                            {% endif %}
-                        </p>
-                        {% if object.user == request.user %}
-                            <a href="{% url "watch:watch_checkin_update" object.id %}" class="me-2">Edit</a>
-                            <a href="{% url "watch:watch_checkin_delete" object.id %}" class="me-2">Delete</a>
+                <div class="d-flex mt-2">
+                    <p class='me-2 text-secondary mb-2'>
+                        {% if object.content_type.model == "movie" %}
+                            <a href="{% url 'watch:movie_checkin_list' object.content_object.id object.user.username %}"
+                                class="text-muted">
+                                {% if checkin_count > 0 %}
+                                    {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
+                                {% else %}
+                                    {{ object.timestamp|date:"Y.m.d H:i" }}
+                                {% endif %}
+                            </a>
+                        {% else %}
+                            <a href="{% url 'watch:series_checkin_list' object.content_object.id object.user.username %}"
+                                class="text-muted">
+                                {% if checkin_count > 0 %}
+                                    {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
+                                {% else %}
+                                    {{ object.timestamp|date:"Y.m.d H:i" }}
+                                {% endif %}
+                            </a>
                         {% endif %}
-                    </span>
+                    </p>
+                    {% if object.user == request.user %}
+                        <a href="{% url "watch:watch_checkin_update" object.id %}" class="me-2">Edit</a>
+                        <a href="{% url "watch:watch_checkin_delete" object.id %}" class="me-2">Delete</a>
+                    {% endif %}
                 </div>
                 <button id="show-comments"
                         class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>

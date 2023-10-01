@@ -465,22 +465,20 @@
                     {% endif %}
                 </div>
                 <span class="d-flex mt-2">
-                    <p class='me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }}</p>
+                    <p class='mb-2 me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }}</p>
                     {% if object.user == request.user %}
                         <a href="{% url "write:repost_update" object.pk %}" class="me-2">Edit</a>
                         <a href="{% url "write:repost_delete" object.pk %}" class="me-2">Delete</a>
                     {% endif %}
                 </span>
-                <div class="mt-2">
-                    <button id="show-comments"
-                            class="btn btn-primary btn-sm mx-auto toggle-button">
-                        Comments ({{ comments|length }})
-                    </button>
-                    <button id="show-reposts"
-                            class="btn btn-secondary btn-sm mx-auto toggle-button">
-                        Reposts ({{ object.get_reposts.count }})
-                    </button>
-                </div>
+                <button id="show-comments"
+                        class="btn btn-primary btn-sm mx-auto toggle-button">
+                    Comments ({{ comments|length }})
+                </button>
+                <button id="show-reposts"
+                        class="btn btn-secondary btn-sm mx-auto toggle-button">
+                    Reposts ({{ object.get_reposts.count }})
+                </button>
                 <hr>
                 <div id="comments-section">
                     {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='repost' %}
