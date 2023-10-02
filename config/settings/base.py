@@ -278,7 +278,6 @@ MARKDOWNIFY = {
             "extra",
             "nl2br",
             "codehilite",
-            "admonition",
         ],
     }
 }

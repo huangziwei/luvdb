@@ -1,35 +1,32 @@
-window.addEventListener('DOMContentLoaded', (event) => {
-    // admonition hack
-    document.querySelectorAll('.admonition.hide .admonition-title').forEach(titleElement => {
-        titleElement.addEventListener('click', () => {
-            titleElement.nextElementSibling.style.display = titleElement.nextElementSibling.style.display === 'none' ? 'block' : 'none';
-        });
-    });
-
+window.addEventListener("DOMContentLoaded", (event) => {
     // spoiler hack
-    document.querySelectorAll('a[href$="/spoiler"], a[href$="/s"]').forEach(a => {
-        a.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (a.classList.contains('revealed')) {
-                a.classList.remove('revealed');
-            } else {
-                a.classList.add('revealed');
-            }
+    document
+        .querySelectorAll('a[href$="/spoiler"], a[href$="/s"]')
+        .forEach((a) => {
+            a.addEventListener("click", (e) => {
+                e.preventDefault();
+                if (a.classList.contains("revealed")) {
+                    a.classList.remove("revealed");
+                } else {
+                    a.classList.add("revealed");
+                }
+            });
         });
-    });
 
     // citation hack
-    document.querySelectorAll('a[href$="/citation"], a[href$="/c"]').forEach(a => {
-        // Create a new 'cite' element
-        const cite = document.createElement('cite');
-        cite.textContent = a.textContent;
-        
-        // Replace the 'a' element with the 'cite' element
-        a.parentNode.replaceChild(cite, a);
-    });
+    document
+        .querySelectorAll('a[href$="/citation"], a[href$="/c"]')
+        .forEach((a) => {
+            // Create a new 'cite' element
+            const cite = document.createElement("cite");
+            cite.textContent = a.textContent;
+
+            // Replace the 'a' element with the 'cite' element
+            a.parentNode.replaceChild(cite, a);
+        });
 
     // citation hack continue: Get all cite elements
-    var cites = document.getElementsByTagName('cite');
+    var cites = document.getElementsByTagName("cite");
 
     // Loop through each cite element
     for (var i = 0; i < cites.length; i++) {
@@ -37,72 +34,73 @@ window.addEventListener('DOMContentLoaded', (event) => {
         var previousElement = cites[i].parentElement;
         if (previousElement) {
             // Calculate the difference in their vertical positions
-            var offset = previousElement.getBoundingClientRect().top - cites[i].getBoundingClientRect().top;
-            
+            var offset =
+                previousElement.getBoundingClientRect().top -
+                cites[i].getBoundingClientRect().top;
+
             // Apply a translateY transform to align the cite with the previous element
-            cites[i].style.transform = 'translateY(' + offset + 'px)';
+            cites[i].style.transform = "translateY(" + offset + "px)";
         }
     }
 
     function updateIframeHeight() {
-        var iframes = document.querySelectorAll('iframe');
-      
-        iframes.forEach(function (iframe) {
-          var originalWidth = iframe.getAttribute('width');
-          var originalHeight = iframe.getAttribute('height');
-          
-          if (originalWidth && originalHeight) {
-            var aspectRatio = originalHeight / originalWidth;
-            var currentWidth = iframe.clientWidth;
-            var newHeight = currentWidth * aspectRatio;
-            iframe.style.height = newHeight + 'px';
-          }
-        });
-      }
-      
-      // Update the iframe height when the page is loaded
-      updateIframeHeight();
-      
-      // Update the iframe height when the window is resized
-      window.addEventListener('resize', updateIframeHeight);
+        var iframes = document.querySelectorAll("iframe");
 
+        iframes.forEach(function (iframe) {
+            var originalWidth = iframe.getAttribute("width");
+            var originalHeight = iframe.getAttribute("height");
+
+            if (originalWidth && originalHeight) {
+                var aspectRatio = originalHeight / originalWidth;
+                var currentWidth = iframe.clientWidth;
+                var newHeight = currentWidth * aspectRatio;
+                iframe.style.height = newHeight + "px";
+            }
+        });
+    }
+
+    // Update the iframe height when the page is loaded
+    updateIframeHeight();
+
+    // Update the iframe height when the window is resized
+    window.addEventListener("resize", updateIframeHeight);
 });
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     let usernames = [];
     let tags = [];
     let lastDropdownTriggerPos = -1;
 
     // Fetch usernames
     fetch("/u/get_followed_usernames/")
-    .then(response => response.json())
-    .then(data => {
-        usernames = data.usernames_with_display_names;
-    });
+        .then((response) => response.json())
+        .then((data) => {
+            usernames = data.usernames_with_display_names;
+        });
 
     // Fetch tags
     fetch("/u/get_user_tags/")
-    .then(response => response.json())
-    .then(data => {
-        tags = data.tags;
-    });
+        .then((response) => response.json())
+        .then((data) => {
+            tags = data.tags;
+        });
 
     const textInput = document.getElementById("text-input");
     if (textInput !== null) {
-        textInput.addEventListener("keyup", function(e) {
+        textInput.addEventListener("keyup", function (e) {
             const value = textInput.value;
             let lastSymbol = null;
             let lastPos = -1;
 
             // Check for '@' and '#'
-            const lastAt = value.lastIndexOf('@');
-            const lastHash = value.lastIndexOf('#');
+            const lastAt = value.lastIndexOf("@");
+            const lastHash = value.lastIndexOf("#");
 
             if (lastAt > lastHash) {
-                lastSymbol = '@';
+                lastSymbol = "@";
                 lastPos = lastAt;
             } else if (lastHash > lastAt) {
-                lastSymbol = '#';
+                lastSymbol = "#";
                 lastPos = lastHash;
             }
 
@@ -112,13 +110,15 @@ document.addEventListener("DOMContentLoaded", function() {
             }
 
             // Check the current last @ or # in the text
-            const currentLastAt = textInput.value.lastIndexOf('@');
-            const currentLastHash = textInput.value.lastIndexOf('#');
+            const currentLastAt = textInput.value.lastIndexOf("@");
+            const currentLastHash = textInput.value.lastIndexOf("#");
             const currentLastPos = Math.max(currentLastAt, currentLastHash);
-            
+
             // Remove dropdown if the last trigger symbol is different from the current last symbol
             if (lastDropdownTriggerPos == currentLastPos) {
-                const existingDropdown = document.getElementById("autocomplete-dropdown");
+                const existingDropdown = document.getElementById(
+                    "autocomplete-dropdown"
+                );
                 if (existingDropdown) {
                     existingDropdown.remove();
                 }
@@ -128,29 +128,35 @@ document.addEventListener("DOMContentLoaded", function() {
             const filter = value.slice(lastPos + 1).toLowerCase();
             let filteredItems = [];
 
-            if (lastSymbol === '@') {
-                filteredItems = usernames.filter(user => user.username.toLowerCase().startsWith(filter) || (user.display_name && user.display_name.toLowerCase().startsWith(filter)));
-            } else if (lastSymbol === '#') {
-                filteredItems = tags.filter(tag => tag.toLowerCase().startsWith(filter));
+            if (lastSymbol === "@") {
+                filteredItems = usernames.filter(
+                    (user) =>
+                        user.username.toLowerCase().startsWith(filter) ||
+                        (user.display_name &&
+                            user.display_name.toLowerCase().startsWith(filter))
+                );
+            } else if (lastSymbol === "#") {
+                filteredItems = tags.filter((tag) =>
+                    tag.toLowerCase().startsWith(filter)
+                );
             }
 
             showDropdown(filteredItems, filter, lastPos + 1, lastSymbol); // Pass the position of the last symbol
         });
-        
 
-        textInput.addEventListener("keydown", function(e) {
+        textInput.addEventListener("keydown", function (e) {
             let lastSymbol = null;
             const value = textInput.value;
-            const lastAt = value.lastIndexOf('@');
-            const lastHash = value.lastIndexOf('#');
+            const lastAt = value.lastIndexOf("@");
+            const lastHash = value.lastIndexOf("#");
             const dropdown = document.getElementById("autocomplete-dropdown");
-        
+
             if (lastAt > lastHash) {
-                lastSymbol = '@';
+                lastSymbol = "@";
             } else if (lastHash > lastAt) {
-                lastSymbol = '#';
+                lastSymbol = "#";
             }
-        
+
             if (e.key === "ArrowDown") {
                 currentSelection++;
                 highlightSelection();
@@ -158,7 +164,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 currentSelection--;
                 highlightSelection();
             } else if (e.key === "Enter") {
-                if (dropdown && lastSymbol) {  // Only prevent default if dropdown is visible and a symbol is present
+                if (dropdown && lastSymbol) {
+                    // Only prevent default if dropdown is visible and a symbol is present
                     e.preventDefault();
                     selectItem(lastSymbol);
                 }
@@ -166,7 +173,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
-    
 });
 
 // Declare currentSelection at the top of your script
@@ -174,7 +180,7 @@ let currentSelection = -1;
 
 function getCaretCoordinates(element, upToChar) {
     const text = element.value.substring(0, upToChar);
-    const mirrorDiv = document.createElement('div');
+    const mirrorDiv = document.createElement("div");
     const computed = window.getComputedStyle(element);
     const lineHeight = parseFloat(computed.lineHeight);
 
@@ -182,32 +188,30 @@ function getCaretCoordinates(element, upToChar) {
     mirrorDiv.style.width = computed.width;
     mirrorDiv.style.height = computed.height;
     mirrorDiv.style.font = computed.font;
-    mirrorDiv.style.whiteSpace = 'pre-wrap';
-    mirrorDiv.style.wordWrap = 'break-word';
+    mirrorDiv.style.whiteSpace = "pre-wrap";
+    mirrorDiv.style.wordWrap = "break-word";
     mirrorDiv.style.padding = computed.padding;
     mirrorDiv.style.border = computed.border;
-    mirrorDiv.style.visibility = 'hidden';
-    mirrorDiv.style.position = 'absolute';
-    mirrorDiv.style.zIndex = '-9999';
+    mirrorDiv.style.visibility = "hidden";
+    mirrorDiv.style.position = "absolute";
+    mirrorDiv.style.zIndex = "-9999";
     mirrorDiv.textContent = text;
 
     document.body.appendChild(mirrorDiv);
 
-    const span = document.createElement('span');
-    span.textContent = element.value.substring(upToChar) || '.';  // Use '.' as a placeholder for empty space
+    const span = document.createElement("span");
+    span.textContent = element.value.substring(upToChar) || "."; // Use '.' as a placeholder for empty space
     mirrorDiv.appendChild(span);
 
     const coordinates = {
         x: span.offsetLeft,
-        y: span.offsetTop
+        y: span.offsetTop,
     };
 
     document.body.removeChild(mirrorDiv);
 
     return coordinates;
 }
-
-
 
 let lastScrollTop = 0; // Variable to store the last scroll position
 
@@ -218,10 +222,11 @@ function highlightSelection() {
     const options = dropdown.querySelectorAll("div");
     if (options.length === 0) return;
 
-    const isDarkMode = document.documentElement.getAttribute("data-bs-theme") === "dark";
+    const isDarkMode =
+        document.documentElement.getAttribute("data-bs-theme") === "dark";
 
     // Reset all options to default background
-    options.forEach(option => {
+    options.forEach((option) => {
         if (isDarkMode) {
             option.classList.add("bg-dark");
             option.classList.remove("bg-light"); // Remove this if you don't use bg-light in light mode
@@ -230,7 +235,6 @@ function highlightSelection() {
             option.classList.add("bg-light"); // Add this if you use bg-light in light mode
         }
     });
-
 
     // Adjust current selection within bounds
     if (currentSelection < 0) {
@@ -252,7 +256,8 @@ function highlightSelection() {
     if (selectedOption.offsetTop < scrollTop) {
         dropdown.scrollTop = selectedOption.offsetTop;
     } else if (selectedOption.offsetTop + optionHeight > scrollBottom) {
-        dropdown.scrollTop = selectedOption.offsetTop + optionHeight - dropdown.clientHeight;
+        dropdown.scrollTop =
+            selectedOption.offsetTop + optionHeight - dropdown.clientHeight;
     }
 
     lastScrollTop = dropdown.scrollTop; // Store the last scroll position
@@ -276,14 +281,15 @@ function selectItem(symbol) {
         const textInput = document.getElementById("text-input");
         const value = textInput.value;
         const lastSymbolPos = value.lastIndexOf(symbol);
-        textInput.value = value.slice(0, lastSymbolPos) + symbol + selectedItem + ' ';
+        textInput.value =
+            value.slice(0, lastSymbolPos) + symbol + selectedItem + " ";
         dropdown.remove();
         currentSelection = -1;
     }
 }
 
 function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
-    if (items.length === 0) return; 
+    if (items.length === 0) return;
     // Remove existing dropdown if any
     const existingDropdown = document.getElementById("autocomplete-dropdown");
     if (existingDropdown) {
@@ -294,7 +300,8 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
     const dropdown = document.createElement("div");
     dropdown.id = "autocomplete-dropdown";
     dropdown.style.position = "absolute";
-    const isDarkMode = document.documentElement.getAttribute("data-bs-theme") === "dark";
+    const isDarkMode =
+        document.documentElement.getAttribute("data-bs-theme") === "dark";
     if (isDarkMode) {
         dropdown.classList.add("bg-dark");
         dropdown.classList.remove("bg-light"); // Remove this if you don't use bg-light in light mode
@@ -310,7 +317,7 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
     // Get line height from computed styles
     const computed = window.getComputedStyle(textInput);
     const lineHeight = parseFloat(computed.lineHeight);
-    
+
     // Position dropdown
     dropdown.style.left = `${textAreaRect.left + x}px`;
     dropdown.style.top = `${textAreaRect.top + y + lineHeight}px`;
@@ -318,10 +325,12 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
     items.forEach((item, index) => {
         const option = document.createElement("div");
         let displayText;
-        if (lastSymbol === '@') {
-            displayText = item.display_name ? `${item.display_name} (${item.username})` : item.username;
-        } else if (lastSymbol === '#') {
-            displayText = item;  // Assuming 'item' is a string for tags
+        if (lastSymbol === "@") {
+            displayText = item.display_name
+                ? `${item.display_name} (${item.username})`
+                : item.username;
+        } else if (lastSymbol === "#") {
+            displayText = item; // Assuming 'item' is a string for tags
         }
 
         option.innerText = displayText;
@@ -333,7 +342,7 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
             option.style.color = ""; // Reset background
             option.style.paddingLeft = "5px"; // Reset padding
         }
-        option.addEventListener("click", function() {
+        option.addEventListener("click", function () {
             // Append selected username to textarea
             textInput.value += item.username + " ";
             dropdown.remove();
@@ -344,4 +353,3 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
     document.body.appendChild(dropdown);
     restoreScrollPosition(); // Restore the last scroll position
 }
-
