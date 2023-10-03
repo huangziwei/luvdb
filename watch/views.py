@@ -1232,6 +1232,25 @@ class GenericCheckInAllListView(ListView):
             else:
                 checkins = checkins.filter(status=status)
 
+        # Adding count of check-ins for each movie or series
+        user_checkin_counts = (
+            WatchCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            .values("user__username")
+            .annotate(total_checkins=Count("id") - 1)
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            item["user__username"]: item["total_checkins"]
+            for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with total_checkins for each user
+        for checkin in checkins:
+            checkin.total_checkins = user_checkin_count_dict.get(
+                checkin.user.username, 0
+            )
+
         return checkins
 
     def get_context_data(self, **kwargs):

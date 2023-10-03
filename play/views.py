@@ -437,9 +437,11 @@ class PlatformDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["sorted_games"] = self.object.games.all().annotate(
-            earliest_release_date=Min("region_release_dates__release_date")
-            ).order_by("earliest_release_date")
+        context["sorted_games"] = (
+            self.object.games.all()
+            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("earliest_release_date")
+        )
         return context
 
 
@@ -649,6 +651,25 @@ class GameCheckInAllListView(ListView):
             else:
                 checkins = checkins.filter(status=status)
 
+        # Get the count of check-ins for each user for this game
+        user_checkin_counts = (
+            GameCheckIn.objects.filter(game=self.kwargs["game_id"])
+            .values("user__username")
+            .annotate(total_checkins=Count("id") - 1)
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            item["user__username"]: item["total_checkins"]
+            for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with total_checkins for each user
+        for checkin in checkins:
+            checkin.total_checkins = user_checkin_count_dict.get(
+                checkin.user.username, 0
+            )
+
         return checkins
 
     def get_context_data(self, **kwargs):
@@ -710,6 +731,22 @@ class GameCheckInUserListView(ListView):
                 checkins = checkins.filter(Q(status="playing") | Q(status="replaying"))
             else:
                 checkins = checkins.filter(status=status)
+
+        # Count the check-ins for each game for this user
+        user_checkin_counts = (
+            GameCheckIn.objects.filter(user=profile_user)
+            .values("game")
+            .annotate(total_checkins=Count("id"))
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            item["game"]: item["total_checkins"] for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with checkin_count for each game
+        for checkin in checkins:
+            checkin.checkin_count = user_checkin_count_dict.get(checkin.game_id, 0) - 1
 
         return checkins
 

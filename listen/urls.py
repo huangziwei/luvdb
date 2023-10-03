@@ -6,6 +6,7 @@ from .views import (
     AudiobookUpdateView,
     GenericCheckInAllListView,
     GenericCheckInListView,
+    GenericCheckInUserListView,
     GenreAutocomplete,
     GenreDetailView,
     LabelAutocomplete,
@@ -15,7 +16,6 @@ from .views import (
     ListenCheckInDeleteView,
     ListenCheckInDetailView,
     ListenCheckInUpdateView,
-    ListenCheckInUserListView,
     ListenListAllView,
     ListenListView,
     PodcastCreateView,
@@ -131,7 +131,7 @@ urlpatterns = [
     ),
     path(
         "<str:username>/checkins/",
-        ListenCheckInUserListView.as_view(),
+        GenericCheckInUserListView.as_view(),
         name="listen_checkin_user_list",
     ),
     # recent

@@ -446,7 +446,6 @@ class BookDetailView(DetailView):
 
         context["checkins"] = checkins
 
-        # Get the count of check-ins for each user for this series
         user_checkin_counts = (
             ReadCheckIn.objects.filter(
                 content_type=content_type.id, object_id=self.object.id
@@ -1338,6 +1337,24 @@ class GenericCheckInAllListView(ListView):
             else:
                 checkins = checkins.filter(status=status)
 
+        user_checkin_counts = (
+            ReadCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            .values("user__username")
+            .annotate(total_checkins=Count("id") - 1)
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            item["user__username"]: item["total_checkins"]
+            for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with total_checkins for each user
+        for checkin in checkins:
+            checkin.total_checkins = user_checkin_count_dict.get(
+                checkin.user.username, 0
+            )
+
         return checkins
 
     def get_context_data(self, **kwargs):
@@ -1416,6 +1433,25 @@ class GenericCheckInUserListView(ListView):
                 checkins = checkins.filter(Q(status="reading") | Q(status="rereading"))
             else:
                 checkins = checkins.filter(status=status)
+
+        # Adding count of check-ins for each book or issue
+        user_checkin_counts = (
+            ReadCheckIn.objects.filter(user=profile_user)
+            .values("content_type", "object_id")
+            .annotate(total_checkins=Count("id") - 1)
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            (item["content_type"], item["object_id"]): item["total_checkins"]
+            for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with total_checkins for each content-object
+        for checkin in checkins:
+            checkin.checkin_count = user_checkin_count_dict.get(
+                (checkin.content_type_id, checkin.object_id), 0
+            )
 
         return checkins
 

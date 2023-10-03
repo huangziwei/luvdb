@@ -961,7 +961,7 @@ class ListenListAllView(ListView):
         return context
 
 
-class ListenCheckInUserListView(ListView):
+class GenericCheckInUserListView(ListView):
     """
     All latest check-ins from a given user of all audio tracks and albums.
     """
@@ -996,6 +996,25 @@ class ListenCheckInUserListView(ListView):
         status = self.request.GET.get("status", "")
         if status:
             checkins = checkins.filter(status=status)
+
+        # Adding count of check-ins for each book or issue
+        user_checkin_counts = (
+            ListenCheckIn.objects.filter(user=profile_user)
+            .values("content_type", "object_id")
+            .annotate(total_checkins=Count("id") - 1)
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            (item["content_type"], item["object_id"]): item["total_checkins"]
+            for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with total_checkins for each content-object
+        for checkin in checkins:
+            checkin.checkin_count = user_checkin_count_dict.get(
+                (checkin.content_type_id, checkin.object_id), 0
+            )
 
         return checkins
 
@@ -1525,6 +1544,24 @@ class GenericCheckInAllListView(ListView):
             else:
                 checkins = checkins.filter(status=status)
 
+        user_checkin_counts = (
+            ListenCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            .values("user__username")
+            .annotate(total_checkins=Count("id") - 1)
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            item["user__username"]: item["total_checkins"]
+            for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with total_checkins for each user
+        for checkin in checkins:
+            checkin.total_checkins = user_checkin_count_dict.get(
+                checkin.user.username, 0
+            )
+
         return checkins
 
     def get_context_data(self, **kwargs):
@@ -1563,82 +1600,6 @@ class GenericCheckInAllListView(ListView):
                 )
                 roles[audiobook_role.role.name].append(
                     (audiobook_role.person, alt_name_or_person_name)
-                )
-            context["roles"] = roles
-
-        return context
-
-
-class GenericCheckInUserListView(ListView):
-    """
-    All latest check-ins from a given user of all movies and series.
-    """
-
-    model = ListenCheckIn
-    template_name = "listen/listen_checkin_list_user.html"
-    context_object_name = "checkins"
-
-    def get_queryset(self):
-        profile_user = get_object_or_404(User, username=self.kwargs["username"])
-
-        latest_checkin_subquery = ListenCheckIn.objects.filter(
-            user=profile_user,
-            content_type=OuterRef("content_type"),
-            object_id=OuterRef("object_id"),
-        ).order_by("-timestamp")
-
-        checkins = (
-            ListenCheckIn.objects.filter(user=profile_user)
-            .annotate(
-                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
-            )
-            .filter(timestamp=F("latest_checkin"))
-        )
-
-        order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
-        if order == "timestamp":
-            checkins = checkins.order_by("timestamp")
-        else:
-            checkins = checkins.order_by("-timestamp")
-
-        status = self.request.GET.get("status")
-        if status:
-            if status == "listened_relistened":
-                checkins = checkins.filter(
-                    Q(status="listened") | Q(status="relistened")
-                )
-            elif status == "listening_relistening":
-                checkins = checkins.filter(
-                    Q(status="listening") | Q(status="relistening")
-                )
-            else:
-                checkins = checkins.filter(status=status)
-
-        return checkins
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        profile_user = get_object_or_404(User, username=self.kwargs["username"])
-        context["profile_user"] = profile_user
-
-        context["order"] = self.request.GET.get(
-            "order", "-timestamp"
-        )  # Default is '-timestamp'
-
-        context["status"] = self.request.GET.get("status", "")
-
-        context["model_name"] = self.kwargs.get("model_name", "release")
-        if context["model_name"] == "release":
-            roles = {}
-            for release_role in release.releaserole_set.all():
-                if release_role.role.name not in roles:
-                    roles[release_role.role.name] = []
-                alt_name_or_person_name = (
-                    release_role.alt_name or release_role.person.name
-                )
-                roles[release_role.role.name].append(
-                    (release_role.person, alt_name_or_person_name)
                 )
             context["roles"] = roles
 

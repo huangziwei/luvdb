@@ -3,11 +3,10 @@
 {% load markdownify %}
 {% load parse_activity_type %}
 {% block content %}
-<div class="container">
-    <div class="row">
-        <!--left column-->
-        <div class="col-12 col-md-8">
-            <div class="row">
+    <div class="container">
+        <div class="row">
+            <!--left column-->
+            <div class="col-12 col-md-8">
                 <div class="col-sm-12">
                     <h4>
                         All Watching Check-Ins from
@@ -16,24 +15,24 @@
                     <span class='d-flex mb-3'>
                         <div class="me-3">
                             <a href="?order=timestamp&status={{ status }}"
-                               class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+                                class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
                             <a href="?order=-timestamp&status={{ status }}"
-                               class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                                class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
                         </div>
                         <div class="me-3">|</div>
                         <div class="me-3">
                             <a href="?status=&order={{ order }}"
-                               class="btn btn-sm btn-outline-secondary mb-1">All</a>
+                                class="btn btn-sm btn-outline-secondary mb-1">All</a>
                             <a href="?status=to_watch&order={{ order }}"
-                               class="btn btn-sm btn-info mb-1">To Watch</a>
+                                class="btn btn-sm btn-info mb-1">To Watch</a>
                             <a href="?status=watching_rewatching&order={{ order }}"
-                               class="btn btn-sm btn-primary mb-1">(Re)Watching</a>
+                                class="btn btn-sm btn-primary mb-1">(Re)Watching</a>
                             <a href="?status=watched_rewatched&order={{ order }}"
-                               class="btn btn-sm btn-success mb-1">(Re)Watched</a>
+                                class="btn btn-sm btn-success mb-1">(Re)Watched</a>
                             <a href="?status=paused&order={{ order }}"
-                               class="btn btn-sm btn-warning mb-1">Paused</a>
+                                class="btn btn-sm btn-warning mb-1">Paused</a>
                             <a href="?status=abandoned&order={{ order }}"
-                               class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                                class="btn btn-sm btn-danger mb-1">Abandoned</a>
                         </div>
                     </span>
                 </div>
@@ -43,10 +42,10 @@
                     {% for checkin in checkins %}
                         <div class="col-sm-12 mt-4">
                             <div class="activity-item mb-3"
-                                 data-activity-type="{{ checkin.activity_type }}">
+                                    data-activity-type="{{ checkin.activity_type }}">
                                 <div class="d-flex flex-wrap align-items-center">
                                     <a href="{% url 'accounts:detail' checkin.user.username %}"
-                                       class="text-decoration-none hover-username me-1">
+                                        class="text-decoration-none hover-username me-1">
                                         {{ checkin.user.display_name | default:checkin.user.username }}
                                         <span class="username">@{{ checkin.user.username }}</span>
                                     </a>
@@ -66,14 +65,14 @@
                                         {% if checkin.content_object.poster %}
                                             {% if checkin.content_object.poster_sens %}
                                                 <img src="{{ checkin.content_object.poster.url }}"
-                                                     alt="{{ checkin.content_object.title }} cover"
-                                                     style="width: 100%"
-                                                     class="img-fluid blur"
-                                                     onclick="this.classList.toggle('blur')">
+                                                        alt="{{ checkin.content_object.title }} cover"
+                                                        style="width: 100%"
+                                                        class="img-fluid blur"
+                                                        onclick="this.classList.toggle('blur')">
                                             {% else %}
                                                 <img src="{{ checkin.content_object.poster.url }}"
-                                                     alt="{{ checkin.content_object.title }} cover"
-                                                     style="width: 100%">
+                                                        alt="{{ checkin.content_object.title }} cover"
+                                                        style="width: 100%">
                                             {% endif %}
                                         {% else %}
                                             <p class="no-cover-text">No poster</p>
@@ -82,12 +81,12 @@
                                     <div class="flex-grow-1 ms-3">
                                         {% if checkin.content_type.model == 'movie' %}
                                             <a href=" {% url 'watch:movie_detail' checkin.content_object.id %} "
-                                               class="text-decoration-none hover-username">
+                                                class="text-decoration-none hover-username">
                                                 <h5>{{ checkin.content_object.title }}</h5>
                                             </a>
                                         {% elif checkin.content_type.model == 'series' %}
                                             <a href=" {% url 'watch:series_detail' checkin.content_object.id %} "
-                                               class="text-decoration-none hover-username">
+                                                class="text-decoration-none hover-username">
                                                 <h5>{{ checkin.content_object.title }}</h5>
                                             </a>
                                         {% endif %}
@@ -140,38 +139,40 @@
                                         {% endif %}
                                     </div>
                                 </div>
-                                <div class="d-flex mt-3">
+                                <div class="d-flex mt-2">
                                     <p class="me-2">
                                         {% if checkin.content_type.model == 'movie' %}
                                             <a href="{% url 'watch:movie_checkin_list' checkin.content_object.id checkin.user.username %}"
-                                               class="text-decoration-none text-secondary">
-                                                {{ checkin.timestamp|date:"Y.m.d H:i" }}
+                                                class="text-decoration-none text-secondary">
+                                                <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
+                                                <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>                                            
                                             </a>
                                         {% elif checkin.content_type.model == 'series' %}
                                             <a href="{% url 'watch:series_checkin_list' checkin.content_object.id checkin.user.username %}"
-                                               class="text-decoration-none text-secondary">
-                                                {{ checkin.timestamp|date:"Y.m.d H:i" }}
+                                                class="text-decoration-none text-secondary">
+                                                <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
+                                                <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>
                                             </a>
                                         {% endif %}
                                     </p>
                                     {% if checkin.comments_enabled %}
                                         <p class="ms-2 me-2">
                                             <a href="{% url 'watch:watch_checkin_detail' checkin.id %}"
-                                               class="text-decoration-none">Reply</a>
+                                                class="text-decoration-none">Reply</a>
                                         </p>
                                     {% endif %}
                                     <p class="ms-2 me-2">
                                         <a href="{% url 'watch:watch_checkin_detail' checkin.id %}?repost=true"
-                                           class="text-decoration-none">Repost</a>
+                                            class="text-decoration-none">Repost</a>
                                     </p>
                                     {% if checkin.user == request.user %}
                                         <p class="ms-2 me-2">
                                             <a href="{% url 'watch:watch_checkin_update' checkin.id %}"
-                                               class="text-decoration-none">Edit</a>
+                                                class="text-decoration-none">Edit</a>
                                         </p>
                                         <p class="ms-2 me-2">
                                             <a href="{% url 'watch:watch_checkin_delete' checkin.id %}"
-                                               class="text-decoration-none">Delete</a>
+                                                class="text-decoration-none">Delete</a>
                                         </p>
                                     {% endif %}
                                 </div>
@@ -186,5 +187,4 @@
             </div>
         </div>
     </div>
-</div>
 {% endblock content %}

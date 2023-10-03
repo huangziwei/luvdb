@@ -39,8 +39,6 @@
                         </div>
                     </span>
                 </div>
-                <!-- Here goes the replaced content -->
-                <!-- Assumption: 'checkins' is the context variable containing the check-ins for the user -->
                 {% if profile_user.is_public or request.user.is_authenticated %}
                     {% for checkin in checkins %}
                         {% if checkin.user.is_public or checkin.user == request.user or request.user.is_authenticated %}
@@ -130,22 +128,24 @@
                                             {% endif %}
                                             <div>
                                                 {% if checkin.content_object.publication_date %}
-                                                    Year: {{ checkin.content_object.publication_date|slice:":4" }}
+                                                    Date: {{ checkin.content_object.publication_date }}
                                                 {% endif %}
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex mt-3">
+                                    <div class="d-flex mt-2">
                                         <p class="me-2">
                                             {% if checkin.content_type.model == 'book' %}
                                                 <a href="{% url 'read:book_checkin_list' checkin.content_object.id checkin.user.username %}"
-                                                   class="text-decoration-none text-secondary">
-                                                    {{ checkin.timestamp|date:"Y.m.d H:i" }}
+                                                class="text-decoration-none text-secondary">
+                                                    <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
+                                                    <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>
                                                 </a>
                                             {% elif checkin.content_type.model == 'issue' %}
                                                 <a href="{% url 'read:issue_checkin_list' checkin.content_object.periodical.id checkin.content_object.id checkin.user.username %}"
-                                                   class="text-decoration-none text-secondary">
-                                                    {{ checkin.timestamp|date:"Y.m.d H:i" }}
+                                                class="text-decoration-none text-secondary">
+                                                    <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
+                                                    <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>
                                                 </a>
                                             {% endif %}
                                         </p>
