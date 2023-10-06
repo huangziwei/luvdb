@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.db.models import Count, Min, OuterRef, Q, Subquery
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -422,11 +422,22 @@ def export_game_data(request):
 
 
 class RequestInvitationView(View):
+    BLACKLISTED_DOMAINS = ["example.com", "data-backup-store.com"]
+
     def post(self, request):
         email = request.POST.get("email")
         if email:
+            # Extract the domain from the email address
+            domain = email.split("@")[-1]
+
+            # Check if the domain is blacklisted
+            if domain in self.BLACKLISTED_DOMAINS:
+                return HttpResponseBadRequest("Email domain is blacklisted")
+
+            # Create or get the invitation request
             InvitationRequest.objects.get_or_create(email=email)
             return redirect("accounts:invitation_requested", email=email)
+
         return redirect("login")
 
 
