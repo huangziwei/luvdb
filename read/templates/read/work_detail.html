@@ -94,6 +94,11 @@
                                     <a href="{% url 'watch:series_detail' adaptation.id %}">{{ adaptation.title }}</a>
                                 {% endif %}
                                 {% if adaptation.release_date %}({{ adaptation.release_date }}){% endif %}
+                                {% with earliest_date=adaptation.region_release_dates.all|dictsort:"release_date"|first %}
+                                    {% if earliest_date %}
+                                        ({{ earliest_date.release_date }})
+                                    {% endif %}
+                                {% endwith %}
                             </li>
                         {% endfor %}
                     </ul>

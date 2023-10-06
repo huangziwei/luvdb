@@ -240,10 +240,22 @@ class WorkDetailView(DetailView):
 
         context["grouped_instances"] = language_grouped_instances
 
+        def get_adaptation_release_date(adaptation):
+            if isinstance(adaptation, Movie):
+                # Assuming you want to take the earliest release date for each movie
+                regional_dates = adaptation.region_release_dates.all().order_by(
+                    "release_date"
+                )
+                return regional_dates[0].release_date if regional_dates else None
+            elif isinstance(adaptation, Series):
+                return adaptation.release_date
+            else:
+                return None
+
         adaptations = list(Movie.objects.filter(based_on=self.object)) + list(
             Series.objects.filter(based_on=self.object)
         )
-        adaptations.sort(key=lambda x: x.release_date)
+        adaptations.sort(key=lambda x: get_adaptation_release_date(x))
         context["adaptations"] = adaptations
 
         grouped_roles = {}
