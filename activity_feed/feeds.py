@@ -1,8 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.syndication.views import Feed
+from django.db.models import Q
 from django.http import Http404
 from django.urls import reverse
+
+from write.models import Say
 
 from .models import Activity
 
@@ -31,7 +34,22 @@ class UserActivityFeed(Feed):
         return f"Latest activities by {user.username} on LʌvDB"
 
     def items(self, user):
-        return Activity.objects.filter(user=user).order_by("-timestamp")[:25]
+        say_content_type = ContentType.objects.get_for_model(Say)
+
+        # IDs of Say objects that are direct mentions
+        direct_mention_say_ids = Say.objects.filter(is_direct_mention=True).values_list(
+            "id", flat=True
+        )
+
+        activities = (
+            Activity.objects.filter(user=user)
+            .exclude(
+                Q(content_type=say_content_type, object_id__in=direct_mention_say_ids)
+            )
+            .order_by("-timestamp")[:25]
+        )
+
+        return activities
 
     def item_title(self, activity):
         related_object = activity.content_object

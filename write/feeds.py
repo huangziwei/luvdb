@@ -36,7 +36,9 @@ class UserSayFeed(Feed):
         return f"Latest says by {user.username} on LʌvDB"
 
     def items(self, user):
-        return Say.objects.filter(user=user).order_by("-timestamp")[:25]
+        return Say.objects.filter(user=user, is_direct_mention=False).order_by(
+            "-timestamp"
+        )[:25]
 
     def item_title(self, say):
         return say.content  # Taking the first 50 characters.
