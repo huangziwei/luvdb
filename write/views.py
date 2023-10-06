@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -160,10 +161,12 @@ class SayListView(ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        self.user = get_object_or_404(
-            get_user_model(), username=self.kwargs["username"]
-        )
-        return Say.objects.filter(user=self.user).order_by("-timestamp")
+        if self.request.user.is_authenticated:
+            return Say.objects.filter(
+                Q(visible_to=self.request.user) | Q(is_direct_mention=False)
+            ).order_by("-timestamp")
+        else:
+            return Say.objects.filter(is_direct_mention=False).order_by("-timestamp")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -198,6 +201,12 @@ class SayListView(ListView):
 class SayDetailView(ShareDetailView):
     model = Say
     template_name = "write/say_detail.html"
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.is_direct_mention and self.request.user not in obj.visible_to.all():
+            raise Http404("You do not have permission to view this.")
+        return obj
 
 
 class SayCreateView(LoginRequiredMixin, CreateView):
@@ -643,7 +652,9 @@ class LuvListDeleteView(LoginRequiredMixin, DeleteView):
         return queryset.filter(user=self.request.user)
 
     def get_success_url(self):
-        return reverse_lazy("write:luvlist_list", args=[str(self.request.user.username)])
+        return reverse_lazy(
+            "write:luvlist_list", args=[str(self.request.user.username)]
+        )
 
 
 class LuvListUserListView(ListView):

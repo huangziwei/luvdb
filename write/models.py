@@ -30,6 +30,11 @@ def handle_tags(instance, content):
         instance.tags.add(tag_obj)
 
 
+def find_mentioned_users(content):
+    usernames = re.findall(r"@(\w+)", content)
+    return User.objects.filter(username__in=usernames)
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -193,6 +198,10 @@ class Say(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     reposts = GenericRelation(Repost)
 
+    # private say / direct mention
+    is_direct_mention = models.BooleanField(default=False)
+    visible_to = models.ManyToManyField(User, related_name="visible_says", blank=True)
+
     def get_absolute_url(self):
         return reverse("write:say_detail", args=[str(self.id)])
 
@@ -206,14 +215,27 @@ class Say(models.Model):
             return None
 
     def save(self, *args, **kwargs):
+        # Determine if the object is new (i.e., has no primary key)
         is_new = self.pk is None
+
+        if self.content.startswith("@"):
+            self.is_direct_mention = True
+            mentioned_users = find_mentioned_users(self.content)
+
+        # Call the parent class's save method to actually save the object
         super().save(*args, **kwargs)
+
+        if self.is_direct_mention:
+            self.visible_to.set(mentioned_users)
+            self.visible_to.add(self.user)
+
         if is_new:
             Activity.objects.create(
                 user=self.user,
                 activity_type="say",
                 content_object=self,
             )
+
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)

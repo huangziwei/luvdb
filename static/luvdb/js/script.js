@@ -1,29 +1,25 @@
 window.addEventListener("DOMContentLoaded", (event) => {
     // spoiler hack
-    document
-        .querySelectorAll('a[href$="/spoiler"], a[href$="/s"]')
-        .forEach((a) => {
-            a.addEventListener("click", (e) => {
-                e.preventDefault();
-                if (a.classList.contains("revealed")) {
-                    a.classList.remove("revealed");
-                } else {
-                    a.classList.add("revealed");
-                }
-            });
+    document.querySelectorAll('a[href$="/spoiler"], a[href$="/s"]').forEach((a) => {
+        a.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (a.classList.contains("revealed")) {
+                a.classList.remove("revealed");
+            } else {
+                a.classList.add("revealed");
+            }
         });
+    });
 
     // citation hack
-    document
-        .querySelectorAll('a[href$="/citation"], a[href$="/c"]')
-        .forEach((a) => {
-            // Create a new 'cite' element
-            const cite = document.createElement("cite");
-            cite.textContent = a.textContent;
+    document.querySelectorAll('a[href$="/citation"], a[href$="/c"]').forEach((a) => {
+        // Create a new 'cite' element
+        const cite = document.createElement("cite");
+        cite.textContent = a.textContent;
 
-            // Replace the 'a' element with the 'cite' element
-            a.parentNode.replaceChild(cite, a);
-        });
+        // Replace the 'a' element with the 'cite' element
+        a.parentNode.replaceChild(cite, a);
+    });
 
     // citation hack continue: Get all cite elements
     var cites = document.getElementsByTagName("cite");
@@ -34,9 +30,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
         var previousElement = cites[i].parentElement;
         if (previousElement) {
             // Calculate the difference in their vertical positions
-            var offset =
-                previousElement.getBoundingClientRect().top -
-                cites[i].getBoundingClientRect().top;
+            var offset = previousElement.getBoundingClientRect().top - cites[i].getBoundingClientRect().top;
 
             // Apply a translateY transform to align the cite with the previous element
             cites[i].style.transform = "translateY(" + offset + "px)";
@@ -116,9 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Remove dropdown if the last trigger symbol is different from the current last symbol
             if (lastDropdownTriggerPos == currentLastPos) {
-                const existingDropdown = document.getElementById(
-                    "autocomplete-dropdown"
-                );
+                const existingDropdown = document.getElementById("autocomplete-dropdown");
                 if (existingDropdown) {
                     existingDropdown.remove();
                 }
@@ -132,13 +124,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 filteredItems = usernames.filter(
                     (user) =>
                         user.username.toLowerCase().startsWith(filter) ||
-                        (user.display_name &&
-                            user.display_name.toLowerCase().startsWith(filter))
+                        (user.display_name && user.display_name.toLowerCase().startsWith(filter))
                 );
             } else if (lastSymbol === "#") {
-                filteredItems = tags.filter((tag) =>
-                    tag.toLowerCase().startsWith(filter)
-                );
+                filteredItems = tags.filter((tag) => tag.toLowerCase().startsWith(filter));
             }
 
             showDropdown(filteredItems, filter, lastPos + 1, lastSymbol); // Pass the position of the last symbol
@@ -222,8 +211,7 @@ function highlightSelection() {
     const options = dropdown.querySelectorAll("div");
     if (options.length === 0) return;
 
-    const isDarkMode =
-        document.documentElement.getAttribute("data-bs-theme") === "dark";
+    const isDarkMode = document.documentElement.getAttribute("data-bs-theme") === "dark";
 
     // Reset all options to default background
     options.forEach((option) => {
@@ -256,8 +244,7 @@ function highlightSelection() {
     if (selectedOption.offsetTop < scrollTop) {
         dropdown.scrollTop = selectedOption.offsetTop;
     } else if (selectedOption.offsetTop + optionHeight > scrollBottom) {
-        dropdown.scrollTop =
-            selectedOption.offsetTop + optionHeight - dropdown.clientHeight;
+        dropdown.scrollTop = selectedOption.offsetTop + optionHeight - dropdown.clientHeight;
     }
 
     lastScrollTop = dropdown.scrollTop; // Store the last scroll position
@@ -277,12 +264,14 @@ function selectItem(symbol) {
 
     const options = dropdown.querySelectorAll("div");
     if (currentSelection >= 0 && currentSelection < options.length) {
-        const selectedItem = options[currentSelection].innerText;
+        const selectedItem = options[currentSelection].username
+            ? options[currentSelection].username
+            : options[currentSelection].innerText;
+
         const textInput = document.getElementById("text-input");
         const value = textInput.value;
         const lastSymbolPos = value.lastIndexOf(symbol);
-        textInput.value =
-            value.slice(0, lastSymbolPos) + symbol + selectedItem + " ";
+        textInput.value = value.slice(0, lastSymbolPos) + symbol + selectedItem + " ";
         dropdown.remove();
         currentSelection = -1;
     }
@@ -300,8 +289,7 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
     const dropdown = document.createElement("div");
     dropdown.id = "autocomplete-dropdown";
     dropdown.style.position = "absolute";
-    const isDarkMode =
-        document.documentElement.getAttribute("data-bs-theme") === "dark";
+    const isDarkMode = document.documentElement.getAttribute("data-bs-theme") === "dark";
     if (isDarkMode) {
         dropdown.classList.add("bg-dark");
         dropdown.classList.remove("bg-light"); // Remove this if you don't use bg-light in light mode
@@ -326,9 +314,8 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
         const option = document.createElement("div");
         let displayText;
         if (lastSymbol === "@") {
-            displayText = item.display_name
-                ? `${item.display_name} (${item.username})`
-                : item.username;
+            displayText = item.display_name ? `${item.display_name} (${item.username})` : item.username;
+            option.username = item.username;
         } else if (lastSymbol === "#") {
             displayText = item; // Assuming 'item' is a string for tags
         }
