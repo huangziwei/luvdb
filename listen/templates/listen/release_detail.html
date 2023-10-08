@@ -89,6 +89,7 @@
                                     {% if object.release_date %}
                                         <div class="mb-1">
                                             <span class="text-muted">Date:</span> {{ object.release_date }}
+                                            {% if object.release_region  %}({{object.release_region}}){% endif %}
                                         </div>
                                     {% endif %}
                                     <div class="my-3">
