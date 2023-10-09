@@ -44,20 +44,20 @@ def vote(request, content_type, object_id, vote_type):
                 user=request.user,
                 value=Vote.UPVOTE,
             )
-    elif vote_type == "down":
-        if existing_vote:
-            if existing_vote.value == Vote.DOWNVOTE:
-                existing_vote.delete()
-            else:
-                existing_vote.value = Vote.DOWNVOTE
-                existing_vote.save()
-        else:
-            Vote.objects.create(
-                content_type=content_type,
-                object_id=obj.id,
-                user=request.user,
-                value=Vote.DOWNVOTE,
-            )
+    # elif vote_type == "down":
+    #     if existing_vote:
+    #         if existing_vote.value == Vote.DOWNVOTE:
+    #             existing_vote.delete()
+    #         else:
+    #             existing_vote.value = Vote.DOWNVOTE
+    #             existing_vote.save()
+    #     else:
+    #         Vote.objects.create(
+    #             content_type=content_type,
+    #             object_id=obj.id,
+    #             user=request.user,
+    #             value=Vote.DOWNVOTE,
+    #         )
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
 
