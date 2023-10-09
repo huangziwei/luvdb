@@ -21,7 +21,9 @@ def vote(request, content_type, object_id, vote_type):
 
     # Prevent users from voting on their own content
     if hasattr(obj, "user") and obj.user == request.user:
-        return HttpResponseForbidden("You cannot vote on your own content.")
+        return HttpResponseForbidden(
+            "Nice try! But no, you cannot vote on your own content."
+        )
 
     content_type = ContentType.objects.get_for_model(obj)
     existing_vote = Vote.objects.filter(
