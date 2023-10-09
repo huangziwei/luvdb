@@ -114,17 +114,11 @@
                                                     <span class="text-muted">Format:</span> {{ object.release_format }}
                                                 </div>
                                             {% endif %}
-                                            {% if object.release_region %}
-                                                <div class="mb-1">
-                                                    <span class="text-muted">Region:</span> {{ object.release_region }}
-                                                </div>
-                                            {% endif %}
                                             {% if object.release_length %}
                                                 <div class="mb-1">
                                                     <span class="text-muted">Length:</span> {{ object.release_length }}
                                                 </div>
                                             {% endif %}
-                                            <!--add series here-->
                                             {% if object.releaseingroup_set.all %}
                                                 <p>
                                                     <span class="text-muted">Other versions:</span>
