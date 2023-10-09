@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load url_filters %}
+{% block title %}Discover{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            {% include "discover/discover_nav.html" %}
+
+                        
+            <!-- Post -->
+            <div class="row mt-3">
+                <div class="col-12">  
+                    <h3>Posts</h3>
+                    <ol>
+                        {% for post in posts %}
+                            <li>   
+                                <div>
+                                    <a href="{% url 'discover:vote' 'post' post.id 'up' %}" class="me-1 text-muted">▲</a>
+                                    <a href="{% url 'write:post_detail' post.id %}">{{post.title}}</a>
+                                </div>
+                                <span class="d-flex">
+                                    <a href="{% url 'discover:vote' 'post' post.id 'down' %}" class="me-2 text-muted">▼</a>
+                                    <p class="me-2 text-muted">{{post.get_votes}} vote{% if post.get_votes > 1 %}s{% endif %}</p>
+                                    <p class="me-2 text-muted">
+                                        by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.username }}</a>
+                                    </p>
+                                    <p class="me-2 text-muted">{{ post.timestamp|timesince }}</p>
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

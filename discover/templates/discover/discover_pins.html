@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load url_filters %}
+{% block title %}Discover{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            {% include "discover/discover_nav.html" %}
+
+                        
+            <!-- Pins -->
+            <div class="row mt-3">
+                <!-- Pins -->
+                <div class="col-12">
+                    <h3>Pins</h3>
+                    <ol>
+                        {% for pin in pins %}
+                            <li>   
+                                <div>
+                                    
+                                    <a href="{% url 'discover:vote' 'pin' pin.id 'up' %}" class="me-1 text-muted">▲</a>
+                                    {% if pin.get_votes < 0 %}
+                                        <a href="{% url 'write:pin_detail' pin.id %}" class="text-muted" >{{pin.title}}</a>
+                                    {% else %}
+                                        <a href="{% url 'write:pin_detail' pin.id %}">{{pin.title}}</a>
+                                    {% endif %}
+                                    <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
+                                </div>
+                                <span class="d-flex">
+                                    <a href="{% url 'discover:vote' 'pin' pin.id 'down' %}" class="me-2 text-muted">▼</a>
+                                    <p class="me-2 text-muted">{{pin.get_votes}} vote{% if pin.get_votes > 1 %}s{% endif %}</p>
+                                    <p class="me-2 text-muted">
+                                        by <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.username }}</a>
+                                    </p>
+                                    <p class="me-2 text-muted">{{ pin.timestamp|timesince }}</p>
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                    <hr>
+                    <div id="refresh-box" class="hidden">
+                        <div class="loader">
+                            <svg class="circular-loader" viewBox="25 25 50 50">
+                                <circle class="loader-path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+                            </svg>
+                        </div>
+                    </div>                                        
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% for i in page_obj.paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <span class="current">{{ i }}</span>
+                                {% else %}
+                                    <a href="?page={{ i }}">{{ i }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

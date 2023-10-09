@@ -43,6 +43,7 @@ urlpatterns = [
     path("play/", include("play.urls")),
     path("listen/", include("listen.urls")),
     path("watch/", include("watch.urls")),
+    path("discover/", include("discover.urls")),
     path("", include("activity_feed.urls")),
     path("", include("write.urls")),
     path("search/", search_view, name="search"),

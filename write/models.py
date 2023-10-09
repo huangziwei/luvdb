@@ -16,6 +16,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from activity_feed.models import Activity
+from discover.models import Vote
 from notify.models import Notification
 from notify.views import create_mentions_notifications
 
@@ -162,6 +163,7 @@ class Post(models.Model):
     comments_enabled = models.BooleanField(default=True)
     tags = models.ManyToManyField(Tag, blank=True)
     reposts = GenericRelation(Repost)
+    votes = GenericRelation(Vote)
 
     def get_absolute_url(self):
         return reverse("write:post_detail", args=[str(self.id)])
@@ -174,6 +176,9 @@ class Post(models.Model):
             return activity.id
         except ObjectDoesNotExist:
             return None
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -251,6 +256,7 @@ class Pin(models.Model):
     comments_enabled = models.BooleanField(default=True)
     tags = models.ManyToManyField(Tag, blank=True)
     reposts = GenericRelation(Repost)
+    votes = GenericRelation(Vote)
 
     def get_absolute_url(self):
         return reverse("write:pin_detail", args=[str(self.id)])
@@ -263,6 +269,9 @@ class Pin(models.Model):
             return activity.id
         except ObjectDoesNotExist:
             return None
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
