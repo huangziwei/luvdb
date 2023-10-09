@@ -10,13 +10,12 @@
             <div class="col-12 col-md-7 left-column">
                 {% if feed_type == "public" %}
                     <span style="display: flex;">
-                        <p style="padding-right:0.5em">Say</p>
-                        |
+                        <p class="me-3">Say</p>
                         <a href="{% url 'write:post_create' %}">
-                            <p style="padding: 0 0.5em">Post</p>
-                        </a> |
+                            <p class="me-3">Post</p>
+                        </a>
                         <a href="{% url 'write:pin_create' %}">
-                            <p style="padding: 0 0.5em">Pin</p>
+                            <p class="me-3">Pin</p>
                         </a>
                     </span>
                     <form method="post">

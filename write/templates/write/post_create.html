@@ -1,16 +1,27 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% block title %}New Post{% endblock %}
 {% block content %}
     <div class="container">
         <div class="row justify-content-start">
             <div class="col-12 col-md-7 left-column">
                 <form method="post">
                     {% csrf_token %}
-                    {{ form|crispy }}
+                    <div>
+                        {{ form.title|as_crispy_field }}
+                    </div>
+                    <div>
+                        {{ form.content|as_crispy_field }}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>
+                            {{ form.comments_enabled|as_crispy_field }}
+                        </span>
+                        <a href="https://daringfireball.net/projects/markdown/basics" target="_blank" class="mb-3">Markdown Syntax</a>
+                    </div>
                     <button type="submit" class="btn btn-primary mb-3">Add Post</button>
                 </form>
             </div>
-            {% comment %} <div class="col-sm-4">{% include "write/post_help_text.html" %}</div> {% endcomment %}
         </div>
     </div>
 {% endblock %}
