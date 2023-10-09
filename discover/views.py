@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import Case, Count, F, IntegerField, Q, Sum, Value, When
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView
@@ -18,8 +18,12 @@ from .models import Vote
 def vote(request, content_type, object_id, vote_type):
     model_class = ContentType.objects.get(model=content_type).model_class()
     obj = get_object_or_404(model_class, id=object_id)
-    content_type = ContentType.objects.get_for_model(obj)
 
+    # Prevent users from voting on their own content
+    if hasattr(obj, "user") and obj.user == request.user:
+        return HttpResponseForbidden("You cannot vote on your own content.")
+
+    content_type = ContentType.objects.get_for_model(obj)
     existing_vote = Vote.objects.filter(
         content_type=content_type, object_id=obj.id, user=request.user
     ).first()
@@ -64,7 +68,7 @@ class DiscoverListAllView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        order_by = self.request.GET.get("order_by", "trending")  # Default to 'votes'
+        order_by = self.request.GET.get("order_by", "newest")  # Default to 'newest'
 
         if order_by == "trending":
             seven_days_ago = timezone.now() - timedelta(days=7)
@@ -166,7 +170,7 @@ class DiscoverListAllView(ListView):
                 ).order_by("-vote_count", "-timestamp")
             )[:10]
 
-        elif order_by == "time":
+        elif order_by == "newest":
             context["posts"] = Post.objects.all().order_by("-timestamp")[:10]
             context["pins"] = Pin.objects.all().order_by("-timestamp")[:10]
             context["lists"] = LuvList.objects.all().order_by("-timestamp")[:10]
@@ -219,7 +223,7 @@ class DiscoverPostListView(ListView):
                 )
             ).order_by("-vote_count", "-timestamp")
 
-        elif order_by == "time":
+        elif order_by == "newest":
             posts = Post.objects.all().order_by("-timestamp")[:10]
 
         paginator = Paginator(posts, self.paginate_by)
@@ -272,7 +276,7 @@ class DiscoverPinListView(ListView):
                 )
             ).order_by("-vote_count", "-timestamp")
 
-        elif order_by == "time":
+        elif order_by == "newest":
             pins = Pin.objects.all().order_by("-timestamp")
 
         paginator = Paginator(pins, self.paginate_by)
@@ -325,7 +329,7 @@ class DiscoverLuvListListView(ListView):
                 )
             ).order_by("-vote_count", "-timestamp")
 
-        elif order_by == "time":
+        elif order_by == "newest":
             lists = LuvList.objects.all().order_by("-timestamp")
 
         paginator = Paginator(lists, self.paginate_by)

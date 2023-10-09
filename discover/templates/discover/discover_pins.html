@@ -15,52 +15,33 @@
                     <h3>Pins</h3>
                     <ol>
                         {% for pin in pins %}
-                            <li>   
-                                <div>
-                                    
-                                    <a href="{% url 'discover:vote' 'pin' pin.id 'up' %}" class="me-1 text-muted">▲</a>
-                                    {% if pin.get_votes < 0 %}
-                                        <a href="{% url 'write:pin_detail' pin.id %}" class="text-muted" >{{pin.title}}</a>
-                                    {% else %}
+                            <li>
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        {% if pin.user != user %}
+                                            <a href="{% url 'discover:vote' 'pin' pin.id 'up' %}" class="me-1 text-muted">▲</a><br>
+                                            <a href="{% url 'discover:vote' 'pin' pin.id 'down' %}" class="me-1 text-muted">▼</a>
+                                        {% endif %}
+                                    </div>
+                                    <div>
                                         <a href="{% url 'write:pin_detail' pin.id %}">{{pin.title}}</a>
-                                    {% endif %}
-                                    <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
+                                        <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
+                                        <span class="d-flex">
+                                            <p class="me-2 text-muted">{{pin.get_votes}} vote{% if pin.get_votes > 1 %}s{% endif %}</p>
+                                            <p class="me-2 text-muted">
+                                                by <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.username }}</a>
+                                            </p>
+                                            <p class="me-2 text-muted">{{ pin.timestamp|timesince }} ago</p>
+                                        </span>
+                                    </div>
                                 </div>
-                                <span class="d-flex">
-                                    <a href="{% url 'discover:vote' 'pin' pin.id 'down' %}" class="me-2 text-muted">▼</a>
-                                    <p class="me-2 text-muted">{{pin.get_votes}} vote{% if pin.get_votes > 1 %}s{% endif %}</p>
-                                    <p class="me-2 text-muted">
-                                        by <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.username }}</a>
-                                    </p>
-                                    <p class="me-2 text-muted">{{ pin.timestamp|timesince }} ago</p>
-                                </span>
                             </li>
                         {% endfor %}
                     </ol>
                 </div>
             </div>
-
-            {% if page_obj.paginator.num_pages > 1 %}
-                    <hr>
-                    <div id="refresh-box" class="hidden">
-                        <div class="loader">
-                            <svg class="circular-loader" viewBox="25 25 50 50">
-                                <circle class="loader-path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
-                            </svg>
-                        </div>
-                    </div>                                        
-                    <div class="pagination">
-                        <span class="step-links">
-                            {% for i in page_obj.paginator.page_range %}
-                                {% if page_obj.number == i %}
-                                    <span class="current">{{ i }}</span>
-                                {% else %}
-                                    <a href="?page={{ i }}">{{ i }}</a>
-                                {% endif %}
-                            {% endfor %}
-                        </span>
-                    </div>
-                {% endif %}
+            {% include "discover/discover_explain.html" %}
+            {% include "discover/discover_pages.html" %}
         </div>
     </div>
 </div>

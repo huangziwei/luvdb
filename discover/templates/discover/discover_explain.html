@@ -1,0 +1,12 @@
+<div class="row mt-3">
+    <div class="bg-light p-3 text-muted">
+        <i class="bg-secondary text-white" style="display:inline-block; width:16px; height:16px; border-radius:50%; text-align:center; line-height:16px; cursor: pointer;">!</i>
+        {% if order_by == "newest" %}
+                Items were ordered by their timestamp, latest first. 
+        {% elif order_by == "trending" %}
+                Items were ranked by the number of votes they received in the last 7 days.
+        {% elif order_by == "all_time" %}
+                Items were ranked by the total number of votes they received.
+        {% endif %}
+    </div>
+</div>

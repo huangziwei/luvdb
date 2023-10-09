@@ -6,32 +6,37 @@
     <div class="row">
         <div class="col-12">
             {% include "discover/discover_nav.html" %}
-
-                        
-            <!-- Post -->
             <div class="row mt-3">
                 <div class="col-12">  
                     <h3>Posts</h3>
                     <ol>
                         {% for post in posts %}
-                            <li>   
-                                <div>
-                                    <a href="{% url 'discover:vote' 'post' post.id 'up' %}" class="me-1 text-muted">▲</a>
-                                    <a href="{% url 'write:post_detail' post.id %}">{{post.title}}</a>
+                            <li>
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        {% if post.user != user %}
+                                            <a href="{% url 'discover:vote' 'post' post.id 'up' %}" class="me-1 text-muted">▲</a><br>
+                                            <a href="{% url 'discover:vote' 'post' post.id 'down' %}" class="me-1 text-muted">▼</a>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <a href="{% url 'write:post_detail' post.id %}">{{post.title}}</a>
+                                        <span class="d-flex">
+                                            <p class="me-2 text-muted">{{post.get_votes}} vote{% if post.get_votes > 1 %}s{% endif %}</p>
+                                            <p class="me-2 text-muted">
+                                                by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.username }}</a>
+                                            </p>
+                                            <p class="me-2 text-muted">{{ post.timestamp|timesince }} ago</p>
+                                        </span>
+                                    </div>
                                 </div>
-                                <span class="d-flex">
-                                    <a href="{% url 'discover:vote' 'post' post.id 'down' %}" class="me-2 text-muted">▼</a>
-                                    <p class="me-2 text-muted">{{post.get_votes}} vote{% if post.get_votes > 1 %}s{% endif %}</p>
-                                    <p class="me-2 text-muted">
-                                        by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.username }}</a>
-                                    </p>
-                                    <p class="me-2 text-muted">{{ post.timestamp|timesince }} ago</p>
-                                </span>
                             </li>
                         {% endfor %}
                     </ol>
                 </div>
             </div>
+            {% include "discover/discover_explain.html" %}
+            {% include "discover/discover_pages.html" %}
         </div>
     </div>
 </div>
