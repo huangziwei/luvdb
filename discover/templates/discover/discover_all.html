@@ -55,6 +55,29 @@
                         {% endfor %}
                     </ol>
                 </div>
+
+                <!-- Pins -->
+                <div class="col-12">
+                    <h3>Lists</h3>
+                    <ol>
+                        {% for list in lists %}
+                            <li>   
+                                <div>
+                                    <a href="{% url 'discover:vote' 'luvlist' list.id 'up' %}" class="me-1 text-muted">▲</a>
+                                    <a href="{% url 'write:luvlist_detail' list.id %}">{{list.title}}</a>
+                                </div>
+                                <span class="d-flex">
+                                    <a href="{% url 'discover:vote' 'luvlist' list.id 'down' %}" class="me-2 text-muted">▼</a>
+                                    <p class="me-2 text-muted">{{list.get_votes}} vote{% if list.get_votes > 1 %}s{% endif %}</p>
+                                    <p class="me-2 text-muted">
+                                        by <a href="{% url 'accounts:detail' list.user.username %}">{{ list.user.username }}</a>
+                                    </p>
+                                    <p class="me-2 text-muted">{{ list.timestamp|timesince }} ago</p>
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
             </div>
         </div>
     </div>

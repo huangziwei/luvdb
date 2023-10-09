@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView
 
-from write.models import Pin, Post
+from write.models import LuvList, Pin, Post
 
 from .models import Vote
 
@@ -102,6 +102,24 @@ class DiscoverListAllView(ListView):
                 .filter(vote_count__gt=-1)
                 .order_by("-vote_count")
             )[:10]
+
+            context["lists"] = (
+                LuvList.objects.annotate(
+                    vote_count=Sum(
+                        Case(
+                            When(
+                                votes__timestamp__gte=seven_days_ago,
+                                then=F("votes__value"),
+                            ),
+                            default=Value(0),
+                            output_field=IntegerField(),
+                        )
+                    )
+                )
+                .filter(vote_count__gt=-1)
+                .order_by("-vote_count")
+            )[:10]
+
         elif order_by == "all_time":
             context["posts"] = (
                 Post.objects.annotate(
@@ -133,10 +151,25 @@ class DiscoverListAllView(ListView):
                 ).order_by("-vote_count", "-timestamp")
             )[:10]
 
+            context["lists"] = (
+                LuvList.objects.annotate(
+                    vote_count=Sum(
+                        Case(
+                            When(
+                                votes__value__isnull=False,
+                                then=F("votes__value"),
+                            ),
+                            default=Value(0),
+                            output_field=IntegerField(),
+                        )
+                    )
+                ).order_by("-vote_count", "-timestamp")
+            )[:10]
+
         elif order_by == "time":
             context["posts"] = Post.objects.all().order_by("-timestamp")[:10]
             context["pins"] = Pin.objects.all().order_by("-timestamp")[:10]
-
+            context["lists"] = LuvList.objects.all().order_by("-timestamp")[:10]
         context["order_by"] = order_by
         return context
 
@@ -247,5 +280,58 @@ class DiscoverPinListView(ListView):
         page_obj = paginator.get_page(page_number)
 
         context["pins"] = page_obj
+        context["order_by"] = order_by
+        return context
+
+
+class DiscoverLuvListListView(ListView):
+    template_name = "discover/discover_luvlists.html"
+    paginate_by = 10
+
+    def get_queryset(self):
+        return LuvList.objects.all()  # Default queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order_by = self.request.GET.get("order_by", "trending")
+
+        lists = None
+        if order_by == "trending":
+            seven_days_ago = timezone.now() - timedelta(days=7)
+            lists = LuvList.objects.annotate(
+                vote_count=Sum(
+                    Case(
+                        When(
+                            votes__timestamp__gte=seven_days_ago,
+                            then=F("votes__value"),
+                        ),
+                        default=Value(0),
+                        output_field=IntegerField(),
+                    )
+                )
+            ).order_by("-vote_count")
+
+        elif order_by == "all_time":
+            lists = LuvList.objects.annotate(
+                vote_count=Sum(
+                    Case(
+                        When(
+                            votes__value__isnull=False,
+                            then=F("votes__value"),
+                        ),
+                        default=Value(0),
+                        output_field=IntegerField(),
+                    )
+                )
+            ).order_by("-vote_count", "-timestamp")
+
+        elif order_by == "time":
+            lists = LuvList.objects.all().order_by("-timestamp")
+
+        paginator = Paginator(lists, self.paginate_by)
+        page_number = self.request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+
+        context["lists"] = page_obj
         context["order_by"] = order_by
         return context
