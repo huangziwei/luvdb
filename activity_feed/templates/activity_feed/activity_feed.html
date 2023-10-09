@@ -11,12 +11,15 @@
                 {% if feed_type == "public" %}
                     <span style="display: flex;">
                         <p class="me-3">Say</p>
-                        <a href="{% url 'write:post_create' %}">
-                            <p class="me-3">Post</p>
-                        </a>
-                        <a href="{% url 'write:pin_create' %}">
-                            <p class="me-3">Pin</p>
-                        </a>
+                        <p class="me-3">
+                            <a href="{% url 'write:post_create' %}">Post</a>
+                        </p>
+                        <p class="me-3">
+                            <a href="{% url 'write:pin_create' %}">Pin</a>
+                        </p>
+                        <p class="me-3">
+                            <a href="{% url 'write:luvlist_create' %}">List</a>
+                        </p>
                     </span>
                     <form method="post">
                         {% csrf_token %}
