@@ -32,7 +32,7 @@
                                     <p class="me-2 text-muted">
                                         by <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.username }}</a>
                                     </p>
-                                    <p class="me-2 text-muted">{{ pin.timestamp|timesince }}</p>
+                                    <p class="me-2 text-muted">{{ pin.timestamp|timesince }} ago</p>
                                 </span>
                             </li>
                         {% endfor %}

@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import Case, Count, F, IntegerField, Q, Sum, Value, When
@@ -13,6 +14,7 @@ from write.models import Pin, Post
 from .models import Vote
 
 
+@login_required
 def vote(request, content_type, object_id, vote_type):
     model_class = ContentType.objects.get(model=content_type).model_class()
     obj = get_object_or_404(model_class, id=object_id)

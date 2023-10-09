@@ -30,6 +30,10 @@
                 <a class="nav-link btn btn-sm"
                    href="{% url 'play:play_list' %}">Play</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link btn btn-sm"
+                   href="{% url 'discover:all' %}">Discover</a>
+            </li>
             <form class="ms-2 d-flex" method="GET" action="{% url 'search' %}">
                 <div class="input-group">
                     <select name="model"
