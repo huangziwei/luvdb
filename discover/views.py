@@ -159,7 +159,7 @@ class DiscoverListAllView(ListView):
                 context[model_name] = (
                     self.annotate_vote_count(model, time_condition)
                     .filter(vote_count__gt=-1)
-                    .order_by("-vote_count")
+                    .order_by("-vote_count", "-timestamp")
                 )[:10]
 
         elif order_by == "all_time":
