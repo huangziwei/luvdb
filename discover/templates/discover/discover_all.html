@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load markdownify %}
 {% load url_filters %}
+{% load linkify %}
 {% block title %}Discover{% endblock %}
 {% block content %}
 <div class="container">
@@ -92,7 +93,7 @@
                                             </p>
                                         </span>
                                         <div class="bg-light p-3 mb-2">
-                                            {{activity.content|truncatechars:300|markdownify}}</a>
+                                            {{activity.content|truncatechars:300|linkify_tags|linkify_mentions|markdownify}}</a>
                                         </div>
                                         <span class="d-flex">
                                             <p class="me-2 text-muted">
@@ -140,7 +141,7 @@
                                             </div>
                                         </span>
                                         <div class="bg-light p-3 mb-2">
-                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                            {{checkin.content|truncatechars:300|linkify_tags|linkify_mentions|markdownify}}</a>
                                         </div>
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
@@ -184,7 +185,7 @@
                                             </div>
                                         </span>
                                         <div class="bg-light p-3 mb-2">
-                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                            {{checkin.content|truncatechars:300|linkify_tags|linkify_mentions|markdownify}}</a>
                                         </div>
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
@@ -225,7 +226,7 @@
                                             </div>
                                         </span>
                                         <div class="bg-light p-3 mb-2">
-                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                            {{checkin.content|truncatechars:300|linkify_tags|linkify_mentions|markdownify}}</a>
                                         </div>
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
@@ -263,7 +264,7 @@
                                             </div>
                                         </span>
                                         <div class="bg-light p-3 mb-2">
-                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                            {{checkin.content|truncatechars:300|linkify_tags|linkify_mentions|markdownify}}</a>
                                         </div>
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
