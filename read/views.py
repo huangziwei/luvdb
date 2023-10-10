@@ -20,6 +20,8 @@ from django.views.generic import (
     UpdateView,
 )
 
+from discover.models import Vote
+from discover.views import user_has_upvoted
 from watch.models import Movie, Series
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
@@ -1151,14 +1153,10 @@ class ReadCheckInDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["comments"] = (
-            Comment.objects.filter(
-                content_type=ContentType.objects.get_for_model(self.object),
-                object_id=self.object.id,
-            )
-            .order_by("timestamp")
-            .order_by("timestamp")
-        )
+        context["comments"] = Comment.objects.filter(
+            content_type=ContentType.objects.get_for_model(self.object),
+            object_id=self.object.id,
+        ).order_by("timestamp")
         context["comment_form"] = CommentForm()
         context["repost_form"] = RepostForm()
         context["app_label"] = self.object._meta.app_label
@@ -1170,6 +1168,9 @@ class ReadCheckInDetailView(DetailView):
             object_id=self.object.content_object.id,
         ).count()
         context["checkin_count"] = checkin_count - 1
+
+        # Determine if the user has upvoted this ReadCheckIn object
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
 
         return context
 

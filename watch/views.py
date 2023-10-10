@@ -20,6 +20,7 @@ from django.views.generic import (
     UpdateView,
 )
 
+from discover.views import user_has_upvoted
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
 
@@ -1060,6 +1061,9 @@ class WatchCheckInDetailView(DetailView):
             object_id=self.object.content_object.id,
         ).count()
         context["checkin_count"] = checkin_count - 1
+
+        # Determine if the user has upvoted this ReadCheckIn object
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
 
         return context
 

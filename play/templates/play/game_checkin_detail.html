@@ -125,12 +125,23 @@
                         <a href="{% url "play:game_checkin_delete" object.pk %}" class="me-2">Delete</a>
                     {% endif %}
                 </div>
-                <button id="show-comments"
-                        class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
-                <button id="show-reposts"
-                        class="btn btn-secondary btn-sm mx-auto toggle-button">
-                    Reposts ({{ object.reposts.count }})
-                </button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <button id="show-comments"
+                                class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
+                        <button id="show-reposts"
+                                class="btn btn-secondary btn-sm mx-auto toggle-button">
+                            Reposts ({{ object.reposts.count }})
+                        </button>
+                    </div>
+                    <div>
+                        <a href="{% url 'discover:vote' 'gamecheckin' checkin.id 'up' %}" 
+                            class="me-2 btn btn-sm {% if has_voted %}btn-outline-danger active{% else %}btn-outline-danger{% endif %}" 
+                            title="Upvote this check-in">
+                            ♡
+                        </a>
+                    </div>
+                </div>
                 <hr>
                 <div id="comments-section">
                     {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='gamecheckin' %}

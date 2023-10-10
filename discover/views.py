@@ -9,9 +9,35 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView
 
-from write.models import LuvList, Pin, Post
+from listen.models import ListenCheckIn
+from play.models import GameCheckIn
+from read.models import ReadCheckIn
+from watch.models import WatchCheckIn
+from write.models import LuvList, Pin, Post, Say
 
 from .models import Vote
+
+###########
+# helpers #
+###########
+
+
+def user_has_upvoted(user, obj):
+    if not user.is_authenticated:
+        return False
+
+    content_type = ContentType.objects.get_for_model(obj)
+    return Vote.objects.filter(
+        user=user,
+        content_type=content_type,
+        object_id=obj.id,
+        value=Vote.UPVOTE,
+    ).exists()
+
+
+#########
+# views #
+#########
 
 
 @login_required
@@ -20,10 +46,10 @@ def vote(request, content_type, object_id, vote_type):
     obj = get_object_or_404(model_class, id=object_id)
 
     # Prevent users from voting on their own content
-    if hasattr(obj, "user") and obj.user == request.user:
-        return HttpResponseForbidden(
-            "Nice try! But no, you cannot vote on your own content."
-        )
+    # if hasattr(obj, "user") and obj.user == request.user:
+    #     return HttpResponseForbidden(
+    #         "Nice try! But no, you cannot vote on your own content."
+    #     )
 
     content_type = ContentType.objects.get_for_model(obj)
     existing_vote = Vote.objects.filter(
@@ -68,114 +94,55 @@ class DiscoverListAllView(ListView):
     def get_queryset(self):
         return None  # We override `get_context_data` to send multiple querysets
 
+    def annotate_vote_count(self, model, time_condition=None):
+        return model.objects.annotate(
+            vote_count=Sum(
+                Case(
+                    When(time_condition, then=F("votes__value")),
+                    default=Value(0),
+                    output_field=IntegerField(),
+                )
+            )
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order_by = self.request.GET.get("order_by", "newest")  # Default to 'newest'
-
+        models_list = [
+            (Say, "says"),
+            (Post, "posts"),
+            (Pin, "pins"),
+            (LuvList, "lists"),
+            (ReadCheckIn, "read_checkins"),
+            (WatchCheckIn, "watch_checkins"),
+            (ListenCheckIn, "listen_checkins"),
+            (GameCheckIn, "game_checkins"),
+        ]
         if order_by == "trending":
             seven_days_ago = timezone.now() - timedelta(days=7)
+            time_condition = {"votes__timestamp__gte": seven_days_ago}
 
-            context["posts"] = (
-                Post.objects.annotate(
-                    vote_count=Sum(
-                        Case(
-                            When(
-                                votes__timestamp__gte=seven_days_ago,
-                                then=F("votes__value"),
-                            ),
-                            default=Value(0),
-                            output_field=IntegerField(),
-                        )
-                    )
-                )
-                .filter(vote_count__gt=-1)
-                .order_by("-vote_count")
-            )[:10]
-
-            context["pins"] = (
-                Pin.objects.annotate(
-                    vote_count=Sum(
-                        Case(
-                            When(
-                                votes__timestamp__gte=seven_days_ago,
-                                then=F("votes__value"),
-                            ),
-                            default=Value(0),
-                            output_field=IntegerField(),
-                        )
-                    )
-                )
-                .filter(vote_count__gt=-1)
-                .order_by("-vote_count")
-            )[:10]
-
-            context["lists"] = (
-                LuvList.objects.annotate(
-                    vote_count=Sum(
-                        Case(
-                            When(
-                                votes__timestamp__gte=seven_days_ago,
-                                then=F("votes__value"),
-                            ),
-                            default=Value(0),
-                            output_field=IntegerField(),
-                        )
-                    )
-                )
-                .filter(vote_count__gt=-1)
-                .order_by("-vote_count")
-            )[:10]
+            for model, model_name in models_list:
+                context[model_name] = (
+                    self.annotate_vote_count(model, time_condition)
+                    .filter(vote_count__gt=-1)
+                    .order_by("-vote_count")
+                )[:10]
 
         elif order_by == "all_time":
-            context["posts"] = (
-                Post.objects.annotate(
-                    vote_count=Sum(
-                        Case(
-                            When(
-                                votes__value__isnull=False,
-                                then=F("votes__value"),
-                            ),
-                            default=Value(0),
-                            output_field=IntegerField(),
-                        )
-                    )
-                ).order_by("-vote_count", "-timestamp")
-            )[:10]
+            time_condition = {"votes__value__isnull": False}
 
-            context["pins"] = (
-                Pin.objects.annotate(
-                    vote_count=Sum(
-                        Case(
-                            When(
-                                votes__value__isnull=False,
-                                then=F("votes__value"),
-                            ),
-                            default=Value(0),
-                            output_field=IntegerField(),
-                        )
+            for model, model_name in models_list:
+                context[model_name] = (
+                    self.annotate_vote_count(model, time_condition).order_by(
+                        "-vote_count", "-timestamp"
                     )
-                ).order_by("-vote_count", "-timestamp")
-            )[:10]
-
-            context["lists"] = (
-                LuvList.objects.annotate(
-                    vote_count=Sum(
-                        Case(
-                            When(
-                                votes__value__isnull=False,
-                                then=F("votes__value"),
-                            ),
-                            default=Value(0),
-                            output_field=IntegerField(),
-                        )
-                    )
-                ).order_by("-vote_count", "-timestamp")
-            )[:10]
+                )[:10]
 
         elif order_by == "newest":
-            context["posts"] = Post.objects.all().order_by("-timestamp")[:10]
-            context["pins"] = Pin.objects.all().order_by("-timestamp")[:10]
-            context["lists"] = LuvList.objects.all().order_by("-timestamp")[:10]
+            for model, model_name in models_list:
+                context[model_name] = model.objects.all().order_by("-timestamp")[:10]
+
         context["order_by"] = order_by
         return context
 

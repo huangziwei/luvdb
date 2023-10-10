@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load markdownify %}
 {% load url_filters %}
 {% block title %}Discover{% endblock %}
 {% block content %}
@@ -8,24 +9,39 @@
             {% include "discover/discover_nav.html" %}
                         
             <div class="row mt-3">
-                <div class="col-12">
+
+                <!-- Lists -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Lists</h3>
+                    <ol>
+                        {% for list in lists %}
+                            <li>
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <a href="{% url 'write:luvlist_detail' list.id %}">{{list.title}}</a>
+                                        <span class="d-flex">
+                                            <p class="me-2 text-muted">
+                                                by <a href="{% url 'accounts:detail' list.user.username %}">{{ list.user.username }}</a>
+                                            </p>
+                                            <p class="me-2 text-muted">{{ list.timestamp|timesince }} ago</p>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <!-- Posts -->
+                <div class="col-12 col-md-6 mb-3">
                     <h3>Posts</h3>      
                     <ol>
                         {% for post in posts %}
                             <li>
                                 <div class="d-flex align-items-start">
                                     <div>
-                                        {% if post.user != user %}
-                                            <a href="{% url 'discover:vote' 'post' post.id 'up' %}" class="ms-1 me-2 text-muted" title="Upvote this post">
-                                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#919191}</style><path d="M177 255.7l136 136c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 351.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9 0L7 425.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1zm-34-192L7 199.7c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l96.4-96.4 96.4 96.4c9.4 9.4 24.6 9.4 33.9 0l22.6-22.6c9.4-9.4 9.4-24.6 0-33.9l-136-136c-9.2-9.4-24.4-9.4-33.8 0z"/></svg>
-                                            </a><br>
-                                            {% comment %} <a href="{% url 'discover:vote' 'post' post.id 'down' %}" class="me-1 text-muted">▼</a> {% endcomment %}
-                                        {% endif %}
-                                    </div>
-                                    <div>
                                         <a href="{% url 'write:post_detail' post.id %}">{{post.title}}</a>
                                         <span class="d-flex">
-                                            {% comment %} <p class="me-2 text-muted">{{post.get_votes}} vote{% if post.get_votes > 1 %}s{% endif %}</p> {% endcomment %}
                                             <p class="me-2 text-muted">
                                                 by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.username }}</a>
                                             </p>
@@ -39,25 +55,16 @@
                 </div>
 
                 <!-- Pins -->
-                <div class="col-12">
+                <div class="col-12 col-md-6 mb-3">
                     <h3>Pins</h3>
                     <ol>
                         {% for pin in pins %}
                             <li>
                                 <div class="d-flex align-items-start">
                                     <div>
-                                        {% if pin.user != user %}
-                                            <a href="{% url 'discover:vote' 'pin' pin.id 'up' %}" class="ms-1 me-2 text-muted" title="Upvote this pin">
-                                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#919191}</style><path d="M177 255.7l136 136c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 351.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9 0L7 425.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1zm-34-192L7 199.7c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l96.4-96.4 96.4 96.4c9.4 9.4 24.6 9.4 33.9 0l22.6-22.6c9.4-9.4 9.4-24.6 0-33.9l-136-136c-9.2-9.4-24.4-9.4-33.8 0z"/></svg>
-                                            </a><br>
-                                            {% comment %} <a href="{% url 'discover:vote' 'pin' pin.id 'down' %}" class="me-1 text-muted">▼</a> {% endcomment %}
-                                        {% endif %}
-                                    </div>
-                                    <div>
                                         <a href="{% url 'write:pin_detail' pin.id %}">{{pin.title}}</a>
                                         <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
                                         <span class="d-flex">
-                                            {% comment %} <p class="me-2 text-muted">{{pin.get_votes}} vote{% if pin.get_votes > 1 %}s{% endif %}</p> {% endcomment %}
                                             <p class="me-2 text-muted">
                                                 by <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.username }}</a>
                                             </p>
@@ -70,30 +77,197 @@
                     </ol>
                 </div>
 
-                <!-- Pins -->
-                <div class="col-12">
-                    <h3>Lists</h3>
+                <!-- Says -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Says</h3>      
                     <ol>
-                        {% for list in lists %}
-                            <li>
+                        {% for say in says %}
+                            <li class="mb-2">
                                 <div class="d-flex align-items-start">
                                     <div>
-                                        {% if list.user != user %}
-                                            <a href="{% url 'discover:vote' 'luvlist' list.id 'up' %}" class="ms-1 me-2 text-muted" title="Upvote this list">
-                                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#919191}</style><path d="M177 255.7l136 136c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 351.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9 0L7 425.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1zm-34-192L7 199.7c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l96.4-96.4 96.4 96.4c9.4 9.4 24.6 9.4 33.9 0l22.6-22.6c9.4-9.4 9.4-24.6 0-33.9l-136-136c-9.2-9.4-24.4-9.4-33.8 0z"/></svg>
-                                            </a><br>
-                                            {% comment %} <a href="{% url 'discover:vote' 'luvlist' list.id 'down' %}" class="me-1 text-muted">▼</a> {% endcomment %}
-                                        {% endif %}
-                                    </div>
-                                    <div>
-                                        <a href="{% url 'write:luvlist_detail' list.id %}">{{list.title}}</a>
                                         <span class="d-flex">
-                                            {% comment %} <p class="me-2 text-muted">{{list.get_votes}} vote{% if list.get_votes > 1 %}s{% endif %}</p> {% endcomment %}
-                                            <p class="me-2 text-muted">
-                                                by <a href="{% url 'accounts:detail' list.user.username %}">{{ list.user.username }}</a>
+                                            <p class="me-2 text-muted mb-2">
+                                                <a href="{% url 'accounts:detail' say.user.username %}">{{ say.user.username }}</a>
+                                                said: 
                                             </p>
-                                            <p class="me-2 text-muted">{{ list.timestamp|timesince }} ago</p>
                                         </span>
+                                        <div class="bg-light p-3 mb-2">
+                                            {{say.content|truncatechars:300|markdownify}}</a>
+                                        </div>
+                                        <span class="d-flex">
+                                            <p class="me-2 text-muted">
+                                                <a href="{% url 'write:say_detail' say.id %}" class="text-muted">
+                                                    {{ say.timestamp|timesince }} ago
+                                                </a>
+                                            </p>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <!-- Checkins -->
+                <!-- Read -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Read Check-ins</h3>      
+                    <ol>
+                        {% for checkin in read_checkins %}
+                            <li class="mb-3">
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted mb-2">
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                checked in to 
+                                                {% if checkin.content_type.model == 'book' %}
+                                                    <a href="{% url 'read:book_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% elif checkin.content_type.model == 'issue' %}
+                                                    <a href="{% url 'read:issue_detail' checkin.content_object.periodical.id checkin.content_object.id %}">
+                                                        {{checkin.content_object.periodical.title}} Vol. {{checkin.content_object.volume}} Nr. {{checkin.content_object.number}}
+                                                    </a>
+                                                {% endif %}
+                                                {% if checkin.content_object.publication_date %}
+                                                    ({{checkin.content_object.publication_date}})
+                                                {% endif %}
+                                            </div>
+                                        </span>
+                                        <div class="bg-light p-3 mb-2">
+                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                        </div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted">
+                                                <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-muted">
+                                                    {{ checkin.timestamp|timesince }} ago
+                                                </a>
+                                            </div>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+                <!-- Watch -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Watch Check-ins</h3>      
+                    <ol>
+                        {% for checkin in watch_checkins %}
+                            <li class="mb-3">
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted mb-2">
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                checked in to 
+                                                {% if checkin.content_type.model == 'movie' %}
+                                                    <a href="{% url 'watch:movie_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% elif checkin.content_type.model == 'series' %}
+                                                    <a href="{% url 'watch:series_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% endif %}
+                                                {% if checkin.content_object.release_date %}
+                                                    ({{checkin.content_object.release_date}})
+                                                {% endif %}
+                                                {% if checkin.content_object.region_release_dates.exists %}
+                                                    {% with earliest_region_release_date=checkin.content_object.region_release_dates.all|first %}
+                                                        ({{ earliest_region_release_date.release_date }}, {{ earliest_region_release_date.region }})
+                                                    {% endwith %}
+                                                {% endif %}
+                                            </div>
+                                        </span>
+                                        <div class="bg-light p-3 mb-2">
+                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                        </div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted">
+                                                <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-muted">
+                                                    {{ checkin.timestamp|timesince }} ago
+                                                </a>
+                                            </div>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <!-- Listen -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Listen Check-ins</h3>      
+                    <ol>
+                        {% for checkin in listen_checkins %}
+                            <li class="mb-3">
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted mb-2">
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                checked in to 
+                                                {% if checkin.content_type.model == 'release' %}
+                                                    <a href="{% url 'listen:release_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% elif checkin.content_type.model == 'podcast' %}
+                                                    <a href="{% url 'listen:podcast_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% elif checkin.content_type.model == 'audiobook' %}
+                                                    <a href="{% url 'listen:audiobook_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% endif %}
+                                                {% if checkin.content_object.release_date %}
+                                                    ({{checkin.content_object.release_date}})
+                                                {% endif %}
+                                            </div>
+                                        </span>
+                                        <div class="bg-light p-3 mb-2">
+                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                        </div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted">
+                                                <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-muted">
+                                                    {{ checkin.timestamp|timesince }} ago
+                                                </a>
+                                            </div>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <!-- Play -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Play Check-ins</h3>      
+                    <ol>
+                        {% for checkin in game_checkins %}
+                            <li class="mb-3">
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted mb-2">
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                checked in to 
+                                                <a href="{% url 'play:game_detail' checkin.game.id %}">{{checkin.game.title}}</a>
+                                                {% if checkin.game.region_release_dates.exists %}
+                                                    {% with earliest_region_release_date=checkin.game.region_release_dates.all|first %}
+                                                        ({{ earliest_region_release_date.release_date }}, {{ earliest_region_release_date.region }})
+                                                    {% endwith %}
+                                                {% endif %}
+                                            </div>
+                                        </span>
+                                        <div class="bg-light p-3 mb-2">
+                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                        </div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted">
+                                                <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-muted">
+                                                    {{ checkin.timestamp|timesince }} ago
+                                                </a>
+                                            </div>
+                                        </span>
+                                        
                                     </div>
                                 </div>
                             </li>

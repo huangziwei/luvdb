@@ -34,32 +34,59 @@
                         {% endif %}
                     </div>
                 </div>
-                {% for say in say_list %}
+                {% for activity in object_list %}
                     <div class="activity-item mb-3">
-                        <div>{{ say.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                        {% if activity.model_name == "Say" %}
+                        <div>{{ activity.content | linkify_tags | linkify_mentions | markdownify }}</div>
                         <span class="d-flex mt-2">
                             <div class="me-2">
-                                <a href="{% url 'write:say_detail' say.id %}" class="link-secondary">{{ say.timestamp |date:"Y.m.d H:i" }}</a>
+                                <a href="{% url 'write:say_detail' activity.id %}" class="link-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }} | {{activity.model_name }}</a>
                             </div>
-                            {% if say.comments_enabled %}
+                            {% if activity.comments_enabled %}
                                 <p class="ms-2 me-2">
-                                    <a href="{% url 'write:say_detail' say.id %}">Reply</a>
+                                    <a href="{% url 'write:say_detail' activity.id %}">Reply</a>
                                 </p>
                             {% endif %}
-                            {% if say.get_activity_id is not None %}
+                            {% if activity.get_activity_id is not None %}
                                 <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:say_detail' say.id %}?repost=true">Repost</a>
+                                    <a href="{% url 'write:say_detail' activity.id %}?repost=true">Repost</a>
                                 </p>
                             {% endif %}
                             {% if object == request.user %}
                                 <p class="ms-2 me-2">
-                                    <a href="{% url 'write:say_update' say.id %}">Edit</a>
+                                    <a href="{% url 'write:say_update' activity.id %}">Edit</a>
                                 </p>
                                 <p class="ms-2 me-2">
-                                    <a href="{% url 'write:say_delete' say.id %}">Delete</a>
+                                    <a href="{% url 'write:say_delete' activity.id %}">Delete</a>
                                 </p>
                             {% endif %}
                         </span>
+                        {% elif activity.model_name == "Repost" %}
+                        <div>{{ activity.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                        <span class="d-flex mt-2">
+                            <div class="me-2">
+                                <a href="{% url 'write:repost_detail' activity.id %}" class="link-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }} | {{ activity.model_name }}</a>
+                            </div>
+                            {% if activity.comments_enabled %}
+                                <p class="ms-2 me-2">
+                                    <a href="{% url 'write:repost_detail' activity.id %}">Reply</a>
+                                </p>
+                            {% endif %}
+                            {% if activity.get_activity_id is not None %}
+                                <p style='margin: 0 0.5em'>
+                                    <a href="{% url 'write:repost_detail' activity.id %}?repost=true">Repost</a>
+                                </p>
+                            {% endif %}
+                            {% if object == request.user %}
+                                <p class="ms-2 me-2">
+                                    <a href="{% url 'write:repost_update' activity.id %}">Edit</a>
+                                </p>
+                                <p class="ms-2 me-2">
+                                    <a href="{% url 'write:repost_delete' activity.id %}">Delete</a>
+                                </p>
+                            {% endif %}
+                        </span>
+                        {% endif %}
                     </div>
                 {% empty %}
                     <p>Nothing.</p>

@@ -12,14 +12,6 @@
                 <h2>{{ object.title }}</h2>
                 <div class='d-flex justify-content-between align-items-start mb-2'>
                     <div class="d-flex align-items-start">
-                        <div>
-                            {% if object.user != user %}
-                                <a href="{% url 'discover:vote' 'luvlist' object.id 'up' %}" class="me-2 text-muted" title="Upvote this list">
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#919191}</style><path d="M177 255.7l136 136c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 351.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9 0L7 425.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1zm-34-192L7 199.7c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l96.4-96.4 96.4 96.4c9.4 9.4 24.6 9.4 33.9 0l22.6-22.6c9.4-9.4 9.4-24.6 0-33.9l-136-136c-9.2-9.4-24.4-9.4-33.8 0z"/></svg>
-                                </a><br>
-                                {% comment %} <a href="{% url 'discover:vote' 'pin' pin.id 'down' %}" class="me-1 text-muted">▼</a> {% endcomment %}
-                            {% endif %}
-                        </div>
                         <div class="me-2">
                             by <a href="{% url 'accounts:detail' object.user.username %}">{{ object.user.display_name | default:object.user.username }}</a>
                         </div>
@@ -29,7 +21,14 @@
                                class="text-muted">{{ object.updated_at|timesince }} ago</a>
                         </div>
                     </div>
-                    <a href="{% url 'write:randomizer' object.id %}" class="btn btn-primary btn-sm">Surprise me!</a>
+                    <div>
+                        <a href="{% url 'discover:vote' 'luvlist' object.id 'up' %}" 
+                            class="me-2 btn btn-sm {% if has_voted %}btn-outline-danger active{% else %}btn-outline-danger{% endif %}" 
+                            title="Like this list">
+                            ♡
+                        </a>
+                        <a href="{% url 'write:randomizer' object.id %}" class="btn btn-primary btn-sm">Surprise me!</a>
+                    </div>
                 </div>
 
                 <div class="mb-3">{{ object.description | markdownify }}</div>

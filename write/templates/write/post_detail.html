@@ -10,14 +10,6 @@
             <div class="col-12 col-md-7 left-column h-entry">
                 <h2 class="p-name">{{ object.title }}</h2>
                 <span class="d-flex">
-                    <p>
-                        {% if object.user != user %}
-                            <a href="{% url 'discover:vote' 'post' object.id 'up' %}" class="me-2 text-muted" title="Upvote this post">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#919191}</style><path d="M177 255.7l136 136c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 351.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9 0L7 425.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1zm-34-192L7 199.7c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l96.4-96.4 96.4 96.4c9.4 9.4 24.6 9.4 33.9 0l22.6-22.6c9.4-9.4 9.4-24.6 0-33.9l-136-136c-9.2-9.4-24.4-9.4-33.8 0z"/></svg>
-                            </a><br>
-                            {% comment %} <a href="{% url 'discover:vote' 'pin' pin.id 'down' %}" class="me-1 text-muted">▼</a> {% endcomment %}
-                        {% endif %}
-                    </p>
                     <p class='me-2'>
                         by
                         <a href="{% url 'accounts:detail' object.user.username %}"
@@ -40,12 +32,23 @@
                 </span>
                 <div class="e-content">{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify }}</div>
                 <br>
-                <button id="show-comments"
-                        class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
-                <button id="show-reposts"
-                        class="btn btn-secondary btn-sm mx-auto toggle-button">
-                    Reposts ({{ object.reposts.count }})
-                </button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <button id="show-comments"
+                                class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
+                        <button id="show-reposts"
+                                class="btn btn-secondary btn-sm mx-auto toggle-button">
+                            Reposts ({{ object.reposts.count }})
+                        </button>
+                    </div>
+                    <div>
+                        <a href="{% url 'discover:vote' 'post' object.id 'up' %}" 
+                            class="me-2 btn btn-sm {% if has_voted %}btn-outline-danger active{% else %}btn-outline-danger{% endif %}" 
+                            title="Like this post">
+                            ♡
+                        </a>
+                    </div>
+                </div>
                 <hr>
                 <div id="comments-section">
                     {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='post' %}

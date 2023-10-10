@@ -341,6 +341,7 @@ class GameCheckIn(models.Model):
     comments_enabled = models.BooleanField(default=True)
     tags = models.ManyToManyField("write.Tag", blank=True)
     reposts = GenericRelation("write.Repost")
+    votes = GenericRelation("discover.Vote")
 
     def get_absolute_url(self):
         return reverse("play:game_checkin_detail", args=[str(self.id)])
@@ -353,6 +354,9 @@ class GameCheckIn(models.Model):
             return activity.id
         except ObjectDoesNotExist:
             return None
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None

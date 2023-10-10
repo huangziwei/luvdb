@@ -24,30 +24,33 @@
                         <div class="mt-2">{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify }}</div>
                     {% endif %}
                 </div>
-                <span class="d-flex">
-                    <p>
-                        {% if object.user != user %}
-                            <a href="{% url 'discover:vote' 'pin' object.id 'up' %}" class="me-2 text-muted" title="Upvote this pin">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#919191}</style><path d="M177 255.7l136 136c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 351.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9 0L7 425.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1zm-34-192L7 199.7c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l96.4-96.4 96.4 96.4c9.4 9.4 24.6 9.4 33.9 0l22.6-22.6c9.4-9.4 9.4-24.6 0-33.9l-136-136c-9.2-9.4-24.4-9.4-33.8 0z"/></svg>
-                            </a><br>
-                            {% comment %} <a href="{% url 'discover:vote' 'pin' pin.id 'down' %}" class="me-1 text-muted">▼</a> {% endcomment %}
-                        {% endif %}
-                    </p>
-                    <p class='me-2 text-secondary'>
+                <span class="d-flex mb-2">
+                    <div class='me-2 text-secondary'>
                         <a href="{% url 'write:pin_list' object.user.username %}"
                            class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
-                    </p>
+                    </div>
                     {% if object.user == request.user %}
                         <a href="{% url "write:pin_update" object.pk %}" class="me-2">Edit</a>
                         <a href="{% url "write:pin_delete" object.pk %}" class="me-2">Delete</a>
                     {% endif %}
                 </span>
-                <button id="show-comments"
-                        class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
-                <button id="show-reposts"
-                        class="btn btn-secondary btn-sm mx-auto toggle-button">
-                    Reposts ({{ object.reposts.count }})
-                </button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <button id="show-comments"
+                                class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
+                        <button id="show-reposts"
+                                class="btn btn-secondary btn-sm mx-auto toggle-button">
+                            Reposts ({{ object.reposts.count }})
+                        </button>
+                    </div>
+                    <div>
+                        <a href="{% url 'discover:vote' 'pin' object.id 'up' %}" 
+                            class="me-2 btn btn-sm {% if has_voted %}btn-outline-danger active{% else %}btn-outline-danger{% endif %}" 
+                            title="Like this pin">
+                            ♡
+                        </a>
+                    </div>
+                </div>
                 <hr>
                 <div id="comments-section">
                     {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='pin' %}

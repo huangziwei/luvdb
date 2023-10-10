@@ -42,6 +42,9 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    def model_name(self):
+        return "Tag"
+
 
 class Comment(models.Model):
     content = models.TextField()
@@ -59,6 +62,9 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         return self.content_object.get_absolute_url()
+
+    def model_name(self):
+        return "Comment"
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -117,6 +123,9 @@ class Repost(models.Model):
 
     def get_reposts(self):
         return Repost.objects.filter(original_repost=self).exclude(id=self.id)
+
+    def model_name(self):
+        return "Repost"
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -180,6 +189,9 @@ class Post(models.Model):
     def get_votes(self):
         return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
+    def model_name(self):
+        return "Post"
+
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
@@ -202,6 +214,7 @@ class Say(models.Model):
     comments_enabled = models.BooleanField(default=True)
     tags = models.ManyToManyField(Tag, blank=True)
     reposts = GenericRelation(Repost)
+    votes = GenericRelation(Vote)
 
     # private say / direct mention
     is_direct_mention = models.BooleanField(default=False)
@@ -218,6 +231,12 @@ class Say(models.Model):
             return activity.id
         except ObjectDoesNotExist:
             return None
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
+
+    def model_name(self):
+        return "Say"
 
     def save(self, *args, **kwargs):
         # Determine if the object is new (i.e., has no primary key)
@@ -272,6 +291,9 @@ class Pin(models.Model):
 
     def get_votes(self):
         return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
+
+    def model_name(self):
+        return "Pin"
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -407,6 +429,9 @@ class LuvList(models.Model):
 
     def get_votes(self):
         return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
+
+    def model_name(self):
+        return "LuvList"
 
 
 class ContentInList(models.Model):

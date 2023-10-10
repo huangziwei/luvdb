@@ -2,7 +2,7 @@ import random
 from collections import Counter
 from datetime import timedelta
 from itertools import chain
-from urllib.parse import urlparse
+from operator import attrgetter
 
 import pytz
 from django.contrib.auth import get_user_model
@@ -22,6 +22,7 @@ from django.views.generic import (
 )
 
 from activity_feed.models import Activity
+from discover.views import user_has_upvoted
 from listen.models import ListenCheckIn
 from play.models import GameCheckIn
 from read.models import ReadCheckIn
@@ -114,6 +115,11 @@ class PostDetailView(ShareDetailView):
     model = Post
     template_name = "write/post_detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        return context
+
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
@@ -162,11 +168,29 @@ class SayListView(ListView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            return Say.objects.filter(
+            say_queryset = Say.objects.filter(
                 Q(visible_to=self.request.user) | Q(is_direct_mention=False)
             ).order_by("-timestamp")
+
+            repost_queryset = Repost.objects.filter(user=self.user).order_by(
+                "-timestamp"
+            )
         else:
-            return Say.objects.filter(is_direct_mention=False).order_by("-timestamp")
+            say_queryset = Say.objects.filter(is_direct_mention=False).order_by(
+                "-timestamp"
+            )
+            repost_queryset = Repost.objects.filter(user=self.user).order_by(
+                "-timestamp"
+            )
+
+        # Merge and sort both querysets by the timestamp.
+        merged_queryset = sorted(
+            chain(say_queryset, repost_queryset),
+            key=attrgetter("timestamp"),
+            reverse=True,
+        )
+
+        return merged_queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -176,6 +200,10 @@ class SayListView(ListView):
         all_tags = []
         for say in Say.objects.filter(user=self.user):
             for tag in say.tags.all():
+                all_tags.append(tag)
+
+        for repost in Repost.objects.filter(user=self.user):
+            for tag in repost.tags.all():
                 all_tags.append(tag)
 
         # Count the frequency of each tag
@@ -207,6 +235,11 @@ class SayDetailView(ShareDetailView):
         if obj.is_direct_mention and self.request.user not in obj.visible_to.all():
             raise Http404("You do not have permission to view this.")
         return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        return context
 
 
 class SayCreateView(LoginRequiredMixin, CreateView):
@@ -294,6 +327,11 @@ class PinListView(ListView):
 class PinDetailView(ShareDetailView):
     model = Pin
     template_name = "write/pin_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        return context
 
 
 class PinCreateView(LoginRequiredMixin, CreateView):
@@ -611,6 +649,8 @@ class LuvListDetailView(DetailView):
 
         # Get a random content from the LuvList
         context["random_content"] = random.choice(contents) if contents else None
+
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
         return context
 
 
