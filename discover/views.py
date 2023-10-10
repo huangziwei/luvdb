@@ -150,7 +150,9 @@ class DiscoverListAllView(ListView):
                     ),
                 )
             )
-            say_and_reposts.sort(key=lambda x: x.vote_count, reverse=True)
+            say_and_reposts = sorted(
+                say_and_reposts, key=lambda x: (x.vote_count, x.timestamp), reverse=True
+            )
             context["says_and_reposts"] = say_and_reposts[:10]
 
             for model, model_name in models_list:
@@ -226,7 +228,7 @@ class DiscoverPostListView(ListView):
                     )
                 )
                 .filter(vote_count__gt=-1)
-                .order_by("-vote_count")
+                .order_by("-vote_count", "-timestamp")
             )
 
         elif order_by == "all_time":
@@ -281,7 +283,7 @@ class DiscoverPinListView(ListView):
                         output_field=IntegerField(),
                     )
                 )
-            ).order_by("-vote_count")
+            ).order_by("-vote_count", "-timestamp")
 
         elif order_by == "all_time":
             pins = Pin.objects.annotate(
@@ -335,7 +337,7 @@ class DiscoverLuvListListView(ListView):
                         output_field=IntegerField(),
                     )
                 )
-            ).order_by("-vote_count")
+            ).order_by("-vote_count", "-timestamp")
 
         elif order_by == "all_time":
             lists = LuvList.objects.annotate(
