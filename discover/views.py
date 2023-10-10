@@ -95,15 +95,27 @@ class DiscoverListAllView(ListView):
         return None  # We override `get_context_data` to send multiple querysets
 
     def annotate_vote_count(self, model, time_condition=None):
-        return model.objects.annotate(
-            vote_count=Sum(
-                Case(
-                    When(time_condition, then=F("votes__value")),
-                    default=Value(0),
-                    output_field=IntegerField(),
+        if time_condition is None:
+            return model.objects.annotate(
+                vote_count=Sum(
+                    Case(
+                        When(Q(votes__value__isnull=False), then=F("votes__value")),
+                        default=Value(0),
+                        output_field=IntegerField(),
+                    )
                 )
             )
-        )
+        else:
+            condition = Q(**time_condition)
+            return model.objects.annotate(
+                vote_count=Sum(
+                    Case(
+                        When(condition, then=F("votes__value")),
+                        default=Value(0),
+                        output_field=IntegerField(),
+                    )
+                )
+            )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -130,7 +142,7 @@ class DiscoverListAllView(ListView):
                 )[:10]
 
         elif order_by == "all_time":
-            time_condition = {"votes__value__isnull": False}
+            time_condition = None
 
             for model, model_name in models_list:
                 context[model_name] = (
