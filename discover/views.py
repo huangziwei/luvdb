@@ -1,6 +1,7 @@
 from datetime import timedelta
 from itertools import chain
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
@@ -17,6 +18,8 @@ from watch.models import WatchCheckIn
 from write.models import LuvList, Pin, Post, Repost, Say
 
 from .models import Vote
+
+User = get_user_model()
 
 ###########
 # helpers #
@@ -165,7 +168,9 @@ class DiscoverListAllView(ListView):
                     self.annotate_vote_count(Repost, time_condition),
                 )
             )
-            say_and_reposts.sort(key=lambda x: x.vote_count, reverse=True)
+            say_and_reposts = sorted(
+                say_and_reposts, key=lambda x: (x.vote_count, x.timestamp), reverse=True
+            )
             context["says_and_reposts"] = say_and_reposts[:10]
 
             for model, model_name in models_list:
@@ -189,6 +194,7 @@ class DiscoverListAllView(ListView):
                 context[model_name] = model.objects.all().order_by("-timestamp")[:10]
 
         context["order_by"] = order_by
+        context["current_page"] = "All"
         return context
 
 
@@ -246,6 +252,7 @@ class DiscoverPostListView(ListView):
 
         context["posts"] = page_obj
         context["order_by"] = order_by
+        context["current_page"] = "Posts"
         return context
 
 
@@ -299,6 +306,7 @@ class DiscoverPinListView(ListView):
 
         context["pins"] = page_obj
         context["order_by"] = order_by
+        context["current_page"] = "Pins"
         return context
 
 
@@ -352,4 +360,54 @@ class DiscoverLuvListListView(ListView):
 
         context["lists"] = page_obj
         context["order_by"] = order_by
+        context["current_page"] = "Lists"
+        return context
+
+
+class DiscoverLikedView(ListView):
+    template_name = "discover/discover_liked.html"
+
+    def get_queryset(self):
+        return None  # We override `get_context_data` to send multiple querysets
+
+    def fetch_voted_objects(self, model):
+        content_type = ContentType.objects.get_for_model(model)
+        voted_ids = Vote.objects.filter(
+            user=self.request.user, content_type=content_type
+        ).values_list("object_id", flat=True)
+
+        return (
+            model.objects.filter(id__in=voted_ids)
+            .annotate(vote_timestamp=F("votes__timestamp"))
+            .order_by("-vote_timestamp")
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        models_list = [
+            (Post, "posts"),
+            (Pin, "pins"),
+            (LuvList, "lists"),
+            (ReadCheckIn, "read_checkins"),
+            (WatchCheckIn, "watch_checkins"),
+            (ListenCheckIn, "listen_checkins"),
+            (GameCheckIn, "game_checkins"),
+        ]
+
+        say_and_reposts = list(
+            chain(
+                self.fetch_voted_objects(Say),
+                self.fetch_voted_objects(Repost),
+            )
+        )
+        context["says_and_reposts"] = sorted(
+            say_and_reposts, key=lambda x: x.vote_timestamp, reverse=True
+        )
+
+        for model, model_name in models_list:
+            context[model_name] = self.fetch_voted_objects(model)
+
+        context["current_page"] = "Liked"
+        context["object"] = self.request.user
         return context

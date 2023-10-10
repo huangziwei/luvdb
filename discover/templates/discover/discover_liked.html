@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+{% load markdownify %}
+{% load url_filters %}
+{% block title %}Liked{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex mb-3">
+                <span class="me-3">
+                    <a href="{% url 'write:say_list' user.username %}">Says</a>
+                </span>
+                <span class="me-3">
+                    <a href="{% url 'write:post_list' user.username %}">Posts</a>
+                </span>
+                <span class="me-3">
+                    <a href="{% url 'write:pin_list' user.username %}">Pins</a>
+                </span>
+                <span class="me-3">
+                    <a href="{% url 'write:luvlist_list' user.username %}">Lists</a>
+                </span>
+                {% if object == user %}
+                    <span class="me-3">
+                        <a href="{% url 'discover:liked' %}">Liked</a>
+                    </span>
+                {% endif %}
+            </div>
+            <hr>
+            <h2>You liked</h2>
+            <div class="row mt-3">
+                <!-- Lists -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Lists</h3>
+                    <ol>
+                        {% for list in lists %}
+                        <li>
+                            <div class="d-flex align-items-start">
+                                <div>
+                                    <a href="{% url 'write:luvlist_detail' list.id %}">{{list.title}}</a>
+                                    <span class="d-flex">
+                                        <p class="me-2 text-muted">
+                                            by <a href="{% url 'accounts:detail' list.user.username %}">{{ list.user.username }}</a>
+                                        </p>
+                                        <p class="me-2 text-muted">{{ list.timestamp|timesince }} ago / Liked {{list.vote_timestamp|timesince}} ago</p>
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <div>No liked Lists yet.</div>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <!-- Posts -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Posts</h3>      
+                    <ol>
+                        {% for post in posts %}
+                        <li>
+                            <div class="d-flex align-items-start">
+                                <div>
+                                    <a href="{% url 'write:post_detail' post.id %}">{{post.title}}</a>
+                                    <span class="d-flex">
+                                        <p class="me-2 text-muted">
+                                            by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.username }}</a>
+                                        </p>
+                                        <p class="me-2 text-muted">{{ post.timestamp|timesince }} ago / Liked {{post.vote_timestamp|timesince}} ago</p>
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <div>No liked Posts yet.</div>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <!-- Pins -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Pins</h3>
+                    <ol>
+                        {% for pin in pins %}
+                        <li>
+                            <div class="d-flex align-items-start">
+                                <div>
+                                    <a href="{% url 'write:pin_detail' pin.id %}">{{pin.title}}</a>
+                                    <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
+                                    <span class="d-flex">
+                                        <p class="me-2 text-muted">
+                                            by <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.username }}</a>
+                                        </p>
+                                        <p class="me-2 text-muted">{{ pin.timestamp|timesince }} ago / Liked {{pin.vote_timestamp|timesince}} ago</p>
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <div>No liked Pins yet.</div>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <!-- Says and Reposts -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Says / Reposts</h3>
+                    <ol>
+                        {% for activity in says_and_reposts %}
+                        <li class="mb-2">
+                            <div class="d-flex align-items-start">
+                                <div>
+                                    <span class="d-flex">
+                                        <p class="me-2 text-muted mb-2">
+                                            <a href="{% url 'accounts:detail' activity.user.username %}">{{ activity.user.username }}</a>
+                                            {% if activity.model_name == "Say" %}said: {% else %}reposted: {% endif %}
+                                        </p>
+                                    </span>
+                                    <div class="bg-light p-3 mb-2">
+                                        {{activity.content|truncatechars:300|markdownify}}</a>
+                                    </div>
+                                    <span class="d-flex">
+                                        <p class="me-2 text-muted">
+                                            {% if activity.model_name == "Say" %}
+                                            <a href="{% url 'write:say_detail' activity.id %}" class="text-muted">
+                                                {{ activity.timestamp|timesince }} ago / Liked {{activity.vote_timestamp|timesince}} ago
+                                            </a>
+                                            {% else %}
+                                            <a href="{% url 'write:repost_detail' activity.id %}" class="text-muted">
+                                                {{ activity.timestamp|timesince }} ago / Liked {{activity.vote_timestamp|timesince}} ago
+                                            </a>
+                                            {% endif %}
+                                        </p>
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <div>No liked Says or Reposts yet.</div>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <!-- Checkins -->
+                <!-- Read -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Read Check-ins</h3>      
+                    <ol>
+                        {% for checkin in read_checkins %}
+                            <li class="mb-3">
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted mb-2">
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                checked in to 
+                                                {% if checkin.content_type.model == 'book' %}
+                                                    <a href="{% url 'read:book_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% elif checkin.content_type.model == 'issue' %}
+                                                    <a href="{% url 'read:issue_detail' checkin.content_object.periodical.id checkin.content_object.id %}">
+                                                        {{checkin.content_object.periodical.title}} Vol. {{checkin.content_object.volume}} Nr. {{checkin.content_object.number}}
+                                                    </a>
+                                                {% endif %}
+                                                {% if checkin.content_object.publication_date %}
+                                                    ({{checkin.content_object.publication_date}})
+                                                {% endif %}
+                                            </div>
+                                        </span>
+                                        <div class="bg-light p-3 mb-2">
+                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                        </div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted">
+                                                <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-muted">
+                                                    {{ checkin.timestamp|timesince }} ago / Liked {{checkin.vote_timestamp|timesince}} ago
+                                                </a>
+                                            </div>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                        <div>No liked Read Check-ins yet.</div>
+                        {% endfor %}
+                    </ol>
+                </div>
+                <!-- Watch -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Watch Check-ins</h3>      
+                    <ol>
+                        {% for checkin in watch_checkins %}
+                            <li class="mb-3">
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted mb-2">
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                checked in to 
+                                                {% if checkin.content_type.model == 'movie' %}
+                                                    <a href="{% url 'watch:movie_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% elif checkin.content_type.model == 'series' %}
+                                                    <a href="{% url 'watch:series_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% endif %}
+                                                {% if checkin.content_object.release_date %}
+                                                    ({{checkin.content_object.release_date}})
+                                                {% endif %}
+                                                {% if checkin.content_object.region_release_dates.exists %}
+                                                    {% with earliest_region_release_date=checkin.content_object.region_release_dates.all|first %}
+                                                        ({{ earliest_region_release_date.release_date }}, {{ earliest_region_release_date.region }})
+                                                    {% endwith %}
+                                                {% endif %}
+                                            </div>
+                                        </span>
+                                        <div class="bg-light p-3 mb-2">
+                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                        </div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted">
+                                                <a href="{% url 'watch:watch_checkin_detail' checkin.id %}" class="text-muted">
+                                                    {{ checkin.timestamp|timesince }} ago / Liked {{checkin.vote_timestamp|timesince}} ago
+                                                </a>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <div>No liked Watch Check-ins yet.</div>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <!-- Listen -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Listen Check-ins</h3>      
+                    <ol>
+                        {% for checkin in listen_checkins %}
+                            <li class="mb-3">
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted mb-2">
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                checked in to 
+                                                {% if checkin.content_type.model == 'release' %}
+                                                    <a href="{% url 'listen:release_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% elif checkin.content_type.model == 'podcast' %}
+                                                    <a href="{% url 'listen:podcast_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% elif checkin.content_type.model == 'audiobook' %}
+                                                    <a href="{% url 'listen:audiobook_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% endif %}
+                                                {% if checkin.content_object.release_date %}
+                                                    ({{checkin.content_object.release_date}})
+                                                {% endif %}
+                                            </div>
+                                        </span>
+                                        <div class="bg-light p-3 mb-2">
+                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                        </div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted">
+                                                <a href="{% url 'listen:listen_checkin_detail' checkin.id %}" class="text-muted">
+                                                    {{ checkin.timestamp|timesince }} ago / Liked {{checkin.vote_timestamp|timesince}} ago
+                                                </a>
+                                            </div>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <div>No liked Listen Check-ins yet.</div>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <!-- Play -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Play Check-ins</h3>      
+                    <ol>
+                        {% for checkin in game_checkins %}
+                            <li class="mb-3">
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted mb-2">
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                checked in to 
+                                                <a href="{% url 'play:game_detail' checkin.game.id %}">{{checkin.game.title}}</a>
+                                                {% if checkin.game.region_release_dates.exists %}
+                                                    {% with earliest_region_release_date=checkin.game.region_release_dates.all|first %}
+                                                        ({{ earliest_region_release_date.release_date }}, {{ earliest_region_release_date.region }})
+                                                    {% endwith %}
+                                                {% endif %}
+                                            </div>
+                                        </span>
+                                        <div class="bg-light p-3 mb-2">
+                                            {{checkin.content|truncatechars:300|markdownify}}</a>
+                                        </div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted">
+                                                <a href="{% url 'play:game_checkin_detail' checkin.id %}" class="text-muted">
+                                                    {{ checkin.timestamp|timesince }} ago / Liked {{checkin.vote_timestamp|timesince}} ago
+                                                </a>
+                                            </div>
+                                        </span>
+                                        
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <div>No liked Game Check-ins yet.</div>
+                        {% endfor %}
+                    </ol>
+                </div>
+                
+            </div>
+            {% include "discover/discover_explain.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

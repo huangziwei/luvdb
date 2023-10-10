@@ -25,6 +25,11 @@
                         <span class="me-3">
                             <a href="{% url 'write:luvlist_list' object.username %}">Lists</a>
                         </span>
+                        {% if object.username == user.username %}
+                        <span class="me-3">
+                            <a href="{% url 'discover:liked' %}">Liked</a>
+                        </span>
+                        {% endif %}
                     </div>
                 </div>
                 <hr>

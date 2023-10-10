@@ -168,7 +168,7 @@ class SayListView(ListView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            say_queryset = Say.objects.filter(
+            say_queryset = Say.objects.filter(user=self.user).filter(
                 Q(visible_to=self.request.user) | Q(is_direct_mention=False)
             ).order_by("-timestamp")
 
