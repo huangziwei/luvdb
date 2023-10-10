@@ -77,28 +77,34 @@
                     </ol>
                 </div>
 
-                <!-- Says -->
+                <!-- Says / Reposts -->
                 <div class="col-12 col-md-6 mb-3">
-                    <h3>Says</h3>      
+                    <h3>Says / Reposts</h3>      
                     <ol>
-                        {% for say in says %}
+                        {% for activity in says_and_reposts %}
                             <li class="mb-2">
                                 <div class="d-flex align-items-start">
                                     <div>
                                         <span class="d-flex">
                                             <p class="me-2 text-muted mb-2">
-                                                <a href="{% url 'accounts:detail' say.user.username %}">{{ say.user.username }}</a>
-                                                said: 
+                                                <a href="{% url 'accounts:detail' activity.user.username %}">{{ activity.user.username }}</a>
+                                                {% if activity.model_name == "Say" %}said: {% else %}reposted: {% endif %}
                                             </p>
                                         </span>
                                         <div class="bg-light p-3 mb-2">
-                                            {{say.content|truncatechars:300|markdownify}}</a>
+                                            {{activity.content|truncatechars:300|markdownify}}</a>
                                         </div>
                                         <span class="d-flex">
                                             <p class="me-2 text-muted">
-                                                <a href="{% url 'write:say_detail' say.id %}" class="text-muted">
-                                                    {{ say.timestamp|timesince }} ago
+                                                {% if activity.model_name == "Say" %}
+                                                <a href="{% url 'write:say_detail' activity.id %}" class="text-muted">
+                                                    {{ activity.timestamp|timesince }} ago
                                                 </a>
+                                                {% else %}
+                                                <a href="{% url 'write:repost_detail' activity.id %}" class="text-muted">
+                                                    {{ activity.timestamp|timesince }} ago
+                                                </a>
+                                                {% endif %}
                                             </p>
                                         </span>
                                     </div>
@@ -182,12 +188,11 @@
                                         </div>
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
-                                                <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-muted">
+                                                <a href="{% url 'watch:watch_checkin_detail' checkin.id %}" class="text-muted">
                                                     {{ checkin.timestamp|timesince }} ago
                                                 </a>
                                             </div>
                                         </span>
-                                        
                                     </div>
                                 </div>
                             </li>
@@ -224,7 +229,7 @@
                                         </div>
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
-                                                <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-muted">
+                                                <a href="{% url 'listen:listen_checkin_detail' checkin.id %}" class="text-muted">
                                                     {{ checkin.timestamp|timesince }} ago
                                                 </a>
                                             </div>
@@ -262,7 +267,7 @@
                                         </div>
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
-                                                <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-muted">
+                                                <a href="{% url 'play:game_checkin_detail' checkin.id %}" class="text-muted">
                                                     {{ checkin.timestamp|timesince }} ago
                                                 </a>
                                             </div>

@@ -1,4 +1,5 @@
 from datetime import timedelta
+from itertools import chain
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -13,7 +14,7 @@ from listen.models import ListenCheckIn
 from play.models import GameCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
-from write.models import LuvList, Pin, Post, Say
+from write.models import LuvList, Pin, Post, Repost, Say
 
 from .models import Vote
 
@@ -120,8 +121,10 @@ class DiscoverListAllView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order_by = self.request.GET.get("order_by", "newest")  # Default to 'newest'
+
         models_list = [
-            (Say, "says"),
+            # (Say, "says"),  # Combined with Reposts
+            # (Repost, "reposts"),
             (Post, "posts"),
             (Pin, "pins"),
             (LuvList, "lists"),
@@ -130,9 +133,22 @@ class DiscoverListAllView(ListView):
             (ListenCheckIn, "listen_checkins"),
             (GameCheckIn, "game_checkins"),
         ]
+
         if order_by == "trending":
             seven_days_ago = timezone.now() - timedelta(days=7)
             time_condition = {"votes__timestamp__gte": seven_days_ago}
+            say_and_reposts = list(
+                chain(
+                    self.annotate_vote_count(Say, time_condition).filter(
+                        vote_count__gt=-1
+                    ),
+                    self.annotate_vote_count(Repost, time_condition).filter(
+                        vote_count__gt=-1
+                    ),
+                )
+            )
+            say_and_reposts.sort(key=lambda x: x.vote_count, reverse=True)
+            context["says_and_reposts"] = say_and_reposts[:10]
 
             for model, model_name in models_list:
                 context[model_name] = (
@@ -143,6 +159,14 @@ class DiscoverListAllView(ListView):
 
         elif order_by == "all_time":
             time_condition = None
+            say_and_reposts = list(
+                chain(
+                    self.annotate_vote_count(Say, time_condition),
+                    self.annotate_vote_count(Repost, time_condition),
+                )
+            )
+            say_and_reposts.sort(key=lambda x: x.vote_count, reverse=True)
+            context["says_and_reposts"] = say_and_reposts[:10]
 
             for model, model_name in models_list:
                 context[model_name] = (
@@ -152,6 +176,15 @@ class DiscoverListAllView(ListView):
                 )[:10]
 
         elif order_by == "newest":
+            say_and_reposts = list(
+                chain(
+                    Say.objects.all().order_by("-timestamp"),
+                    Repost.objects.all().order_by("-timestamp"),
+                )
+            )
+            say_and_reposts.sort(key=lambda x: x.timestamp, reverse=True)
+            context["says_and_reposts"] = say_and_reposts[:10]
+
             for model, model_name in models_list:
                 context[model_name] = model.objects.all().order_by("-timestamp")[:10]
 

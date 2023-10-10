@@ -589,6 +589,11 @@ class RepostDetailView(ShareDetailView):
     template_name = "write/repost_detail.html"
     context_object_name = "repost"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        return context
+
 
 class RepostDeleteView(LoginRequiredMixin, DeleteView):
     model = Repost

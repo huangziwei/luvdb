@@ -104,6 +104,7 @@ class Repost(models.Model):
     comments = GenericRelation(Comment)
     comments_enabled = models.BooleanField(default=True)
     tags = models.ManyToManyField(Tag, blank=True)
+    votes = GenericRelation(Vote)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -123,6 +124,9 @@ class Repost(models.Model):
 
     def get_reposts(self):
         return Repost.objects.filter(original_repost=self).exclude(id=self.id)
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
     def model_name(self):
         return "Repost"
