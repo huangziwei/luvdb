@@ -8,12 +8,8 @@
             <a href="{% url 'discover:lists' %}" class="me-3 text-muted">Lists</a>
             <a href="{% url 'discover:posts' %}" class="me-3 text-muted">Posts</a>
             <a href="{% url 'discover:pins' %}" class="me-3 text-muted">Pins</a>
-            {% if user.is_authenticated %}
-                <a href="{% url 'discover:liked' %}" class="me-3 text-muted">Liked</a>
-            {% endif %}
         </span>
     </div>
-    {% if current_page != "Liked"%}
     <div class="d-flex flex-row mt-2">
         <span class="mb-0 text-muted">
             <a href="?order_by=newest" class="me-3 text-muted">Newest</a>
@@ -21,5 +17,4 @@
             <a href="?order_by=all_time" class="me-3 text-muted">All Time</a>
         </span>
     </div>
-    {% endif %}
 </div>
