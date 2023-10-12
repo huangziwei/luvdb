@@ -11,7 +11,7 @@ from play.models import GameCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
 
-from .models import Pin, Post, Repost, Say
+from .models import Pin, Post, Project, Repost, Say
 
 User = get_user_model()
 
@@ -80,6 +80,51 @@ class UserPostFeed(Feed):
 
     def item_description(self, post):
         return post.content  # Assuming 'Post' model has a 'content' field.
+
+    def item_link(self, post):
+        return reverse("write:post_detail", args=[post.pk])
+
+    def item_pubdate(self, post):
+        return post.timestamp
+
+
+class UserPostProjectFeed(Feed):
+    def __call__(self, request, *args, **kwargs):
+        user, project = self.get_object(
+            request, kwargs.get("username"), kwargs.get("project")
+        )
+        if not user.is_public:
+            raise Http404("This feed is private.")
+        return super(UserPostProjectFeed, self).__call__(request, *args, **kwargs)
+
+    def get_object(self, request, username, project):
+        user = User.objects.get(username=username)
+        project = Project.objects.get(name=project, post__user=user)
+        return user, project
+
+    def title(self, obj):
+        user, project = obj
+        return f"{user.username}'s {project.name} Post feed at LʌvDB"
+
+    def link(self, obj):
+        user, project = obj
+        return reverse("write:post_list_project", args=[user.username, project.name])
+
+    def description(self, obj):
+        user, project = obj
+        return f"Latest posts in project {project.name} by {user.username} on LʌvDB"
+
+    def items(self, obj):
+        user, project = obj
+        return Post.objects.filter(user=user, projects=project).order_by("-timestamp")[
+            :25
+        ]
+
+    def item_title(self, post):
+        return post.title
+
+    def item_description(self, post):
+        return post.content
 
     def item_link(self, post):
         return reverse("write:post_detail", args=[post.pk])

@@ -1,6 +1,13 @@
 from django.urls import path, re_path
 
-from .feeds import TagListFeed, TagUserListFeed, UserPinFeed, UserPostFeed, UserSayFeed
+from .feeds import (
+    TagListFeed,
+    TagUserListFeed,
+    UserPinFeed,
+    UserPostFeed,
+    UserPostProjectFeed,
+    UserSayFeed,
+)
 from .views import (
     CommentCreateView,
     CommentDeleteView,
@@ -55,7 +62,7 @@ urlpatterns = [
     # post
     path("u/<str:username>/posts/", PostListView.as_view(), name="post_list"),
     path(
-        "u/<str:username>/posts/<str:project>",
+        "u/<str:username>/posts/<str:project>/",
         PostListView.as_view(),
         name="post_list_project",
     ),
@@ -65,6 +72,11 @@ urlpatterns = [
         name="project-autocomplete",
     ),
     path("u/<str:username>/posts/rss/", UserPostFeed(), name="user_post_feed"),
+    path(
+        "u/<str:username>/posts/<str:project>/rss/",
+        UserPostProjectFeed(),
+        name="user_post_project_feed",
+    ),
     path("post/create/", PostCreateView.as_view(), name="post_create"),
     path("post/<int:pk>/", PostDetailView.as_view(), name="post_detail"),
     path("post/<int:pk>/update/", PostUpdateView.as_view(), name="post_update"),

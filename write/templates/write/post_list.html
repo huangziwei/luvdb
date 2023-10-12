@@ -41,7 +41,11 @@
                             <a class="btn btn-sm btn-primary" href="{% url 'write:post_create' %}">New</a>
                         {% endif %}
                         {% if object.is_public %}
+                            {% if current_project %}
+                            <a class="btn btn-sm btn-success" href="{% url 'write:user_post_project_feed' object.username current_project %}">RSS</a>
+                            {% else %}
                             <a class="btn btn-sm btn-success" href="{% url 'write:user_post_feed' object.username %}">RSS</a>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
