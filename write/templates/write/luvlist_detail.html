@@ -15,23 +15,33 @@
                         <div class="me-2">
                             by <a href="{% url 'accounts:detail' object.user.username %}">{{ object.user.display_name | default:object.user.username }}</a>
                         </div>
-                        <div class='me-2 text-secondary'>
+
+                        <div class='me-2 text-secondary d-none d-lg-block'>
                             Updated
                             <a href="{% url 'write:luvlist_list' object.user.username %}"
-                               class="text-muted">{{ object.updated_at|timesince }} ago</a>
+                                class="text-muted">{{ object.updated_at|timesince }} ago</a>
                         </div>
-                    </div>
+                    </div>    
                     <div>
                         <a href="{% url 'discover:vote' 'luvlist' object.id 'up' %}" 
-                            class="me-2 btn btn-sm {% if has_voted %}btn-outline-danger active{% else %}btn-outline-danger{% endif %}" 
+                            class="me-1 btn btn-sm {% if has_voted %}btn-outline-danger active{% else %}btn-outline-danger{% endif %}" 
                             title="Like this list">
                             ♡
                         </a>
                         <a href="{% url 'write:randomizer' object.id %}" class="btn btn-primary btn-sm">Surprise me!</a>
                     </div>
-                </div>
 
-                <div class="mb-3">{{ object.description | markdownify }}</div>
+                    
+                </div>
+                
+
+                <div class="mb-2">{{ object.description | markdownify }}</div>
+                <div class="mb-3 me-2 text-secondary d-lg-none">
+                    Updated
+                    <a href="{% url 'write:luvlist_list' object.user.username %}"
+                        class="text-muted">{{ object.updated_at|timesince }} ago</a>
+                </div>
+                
 
                 {% for content in contents %}
                     {% if content.content_object %}
