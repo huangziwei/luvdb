@@ -10,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, transaction
 from django.db.models import Q
-from django.db.models.signals import post_delete, pre_delete
+from django.db.models.signals import m2m_changed, post_delete, pre_delete
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
@@ -44,6 +44,16 @@ class Tag(models.Model):
 
     def model_name(self):
         return "Tag"
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+    def model_name(self):
+        return "Category"
 
 
 class Comment(models.Model):
@@ -175,6 +185,7 @@ class Post(models.Model):
     comments = GenericRelation(Comment)
     comments_enabled = models.BooleanField(default=True)
     tags = models.ManyToManyField(Tag, blank=True)
+    categories = models.ManyToManyField(Category, blank=True)
     reposts = GenericRelation(Repost)
     votes = GenericRelation(Vote)
 
@@ -389,6 +400,16 @@ def notify_comment_user_on_deletion(sender, instance, **kwargs):
                 )
 
     transaction.on_commit(_notify_comment_user_on_deletion)
+
+
+@receiver(m2m_changed, sender=Post.categories.through)
+def update_categories(sender, instance, action, **kwargs):
+    if action == "post_remove" or action == "post_clear":
+        # Only check categories if some are removed
+        unused_categories = Category.objects.annotate(
+            num_posts=models.Count("post")
+        ).filter(num_posts=0)
+        unused_categories.delete()
 
 
 # delete repost when activity is deleted

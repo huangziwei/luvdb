@@ -5,6 +5,7 @@ from itertools import chain
 from operator import attrgetter
 
 import pytz
+from dal import autocomplete
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
@@ -37,7 +38,17 @@ from .forms import (
     RepostForm,
     SayForm,
 )
-from .models import Comment, ContentInList, LuvList, Pin, Post, Randomizer, Repost, Say
+from .models import (
+    Category,
+    Comment,
+    ContentInList,
+    LuvList,
+    Pin,
+    Post,
+    Randomizer,
+    Repost,
+    Say,
+)
 
 User = get_user_model()
 
@@ -80,7 +91,21 @@ class PostListView(ListView):
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs["username"])
-        return Post.objects.filter(user=self.user).order_by("-timestamp")
+        queryset = Post.objects.filter(user=self.user)
+
+        if "category" in self.kwargs:
+            category = Category.objects.filter(
+                name=self.kwargs["category"], post__user=self.user
+            ).first()
+            if category is not None:
+                queryset = queryset.filter(categories=category)
+            else:
+                # Handle the case when the category does not exist
+                queryset = Post.objects.none()
+        else:
+            queryset = queryset.filter(categories__isnull=True)
+
+        return queryset.order_by("-timestamp")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -107,6 +132,10 @@ class PostListView(ListView):
             tag_sizes[tag] = min_size + scaling_factor * tag_counter[tag]
 
         context["all_tags"] = tag_sizes
+        context["all_categories"] = Category.objects.filter(
+            post__user=self.user
+        ).distinct()
+        context["current_category"] = self.kwargs.get("category", None)
 
         return context
 
@@ -118,6 +147,7 @@ class PostDetailView(ShareDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["categories"] = self.object.categories.all()
         return context
 
 
@@ -168,9 +198,11 @@ class SayListView(ListView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            say_queryset = Say.objects.filter(user=self.user).filter(
-                Q(visible_to=self.request.user) | Q(is_direct_mention=False)
-            ).order_by("-timestamp")
+            say_queryset = (
+                Say.objects.filter(user=self.user)
+                .filter(Q(visible_to=self.request.user) | Q(is_direct_mention=False))
+                .order_by("-timestamp")
+            )
 
             repost_queryset = Repost.objects.filter(user=self.user).order_by(
                 "-timestamp"
@@ -803,3 +835,21 @@ class RandomizerDetailView(DetailView):
         context["time_until_renewal"] = time_until_renewal
 
         return context
+
+
+class CategoryAutocomplete(autocomplete.Select2QuerySetView):
+    create_field = "name"  # This is the field used to create the new Category object
+
+    def get_queryset(self):
+        qs = Category.objects.filter(post__user=self.request.user).distinct()
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+
+        return qs
+
+    def create_object(self, text):
+        return Category.objects.create(name=text)
+
+    def has_add_permission(self, request):
+        return True  # or customize this if you require special logic

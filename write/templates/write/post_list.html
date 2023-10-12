@@ -25,9 +25,17 @@
                 </div>
                 <hr>
                 <div class="d-flex justify-content-between mb-3">
-                    <h5>
-                        <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a> posted
-                    </h5>
+                    <div>
+                        <h5>
+                            <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a> posted
+                        </h5>
+                        {% if current_category %}
+                            <div>
+                                (in cateogry "<a class="text-muted" href="{% url 'write:post_list_category' object.username current_category %}">{{current_category}}</a>")
+                            </div>
+                        {% endif %}
+                    </div>
+                    
                     <div>
                         {% if object.username == request.user.username %}
                             <a class="btn btn-sm btn-primary" href="{% url 'write:post_create' %}">New</a>
@@ -37,6 +45,7 @@
                         {% endif %}
                     </div>
                 </div>
+
                 {% for post in post_list %}
                     <div>
                         <div>
@@ -68,10 +77,11 @@
                     <p>Nothing.</p>
                 {% endfor %}
             </div>
-            {% if all_tags %}
+            {% if all_tags or all_categories %}
                 <div class="col-12 col-md-5 right-column">
                     <!--All tags on the page-->
-                    <div class="bg-light p-3">
+                    {% if all_tags %}
+                    <div class="bg-light p-3 mb-3">
                         <span>
                             {% for tag, size in all_tags.items %}
                                 <a href="{% url 'write:tag_user_list' object.username tag.name %}"
@@ -80,6 +90,24 @@
                             {% endfor %}
                         </span>
                     </div>
+                    {% endif %}
+
+                    {% if all_categories %}
+                    <div class="bg-light p-3">
+                        <h5>Categories</h5>
+                        {% comment %} <div>
+                            <a href="{% url 'write:post_list' object.username %}"
+                                   class="me-2">Uncategorized</a>
+                        </div> {% endcomment %}
+                        {% for category in all_categories %}
+                        <div>
+                            <a href="{% url 'write:post_list_category' object.username category.name %}"
+                                   class="me-2">{{ category.name }}</a>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

@@ -1,11 +1,13 @@
 from urllib.parse import urlparse
 
+from dal import autocomplete
 from django import forms
 from django.contrib.auth import get_user_model, settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse_lazy
 
-from .models import Comment, ContentInList, LuvList, Pin, Post, Repost, Say
+from .models import Category, Comment, ContentInList, LuvList, Pin, Post, Repost, Say
 
 User = get_user_model()
 
@@ -13,7 +15,7 @@ User = get_user_model()
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["title", "content", "comments_enabled"]
+        fields = ["title", "content", "comments_enabled", "categories"]
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Post title..."}),
             "content": forms.Textarea(
@@ -23,6 +25,9 @@ class PostForm(forms.ModelForm):
                     "id": "text-input",
                 }
             ),
+            "categories": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("write:category-autocomplete"),
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -30,6 +35,9 @@ class PostForm(forms.ModelForm):
         self.fields["title"].label = ""
         self.fields["content"].label = ""
         self.fields["comments_enabled"].label = "Enable comments"
+        self.fields[
+            "categories"
+        ].help_text = "Posts in categories appear only on their respective category pages, not in the general post list."
 
 
 class SayForm(forms.ModelForm):

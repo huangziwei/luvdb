@@ -2,6 +2,7 @@ from django.urls import path, re_path
 
 from .feeds import TagListFeed, TagUserListFeed, UserPinFeed, UserPostFeed, UserSayFeed
 from .views import (
+    CategoryAutocomplete,
     CommentCreateView,
     CommentDeleteView,
     CommentUpdateView,
@@ -53,6 +54,16 @@ urlpatterns = [
     path("pin/copy/<int:pk>/", PinCreateView.as_view(), name="pin_copy"),
     # post
     path("u/<str:username>/posts/", PostListView.as_view(), name="post_list"),
+    path(
+        "u/<str:username>/posts/<str:category>",
+        PostListView.as_view(),
+        name="post_list_category",
+    ),
+    path(
+        "category-autocomplete/",
+        CategoryAutocomplete.as_view(),
+        name="category-autocomplete",
+    ),
     path("u/<str:username>/posts/rss/", UserPostFeed(), name="user_post_feed"),
     path("post/create/", PostCreateView.as_view(), name="post_create"),
     path("post/<int:pk>/", PostDetailView.as_view(), name="post_detail"),
