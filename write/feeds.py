@@ -90,35 +90,36 @@ class UserPostFeed(Feed):
 
 class UserPostProjectFeed(Feed):
     def __call__(self, request, *args, **kwargs):
-        user, project = self.get_object(
-            request, kwargs.get("username"), kwargs.get("project")
-        )
-        if not user.is_public:
+        username = kwargs.get("username")
+        project_name = kwargs.get("project")
+        if not self.is_feed_public(username):
             raise Http404("This feed is private.")
         return super(UserPostProjectFeed, self).__call__(request, *args, **kwargs)
 
-    def get_object(self, request, username, project):
+    def is_feed_public(self, username):
         user = User.objects.get(username=username)
-        project = Project.objects.get(name=project, post__user=user)
-        return user, project
+        return user.is_public
+
+    def get_object(self, request, username, project):
+        return username, project
 
     def title(self, obj):
-        user, project = obj
-        return f"{user.username}'s {project.name} Post feed at LʌvDB"
+        username, project_name = obj
+        return f"{username}'s {project_name} Post feed at LʌvDB"
 
     def link(self, obj):
-        user, project = obj
-        return reverse("write:post_list_project", args=[user.username, project.name])
+        username, project_name = obj
+        return reverse("write:post_list_project", args=[username, project_name])
 
     def description(self, obj):
-        user, project = obj
-        return f"Latest posts in project {project.name} by {user.username} on LʌvDB"
+        username, project_name = obj
+        return f"Latest posts in project {project_name} by {username} on LʌvDB"
 
     def items(self, obj):
-        user, project = obj
-        return Post.objects.filter(user=user, projects=project).order_by("-timestamp")[
-            :25
-        ]
+        username, project_name = obj
+        return Post.objects.filter(
+            user__username=username, projects__name=project_name
+        ).order_by("-timestamp")[:25]
 
     def item_title(self, post):
         return post.title

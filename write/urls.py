@@ -61,21 +61,21 @@ urlpatterns = [
     path("pin/copy/<int:pk>/", PinCreateView.as_view(), name="pin_copy"),
     # post
     path("u/<str:username>/posts/", PostListView.as_view(), name="post_list"),
+    path("u/<str:username>/posts/rss/", UserPostFeed(), name="user_post_feed"),
     path(
         "u/<str:username>/posts/<str:project>/",
         PostListView.as_view(),
         name="post_list_project",
     ),
     path(
-        "project-autocomplete/",
-        ProjectAutocomplete.as_view(),
-        name="project-autocomplete",
-    ),
-    path("u/<str:username>/posts/rss/", UserPostFeed(), name="user_post_feed"),
-    path(
         "u/<str:username>/posts/<str:project>/rss/",
         UserPostProjectFeed(),
         name="user_post_project_feed",
+    ),
+    path(
+        "project-autocomplete/",
+        ProjectAutocomplete.as_view(),
+        name="project-autocomplete",
     ),
     path("post/create/", PostCreateView.as_view(), name="post_create"),
     path("post/<int:pk>/", PostDetailView.as_view(), name="post_detail"),
