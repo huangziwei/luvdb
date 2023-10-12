@@ -30,11 +30,8 @@
                         </a>
                         <a href="{% url 'write:randomizer' object.id %}" class="btn btn-primary btn-sm">Surprise me!</a>
                     </div>
-
-                    
                 </div>
                 
-
                 <div class="mb-2">{{ object.description | markdownify }}</div>
                 <div class="mb-3 me-2 text-secondary d-lg-none">
                     Updated
@@ -42,7 +39,6 @@
                         class="text-muted">{{ object.updated_at|timesince }} ago</a>
                 </div>
                 
-
                 {% for content in contents %}
                     {% if content.content_object %}
                         {% if content.content_type.model == 'luvlist' %}

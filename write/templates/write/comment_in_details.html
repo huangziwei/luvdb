@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {% if comments %}
     {% for comment in comments %}
-        <div class="mt-2">
+        <div class="mt-3">
             <span class='d-flex mt-2'>
                 <a href="{% url 'accounts:detail' comment.user.username %}" class="me-2">
                     {{ comment.user.display_name | default:comment.user.username }}
