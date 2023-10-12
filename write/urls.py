@@ -39,8 +39,8 @@ from .views import (
 app_name = "write"
 urlpatterns = [
     # pin
-    path("u/<str:username>/pins", PinListView.as_view(), name="pin_list"),
-    path("u/<str:username>/pins/rss", UserPinFeed(), name="user_pin_feed"),
+    path("u/<str:username>/pins/", PinListView.as_view(), name="pin_list"),
+    path("u/<str:username>/pins/rss/", UserPinFeed(), name="user_pin_feed"),
     re_path(
         r"^pins/from/(?P<root_url>.+)/$",
         PinsFromURLView.as_view(),
@@ -52,15 +52,15 @@ urlpatterns = [
     path("pin/<int:pk>/delete/", PinDeleteView.as_view(), name="pin_delete"),
     path("pin/copy/<int:pk>/", PinCreateView.as_view(), name="pin_copy"),
     # post
-    path("u/<str:username>/posts", PostListView.as_view(), name="post_list"),
-    path("u/<str:username>/posts/rss", UserPostFeed(), name="user_post_feed"),
+    path("u/<str:username>/posts/", PostListView.as_view(), name="post_list"),
+    path("u/<str:username>/posts/rss/", UserPostFeed(), name="user_post_feed"),
     path("post/create/", PostCreateView.as_view(), name="post_create"),
     path("post/<int:pk>/", PostDetailView.as_view(), name="post_detail"),
     path("post/<int:pk>/update/", PostUpdateView.as_view(), name="post_update"),
     path("post/<int:pk>/delete/", PostDeleteView.as_view(), name="post_delete"),
     # say
-    path("u/<str:username>/says", SayListView.as_view(), name="say_list"),
-    path("u/<str:username>/says/rss", UserSayFeed(), name="user_say_feed"),
+    path("u/<str:username>/says/", SayListView.as_view(), name="say_list"),
+    path("u/<str:username>/says/rss/", UserSayFeed(), name="user_say_feed"),
     path("say/create/", SayCreateView.as_view(), name="say_create"),
     path("say/<int:pk>/", SayDetailView.as_view(), name="say_detail"),
     path("say/<int:pk>/update/", SayUpdateView.as_view(), name="say_update"),
@@ -93,7 +93,7 @@ urlpatterns = [
         TagUserListView.as_view(),
         name="tag_user_list",
     ),
-    path("tag/<str:tag>/rss", TagListFeed(), name="tag_list_feed"),
+    path("tag/<str:tag>/rss/", TagListFeed(), name="tag_list_feed"),
     path(
         "u/<str:username>/tag/<str:tag>/rss",
         TagUserListFeed(),
