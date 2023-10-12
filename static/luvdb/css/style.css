@@ -8,7 +8,7 @@
 }
 
 .select2-selection__choice {
-    margin-bottom: .75em !important;
+    margin-bottom: 0 !important;
 }
 
 /* https://github.com/yourlabs/django-autocomplete-light/issues/1055#issuecomment-610613743  */
@@ -180,8 +180,10 @@ li:last-child {
 
 .select2-selection__rendered {
     line-height: normal !important;
+    margin-top:0 !important;
     padding: 0.6em 1.5em 0em 0.8em !important;
     vertical-align: middle !important;
+    color: darkgray !important;
 }
 
 
@@ -487,14 +489,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 [data-bs-theme='dark'] .select2-selection__rendered {
     line-height: normal !important;
-    padding: 0.6em 1.5em 0em 0.8em !important;
+    padding: 0.6em 1.5em 0.6em 0.8em !important;
     vertical-align: middle !important;
-    color: rgb(173, 181, 189) !important;
+    color: darkgray !important;
+}
+
+.select2-search__field {
+    margin-top: 0 !important;
+}
+
+[data-bs-theme='dark'] .select2-search__field {
+    margin-top: 0 !important;
 }
 
 [data-bs-theme='dark'] .select2-selection__choice {
     background-color: rgb(51, 51, 51) !important;
     border-color: rgb(51, 51, 51) !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
 }
 
 /* [data-bs-theme='dark'] .btn-primary {

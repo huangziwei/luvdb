@@ -46,14 +46,14 @@ class Tag(models.Model):
         return "Tag"
 
 
-class Category(models.Model):
+class Project(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
 
     def model_name(self):
-        return "Category"
+        return "Project"
 
 
 class Comment(models.Model):
@@ -185,7 +185,7 @@ class Post(models.Model):
     comments = GenericRelation(Comment)
     comments_enabled = models.BooleanField(default=True)
     tags = models.ManyToManyField(Tag, blank=True)
-    categories = models.ManyToManyField(Category, blank=True)
+    projects = models.ManyToManyField(Project, blank=True)
     reposts = GenericRelation(Repost)
     votes = GenericRelation(Vote)
 
@@ -402,14 +402,14 @@ def notify_comment_user_on_deletion(sender, instance, **kwargs):
     transaction.on_commit(_notify_comment_user_on_deletion)
 
 
-@receiver(m2m_changed, sender=Post.categories.through)
-def update_categories(sender, instance, action, **kwargs):
+@receiver(m2m_changed, sender=Post.projects.through)
+def update_projects(sender, instance, action, **kwargs):
     if action == "post_remove" or action == "post_clear":
-        # Only check categories if some are removed
-        unused_categories = Category.objects.annotate(
+        # Only check projects if some are removed
+        unused_projects = Project.objects.annotate(
             num_posts=models.Count("post")
         ).filter(num_posts=0)
-        unused_categories.delete()
+        unused_projects.delete()
 
 
 # delete repost when activity is deleted

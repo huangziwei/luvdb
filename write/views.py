@@ -39,12 +39,12 @@ from .forms import (
     SayForm,
 )
 from .models import (
-    Category,
     Comment,
     ContentInList,
     LuvList,
     Pin,
     Post,
+    Project,
     Randomizer,
     Repost,
     Say,
@@ -93,17 +93,17 @@ class PostListView(ListView):
         self.user = get_object_or_404(User, username=self.kwargs["username"])
         queryset = Post.objects.filter(user=self.user)
 
-        if "category" in self.kwargs:
-            category = Category.objects.filter(
-                name=self.kwargs["category"], post__user=self.user
+        if "project" in self.kwargs:
+            project = Project.objects.filter(
+                name=self.kwargs["project"], post__user=self.user
             ).first()
-            if category is not None:
-                queryset = queryset.filter(categories=category)
+            if project is not None:
+                queryset = queryset.filter(projects=project)
             else:
-                # Handle the case when the category does not exist
+                # Handle the case when the project does not exist
                 queryset = Post.objects.none()
         else:
-            queryset = queryset.filter(categories__isnull=True)
+            queryset = queryset.filter(projects__isnull=True)
 
         return queryset.order_by("-timestamp")
 
@@ -132,10 +132,10 @@ class PostListView(ListView):
             tag_sizes[tag] = min_size + scaling_factor * tag_counter[tag]
 
         context["all_tags"] = tag_sizes
-        context["all_categories"] = Category.objects.filter(
+        context["all_projects"] = Project.objects.filter(
             post__user=self.user
         ).distinct()
-        context["current_category"] = self.kwargs.get("category", None)
+        context["current_project"] = self.kwargs.get("project", None)
 
         return context
 
@@ -147,7 +147,7 @@ class PostDetailView(ShareDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
-        context["categories"] = self.object.categories.all()
+        context["projects"] = self.object.projects.all()
         return context
 
 
@@ -837,11 +837,11 @@ class RandomizerDetailView(DetailView):
         return context
 
 
-class CategoryAutocomplete(autocomplete.Select2QuerySetView):
-    create_field = "name"  # This is the field used to create the new Category object
+class ProjectAutocomplete(autocomplete.Select2QuerySetView):
+    create_field = "name"  # This is the field used to create the new Project object
 
     def get_queryset(self):
-        qs = Category.objects.filter(post__user=self.request.user).distinct()
+        qs = Project.objects.filter(post__user=self.request.user).distinct()
 
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
@@ -849,7 +849,7 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
     def create_object(self, text):
-        return Category.objects.create(name=text)
+        return Project.objects.create(name=text)
 
     def has_add_permission(self, request):
         return True  # or customize this if you require special logic

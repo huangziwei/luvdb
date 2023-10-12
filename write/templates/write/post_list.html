@@ -29,9 +29,9 @@
                         <h5>
                             <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a> posted
                         </h5>
-                        {% if current_category %}
+                        {% if current_project %}
                             <div>
-                                (in cateogry "<a class="text-muted" href="{% url 'write:post_list_category' object.username current_category %}">{{current_category}}</a>")
+                                (in project "<a class="text-muted" href="{% url 'write:post_list_project' object.username current_project %}">{{current_project}}</a>")
                             </div>
                         {% endif %}
                     </div>
@@ -77,7 +77,7 @@
                     <p>Nothing.</p>
                 {% endfor %}
             </div>
-            {% if all_tags or all_categories %}
+            {% if all_tags or all_projects %}
                 <div class="col-12 col-md-5 right-column">
                     <!--All tags on the page-->
                     {% if all_tags %}
@@ -92,17 +92,17 @@
                     </div>
                     {% endif %}
 
-                    {% if all_categories %}
+                    {% if all_projects %}
                     <div class="bg-light p-3">
-                        <h5>Categories</h5>
+                        <h5>Projects</h5>
                         {% comment %} <div>
                             <a href="{% url 'write:post_list' object.username %}"
                                    class="me-2">Uncategorized</a>
                         </div> {% endcomment %}
-                        {% for category in all_categories %}
+                        {% for project in all_projects %}
                         <div>
-                            <a href="{% url 'write:post_list_category' object.username category.name %}"
-                                   class="me-2">{{ category.name }}</a>
+                            <a href="{% url 'write:post_list_project' object.username project.name %}"
+                                   class="me-2">{{ project.name }}</a>
                         </div>
                         {% endfor %}
 

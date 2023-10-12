@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse_lazy
 
-from .models import Category, Comment, ContentInList, LuvList, Pin, Post, Repost, Say
+from .models import Comment, ContentInList, LuvList, Pin, Post, Project, Repost, Say
 
 User = get_user_model()
 
@@ -15,7 +15,7 @@ User = get_user_model()
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["title", "content", "comments_enabled", "categories"]
+        fields = ["title", "content", "comments_enabled", "projects"]
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Post title..."}),
             "content": forms.Textarea(
@@ -25,8 +25,9 @@ class PostForm(forms.ModelForm):
                     "id": "text-input",
                 }
             ),
-            "categories": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("write:category-autocomplete"),
+            "projects": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("write:project-autocomplete"),
+                attrs={"data-placeholder": "Type to select projects"},
             ),
         }
 
@@ -35,9 +36,10 @@ class PostForm(forms.ModelForm):
         self.fields["title"].label = ""
         self.fields["content"].label = ""
         self.fields["comments_enabled"].label = "Enable comments"
+        self.fields["projects"].label = ""
         self.fields[
-            "categories"
-        ].help_text = "Posts in categories appear only on their respective category pages, not in the general post list."
+            "projects"
+        ].help_text = "Posts in projects appear only on their respective project pages, not in the general post list."
 
 
 class SayForm(forms.ModelForm):

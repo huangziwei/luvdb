@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from .models import Category, Comment, ContentInList, LuvList, Pin, Post, Repost, Say
+from .models import Comment, ContentInList, LuvList, Pin, Post, Project, Repost, Say
 
 
-class CategoryAdmin(admin.ModelAdmin):
+class ProjectAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
 
@@ -42,4 +42,4 @@ admin.site.register(Comment, CommentAdmin)
 admin.site.register(Pin, PinAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Say, SayAdmin)
-admin.site.register(Category, CategoryAdmin)
+admin.site.register(Project, ProjectAdmin)

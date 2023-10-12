@@ -9,13 +9,11 @@
         <div class="row">
             <div class="col-12 col-md-7 left-column h-entry">
                 <h2 class="p-name">{{ object.title }}</h2>
-                {% if categories %}
-                <p>
-                    (in cateogr{% if categories.count > 1 %}ies{% else %}y{% endif %} 
-                    {% for category in categories %}
-                        "<a class="text-muted" href="{% url 'write:post_list_category' object.user.username category %}">{{category}}</a>"{% if not forloop.last %},{% endif %}
-                    {% endfor %})
-                </p>
+                {% if projects %}
+                    <p>
+                        (in project{% if projects.count > 1 %}s{% endif %} 
+                        {% for project in projects %}"<a class="text-muted" href="{% url 'write:post_list_project' object.user.username project %}">{{project}}</a>"{% if not forloop.last %}, {% endif %}{% endfor %})
+                    </p>
                 {% endif %}
                 <span class="d-flex">
                     <p class='me-2'>

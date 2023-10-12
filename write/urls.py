@@ -2,7 +2,6 @@ from django.urls import path, re_path
 
 from .feeds import TagListFeed, TagUserListFeed, UserPinFeed, UserPostFeed, UserSayFeed
 from .views import (
-    CategoryAutocomplete,
     CommentCreateView,
     CommentDeleteView,
     CommentUpdateView,
@@ -22,6 +21,7 @@ from .views import (
     PostDetailView,
     PostListView,
     PostUpdateView,
+    ProjectAutocomplete,
     RandomizerDetailView,
     RepostCreateView,
     RepostDeleteView,
@@ -55,14 +55,14 @@ urlpatterns = [
     # post
     path("u/<str:username>/posts/", PostListView.as_view(), name="post_list"),
     path(
-        "u/<str:username>/posts/<str:category>",
+        "u/<str:username>/posts/<str:project>",
         PostListView.as_view(),
-        name="post_list_category",
+        name="post_list_project",
     ),
     path(
-        "category-autocomplete/",
-        CategoryAutocomplete.as_view(),
-        name="category-autocomplete",
+        "project-autocomplete/",
+        ProjectAutocomplete.as_view(),
+        name="project-autocomplete",
     ),
     path("u/<str:username>/posts/rss/", UserPostFeed(), name="user_post_feed"),
     path("post/create/", PostCreateView.as_view(), name="post_create"),
