@@ -51,30 +51,12 @@
                 </div>
 
                 {% for post in post_list %}
-                    <div>
+                    <div class='d-flex flex-lg-row flex-column mb-3 justify-content-between align-items-lg-end align-items-start'>
                         <div>
                             <a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a>
                         </div>
-                        <span class="d-flex">
-                            <p class="me-2 text-muted">{{ post.timestamp|date:"Y.m.d H:i" }}</p>
-                            {% if post.comments_enabled %}
-                                <p class="ms-2 me-2">
-                                    <a href="{% url 'write:post_detail' post.id %}">Reply</a>
-                                </p>
-                            {% endif %}
-                            {% if post.get_activity_id is not None %}
-                                <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:post_detail' post.id %}?repost=true">Repost</a>
-                                </p>
-                            {% endif %}
-                            {% if object == request.user %}
-                                <p class="ms-2 me-2">
-                                    <a href="{% url 'write:post_update' post.id %}">Edit</a>
-                                </p>
-                                <p class="ms-2 me-2">
-                                    <a href="{% url 'write:post_delete' post.id %}">Delete</a>
-                                </p>
-                            {% endif %}
+                        <span class="d-flex flex-column">
+                            <small class="text-muted font-monospace mt-lg-0" style="font-size: 0.8em">{{ post.timestamp|date:"Y.m.d H:i " }}</small>
                         </span>
                     </div>
                 {% empty %}
@@ -83,9 +65,22 @@
             </div>
             {% if all_tags or all_projects %}
                 <div class="col-12 col-md-5 right-column">
+                    {% if all_projects %}
+                    <div class="bg-light p-3 mb-3">
+                        <h5>Projects</h5>
+                        <div>
+                        {% for project in all_projects %}
+                            <a href="{% url 'write:post_list_project' object.username project.name %}"
+                                   class="me-0">{{ project.name }}</a>
+                            {% if not forloop.last %}/{% endif %}
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
                     <!--All tags on the page-->
                     {% if all_tags %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mt-3">
+                        <h5>Hashtags</h5>
                         <span>
                             {% for tag, size in all_tags.items %}
                                 <a href="{% url 'write:tag_user_list' object.username tag.name %}"
@@ -93,23 +88,6 @@
                                    class="text-success me-2">#{{ tag.name }}</a>
                             {% endfor %}
                         </span>
-                    </div>
-                    {% endif %}
-
-                    {% if all_projects %}
-                    <div class="bg-light p-3">
-                        <h5>Projects</h5>
-                        {% comment %} <div>
-                            <a href="{% url 'write:post_list' object.username %}"
-                                   class="me-2">Uncategorized</a>
-                        </div> {% endcomment %}
-                        {% for project in all_projects %}
-                        <div>
-                            <a href="{% url 'write:post_list_project' object.username project.name %}"
-                                   class="me-2">{{ project.name }}</a>
-                        </div>
-                        {% endfor %}
-
                     </div>
                     {% endif %}
                 </div>

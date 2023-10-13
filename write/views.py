@@ -121,7 +121,7 @@ class PostListView(ListView):
         tag_counter = Counter(all_tags)
 
         # Calculate max size limit for tags (200% in this case)
-        max_size = 200
+        max_size = 125
         min_size = 100
         max_count = max(tag_counter.values(), default=1)
         scaling_factor = (max_size - min_size) / max_count
@@ -242,7 +242,7 @@ class SayListView(ListView):
         tag_counter = Counter(all_tags)
 
         # Calculate max size limit for tags (200% in this case)
-        max_size = 200
+        max_size = 125
         min_size = 100
         max_count = max(tag_counter.values(), default=1)
         scaling_factor = (max_size - min_size) / max_count
@@ -340,7 +340,7 @@ class PinListView(ListView):
         tag_counter = Counter(all_tags)
 
         # Calculate max size limit for tags (200% in this case)
-        max_size = 200
+        max_size = 125
         min_size = 100
         max_count = max(tag_counter.values(), default=1)
         scaling_factor = (max_size - min_size) / max_count
