@@ -453,7 +453,7 @@
                 {% endif %}
                 {% if object.wikipedia or object.website%}
                 <div class="bg-light p-3 mb-3">
-                    <h5 class="mt-2">Link</h5>
+                    <h5>Link</h5>
                     {% if object.wikipedia %}
                         <div>
                             <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>
@@ -470,7 +470,7 @@
                 <div class="bg-light p-3">
                     <h5>Statistics</h5>
                     {% if litworks_count != 0 or litinstances_count != 0 or books_count != 0 %}
-                    <div class="mb-3">
+                    <div class="mt-3">
                         <h6>Read</h6>
                         {% if litworks_count != 0 %}
                         <div>
@@ -491,7 +491,7 @@
                     {% endif %}
 
                     {% if movies_count != 0 or series_count != 0%}
-                    <div class="mb-3">
+                    <div class="mt-3">
                         <h6>Watch</h6>
                         {% if movies_count != 0 %}
                         <div>
@@ -507,7 +507,7 @@
                     {% endif %}
 
                     {% if listenworks_count != 0 or tracks_count != 0 or releases_count != 0 or audiobooks_count != 0%}
-                    <div class="mb-3">
+                    <div class="mt-3">
                         <h6>Listen</h6>
                         {% if listenworks_count != 0 %}
                         <div>
@@ -533,7 +533,7 @@
                     {% endif %}
 
                     {% if gameworks_count != 0 or games_count != 0%}
-                    <div class="mb-2">
+                    <div class="mt-3">
                         <h6>Play</h6>
                         {% if gameworks_count != 0 %}
                         <div>
