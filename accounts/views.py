@@ -34,7 +34,7 @@ from read.models import Instance as LitInstance
 from read.models import Periodical, ReadCheckIn
 from read.models import Work as LitWork
 from watch.models import Movie, Series, WatchCheckIn
-from write.models import Comment, Pin, Post, Repost, Say, Tag
+from write.models import Comment, LuvList, Pin, Post, Repost, Say, Tag
 
 from .forms import (
     CustomUserChangeForm,
@@ -487,6 +487,7 @@ def filter_write(query, search_terms):
     say_results = Say.objects.all()
     pin_results = Pin.objects.all()
     repost_results = Repost.objects.all()
+    luvlist_results = LuvList.objects.all()
 
     for term in search_terms:
         post_results = (
@@ -511,8 +512,13 @@ def filter_write(query, search_terms):
             .distinct()
             .order_by("timestamp")
         )
+        luvlist_results = (
+            luvlist_results.filter(description__icontains=term)
+            .distinct()
+            .order_by("timestamp")
+        )
 
-    return post_results, say_results, pin_results, repost_results
+    return post_results, say_results, pin_results, repost_results, luvlist_results
 
 
 def filter_read(query, search_terms):
@@ -743,6 +749,7 @@ def search_view(request):
     say_results = []
     pin_results = []
     repost_results = []
+    luvlist_results = []
     # read
     litwork_results = []
     litinstance_results = []
@@ -769,9 +776,13 @@ def search_view(request):
             user_results = filter_users(query, search_terms)
 
         if model in ["all", "write"]:
-            post_results, say_results, pin_results, repost_results = filter_write(
-                query, search_terms
-            )
+            (
+                post_results,
+                say_results,
+                pin_results,
+                repost_results,
+                luvlist_results,
+            ) = filter_write(query, search_terms)
 
         if model in ["all", "read"]:
             (
@@ -815,6 +826,7 @@ def search_view(request):
             "say_results": say_results,
             "pin_results": pin_results,
             "repost_results": repost_results,
+            "luvlist_results": luvlist_results,
             # read
             "litwork_results": litwork_results,
             "litinstance_results": litinstance_results,

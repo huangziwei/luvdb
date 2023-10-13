@@ -25,12 +25,12 @@
                             <a href="{% url 'accounts:detail' username=user.username %}">{{ user.display_name | default:user.username }}</a>
                         </p>
                     {% endfor %}
-                    <hr class="mt-3">
+                    <hr>
                 {% endif %}
 
                 <!--Entity-->
                 {% if person_results %}
-                    <h3 class="mb-4">Entity</h3>
+                    <h3 class="mb-3">Entity</h3>
                     {% if person_results %}
                         <h4>Persons</h4>
                         {% for person in person_results %}
@@ -39,15 +39,15 @@
                             </p>
                         {% endfor %}
                     {% endif %}
-                    <hr class="mt-3">
+                    <hr>
                 {% endif %}
 
                 <!--Read-->
                 {% if litwork_results or litinstance_results or book_results or periodical_results or book_series %}
-                    <h3 class="mb-4">Read</h3>
+                    <h3 class="mb-3">Read</h3>
                     <div class="row">
                         {% if litwork_results %}
-                        <div class="col-4">
+                        <div class="col-12 col-md-4 mb-3">
                             <h4>Works</h4>
                             {% for work in litwork_results %}
                                 <p>
@@ -59,7 +59,7 @@
                         {% endif %}
 
                         {% if litinstance_results %}
-                        <div class="col-4">
+                        <div class="col-12 col-md-4 mb-3">
                             <h4>Instances</h4>
                             {% for instance in litinstance_results %}
                                 <p>
@@ -71,7 +71,7 @@
                         {% endif %}
 
                         {% if book_results %}
-                        <div class="col-4">
+                        <div class="col-12 col-md-4 mb-3">
                             <h4>Book</h4>
                             {% for book in book_results %}
                                 <p>
@@ -88,7 +88,7 @@
                     
                     <div class="row mt-2">
                         {% if periodical_results %}
-                        <div class="col-4">
+                        <div class="col-12 col-md-4 mb-3">
                             <h4>Periodicals</h4>
                             {% for periodical in periodical_results %}
                                 <p>
@@ -99,7 +99,7 @@
                         {% endif %}
                         
                         {% if book_series %}
-                        <div class="col-4">
+                        <div class="col-12 col-md-4 mb-3">
                             <h4>Book Series</h4>
                             {% for series in book_series %}
                                 <p>
@@ -109,15 +109,15 @@
                         </div>
                         {% endif %}
                     </div>
-                    <hr class="mt-3">
+                    <hr>
                 {% endif %}
 
                 <!--Watch-->
                 {% if movie_results or series_results %}
                 <div class="row">
-                    <h3 class="mb-4">Watch</h3>
+                    <h3 class="mb-3">Watch</h3>
                     {% if movie_results %}
-                    <div class="col-4">
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Movies</h4>
                         {% for movie in movie_results %}
                             <p>
@@ -129,7 +129,7 @@
                     {% endif %}
 
                     {% if series_results %}
-                    <div class="col-4">
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Series</h4>
                         {% for serie in series_results %}
                             <p>
@@ -139,17 +139,17 @@
                         {% endfor %}
                     </div>
                     {% endif %}
-                    <hr class="mt-3">
+                    <hr>
                 </div>
                 {% endif %}
 
 
                 <!--Listen-->
                 {% if musicwork_results or track_results or release_results or podcast_results or audiobook_results %}
-                <div class="row">
-                    <h3 class="mb-4">Listen</h3>
+                <div class="row mb-4">
+                    <h3 class="mb-3">Listen</h3>
                     {% if musicwork_results %}
-                    <div class="col-4">
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Works</h4>
                         {% for work in musicwork_results %}
                             <p>
@@ -160,7 +160,7 @@
                     </div>
                     {% endif %}
                     {% if track_results %}
-                    <div class="col-4">
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Tracks</h4>
                         {% for track in track_results %}
                             <p>
@@ -171,7 +171,7 @@
                     </div>
                     {% endif %}
                     {% if release_results %}
-                    <div class="col-4">
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Releases</h4>
                         {% for release in release_results %}
                             <p>
@@ -182,7 +182,7 @@
                     </div>
                     {% endif %}
                     {% if podcast_results %}
-                    <div class="col-4">
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Podcasts</h4>
                         {% for podcast in podcast_results %}
                             <p>
@@ -192,7 +192,7 @@
                     </div>
                     {% endif %}
                     {% if audiobook_results %}
-                    <div class="col-4">
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Audiobooks</h4>
                         {% for audiobook in audiobook_results %}
                             <p>
@@ -202,18 +202,17 @@
                         {% endfor %}
                     </div>
                     {% endif %}
-
-                    <hr class="mt-3">
+                    <hr>
                 </div>
                 {% endif %}
 
                 <!--Play-->
                 {% if game_results or gamework_results %}
                 <div class="row">
-                    <h3 class="mb-4">Play</h3>
+                    <h3 class="mb-3">Play</h3>
                     
                     {% if gamework_results %}
-                    <div class="col-4">
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Works</h4>
                         {% for gamework in gamework_results %}
                             <p>
@@ -224,7 +223,7 @@
                     </div>
                     {% endif %}
                     {% if game_results %}
-                    <div class="col-4">
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Games</h4>
                         {% for game in game_results %}
                             <p>
@@ -234,14 +233,16 @@
                         {% endfor %}
                     </div>
                     {% endif %}
-                    <hr class="mt-3">
+                    <hr>
                 </div>
                 {% endif %}
 
                 <!--Write-->
                 {% if post_results or say_results or pin_results or repost_results %}
-                    <h3 class="mb-4">Write</h3>
+                <div class="row">
+                    <h3 class="mb-3">Others</h3>
                     {% if post_results %}
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Posts</h4>
                         {% for post in post_results %}
                             <p>
@@ -249,17 +250,11 @@
                                 ({{ post.user.display_name | default:post.user.username }}, {{ post.timestamp|date:"Y.m.d" }})
                             </p>
                         {% endfor %}
+                    </div>
                     {% endif %}
-                    {% if say_results %}
-                        <h4>Says</h4>
-                        {% for say in say_results %}
-                            <p>
-                                <a href="{% url 'write:say_detail' say.id %}">{{ say.content|truncatechars:50 }}</a>
-                                ({{ say.user.display_name | default:say.user.username }}, {{ say.timestamp|date:"Y.m.d" }})
-                            </p>
-                        {% endfor %}
-                    {% endif %}
+                    
                     {% if pin_results %}
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Pins</h4>
                         {% for pin in pin_results %}
                             <p>
@@ -267,18 +262,45 @@
                                 ({{ pin.user.display_name | default:pin.user.username }}, {{ pin.timestamp|date:"Y.m.d" }})
                             </p>
                         {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if luvlist_results %}
+                    <div class="col-12 col-md-4 mb-3">
+                        <h4>Lists</h4>
+                        {% for luvlist in luvlist_results %}
+                            <p>
+                                <a href="{% url 'write:luvlist_detail' luvlist.id %}">{{ luvlist.title }}</a>
+                                ({{ luvlist.user.display_name | default:luvlist.user.username }}, {{ luvlist.timestamp|date:"Y.m.d" }})
+                            </p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if say_results %}
+                    <div class="col-12 col-md-4 mb-3">
+                        <h4>Says</h4>
+                        {% for say in say_results %}
+                            <p>
+                                <a href="{% url 'write:say_detail' say.id %}">{{ say.content|truncatechars:30 }}</a>
+                                ({{ say.user.display_name | default:say.user.username }}, {{ say.timestamp|date:"Y.m.d" }})
+                            </p>
+                        {% endfor %}
+                    </div>
                     {% endif %}
                     {% if repost_results %}
+                    <div class="col-12 col-md-4 mb-3">
                         <h4>Reposts</h4>
                         {% for repost in repost_results %}
                             <p>
-                                <a href="{% url 'write:repost_detail' repost.id %}">{{ repost.content|truncatechars:50 }}</a>
+                                <a href="{% url 'write:repost_detail' repost.id %}">{{ repost.content|truncatechars:30 }}</a>
                                 ({{ repost.user.display_name | default:repost.user.username }}, {{ repost.timestamp|date:"Y.m.d" }})
                             </p>
                         {% endfor %}
+                    </div>
                     {% endif %}
-                    <hr class="mt-3">
+                    <hr>
+                </div>
                 {% endif %}
+                
             </div>
         </div>
     </div>
