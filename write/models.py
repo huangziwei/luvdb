@@ -445,6 +445,7 @@ class LuvList(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     votes = GenericRelation(Vote)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
         return self.title
@@ -457,6 +458,10 @@ class LuvList(models.Model):
 
     def model_name(self):
         return "LuvList"
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        handle_tags(self, self.description)
 
 
 class ContentInList(models.Model):

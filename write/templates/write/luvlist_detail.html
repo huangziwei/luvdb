@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 
-                <div class="mb-2">{{ object.description | markdownify }}</div>
+                <div class="mb-2">{{ object.description | linkify_tags | markdownify }}</div>
                 <div class="mb-3 me-2 text-secondary d-lg-none">
                     Updated
                     <a href="{% url 'write:luvlist_list' object.user.username %}"

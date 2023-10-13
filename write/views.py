@@ -119,6 +119,7 @@ class PostListView(ListView):
 
         # Count the frequency of each tag
         tag_counter = Counter(all_tags)
+        sorted_tags = sorted(tag_counter.items(), key=lambda x: x[1], reverse=True)
 
         # Calculate max size limit for tags (200% in this case)
         max_size = 125
@@ -128,8 +129,8 @@ class PostListView(ListView):
 
         # Scale the counts so that the maximum count corresponds to the maximum size
         tag_sizes = {}
-        for tag in tag_counter:
-            tag_sizes[tag] = min_size + scaling_factor * tag_counter[tag]
+        for tag, count in sorted_tags:
+            tag_sizes[tag] = min_size + scaling_factor * count
 
         context["all_tags"] = tag_sizes
         context["all_projects"] = Project.objects.filter(
@@ -240,6 +241,7 @@ class SayListView(ListView):
 
         # Count the frequency of each tag
         tag_counter = Counter(all_tags)
+        sorted_tags = sorted(tag_counter.items(), key=lambda x: x[1], reverse=True)
 
         # Calculate max size limit for tags (200% in this case)
         max_size = 125
@@ -249,8 +251,8 @@ class SayListView(ListView):
 
         # Scale the counts so that the maximum count corresponds to the maximum size
         tag_sizes = {}
-        for tag in tag_counter:
-            tag_sizes[tag] = min_size + scaling_factor * tag_counter[tag]
+        for tag, count in sorted_tags:
+            tag_sizes[tag] = min_size + scaling_factor * count
 
         context["all_tags"] = tag_sizes
         context["no_citation_css"] = True
@@ -338,6 +340,7 @@ class PinListView(ListView):
 
         # Count the frequency of each tag
         tag_counter = Counter(all_tags)
+        sorted_tags = sorted(tag_counter.items(), key=lambda x: x[1], reverse=True)
 
         # Calculate max size limit for tags (200% in this case)
         max_size = 125
@@ -347,8 +350,8 @@ class PinListView(ListView):
 
         # Scale the counts so that the maximum count corresponds to the maximum size
         tag_sizes = {}
-        for tag in tag_counter:
-            tag_sizes[tag] = min_size + scaling_factor * tag_counter[tag]
+        for tag, count in sorted_tags:
+            tag_sizes[tag] = min_size + scaling_factor * count
 
         context["all_tags"] = tag_sizes
         context["no_citation_css"] = True
@@ -470,6 +473,7 @@ class TagListView(ListView):
         posts = Post.objects.filter(tags__name=tag)
         says = Say.objects.filter(tags__name=tag)
         pins = Pin.objects.filter(tags__name=tag)
+        luvlists = LuvList.objects.filter(tags__name=tag)
         read_checkins = ReadCheckIn.objects.filter(tags__name=tag)
         watch_checkins = WatchCheckIn.objects.filter(tags__name=tag)
         listen_checkins = ListenCheckIn.objects.filter(tags__name=tag)
@@ -482,6 +486,7 @@ class TagListView(ListView):
                 posts,
                 says,
                 pins,
+                luvlists,
                 read_checkins,
                 watch_checkins,
                 listen_checkins,
@@ -543,6 +548,7 @@ class TagUserListView(ListView):
         posts = Post.objects.filter(tags__name=tag, user=user)
         says = Say.objects.filter(tags__name=tag, user=user)
         pins = Pin.objects.filter(tags__name=tag, user=user)
+        luvlists = LuvList.objects.filter(tags__name=tag, user=user)
         reposts = Repost.objects.filter(tags__name=tag, user=user)
         read_checkins = ReadCheckIn.objects.filter(tags__name=tag, user=user)
         watch_checkins = WatchCheckIn.objects.filter(tags__name=tag, user=user)
@@ -556,6 +562,7 @@ class TagUserListView(ListView):
                 posts,
                 says,
                 pins,
+                luvlists,
                 read_checkins,
                 watch_checkins,
                 listen_checkins,
@@ -760,6 +767,29 @@ class LuvListUserListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["object"] = self.user
+
+        # Get all tags for this user's pins
+        all_tags = []
+        for luvlist in LuvList.objects.filter(user=self.user):
+            for tag in luvlist.tags.all():
+                all_tags.append(tag)
+
+        # Count the frequency of each tag
+        tag_counter = Counter(all_tags)
+        sorted_tags = sorted(tag_counter.items(), key=lambda x: x[1], reverse=True)
+
+        # Calculate max size limit for tags (200% in this case)
+        max_size = 125
+        min_size = 100
+        max_count = max(tag_counter.values(), default=1)
+        scaling_factor = (max_size - min_size) / max_count
+
+        # Scale the counts so that the maximum count corresponds to the maximum size
+        tag_sizes = {}
+        for tag, count in sorted_tags:
+            tag_sizes[tag] = min_size + scaling_factor * count
+
+        context["all_tags"] = tag_sizes
 
         return context
 

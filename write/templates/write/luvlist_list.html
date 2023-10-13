@@ -60,6 +60,20 @@
                     <p>No Lists found.</p>
                 {% endfor %}
             </div>
+            {% if all_tags %}
+            <div class="col-12 col-md-5 right-column">
+                <!--All tags on the page-->
+                <div class="bg-light p-3 mb-3">
+                    <span>
+                        {% for tag, size in all_tags.items %}
+                            <a href="{% url 'write:tag_user_list' object.username tag.name %}"
+                               style="font-size: {{ size }}%"
+                               class="text-success me-2">#{{ tag.name }}</a>
+                        {% endfor %}
+                    </span>
+                </div>
+            </div>
+        {% endif %}
         </div>
     </div>
 {% endblock %}
