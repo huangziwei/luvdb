@@ -145,9 +145,9 @@
                                         <span class="text-muted">ASIN:</span> {{ object.asin }}
                                     </div>
                                 {% endif %}
-                                {% if object.details %}
+                                {% if object.notes %}
                                     <span class="text-muted">Details:</span>
-                                    <div class="card card-body">{{ object.details|markdownify }}</div>
+                                    <div class="card card-body">{{ object.notes|markdownify }}</div>
                                 {% endif %}
                             </div>
                         </div>

@@ -3,8 +3,8 @@
 {% load markdownify %}
 {% block meta %}
     <meta property="og:title" content="{{ object.title }}">
-    {% if object.description %}
-        <meta property="og:description" content="{{ object.description|truncatewords:150 }}">
+    {% if object.notes %}
+        <meta property="og:description" content="{{ object.notes|truncatewords:150 }}">
     {% else %}
         <meta property="og:description" content="Check out {{ object.title }} on luvdb.com">
     {% endif %}
@@ -115,7 +115,7 @@
                                             <span class="text-muted">Premiere on:</span> {{ object.release_date }}
                                         </p>
                                     {% endif %}
-                                    {% if object.description %}
+                                    {% if object.notes %}
                                     <div class="my-3">
                                         <p class="text-muted"
                                            type="button"
@@ -126,7 +126,7 @@
                                             <span class="text-muted">More Details</span>
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
-                                            <div class="card card-body">{{ object.description|markdownify }}</div>
+                                            <div class="card card-body">{{ object.notes|markdownify }}</div>
                                         </div>
                                     </div>
                                     {% endif %}

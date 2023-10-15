@@ -10,7 +10,7 @@
         <div class="row">
             <div class='col-12 col-md-8'>
                 <h2>{{ object.title }}</h2>
-                <div class="mb-3">{{ object.description | markdownify }}</div>
+                <div class="mb-3">{{ object.notes | markdownify }}</div>
                 
                 <div class='mt-3'>
                     {% for book_in_series in object.bookinseries_set.all %}

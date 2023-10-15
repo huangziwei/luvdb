@@ -3,7 +3,7 @@
     {% csrf_token %}
     <div class="row">
         <div class="col-md-12">{{ form.title|as_crispy_field }}</div>
-        <div class="col-md-12">{{ form.description|as_crispy_field }}</div>
+        <div class="col-md-12">{{ form.notes|as_crispy_field }}</div>
     </div>
     <h2>Books in Series</h2>
     {{ books.management_form }}

@@ -3,8 +3,8 @@
 {% load markdownify %}
 {% block meta %}
     <meta property="og:title" content="{{ object.title }}" />
-    {% if object.description %}
-        <meta property="og:description" content="{{ object.description|truncatewords:150 }}">
+    {% if object.notes %}
+        <meta property="og:description" content="{{ object.notes|truncatewords:150 }}">
     {% else %}
         <meta property="og:description" content="Check out {{ object.title }} on luvdb.com">
     {% endif %}    
@@ -129,7 +129,7 @@
                                         <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View All</a>
                                     </div>
                                     
-                                    {% if object.description or ordered_release_dates%}
+                                    {% if object.notes or ordered_release_dates%}
                                     <div class="my-3">
                                         <p class="text-muted"
                                            type="button"
@@ -147,9 +147,9 @@
                                                     {% if not forloop.last %}/{% endif %}
                                                 {% endfor %}
                                             {% endif %}
-                                            {% if object.description %}
+                                            {% if object.notes %}
                                                 <span class="text-muted">Details:</span>
-                                                <div class="card card-body">{{ object.description|markdownify }}</div>
+                                                <div class="card card-body">{{ object.notes|markdownify }}</div>
                                             {% endif %}
                                         </div>
                                     </div>

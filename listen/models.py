@@ -563,7 +563,7 @@ class Audiobook(models.Model):
     language = LanguageField(max_length=8, blank=True, null=True)
     release_date = models.TextField(blank=True, null=True)
     wikipedia = models.URLField(max_length=200, blank=True, null=True)
-    details = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     # novel, novella, short story, poem, etc.
     format = models.CharField(

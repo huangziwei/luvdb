@@ -67,7 +67,7 @@ class Movie(models.Model):
         LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="movies"
     )
 
-    description = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
     website = models.CharField(max_length=100, blank=True, null=True)
     poster = models.ImageField(upload_to=rename_movie_poster, null=True, blank=True)
     poster_sens = models.BooleanField(default=False, null=True, blank=True)
@@ -205,7 +205,7 @@ class Series(models.Model):
     release_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
-    description = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
     website = models.CharField(max_length=100, blank=True, null=True)
     poster = models.ImageField(upload_to=rename_movie_poster, null=True, blank=True)
     poster_sens = models.BooleanField(default=False, null=True, blank=True)
@@ -429,7 +429,7 @@ class WatchCheckIn(models.Model):
 
 class Collection(models.Model):
     title = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,

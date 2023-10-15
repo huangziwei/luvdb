@@ -11,8 +11,8 @@
                     {{ object.other_titles }}
                 </p>
                 {% endif %}
-                {% if object.description %}
-                <div class="mb-3">{{ object.description|markdownify }}</div>
+                {% if object.notes %}
+                <div class="mb-3">{{ object.notes|markdownify }}</div>
                 {% endif %}
                 <div class='mt-3'>
                     {% for game_in_series in object.gameinseries_set.all %}

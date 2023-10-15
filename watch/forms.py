@@ -435,7 +435,7 @@ class WatchCheckInForm(forms.ModelForm):
 class CollectionForm(forms.ModelForm):
     class Meta:
         model = Collection
-        fields = ["title", "description"]
+        fields = ["title", "notes"]
 
 
 class ContentInCollectionForm(forms.ModelForm):

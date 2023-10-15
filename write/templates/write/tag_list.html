@@ -310,7 +310,7 @@
                                                 class="text-decoration-none hover-username">
                                                     <h5>{{ item.content_object.title }}</h5>
                                                 </a>
-                                                <div class="text-muted">{{ item.content_object.description|truncatechars:600 }}</div>
+                                                <div class="text-muted">{{ item.content_object.notes|truncatechars:600 }}</div>
                                             {% elif item.content_type.model == "audiobook" %}
                                                 <a href="{% url 'listen:audiobook_detail' item.content_object.id %}"
                                                 class="text-decoration-none hover-username">

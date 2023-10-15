@@ -6,8 +6,8 @@
 {% load parse_activity_type %}
 {% block meta %}
     <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Check-in on {{ object.content_object.title }}">
-    {% if object.description %}
-        <meta property="og:description" content="{{ object.description|truncatewords:150 }}">
+    {% if object.notes %}
+        <meta property="og:description" content="{{ object.notes|truncatewords:150 }}">
     {% else %}
         <meta property="og:description" content="Check out {{ object.user.display_name | default:object.user.username }}'s Check-in on {{ object.content_object.title }} on luvdb.com">
     {% endif %}
@@ -79,7 +79,7 @@
                                    class="text-decoration-none hover-username">
                                     <h5>{{ object.content_object.title }}</h5>
                                 </a>
-                                <div class="text-muted">{{ object.content_object.description | truncatechars:600 }}</div>
+                                <div class="text-muted">{{ object.content_object.notes | truncatechars:600 }}</div>
                             {% elif object.content_type.model == 'audiobook' %}
                                 <a href="{% url 'listen:audiobook_detail' object.content_object.id %}"
                                    class="text-decoration-none hover-username">
