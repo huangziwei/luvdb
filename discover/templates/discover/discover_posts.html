@@ -16,7 +16,6 @@
                                     <div>
                                         <a href="{% url 'write:post_detail' post.id %}">{{post.title}}</a>
                                         <span class="d-flex">
-                                            <p class="me-2 text-muted">{{post.get_votes}} vote{% if post.get_votes > 1 %}s{% endif %}</p>
                                             <p class="me-2 text-muted">
                                                 by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.username }}</a>
                                             </p>

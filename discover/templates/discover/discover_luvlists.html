@@ -15,7 +15,6 @@
                                     <div>
                                         <a href="{% url 'write:luvlist_detail' list.id %}">{{list.title}}</a>
                                         <span class="d-flex">
-                                            <p class="me-2 text-muted">{{list.get_votes}} vote{% if list.get_votes > 1 %}s{% endif %}</p>
                                             <p class="me-2 text-muted">
                                                 by <a href="{% url 'accounts:detail' list.user.username %}">{{ list.user.username }}</a>
                                             </p>
