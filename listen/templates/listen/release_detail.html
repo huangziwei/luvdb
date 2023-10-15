@@ -70,9 +70,9 @@
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
-                                    {% if object.label %}
+                                    {% if object.label.exists %}
                                         <div class="mb-1">
-                                            <span class="text-muted">Label:</span>
+                                            <span class="text-muted">Label{% if object.label.count > 1 %}s{% endif %}:</span>
                                             {% for label in object.label.all %}
                                                 <a href="{% url 'entity:company_detail' label.id %}">
                                                     {{ label.name }}
