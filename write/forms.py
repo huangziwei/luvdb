@@ -128,7 +128,7 @@ class LuvListForm(forms.ModelForm):
         model = LuvList
         fields = [
             "title",
-            "description",
+            "notes",
             "source",
             "wikipedia",
         ]

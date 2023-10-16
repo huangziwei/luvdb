@@ -432,7 +432,7 @@ def delete_say(sender, instance, **kwargs):
 
 class LuvList(models.Model):
     title = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
     source = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
 
@@ -458,10 +458,10 @@ class LuvList(models.Model):
 
     def model_name(self):
         return "LuvList"
-    
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        handle_tags(self, self.description)
+        handle_tags(self, self.notes)
 
 
 class ContentInList(models.Model):
