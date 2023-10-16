@@ -63,7 +63,7 @@ urlpatterns = [
     path("u/<str:username>/posts/", PostListView.as_view(), name="post_list"),
     path("u/<str:username>/posts/rss/", UserPostFeed(), name="user_post_feed"),
     path(
-        "u/<str:username>/posts/<str:project>/",
+        "u/<str:username>/posts/<slug:project>/",
         PostListView.as_view(),
         name="post_list_project",
     ),

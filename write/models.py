@@ -14,6 +14,7 @@ from django.db.models.signals import m2m_changed, post_delete, pre_delete
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.text import slugify
 
 from activity_feed.models import Activity
 from discover.models import Vote
@@ -48,12 +49,18 @@ class Tag(models.Model):
 
 class Project(models.Model):
     name = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=50, editable=False, blank=True)
 
     def __str__(self):
         return self.name
 
     def model_name(self):
         return "Project"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 
 class Comment(models.Model):

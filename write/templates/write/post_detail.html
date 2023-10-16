@@ -12,7 +12,7 @@
                 {% if projects %}
                     <p>
                         (in project{% if projects.count > 1 %}s{% endif %} 
-                        {% for project in projects %}"<a class="text-muted" href="{% url 'write:post_list_project' object.user.username project %}">{{project}}</a>"{% if not forloop.last %}, {% endif %}{% endfor %})
+                        {% for project in projects %}"<a class="text-muted" href="{% url 'write:post_list_project' object.user.username project.slug %}">{{project.name}}</a>"{% if not forloop.last %}, {% endif %}{% endfor %})
                     </p>
                 {% endif %}
                 <span class="d-flex">

@@ -70,7 +70,7 @@
                         <h5>Projects</h5>
                         <div>
                         {% for project_info in all_projects %}
-                            <a href="{% url 'write:post_list_project' object.username project_info.project.name %}"
+                            <a href="{% url 'write:post_list_project' object.username project_info.project.slug %}"
                                    class="me-0">{{ project_info.project.name }}</a>
                             ({{project_info.post_count}})
                             {% if not forloop.last %}/{% endif %}

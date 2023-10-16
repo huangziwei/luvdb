@@ -95,7 +95,7 @@ class PostListView(ListView):
 
         if "project" in self.kwargs:
             project = Project.objects.filter(
-                name=self.kwargs["project"], post__user=self.user
+                slug=self.kwargs["project"], post__user=self.user
             ).first()
             if project is not None:
                 queryset = queryset.filter(projects=project)
