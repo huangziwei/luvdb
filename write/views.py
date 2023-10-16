@@ -133,9 +133,9 @@ class PostListView(ListView):
             tag_sizes[tag] = min_size + scaling_factor * count
 
         context["all_tags"] = tag_sizes
-        context["all_projects"] = Project.objects.filter(
-            post__user=self.user
-        ).distinct()
+        context["all_projects"] = (
+            Project.objects.filter(post__user=self.user).distinct().order_by("name")
+        )
         context["current_project"] = self.kwargs.get("project", None)
 
         return context
