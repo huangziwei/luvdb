@@ -69,9 +69,10 @@
                     <div class="bg-light p-3 mb-3">
                         <h5>Projects</h5>
                         <div>
-                        {% for project in all_projects %}
-                            <a href="{% url 'write:post_list_project' object.username project.name %}"
-                                   class="me-0">{{ project.name }}</a>
+                        {% for project_info in all_projects %}
+                            <a href="{% url 'write:post_list_project' object.username project_info.project.name %}"
+                                   class="me-0">{{ project_info.project.name }}</a>
+                            ({{project_info.post_count}})
                             {% if not forloop.last %}/{% endif %}
                         {% endfor %}
                         </div>
