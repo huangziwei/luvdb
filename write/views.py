@@ -142,7 +142,16 @@ class PostListView(ListView):
             projects_with_counts.append({"project": project, "post_count": post_count})
 
         context["all_projects"] = projects_with_counts
-        context["current_project"] = self.kwargs.get("project", None)
+        current_project_slug = self.kwargs.get("project", None)
+        current_project_obj = Project.objects.filter(slug=current_project_slug).first()
+
+        if current_project_obj:
+            context["current_project"] = {
+                "name": current_project_obj.name,
+                "slug": current_project_obj.slug,
+            }
+        else:
+            context["current_project"] = None
 
         return context
 

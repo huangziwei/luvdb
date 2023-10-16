@@ -31,7 +31,7 @@
                         </h5>
                         {% if current_project %}
                             <div>
-                                (in project "<a class="text-muted" href="{% url 'write:post_list_project' object.username current_project %}">{{current_project}}</a>")
+                                (in project "<a class="text-muted" href="{% url 'write:post_list_project' object.username current_project.slug %}">{{current_project.name}}</a>")
                             </div>
                         {% endif %}
                     </div>
@@ -42,7 +42,7 @@
                         {% endif %}
                         {% if object.is_public %}
                             {% if current_project %}
-                            <a class="btn btn-sm btn-success" href="{% url 'write:user_post_project_feed' object.username current_project %}">RSS</a>
+                            <a class="btn btn-sm btn-success" href="{% url 'write:user_post_project_feed' object.username current_project.slug %}">RSS</a>
                             {% else %}
                             <a class="btn btn-sm btn-success" href="{% url 'write:user_post_feed' object.username %}">RSS</a>
                             {% endif %}
