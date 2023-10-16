@@ -118,7 +118,7 @@ class UserPostProjectFeed(Feed):
     def items(self, obj):
         username, project_name = obj
         return Post.objects.filter(
-            user__username=username, projects__name=project_name
+            user__username=username, projects__slug=project_name
         ).order_by("-timestamp")[:25]
 
     def item_title(self, post):
