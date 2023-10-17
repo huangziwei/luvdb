@@ -513,7 +513,7 @@ def filter_write(query, search_terms):
             .order_by("timestamp")
         )
         luvlist_results = (
-            luvlist_results.filter(description__icontains=term)
+            luvlist_results.filter(notes__icontains=term)
             .distinct()
             .order_by("timestamp")
         )
