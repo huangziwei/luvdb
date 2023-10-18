@@ -41,6 +41,10 @@ class Entity(models.Model):
 class Person(Entity):
     """
     A Person entity
+    ---
+    // We renamed Person to Creator in many parts of the codebase
+    // but not all, and kept the model name as Person for the database and other models
+    // because there's too much code to change
     """
 
     # person meta data

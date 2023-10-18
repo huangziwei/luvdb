@@ -21,10 +21,10 @@ from .models import Company, Person, Role
 
 
 # Create your views here.
-class PersonCreateView(LoginRequiredMixin, CreateView):
+class CreatorCreateView(LoginRequiredMixin, CreateView):
     model = Person
     form_class = PersonForm
-    template_name = "entity/person_create.html"
+    template_name = "entity/creator_create.html"
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -35,9 +35,9 @@ class PersonCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy("entity:creator_detail", kwargs={"pk": self.object.pk})
 
 
-class PersonDetailView(DetailView):
+class CreatorDetailView(DetailView):
     model = Person
-    template_name = "entity/person_detail.html"
+    template_name = "entity/creator_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -370,10 +370,10 @@ class PersonDetailView(DetailView):
         return context
 
 
-class PersonUpdateView(LoginRequiredMixin, UpdateView):
+class CreatorUpdateView(LoginRequiredMixin, UpdateView):
     model = Person
     form_class = PersonForm
-    template_name = "entity/person_update.html"
+    template_name = "entity/creator_update.html"
 
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
@@ -421,7 +421,7 @@ class RoleDetailView(LoginRequiredMixin, DetailView):
     template_name = "entity/role_detail.html"
 
 
-class PersonAutoComplete(autocomplete.Select2QuerySetView):
+class CreatorAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         qs = Person.objects.all()
 

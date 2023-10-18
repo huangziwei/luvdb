@@ -5,10 +5,10 @@ from .views import (
     CompanyCreateView,
     CompanyDetailView,
     CompanyUpdateView,
-    PersonAutoComplete,
-    PersonCreateView,
-    PersonDetailView,
-    PersonUpdateView,
+    CreatorAutoComplete,
+    CreatorCreateView,
+    CreatorDetailView,
+    CreatorUpdateView,
     RoleAutocomplete,
     RoleCreateView,
     RoleDetailView,
@@ -19,12 +19,14 @@ app_name = "entity"
 
 urlpatterns = [
     # creator
-    path("creator/create/", PersonCreateView.as_view(), name="creator_create"),
-    path("creator/<int:pk>/", PersonDetailView.as_view(), name="creator_detail"),
-    path("creator/<int:pk>/update/", PersonUpdateView.as_view(), name="creator_update"),
+    path("creator/create/", CreatorCreateView.as_view(), name="creator_create"),
+    path("creator/<int:pk>/", CreatorDetailView.as_view(), name="creator_detail"),
+    path(
+        "creator/<int:pk>/update/", CreatorUpdateView.as_view(), name="creator_update"
+    ),
     path(
         "creator-autocomplete/",
-        PersonAutoComplete.as_view(),
+        CreatorAutoComplete.as_view(),
         name="creator-autocomplete",
     ),
     # role
