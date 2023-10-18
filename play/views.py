@@ -85,9 +85,9 @@ class WorkDetailView(DetailView):
         for role in work.workrole_set.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.creator.name
+            creatoralt_name_or_creator_name = role.alt_name or role.creator.name
             grouped_roles[role.role.name].append(
-                (role.creator, alt_name_or_person_name)
+                (role.creator, creatoralt_name_or_creator_name)
             )
         context["grouped_roles"] = grouped_roles
 
@@ -205,9 +205,9 @@ class GameDetailView(DetailView):
         for role in game.gameroles.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.creator.name
+            creatoralt_name_or_creator_name = role.alt_name or role.creator.name
             grouped_roles[role.role.name].append(
-                (role.creator, alt_name_or_person_name)
+                (role.creator, creatoralt_name_or_creator_name)
             )
         context["grouped_roles"] = grouped_roles
 
@@ -616,9 +616,9 @@ class GameCheckInListView(ListView):
         for role in game.gameroles.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.creator.name
+            creatoralt_name_or_creator_name = role.alt_name or role.creator.name
             grouped_roles[role.role.name].append(
-                (role.creator, alt_name_or_person_name)
+                (role.creator, creatoralt_name_or_creator_name)
             )
         context["grouped_roles"] = grouped_roles
 
@@ -696,9 +696,9 @@ class GameCheckInAllListView(ListView):
         for role in game.gameroles.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.creator.name
+            creatoralt_name_or_creator_name = role.alt_name or role.creator.name
             grouped_roles[role.role.name].append(
-                (role.creator, alt_name_or_person_name)
+                (role.creator, creatoralt_name_or_creator_name)
             )
         context["grouped_roles"] = grouped_roles
 

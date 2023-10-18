@@ -68,7 +68,7 @@ class WorkRoleForm(forms.ModelForm):
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
-        if person and not role:
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
@@ -90,9 +90,8 @@ WorkRoleFormSet = inlineformset_factory(
     form=WorkRoleForm,
     extra=15,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
@@ -146,7 +145,7 @@ class InstanceRoleForm(forms.ModelForm):
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
-        if person and not role:
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
@@ -168,9 +167,8 @@ InstanceRoleFormSet = inlineformset_factory(
     form=InstanceRoleForm,
     extra=15,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
@@ -233,7 +231,7 @@ class BookRoleForm(forms.ModelForm):
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
-        if person and not role:
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
@@ -255,9 +253,8 @@ BookRoleFormSet = inlineformset_factory(
     form=BookRoleForm,
     extra=10,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={
                 "data-create-url": reverse_lazy("entity:creator_create"),

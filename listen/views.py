@@ -234,9 +234,9 @@ class WorkDetailView(DetailView):
         for role in work.workrole_set.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.creator.name
+            alt_name_or_creator_name = role.alt_name or role.creator.name
             grouped_roles[role.role.name].append(
-                (role.creator, alt_name_or_person_name)
+                (role.creator, alt_name_or_creator_name)
             )
         context["grouped_roles"] = grouped_roles
 
@@ -283,7 +283,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         return Work.objects.none()  # If no query is provided, return no objects
 
     def get_result_label(self, item):
-        # Get the first person with a role of 'Singer' for the release
+        # Get the first creator with a role of 'Singer' for the release
         singer_role = Role.objects.filter(
             name="Singer"
         ).first()  # Adjust 'Singer' to match your data
@@ -292,17 +292,17 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         singer_work_role = item.workrole_set.filter(role=singer_role).first()
         composer_work_role = item.workrole_set.filter(role=composer_role).first()
         if singer_work_role:
-            person_name = singer_work_role.creator.name
+            creator_name = singer_work_role.creator.name
         elif composer_work_role:
-            person_name = composer_work_role.creator.name
+            creator_name = composer_work_role.creator.name
         else:
-            person_name = "Unknown"
+            creator_name = "Unknown"
 
         # Get the year from the release_date
         publication_year = item.release_date[:4] if item.release_date else "Unknown"
 
         # Format the label
-        label = format_html("{} ({}, {})", item.title, person_name, publication_year)
+        label = format_html("{} ({}, {})", item.title, creator_name, publication_year)
 
         return label
 
@@ -400,9 +400,9 @@ class TrackDetailView(DetailView):
         for role in track.trackrole_set.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.creator.name
+            alt_name_or_creator_name = role.alt_name or role.creator.name
             grouped_roles[role.role.name].append(
-                (role.creator, alt_name_or_person_name)
+                (role.creator, alt_name_or_creator_name)
             )
         context["grouped_roles"] = grouped_roles
         context["releases"] = track.releases.all().order_by("release_date")
@@ -444,28 +444,28 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
         singer_track_role = item.trackrole_set.filter(role=singer_role).first()
         composer_track_role = item.trackrole_set.filter(role=composer_role).first()
 
-        # Check if singer_track_role exists and a person is associated
+        # Check if singer_track_role exists and a creator is associated
         if singer_track_role:
-            person_name = (
+            creator_name = (
                 singer_track_role.alt_name
                 if singer_track_role.alt_name
                 else singer_track_role.creator.name
             )
         # If no singer, use composer
         elif composer_track_role:
-            person_name = (
+            creator_name = (
                 composer_track_role.alt_name
                 if composer_track_role.alt_name
                 else composer_track_role.creator.name
             )
         else:
-            person_name = "Unknown"
+            creator_name = "Unknown"
 
         # Get the year from the release_date
         release_year = item.release_date[:4] if item.release_date else "Unknown"
 
         # Format the label
-        label = format_html("{} ({}, {})", item.title, person_name, release_year)
+        label = format_html("{} ({}, {})", item.title, creator_name, release_year)
 
         return label
 
@@ -532,9 +532,11 @@ class ReleaseDetailView(DetailView):
         for release_role in release.releaserole_set.all():
             if release_role.role.name not in roles:
                 roles[release_role.role.name] = []
-            alt_name_or_person_name = release_role.alt_name or release_role.creator.name
+            alt_name_or_creator_name = (
+                release_role.alt_name or release_role.creator.name
+            )
             roles[release_role.role.name].append(
-                (release_role.creator, alt_name_or_person_name)
+                (release_role.creator, alt_name_or_creator_name)
             )
         context["roles"] = roles
 
@@ -751,10 +753,12 @@ class ReleaseCreditDetailView(DetailView):
         release_credits = {role.role: [] for role in release_roles}
 
         for release_role in release_roles:
-            alt_name_or_person_name = release_role.alt_name or release_role.creator.name
+            alt_name_or_creator_name = (
+                release_role.alt_name or release_role.creator.name
+            )
 
             release_credits[release_role.role].append(
-                (release_role.creator, alt_name_or_person_name)
+                (release_role.creator, alt_name_or_creator_name)
             )
 
         # Aggregate Track level credits
@@ -773,10 +777,12 @@ class ReleaseCreditDetailView(DetailView):
             }
 
             for track_role in track_roles:
-                alt_name_or_person_name = track_role.alt_name or track_role.creator.name
+                alt_name_or_creator_name = (
+                    track_role.alt_name or track_role.creator.name
+                )
                 track_credits[(release_track.track, disk, order)][
                     track_role.role
-                ].append((track_role.creator, alt_name_or_person_name))
+                ].append((track_role.creator, alt_name_or_creator_name))
 
         context["release_credits"] = release_credits
         context["track_credits"] = track_credits
@@ -1474,11 +1480,11 @@ class GenericCheckInListView(ListView):
             for release_role in release.releaserole_set.all():
                 if release_role.role.name not in roles:
                     roles[release_role.role.name] = []
-                alt_name_or_person_name = (
+                alt_name_or_creator_name = (
                     release_role.alt_name or release_role.creator.name
                 )
                 roles[release_role.role.name].append(
-                    (release_role.creator, alt_name_or_person_name)
+                    (release_role.creator, alt_name_or_creator_name)
                 )
             context["roles"] = roles
         elif context["model_name"] == "audiobook":
@@ -1487,11 +1493,11 @@ class GenericCheckInListView(ListView):
             for audiobook_role in audiobook.audiobookrole_set.all():
                 if audiobook_role.role.name not in roles:
                     roles[audiobook_role.role.name] = []
-                alt_name_or_person_name = (
+                alt_name_or_creator_name = (
                     audiobook_role.alt_name or audiobook_role.creator.name
                 )
                 roles[audiobook_role.role.name].append(
-                    (audiobook_role.creator, alt_name_or_person_name)
+                    (audiobook_role.creator, alt_name_or_creator_name)
                 )
             context["roles"] = roles
 
@@ -1590,11 +1596,11 @@ class GenericCheckInAllListView(ListView):
             for release_role in release.releaserole_set.all():
                 if release_role.role.name not in roles:
                     roles[release_role.role.name] = []
-                alt_name_or_person_name = (
+                alt_name_or_creator_name = (
                     release_role.alt_name or release_role.creator.name
                 )
                 roles[release_role.role.name].append(
-                    (release_role.creator, alt_name_or_person_name)
+                    (release_role.creator, alt_name_or_creator_name)
                 )
             context["roles"] = roles
         elif context["model_name"] == "audiobook":
@@ -1603,11 +1609,11 @@ class GenericCheckInAllListView(ListView):
             for audiobook_role in audiobook.audiobookrole_set.all():
                 if audiobook_role.role.name not in roles:
                     roles[audiobook_role.role.name] = []
-                alt_name_or_person_name = (
+                alt_name_or_creator_name = (
                     audiobook_role.alt_name or audiobook_role.creator.name
                 )
                 roles[audiobook_role.role.name].append(
-                    (audiobook_role.creator, alt_name_or_person_name)
+                    (audiobook_role.creator, alt_name_or_creator_name)
                 )
             context["roles"] = roles
 
@@ -1760,11 +1766,11 @@ class AudiobookDetailView(DetailView):
         for audiobook_role in audiobook.audiobookrole_set.all():
             if audiobook_role.role.name not in roles:
                 roles[audiobook_role.role.name] = []
-            alt_name_or_person_name = (
+            alt_name_or_creator_name = (
                 audiobook_role.alt_name or audiobook_role.creator.name
             )
             roles[audiobook_role.role.name].append(
-                (audiobook_role.creator, alt_name_or_person_name)
+                (audiobook_role.creator, alt_name_or_creator_name)
             )
         context["roles"] = roles
 

@@ -58,15 +58,15 @@ class WorkRoleForm(forms.ModelForm):
         creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
-        # if the person field is filled but the role field is not
-        if person and not role:
+        # if the creator field is filled but the role field is not
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.creator is None:  # if the person field is empty
+        if instance.creator is None:  # if the creator field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -81,9 +81,8 @@ WorkRoleFormSet = inlineformset_factory(
     form=WorkRoleForm,
     extra=15,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
@@ -183,15 +182,15 @@ class GameRoleForm(forms.ModelForm):
         creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
-        # if the person field is filled but the role field is not
-        if person and not role:
+        # if the creator field is filled but the role field is not
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.creator is None:  # if the person field is empty
+        if instance.creator is None:  # if the creator field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -206,9 +205,8 @@ GameRoleFormSet = inlineformset_factory(
     form=GameRoleForm,
     extra=15,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
@@ -233,15 +231,15 @@ class GameCastForm(forms.ModelForm):
         creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
-        # if the person field is filled but the role field is not
-        if person and not role:
+        # if the creator field is filled but the role field is not
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.creator is None:  # if the person field is empty
+        if instance.creator is None:  # if the creator field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -256,9 +254,8 @@ GameCastFormSet = inlineformset_factory(
     form=GameCastForm,
     extra=15,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),

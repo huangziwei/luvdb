@@ -239,9 +239,9 @@ class MovieDetailView(DetailView):
         for movie_role in movie.movieroles.all():
             if movie_role.role.name not in roles:
                 roles[movie_role.role.name] = []
-            alt_name_or_person_name = movie_role.alt_name or movie_role.creator.name
+            d = movie_role.alt_name or movie_role.creator.name
             roles[movie_role.role.name].append(
-                (movie_role.creator, alt_name_or_person_name)
+                (movie_role.creator, d)
             )
         context["roles"] = roles
 
@@ -1162,9 +1162,9 @@ class GenericCheckInListView(ListView):
             for movie_role in movie.movieroles.all():
                 if movie_role.role.name not in roles:
                     roles[movie_role.role.name] = []
-                alt_name_or_person_name = movie_role.alt_name or movie_role.creator.name
+                d = movie_role.alt_name or movie_role.creator.name
                 roles[movie_role.role.name].append(
-                    (movie_role.creator, alt_name_or_person_name)
+                    (movie_role.creator, d)
                 )
             context["roles"] = roles
             context["object"] = movie
@@ -1174,11 +1174,11 @@ class GenericCheckInListView(ListView):
             for series_role in series.seriesroles.all():
                 if series_role.role.name not in roles:
                     roles[series_role.role.name] = []
-                alt_name_or_person_name = (
+                d = (
                     series_role.alt_name or series_role.creator.name
                 )
                 roles[series_role.role.name].append(
-                    (series_role.creator, alt_name_or_person_name)
+                    (series_role.creator, d)
                 )
             context["roles"] = roles
             context["object"] = series
@@ -1279,9 +1279,9 @@ class GenericCheckInAllListView(ListView):
             for movie_role in movie.movieroles.all():
                 if movie_role.role.name not in roles:
                     roles[movie_role.role.name] = []
-                alt_name_or_person_name = movie_role.alt_name or movie_role.creator.name
+                d = movie_role.alt_name or movie_role.creator.name
                 roles[movie_role.role.name].append(
-                    (movie_role.creator, alt_name_or_person_name)
+                    (movie_role.creator, d)
                 )
 
         elif context["model_name"] == "series":
@@ -1290,11 +1290,11 @@ class GenericCheckInAllListView(ListView):
             for series_role in series.seriesroles.all():
                 if series_role.role.name not in roles:
                     roles[series_role.role.name] = []
-                alt_name_or_person_name = (
+                d = (
                     series_role.alt_name or series_role.creator.name
                 )
                 roles[series_role.role.name].append(
-                    (series_role.creator, alt_name_or_person_name)
+                    (series_role.creator, d)
                 )
         context["roles"] = roles
         return context

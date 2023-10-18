@@ -264,9 +264,9 @@ class WorkDetailView(DetailView):
         for role in work.workrole_set.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.creator.name
+            alt_name_or_creator_name = role.alt_name or role.creator.name
             grouped_roles[role.role.name].append(
-                (role.creator, alt_name_or_person_name)
+                (role.creator, alt_name_or_creator_name)
             )
         context["grouped_roles"] = grouped_roles
 
@@ -360,9 +360,9 @@ class InstanceDetailView(DetailView):
         for role in self.object.instancerole_set.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.creator.name
+            alt_name_or_creator_name = role.alt_name or role.creator.name
             grouped_roles[role.role.name].append(
-                (role.creator, alt_name_or_person_name)
+                (role.creator, alt_name_or_creator_name)
             )
         context["grouped_roles"] = grouped_roles
         context["books"] = self.object.books.all().order_by("publication_date")
@@ -431,9 +431,9 @@ class BookDetailView(DetailView):
         for book_role in book.bookrole_set.all():
             if book_role.role.name not in roles:
                 roles[book_role.role.name] = []
-            alt_name_or_person_name = book_role.alt_name or book_role.creator.name
+            alt_name_or_creator_name = book_role.alt_name or book_role.creator.name
             roles[book_role.role.name].append(
-                (book_role.creator, alt_name_or_person_name)
+                (book_role.creator, alt_name_or_creator_name)
             )
         context["roles"] = roles
 
@@ -1287,11 +1287,11 @@ class GenericCheckInListView(ListView):
                 for book_role in book.bookrole_set.all():
                     if book_role.role.name not in roles:
                         roles[book_role.role.name] = []
-                    alt_name_or_person_name = (
+                    alt_name_or_creator_name = (
                         book_role.alt_name or book_role.creator.name
                     )
                     roles[book_role.role.name].append(
-                        (book_role.creator, alt_name_or_person_name)
+                        (book_role.creator, alt_name_or_creator_name)
                     )
                 context["roles"] = roles
 
@@ -1390,11 +1390,11 @@ class GenericCheckInAllListView(ListView):
                 for book_role in book.bookrole_set.all():
                     if book_role.role.name not in roles:
                         roles[book_role.role.name] = []
-                    alt_name_or_person_name = (
+                    alt_name_or_creator_name = (
                         book_role.alt_name or book_role.creator.name
                     )
                     roles[book_role.role.name].append(
-                        (book_role.creator, alt_name_or_person_name)
+                        (book_role.creator, alt_name_or_creator_name)
                     )
                 context["roles"] = roles
 

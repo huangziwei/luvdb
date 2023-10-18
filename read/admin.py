@@ -104,20 +104,20 @@ class IssueAdmin(admin.ModelAdmin):
 
 class WorkRoleAdmin(admin.ModelAdmin):
     list_display = ("work", "creator", "role")
-    search_fields = ("work__title", "person__name", "role__name")
+    search_fields = ("work__title", "creator__name", "role__name")
     list_filter = ("role",)
 
 
 class InstanceRoleAdmin(admin.ModelAdmin):
     list_display = ("instance", "creator", "role")
-    search_fields = ("instance__title", "person__name", "role__name")
+    search_fields = ("instance__title", "creator__name", "role__name")
     list_filter = ("role",)
 
 
 class BookRoleAdmin(admin.ModelAdmin):
     list_display = ("book", "creator", "alt_name", "role")
     list_filter = ("book", "creator", "role")
-    search_fields = ("book__title", "person__name", "role__name")
+    search_fields = ("book__title", "creator__name", "role__name")
 
 
 class BookInSeriesInline(admin.TabularInline):

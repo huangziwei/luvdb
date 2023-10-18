@@ -108,15 +108,15 @@ class MovieRoleForm(forms.ModelForm):
         creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
-        # if the person field is filled but the role field is not
-        if person and not role:
+        # if the creator field is filled but the role field is not
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.creator is None:  # if the person field is empty
+        if instance.creator is None:  # if the creator field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -131,9 +131,8 @@ MovieRoleFormSet = inlineformset_factory(
     form=MovieRoleForm,
     extra=15,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
@@ -158,15 +157,15 @@ class MovieCastForm(forms.ModelForm):
         creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
-        # if the person field is filled but the role field is not
-        if person and not role:
+        # if the creator field is filled but the role field is not
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.creator is None:  # if the person field is empty
+        if instance.creator is None:  # if the creator field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -181,9 +180,8 @@ MovieCastFormSet = inlineformset_factory(
     form=MovieCastForm,
     extra=15,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
@@ -242,15 +240,15 @@ class SeriesRoleForm(forms.ModelForm):
         creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
-        # if the person field is filled but the role field is not
-        if person and not role:
+        # if the creator field is filled but the role field is not
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.creator is None:  # if the person field is empty
+        if instance.creator is None:  # if the creator field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -265,9 +263,8 @@ SeriesRoleFormSet = inlineformset_factory(
     form=SeriesRoleForm,
     extra=15,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
@@ -312,15 +309,15 @@ class EpisodeRoleForm(forms.ModelForm):
         creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
-        # if the person field is filled but the role field is not
-        if person and not role:
+        # if the creator field is filled but the role field is not
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.creator is None:  # if the person field is empty
+        if instance.creator is None:  # if the creator field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -336,7 +333,7 @@ EpisodeRoleFormSet = inlineformset_factory(
     extra=15,
     can_delete=True,
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
@@ -361,15 +358,15 @@ class EpisodeCastForm(forms.ModelForm):
         creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
-        # if the person field is filled but the role field is not
-        if person and not role:
+        # if the creator field is filled but the role field is not
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.creator is None:  # if the person field is empty
+        if instance.creator is None:  # if the creator field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -384,9 +381,8 @@ EpisodeCastFormSet = inlineformset_factory(
     form=EpisodeCastForm,
     extra=15,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),

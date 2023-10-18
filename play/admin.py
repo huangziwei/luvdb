@@ -68,13 +68,13 @@ class GameAdmin(admin.ModelAdmin):
 @admin.register(GameRole)
 class GameRoleAdmin(admin.ModelAdmin):
     list_display = ["game", "creator", "role", "alt_name"]
-    search_fields = ["game__title", "person__name", "role__name"]
+    search_fields = ["game__title", "creator__name", "role__name"]
 
 
 @admin.register(GameCast)
 class GameCastAdmin(admin.ModelAdmin):
     list_display = ["game", "creator", "role", "character_name"]
-    search_fields = ["game__title", "person__name", "role__name"]
+    search_fields = ["game__title", "creator__name", "role__name"]
 
 
 @admin.register(GameCheckIn)

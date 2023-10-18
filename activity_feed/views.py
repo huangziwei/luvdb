@@ -86,7 +86,7 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
             )
             book.since = now.year - publication_year
             book.authors = book.bookrole_set.filter(role__name="Author").values(
-                "person__name", "alt_name"
+                "creator__name", "alt_name"
             )
 
         context["books_published_today"] = books_published_today
@@ -408,7 +408,7 @@ class CalendarActivityFeedView(ActivityFeedView):
             )
             book.since = selected_datetime.year - publication_year
             book.authors = book.bookrole_set.filter(role__name="Author").values(
-                "person__name", "alt_name"
+                "creator__name", "alt_name"
             )
 
         context["books_published_today"] = books_published_today

@@ -227,11 +227,11 @@ class CreatorDetailView(DetailView):
 
         series_directed_info = []
 
-        # Add series directed by the person
+        # Add series directed by the creator
         for series in directed_series:
             series_directed_info.append({"series": series, "episode_count": None})
 
-        # Add series based on episodes directed by the person
+        # Add series based on episodes directed by the creator
         for entry in episode_series:
             # Check if series is already in series_directed_info
             if any(
@@ -275,11 +275,11 @@ class CreatorDetailView(DetailView):
 
         series_written_info = []
 
-        # Add series written by the person
+        # Add series written by the creator
         for series in written_series:
             series_written_info.append({"series": series, "episode_count": None})
 
-        # Add series based on episodes written by the person
+        # Add series based on episodes written by the creator
         for entry in episode_series_writer:
             # Check if series is already in series_written_info
             if any(

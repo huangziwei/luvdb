@@ -91,9 +91,8 @@ WorkRoleFormSet = inlineformset_factory(
     form=WorkRoleForm,
     extra=15,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
@@ -150,7 +149,7 @@ class TrackRoleForm(forms.ModelForm):
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
-        if person and not role:
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
@@ -172,9 +171,8 @@ TrackRoleFormSet = inlineformset_factory(
     form=TrackRoleForm,
     extra=15,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
@@ -240,7 +238,7 @@ class ReleaseRoleForm(forms.ModelForm):
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
-        if person and not role:
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
@@ -262,9 +260,8 @@ ReleaseRoleFormSet = inlineformset_factory(
     form=ReleaseRoleForm,
     extra=10,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={
                 "data-create-url": reverse_lazy("entity:creator_create"),
@@ -449,7 +446,7 @@ class AudiobookRoleForm(forms.ModelForm):
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
-        if person and not role:
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
@@ -471,9 +468,8 @@ AudiobookRoleFormSet = inlineformset_factory(
     form=AudiobookRoleForm,
     extra=10,
     can_delete=True,
-    labels={"person": "Entity"},
     widgets={
-        "person": autocomplete.ModelSelect2(
+        "creator": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:creator-autocomplete"),
             attrs={
                 "data-create-url": reverse_lazy("entity:creator_create"),
