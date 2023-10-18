@@ -1,14 +1,14 @@
 from django import forms
 
-from .models import Person
+from .models import Creator
 
 
 ##########
-# Person #
+# Creator #
 ##########
-class PersonForm(forms.ModelForm):
+class CreatorForm(forms.ModelForm):
     class Meta:
-        model = Person
+        model = Creator
         fields = [
             "name",
             "other_names",
@@ -37,6 +37,7 @@ class PersonForm(forms.ModelForm):
             "other_names": forms.TextInput(),  # Use TextInput to make it a single line input
         }
         labels = {
+            "creator_type": "Type",
             "birth_date": "Date of Birth / Formation",
             "birth_place": "Place of Birth / Formation",
             "death_date": "Date of Death / Dissolution",

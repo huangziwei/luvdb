@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from .models import Company, Person, Role
+from .models import Company, Creator, Role
 
 
-@admin.register(Person)
+@admin.register(Creator)
 class PersonAdmin(admin.ModelAdmin):
     list_display = [
         "name",

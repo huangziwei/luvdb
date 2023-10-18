@@ -60,7 +60,7 @@ class WorkRoleForm(forms.ModelForm):
 
         # if the creator field is filled but the role field is not
         if creator and not role:
-            raise ValidationError("Role is required when Person is filled.")
+            raise ValidationError("Role is required when Creator is filled.")
 
         return cleaned_data
 
@@ -184,7 +184,7 @@ class GameRoleForm(forms.ModelForm):
 
         # if the creator field is filled but the role field is not
         if creator and not role:
-            raise ValidationError("Role is required when Person is filled.")
+            raise ValidationError("Role is required when Creator is filled.")
 
         return cleaned_data
 
@@ -233,7 +233,7 @@ class GameCastForm(forms.ModelForm):
 
         # if the creator field is filled but the role field is not
         if creator and not role:
-            raise ValidationError("Role is required when Person is filled.")
+            raise ValidationError("Role is required when Creator is filled.")
 
         return cleaned_data
 

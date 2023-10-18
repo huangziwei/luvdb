@@ -16,14 +16,14 @@ from read.models import Instance as LitInstance
 from read.models import Work as LitWork
 from watch.models import Episode, Movie, Series
 
-from .forms import PersonForm
-from .models import Company, Person, Role
+from .forms import CreatorForm
+from .models import Company, Creator, Role
 
 
 # Create your views here.
 class CreatorCreateView(LoginRequiredMixin, CreateView):
-    model = Person
-    form_class = PersonForm
+    model = Creator
+    form_class = CreatorForm
     template_name = "entity/creator_create.html"
 
     def form_valid(self, form):
@@ -36,7 +36,7 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
 
 
 class CreatorDetailView(DetailView):
-    model = Person
+    model = Creator
     template_name = "entity/creator_detail.html"
 
     def get_context_data(self, **kwargs):
@@ -371,8 +371,8 @@ class CreatorDetailView(DetailView):
 
 
 class CreatorUpdateView(LoginRequiredMixin, UpdateView):
-    model = Person
-    form_class = PersonForm
+    model = Creator
+    form_class = CreatorForm
     template_name = "entity/creator_update.html"
 
     def form_valid(self, form):
@@ -423,7 +423,7 @@ class RoleDetailView(LoginRequiredMixin, DetailView):
 
 class CreatorAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        qs = Person.objects.all()
+        qs = Creator.objects.all()
 
         if self.q:
             qs = qs.filter(
@@ -432,7 +432,7 @@ class CreatorAutoComplete(autocomplete.Select2QuerySetView):
 
             return qs
 
-        return Person.objects.none()
+        return Creator.objects.none()
 
     def get_result_label(self, item):
         # Get the birth and death years

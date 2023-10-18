@@ -14,7 +14,7 @@ from django.utils.text import slugify
 from PIL import Image
 
 from activity_feed.models import Activity
-from entity.models import Company, Entity, Person, Role
+from entity.models import Company, Creator, Entity, Role
 from read.models import Book, Instance, LanguageField, Publisher, standardize_date
 from write.models import create_mentions_notifications, handle_tags
 
@@ -80,7 +80,7 @@ class Work(models.Model):
     other_titles = models.TextField(blank=True, null=True)
     romanized_title = models.CharField(max_length=200, blank=True, null=True)
     creators = models.ManyToManyField(
-        Person, through="WorkRole", related_name="listen_works"
+        Creator, through="WorkRole", related_name="listen_works"
     )
     release_date = models.CharField(max_length=10, blank=True, null=True)
     recorded_date = models.CharField(max_length=10, blank=True, null=True)
@@ -98,7 +98,7 @@ class Work(models.Model):
 class WorkRole(models.Model):
     work = models.ForeignKey(Work, on_delete=models.CASCADE)
     creator = models.ForeignKey(
-        Person,
+        Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -128,7 +128,7 @@ class Track(models.Model):
     other_titles = models.TextField(blank=True, null=True)
     romanized_title = models.CharField(max_length=255, blank=True, null=True)
     creators = models.ManyToManyField(
-        Person, through="TrackRole", related_name="tracks"
+        Creator, through="TrackRole", related_name="tracks"
     )
     work = models.ForeignKey(
         Work, on_delete=models.SET_NULL, null=True, blank=True, related_name="tracks"
@@ -170,7 +170,9 @@ class Track(models.Model):
 
 class TrackRole(models.Model):
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
-    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=255, blank=True, null=True)
 
@@ -194,7 +196,7 @@ class Release(models.Model):
     other_titles = models.TextField(blank=True, null=True)
 
     creators = models.ManyToManyField(
-        Person, through="ReleaseRole", related_name="releases"
+        Creator, through="ReleaseRole", related_name="releases"
     )
     tracks = models.ManyToManyField(
         Track, through="ReleaseTrack", related_name="releases"
@@ -313,7 +315,7 @@ class Release(models.Model):
 class ReleaseRole(models.Model):
     release = models.ForeignKey(Release, on_delete=models.CASCADE)
     creator = models.ForeignKey(
-        Person,
+        Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -543,7 +545,7 @@ class Audiobook(models.Model):
     cover = models.ImageField(upload_to=rename_release_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False, null=True, blank=True)
     creators = models.ManyToManyField(
-        Person, through="AudiobookRole", related_name="audiobooks"
+        Creator, through="AudiobookRole", related_name="audiobooks"
     )
     instances = models.ManyToManyField(
         Instance, through="AudiobookInstance", related_name="audiobooks"
@@ -655,7 +657,7 @@ class Audiobook(models.Model):
 class AudiobookRole(models.Model):
     audiobook = models.ForeignKey(Audiobook, on_delete=models.CASCADE)
     creator = models.ForeignKey(
-        Person,
+        Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,

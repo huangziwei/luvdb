@@ -13,7 +13,7 @@ from django.utils.text import slugify
 from PIL import Image
 
 from activity_feed.models import Activity
-from entity.models import Company, Entity, Person, Role
+from entity.models import Company, Creator, Entity, Role
 from write.models import create_mentions_notifications, handle_tags
 
 
@@ -92,7 +92,7 @@ class Work(models.Model):  # Renamed from Book
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
     creators = models.ManyToManyField(
-        Person, through="WorkRole", related_name="play_works"
+        Creator, through="WorkRole", related_name="play_works"
     )
 
     developers = models.ManyToManyField(Company, related_name="play_works")
@@ -151,12 +151,12 @@ class Work(models.Model):  # Renamed from Book
 
 class WorkRole(models.Model):  # Renamed from BookRole
     """
-    A Role of a Person in a Work
+    A Role of a Creator in a Work
     """
 
     work = models.ForeignKey(Work, on_delete=models.CASCADE)
     creator = models.ForeignKey(
-        Person,
+        Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -187,9 +187,9 @@ class Game(models.Model):
     developers = models.ManyToManyField(Company, related_name="developed_games")
     publishers = models.ManyToManyField(Company, related_name="published_games")
 
-    creators = models.ManyToManyField(Person, through="GameRole", related_name="games")
+    creators = models.ManyToManyField(Creator, through="GameRole", related_name="games")
     casts = models.ManyToManyField(
-        Person, through="GameCast", related_name="games_cast"
+        Creator, through="GameCast", related_name="games_cast"
     )
     notes = models.TextField(blank=True, null=True)
     website = models.CharField(max_length=100, blank=True, null=True)
@@ -281,11 +281,13 @@ class GameReleaseDate(models.Model):
 
 class GameRole(models.Model):
     """
-    A Role of a Person in a Game
+    A Role of a Creator in a Game
     """
 
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="gameroles")
-    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=100, blank=True, null=True)
 
@@ -299,7 +301,9 @@ class GameCast(models.Model):
     """
 
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="gamecasts")
-    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     character_name = models.CharField(max_length=100, blank=True, null=True)
 

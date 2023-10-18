@@ -29,7 +29,7 @@ from django.views.generic import (
 from PIL import Image
 
 from discover.views import user_has_upvoted
-from entity.models import Person, Role
+from entity.models import Creator, Role
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
 
@@ -265,7 +265,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            creators = Person.objects.filter(name__icontains=self.q)
+            creators = Creator.objects.filter(name__icontains=self.q)
 
             # get the author role
             singer_role = Role.objects.filter(name="Singer").first()
@@ -418,7 +418,7 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            creators = Person.objects.filter(name__icontains=self.q)
+            creators = Creator.objects.filter(name__icontains=self.q)
 
             # get the author role
             singer_role = Role.objects.filter(name="Singer").first()

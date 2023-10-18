@@ -14,7 +14,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import DeleteView, ListView
 
-from entity.models import Person
+from entity.models import Creator
 from listen.models import Release
 from play.models import Game, GameReleaseDate
 from read.models import Book
@@ -45,12 +45,12 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         current_month_day_dash = now.strftime("-%m-%d")
 
         # Query for people born or died on this day
-        born_today = Person.objects.filter(
+        born_today = Creator.objects.filter(
             Q(birth_date__contains=current_month_day)
             | Q(birth_date__contains=current_month_day_dash)
         ).order_by("birth_date")
 
-        died_today = Person.objects.filter(
+        died_today = Creator.objects.filter(
             Q(death_date__contains=current_month_day)
             | Q(death_date__contains=current_month_day_dash)
         ).order_by("death_date")
@@ -367,12 +367,12 @@ class CalendarActivityFeedView(ActivityFeedView):
         selected_month_day_dash = selected_datetime.strftime("-%m-%d")
 
         # Query for people born or died on this day
-        born_today = Person.objects.filter(
+        born_today = Creator.objects.filter(
             Q(birth_date__contains=selected_month_day)
             | Q(birth_date__contains=selected_month_day_dash)
         ).order_by("birth_date")
 
-        died_today = Person.objects.filter(
+        died_today = Creator.objects.filter(
             Q(death_date__contains=selected_month_day)
             | Q(death_date__contains=selected_month_day_dash)
         ).order_by("death_date")

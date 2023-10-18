@@ -18,7 +18,7 @@ from langcodes import Language
 from PIL import Image
 
 from activity_feed.models import Activity
-from entity.models import Company, Entity, Person, Role
+from entity.models import Company, Creator, Entity, Role
 from write.models import create_mentions_notifications, handle_tags
 
 
@@ -187,7 +187,7 @@ class Work(models.Model):  # Renamed from Book
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     creators = models.ManyToManyField(
-        Person, through="WorkRole", related_name="read_works"
+        Creator, through="WorkRole", related_name="read_works"
     )
     publication_date = models.TextField(blank=True, null=True)
     language = LanguageField(max_length=8, blank=True, null=True)
@@ -241,12 +241,12 @@ class Work(models.Model):  # Renamed from Book
 
 class WorkRole(models.Model):  # Renamed from BookRole
     """
-    A Role of a Person in a Work
+    A Role of a Creator in a Work
     """
 
     work = models.ForeignKey(Work, on_delete=models.CASCADE)
     creator = models.ForeignKey(
-        Person,
+        Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -274,7 +274,7 @@ class Instance(models.Model):
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     creators = models.ManyToManyField(
-        Person, through="InstanceRole", related_name="instances"
+        Creator, through="InstanceRole", related_name="instances"
     )
     work = models.ForeignKey(
         Work, on_delete=models.SET_NULL, null=True, blank=True, related_name="instances"
@@ -318,7 +318,9 @@ class Instance(models.Model):
 
 class InstanceRole(models.Model):
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
-    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
     alt_name = models.CharField(max_length=255, blank=True, null=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
 
@@ -336,7 +338,7 @@ class Book(models.Model):
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False, null=True, blank=True)
-    creators = models.ManyToManyField(Person, through="BookRole", related_name="books")
+    creators = models.ManyToManyField(Creator, through="BookRole", related_name="books")
     instances = models.ManyToManyField(
         Instance, through="BookInstance", related_name="books"
     )
@@ -470,7 +472,7 @@ class Book(models.Model):
 class BookRole(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     creator = models.ForeignKey(
-        Person,
+        Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,

@@ -13,7 +13,7 @@ from django.utils.text import slugify
 from PIL import Image
 
 from activity_feed.models import Activity
-from entity.models import Company, Entity, Person, Role
+from entity.models import Company, Creator, Entity, Role
 from read.models import LanguageField
 from read.models import Work as LitWork
 from write.models import create_mentions_notifications, handle_tags
@@ -60,10 +60,10 @@ class Movie(models.Model):
     studios = models.ManyToManyField(Company, related_name="movies")
     distributors = models.ManyToManyField(Company, related_name="movies_distributed")
     creators = models.ManyToManyField(
-        Person, through="MovieRole", related_name="movies"
+        Creator, through="MovieRole", related_name="movies"
     )
     casts = models.ManyToManyField(
-        Person, through="MovieCast", related_name="movies_cast"
+        Creator, through="MovieCast", related_name="movies_cast"
     )
     based_on = models.ForeignKey(
         LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="movies"
@@ -163,13 +163,15 @@ class MovieReleaseDate(models.Model):
 
 class MovieRole(models.Model):
     """
-    A Role of a Person in a Movie
+    A Role of a Creator in a Movie
     """
 
     movie = models.ForeignKey(
         Movie, on_delete=models.CASCADE, related_name="movieroles"
     )
-    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=100, blank=True, null=True)
 
@@ -185,7 +187,9 @@ class MovieCast(models.Model):
     movie = models.ForeignKey(
         Movie, on_delete=models.CASCADE, related_name="moviecasts"
     )
-    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     character_name = models.CharField(max_length=100, blank=True, null=True)
 
@@ -202,7 +206,7 @@ class Series(models.Model):
     studios = models.ManyToManyField(Company, related_name="series")
     distributors = models.ManyToManyField(Company, related_name="series_distributed")
     creators = models.ManyToManyField(
-        Person, through="SeriesRole", related_name="series"
+        Creator, through="SeriesRole", related_name="series"
     )
     release_date = models.CharField(
         max_length=10, blank=True, null=True
@@ -286,13 +290,15 @@ class Series(models.Model):
 
 class SeriesRole(models.Model):
     """
-    A Role of a Person in a Movie
+    A Role of a Creator in a Movie
     """
 
     series = models.ForeignKey(
         Series, on_delete=models.CASCADE, related_name="seriesroles"
     )
-    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=100, blank=True, null=True)
 
@@ -315,10 +321,10 @@ class Episode(models.Model):
     )  # YYYY or YYYY-MM or YYYY-MM-DD
     length = models.CharField(max_length=10, blank=True, null=True)  # in minutes
     creators = models.ManyToManyField(
-        Person, through="EpisodeRole", related_name="episodes_role"
+        Creator, through="EpisodeRole", related_name="episodes_role"
     )
     casts = models.ManyToManyField(
-        Person, through="EpisodeCast", related_name="episodes_cast"
+        Creator, through="EpisodeCast", related_name="episodes_cast"
     )
 
     def __str__(self):
@@ -330,13 +336,15 @@ class Episode(models.Model):
 
 class EpisodeRole(models.Model):
     """
-    A Role of a Person in a Movie
+    A Role of a Creator in a Movie
     """
 
     episode = models.ForeignKey(
         Episode, on_delete=models.CASCADE, related_name="episoderoles"
     )
-    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=100, blank=True, null=True)
 
@@ -352,7 +360,9 @@ class EpisodeCast(models.Model):
     episode = models.ForeignKey(
         Episode, on_delete=models.CASCADE, related_name="episodecasts"
     )
-    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     character_name = models.CharField(max_length=100, blank=True, null=True)
 

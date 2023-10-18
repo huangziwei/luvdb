@@ -24,7 +24,7 @@ from django.views.generic import (
 )
 
 from activity_feed.models import Activity, Follow
-from entity.models import Person
+from entity.models import Creator
 from listen.models import Audiobook, ListenCheckIn, Podcast, Release, Track
 from listen.models import Work as MusicWork
 from play.models import Game, GameCast, GameCheckIn, GameRole
@@ -719,7 +719,7 @@ def filter_watch(query, search_terms):
 
 
 def filter_creator(query, search_terms):
-    creator_results = Person.objects.all()
+    creator_results = Creator.objects.all()
 
     for term in search_terms:
         creator_results = creator_results.filter(

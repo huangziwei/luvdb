@@ -38,13 +38,11 @@ class Entity(models.Model):
         return self.name
 
 
-class Person(Entity):
+class Creator(Entity):
     """
-    A Person entity
+    A Creator entity
     ---
-    // We renamed Person to Creator in many parts of the codebase
-    // but not all, and kept the model name as Person for the database and other models
-    // because there's too much code to change
+    // Renamed from Person
     """
 
     CREATOR_TYPES = (

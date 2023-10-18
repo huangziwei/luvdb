@@ -46,12 +46,12 @@ from .models import (
     Book,
     BookInSeries,
     BookSeries,
+    Creator,
     Genre,
     Instance,
     Issue,
     LanguageField,
     Periodical,
-    Person,
     Publisher,
     ReadCheckIn,
     Role,
@@ -899,7 +899,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            authors = Person.objects.filter(name__icontains=self.q)
+            authors = Creator.objects.filter(name__icontains=self.q)
 
             # get the author role
             author_role = Role.objects.filter(name="Author").first()
@@ -951,7 +951,7 @@ class InstanceAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            authors = Person.objects.filter(name__icontains=self.q)
+            authors = Creator.objects.filter(name__icontains=self.q)
 
             # get the author role
             author_role = Role.objects.filter(name="Author").first()
@@ -1567,7 +1567,7 @@ class GenreDetailView(DetailView):
 
         works_with_authors = []
         for work in works:
-            authors = Person.objects.filter(
+            authors = Creator.objects.filter(
                 read_workrole_set__work=work,
                 read_workrole_set__role__name__in=[
                     "Author",
