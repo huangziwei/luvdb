@@ -508,11 +508,9 @@ class ReadCheckIn(models.Model):
     progress = models.IntegerField(null=True, blank=True)
     PAGE = "PG"
     PERCENTAGE = "PC"
-    CHAPTER = "CH"
     PROGRESS_TYPE_CHOICES = [
         (PAGE, "Page"),
         (PERCENTAGE, "Percentage"),
-        (CHAPTER, "Chapter"),
     ]
     progress_type = models.CharField(
         max_length=2,

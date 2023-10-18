@@ -56,8 +56,6 @@
                                 <span class="badge text-bg-warning me-2">
                                     {% if checkin.progress_type == "PG" %}
                                         On page {{ checkin.progress }}
-                                    {% elif checkin.progress_type == "CH" %}
-                                        Chapter {{ checkin.progress }}
                                     {% else %}
                                         At {{ checkin.progress }}%
                                     {% endif %}
