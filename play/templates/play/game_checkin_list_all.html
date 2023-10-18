@@ -72,8 +72,8 @@
                                 {% for role, persons_altname_tuples in grouped_roles.items %}
                                     <div class="mb-1">
                                         <span class="text-muted">{{ role }}:</span>
-                                        {% for person, name in persons_altname_tuples %}
-                                            <a href="{% url 'entity:creator_detail' person.id %}">{{ name }}</a>
+                                        {% for creator, name in persons_altname_tuples %}
+                                            <a href="{% url 'entity:creator_detail' creator.id %}">{{ name }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
                                     </div>

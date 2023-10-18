@@ -59,8 +59,8 @@
                                     {% for role_name, person_altname_tuples in roles.items %}
                                         <p>
                                             <span class="text-muted">{{ role_name }}:</span>
-                                            {% for person, alt_name in person_altname_tuples %}
-                                                <a href="{% url 'entity:creator_detail' person.id %}">{{ alt_name }}</a>
+                                            {% for creator, alt_name in person_altname_tuples %}
+                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
                                         </p>
@@ -196,7 +196,7 @@
                                                 <!-- Assuming you have a way to access the roles related to book_instance -->
                                                 {% for role in book_instance.instance.instancerole_set.all %}
                                                     {% if role.role.name == "Author" %}
-                                                        <a href="{% url 'entity:creator_detail' role.person.id %}" class="text-muted">{{ role.alt_name|default:role.person.name }}</a>{% if not forloop.last %},{% endif %}
+                                                        <a href="{% url 'entity:creator_detail' role.creator.id %}" class="text-muted">{{ role.alt_name|default:role.creator.name }}</a>{% if not forloop.last %},{% endif %}
                                                     {% endif %}
                                                 {% endfor %}
                                                 ({{ book_instance.publication_date|default:book_instance.instance.publication_date }})

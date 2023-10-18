@@ -11,7 +11,7 @@
                 <li>
                     <span class="text-muted">{{ role.name }}:</span>
                     {% for seriesrole in roles_list %}
-                        <a href="{% url 'entity:creator_detail' seriesrole.person.id %}">{{ seriesrole.person.name }}</a>
+                        <a href="{% url 'entity:creator_detail' seriesrole.creator.id %}">{{ seriesrole.creator.name }}</a>
                         {% if not forloop.last %}/{% endif %}
                     {% endfor %}
                 </li>
@@ -27,9 +27,9 @@
                         <span class="text-muted">{{ role.name }}:</span>
                     </li>
                     <ul>
-                        {% for person, episodes in crew_info.items %}
+                        {% for creator, episodes in crew_info.items %}
                             <li>
-                                <a href="{% url 'entity:creator_detail' person.id %}">{{ person.name }}</a>
+                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
                                 <a href="#"
                                    class="text-muted"
                                    data-bs-toggle="collapse"
@@ -56,9 +56,9 @@
             <p>There is no episode cast added yet.</p>
         {% else %}
             <ul>
-                {% for person, roles in episodes_cast.items %}
+                {% for creator, roles in episodes_cast.items %}
                     <li>
-                        <a href="{% url 'entity:creator_detail' person.id %}">{{ person.name }}</a>
+                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
                         as
                         {% regroup roles by character_name as character_roles %}
                         {% for character_role in character_roles %}

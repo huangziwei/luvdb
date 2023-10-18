@@ -9,11 +9,11 @@
             <div class="col-12 col-md-8 left-column">
                 <h2>{{ object.title }}</h2>
                 {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
-                {% for role, persons_altname_tuples in grouped_roles.items %}
+                {% for role, creators_altname_tuples in grouped_roles.items %}
                     <div>
                         <span class="text-muted">{{ role }}:</span>
-                        {% for person, name in persons_altname_tuples %}
-                            <a href="{% url 'entity:creator_detail' person.id %}">{{ name }}</a>
+                        {% for creator, name in creators_altname_tuples %}
+                            <a href="{% url 'entity:creator_detail' creator.id %}">{{ name }}</a>
                             {% if not forloop.last %}/{% endif %}
                         {% endfor %}
                     </div>

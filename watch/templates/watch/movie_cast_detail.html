@@ -12,7 +12,7 @@
                 <li>
                     <span class="text-muted">{{ role_group.grouper.name }}:</span>
                     {% for movierole in role_group.list %}
-                        <a href="{% url 'entity:creator_detail' movierole.person.id %}">{{ movierole.person.name }}</a>
+                        <a href="{% url 'entity:creator_detail' movierole.creator.id %}">{{ movierole.creator.name }}</a>
                         {% if not forloop.last %}/{% endif %}
                     {% endfor %}
                 </li>
@@ -24,7 +24,7 @@
         <ul>
             {% for moviecast in moviecasts %}
                 <li>
-                    <a href="{% url 'entity:creator_detail' moviecast.person.id %}">{{ moviecast.person.name }}</a>
+                    <a href="{% url 'entity:creator_detail' moviecast.creator.id %}">{{ moviecast.creator.name }}</a>
                     as
                     {{ moviecast.character_name }}
                 </li>

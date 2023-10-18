@@ -95,8 +95,8 @@
                                     {# djlint:on #}
                                     {% for release_role in role.list %}
                                         {% if not forloop.first %}/{% endif %}
-                                        <a href="{% url 'entity:creator_detail' release_role.person.id %}">
-                                            {{ release_role.alt_name | default:release_role.person.name }}
+                                        <a href="{% url 'entity:creator_detail' release_role.creator.id %}">
+                                            {{ release_role.alt_name | default:release_role.creator.name }}
                                         </a>
                                     {% endfor %}
                                 </div>
@@ -109,8 +109,8 @@
                                     {# djlint:on #}
                                     {% for audiobook_role in role.list %}
                                         {% if not forloop.first %}/{% endif %}
-                                        <a href="{% url 'entity:creator_detail' audiobook_role.person.id %}">
-                                            {{ audiobook_role.alt_name | default:audiobook_role.person.name }}
+                                        <a href="{% url 'entity:creator_detail' audiobook_role.creator.id %}">
+                                            {{ audiobook_role.alt_name | default:audiobook_role.creator.name }}
                                         </a>
                                     {% endfor %}
                                 </div>

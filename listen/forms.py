@@ -30,7 +30,7 @@ from .models import (
 class WorkForm(forms.ModelForm):
     class Meta:
         model = Work
-        exclude = ["created_by", "updated_by", "persons", "romanized_title"]
+        exclude = ["created_by", "updated_by", "creators", "romanized_title"]
         fields = "__all__"
         help_texts = {
             "title": "Enter the work's title in its original language. ",
@@ -61,22 +61,22 @@ class WorkRoleForm(forms.ModelForm):
 
     class Meta:
         model = WorkRole
-        fields = ["person", "alt_name", "role", "domain"]
+        fields = ["creator", "alt_name", "role", "domain"]
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
-        if person and not role:
+        if creator and not role:
             raise ValidationError("Role is required when Person is filled.")
 
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -109,7 +109,7 @@ WorkRoleFormSet = inlineformset_factory(
 class TrackForm(forms.ModelForm):
     class Meta:
         model = Track
-        exclude = ["created_by", "updated_by", "persons"]
+        exclude = ["created_by", "updated_by", "creators"]
         fields = "__all__"
         help_texts = {
             "title": "Enter the track's title. ",
@@ -142,11 +142,11 @@ class TrackRoleForm(forms.ModelForm):
 
     class Meta:
         model = TrackRole
-        fields = ["person", "alt_name", "role", "domain"]
+        fields = ["creator", "alt_name", "role", "domain"]
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -157,7 +157,7 @@ class TrackRoleForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -198,7 +198,7 @@ class ReleaseForm(forms.ModelForm):
             "updated_by",
             "works",
             "tracks",
-            "persons",
+            "creators",
         ]
         fields = "__all__"
         widgets = {
@@ -232,11 +232,11 @@ class ReleaseRoleForm(forms.ModelForm):
 
     class Meta:
         model = ReleaseRole
-        fields = ("person", "role", "domain", "alt_name")
+        fields = ("creator", "role", "domain", "alt_name")
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -247,7 +247,7 @@ class ReleaseRoleForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -410,7 +410,7 @@ class AudiobookForm(forms.ModelForm):
             "updated_by",
             "works",
             "instances",
-            "persons",
+            "creators",
         ]
         fields = "__all__"
         widgets = {
@@ -441,11 +441,11 @@ class AudiobookRoleForm(forms.ModelForm):
 
     class Meta:
         model = AudiobookRole
-        fields = ("person", "role", "domain", "alt_name")
+        fields = ("creator", "role", "domain", "alt_name")
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -456,7 +456,7 @@ class AudiobookRoleForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None

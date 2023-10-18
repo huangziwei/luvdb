@@ -79,8 +79,8 @@
                                         {# djlint:on #}
                                         {% for book_role in role.list %}
                                             {% if not forloop.first %}/{% endif %}
-                                            <a href="{% url 'entity:creator_detail' book_role.person.id %}">
-                                                {{ book_role.alt_name | default:book_role.person.name }}
+                                            <a href="{% url 'entity:creator_detail' book_role.creator.id %}">
+                                                {{ book_role.alt_name | default:book_role.creator.name }}
                                             </a>
                                         {% endfor %}
                                     </div>

@@ -56,17 +56,17 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         ).order_by("death_date")
 
         # Calculate age at birth or death
-        for person in born_today:
+        for creator in born_today:
             birth_year = int(
-                person.birth_date.split("-" if "-" in person.birth_date else ".")[0]
+                creator.birth_date.split("-" if "-" in creator.birth_date else ".")[0]
             )
-            person.since = now.year - birth_year
+            creator.since = now.year - birth_year
 
-        for person in died_today:
+        for creator in died_today:
             death_year = int(
-                person.death_date.split("-" if "-" in person.death_date else ".")[0]
+                creator.death_date.split("-" if "-" in creator.death_date else ".")[0]
             )
-            person.since = now.year - death_year
+            creator.since = now.year - death_year
 
         context["born_today"] = born_today
         context["died_today"] = died_today
@@ -378,17 +378,17 @@ class CalendarActivityFeedView(ActivityFeedView):
         ).order_by("death_date")
 
         # Calculate age at birth or death
-        for person in born_today:
+        for creator in born_today:
             birth_year = int(
-                person.birth_date.split("-" if "-" in person.birth_date else ".")[0]
+                creator.birth_date.split("-" if "-" in creator.birth_date else ".")[0]
             )
-            person.since = selected_datetime.year - birth_year
+            creator.since = selected_datetime.year - birth_year
 
-        for person in died_today:
+        for creator in died_today:
             death_year = int(
-                person.death_date.split("-" if "-" in person.death_date else ".")[0]
+                creator.death_date.split("-" if "-" in creator.death_date else ".")[0]
             )
-            person.since = selected_datetime.year - death_year
+            creator.since = selected_datetime.year - death_year
 
         context["born_today"] = born_today
         context["died_today"] = died_today

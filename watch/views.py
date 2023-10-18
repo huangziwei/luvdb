@@ -239,9 +239,9 @@ class MovieDetailView(DetailView):
         for movie_role in movie.movieroles.all():
             if movie_role.role.name not in roles:
                 roles[movie_role.role.name] = []
-            alt_name_or_person_name = movie_role.alt_name or movie_role.person.name
+            alt_name_or_person_name = movie_role.alt_name or movie_role.creator.name
             roles[movie_role.role.name].append(
-                (movie_role.person, alt_name_or_person_name)
+                (movie_role.creator, alt_name_or_person_name)
             )
         context["roles"] = roles
 
@@ -789,7 +789,7 @@ class SeriesCastDetailView(DetailView):
 
         # Extract all casts from those episodes
         casts = EpisodeCast.objects.filter(episode__in=episodes).prefetch_related(
-            "person", "role"
+            "creator", "role"
         )
 
         # Prepare data structure for the episode casts
@@ -799,7 +799,7 @@ class SeriesCastDetailView(DetailView):
             episode_str = str(cast.episode.episode).zfill(2)
             episode_num = f"S{season_str}E{episode_str}"
 
-            episodes_cast[cast.person].append(
+            episodes_cast[cast.creator].append(
                 {
                     "character_name": cast.character_name,
                     "role": cast.role,
@@ -811,8 +811,8 @@ class SeriesCastDetailView(DetailView):
             )
 
         # Sort episodes for each cast member by release_date
-        for person, roles in episodes_cast.items():
-            episodes_cast[person] = sorted(roles, key=lambda x: x["release_date"])
+        for creator, roles in episodes_cast.items():
+            episodes_cast[creator] = sorted(roles, key=lambda x: x["release_date"])
         # Sort cast by number of episodes they've participated in
         episodes_cast = dict(
             sorted(episodes_cast.items(), key=lambda x: len(x[1]), reverse=True)
@@ -820,17 +820,17 @@ class SeriesCastDetailView(DetailView):
 
         # Extract all crews from those episodes
         crews = EpisodeRole.objects.filter(episode__in=episodes).prefetch_related(
-            "person", "role"
+            "creator", "role"
         )
 
-        # Prepare data structure for the episode crews grouped by roles then persons
+        # Prepare data structure for the episode crews grouped by roles then creators
         episodes_crew_by_role = defaultdict(lambda: defaultdict(list))
         for crew in crews:
             season_str = str(crew.episode.season).zfill(2)
             episode_str = str(crew.episode.episode).zfill(2)
             episode_num = f"S{season_str}E{episode_str}"
 
-            episodes_crew_by_role[crew.role][crew.person].append(
+            episodes_crew_by_role[crew.role][crew.creator].append(
                 {
                     "episode_title": crew.episode.title,
                     "episode_id": crew.episode.id,
@@ -841,8 +841,8 @@ class SeriesCastDetailView(DetailView):
 
         # Convert inner defaultdicts to dict and sort episodes by release_date
         for role, crew_info in episodes_crew_by_role.items():
-            for person, episodes in crew_info.items():
-                crew_info[person] = sorted(episodes, key=lambda x: x["release_date"])
+            for creator, episodes in crew_info.items():
+                crew_info[creator] = sorted(episodes, key=lambda x: x["release_date"])
             episodes_crew_by_role[role] = dict(
                 sorted(crew_info.items(), key=lambda x: len(x[1]), reverse=True)
             )
@@ -1162,9 +1162,9 @@ class GenericCheckInListView(ListView):
             for movie_role in movie.movieroles.all():
                 if movie_role.role.name not in roles:
                     roles[movie_role.role.name] = []
-                alt_name_or_person_name = movie_role.alt_name or movie_role.person.name
+                alt_name_or_person_name = movie_role.alt_name or movie_role.creator.name
                 roles[movie_role.role.name].append(
-                    (movie_role.person, alt_name_or_person_name)
+                    (movie_role.creator, alt_name_or_person_name)
                 )
             context["roles"] = roles
             context["object"] = movie
@@ -1175,10 +1175,10 @@ class GenericCheckInListView(ListView):
                 if series_role.role.name not in roles:
                     roles[series_role.role.name] = []
                 alt_name_or_person_name = (
-                    series_role.alt_name or series_role.person.name
+                    series_role.alt_name or series_role.creator.name
                 )
                 roles[series_role.role.name].append(
-                    (series_role.person, alt_name_or_person_name)
+                    (series_role.creator, alt_name_or_person_name)
                 )
             context["roles"] = roles
             context["object"] = series
@@ -1279,9 +1279,9 @@ class GenericCheckInAllListView(ListView):
             for movie_role in movie.movieroles.all():
                 if movie_role.role.name not in roles:
                     roles[movie_role.role.name] = []
-                alt_name_or_person_name = movie_role.alt_name or movie_role.person.name
+                alt_name_or_person_name = movie_role.alt_name or movie_role.creator.name
                 roles[movie_role.role.name].append(
-                    (movie_role.person, alt_name_or_person_name)
+                    (movie_role.creator, alt_name_or_person_name)
                 )
 
         elif context["model_name"] == "series":
@@ -1291,10 +1291,10 @@ class GenericCheckInAllListView(ListView):
                 if series_role.role.name not in roles:
                     roles[series_role.role.name] = []
                 alt_name_or_person_name = (
-                    series_role.alt_name or series_role.person.name
+                    series_role.alt_name or series_role.creator.name
                 )
                 roles[series_role.role.name].append(
-                    (series_role.person, alt_name_or_person_name)
+                    (series_role.creator, alt_name_or_person_name)
                 )
         context["roles"] = roles
         return context

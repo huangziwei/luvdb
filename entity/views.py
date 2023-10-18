@@ -41,52 +41,52 @@ class CreatorDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        person = self.object
+        creator = self.object
         # read
-        # context["read_works"] = person.read_works.all().order_by("publication_date")
+        # context["read_works"] = creator.read_works.all().order_by("publication_date")
         roles_as_author = ["Author", "Ghost Writer", "Created By", "Novelization By"]
         context["read_works"] = (
             LitWork.objects.filter(
-                Q(workrole__role__name__in=roles_as_author, workrole__person=person)
+                Q(workrole__role__name__in=roles_as_author, workrole__creator=creator)
             )
             .distinct()
             .order_by("publication_date")
         )
 
         as_translator = LitInstance.objects.filter(
-            instancerole__role__name="Translator", instancerole__person=person
+            instancerole__role__name="Translator", instancerole__creator=creator
         ).order_by("publication_date")
         context["as_translator"] = as_translator
 
         as_narrator = Audiobook.objects.filter(
-            audiobookrole__role__name="Narrator", audiobookrole__person=person
+            audiobookrole__role__name="Narrator", audiobookrole__creator=creator
         ).order_by("release_date")
         context["as_narrator"] = as_narrator
 
         writings = Book.objects.filter(
             Q(bookrole__role__name="Introduction")
             | Q(bookrole__role__name="Afterword"),
-            bookrole__person=person,
+            bookrole__creator=creator,
         ).order_by("publication_date")
 
         context["writings"] = writings
 
         as_editor = LitInstance.objects.filter(
-            instancerole__role__name="Editor", instancerole__person=person
+            instancerole__role__name="Editor", instancerole__creator=creator
         ).order_by("publication_date")
         context["as_editor"] = as_editor
 
         as_annotator = LitInstance.objects.filter(
-            instancerole__role__name="Annotator", instancerole__person=person
+            instancerole__role__name="Annotator", instancerole__creator=creator
         ).order_by("publication_date")
         context["as_annotator"] = as_annotator
 
-        context["litworks_count"] = person.read_works.distinct().count()
+        context["litworks_count"] = creator.read_works.distinct().count()
         context["litinstances_count"] = (
-            LitInstance.objects.filter(instancerole__person=person).distinct().count()
+            LitInstance.objects.filter(instancerole__creator=creator).distinct().count()
         )
         context["books_count"] = (
-            Book.objects.filter(bookrole__person=person).distinct().count()
+            Book.objects.filter(bookrole__creator=creator).distinct().count()
         )
 
         # listen
@@ -136,17 +136,17 @@ class CreatorDetailView(DetailView):
 
         LP_releases = Release.objects.filter(
             releaserole__role__name__in=roles_as_performer,
-            releaserole__person=person,
+            releaserole__creator=creator,
             release_type__in=["LP", "Box Set"],
         ).order_by("release_date")
         EP_releases = Release.objects.filter(
             releaserole__role__name__in=roles_as_performer,
-            releaserole__person=person,
+            releaserole__creator=creator,
             release_type="EP",
         ).order_by("release_date")
         single_releases = Release.objects.filter(
             releaserole__role__name__in=roles_as_performer,
-            releaserole__person=person,
+            releaserole__creator=creator,
             release_type="Single",
         ).order_by("release_date")
 
@@ -157,48 +157,48 @@ class CreatorDetailView(DetailView):
         )
 
         context["releases_as_liner_notes_writer"] = Release.objects.filter(
-            releaserole__role__name="Liner Notes", releaserole__person=person
+            releaserole__role__name="Liner Notes", releaserole__creator=creator
         ).order_by("release_date")
 
         context["tracks_as_singer"] = Track.objects.filter(
-            trackrole__role__name="Singer", trackrole__person=person
+            trackrole__role__name="Singer", trackrole__creator=creator
         ).order_by("release_date")
         context["works_as_composer"] = ListenWork.objects.filter(
-            workrole__role__name="Composer", workrole__person=person
+            workrole__role__name="Composer", workrole__creator=creator
         ).order_by("release_date")
         context["works_as_lyricist"] = ListenWork.objects.filter(
-            workrole__role__name="Lyricist", workrole__person=person
+            workrole__role__name="Lyricist", workrole__creator=creator
         ).order_by("release_date")
         context["tracks_as_producer"] = Track.objects.filter(
-            trackrole__role__name="Producer", trackrole__person=person
+            trackrole__role__name="Producer", trackrole__creator=creator
         ).order_by("release_date")
         context["tracks_as_arranger"] = Track.objects.filter(
-            trackrole__role__name="Arranger", trackrole__person=person
+            trackrole__role__name="Arranger", trackrole__creator=creator
         ).order_by("release_date")
 
         context["listenworks_count"] = (
-            ListenWork.objects.filter(workrole__person=person).distinct().count()
+            ListenWork.objects.filter(workrole__creator=creator).distinct().count()
         )
         context["tracks_count"] = (
-            Track.objects.filter(trackrole__person=person).distinct().count()
+            Track.objects.filter(trackrole__creator=creator).distinct().count()
         )
         context["releases_count"] = (
-            Release.objects.filter(releaserole__person=person).distinct().count()
+            Release.objects.filter(releaserole__creator=creator).distinct().count()
         )
         context["audiobooks_count"] = (
-            Audiobook.objects.filter(audiobookrole__person=person).distinct().count()
+            Audiobook.objects.filter(audiobookrole__creator=creator).distinct().count()
         )
 
         # watch
         ## as casts
         context["movies"] = (
-            Movie.objects.filter(moviecasts__person=person)
+            Movie.objects.filter(moviecasts__creator=creator)
             .distinct()
             .annotate(earliest_release_date=Min("region_release_dates__release_date"))
             .order_by("earliest_release_date")
         )
         context["series"] = (
-            Series.objects.filter(episodes__episodecasts__person=person)
+            Series.objects.filter(episodes__episodecasts__creator=creator)
             .annotate(episode_count=Count("episodes"))
             .distinct()
             .order_by("release_date")
@@ -206,7 +206,7 @@ class CreatorDetailView(DetailView):
         ## as staff
         context["movies_as_director"] = (
             Movie.objects.filter(
-                movieroles__person=person, movieroles__role__name="Director"
+                movieroles__creator=creator, movieroles__role__name="Director"
             )
             .distinct()
             .annotate(earliest_release_date=Min("region_release_dates__release_date"))
@@ -214,12 +214,12 @@ class CreatorDetailView(DetailView):
         )
 
         directed_series = Series.objects.filter(
-            seriesroles__person=person, seriesroles__role__name="Director"
+            seriesroles__creator=creator, seriesroles__role__name="Director"
         ).distinct()
 
         episode_series = (
             Episode.objects.filter(
-                episoderoles__person=person, episoderoles__role__name="Director"
+                episoderoles__creator=creator, episoderoles__role__name="Director"
             )
             .values("series__id", "series__title")
             .annotate(episode_count=Count("id"))
@@ -254,7 +254,7 @@ class CreatorDetailView(DetailView):
 
         context["movies_as_writer"] = (
             Movie.objects.filter(
-                movieroles__person=person, movieroles__role__name="Screenwriter"
+                movieroles__creator=creator, movieroles__role__name="Screenwriter"
             )
             .distinct()
             .annotate(earliest_release_date=Min("region_release_dates__release_date"))
@@ -262,12 +262,12 @@ class CreatorDetailView(DetailView):
         )
 
         written_series = Series.objects.filter(
-            seriesroles__person=person, seriesroles__role__name="Screenwriter"
+            seriesroles__creator=creator, seriesroles__role__name="Screenwriter"
         ).distinct()
 
         episode_series_writer = (
             Episode.objects.filter(
-                episoderoles__person=person, episoderoles__role__name="Screenwriter"
+                episoderoles__creator=creator, episoderoles__role__name="Screenwriter"
             )
             .values("series__id", "series__title")
             .annotate(episode_count=Count("id"))
@@ -301,16 +301,16 @@ class CreatorDetailView(DetailView):
 
         context["movies_count"] = (
             Movie.objects.filter(
-                Q(movieroles__person=person) | Q(moviecasts__person=person)
+                Q(movieroles__creator=creator) | Q(moviecasts__creator=creator)
             )
             .distinct()
             .count()
         )
         context["series_count"] = (
             Series.objects.filter(
-                Q(seriesroles__person=person)
-                | Q(episodes__episodecasts__person=person)
-                | Q(episodes__episoderoles__person=person)
+                Q(seriesroles__creator=creator)
+                | Q(episodes__episodecasts__creator=creator)
+                | Q(episodes__episoderoles__creator=creator)
             )
             .distinct()
             .count()
@@ -319,7 +319,7 @@ class CreatorDetailView(DetailView):
         # play
         context["gameworks_as_writer"] = (
             GameWork.objects.filter(
-                workrole__role__name="Writer", workrole__person=person
+                workrole__role__name="Writer", workrole__creator=creator
             )
             .distinct()
             .order_by("first_release_date")
@@ -327,7 +327,7 @@ class CreatorDetailView(DetailView):
 
         context["gameworks_as_artist"] = (
             GameWork.objects.filter(
-                workrole__role__name="Artist", workrole__person=person
+                workrole__role__name="Artist", workrole__creator=creator
             )
             .distinct()
             .order_by("first_release_date")
@@ -335,7 +335,7 @@ class CreatorDetailView(DetailView):
 
         context["gameworks_as_musician"] = (
             GameWork.objects.filter(
-                workrole__role__name="Musician", workrole__person=person
+                workrole__role__name="Musician", workrole__creator=creator
             )
             .distinct()
             .order_by("first_release_date")
@@ -343,25 +343,25 @@ class CreatorDetailView(DetailView):
 
         context["gameworks_as_producer"] = (
             GameWork.objects.filter(
-                workrole__role__name="Producer", workrole__person=person
+                workrole__role__name="Producer", workrole__creator=creator
             )
             .distinct()
             .order_by("first_release_date")
         )
 
         context["games_as_cast"] = (
-            Game.objects.filter(gamecasts__person=person)
+            Game.objects.filter(gamecasts__creator=creator)
             .distinct()
             .annotate(earliest_release_date=Min("region_release_dates__release_date"))
             .order_by("earliest_release_date")
         )
 
         context["gameworks_count"] = (
-            GameWork.objects.filter(workrole__person=person).distinct().count()
+            GameWork.objects.filter(workrole__creator=creator).distinct().count()
         )
         context["games_count"] = (
             Game.objects.filter(
-                Q(gameroles__person=person) | Q(gamecasts__person=person)
+                Q(gameroles__creator=creator) | Q(gamecasts__creator=creator)
             )
             .distinct()
             .count()

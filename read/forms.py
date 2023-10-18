@@ -30,7 +30,7 @@ from .models import (
 class WorkForm(forms.ModelForm):
     class Meta:
         model = Work
-        exclude = ["created_by", "updated_by", "persons"]
+        exclude = ["created_by", "updated_by", "creators"]
         fields = "__all__"
         help_texts = {
             "title": "Enter the work's title in its original language. ",
@@ -60,11 +60,11 @@ class WorkRoleForm(forms.ModelForm):
 
     class Meta:
         model = WorkRole
-        fields = ["person", "alt_name", "role", "domain"]
+        fields = ["creator", "alt_name", "role", "domain"]
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -75,7 +75,7 @@ class WorkRoleForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -111,7 +111,7 @@ WorkRoleFormSet = inlineformset_factory(
 class InstanceForm(forms.ModelForm):
     class Meta:
         model = Instance
-        exclude = ["created_by", "updated_by", "persons"]
+        exclude = ["created_by", "updated_by", "creators"]
         fields = "__all__"
         help_texts = {
             "title": "Enter the instance's title. ",
@@ -138,11 +138,11 @@ class InstanceRoleForm(forms.ModelForm):
 
     class Meta:
         model = InstanceRole
-        fields = ["person", "alt_name", "role", "domain"]
+        fields = ["creator", "alt_name", "role", "domain"]
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -153,7 +153,7 @@ class InstanceRoleForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -194,7 +194,7 @@ class BookForm(forms.ModelForm):
             "updated_by",
             "works",
             "instances",
-            "persons",
+            "creators",
         ]
         fields = "__all__"
         widgets = {
@@ -225,11 +225,11 @@ class BookRoleForm(forms.ModelForm):
 
     class Meta:
         model = BookRole
-        fields = ("person", "role", "domain", "alt_name")
+        fields = ("creator", "role", "domain", "alt_name")
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -240,7 +240,7 @@ class BookRoleForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None

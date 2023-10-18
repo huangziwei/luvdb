@@ -29,7 +29,7 @@ from .models import (
 class MovieForm(forms.ModelForm):
     class Meta:
         model = Movie
-        exclude = ["created_by", "updated_by", "persons", "casts"]
+        exclude = ["created_by", "updated_by", "creators", "casts"]
         fields = "__all__"
         widgets = {
             "studios": autocomplete.ModelSelect2Multiple(
@@ -101,11 +101,11 @@ class MovieRoleForm(forms.ModelForm):
 
     class Meta:
         model = MovieRole
-        fields = ("person", "role", "domain", "alt_name")
+        fields = ("creator", "role", "domain", "alt_name")
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -116,7 +116,7 @@ class MovieRoleForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -151,11 +151,11 @@ class MovieCastForm(forms.ModelForm):
 
     class Meta:
         model = MovieCast
-        fields = ("person", "role", "domain", "character_name")
+        fields = ("creator", "role", "domain", "character_name")
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -166,7 +166,7 @@ class MovieCastForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -199,7 +199,7 @@ MovieCastFormSet = inlineformset_factory(
 class SeriesForm(forms.ModelForm):
     class Meta:
         model = Series
-        exclude = ["created_by", "updated_by", "persons"]
+        exclude = ["created_by", "updated_by", "creators"]
         fields = "__all__"
         widgets = {
             "studios": autocomplete.ModelSelect2Multiple(
@@ -235,11 +235,11 @@ class SeriesRoleForm(forms.ModelForm):
 
     class Meta:
         model = SeriesRole
-        fields = ("person", "role", "domain", "alt_name")
+        fields = ("creator", "role", "domain", "alt_name")
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -250,7 +250,7 @@ class SeriesRoleForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -283,7 +283,7 @@ SeriesRoleFormSet = inlineformset_factory(
 class EpisodeForm(forms.ModelForm):
     class Meta:
         model = Episode
-        exclude = ["created_by", "updated_by", "persons", "casts"]
+        exclude = ["created_by", "updated_by", "creators", "casts"]
         fields = "__all__"
 
         widgets = {
@@ -305,11 +305,11 @@ class EpisodeRoleForm(forms.ModelForm):
 
     class Meta:
         model = EpisodeRole
-        fields = ("person", "role", "domain", "alt_name")
+        fields = ("creator", "role", "domain", "alt_name")
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -320,7 +320,7 @@ class EpisodeRoleForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -354,11 +354,11 @@ class EpisodeCastForm(forms.ModelForm):
 
     class Meta:
         model = EpisodeCast
-        fields = ("person", "role", "domain", "character_name")
+        fields = ("creator", "role", "domain", "character_name")
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -369,7 +369,7 @@ class EpisodeCastForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None

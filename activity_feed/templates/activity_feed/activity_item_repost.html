@@ -94,8 +94,8 @@
                                     {# djlint:on #}
                                     {% for book_role in role.list %}
                                         {% if not forloop.first %}/{% endif %}
-                                        <a href="{% url 'entity:creator_detail' book_role.person.id %}">
-                                            {{ book_role.alt_name | default:book_role.person.name }}
+                                        <a href="{% url 'entity:creator_detail' book_role.creator.id %}">
+                                            {{ book_role.alt_name | default:book_role.creator.name }}
                                         </a>
                                     {% endfor %}
                                 </div>
@@ -193,8 +193,8 @@
                                     {# djlint:on #}
                                     {% for movie_role in role.list %}
                                         {% if not forloop.first %}/{% endif %}
-                                        <a href="{% url 'entity:creator_detail' movie_role.person.id %}">
-                                            {{ movie_role.alt_name | default:movie_role.person.name }}
+                                        <a href="{% url 'entity:creator_detail' movie_role.creator.id %}">
+                                            {{ movie_role.alt_name | default:movie_role.creator.name }}
                                         </a>
                                     {% endfor %}
                                 </div>
@@ -208,8 +208,8 @@
                                     {# djlint:on #}
                                     {% for series_role in role.list %}
                                         {% if not forloop.first %}/{% endif %}
-                                        <a href="{% url 'entity:creator_detail' series_role.person.id %}">
-                                            {{ series_role.alt_name | default:series_role.person.name }}
+                                        <a href="{% url 'entity:creator_detail' series_role.creator.id %}">
+                                            {{ series_role.alt_name | default:series_role.creator.name }}
                                         </a>
                                     {% endfor %}
                                 </div>
@@ -313,8 +313,8 @@
                                 {# djlint:on #}
                                 {% for game_role in role.list %}
                                     {% if not forloop.first %}/{% endif %}
-                                    <a href="{% url 'entity:creator_detail' game_role.person.id %}">
-                                        {{ game_role.alt_name | default:game_role.person.name }}
+                                    <a href="{% url 'entity:creator_detail' game_role.creator.id %}">
+                                        {{ game_role.alt_name | default:game_role.creator.name }}
                                     </a>
                                 {% endfor %}
                             </div>
@@ -449,8 +449,8 @@
                                 <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                 {% for release_role in role.list %}
                                     {% if not forloop.first %}/{% endif %}
-                                    <a href="{% url 'entity:creator_detail' release_role.person.id %}">
-                                        {{ release_role.alt_name | default:release_role.person.name }}
+                                    <a href="{% url 'entity:creator_detail' release_role.creator.id %}">
+                                        {{ release_role.alt_name | default:release_role.creator.name }}
                                     </a>
                                 {% endfor %}
                             </div>
@@ -461,8 +461,8 @@
                                 <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                 {% for release_role in role.list %}
                                     {% if not forloop.first %}/{% endif %}
-                                    <a href="{% url 'entity:creator_detail' release_role.person.id %}">
-                                        {{ release_role.alt_name | default:release_role.person.name }}
+                                    <a href="{% url 'entity:creator_detail' release_role.creator.id %}">
+                                        {{ release_role.alt_name | default:release_role.creator.name }}
                                     </a>
                                 {% endfor %}
                             </div>

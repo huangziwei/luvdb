@@ -110,7 +110,7 @@
                                         <div class="ms-4">
                                             {% for role in issueinstance.instance.instancerole_set.all %}
                                                 {% if role.role.name == "Author" %}
-                                                    <a href="{% url 'entity:creator_detail' role.person.id %}" class="text-muted">{{ role.alt_name|default:role.person.name }}</a>{% if not forloop.last %},{% endif %}
+                                                    <a href="{% url 'entity:creator_detail' role.creator.id %}" class="text-muted">{{ role.alt_name|default:role.creator.name }}</a>{% if not forloop.last %},{% endif %}
                                                 {% endif %}
                                             {% endfor %}
                                             ({{ issueinstance.publication_date|default:issueinstance.instance.publication_date }})

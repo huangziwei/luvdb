@@ -91,7 +91,7 @@ class Work(models.Model):  # Renamed from Book
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
-    persons = models.ManyToManyField(
+    creators = models.ManyToManyField(
         Person, through="WorkRole", related_name="play_works"
     )
 
@@ -155,7 +155,7 @@ class WorkRole(models.Model):  # Renamed from BookRole
     """
 
     work = models.ForeignKey(Work, on_delete=models.CASCADE)
-    person = models.ForeignKey(
+    creator = models.ForeignKey(
         Person,
         on_delete=models.CASCADE,
         null=True,
@@ -172,7 +172,7 @@ class WorkRole(models.Model):  # Renamed from BookRole
     alt_name = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.work} - {self.person} - {self.role}"
+        return f"{self.work} - {self.creator} - {self.role}"
 
 
 class Game(models.Model):
@@ -187,7 +187,7 @@ class Game(models.Model):
     developers = models.ManyToManyField(Company, related_name="developed_games")
     publishers = models.ManyToManyField(Company, related_name="published_games")
 
-    persons = models.ManyToManyField(Person, through="GameRole", related_name="games")
+    creators = models.ManyToManyField(Person, through="GameRole", related_name="games")
     casts = models.ManyToManyField(
         Person, through="GameCast", related_name="games_cast"
     )
@@ -285,12 +285,12 @@ class GameRole(models.Model):
     """
 
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="gameroles")
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.game} - {self.person} - {self.role}"
+        return f"{self.game} - {self.creator} - {self.role}"
 
 
 class GameCast(models.Model):
@@ -299,12 +299,12 @@ class GameCast(models.Model):
     """
 
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="gamecasts")
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     character_name = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.game} - {self.person} - {self.role}"
+        return f"{self.game} - {self.creator} - {self.role}"
 
 
 class GameCheckIn(models.Model):

@@ -85,8 +85,10 @@ class WorkDetailView(DetailView):
         for role in work.workrole_set.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.person.name
-            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+            alt_name_or_person_name = role.alt_name or role.creator.name
+            grouped_roles[role.role.name].append(
+                (role.creator, alt_name_or_person_name)
+            )
         context["grouped_roles"] = grouped_roles
 
         games = (
@@ -203,8 +205,10 @@ class GameDetailView(DetailView):
         for role in game.gameroles.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.person.name
-            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+            alt_name_or_person_name = role.alt_name or role.creator.name
+            grouped_roles[role.role.name].append(
+                (role.creator, alt_name_or_person_name)
+            )
         context["grouped_roles"] = grouped_roles
 
         context["checkin_form"] = GameCheckInForm(
@@ -612,8 +616,10 @@ class GameCheckInListView(ListView):
         for role in game.gameroles.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.person.name
-            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+            alt_name_or_person_name = role.alt_name or role.creator.name
+            grouped_roles[role.role.name].append(
+                (role.creator, alt_name_or_person_name)
+            )
         context["grouped_roles"] = grouped_roles
 
         # Get the game details
@@ -690,8 +696,10 @@ class GameCheckInAllListView(ListView):
         for role in game.gameroles.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.person.name
-            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+            alt_name_or_person_name = role.alt_name or role.creator.name
+            grouped_roles[role.role.name].append(
+                (role.creator, alt_name_or_person_name)
+            )
         context["grouped_roles"] = grouped_roles
 
         return context

@@ -27,7 +27,7 @@
                 </div>
                 {% endfor %}
                 <div class="col-md-4 mb-3">
-                    {{ form.person | as_crispy_field}}
+                    {{ form.creator | as_crispy_field}}
                     <a href="{% url 'entity:creator_create' %}?next={{ request.path }}" class="text-secondary" target="_blank">Add a new creator?</a>
                 </div>
                 <div class="col-md-4 mb-3">

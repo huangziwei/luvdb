@@ -234,8 +234,10 @@ class WorkDetailView(DetailView):
         for role in work.workrole_set.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.person.name
-            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+            alt_name_or_person_name = role.alt_name or role.creator.name
+            grouped_roles[role.role.name].append(
+                (role.creator, alt_name_or_person_name)
+            )
         context["grouped_roles"] = grouped_roles
 
         # tracks
@@ -246,7 +248,7 @@ class WorkDetailView(DetailView):
             for release in releases:
                 release.type = "release"
             items = sorted(list(releases), key=lambda x: x.release_date)
-            singers = track.persons.filter(trackrole__role__name="Singer")
+            singers = track.creators.filter(trackrole__role__name="Singer")
             context["tracks"].append(
                 {"track": track, "items": items, "singers": singers}
             )
@@ -263,14 +265,14 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            persons = Person.objects.filter(name__icontains=self.q)
+            creators = Person.objects.filter(name__icontains=self.q)
 
             # get the author role
             singer_role = Role.objects.filter(name="Singer").first()
 
             # get all the works which are associated with these authors
             qs = qs.filter(
-                Q(workrole__role=singer_role, workrole__person__in=persons)
+                Q(workrole__role=singer_role, workrole__creator__in=creators)
                 | Q(title__icontains=self.q)
                 | Q(other_titles__icontains=self.q)
                 | Q(release_date__icontains=self.q)
@@ -290,9 +292,9 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         singer_work_role = item.workrole_set.filter(role=singer_role).first()
         composer_work_role = item.workrole_set.filter(role=composer_role).first()
         if singer_work_role:
-            person_name = singer_work_role.person.name
+            person_name = singer_work_role.creator.name
         elif composer_work_role:
-            person_name = composer_work_role.person.name
+            person_name = composer_work_role.creator.name
         else:
             person_name = "Unknown"
 
@@ -398,8 +400,10 @@ class TrackDetailView(DetailView):
         for role in track.trackrole_set.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
-            alt_name_or_person_name = role.alt_name or role.person.name
-            grouped_roles[role.role.name].append((role.person, alt_name_or_person_name))
+            alt_name_or_person_name = role.alt_name or role.creator.name
+            grouped_roles[role.role.name].append(
+                (role.creator, alt_name_or_person_name)
+            )
         context["grouped_roles"] = grouped_roles
         context["releases"] = track.releases.all().order_by("release_date")
         return context
@@ -414,14 +418,14 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             # get all the authors whose name starts with query
-            persons = Person.objects.filter(name__icontains=self.q)
+            creators = Person.objects.filter(name__icontains=self.q)
 
             # get the author role
             singer_role = Role.objects.filter(name="Singer").first()
 
             # get all the instances which are associated with these authors
             qs = qs.filter(
-                Q(trackrole__role=singer_role, trackrole__person__in=persons)
+                Q(trackrole__role=singer_role, trackrole__creator__in=creators)
                 | Q(title__icontains=self.q)
                 | Q(other_titles__icontains=self.q)
                 | Q(release_date__icontains=self.q)
@@ -445,14 +449,14 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
             person_name = (
                 singer_track_role.alt_name
                 if singer_track_role.alt_name
-                else singer_track_role.person.name
+                else singer_track_role.creator.name
             )
         # If no singer, use composer
         elif composer_track_role:
             person_name = (
                 composer_track_role.alt_name
                 if composer_track_role.alt_name
-                else composer_track_role.person.name
+                else composer_track_role.creator.name
             )
         else:
             person_name = "Unknown"
@@ -528,9 +532,9 @@ class ReleaseDetailView(DetailView):
         for release_role in release.releaserole_set.all():
             if release_role.role.name not in roles:
                 roles[release_role.role.name] = []
-            alt_name_or_person_name = release_role.alt_name or release_role.person.name
+            alt_name_or_person_name = release_role.alt_name or release_role.creator.name
             roles[release_role.role.name].append(
-                (release_role.person, alt_name_or_person_name)
+                (release_role.creator, alt_name_or_person_name)
             )
         context["roles"] = roles
 
@@ -747,10 +751,10 @@ class ReleaseCreditDetailView(DetailView):
         release_credits = {role.role: [] for role in release_roles}
 
         for release_role in release_roles:
-            alt_name_or_person_name = release_role.alt_name or release_role.person.name
+            alt_name_or_person_name = release_role.alt_name or release_role.creator.name
 
             release_credits[release_role.role].append(
-                (release_role.person, alt_name_or_person_name)
+                (release_role.creator, alt_name_or_person_name)
             )
 
         # Aggregate Track level credits
@@ -769,10 +773,10 @@ class ReleaseCreditDetailView(DetailView):
             }
 
             for track_role in track_roles:
-                alt_name_or_person_name = track_role.alt_name or track_role.person.name
+                alt_name_or_person_name = track_role.alt_name or track_role.creator.name
                 track_credits[(release_track.track, disk, order)][
                     track_role.role
-                ].append((track_role.person, alt_name_or_person_name))
+                ].append((track_role.creator, alt_name_or_person_name))
 
         context["release_credits"] = release_credits
         context["track_credits"] = track_credits
@@ -1471,10 +1475,10 @@ class GenericCheckInListView(ListView):
                 if release_role.role.name not in roles:
                     roles[release_role.role.name] = []
                 alt_name_or_person_name = (
-                    release_role.alt_name or release_role.person.name
+                    release_role.alt_name or release_role.creator.name
                 )
                 roles[release_role.role.name].append(
-                    (release_role.person, alt_name_or_person_name)
+                    (release_role.creator, alt_name_or_person_name)
                 )
             context["roles"] = roles
         elif context["model_name"] == "audiobook":
@@ -1484,10 +1488,10 @@ class GenericCheckInListView(ListView):
                 if audiobook_role.role.name not in roles:
                     roles[audiobook_role.role.name] = []
                 alt_name_or_person_name = (
-                    audiobook_role.alt_name or audiobook_role.person.name
+                    audiobook_role.alt_name or audiobook_role.creator.name
                 )
                 roles[audiobook_role.role.name].append(
-                    (audiobook_role.person, alt_name_or_person_name)
+                    (audiobook_role.creator, alt_name_or_person_name)
                 )
             context["roles"] = roles
 
@@ -1587,10 +1591,10 @@ class GenericCheckInAllListView(ListView):
                 if release_role.role.name not in roles:
                     roles[release_role.role.name] = []
                 alt_name_or_person_name = (
-                    release_role.alt_name or release_role.person.name
+                    release_role.alt_name or release_role.creator.name
                 )
                 roles[release_role.role.name].append(
-                    (release_role.person, alt_name_or_person_name)
+                    (release_role.creator, alt_name_or_person_name)
                 )
             context["roles"] = roles
         elif context["model_name"] == "audiobook":
@@ -1600,10 +1604,10 @@ class GenericCheckInAllListView(ListView):
                 if audiobook_role.role.name not in roles:
                     roles[audiobook_role.role.name] = []
                 alt_name_or_person_name = (
-                    audiobook_role.alt_name or audiobook_role.person.name
+                    audiobook_role.alt_name or audiobook_role.creator.name
                 )
                 roles[audiobook_role.role.name].append(
-                    (audiobook_role.person, alt_name_or_person_name)
+                    (audiobook_role.creator, alt_name_or_person_name)
                 )
             context["roles"] = roles
 
@@ -1757,10 +1761,10 @@ class AudiobookDetailView(DetailView):
             if audiobook_role.role.name not in roles:
                 roles[audiobook_role.role.name] = []
             alt_name_or_person_name = (
-                audiobook_role.alt_name or audiobook_role.person.name
+                audiobook_role.alt_name or audiobook_role.creator.name
             )
             roles[audiobook_role.role.name].append(
-                (audiobook_role.person, alt_name_or_person_name)
+                (audiobook_role.creator, alt_name_or_person_name)
             )
         context["roles"] = roles
 

@@ -79,7 +79,7 @@ class Work(models.Model):
     subtitle = models.CharField(max_length=200, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
     romanized_title = models.CharField(max_length=200, blank=True, null=True)
-    persons = models.ManyToManyField(
+    creators = models.ManyToManyField(
         Person, through="WorkRole", related_name="listen_works"
     )
     release_date = models.CharField(max_length=10, blank=True, null=True)
@@ -97,7 +97,7 @@ class Work(models.Model):
 
 class WorkRole(models.Model):
     work = models.ForeignKey(Work, on_delete=models.CASCADE)
-    person = models.ForeignKey(
+    creator = models.ForeignKey(
         Person,
         on_delete=models.CASCADE,
         null=True,
@@ -114,7 +114,7 @@ class WorkRole(models.Model):
     alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.role} of {self.work} by {self.person}"
+        return f"{self.role} of {self.work} by {self.creator}"
 
 
 class Track(models.Model):
@@ -127,7 +127,9 @@ class Track(models.Model):
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
     romanized_title = models.CharField(max_length=255, blank=True, null=True)
-    persons = models.ManyToManyField(Person, through="TrackRole", related_name="tracks")
+    creators = models.ManyToManyField(
+        Person, through="TrackRole", related_name="tracks"
+    )
     work = models.ForeignKey(
         Work, on_delete=models.SET_NULL, null=True, blank=True, related_name="tracks"
     )
@@ -168,12 +170,12 @@ class Track(models.Model):
 
 class TrackRole(models.Model):
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.track} - {self.alt_name or self.person.name} - {self.role}"
+        return f"{self.track} - {self.alt_name or self.creator.name} - {self.role}"
 
 
 # Release
@@ -191,7 +193,7 @@ class Release(models.Model):
     romanized_title = models.CharField(max_length=255, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
 
-    persons = models.ManyToManyField(
+    creators = models.ManyToManyField(
         Person, through="ReleaseRole", related_name="releases"
     )
     tracks = models.ManyToManyField(
@@ -310,7 +312,7 @@ class Release(models.Model):
 
 class ReleaseRole(models.Model):
     release = models.ForeignKey(Release, on_delete=models.CASCADE)
-    person = models.ForeignKey(
+    creator = models.ForeignKey(
         Person,
         on_delete=models.CASCADE,
         null=True,
@@ -321,7 +323,7 @@ class ReleaseRole(models.Model):
     alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.release} - {self.alt_name or self.person.name} - {self.role}"
+        return f"{self.release} - {self.alt_name or self.creator.name} - {self.role}"
 
 
 class ReleaseTrack(models.Model):
@@ -540,7 +542,7 @@ class Audiobook(models.Model):
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_release_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False, null=True, blank=True)
-    persons = models.ManyToManyField(
+    creators = models.ManyToManyField(
         Person, through="AudiobookRole", related_name="audiobooks"
     )
     instances = models.ManyToManyField(
@@ -652,7 +654,7 @@ class Audiobook(models.Model):
 
 class AudiobookRole(models.Model):
     audiobook = models.ForeignKey(Audiobook, on_delete=models.CASCADE)
-    person = models.ForeignKey(
+    creator = models.ForeignKey(
         Person,
         on_delete=models.CASCADE,
         null=True,
@@ -663,7 +665,7 @@ class AudiobookRole(models.Model):
     alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.audiobook} - {self.alt_name or self.person.name} - {self.role}"
+        return f"{self.audiobook} - {self.alt_name or self.creator.name} - {self.role}"
 
 
 class AudiobookInstance(models.Model):

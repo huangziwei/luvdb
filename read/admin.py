@@ -32,8 +32,8 @@ class PublisherAdmin(admin.ModelAdmin):
 class WorkRoleInline(admin.TabularInline):
     model = WorkRole
     extra = 1
-    fields = ("person", "role")
-    autocomplete_fields = ["person"]
+    fields = ("creator", "role")
+    autocomplete_fields = ["creator"]
 
 
 class WorkAdmin(admin.ModelAdmin):
@@ -45,8 +45,8 @@ class WorkAdmin(admin.ModelAdmin):
 class InstanceRoleInline(admin.TabularInline):
     model = InstanceRole
     extra = 1
-    fields = ("person", "role")
-    autocomplete_fields = ["person"]
+    fields = ("creator", "role")
+    autocomplete_fields = ["creator"]
 
 
 class InstanceAdmin(admin.ModelAdmin):
@@ -57,9 +57,9 @@ class InstanceAdmin(admin.ModelAdmin):
 
 class BookRoleInline(admin.TabularInline):
     model = BookRole
-    fields = ("person", "role", "alt_name")
+    fields = ("creator", "role", "alt_name")
     extra = 1
-    autocomplete_fields = ["person"]
+    autocomplete_fields = ["creator"]
 
 
 class BookInstanceInline(admin.TabularInline):
@@ -103,20 +103,20 @@ class IssueAdmin(admin.ModelAdmin):
 
 
 class WorkRoleAdmin(admin.ModelAdmin):
-    list_display = ("work", "person", "role")
+    list_display = ("work", "creator", "role")
     search_fields = ("work__title", "person__name", "role__name")
     list_filter = ("role",)
 
 
 class InstanceRoleAdmin(admin.ModelAdmin):
-    list_display = ("instance", "person", "role")
+    list_display = ("instance", "creator", "role")
     search_fields = ("instance__title", "person__name", "role__name")
     list_filter = ("role",)
 
 
 class BookRoleAdmin(admin.ModelAdmin):
-    list_display = ("book", "person", "alt_name", "role")
-    list_filter = ("book", "person", "role")
+    list_display = ("book", "creator", "alt_name", "role")
+    list_filter = ("book", "creator", "role")
     search_fields = ("book__title", "person__name", "role__name")
 
 

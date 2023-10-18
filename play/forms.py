@@ -23,7 +23,7 @@ from .models import (
 class WorkForm(forms.ModelForm):
     class Meta:
         model = Work
-        exclude = ["created_by", "updated_by", "persons", "casts"]
+        exclude = ["created_by", "updated_by", "creators", "casts"]
         fields = "__all__"
         widgets = {
             "developers": autocomplete.ModelSelect2Multiple(
@@ -51,11 +51,11 @@ class WorkRoleForm(forms.ModelForm):
 
     class Meta:
         model = WorkRole
-        fields = ("person", "role", "domain", "alt_name")
+        fields = ("creator", "role", "domain", "alt_name")
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -66,7 +66,7 @@ class WorkRoleForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -99,7 +99,7 @@ WorkRoleFormSet = inlineformset_factory(
 class GameForm(forms.ModelForm):
     class Meta:
         model = Game
-        exclude = ["created_by", "updated_by", "persons", "casts"]
+        exclude = ["created_by", "updated_by", "creators", "casts"]
         fields = "__all__"
         widgets = {
             "work": autocomplete.ModelSelect2(
@@ -176,11 +176,11 @@ class GameRoleForm(forms.ModelForm):
 
     class Meta:
         model = GameRole
-        fields = ("person", "role", "domain", "alt_name")
+        fields = ("creator", "role", "domain", "alt_name")
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -191,7 +191,7 @@ class GameRoleForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None
@@ -226,11 +226,11 @@ class GameCastForm(forms.ModelForm):
 
     class Meta:
         model = GameCast
-        fields = ("person", "role", "domain", "character_name")
+        fields = ("creator", "role", "domain", "character_name")
 
     def clean(self):
         cleaned_data = super().clean()
-        person = cleaned_data.get("person")
+        creator = cleaned_data.get("creator")
         role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
@@ -241,7 +241,7 @@ class GameCastForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.person is None:  # if the person field is empty
+        if instance.creator is None:  # if the person field is empty
             if commit and instance.pk:
                 instance.delete()
             return None

@@ -186,7 +186,7 @@ class Work(models.Model):  # Renamed from Book
     # work meta data
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
-    persons = models.ManyToManyField(
+    creators = models.ManyToManyField(
         Person, through="WorkRole", related_name="read_works"
     )
     publication_date = models.TextField(blank=True, null=True)
@@ -245,7 +245,7 @@ class WorkRole(models.Model):  # Renamed from BookRole
     """
 
     work = models.ForeignKey(Work, on_delete=models.CASCADE)
-    person = models.ForeignKey(
+    creator = models.ForeignKey(
         Person,
         on_delete=models.CASCADE,
         null=True,
@@ -262,7 +262,7 @@ class WorkRole(models.Model):  # Renamed from BookRole
     alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.work} - {self.person} - {self.role}"
+        return f"{self.work} - {self.creator} - {self.role}"
 
 
 class Instance(models.Model):
@@ -273,7 +273,7 @@ class Instance(models.Model):
 
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
-    persons = models.ManyToManyField(
+    creators = models.ManyToManyField(
         Person, through="InstanceRole", related_name="instances"
     )
     work = models.ForeignKey(
@@ -318,12 +318,12 @@ class Instance(models.Model):
 
 class InstanceRole(models.Model):
     instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    creator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=255, blank=True, null=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.instance} - {self.person} - {self.role}"
+        return f"{self.instance} - {self.creator} - {self.role}"
 
 
 class Book(models.Model):
@@ -336,7 +336,7 @@ class Book(models.Model):
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False, null=True, blank=True)
-    persons = models.ManyToManyField(Person, through="BookRole", related_name="books")
+    creators = models.ManyToManyField(Person, through="BookRole", related_name="books")
     instances = models.ManyToManyField(
         Instance, through="BookInstance", related_name="books"
     )
@@ -469,7 +469,7 @@ class Book(models.Model):
 
 class BookRole(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    person = models.ForeignKey(
+    creator = models.ForeignKey(
         Person,
         on_delete=models.CASCADE,
         null=True,
@@ -480,7 +480,7 @@ class BookRole(models.Model):
     alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.book} - {self.alt_name or self.person.name} - {self.role}"
+        return f"{self.book} - {self.alt_name or self.creator.name} - {self.role}"
 
 
 class BookInstance(models.Model):

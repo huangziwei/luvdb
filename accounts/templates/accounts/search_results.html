@@ -29,13 +29,13 @@
                 {% endif %}
 
                 <!--Entity-->
-                {% if person_results %}
+                {% if creator_results %}
                     <h3 class="mb-3">Entity</h3>
-                    {% if person_results %}
+                    {% if creator_results %}
                         <h4>Persons</h4>
-                        {% for person in person_results %}
+                        {% for creator in creator_results %}
                             <p>
-                                <a href="{% url 'entity:creator_detail' person.id %}">{{ person.name|truncatechars:50 }}</a>
+                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name|truncatechars:50 }}</a>
                             </p>
                         {% endfor %}
                     {% endif %}

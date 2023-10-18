@@ -20,8 +20,8 @@
                                 <span class="text-muted">{{ role.grouper }}{% if role.list|length > 1 %}s{% endif %}</span>:
                                 {% for release_role in role.list %}
                                     {% if not forloop.first %}, {% endif %}
-                                    <a href="{% url 'entity:creator_detail' release_role.person.id %}">
-                                        {{ release_role.alt_name | default:release_role.person.name }}
+                                    <a href="{% url 'entity:creator_detail' release_role.creator.id %}">
+                                        {{ release_role.alt_name | default:release_role.creator.name }}
                                     </a>
                                 {% endfor %}
                             </div>
@@ -71,8 +71,8 @@
                                             <span class="text-muted">{{ role.grouper }}{% if role.list|length > 1 %}s{% endif %}</span>:
                                             {% for release_role in role.list %}
                                                 {% if not forloop.first %}, {% endif %}
-                                                <a href="{% url 'entity:creator_detail' release_role.person.id %}">
-                                                    {{ release_role.alt_name | default:release_role.person.name }}
+                                                <a href="{% url 'entity:creator_detail' release_role.creator.id %}">
+                                                    {{ release_role.alt_name | default:release_role.creator.name }}
                                                 </a>
                                             {% endfor %}
                                         </div>

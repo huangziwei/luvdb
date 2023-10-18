@@ -210,7 +210,7 @@
                                  role="button"
                                  aria-expanded="false"
                                  aria-controls="personsCollapse">
-                                <b>Persons</b>
+                                <b>Creators</b>
                             </div>
                             <div id="personsCollapse"
                                  class="collapse"
@@ -220,11 +220,11 @@
                                         <li class="list-group-item">
                                             <b>Born</b>
                                         </li>
-                                        {% for person in born_today %}
+                                        {% for creator in born_today %}
                                             <li class="list-group-item">
                                                 {# djlint:off #}
-                                                <a href="{% url 'entity:creator_detail' person.id %}">{{ person.name }}</a>
-                                                ({{ person.birth_date|slice:":4" }}{% if person.death_date %}-{{ person.death_date|slice:":4" }}{% else %} - {% endif %}, {{ person.since }} years ago)
+                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                                ({{ creator.birth_date|slice:":4" }}{% if creator.death_date %}-{{ creator.death_date|slice:":4" }}{% else %} - {% endif %}, {{ creator.since }} years ago)
                                                 {# djlint:on #}
                                             </li>
                                         {% endfor %}
@@ -233,11 +233,11 @@
                                         <li class="list-group-item">
                                             <b>Died</b>
                                         </li>
-                                        {% for person in died_today %}
+                                        {% for creator in died_today %}
                                             <li class="list-group-item">
-                                                <a href="{% url 'entity:creator_detail' person.id %}">{{ person.name }}</a>
+                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
                                                 {# djlint:off #}
-                                                ({% if person.birth_date %}{{ person.birth_date|slice:":4" }}{% else %}?{% endif %}-{{ person.death_date|slice:":4" }}, {{ person.since }} years ago)
+                                                ({% if creator.birth_date %}{{ creator.birth_date|slice:":4" }}{% else %}?{% endif %}-{{ creator.death_date|slice:":4" }}, {{ creator.since }} years ago)
                                                 {# djlint:on #}
                                             </li>
                                         {% endfor %}

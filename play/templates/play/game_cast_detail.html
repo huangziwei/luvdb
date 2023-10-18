@@ -12,7 +12,7 @@
                 <li>
                     <span class="text-muted">{{ role_group.grouper.name }}:</span>
                     {% for gamerole in role_group.list %}
-                        <a href="{% url 'entity:creator_detail' gamerole.person.id %}">{{ gamerole.person.name }}</a>
+                        <a href="{% url 'entity:creator_detail' gamerole.creator.id %}">{{ gamerole.creator.name }}</a>
                         {% if not forloop.last %}/{% endif %}
                     {% endfor %}
                 </li>
@@ -24,7 +24,7 @@
         <ul>
             {% for gamecast in gamecasts %}
                 <li>
-                    <a href="{% url 'entity:creator_detail' gamecast.person.id %}">{{ gamecast.person.name }}</a>
+                    <a href="{% url 'entity:creator_detail' gamecast.creator.id %}">{{ gamecast.creator.name }}</a>
                     as
                     {{ gamecast.character_name }}
                 </li>

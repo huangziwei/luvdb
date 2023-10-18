@@ -403,11 +403,11 @@ def export_game_data(request):
         developers = game.developers.all()
         data += serializers.serialize("json", developers)
 
-        persons_as_gamerole = GameRole.objects.filter(game=game)
-        data += serializers.serialize("json", persons_as_gamerole)
+        creators_as_gamerole = GameRole.objects.filter(game=game)
+        data += serializers.serialize("json", creators_as_gamerole)
 
-        persons_as_gamecast = GameCast.objects.filter(game=game)
-        data += serializers.serialize("json", persons_as_gamecast)
+        creators_as_gamecast = GameCast.objects.filter(game=game)
+        data += serializers.serialize("json", creators_as_gamecast)
 
         platforms = game.platforms.all()
         data += serializers.serialize("json", platforms)
@@ -533,8 +533,8 @@ def filter_read(query, search_terms):
             litwork_results.filter(
                 Q(title__icontains=term)
                 | Q(subtitle__icontains=term)
-                | Q(workrole__person__name__icontains=term)
-                | Q(workrole__person__other_names__icontains=term)
+                | Q(workrole__creator__name__icontains=term)
+                | Q(workrole__creator__other_names__icontains=term)
                 | Q(workrole__alt_name__icontains=term)
                 | Q(publication_date__icontains=term)
             )
@@ -545,8 +545,8 @@ def filter_read(query, search_terms):
             litinstance_results.filter(
                 Q(title__icontains=term)
                 | Q(subtitle__icontains=term)
-                | Q(instancerole__person__name__icontains=term)
-                | Q(instancerole__person__other_names__icontains=term)
+                | Q(instancerole__creator__name__icontains=term)
+                | Q(instancerole__creator__other_names__icontains=term)
                 | Q(instancerole__alt_name__icontains=term)
                 | Q(publication_date__icontains=term)
             )
@@ -561,8 +561,8 @@ def filter_read(query, search_terms):
                 | Q(isbn_13__icontains=term)
                 | Q(eisbn_13__icontains=term)
                 | Q(asin__icontains=term)
-                | Q(bookrole__person__name__icontains=term)
-                | Q(bookrole__person__other_names__icontains=term)
+                | Q(bookrole__creator__name__icontains=term)
+                | Q(bookrole__creator__other_names__icontains=term)
                 | Q(bookrole__alt_name__icontains=term)
                 | Q(publication_date__icontains=term)
                 | Q(publisher__name__icontains=term)
@@ -594,8 +594,8 @@ def filter_listen(query, search_terms):
             musicwork_results.filter(
                 Q(title__icontains=term)
                 | Q(other_titles__icontains=term)
-                | Q(workrole__person__name__icontains=term)
-                | Q(workrole__person__other_names__icontains=term)
+                | Q(workrole__creator__name__icontains=term)
+                | Q(workrole__creator__other_names__icontains=term)
                 | Q(workrole__alt_name__icontains=term)
             )
             .distinct()
@@ -605,8 +605,8 @@ def filter_listen(query, search_terms):
             track_results.filter(
                 Q(title__icontains=term)
                 | Q(other_titles__icontains=term)
-                | Q(trackrole__person__name__icontains=term)
-                | Q(trackrole__person__other_names__icontains=term)
+                | Q(trackrole__creator__name__icontains=term)
+                | Q(trackrole__creator__other_names__icontains=term)
                 | Q(trackrole__alt_name__icontains=term)
             )
             .distinct()
@@ -616,8 +616,8 @@ def filter_listen(query, search_terms):
             release_results.filter(
                 Q(title__icontains=term)
                 | Q(other_titles__icontains=term)
-                | Q(releaserole__person__name__icontains=term)
-                | Q(releaserole__person__other_names__icontains=term)
+                | Q(releaserole__creator__name__icontains=term)
+                | Q(releaserole__creator__other_names__icontains=term)
                 | Q(releaserole__alt_name__icontains=term)
                 | Q(catalog_number__icontains=term)
                 | Q(label__name__icontains=term)
@@ -628,8 +628,8 @@ def filter_listen(query, search_terms):
         podcast_results = podcast_results.filter(Q(title__icontains=term)).distinct()
         audiobook_results = audiobook_results.filter(
             Q(title__icontains=term)
-            | Q(audiobookrole__person__name__icontains=term)
-            | Q(audiobookrole__person__other_names__icontains=term)
+            | Q(audiobookrole__creator__name__icontains=term)
+            | Q(audiobookrole__creator__other_names__icontains=term)
             | Q(release_date__icontains=term)
             | Q(publisher__name__icontains=term)
         ).distinct()
@@ -652,8 +652,8 @@ def filter_play(query, search_terms):
             gamework_results.filter(
                 Q(title__icontains=term)
                 | Q(other_titles__icontains=term)
-                | Q(workrole__person__name__icontains=term)
-                | Q(workrole__person__other_names__icontains=term)
+                | Q(workrole__creator__name__icontains=term)
+                | Q(workrole__creator__other_names__icontains=term)
                 | Q(workrole__alt_name__icontains=term)
                 | Q(first_release_date=query)
             )
@@ -666,11 +666,11 @@ def filter_play(query, search_terms):
                 | Q(other_titles__icontains=term)
                 | Q(developers__name__icontains=term)
                 | Q(platforms__name__icontains=term)
-                | Q(gameroles__person__name__icontains=term)
-                | Q(gameroles__person__other_names__icontains=term)
+                | Q(gameroles__creator__name__icontains=term)
+                | Q(gameroles__creator__other_names__icontains=term)
                 | Q(gameroles__alt_name__icontains=term)
-                | Q(gamecasts__person__name__icontains=term)
-                | Q(gamecasts__person__other_names__icontains=term)
+                | Q(gamecasts__creator__name__icontains=term)
+                | Q(gamecasts__creator__other_names__icontains=term)
                 | Q(gamecasts__character_name__icontains=term)
             )
             .distinct()
@@ -689,11 +689,11 @@ def filter_watch(query, search_terms):
             movie_results.filter(
                 Q(title__icontains=term)
                 | Q(other_titles__icontains=term)
-                | Q(movieroles__person__name__icontains=term)
-                | Q(movieroles__person__other_names__icontains=term)
+                | Q(movieroles__creator__name__icontains=term)
+                | Q(movieroles__creator__other_names__icontains=term)
                 | Q(movieroles__alt_name__icontains=term)
-                | Q(moviecasts__person__name__icontains=term)
-                | Q(moviecasts__person__other_names__icontains=term)
+                | Q(moviecasts__creator__name__icontains=term)
+                | Q(moviecasts__creator__other_names__icontains=term)
                 | Q(moviecasts__character_name__icontains=term)
             )
             .distinct()
@@ -704,11 +704,11 @@ def filter_watch(query, search_terms):
             series_results.filter(
                 Q(title__icontains=term)
                 | Q(other_titles__icontains=term)
-                | Q(seriesroles__person__name__icontains=term)
-                | Q(seriesroles__person__other_names__icontains=term)
+                | Q(seriesroles__creator__name__icontains=term)
+                | Q(seriesroles__creator__other_names__icontains=term)
                 | Q(seriesroles__alt_name__icontains=term)
-                | Q(episodes__episodecasts__person__name__icontains=term)
-                | Q(episodes__episodecasts__person__other_names__icontains=term)
+                | Q(episodes__episodecasts__creator__name__icontains=term)
+                | Q(episodes__episodecasts__creator__other_names__icontains=term)
                 | Q(episodes__episodecasts__character_name__icontains=term)
             )
             .distinct()
@@ -718,15 +718,15 @@ def filter_watch(query, search_terms):
     return movie_results, series_results
 
 
-def filter_person(query, search_terms):
-    person_results = Person.objects.all()
+def filter_creator(query, search_terms):
+    creator_results = Person.objects.all()
 
     for term in search_terms:
-        person_results = person_results.filter(
+        creator_results = creator_results.filter(
             Q(name__icontains=term) | Q(other_names__icontains=term)
         ).distinct()
 
-    return person_results
+    return creator_results
 
 
 def parse_query(query):
@@ -743,7 +743,7 @@ def search_view(request):
     # Initialize all results as empty
     user_results = []
     # entity
-    person_results = []
+    creator_results = []
     # write
     post_results = []
     say_results = []
@@ -808,8 +808,8 @@ def search_view(request):
         if model in ["all", "watch"]:
             movie_results, series_results = filter_watch(query, search_terms)
 
-        if model in ["all", "person"]:
-            person_results = filter_person(query, search_terms)
+        if model in ["all", "creator"]:
+            creator_results = filter_creator(query, search_terms)
 
     execution_time = time.time() - start_time
 
@@ -820,7 +820,7 @@ def search_view(request):
             "query": query,
             "user_results": user_results,
             # entity
-            "person_results": person_results,
+            "creator_results": creator_results,
             # write
             "post_results": post_results,
             "say_results": say_results,
