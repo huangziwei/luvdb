@@ -11,7 +11,6 @@ from .models import (
     MovieRole,
     Series,
     SeriesRole,
-    Studio,
     WatchCheckIn,
 )
 
@@ -78,7 +77,6 @@ class StudioAdmin(admin.ModelAdmin):
 
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Movie, MovieAdmin)
-admin.site.register(Studio, StudioAdmin)
 admin.site.register(Series, SeriesAdmin)
 admin.site.register(Episode, EpisodeAdmin)
 

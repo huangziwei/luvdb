@@ -23,10 +23,6 @@ from .views import (
     PeriodicalCreateView,
     PeriodicalDetailView,
     PeriodicalUpdateView,
-    PublisherAutocomplete,
-    PublisherCreateView,
-    PublisherDetailView,
-    PublisherUpdateView,
     ReadCheckInCreateView,
     ReadCheckInDeleteView,
     ReadCheckInDetailView,
@@ -136,14 +132,6 @@ urlpatterns = [
         IssueUpdateView.as_view(),
         name="issue_update",
     ),
-    # publisher
-    path("publisher/create/", PublisherCreateView.as_view(), name="publisher_create"),
-    path("publisher/<int:pk>/", PublisherDetailView.as_view(), name="publisher_detail"),
-    path(
-        "publisher/<int:pk>/update/",
-        PublisherUpdateView.as_view(),
-        name="publisher_update",
-    ),
     # autocomplete views
     path(
         "instance-autocomplete/",
@@ -151,11 +139,6 @@ urlpatterns = [
         name="instance-autocomplete",
     ),
     path("work-autocomplete/", WorkAutocomplete.as_view(), name="work-autocomplete"),
-    path(
-        "publisher-autocomplete/",
-        PublisherAutocomplete.as_view(),
-        name="publisher-autocomplete",
-    ),
     path(
         "language-autocomplete/",
         LanguageAutocomplete.as_view(),

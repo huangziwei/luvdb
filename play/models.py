@@ -28,35 +28,6 @@ def rename_game_cover(instance, filename):
     return os.path.join("covers", directory_name, new_name)
 
 
-# Create your models here.
-class Developer(Entity):
-    location = models.CharField(max_length=100, blank=True, null=True)
-    website = models.URLField(blank=True, null=True)
-    wikipedia = models.URLField(blank=True, null=True)
-    founded_date = models.CharField(max_length=10, blank=True, null=True)
-    closed_date = models.CharField(max_length=10, blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        if self.location:
-            return f"{self.location}: {self.name}"
-        return self.name
-
-
-class GamePublisher(Entity):
-    location = models.CharField(max_length=100, blank=True, null=True)
-    website = models.URLField(blank=True, null=True)
-    wikipedia = models.URLField(blank=True, null=True)
-    founded_date = models.CharField(max_length=10, blank=True, null=True)
-    closed_date = models.CharField(max_length=10, blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        if self.location:
-            return f"{self.location}: {self.name}"
-        return self.name
-
-
 class Platform(Entity):
     website = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)

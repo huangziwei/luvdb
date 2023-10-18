@@ -12,7 +12,6 @@ from .models import (
     Issue,
     IssueInstance,
     Periodical,
-    Publisher,
     ReadCheckIn,
     Work,
     WorkRole,
@@ -21,11 +20,6 @@ from .models import (
 
 class GenreAdmin(admin.ModelAdmin):
     list_display = ("name",)
-    search_fields = ("name",)
-
-
-class PublisherAdmin(admin.ModelAdmin):
-    list_display = ("name", "created_at", "updated_at", "created_by", "updated_by")
     search_fields = ("name",)
 
 
@@ -81,8 +75,6 @@ class BookAdmin(admin.ModelAdmin):
 
     inlines = [BookRoleInline, BookInstanceInline]  # Changed to new inline
 
-    autocomplete_fields = ["publisher"]
-
 
 class PeriodicalAdmin(admin.ModelAdmin):
     list_display = ("title",)
@@ -132,7 +124,6 @@ class SeriesAdmin(admin.ModelAdmin):
     inlines = [BookInSeriesInline]
 
 
-admin.site.register(Publisher, PublisherAdmin)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(Book, BookAdmin)
 admin.site.register(Instance, InstanceAdmin)

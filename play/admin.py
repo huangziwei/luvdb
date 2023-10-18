@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from .models import (
-    Developer,
     Game,
     GameCast,
     GameCheckIn,
@@ -32,19 +31,6 @@ class GameInSeriesInline(admin.TabularInline):
 class GameReleaseDateInline(admin.TabularInline):
     model = GameReleaseDate
     extra = 0
-
-
-@admin.register(Developer)
-class DeveloperAdmin(admin.ModelAdmin):
-    list_display = [
-        "name",
-        "location",
-        "website",
-        "founded_date",
-        "closed_date",
-        "notes",
-    ]
-    search_fields = ["name"]
 
 
 @admin.register(Platform)

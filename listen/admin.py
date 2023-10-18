@@ -5,7 +5,6 @@ from .models import (
     AudiobookInstance,
     AudiobookRole,
     Genre,
-    Label,
     ListenCheckIn,
     Podcast,
     Release,
@@ -82,7 +81,6 @@ class AudiobookAdmin(admin.ModelAdmin):
     inlines = [AudiobookRoleInline, AudiobookInstanceInline]
 
 
-admin.site.register(Label)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(Track, TrackAdmin)
 admin.site.register(Release, ReleaseAdmin)

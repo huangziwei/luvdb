@@ -54,7 +54,6 @@ from .forms import (
 from .models import (
     Audiobook,
     Genre,
-    Label,
     ListenCheckIn,
     Podcast,
     Release,
@@ -65,84 +64,6 @@ from .models import (
 )
 
 User = get_user_model()
-
-
-###########
-## Label ##
-###########
-class LabelCreateView(LoginRequiredMixin, CreateView):
-    model = Label
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "website",
-        "wikipedia",
-        "founded_date",
-        "closed_date",
-        "notes",
-    ]
-    template_name = "listen/label_create.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["other_names"].widget = forms.TextInput()
-        return form
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        form.instance.updated_by = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
-
-
-class LabelDetailView(DetailView):
-    model = Label
-    template_name = "listen/label_detail.html"
-
-
-class LabelUpdateView(LoginRequiredMixin, UpdateView):
-    model = Label
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "website",
-        "wikipedia",
-        "founded_date",
-        "closed_date",
-        "notes",
-    ]
-    template_name = "listen/label_update.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["other_names"].widget = forms.TextInput()
-        return form
-
-    def form_valid(self, form):
-        form.instance.updated_by = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
-
-
-class LabelAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return Label.objects.none()
-
-        qs = Label.objects.all()
-
-        if self.q:
-            qs = qs.filter(Q(name__icontains=self.q) | Q(other_names__icontains=self.q))
-
-            return qs
-
-        return Label.objects.none()
 
 
 ##########

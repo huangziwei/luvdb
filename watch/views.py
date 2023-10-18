@@ -47,7 +47,6 @@ from .models import (
     Genre,
     Movie,
     Series,
-    Studio,
     WatchCheckIn,
 )
 
@@ -365,84 +364,6 @@ class MovieCastDetailView(DetailView):
         context["moviecrew"] = self.object.movieroles.all()
 
         return context
-
-
-class StudioCreateView(LoginRequiredMixin, CreateView):
-    model = Studio
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "website",
-        "wikipedia",
-        "founded_date",
-        "closed_date",
-        "notes",
-    ]
-    template_name = "watch/studio_create.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["other_names"].widget = forms.TextInput()
-        return form
-
-    def get_success_url(self):
-        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        form.instance.updated_by = self.request.user
-        return super().form_valid(form)
-
-
-class StudioUpdateView(LoginRequiredMixin, UpdateView):
-    model = Studio
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "website",
-        "wikipedia",
-        "founded_date",
-        "closed_date",
-        "notes",
-    ]
-    template_name = "watch/studio_update.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["other_names"].widget = forms.TextInput()
-        return form
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        form.instance.updated_by = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
-
-
-class StudioDetailView(DetailView):
-    model = Studio
-    template_name = "watch/studio_detail.html"
-    context_object_name = "studio"
-
-
-class StudioAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return Studio.objects.none()
-
-        qs = Studio.objects.all()
-
-        if self.q:
-            qs = qs.filter(Q(name__icontains=self.q) | Q(other_names__icontains=self.q))
-
-            return qs
-
-        return Studio.objects.none()
-
 
 class WatchListView(TemplateView):
     template_name = "watch/watch_list.html"

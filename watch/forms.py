@@ -49,7 +49,6 @@ class MovieForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(MovieForm, self).__init__(*args, **kwargs)
-        self.fields["studios_deprecated"].required = False
         self.fields["studios"].required = False
         self.fields["distributors"].required = False
         self.fields["genres"].required = False
@@ -217,7 +216,6 @@ class SeriesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SeriesForm, self).__init__(*args, **kwargs)
-        self.fields["studios_deprecated"].required = False
         self.fields["studios"].required = False
         self.fields["distributors"].required = False
         self.fields["genres"].required = False

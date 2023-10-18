@@ -54,11 +54,14 @@
                                         <a href="{% url 'read:periodical_detail' issue.periodical.id %}">{{ issue.periodical.title }}</a>
                                     </h4>
                                     <h5 class="text-muted">Vol. {{ issue.volume }} Nr. {{ issue.number }}</h5>
-
                                 </span>
-                                <div class="issue-meta">
+                                <div class="issue-meta mt-3">
                                     {% if issue.publication_date %}<p class='text-secondary'>Date: {{ issue.publication_date }}</p>{% endif %}
-                                    {% if issue.publisher %}<p class='text-secondary'>Publisher: {{ issue.publisher }}</p>{% endif %}
+                                    {% if issue.publisher %}
+                                    <p class='text-secondary'>Publisher: 
+                                        <a href="{% url 'entity:company_detail' issue.publisher.id %}">{{ issue.publisher }}</a>
+                                    </p>
+                                    {% endif %}
                                 </div>
                             </div>
                             <!-- End of issue-card -->

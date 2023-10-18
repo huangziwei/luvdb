@@ -14,8 +14,8 @@ from django.utils.text import slugify
 from PIL import Image
 
 from activity_feed.models import Activity
-from entity.models import Company, Creator, Entity, Role
-from read.models import Book, Instance, LanguageField, Publisher, standardize_date
+from entity.models import Company, Creator, Role
+from read.models import Book, Instance, LanguageField, standardize_date
 from write.models import create_mentions_notifications, handle_tags
 
 
@@ -36,29 +36,6 @@ def rename_release_cover(instance, filename):
 
     new_name = f"{unique_id}{extension}"
     return os.path.join("covers", directory_name, new_name)
-
-
-class Label(Entity):
-    """
-    A Publisher entity
-    """
-
-    # publisher meta data
-    notes = models.TextField(blank=True, null=True)
-    location = models.CharField(max_length=255, blank=True, null=True)
-    website = models.URLField(blank=True, null=True)
-    wikipedia = models.URLField(blank=True, null=True)
-    founded_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
-    closed_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
-
-    def __str__(self):
-        if self.location:
-            return f"{self.location}: {self.name}"
-        return self.name
 
 
 class Genre(models.Model):
@@ -201,9 +178,7 @@ class Release(models.Model):
     tracks = models.ManyToManyField(
         Track, through="ReleaseTrack", related_name="releases"
     )
-    label_deprecated = models.ManyToManyField(
-        Label, related_name="releases_deprecated", db_column="label"
-    )
+
     label = models.ManyToManyField(Company, related_name="releases")
     genres = models.ManyToManyField(Genre, related_name="releases", blank=True)
     discogs = models.URLField(blank=True, null=True)
@@ -549,13 +524,6 @@ class Audiobook(models.Model):
     )
     instances = models.ManyToManyField(
         Instance, through="AudiobookInstance", related_name="audiobooks"
-    )
-    publisher_deprecated = models.ForeignKey(
-        Publisher,
-        on_delete=models.SET_NULL,
-        related_name="audiobooks",
-        null=True,
-        blank=True,
     )
     publisher = models.ForeignKey(
         Company,

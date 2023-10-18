@@ -52,79 +52,12 @@ from .models import (
     Issue,
     LanguageField,
     Periodical,
-    Publisher,
     ReadCheckIn,
     Role,
     Work,
 )
 
 User = get_user_model()
-
-#############
-# Publisher #
-#############
-
-
-class PublisherCreateView(LoginRequiredMixin, CreateView):
-    model = Publisher
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "website",
-        "wikipedia",
-        "founded_date",
-        "closed_date",
-        "notes",
-    ]
-    template_name = "read/publisher_create.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["other_names"].widget = forms.TextInput()
-        return form
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        form.instance.updated_by = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
-
-
-class PublisherDetailView(DetailView):
-    model = Publisher
-    template_name = "read/publisher_detail.html"
-
-
-class PublisherUpdateView(LoginRequiredMixin, UpdateView):
-    model = Publisher
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "website",
-        "wikipedia",
-        "founded_date",
-        "closed_date",
-        "notes",
-    ]
-    template_name = "read/publisher_update.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["other_names"].widget = forms.TextInput()
-        return form
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        form.instance.updated_by = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
-
 
 ##########
 ## Work ##
@@ -993,21 +926,6 @@ class InstanceAutocomplete(autocomplete.Select2QuerySetView):
             label = format_html("{} ({})", item.title, publication_year)
 
         return label
-
-
-class PublisherAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        if not self.request.user.is_authenticated:
-            return Publisher.objects.none()
-
-        qs = Publisher.objects.all()
-
-        if self.q:
-            qs = qs.filter(name__icontains=self.q)
-
-            return qs
-
-        return Publisher.objects.none()
 
 
 class LanguageAutocomplete(autocomplete.Select2ListView):

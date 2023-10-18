@@ -30,20 +30,6 @@ def rename_movie_poster(instance, filename):
     return os.path.join("posters", directory_name, new_name)
 
 
-class Studio(Entity):
-    location = models.CharField(max_length=100, blank=True, null=True)
-    website = models.URLField(blank=True, null=True)
-    wikipedia = models.URLField(blank=True, null=True)
-    founded_date = models.CharField(max_length=10, blank=True, null=True)
-    closed_date = models.CharField(max_length=10, blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        if self.location:
-            return f"{self.location}: {self.name}"
-        return self.name
-
-
 class Genre(models.Model):
     name = models.CharField(max_length=100)
 
@@ -56,7 +42,6 @@ class Movie(models.Model):
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
-    studios_deprecated = models.ManyToManyField(Studio, related_name="movies")
     studios = models.ManyToManyField(Company, related_name="movies")
     distributors = models.ManyToManyField(Company, related_name="movies_distributed")
     creators = models.ManyToManyField(
@@ -202,7 +187,6 @@ class Series(models.Model):
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     romanized_title = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
-    studios_deprecated = models.ManyToManyField(Studio, related_name="series")
     studios = models.ManyToManyField(Company, related_name="series")
     distributors = models.ManyToManyField(Company, related_name="series_distributed")
     creators = models.ManyToManyField(

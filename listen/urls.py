@@ -9,10 +9,6 @@ from .views import (
     GenericCheckInUserListView,
     GenreAutocomplete,
     GenreDetailView,
-    LabelAutocomplete,
-    LabelCreateView,
-    LabelDetailView,
-    LabelUpdateView,
     ListenCheckInDeleteView,
     ListenCheckInDetailView,
     ListenCheckInUpdateView,
@@ -40,10 +36,6 @@ from .views import (
 
 app_name = "listen"
 urlpatterns = [
-    # label
-    path("label/create/", LabelCreateView.as_view(), name="label_create"),
-    path("label/<int:pk>/", LabelDetailView.as_view(), name="label_detail"),
-    path("label/<int:pk>/update/", LabelUpdateView.as_view(), name="label_update"),
     # work
     path("work/create/", WorkCreateView.as_view(), name="work_create"),
     path("work/<int:pk>/", WorkDetailView.as_view(), name="work_detail"),
@@ -68,12 +60,6 @@ urlpatterns = [
     path("podcast/<int:pk>/", PodcastDetailView.as_view(), name="podcast_detail"),
     path(
         "podcast/<int:pk>/update/", PodcastUpdateView.as_view(), name="podcast_update"
-    ),
-    # autocomplete views
-    path(
-        "label-autocomplete/",
-        LabelAutocomplete.as_view(),
-        name="label-autocomplete",
     ),
     path("work-autocomplete/", WorkAutocomplete.as_view(), name="work-autocomplete"),
     path("track-autocomplete/", TrackAutocomplete.as_view(), name="track-autocomplete"),

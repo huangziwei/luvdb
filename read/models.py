@@ -96,29 +96,6 @@ def standardize_date(date_str):
 # models
 
 
-class Publisher(Entity):
-    """
-    A Publisher entity
-    """
-
-    # publisher meta data
-    location = models.CharField(max_length=255, blank=True, null=True)
-    website = models.URLField(blank=True, null=True)
-    wikipedia = models.URLField(blank=True, null=True)
-    founded_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
-    closed_date = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # YYYY or YYYY-MM or YYYY-MM-DD
-    notes = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        if self.location:
-            return f"{self.location}: {self.name}"
-        return self.name
-
-
 class LanguageField(models.CharField):
     def __init__(self, *args, **kwargs):
         kwargs["max_length"] = 8
@@ -341,13 +318,6 @@ class Book(models.Model):
     creators = models.ManyToManyField(Creator, through="BookRole", related_name="books")
     instances = models.ManyToManyField(
         Instance, through="BookInstance", related_name="books"
-    )
-    publisher_deprecated = models.ForeignKey(
-        Publisher,
-        on_delete=models.SET_NULL,
-        related_name="books",
-        null=True,
-        blank=True,
     )
     publisher = models.ForeignKey(
         Company,
@@ -639,7 +609,7 @@ class Issue(models.Model):
         Periodical, on_delete=models.CASCADE, related_name="issues"
     )
     publisher = models.ForeignKey(
-        Publisher,
+        Company,
         on_delete=models.SET_NULL,
         related_name="published_issues",
         null=True,

@@ -212,8 +212,8 @@ class ReleaseForm(forms.ModelForm):
             "other_titles": forms.TextInput(),
         }
         help_texts = {
-            "release_format": "e.g. CD, digital, etc.",
-            "release_type": "e.g. Single, EP, LP, etc.",
+            "release_format": "For the medium of the release, e.g. Vinyl, CD, Digital, etc.",
+            "release_type": " For the length of the release, e.g. Single, EP, LP, etc.",
             "recording_type": "e.g. Live, Studio, etc.",
             "other_titles": "e.g. translated titles in different languages, separated by slashes (`/`).",
         }
@@ -222,7 +222,6 @@ class ReleaseForm(forms.ModelForm):
         super(ReleaseForm, self).__init__(*args, **kwargs)
         self.fields["cover_sens"].label = "Is the cover sensitive or explicit?"
         self.fields["label"].required = False
-        self.fields["label_deprecated"].required = False
 
 
 class ReleaseRoleForm(forms.ModelForm):
@@ -430,7 +429,6 @@ class AudiobookForm(forms.ModelForm):
         super(AudiobookForm, self).__init__(*args, **kwargs)
         self.fields["cover_sens"].label = "Is the cover sensitive or explicit?"
         self.fields["publisher"].required = False
-        self.fields["publisher_deprecated"].required = False
 
 
 class AudiobookRoleForm(forms.ModelForm):
