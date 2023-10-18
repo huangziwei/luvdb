@@ -47,6 +47,15 @@ class Person(Entity):
     // because there's too much code to change
     """
 
+    CREATOR_TYPES = (
+        ("person", "Person"),
+        ("group", "Group"),
+    )
+
+    creator_type = models.CharField(
+        max_length=10, choices=CREATOR_TYPES, default="person", blank=True, null=True
+    )
+
     # person meta data
     birth_date = models.CharField(
         max_length=10, blank=True, null=True

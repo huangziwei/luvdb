@@ -12,6 +12,7 @@ class PersonForm(forms.ModelForm):
         fields = [
             "name",
             "other_names",
+            "creator_type",
             "birth_date",
             "birth_place",
             "death_date",
@@ -23,6 +24,7 @@ class PersonForm(forms.ModelForm):
         help_texts = {
             "name": "Enter the person's or the group's most-used name in their original language. ",
             "other_names": "Enter any other names the person or the group is known by, separated by slashes (`/`).",
+            "creator_type": "Select whether the entity is a person or a group.",
             "birth_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
             "birth_place": "Enter the place of birth or formation in its original language.",
             "death_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",

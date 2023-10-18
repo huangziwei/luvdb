@@ -8,6 +8,7 @@ class PersonAdmin(admin.ModelAdmin):
     list_display = [
         "name",
         "other_names",
+        "creator_type",
         "birth_date",
         "death_date",
         "birth_place",
@@ -18,6 +19,7 @@ class PersonAdmin(admin.ModelAdmin):
     search_fields = [
         "name",
         "other_names",
+        "creator_type",
         "birth_date",
         "death_date",
         "birth_place",
