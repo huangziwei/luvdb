@@ -18,12 +18,14 @@ from .views import (
 app_name = "entity"
 
 urlpatterns = [
-    # person
-    path("person/create/", PersonCreateView.as_view(), name="person_create"),
-    path("person/<int:pk>/", PersonDetailView.as_view(), name="person_detail"),
-    path("person/<int:pk>/update/", PersonUpdateView.as_view(), name="person_update"),
+    # creator
+    path("creator/create/", PersonCreateView.as_view(), name="creator_create"),
+    path("creator/<int:pk>/", PersonDetailView.as_view(), name="creator_detail"),
+    path("creator/<int:pk>/update/", PersonUpdateView.as_view(), name="creator_update"),
     path(
-        "person-autocomplete/", PersonAutoComplete.as_view(), name="person-autocomplete"
+        "creator-autocomplete/",
+        PersonAutoComplete.as_view(),
+        name="creator-autocomplete",
     ),
     # role
     path("role/create/", RoleCreateView.as_view(), name="role_create"),

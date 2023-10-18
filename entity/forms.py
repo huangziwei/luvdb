@@ -34,3 +34,9 @@ class PersonForm(forms.ModelForm):
         widgets = {
             "other_names": forms.TextInput(),  # Use TextInput to make it a single line input
         }
+        labels = {
+            "birth_date": "Date of Birth / Formation",
+            "birth_place": "Place of Birth / Formation",
+            "death_date": "Date of Death / Dissolution",
+            "death_place": "Place of Death / Dissolution",
+        }

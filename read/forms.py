@@ -93,8 +93,8 @@ WorkRoleFormSet = inlineformset_factory(
     labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("entity:person-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+            url=reverse_lazy("entity:creator-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
         "role": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:role-autocomplete"),
@@ -171,8 +171,8 @@ InstanceRoleFormSet = inlineformset_factory(
     labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("entity:person-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+            url=reverse_lazy("entity:creator-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
         "role": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:role-autocomplete"),
@@ -258,9 +258,9 @@ BookRoleFormSet = inlineformset_factory(
     labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("entity:person-autocomplete"),
+            url=reverse_lazy("entity:creator-autocomplete"),
             attrs={
-                "data-create-url": reverse_lazy("entity:person_create"),
+                "data-create-url": reverse_lazy("entity:creator_create"),
                 "data-placeholder": "Type to search",
             },
         ),

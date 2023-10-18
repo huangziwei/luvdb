@@ -12,7 +12,7 @@
                     <div>
                         <span class="text-muted">{{ role }}:</span>
                         {% for person, name in persons_altname_tuples %}
-                            <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
+                            <a href="{% url 'entity:creator_detail' person.id %}">{{ name }}</a>
                             {% if not forloop.last %}/{% endif %}
                         {% endfor %}
                     </div>

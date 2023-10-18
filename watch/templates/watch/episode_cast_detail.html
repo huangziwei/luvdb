@@ -5,7 +5,7 @@
         <ul>
             {% for episodecast in episodecasts %}
                 <li>
-                    <a href="{% url 'entity:person_detail' episodecast.person.id %}">{{ episodecast.person.name }}</a>
+                    <a href="{% url 'entity:creator_detail' episodecast.person.id %}">{{ episodecast.person.name }}</a>
                     as
                     {{ episodecast.character_name }}
                 </li>

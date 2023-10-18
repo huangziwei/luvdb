@@ -35,7 +35,7 @@
                         <h4>Persons</h4>
                         {% for person in person_results %}
                             <p>
-                                <a href="{% url 'entity:person_detail' person.id %}">{{ person.name|truncatechars:50 }}</a>
+                                <a href="{% url 'entity:creator_detail' person.id %}">{{ person.name|truncatechars:50 }}</a>
                             </p>
                         {% endfor %}
                     {% endif %}

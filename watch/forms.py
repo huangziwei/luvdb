@@ -134,8 +134,8 @@ MovieRoleFormSet = inlineformset_factory(
     labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("entity:person-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+            url=reverse_lazy("entity:creator-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
         "role": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:role-autocomplete"),
@@ -184,8 +184,8 @@ MovieCastFormSet = inlineformset_factory(
     labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("entity:person-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+            url=reverse_lazy("entity:creator-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
         "role": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:role-autocomplete"),
@@ -268,8 +268,8 @@ SeriesRoleFormSet = inlineformset_factory(
     labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("entity:person-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+            url=reverse_lazy("entity:creator-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
         "role": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:role-autocomplete"),
@@ -337,8 +337,8 @@ EpisodeRoleFormSet = inlineformset_factory(
     can_delete=True,
     widgets={
         "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("entity:person-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+            url=reverse_lazy("entity:creator-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
         "role": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:role-autocomplete"),
@@ -387,8 +387,8 @@ EpisodeCastFormSet = inlineformset_factory(
     labels={"person": "Entity"},
     widgets={
         "person": autocomplete.ModelSelect2(
-            url=reverse_lazy("entity:person-autocomplete"),
-            attrs={"data-create-url": reverse_lazy("entity:person_create")},
+            url=reverse_lazy("entity:creator-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
         ),
         "role": autocomplete.ModelSelect2(
             url=reverse_lazy("entity:role-autocomplete"),

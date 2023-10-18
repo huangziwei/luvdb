@@ -32,7 +32,7 @@ class PersonCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("entity:person_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("entity:creator_detail", kwargs={"pk": self.object.pk})
 
 
 class PersonDetailView(DetailView):
@@ -380,7 +380,7 @@ class PersonUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("entity:person_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("entity:creator_detail", kwargs={"pk": self.object.pk})
 
 
 class RoleCreateView(LoginRequiredMixin, CreateView):

@@ -124,7 +124,7 @@
                                                 {% if not forloop.first %}
                                                     /
                                                 {% endif %}
-                                                <a href="{% url 'entity:person_detail' release_role.person.id %}">
+                                                <a href="{% url 'entity:creator_detail' release_role.person.id %}">
                                                     {{ release_role.alt_name | default:release_role.person.name }}
                                                 </a>
                                             {% endfor %}
@@ -140,7 +140,7 @@
                                                 {% if not forloop.first %}
                                                     /
                                                 {% endif %}
-                                                <a href="{% url 'entity:person_detail' audiobook_role.person.id %}">
+                                                <a href="{% url 'entity:creator_detail' audiobook_role.person.id %}">
                                                     {{ audiobook_role.alt_name | default:audiobook_role.person.name }}
                                                 </a>
                                             {% endfor %}

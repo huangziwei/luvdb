@@ -65,7 +65,7 @@
                                         <div class="mb-1">
                                             <span class="text-muted">{{ role_name }}:</span>
                                             {% for person, alt_name in person_altname_tuples %}
-                                                <a href="{% url 'entity:person_detail' person.id %}">{{ alt_name }}</a>
+                                                <a href="{% url 'entity:creator_detail' person.id %}">{{ alt_name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
                                         </div>

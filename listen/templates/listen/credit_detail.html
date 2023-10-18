@@ -13,7 +13,7 @@
                     <div class="ms-4 mb-1">
                         <span class="text-muted">{{ role.name }}:</span>
                         {% for person, name in persons_altname_tuples %}
-                            <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
+                            <a href="{% url 'entity:creator_detail' person.id %}">{{ name }}</a>
                             {% if not forloop.last %}/{% endif %}
                         {% endfor %}
                     </div>
@@ -35,7 +35,7 @@
                                     <div class="ms-4 mb-1">
                                         <span class="text-muted">{{ role.name }}:</span>
                                         {% for person, name in persons_altname_tuples %}
-                                            <a href="{% url 'entity:person_detail' person.id %}">{{ name }}</a>
+                                            <a href="{% url 'entity:creator_detail' person.id %}">{{ name }}</a>
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
                                     </div>

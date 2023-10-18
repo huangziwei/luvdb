@@ -59,7 +59,7 @@ class Person(Entity):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("entity:person_detail", kwargs={"pk": self.pk})
+        return reverse("entity:creator_detail", kwargs={"pk": self.pk})
 
 
 class Role(models.Model):

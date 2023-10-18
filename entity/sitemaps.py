@@ -15,4 +15,4 @@ class PersonSiteMap(Sitemap):
         return obj.updated_at
 
     def location(self, obj):
-        return reverse("entity:person_detail", args=[obj.id])
+        return reverse("entity:creator_detail", args=[obj.id])
