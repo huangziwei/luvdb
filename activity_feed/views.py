@@ -47,15 +47,30 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         # Query for people born or died on this day
         born_today = Creator.objects.filter(
             Q(birth_date__contains=current_month_day)
-            | Q(birth_date__contains=current_month_day_dash)
+            | Q(birth_date__contains=current_month_day_dash),
+            creator_type="person",
         ).order_by("birth_date")
 
         died_today = Creator.objects.filter(
             Q(death_date__contains=current_month_day)
-            | Q(death_date__contains=current_month_day_dash)
+            | Q(death_date__contains=current_month_day_dash),
+            creator_type="person",
         ).order_by("death_date")
 
-        # Calculate age at birth or death
+        # Query for groups formed or dissolved on this day
+        formed_today = Creator.objects.filter(
+            Q(birth_date__contains=current_month_day)
+            | Q(birth_date__contains=current_month_day_dash),
+            creator_type="group",
+        ).order_by("birth_date")
+
+        dissolved_today = Creator.objects.filter(
+            Q(death_date__contains=current_month_day)
+            | Q(death_date__contains=current_month_day_dash),
+            creator_type="group",
+        ).order_by("death_date")
+
+        # Calculate age at birth or death for persons
         for creator in born_today:
             birth_year = int(
                 creator.birth_date.split("-" if "-" in creator.birth_date else ".")[0]
@@ -68,8 +83,23 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
             )
             creator.since = now.year - death_year
 
+        # Calculate age at formation or dissolution for groups
+        for creator in formed_today:
+            formation_year = int(
+                creator.birth_date.split("-" if "-" in creator.birth_date else ".")[0]
+            )
+            creator.since = now.year - formation_year
+
+        for creator in dissolved_today:
+            dissolution_year = int(
+                creator.death_date.split("-" if "-" in creator.death_date else ".")[0]
+            )
+            creator.since = now.year - dissolution_year
+
         context["born_today"] = born_today
         context["died_today"] = died_today
+        context["formed_today"] = formed_today
+        context["dissolved_today"] = dissolved_today
 
         # Query for books published on this day
         books_published_today = Book.objects.filter(
@@ -369,15 +399,30 @@ class CalendarActivityFeedView(ActivityFeedView):
         # Query for people born or died on this day
         born_today = Creator.objects.filter(
             Q(birth_date__contains=selected_month_day)
-            | Q(birth_date__contains=selected_month_day_dash)
+            | Q(birth_date__contains=selected_month_day_dash),
+            creator_type="person",
         ).order_by("birth_date")
 
         died_today = Creator.objects.filter(
             Q(death_date__contains=selected_month_day)
-            | Q(death_date__contains=selected_month_day_dash)
+            | Q(death_date__contains=selected_month_day_dash),
+            creator_type="person",
         ).order_by("death_date")
 
-        # Calculate age at birth or death
+        # Query for groups formed or dissolved on this day
+        formed_today = Creator.objects.filter(
+            Q(birth_date__contains=selected_month_day)
+            | Q(birth_date__contains=selected_month_day_dash),
+            creator_type="group",
+        ).order_by("birth_date")
+
+        dissolved_today = Creator.objects.filter(
+            Q(death_date__contains=selected_month_day)
+            | Q(death_date__contains=selected_month_day_dash),
+            creator_type="group",
+        ).order_by("death_date")
+
+        # Calculate age at birth or death for persons
         for creator in born_today:
             birth_year = int(
                 creator.birth_date.split("-" if "-" in creator.birth_date else ".")[0]
@@ -390,8 +435,23 @@ class CalendarActivityFeedView(ActivityFeedView):
             )
             creator.since = selected_datetime.year - death_year
 
+        # Calculate age at formation or dissolution for groups
+        for creator in formed_today:
+            formation_year = int(
+                creator.birth_date.split("-" if "-" in creator.birth_date else ".")[0]
+            )
+            creator.since = selected_datetime.year - formation_year
+
+        for creator in dissolved_today:
+            dissolution_year = int(
+                creator.death_date.split("-" if "-" in creator.death_date else ".")[0]
+            )
+            creator.since = selected_datetime.year - dissolution_year
+
         context["born_today"] = born_today
         context["died_today"] = died_today
+        context["formed_today"] = formed_today
+        context["dissolved_today"] = dissolved_today
 
         # Query for books published on this day
         books_published_today = Book.objects.filter(

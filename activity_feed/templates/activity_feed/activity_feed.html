@@ -86,7 +86,7 @@
                             {% now "Y" as current_year %}
                             <div class="alert alert-success" role="alert">LʌvDB is {{ current_year|add:"-2023" }} years old today!</div>
                         {% endif %}
-                        {% if not books_published_today and not movies_released_today and not series_released_today and not music_released_today and not games_released_today and not born_today and not died_today %}
+                        {% if not books_published_today and not movies_released_today and not series_released_today and not music_released_today and not games_released_today and not born_today and not died_today and not formed_today and not dissolved_today%}
                             <p>Looks like it's a quiet day in our database.</p>
                         {% else %}
                             {% if books_published_today %}
@@ -199,7 +199,7 @@
                             </div>
                         </div>
                     {% endif %}
-                    {% if born_today or died_today %}
+                    {% if born_today or died_today or formed_today or dissolved_today%}
                         <div class="card mb-3">
                             <div class="card-header"
                                  id="personsHeading"
@@ -216,7 +216,7 @@
                                 <ul class="list-group list-group-flush">
                                     {% if born_today %}
                                         <li class="list-group-item">
-                                            <b>Born / Formed</b>
+                                            <b>Born</b>
                                         </li>
                                         {% for creator in born_today %}
                                             <li class="list-group-item">
@@ -227,11 +227,37 @@
                                             </li>
                                         {% endfor %}
                                     {% endif %}
+                                    {% if formed_today %}
+                                        <li class="list-group-item">
+                                            <b>Formed</b>
+                                        </li>
+                                        {% for creator in formed_today %}
+                                            <li class="list-group-item">
+                                                {# djlint:off #}
+                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                                ({{ creator.birth_date|slice:":4" }}{% if creator.death_date %}-{{ creator.death_date|slice:":4" }}{% else %} - {% endif %}, {{ creator.since }} years ago)
+                                                {# djlint:on #}
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
                                     {% if died_today %}
                                         <li class="list-group-item">
-                                            <b>Died / Dissolved</b>
+                                            <b>Died</b>
                                         </li>
                                         {% for creator in died_today %}
+                                            <li class="list-group-item">
+                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                                {# djlint:off #}
+                                                ({% if creator.birth_date %}{{ creator.birth_date|slice:":4" }}{% else %}?{% endif %}-{{ creator.death_date|slice:":4" }}, {{ creator.since }} years ago)
+                                                {# djlint:on #}
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if dissolved_today %}
+                                        <li class="list-group-item">
+                                            <b>Dissolved</b>
+                                        </li>
+                                        {% for creator in dissolved_today %}
                                             <li class="list-group-item">
                                                 <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
                                                 {# djlint:off #}
