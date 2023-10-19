@@ -45,19 +45,24 @@
                     <!--cover-box-->
                     <div class="col-12 mb-3">
                         <div style='width:50%'>
-                            {% if game.cover %}
-                                {% if game.cover_sens %}
-                                    <img src="{{ game.cover.url }}"
-                                         alt="{{ game.title }} cover"
-                                         class="blur img-fluid"
-                                         onclick="this.classList.toggle('blur')">
-                                {% else %}
-                                    <img src="{{ game.cover.url }}"
-                                         alt="{{ game.title }} cover"
-                                         class="img-fluid">
-                                {% endif %}
+                            {% if user.pure_text_mode %}
+                                <div class="cover-placeholder bg-light">{{ game.title }}</div>
                             {% else %}
-                                <div class="no-cover-text">No Cover</div>
+                                {% if game.cover %}
+                                    {% if game.cover_sens %}
+                                        <img src="{{ game.cover.url }}"
+                                            alt="{{ game.title }} cover"
+                                            class="blur img-fluid"
+                                            onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ game.cover.url }}"
+                                            alt="{{ game.title }} cover"
+                                            class="img-fluid cover-border"
+                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ game.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';">
+                                    {% endif %}
+                                {% else %}
+                                    <div class="cover-placeholder bg-light">{{ game.title }}</div>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>

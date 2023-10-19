@@ -93,19 +93,24 @@ class="text-decoration-none">Delete</a></span>
                     <!--cover-box-->
                     <div class="col-12 mb-3">
                         <div style='width:50%'>
-                            {% if object.poster %}
-                                {% if object.poster_sens %}
-                                    <img src="{{ object.poster.url }}"
-                                         alt="{{ object.title }} poster"
-                                         class="blur img-fluid"
-                                         onclick="this.classList.toggle('blur')">
-                                {% else %}
-                                    <img src="{{ object.poster.url }}"
-                                         alt="{{ object.title }} poster"
-                                         class="img-fluid">
-                                {% endif %}
+                            {% if user.pure_text_mode %}
+                                <div class="cover-placeholder bg-light">{{ object.title }}</div>
                             {% else %}
-                                <div class="no-cover-text">No Poster</div>
+                                {% if object.poster %}
+                                    {% if object.poster_sens %}
+                                        <img src="{{ object.poster.url }}"
+                                            alt="{{ object.title }} poster"
+                                            class="blur img-fluid cover-border"
+                                            onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ object.poster.url }}"
+                                            alt="{{ object.title }} poster"
+                                            class="img-fluid cover-border"
+                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.title }}</div>';">
+                                    {% endif %}
+                                {% else %}
+                                    <div class="cover-placeholder bg-light">{{ object.title }}</div>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>

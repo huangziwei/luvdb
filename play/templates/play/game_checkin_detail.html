@@ -42,20 +42,24 @@
                 <div class="bg-light p-3 mt-2">
                     <div class="d-flex flex-row bg-light mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                            {% if object.game.cover %}
-                                {% if object.game.cover_sens %}
-                                    <img src="{{ object.game.cover.url }}"
-                                         alt="{{ object.game.title }} cover"
-                                         style="width: 100%"
-                                         class="img-fluid blur"
-                                         onclick="this.classList.toggle('blur')">
-                                {% else %}
-                                    <img src="{{ object.game.cover.url }}"
-                                         alt="{{ object.game.title }} cover"
-                                         style="width: 100%">
-                                {% endif %}
+                            {% if user.pure_text_mode %}
+                                <div class="cover-placeholder bg-light">{{ object.game.title }}</div>
                             {% else %}
-                                <div class="no-cover-text">No Cover</div>
+                                {% if object.game.cover %}
+                                    {% if object.game.cover_sens %}
+                                        <img src="{{ object.game.cover.url }}"
+                                            alt="{{ object.game.title }} cover"
+                                            class="img-fluid blur cover-border"
+                                            onclick="this.classList.toggle('blur')">
+                                    {% else %}
+                                        <img src="{{ object.game.cover.url }}"
+                                            alt="{{ object.game.title }} cover"
+                                            class="img-fluid cover-border"
+                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.game.title }}</div>';">
+                                    {% endif %}
+                                {% else %}
+                                    <div class="cover-placeholder bg-light">{{ object.game.title }}</div>
+                                {% endif %}
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 ms-3">

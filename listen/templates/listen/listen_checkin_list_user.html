@@ -78,20 +78,24 @@
                             <div class="mt-2">{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
                             <div class="d-flex flex-row bg-light p-3 mt-2">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                    {% if checkin.content_object.cover %}
-                                        {% if checkin.content_object.cover_sens %}
-                                            <img src="{{ checkin.content_object.cover.url }}"
-                                                    alt="{{ checkin.content_object.title }} cover"
-                                                    style="width: 100%"
-                                                    class="img-fluid blur"
-                                                    onclick="this.classList.toggle('blur')">
-                                        {% else %}
-                                            <img src="{{ checkin.content_object.cover.url }}"
-                                                    alt="{{ checkin.content_object.title }} cover"
-                                                    style="width: 100%">
-                                        {% endif %}
+                                    {% if user.pure_text_mode %}
+                                        <div class="listen-cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
                                     {% else %}
-                                        <div class="no-cover-text">No Cover</div>
+                                        {% if checkin.content_object.cover %}
+                                            {% if checkin.content_object.cover_sens %}
+                                                <img src="{{ checkin.content_object.cover.url }}"
+                                                        alt="{{ checkin.content_object.title }} cover"
+                                                        class="img-fluid blur cover-border"
+                                                        onclick="this.classList.toggle('blur')">
+                                            {% else %}
+                                                <img src="{{ checkin.content_object.cover.url }}"
+                                                        alt="{{ checkin.content_object.title }} cover"
+                                                        class="img-fluid cover-border"
+                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}</div>';">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="listen-cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 <div class="flex-grow-1 ms-3">
