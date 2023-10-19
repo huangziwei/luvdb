@@ -19,12 +19,13 @@
                             <a href="{{ pin.url }}">{{ pin.title }}</a>
                             (<a href="{% url 'write:pins_from_url' pin.url|root_url %}"
    class="link-secondary">{{ pin.url|root_url }}</a>)
-                            {% if pin.content %}
-                                <blockquote>
-                                    {{ pin.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
-                                </blockquote>
-                            {% endif %}
+                            
                         </div>
+                        {% if pin.content %}
+                            <div class='mt-2'>
+                                {{ pin.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
+                            </div>
+                        {% endif %}
                         <span class="d-flex mt-2">
                             <p style='margin-right: 0.5em'>
                                 <a href="{% url 'write:pin_detail' pin.id %}" class="link-secondary">{{ pin.timestamp |date:"Y.m.d H:i" }}</a>

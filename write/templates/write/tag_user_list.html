@@ -50,10 +50,10 @@
                                         <a href="{% url 'write:pins_from_url' item.url|root_url %}"
                                         class="link-secondary">({{ item.url|root_url }})</a>
                                     </div>
-                                    {% if item.content %}
-                                        <div class="mt-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
-                                    {% endif %}
-                                </div>                            
+                                </div>  
+                                {% if item.content %}
+                                    <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                {% endif %}                          
                                 <div class="mb-2">
                                     <a href="{% url 'write:pin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                 </div>
