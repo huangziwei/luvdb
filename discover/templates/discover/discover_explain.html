@@ -1,5 +1,5 @@
-<div class="row mt-3">
-    <div class="bg-light p-3 text-muted">
+<div class="row">
+    <div class="p-3 text-muted">
         <i class="bg-secondary text-white" style="display:inline-block; width:16px; height:16px; border-radius:50%; text-align:center; line-height:16px;">!</i>
         {% if order_by == "newest" %}
             Items were ordered by their timestamp, latest first. 
@@ -7,10 +7,8 @@
             Items were ranked by the number of votes they received in the last 7 days.
         {% elif order_by == "all_time" %}
             Items were ranked by the total number of votes they received.
-        {% endif %}
-
-        {% if current_page == "Liked" %}
-            This page is private and only accessible to you; it cannot be shared with others.
+        {% elif order_by == "random" %}
+            Items were ordered randomly.
         {% endif %}
     </div>
 </div>

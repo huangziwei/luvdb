@@ -1,5 +1,6 @@
 from datetime import timedelta
 from itertools import chain
+from random import sample
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -123,11 +124,9 @@ class DiscoverListAllView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        order_by = self.request.GET.get("order_by", "newest")  # Default to 'newest'
+        order_by = self.request.GET.get("order_by", "random")  # Default to 'newest'
 
         models_list = [
-            # (Say, "says"),  # Combined with Reposts
-            # (Repost, "reposts"),
             (Post, "posts"),
             (Pin, "pins"),
             (LuvList, "lists"),
@@ -194,6 +193,38 @@ class DiscoverListAllView(ListView):
 
             for model, model_name in models_list:
                 context[model_name] = model.objects.all().order_by("-timestamp")[:10]
+
+        elif order_by == "random":
+            say_ids = list(Say.objects.values_list("id", flat=True))
+            repost_ids = list(Repost.objects.values_list("id", flat=True))
+            combined_ids = say_ids + repost_ids
+
+            if len(combined_ids) > 10:
+                sampled_ids = sample(combined_ids, 10)
+            else:
+                sampled_ids = combined_ids
+
+            say_sampled = [id for id in sampled_ids if id in say_ids]
+            repost_sampled = [id for id in sampled_ids if id in repost_ids]
+
+            say_and_reposts = list(
+                chain(
+                    Say.objects.filter(id__in=say_sampled),
+                    Repost.objects.filter(id__in=repost_sampled),
+                )
+            )
+
+            context["says_and_reposts"] = say_and_reposts
+
+            for model, model_name in models_list:
+                model_ids = list(model.objects.values_list("id", flat=True))
+
+                if len(model_ids) > 10:
+                    model_ids = sample(model_ids, 10)
+
+                context[model_name] = model.objects.filter(id__in=model_ids).order_by(
+                    "?"
+                )
 
         context["order_by"] = order_by
         context["current_page"] = "All"

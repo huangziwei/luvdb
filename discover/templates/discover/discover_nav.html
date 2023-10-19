@@ -12,9 +12,10 @@
     </div>
     <div class="d-flex flex-row mt-2">
         <span class="mb-0 text-muted">
-            <a href="?order_by=newest" class="me-3 text-muted">Newest</a>
-            <a href="?order_by=trending" class="me-3 text-muted">7 Days</a>
-            <a href="?order_by=all_time" class="me-3 text-muted">All Time</a>
+            <a href="?order_by=random" class="me-3 text-muted {% if order_by == 'random' %}fw-bold{% endif %}">Random</a>
+            <a href="?order_by=newest" class="me-3 text-muted {% if order_by == 'newest' %}fw-bold{% endif %}">Newest</a>
+            <a href="?order_by=trending" class="me-3 text-muted {% if order_by == 'trending' %}fw-bold{% endif %}">7 Days</a>
+            <a href="?order_by=all_time" class="me-3 text-muted {% if order_by == 'all_time' %}fw-bold{% endif %}">All Time</a>
         </span>
     </div>
 </div>
