@@ -170,20 +170,25 @@
                                 <span class="sticky-note">{{ content.order }}</span>
                                 <div class="bg-white p-3 d-flex">
                                     <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                        {% if content.content_object.cover %}
-                                            {% if content.content_object.cover_sens %}
-                                                <img src="{{ content.content_object.cover.url }}"
-                                                     alt="{{ content.content_object.title }} cover"
-                                                     style="width: 100%"
-                                                     class="img-fluid blur"
-                                                     onclick="this.classList.toggle('blur')">
-                                            {% else %}
-                                                <img src="{{ content.content_object.cover.url }}"
-                                                     alt="{{ content.content_object.title }} cover"
-                                                     style="width: 100%">
-                                            {% endif %}
+                                        {% if user.pure_text_mode %}
+                                            <div class="cover-placeholder bg-light">{{ content.content_object.title }}</div>
                                         {% else %}
-                                            <div class="no-cover-text">No Cover</div>
+                                            {% if content.content_object.cover %}
+                                                {% if content.content_object.cover_sens %}
+                                                    <img src="{{ content.content_object.cover.url }}"
+                                                        alt="{{ content.content_object.title }} cover"
+                                                        style="width: 100%"
+                                                        class="img-fluid blur"
+                                                        onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ content.content_object.cover.url }}"
+                                                        alt="{{ content.content_object.title }} cover"
+                                                        class="img-fluid cover-border"
+                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ content.content_object.title }}</div>';">
+                                                        {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder">{{ content.content_object.title }}</div>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                     <div class="flex-grow-1 ms-3">
@@ -229,20 +234,25 @@
                                 <span class="sticky-note">{{ content.order }}</span>
                                 <div class="bg-white p-3 d-flex">
                                     <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                        {% if content.content_object.poster %}
-                                            {% if content.content_object.poster_sens %}
-                                                <img src="{{ content.content_object.poster.url }}"
-                                                     alt="{{ content.content_object.title }} cover"
-                                                     style="width: 100%"
-                                                     class="img-fluid blur"
-                                                     onclick="this.classList.toggle('blur')">
-                                            {% else %}
-                                                <img src="{{ content.content_object.poster.url }}"
-                                                     alt="{{ content.content_object.title }} cover"
-                                                     style="width: 100%">
-                                            {% endif %}
+                                        {% if user.pure_text_mode %}
+                                            <div class="cover-placeholder bg-light">{{ content.content_object.title }}</div>
                                         {% else %}
-                                            <div class="no-cover-text">No Cover</div>
+                                            {% if content.content_object.poster %}
+                                                {% if content.content_object.poster_sens %}
+                                                    <img src="{{ content.content_object.poster.url }}"
+                                                        alt="{{ content.content_object.title }} cover"
+                                                        style="width: 100%"
+                                                        class="img-fluid blur"
+                                                        onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ content.content_object.poster.url }}"
+                                                        alt="{{ content.content_object.title }} cover"
+                                                        class="img-fluid cover-border"
+                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ content.content_object.title }}</div>';">
+                                                        {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder">{{ content.content_object.title }}</div>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                     <div class="flex-grow-1 ms-3">
@@ -316,20 +326,25 @@
                                 <span class="sticky-note">{{ content.order }}</span>
                                 <div class="bg-white p-3 d-flex">
                                     <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                        {% if content.content_object.cover %}
-                                            {% if content.content_object.cover_sens %}
-                                                <img src="{{ content.content_object.cover.url }}"
-                                                     alt="{{ content.content_object.title }} cover"
-                                                     style="width: 100%"
-                                                     class="img-fluid blur"
-                                                     onclick="this.classList.toggle('blur')">
-                                            {% else %}
-                                                <img src="{{ content.content_object.cover.url }}"
-                                                     alt="{{ content.content_object.title }} cover"
-                                                     style="width: 100%">
-                                            {% endif %}
+                                        {% if user.pure_text_mode %}
+                                            <div class="listen-cover-placeholder bg-light">{{ content.content_object.title }}</div>
                                         {% else %}
-                                            <div class="no-cover-text">No Cover</div>
+                                            {% if content.content_object.cover %}
+                                                {% if content.content_object.cover_sens %}
+                                                    <img src="{{ content.content_object.cover.url }}"
+                                                        alt="{{ content.content_object.title }} cover"
+                                                        style="width: 100%"
+                                                        class="img-fluid blur"
+                                                        onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ content.content_object.cover.url }}"
+                                                        alt="{{ content.content_object.title }} cover"
+                                                        class="img-fluid listen-cover-border"
+                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ content.content_object.title }}</div>';">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="listen-cover-placeholder">{{ content.content_object.title }}</div>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                     <div class="flex-grow-1 ms-3">
@@ -381,20 +396,25 @@
                                 <span class="sticky-note">{{ content.order }}</span>
                                 <div class="bg-white p-3 d-flex">
                                     <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                        {% if content.content_object.cover %}
-                                            {% if content.content_object.cover_sens %}
-                                                <img src="{{ content.content_object.cover.url }}"
-                                                     alt="{{ content.content_object.title }} cover"
-                                                     style="width: 100%"
-                                                     class="img-fluid blur"
-                                                     onclick="this.classList.toggle('blur')">
-                                            {% else %}
-                                                <img src="{{ content.content_object.cover.url }}"
-                                                     alt="{{ content.content_object.title }} cover"
-                                                     style="width: 100%">
-                                            {% endif %}
+                                        {% if user.pure_text_mode %}
+                                            <div class="cover-placeholder bg-light">{{ content.content_object.title }}</div>
                                         {% else %}
-                                            <div class="no-cover-text">No Cover</div>
+                                            {% if content.content_object.cover %}
+                                                {% if content.content_object.cover_sens %}
+                                                    <img src="{{ content.content_object.cover.url }}"
+                                                        alt="{{ content.content_object.title }} cover"
+                                                        style="width: 100%"
+                                                        class="img-fluid blur"
+                                                        onclick="this.classList.toggle('blur')">
+                                                {% else %}
+                                                    <img src="{{ content.content_object.cover.url }}"
+                                                        alt="{{ content.content_object.title }} cover"
+                                                        class="img-fluid cover-border"
+                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ content.content_object.title }}</div>';">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder">{{ content.content_object.title }}</div>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                     <div class="flex-grow-1 ms-3">
