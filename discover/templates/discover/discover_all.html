@@ -93,9 +93,11 @@
                                                 {% if activity.model_name == "Say" %}said: {% else %}reposted: {% endif %}
                                             </p>
                                         </span>
+                                        {% if activity.content %}
                                         <div class="bg-light p-3 mb-2">
                                             {{activity.content|truncatechars:300|linkify_tags|linkify_mentions|markdownify}}</a>
                                         </div>
+                                        {% endif %}
                                         <span class="d-flex">
                                             <p class="me-2 text-muted">
                                                 {% if activity.model_name == "Say" %}
@@ -141,9 +143,11 @@
                                                 {% endif %}
                                             </div>
                                         </span>
+                                        {% if checkin.content %}
                                         <div class="bg-light p-3 mb-2">
                                             {{checkin.content|truncatechars:300|linkify_tags|linkify_mentions|markdownify}}</a>
                                         </div>
+                                        {% endif %}
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
                                                 <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-muted">
@@ -185,9 +189,11 @@
                                                 {% endif %}
                                             </div>
                                         </span>
+                                        {% if checkin.content %}
                                         <div class="bg-light p-3 mb-2">
                                             {{checkin.content|truncatechars:300|linkify_tags|linkify_mentions|markdownify}}</a>
                                         </div>
+                                        {% endif %}
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
                                                 <a href="{% url 'watch:watch_checkin_detail' checkin.id %}" class="text-muted">
@@ -226,9 +232,11 @@
                                                 {% endif %}
                                             </div>
                                         </span>
+                                        {% if checkin.content %}
                                         <div class="bg-light p-3 mb-2">
                                             {{checkin.content|truncatechars:300|linkify_tags|linkify_mentions|markdownify}}</a>
                                         </div>
+                                        {% endif %}
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
                                                 <a href="{% url 'listen:listen_checkin_detail' checkin.id %}" class="text-muted">
@@ -264,9 +272,11 @@
                                                 {% endif %}
                                             </div>
                                         </span>
+                                        {% if checkin.content %}
                                         <div class="bg-light p-3 mb-2">
                                             {{checkin.content|truncatechars:300|linkify_tags|linkify_mentions|markdownify}}</a>
                                         </div>
+                                        {% endif %}
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
                                                 <a href="{% url 'play:game_checkin_detail' checkin.id %}" class="text-muted">
