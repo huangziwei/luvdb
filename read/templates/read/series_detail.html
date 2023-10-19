@@ -19,13 +19,24 @@
                             <span class="sticky-note">{{ book_in_series.order }}</span>
                             <div class="bg-white p-3 d-flex">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                    {% if book_in_series.book.cover %}
-                                        <img src="{{ book_in_series.book.cover.url }}"
-                                             alt="{{ book_in_series.book.title }} cover"
-                                             style="width: 100%"
-                                             class="img-fluid">
+                                    {% if user.pure_text_mode %}
+                                        <div class="cover-placeholder bg-light">{{ book_in_series.book.title }}</div>
                                     {% else %}
-                                        <div class="no-cover-text">No Cover</div>
+                                        {% if book_in_series.book.cover %}
+                                            {% if book_in_series.book.cover_sens %}
+                                                <img src="{{ book_in_series.book.cover.url }}"
+                                                    alt="{{ book_in_series.book.title }} cover"
+                                                    class="img-fluid blur cover-border"
+                                                    onclick="this.classList.toggle('blur')">
+                                            {% else %}
+                                                <img src="{{ book_in_series.book.cover.url }}"
+                                                    alt="{{ book_in_series.book.title }} cover"
+                                                    class="img-fluid cover-border"
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ book_in_series.book.title }}</div>';">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="cover-placeholder bg-light">{{ book_in_series.book.title }}</div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 <div class="flex-grow-1 ms-3">
@@ -92,14 +103,6 @@
         color: #a1a1a1;
         line-height: 18px;
         border-radius: 0 0 4px 4px;
-      }
-    .no-cover-text {
-        width: 100%;
-        height: 100%;
-        background-color: #ddd;
-        display: flex;
-        justify-content: center;
-        align-items: center;
       }
     </style>
 {% endblock %}

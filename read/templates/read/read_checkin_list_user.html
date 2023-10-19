@@ -78,12 +78,12 @@
                                                     {% if checkin.content_object.cover_sens %}
                                                         <img src="{{ checkin.content_object.cover.url }}"
                                                                 alt="{{ checkin.content_object.title }} cover"
-                                                                class="img-fluid blur"
+                                                                class="img-fluid blur cover-border"
                                                                 onclick="this.classList.toggle('blur')">
                                                     {% else %}
                                                         <img src="{{ checkin.content_object.cover.url }}"
                                                                 alt="{{ checkin.content_object.title }}"
-                                                                class="img-fluid"
+                                                                class="img-fluid cover-border"
                                                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>';">
                                                     {% endif %}
                                                 {% else %}

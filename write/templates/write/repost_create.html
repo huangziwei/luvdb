@@ -41,7 +41,7 @@
                                         {% if original_activity.content_object.book.cover_sens %}
                                             <img src="{{ original_activity.content_object.book.cover.url }}"
                                                  alt="{{ original_activity.content_object.book.title }} cover"
-                                                 class="img-fluid blur"
+                                                 class="img-fluid blur cover-border"
                                                  onclick="this.classList.toggle('blur')">
                                         {% else %}
                                             <img src="{{ original_activity.content_object.book.cover.url }}"
@@ -108,7 +108,7 @@
                                         {% if original_activity.content_object.game.cover_sens %}
                                             <img src="{{ original_activity.content_object.game.cover.url }}"
                                                  alt="{{ original_activity.content_object.game.title }} cover"
-                                                 class="img-fluid blur"
+                                                 class="img-fluid blur cover-border"
                                                  onclick="this.classList.toggle('blur')">
                                         {% else %}
                                             <img src="{{ original_activity.content_object.game.cover.url }}"

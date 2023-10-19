@@ -20,12 +20,12 @@
                                                     {% if release.cover_sens %}
                                                         <img src="{{ release.cover.url }}"
                                                              alt="{{ release.title }} cover"
-                                                             class="img-fluid blur"
+                                                             class="img-fluid blur cover-border"
                                                              onclick="this.classList.toggle('blur')">
                                                     {% else %}
                                                         <img src="{{ release.cover.url }}"
                                                              alt="{{ release.title }}"
-                                                             class="img-fluid">
+                                                             class="img-fluid cover-border">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="listen-cover-placeholder bg-light">{{ release.title }}</div>
@@ -51,12 +51,12 @@
                                                     {% if podcast.cover_sens %}
                                                         <img src="{{ podcast.cover.url }}"
                                                             alt="{{ podcast.title }} cover"
-                                                            class="img-fluid blur"
+                                                            class="img-fluid blur cover-border"
                                                             onclick="this.classList.toggle('blur')">
                                                     {% else %}
                                                         <img src="{{ podcast.cover.url }}"
                                                             alt="{{ podcast.title }}"
-                                                            class="img-fluid">
+                                                            class="img-fluid cover-border">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="listen-cover-placeholder bg-light">{{ podcast.title }}</div>
@@ -82,12 +82,12 @@
                                                     {% if audiobook.cover_sens %}
                                                         <img src="{{ audiobook.cover.url }}"
                                                             alt="{{ audiobook.title }} cover"
-                                                            class="img-fluid blur"
+                                                            class="img-fluid blur cover-border"
                                                             onclick="this.classList.toggle('blur')">
                                                     {% else %}
                                                         <img src="{{ audiobook.cover.url }}"
                                                             alt="{{ audiobook.title }}"
-                                                            class="img-fluid">
+                                                            class="img-fluid cover-border">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="listen-cover-placeholder bg-light">{{ audiobook.title }}</div>

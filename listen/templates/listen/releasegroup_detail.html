@@ -50,13 +50,24 @@
                         <div class="bg-light p-3 mb-3">
                             <div class="bg-white p-3 d-flex">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                    {% if release_in_group.release.cover %}
-                                        <img src="{{ release_in_group.release.cover.url }}"
-                                             alt="{{ release_in_group.release.title }} cover"
-                                             style="width: 100%"
-                                             class="img-fluid">
+                                    {% if user.pure_text_mode %}
+                                        <div class="listen-cover-placeholder bg-light">{{ release_in_group.release.title }}</div>
                                     {% else %}
-                                        <div class="no-cover-text">No Cover</div>
+                                        {% if release_in_group.release.cover %}
+                                            {% if release_in_group.release.cover_sens %}
+                                                <img src="{{ release_in_group.release.cover.url }}"
+                                                    alt="{{ release_in_group.release.title }} cover"
+                                                    class="img-fluid blur cover-border"
+                                                    onclick="this.classList.toggle('blur')">
+                                            {% else %}
+                                                <img src="{{ release_in_group.release.cover.url }}"
+                                                    alt="{{ release_in_group.release.title }} cover"
+                                                    class="img-fluid cover-border"
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ release_in_group.release.title }}</div>';">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="listen-cover-placeholder bg-light">{{ release_in_group.release.title }}</div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 <div class="flex-grow-1 ms-3">
@@ -116,15 +127,4 @@
             </div>
         </div>
     </div>
-
-    <style>
-    .no-cover-text {
-        width: 100%;
-        height: 100%;
-        background-color: #ddd;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    </style>
 {% endblock %}

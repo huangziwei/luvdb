@@ -1,6 +1,8 @@
 from django.contrib import admin
 
 from .models import (
+    Collection,
+    ContentInCollection,
     Episode,
     EpisodeCast,
     EpisodeRole,
@@ -13,6 +15,18 @@ from .models import (
     SeriesRole,
     WatchCheckIn,
 )
+
+
+class ContentInCollectionInline(admin.TabularInline):
+    model = ContentInCollection
+    extra = 1
+
+
+class CollectionAdmin(admin.ModelAdmin):
+    list_display = ["id", "title"]
+    search_fields = ["title"]
+
+    inlines = [ContentInCollectionInline]
 
 
 class MovieRoleInline(admin.TabularInline):
@@ -79,6 +93,7 @@ admin.site.register(Genre, GenreAdmin)
 admin.site.register(Movie, MovieAdmin)
 admin.site.register(Series, SeriesAdmin)
 admin.site.register(Episode, EpisodeAdmin)
+admin.site.register(Collection, CollectionAdmin)
 
 
 @admin.register(WatchCheckIn)

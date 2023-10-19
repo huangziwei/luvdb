@@ -21,13 +21,24 @@
                             <span class="sticky-note">{{ game_in_series.order }}</span>
                             <div class="bg-white p-3 d-flex">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                    {% if game_in_series.game.cover %}
-                                        <img src="{{ game_in_series.game.cover.url }}"
-                                             alt="{{ game_in_series.game.title }} cover"
-                                             style="width: 100%"
-                                             class="img-fluid">
+                                    {% if user.pure_text_mode %}
+                                        <div class="cover-placeholder bg-light">{{ game_in_series.game.title }}</div>
                                     {% else %}
-                                        <div class="no-cover-text">No Cover</div>
+                                        {% if game_in_series.game.cover %}
+                                            {% if game_in_series.game.cover_sens %}
+                                                <img src="{{ game_in_series.game.cover.url }}"
+                                                    alt="{{ game_in_series.game.title }} cover"
+                                                    class="img-fluid blur cover-border"
+                                                    onclick="this.classList.toggle('blur')">
+                                            {% else %}
+                                                <img src="{{ game_in_series.game.cover.url }}"
+                                                    alt="{{ game_in_series.game.title }} cover"
+                                                    class="img-fluid cover-border"
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ game_in_series.game.title }}</div>';">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="cover-placeholder bg-light">{{ game_in_series.game.title }}</div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 <div class="flex-grow-1 ms-3">
@@ -119,14 +130,6 @@
         color: #a1a1a1;
         line-height: 18px;
         border-radius: 0 0 4px 4px;
-      }
-    .no-cover-text {
-        width: 100%;
-        height: 100%;
-        background-color: #ddd;
-        display: flex;
-        justify-content: center;
-        align-items: center;
       }
     </style>
 {% endblock %}

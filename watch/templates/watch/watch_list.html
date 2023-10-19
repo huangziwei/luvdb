@@ -20,12 +20,12 @@
                                                     {% if movie.poster_sens %}
                                                         <img src="{{ movie.poster.url }}"
                                                                 alt="{{ movie.title }} poster"
-                                                                class="img-fluid blur"
+                                                                class="img-fluid blur cover-border"
                                                                 onclick="this.classList.toggle('blur')">
                                                     {% else %}
                                                         <img src="{{ movie.poster.url }}"
                                                                 alt="{{ movie.title }}"
-                                                                class="img-fluid"
+                                                                class="img-fluid cover-border"
                                                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>';">
                                                     {% endif %}
                                                 {% else %}
@@ -52,12 +52,12 @@
                                                     {% if series.poster_sens %}
                                                         <img src="{{ series.poster.url }}"
                                                                 alt="{{ series.title }} poster"
-                                                                class="img-fluid blur"
+                                                                class="img-fluid blur cover-border"
                                                                 onclick="this.classList.toggle('blur')">
                                                     {% else %}
                                                         <img src="{{ series.poster.url }}"
                                                                 alt="{{ series.title }}"
-                                                                class="img-fluid"
+                                                                class="img-fluid cover-border"
                                                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ series.title }}{% if series.subtitle %}: {{series.subtitle}}{% endif %}</div>';">
                                                     {% endif %}
                                                 {% else %}
@@ -89,12 +89,12 @@
                                                     {% if movie.poster_sens %}
                                                         <img src="{{ movie.poster.url }}"
                                                                 alt="{{ movie.title }} poster"
-                                                                class="img-fluid blur"
+                                                                class="img-fluid blur cover-border"
                                                                 onclick="this.classList.toggle('blur')">
                                                     {% else %}
                                                         <img src="{{ movie.poster.url }}"
                                                                 alt="{{ movie.title }}"
-                                                                class="img-fluid"
+                                                                class="img-fluid cover-border"
                                                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>';">
                                                     {% endif %}
                                                 {% else %}
@@ -121,12 +121,12 @@
                                                     {% if serie.poster_sens %}
                                                         <img src="{{ serie.poster.url }}"
                                                                 alt="{{ serie.title }} poster"
-                                                                class="img-fluid blur"
+                                                                class="img-fluid blur cover-border"
                                                                 onclick="this.classList.toggle('blur')">
                                                     {% else %}
                                                         <img src="{{ serie.poster.url }}"
                                                                 alt="{{ serie.title }}"
-                                                                class="img-fluid"
+                                                                class="img-fluid cover-border"
                                                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>';">
                                                     {% endif %}
                                                 {% else %}

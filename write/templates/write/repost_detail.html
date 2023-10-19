@@ -47,19 +47,24 @@
                             </div>
                             <div class="d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                    {% if repost.original_activity.content_object.content_object.cover %}
-                                        {% if repost.original_activity.content_object.content_object.cover_sens %}
-                                            <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
-                                                 alt="{{ repost.original_activity.content_object.content_object.title }} cover"
-                                                 class="img-fluid blur"
-                                                 onclick="this.classList.toggle('blur')">
-                                        {% else %}
-                                            <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
-                                                 alt="{{ repost.original_activity.content_object.content_object.title }} cover"
-                                                 style="width: 100%">
-                                        {% endif %}
+                                    {% if user.pure_text_mode %}
+                                        <div class="cover-placeholder bg-light">{{ repost.original_activity.content_object.content_object.title }}</div>
                                     {% else %}
-                                        <div class="no-cover-text">No Cover</div>
+                                        {% if repost.original_activity.content_object.content_object.cover %}
+                                            {% if repost.original_activity.content_object.content_object.cover_sens %}
+                                                <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
+                                                    alt="{{ repost.original_activity.content_object.content_object.title }} cover"
+                                                    class="img-fluid blur cover-border"
+                                                    onclick="this.classList.toggle('blur')">
+                                            {% else %}
+                                                <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
+                                                    alt="{{ repost.original_activity.content_object.content_object.title }} cover"
+                                                    class="img-fluid cover-border"
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ repost.original_activity.content_object.content_object.title }}</div>';">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="cover-placeholder">{{ repost.original_activity.content_object.content_object.title }}</div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 <div class="flex-grow-1 ms-3">
@@ -134,20 +139,24 @@
                             </div>
                             <div class="d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                    {% if repost.original_activity.content_object.content_object.poster %}
-                                        {% if repost.original_activity.content_object.content_object.poster_sens %}
-                                            <img src="{{ repost.original_activity.content_object.content_object.poster.url }}"
-                                                 alt="{{ repost.original_activity.content_object.content_object.title }} poster"
-                                                 style="width: 100%"
-                                                 class="poster-image blur"
-                                                 onclick="this.classList.toggle('blur')">
-                                        {% else %}
-                                            <img src="{{ repost.original_activity.content_object.content_object.poster.url }}"
-                                                 alt="{{ repost.original_activity.content_object.content_object.title }} poster"
-                                                 style="width: 100%">
-                                        {% endif %}
+                                    {% if user.pure_text_mode %}
+                                        <div class="cover-placeholder bg-light">{{ repost.original_activity.content_object.content_object.title }}</div>
                                     {% else %}
-                                        <div class="no-cover-text">No Poster</div>
+                                        {% if repost.original_activity.content_object.content_object.poster %}
+                                            {% if repost.original_activity.content_object.content_object.poster_sens %}
+                                                <img src="{{ repost.original_activity.content_object.content_object.poster.url }}"
+                                                    alt="{{ repost.original_activity.content_object.content_object.title }} poster"
+                                                    class="img-fluid blur cover-border"
+                                                    onclick="this.classList.toggle('blur')">
+                                            {% else %}
+                                                <img src="{{ repost.original_activity.content_object.content_object.poster.url }}"
+                                                    alt="{{ repost.original_activity.content_object.content_object.title }} poster"
+                                                    class="img-fluid cover-border"
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ repost.original_activity.content_object.content_object.title }}</div>';">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="cover-placeholder">{{ repost.original_activity.content_object.content_object.title }}</div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 <div class="flex-grow-1 ms-3">
@@ -264,20 +273,24 @@
                             </div>
                             <div class="d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                    {% if repost.original_activity.content_object.content_object.cover %}
-                                        {% if repost.original_activity.content_object.content_object.cover_sens %}
-                                            <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
-                                                 alt="{{ repost.original_activity.content_object.content_object.title }} cover"
-                                                 style="width: 100%"
-                                                 class="img-fluid blur"
-                                                 onclick="this.classList.toggle('blur')">
-                                        {% else %}
-                                            <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
-                                                 alt="{{ repost.original_activity.content_object.content_object.title }} cover"
-                                                 style="width: 100%">
-                                        {% endif %}
+                                    {% if user.pure_text_mode %}
+                                        <div class="listen-cover-placeholder bg-light">{{ repost.original_activity.content_object.content_object.title }}</div>
                                     {% else %}
-                                        <div class="no-cover-text">No Cover</div>
+                                        {% if repost.original_activity.content_object.content_object.cover %}
+                                            {% if repost.original_activity.content_object.content_object.cover_sens %}
+                                                <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
+                                                    alt="{{ repost.original_activity.content_object.content_object.title }} cover"
+                                                    class="img-fluid blur cover-border"
+                                                    onclick="this.classList.toggle('blur')">
+                                            {% else %}
+                                                <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
+                                                    alt="{{ repost.original_activity.content_object.content_object.title }} cover"
+                                                    class="img-fluid cover-border"
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ repost.original_activity.content_object.content_object.title }}</div>';">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="listen-cover-placeholder">{{ repost.original_activity.content_object.content_object.title }}</div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 <div class="flex-grow-1 ms-3">
@@ -365,12 +378,24 @@
                             </div>
                             <div class="d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                    {% if repost.original_activity.content_object.game.cover %}
-                                        <img src="{{ repost.original_activity.content_object.game.cover.url }}"
-                                             alt="{{ repost.original_activity.content_object.game.title }} cover"
-                                             style="width: 100%">
+                                    {% if user.pure_text_mode %}
+                                        <div class="cover-placeholder bg-light">{{ repost.original_activity.content_object.game.title }}</div>
                                     {% else %}
-                                        <div class="no-cover-text">No Cover</div>
+                                        {% if repost.original_activity.content_object.game.cover %}
+                                            {% if repost.original_activity.content_object.game.cover_sens %}
+                                                <img src="{{ repost.original_activity.content_object.game.cover.url }}"
+                                                    alt="{{ repost.original_activity.content_object.game.title }} cover"
+                                                    class="img-fluid blur cover-border"
+                                                    onclick="this.classList.toggle('blur')">
+                                            {% else %}
+                                                <img src="{{ repost.original_activity.content_object.game.cover.url }}"
+                                                    alt="{{ repost.original_activity.content_object.game.title }} cover"
+                                                    class="img-fluid cover-border"
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ repost.original_activity.content_object.game.title }}</div>';">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="cover-placeholder">{{ repost.original_activity.content_object.game.title }}</div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                                 <div class="flex-grow-1 ms-3">

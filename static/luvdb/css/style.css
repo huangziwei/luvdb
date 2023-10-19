@@ -170,13 +170,6 @@ li:last-child {
     }
 }
 
-.no-cover-text {
-    color: #888;
-    /* dark gray */
-    font-size: 1.2em;
-}
-
-
 .select2-selection__clear {
     margin-top: 0 !important;
 }
