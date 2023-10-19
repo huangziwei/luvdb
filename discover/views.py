@@ -124,7 +124,7 @@ class DiscoverListAllView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        order_by = self.request.GET.get("order_by", "random")  # Default to 'newest'
+        order_by = self.request.GET.get("order_by", "random")  # Default to 'random'
 
         models_list = [
             (Post, "posts"),
@@ -240,7 +240,7 @@ class DiscoverPostListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        order_by = self.request.GET.get("order_by", "trending")  # Default to 'votes'
+        order_by = self.request.GET.get("order_by", "random")
 
         if order_by == "trending":
             seven_days_ago = timezone.now() - timedelta(days=7)
@@ -279,6 +279,14 @@ class DiscoverPostListView(ListView):
         elif order_by == "newest":
             posts = Post.objects.all().order_by("-timestamp")[:10]
 
+        elif order_by == "random":
+            post_ids = list(Post.objects.values_list("id", flat=True))
+
+            if len(post_ids) > 10:
+                post_ids = sample(post_ids, 10)
+
+            posts = Post.objects.filter(id__in=post_ids).order_by("?")
+
         paginator = Paginator(posts, self.paginate_by)
         page_number = self.request.GET.get("page")
         page_obj = paginator.get_page(page_number)
@@ -298,7 +306,7 @@ class DiscoverPinListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        order_by = self.request.GET.get("order_by", "trending")
+        order_by = self.request.GET.get("order_by", "random")
 
         pins = None
         if order_by == "trending":
@@ -333,6 +341,14 @@ class DiscoverPinListView(ListView):
         elif order_by == "newest":
             pins = Pin.objects.all().order_by("-timestamp")
 
+        elif order_by == "random":
+            pin_ids = list(Pin.objects.values_list("id", flat=True))
+
+            if len(pin_ids) > 10:
+                pin_ids = sample(pin_ids, 10)
+
+            pins = Pin.objects.filter(id__in=pin_ids).order_by("?")
+
         paginator = Paginator(pins, self.paginate_by)
         page_number = self.request.GET.get("page")
         page_obj = paginator.get_page(page_number)
@@ -352,7 +368,7 @@ class DiscoverLuvListListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        order_by = self.request.GET.get("order_by", "trending")
+        order_by = self.request.GET.get("order_by", "random")
 
         lists = None
         if order_by == "trending":
@@ -386,6 +402,14 @@ class DiscoverLuvListListView(ListView):
 
         elif order_by == "newest":
             lists = LuvList.objects.all().order_by("-timestamp")
+
+        elif order_by == "random":
+            list_ids = list(LuvList.objects.values_list("id", flat=True))
+
+            if len(list_ids) > 10:
+                list_ids = sample(list_ids, 10)
+
+            lists = LuvList.objects.filter(id__in=list_ids).order_by("?")
 
         paginator = Paginator(lists, self.paginate_by)
         page_number = self.request.GET.get("page")
