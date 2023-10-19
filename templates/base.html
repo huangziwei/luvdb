@@ -120,6 +120,10 @@
         </main>
         <!-- Transparent Buttons Added Here -->
         <div class="position-fixed bottom-0 end-0 p-4">
+            <span id="notification" class="bg-light" 
+                style="display:none; position:absolute; right: 100%; top: 50%; transform: translateY(-50%); padding: 1em;white-space: nowrap;">
+                Copied URL!
+            </span>
             <!-- Dropdown wrapper -->
             <div class="btn-groupx">
                 <!-- Main button -->
@@ -135,6 +139,14 @@
                         <a class="dropdown-item p-2" href="#" onclick="window.scrollTo(0,0)" aria-label="Go to the top">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-circle" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item p-2" href="#" onclick="navigator.clipboard.writeText(window.location.href); showNotification();" aria-label="Copy URL">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+                                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+                                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
                             </svg>
                         </a>
                     </li>
@@ -169,6 +181,15 @@
         <script src="{% static 'js/dark-mode.js' %}" defer ></script>
         <script src="{% static 'js/pullrefresh.js' %}" defer></script>
         <script src="{% static 'js/script.js' %}" defer></script>
+        <script>
+            function showNotification() {
+                const notification = document.getElementById('notification');
+                notification.style.display = 'inline';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 1000);
+            }
+        </script>
         <style>
             .no-caret::after {
                 display: none;
