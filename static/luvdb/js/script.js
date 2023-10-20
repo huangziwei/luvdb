@@ -1,3 +1,7 @@
+////////////////////////////////
+// Spoiler and citation hacks //
+////////////////////////////////
+
 window.addEventListener("DOMContentLoaded", (event) => {
     // spoiler hack
     document.querySelectorAll('a[href$="/spoiler"], a[href$="/s"]').forEach((a) => {
@@ -59,6 +63,10 @@ window.addEventListener("DOMContentLoaded", (event) => {
     // Update the iframe height when the window is resized
     window.addEventListener("resize", updateIframeHeight);
 });
+
+//////////////////////////////////////
+// Autocomplete @ and # in textarea //
+//////////////////////////////////////
 
 document.addEventListener("DOMContentLoaded", function () {
     let usernames = [];
