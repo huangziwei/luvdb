@@ -8,8 +8,675 @@
 {% block content %}
     <div class="container">
         <div class="row justify-content-start">
+            <!--For small screen-->
+            <!-- navbar -->
+            <div class="col-12 d-block d-md-none mb-1">
+                <div class="row">
+                    <div class="d-flex justify-content-between">
+                        <span class="me-3">
+                            <a href="{% url 'write:say_list' object.username %}">Says</a>
+                        </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:post_list' object.username %}">Posts</a>
+                        </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:pin_list' object.username %}">Pins</a>
+                        </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:luvlist_list' object.username %}">Lists</a>
+                        </span>
+                        {% if object.username == user.username %}
+                        <span class="me-3">
+                            <a href="{% url 'discover:liked' %}">Liked</a>
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <!-- bio -->
+            <div class="col-12 d-block d-md-none mb-1">
+                <div class="bio p-3">
+                    <div class="d-flex align-items-end">
+                        {% if object.display_name %}<h4 class="mb-0 h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">{{ object.display_name }}</h4>{% endif %}
+                        <div class="h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">@{{ object.username }}</div>
+                    </div>
+                    <p>
+                        <span class="text-muted">Since {{ object.date_joined|date:"Y.m.d" }}</span>
+                    </p>
+                    {% if object.bio %}
+                        <div>{{ object.bio | linkify_tags | linkify_mentions | markdownify }}</div>
+                    {% endif %}
+                    {% if object == request.user %}
+                        <div class='d-flex '>
+                            <!-- Action buttons -->
+                            <a class="btn btn-primary btn-sm mt-3 me-1"
+                               href="{% url 'accounts:update' object.username %}"
+                               role="button">Update Profile</a>
+                            <div class="dropdown mt-3">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                        type="button"
+                                        id="actionMenu"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">More</button>
+                                <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                                    {% if can_generate_code %}
+                                        <li>
+                                            <form method="post" action="{% url 'accounts:generate_invitation_code' %}">
+                                                {% csrf_token %}
+                                                <button class="dropdown-item" type="submit">Invite</button>
+                                            </form>
+                                        </li>
+                                    {% endif %}
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="{% url 'accounts:export_user_data' %}"
+                                           role="button">Export User Data</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% if messages %}
+                            <div class="messages rounded p-3 mt-3 bg-light" style="border: 1px solid var(--bs-gray-300);">
+                                {% for message in messages %}
+                                    <p class="mb-0 {% if message.tags %}{{ message.tags }}{% endif %}">
+                                        {{ message|safe }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if object != request.user %}
+                        <div class='d-flex'>
+                            {% if not request.user|is_blocking:object %}
+                                {% if request.user|is_following:object %}
+                                    <form method="POST" action="{% url 'activity_feed:unfollow' object.id %}">
+                                        {% csrf_token %}
+                                        <button class="btn btn-primary btn-sm mt-3 me-1" type="submit">Unfollow</button>
+                                    </form>
+                                {% else %}
+                                    <form method="POST" action="{% url 'activity_feed:follow' object.id %}">
+                                        {% csrf_token %}
+                                        <button class="btn btn-primary btn-sm mt-3 me-1" type="submit">Follow</button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                            <div class="dropdown mt-3">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                        type="button"
+                                        id="actionMenu"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">More</button>
+                                <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                                    {% if request.user|is_blocking:object %}
+                                        <li>
+                                            <form method="POST" action="{% url 'activity_feed:unblock' object.id %}">
+                                                {% csrf_token %}
+                                                <button class="dropdown-item" type="submit">Unblock</button>
+                                            </form>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <form method="POST" action="{% url 'activity_feed:block' object.id %}">
+                                                {% csrf_token %}
+                                                <button class="dropdown-item" type="submit">Block</button>
+                                            </form>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <hr>
+            </div>
+
+            <!-- recent -->
+            <div class="col-12 d-block d-md-none mb-1">
+                <!--Most recent activity-->
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5>Recent</h5>
+                    <a class="btn btn-outline-secondary btn-sm"
+                       href="{% url 'accounts:feed' object.username %}">All</a>
+                </div>
+                {% for activity in recent_activities %}
+                    {% include "activity_feed/activity_item.html" with width='narrow' %}
+                    <hr>
+                {% endfor %}
+            </div>
+
+            <!-- records -->
+            <div class="col012 d-block d-md-none mb-2">
+                {% if does_read_exist %}
+                    <div class="row">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h4>Read</h4>
+                            <div>
+                                <a class="btn btn-outline-secondary btn-sm"
+                                href="{% url 'read:read_checkin_user_list' object.username %}">All</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            {% if reading %}
+                                <div class="mt-3 me-3 d-flex overflow-auto">
+                                    <div class="rotate text-muted">Reading</div>
+                                    {% for item in reading %}
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                        {% if item.content_type.model == 'book' %}
+                                                <a href="{% url 'read:book_checkin_list' item.content_object.id item.user.username %}">
+                                                    {% if user.pure_text_mode %}
+                                                        <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% else %}
+                                                        {% if item.content_object.cover %}
+                                                            {% if item.content_object.cover_sens %}
+                                                                <img src="{{ item.content_object.cover.url }}"
+                                                                        alt="{{ item.content_object.title }} cover"
+                                                                        class="img-fluid blur cover-border"
+                                                                        onclick="this.classList.toggle('blur')">
+                                                            {% else %}
+                                                                <img src="{{ item.content_object.cover.url }}"
+                                                                        alt="{{ item.content_object.title }}"
+                                                                        class="img-fluid cover-border"
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </a>
+                                            {% elif item.content_type.model == 'issue' %}
+                                                <a href="{% url 'read:issue_checkin_list' item.content_object.periodical.id item.content_object.id item.user.username %}">
+                                                    {% if user.pure_text_mode %}
+                                                        <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% else %}
+                                                        {% if item.content_object.cover %}
+                                                            {% if item.content_object.cover_sens %}
+                                                                <img src="{{ item.content_object.cover.url }}"
+                                                                        alt="{{ item.content_object.title }} cover"
+                                                                        class="img-fluid blur cover-border"
+                                                                        onclick="this.classList.toggle('blur')">
+                                                            {% else %}
+                                                                <img src="{{ item.content_object.cover.url }}"
+                                                                        alt="{{ item.content_object.title }}"
+                                                                        class="img-fluid cover-border"
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    {% empty %}
+                                        <p>No items.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if read %}
+                                <div class="mt-3 me-3 d-flex overflow-auto">
+                                    <div class="rotate text-muted">Read</div>
+                                    {% for item in read %}
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                            {% if item.content_type.model == 'book' %}
+                                                <a href="{% url 'read:book_checkin_list' item.content_object.id item.user.username %}">
+                                                    {% if user.pure_text_mode %}
+                                                        <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% else %}
+                                                        {% if item.content_object.cover %}
+                                                            {% if item.content_object.cover_sens %}
+                                                                <img src="{{ item.content_object.cover.url }}"
+                                                                        alt="{{ item.content_object.title }} cover"
+                                                                        class="img-fluid blur cover-border"
+                                                                        onclick="this.classList.toggle('blur')">
+                                                            {% else %}
+                                                                <img src="{{ item.content_object.cover.url }}"
+                                                                        alt="{{ item.content_object.title }}"
+                                                                        class="img-fluid cover-border"
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </a>
+                                            {% elif item.content_type.model == 'issue' %}
+                                                <a href="{% url 'read:issue_checkin_list' item.content_object.periodical.id item.content_object.id item.user.username %}">
+                                                    {% if user.pure_text_mode %}
+                                                        <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>
+                                                    {% else %}
+                                                        {% if item.cover %}
+                                                            {% if item.cover_sens %}
+                                                                <img src="{{ item.cover.url }}"
+                                                                        alt="{{ item.title }} cover"
+                                                                        class="img-fluid blur cover-border"
+                                                                        onclick="this.classList.toggle('blur')">
+                                                            {% else %}
+                                                                <img src="{{ item.cover.url }}"
+                                                                        alt="{{ item.title }}"
+                                                                        class="img-fluid cover-border"
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>';">
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ issue.number }}</div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    {% empty %}
+                                        <p>No items.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if does_watch_exist %}
+                    <div class="row">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h4 class="mt-4">Watch</h4>
+                            <div>
+                                <a class="btn btn-outline-secondary btn-sm"
+                                href="{% url 'watch:watch_checkin_user_list' object.username %}">All</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            {% if watching %}
+                                <div class="mt-3 me-3 d-flex overflow-auto">
+                                    <div class="rotate text-muted">Watching</div>
+                                    {% for item in watching %}
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                            {% if item.content_type.model == 'movie' %}
+                                                <a href="{% url 'watch:movie_checkin_list' item.content_object.id item.user.username %}">
+                                                    {% if user.pure_text_mode %}
+                                                        <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% else %}
+                                                        {% if item.content_object.poster %}
+                                                            {% if item.content_object.poster_sens %}
+                                                                <img src="{{ item.content_object.poster.url }}"
+                                                                        alt="{{ item.content_object.title }} poster"
+                                                                        class="img-fluid blur cover-border"
+                                                                        onclick="this.classList.toggle('blur')">
+                                                            {% else %}
+                                                                <img src="{{ item.content_object.poster.url }}"
+                                                                        alt="{{ item.content_object.title }}"
+                                                                        class="img-fluid cover-border"
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </a>
+                                            {% elif item.content_type.model == 'series' %}
+                                                <a href="{% url 'watch:series_checkin_list' item.content_object.id item.user.username %}">
+                                                    {% if user.pure_text_mode %}
+                                                        <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% else %}
+                                                        {% if item.content_object.poster %}
+                                                            {% if item.content_object.poster_sens %}
+                                                                <img src="{{ item.content_object.poster.url }}"
+                                                                        alt="{{ item.content_object.title }} poster"
+                                                                        class="img-fluid blur cover-border"
+                                                                        onclick="this.classList.toggle('blur')">
+                                                            {% else %}
+                                                                <img src="{{ item.content_object.poster.url }}"
+                                                                        alt="{{ item.content_object.title }}"
+                                                                        class="img-fluid cover-border"
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    {% empty %}
+                                        <p>No items.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if watched %}
+                                <div class="mt-3 me-3 d-flex overflow-auto">
+                                    <div class="rotate text-muted">Watched</div>
+                                    {% for item in watched %}
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                            {% if item.content_type.model == 'movie' %}
+                                                <a href="{% url 'watch:movie_checkin_list' item.content_object.id item.user.username %}">
+                                                    {% if user.pure_text_mode %}
+                                                        <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% else %}
+                                                        {% if item.content_object.poster %}
+                                                            {% if item.content_object.poster_sens %}
+                                                                <img src="{{ item.content_object.poster.url }}"
+                                                                        alt="{{ item.content_object.title }} poster"
+                                                                        class="img-fluid blur cover-border"
+                                                                        onclick="this.classList.toggle('blur')">
+                                                            {% else %}
+                                                                <img src="{{ item.content_object.poster.url }}"
+                                                                        alt="{{ item.content_object.title }}"
+                                                                        class="img-fluid cover-border bg-light"
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </a>
+                                            {% elif item.content_type.model == 'series' %}
+                                                <a href="{% url 'watch:series_checkin_list' item.content_object.id item.user.username %}">
+                                                    {% if user.pure_text_mode %}
+                                                        <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% else %}
+                                                        {% if item.content_object.poster %}
+                                                            {% if item.content_object.poster_sens %}
+                                                                <img src="{{ item.content_object.poster.url }}"
+                                                                        alt="{{ item.content_object.title }} poster"
+                                                                        class="img-fluid blur cover-border"
+                                                                        onclick="this.classList.toggle('blur')">
+                                                            {% else %}
+                                                                <img src="{{ item.content_object.poster.url }}"
+                                                                        alt="{{ item.content_object.title }}"
+                                                                        class="img-fluid cover-border"
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    {% empty %}
+                                        <p>No items.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if does_listen_exist %}
+                    <div class="row">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h4 class="mt-4">Listen</h4>
+                            <div>
+                                <a class="btn btn-outline-secondary btn-sm"
+                                href="{% url 'listen:listen_checkin_user_list' object.username %}">All</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            {% if listening %}
+                                <div class="mt-3 me-3 d-flex overflow-auto">
+                                    <div class="rotate text-muted">Listening</div>
+                                    {% for item in listening %}
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
+                                            <a href="{% url 'listen:audiobook_checkin_list' item.content_object.id item.user.username %}">
+                                                {% if user.pure_text_mode %}
+                                                    <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                {% else %}
+                                                    {% if item.content_object.cover %}
+                                                        {% if item.content_object.cover_sens %}
+                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                    alt="{{ item.content_object.title }} cover"
+                                                                    class="img-fluid blur cover-border"
+                                                                    onclick="this.classList.toggle('blur')">
+                                                        {% else %}
+                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                    alt="{{ item.content_object.title }}"
+                                                                    class="img-fluid cover-border"
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                    {% empty %}
+                                        <p>No items.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if looping %}
+                                <div class="mt-3 me-3 d-flex overflow-auto">
+                                    <div class="rotate text-muted">Looping</div>
+                                    {% for item in looping %}
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                            <a href="{% url 'listen:release_checkin_list' item.content_object.id item.user.username %}">
+                                                {% if user.pure_text_mode %}
+                                                    <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                {% else %}
+                                                    {% if item.content_object.cover %}
+                                                        {% if item.content_object.cover_sens %}
+                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                    alt="{{ item.content_object.title }} cover"
+                                                                    class="img-fluid blur cover-border"
+                                                                    onclick="this.classList.toggle('blur')">
+                                                        {% else %}
+                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                    alt="{{ item.content_object.title }}"
+                                                                    class="img-fluid cover-border"
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                    {% empty %}
+                                        <p>No items.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if listened %}
+                                <div class="mt-3 me-3 d-flex overflow-auto">
+                                    <div class="rotate text-muted">Listend</div>
+                                    {% for item in listened %}
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                        {% if item.content_object.model_name == "Release" %}
+                                            <a href="{% url 'listen:release_checkin_list' item.content_object.id item.user.username %}">
+                                                {% if user.pure_text_mode %}
+                                                    <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                {% else %}
+                                                    {% if item.content_object.cover %}
+                                                        {% if item.content_object.cover_sens %}
+                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                    alt="{{ item.content_object.title }} cover"
+                                                                    class="img-fluid blur cover-border"
+                                                                    onclick="this.classList.toggle('blur')">
+                                                        {% else %}
+                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                    alt="{{ item.content_object.title }}"
+                                                                    class="img-fluid cover-border bg-light"
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </a>
+                                            {% elif item.content_object.model_name == "Audiobook" %}
+                                            <a href="{% url 'listen:audiobook_checkin_list' item.content_object.id item.user.username %}">
+                                                {% if user.pure_text_mode %}
+                                                    <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                {% else %}
+                                                    {% if item.content_object.cover %}
+                                                        {% if item.content_object.cover_sens %}
+                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                    alt="{{ item.content_object.title }} cover"
+                                                                    class="img-fluid blur cover-border"
+                                                                    onclick="this.classList.toggle('blur')">
+                                                        {% else %}
+                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                    alt="{{ item.content_object.title }}"
+                                                                    class="img-fluid cover-border bg-light"
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    {% empty %}
+                                        <p>No items.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if subscribed %}
+                                <div class="mt-3 me-3 d-flex overflow-auto">
+                                    <div class="rotate text-muted">Subscribed</div>
+                                    {% for item in subscribed %}
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                            <a href="{% url 'listen:podcast_checkin_list' item.content_object.id item.user.username %}">
+                                                {% if user.pure_text_mode %}
+                                                    <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                {% else %}
+                                                    {% if item.content_object.cover %}
+                                                        {% if item.content_object.cover_sens %}
+                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                    alt="{{ item.content_object.title }} cover"
+                                                                    class="img-fluid blur cover-border"
+                                                                    onclick="this.classList.toggle('blur')">
+                                                        {% else %}
+                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                    alt="{{ item.content_object.title }}"
+                                                                    class="img-fluid cover-border bg-light"
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                    {% empty %}
+                                        <p>No items.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if does_play_exist %}
+                    <div class="row">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h4 class="mt-4">Play</h4>
+                            <div>
+                                <a class="btn btn-outline-secondary btn-sm"
+                                href="{% url 'play:game_checkin_user_list' object.username %}">All</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            {% if playing %}
+                                <div class="mt-3 me-3 d-flex overflow-auto">
+                                    <div class="rotate text-muted">Playing</div>
+                                    {% for item in playing %}
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                            <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
+                                                {% if user.pure_text_mode %}
+                                                    <div class="cover-placeholder bg-light">{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>
+                                                {% else %}
+                                                    {% if item.game.cover %}
+                                                        {% if item.game.cover_sens %}
+                                                            <img src="{{ item.game.cover.url }}"
+                                                                    alt="{{ item.game.title }} cover"
+                                                                    class="img-fluid blur cover-border"
+                                                                    onclick="this.classList.toggle('blur')">
+                                                        {% else %}
+                                                            <img src="{{ item.game.cover.url }}"
+                                                                    alt="{{ item.game.title }}"
+                                                                    class="img-fluid cover-border bg-light"
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>';">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="cover-placeholder img-fluid bg-light">{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                    {% empty %}
+                                        <p>No items.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if played %}
+                                <div class="mt-3 me-3 d-flex overflow-auto">
+                                    <div class="rotate text-muted">Played</div>
+                                    {% for item in played %}
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                            <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
+                                                {% if user.pure_text_mode %}
+                                                    <div class="cover-placeholder bg-light">{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>
+                                                {% else %}
+                                                    {% if item.game.cover %}
+                                                        {% if item.game.cover_sens %}
+                                                            <img src="{{ item.game.cover.url }}"
+                                                                    alt="{{ item.game.title }} cover"
+                                                                    class="img-fluid blur bg-light"
+                                                                    onclick="this.classList.toggle('blur')">
+                                                        {% else %}
+                                                            <img src="{{ item.game.cover.url }}"
+                                                                    alt="{{ item.game.title }}"
+                                                                    class="img-fluid cover-border bg-light"
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>';">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="cover-placeholder img-fluid bg-light">{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                    {% empty %}
+                                        <p>No items.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- follow -->
+            <div class="col-12 d-block d-md-none mb-1">
+                <!-- For mobile screens, this block will be after the left column. For desktop screens, it will be in the right column. -->
+                <div>
+                    <!--following-->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>Following</h4>
+                        <a class="btn btn-outline-secondary btn-sm"
+                           href="{% url 'accounts:following_list' object.username %}">All</a>
+                    </div>
+                    {% for follow in recent_following %}
+                        <span class="me-2"><a href="{% url 'accounts:detail' username=follow.followed.username %}">{{ follow.followed.display_name|default:follow.followed.username }}</a></span>
+                    {% empty %}
+                        <p>This user is not following anyone.</p>
+                    {% endfor %}
+                </div>
+                <br>
+                <div>
+                    <!--followers-->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>Followers</h4>
+                        <a class="btn btn-outline-secondary btn-sm"
+                           href="{% url 'accounts:follower_list' object.username %}">All</a>
+                    </div>
+                    {% for follow in recent_followers %}
+                        <span class="me-2"><a href="{% url 'accounts:detail' username=follow.follower.username %}">{{ follow.follower.display_name|default:follow.follower.username }}</a></span>
+                    {% empty %}
+                        <p>This user has no followers.</p>
+                    {% endfor %}
+                </div>
+                <hr>
+            </div>
+
+            <!-- For larger screens: keep the existing layout -->
             <!-- Left column -->
-            <div class="col-md-8 col-sm-12 order-2 order-sm-2 order-md-1">
+            <div class="col-md-8 col-sm-12 d-none d-md-block">
                 <!--navbar-->
                 <div class="row">
                     <div class="d-flex">
@@ -527,7 +1194,7 @@
                 {% endif %}
             </div>
             <!-- Right column -->
-            <div class="col-md-4 col-sm-12 order-1 order-sm-1 order-md-2">
+            <div class="col-md-4 col-sm-12 d-none d-md-block">
                 <div class="bio p-3">
                     <div class="d-flex align-items-end">
                         {% if object.display_name %}<h4 class="mb-0 h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">{{ object.display_name }}</h4>{% endif %}
@@ -644,7 +1311,7 @@
                                href="{% url 'accounts:following_list' object.username %}">All</a>
                         </div>
                         {% for follow in recent_following %}
-                            <span><a href="{% url 'accounts:detail' username=follow.followed.username %}">{{ follow.followed.display_name|default:follow.followed.username }}</a></span>
+                            <span class="me-2"><a href="{% url 'accounts:detail' username=follow.followed.username %}">{{ follow.followed.display_name|default:follow.followed.username }}</a></span>
                         {% empty %}
                             <p>This user is not following anyone.</p>
                         {% endfor %}
@@ -658,7 +1325,7 @@
                                href="{% url 'accounts:follower_list' object.username %}">All</a>
                         </div>
                         {% for follow in recent_followers %}
-                            <span><a href="{% url 'accounts:detail' username=follow.follower.username %}">{{ follow.follower.display_name|default:follow.follower.username }}</a></span>
+                            <span class="me-2"><a href="{% url 'accounts:detail' username=follow.follower.username %}">{{ follow.follower.display_name|default:follow.follower.username }}</a></span>
                         {% empty %}
                             <p>This user has no followers.</p>
                         {% endfor %}

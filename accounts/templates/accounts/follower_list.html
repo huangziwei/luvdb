@@ -2,14 +2,20 @@
 {% block content %}
     <div class="container">
         <h2>Followers</h2>
-        <ul>
+        <div>
             {% for follow in follower_list %}
-                <li>
-                    <a href="{% url 'accounts:detail' follow.follower.username %}">{{ follow.follower.username }}</a>
-                </li>
+                <span class="me-1">
+                    {% if follow.follower.display_name %}
+                    {{ follow.follower.display_name|default:follow.follower.username}}
+                    (<a href="{% url 'accounts:detail' follow.follower.username %}">@{{ follow.follower.username }}</a>)
+                    {% else %}
+                        <a href="{% url 'accounts:detail' follow.follower.username %}">@{{ follow.follower.username}}</a>
+                    {% endif %}
+                </span>
+                {% if not forloop.last %} / {% endif %}
             {% empty %}
-                <li>No followers yet.</li>
+                <div>No followers yet.</div>
             {% endfor %}
-        </ul>
+        </div>
     </div>
 {% endblock %}
