@@ -216,6 +216,7 @@ class ReleaseForm(forms.ModelForm):
             "release_type": " For the length of the release, e.g. Single, EP, LP, etc.",
             "recording_type": "e.g. Live, Studio, etc.",
             "other_titles": "e.g. translated titles in different languages, separated by slashes (`/`).",
+            "apple_music_url": "add `geo` in the beginning of the URL to redirect to the user's country, e.g. `https://geo.music.apple.com/us/album/...`",
         }
 
     def __init__(self, *args, **kwargs):

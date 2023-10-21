@@ -218,8 +218,6 @@ class Release(models.Model):
 
     spotify_url = models.URLField(blank=True, null=True)
     apple_music_url = models.URLField(blank=True, null=True)
-    kkbox_url = models.URLField(blank=True, null=True)
-    youtube_url = models.URLField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
     # Entry metadata
