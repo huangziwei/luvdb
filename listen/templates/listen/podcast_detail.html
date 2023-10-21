@@ -174,7 +174,7 @@
             <div class="d-flex flex-column col-sm-4">
                 {% if user.is_authenticated %}
                     <div class="bg-light p-3 mb-3 order-2 order-sm-1">
-                        <a href="{% url 'listen:release_update' object.pk %}"
+                        <a href="{% url 'listen:podcast_update' object.pk %}"
                            class='fs-6 text-secondary'>Edit Podcast</a>
                     </div>
                 {% endif %}
