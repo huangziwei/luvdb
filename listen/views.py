@@ -1052,9 +1052,7 @@ def parse_podcast(rss_feed_url):
 
         episode_info = {
             "title": entry.title,
-            "subtitle": entry.subtitle if hasattr(entry, "subtitle") else None,
             "release_date": release_date,
-            "audio_url": entry.enclosures[0].href if entry.enclosures else None,
             "episode_url": entry.link if hasattr(entry, "link") else None,
         }
         episodes_info.append(episode_info)
