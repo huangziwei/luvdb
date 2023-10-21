@@ -710,6 +710,21 @@ class LuvListDetailView(DetailView):
         context["random_content"] = random.choice(contents) if contents else None
 
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+
+        # statistics
+        context["book_count"] = contents.filter(content_type__model="book").count()
+        context["movie_count"] = contents.filter(content_type__model="movie").count()
+        context["series_count"] = contents.filter(content_type__model="series").count()
+        context["release_count"] = contents.filter(
+            content_type__model="release"
+        ).count()
+        context["audiobook_count"] = contents.filter(
+            content_type__model="audiobook"
+        ).count()
+        context["podcast_count"] = contents.filter(
+            content_type__model="podcast"
+        ).count()
+        context["game_count"] = contents.filter(content_type__model="game").count()
         return context
 
 

@@ -507,6 +507,45 @@
                         
                     </div>
                 {% endif %}
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                    <h5>Statistics</h5>
+                    {% if book_count > 0 %}
+                    <div>
+                        Books: {{ book_count }} 
+                    </div>
+                    {% endif %}
+                    {% if movie_count > 0 %}
+                    <div>
+                        Movies: {{ movie_count }} 
+                    </div>
+                    {% endif %}
+                    {% if series_count > 0 %}
+                    <div>
+                        Series: {{ series_count }} 
+                    </div>
+                    {% endif %}
+
+                    {% if release_count > 0 %}
+                    <div>
+                        Releases: {{ release_count }} 
+                    </div>
+                    {% endif %}
+                    {% if audiobook_count > 0 %}
+                    <div>
+                        Audiobooks: {{ audiobook_count }} 
+                    </div>
+                    {% endif %}
+                    {% if podcast_count > 0 %}
+                    <div>
+                        Podcasts: {{ podcast_count }} 
+                    </div>
+                    {% endif %}
+                    {% if game_count > 0 %}
+                    <div>
+                        Games: {{ game_count }} 
+                    </div>
+                    {% endif %}
+                </div>
             </div>
 
         </div>
