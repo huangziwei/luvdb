@@ -198,7 +198,7 @@
                     </div>
                 </div>
                 <!--Listen on-->
-                {% if object.apple_music_url or object.spotify_url or  object.kkbox_url or object.spotify_url or object.youtube_url %}
+                {% if object.apple_music_url or object.spotify_url %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <h5>Listen on</h5>
                         {% if object.apple_music_url %}
@@ -206,19 +206,9 @@
                                 <a href="{{ object.apple_music_url }}">Apple Music</a>
                             </div>
                         {% endif %}
-                        {% if object.kkbox_url %}
-                            <div>
-                                <a href="{{ object.kkbox_url }}">KKBox</a>
-                            </div>
-                        {% endif %}
                         {% if object.spotify_url %}
                             <div>
                                 <a href="{{ object.spotify_url }}">Spotify</a>
-                            </div>
-                        {% endif %}
-                        {% if object.youtube_url %}
-                            <div>
-                                <a href="{{ object.youtube_url }}">YouTube</a>
                             </div>
                         {% endif %}
                     </div>
