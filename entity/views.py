@@ -471,7 +471,7 @@ class CompanyCreateView(LoginRequiredMixin, CreateView):
         "website",
         "wikipedia",
         "founded_date",
-        "closed_date",
+        "defunct_date",
         "notes",
     ]
     template_name = "entity/company_create.html"
@@ -560,7 +560,7 @@ class CompanyUpdateView(LoginRequiredMixin, UpdateView):
         "website",
         "wikipedia",
         "founded_date",
-        "closed_date",
+        "defunct_date",
         "notes",
     ]
     template_name = "entity/company_update.html"
