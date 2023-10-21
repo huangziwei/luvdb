@@ -343,9 +343,11 @@ class ListenCheckIn(models.Model):
     progress = models.CharField(max_length=20, null=True, blank=True)
     TOTAL_LISTEN_TIME = "TT"
     LOOP_TIME = "LT"
+    EPISODE = "EP"
     PROGRESS_TYPE_CHOICES = [
         (TOTAL_LISTEN_TIME, "Accumulated Listen Time"),
         (LOOP_TIME, "Loop Time"),
+        (EPISODE, "Episode"),
     ]
     progress_type = models.CharField(
         max_length=2,

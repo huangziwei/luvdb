@@ -162,12 +162,11 @@
                         <li>
                             <a class="dropdown-item"
                                href="#"
-                               onclick="setProgressType(event,'TT', '{{ content_type }}')">Episode</a>
+                               onclick="setProgressType(event,'EP', '{{ content_type }}')">Episode</a>
                         </li>
                     </ul>
                 </div>
             </div>
-        
         {% endif %}
     </div>
     <!-- Hidden input fields to hold status and progress_type values -->
@@ -221,7 +220,24 @@
     function setProgressType(event, type) {
         event.preventDefault();
         document.getElementById('progressTypeInput').value = type;
-        document.getElementById('progressTypeBtn').textContent = type == 'TT' ? 'Minues' : 'Loop Times';
+    
+        let textContent;
+        switch(type) {
+            case 'TT':
+                textContent = 'Minutes';
+                break;
+            case 'LT':
+                textContent = 'Loop Times';
+                break;
+            case 'EP':
+                textContent = 'Episode';
+                break;
+            default:
+                textContent = 'Unknown';
+        }
+    
+        document.getElementById('progressTypeInput').value = type;
+        document.getElementById('progressTypeBtn').textContent = textContent;
     }
     
     function updateStatusButton(status) {
@@ -255,6 +271,14 @@
         // Set default status and progress type values
         var default_status = '{{ latest_user_status }}' || 'to_listen';
         setStatus(event, default_status);
-        setProgressType(event, 'TT');
+        var default_type;
+        var content_type = '{{ content_type }}';
+        if (content_type === 'release' || content_type === 'audiobook') {
+            default_type = 'TT';
+        } else if (content_type === 'podcast') {
+            default_type = 'EP';
+        }
+    
+        setProgressType(null, default_type, content_type);
     });
 </script>
