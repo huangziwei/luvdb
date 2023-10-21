@@ -436,8 +436,8 @@ class CreatorAutoComplete(autocomplete.Select2QuerySetView):
 
     def get_result_label(self, item):
         # Get the birth and death years
-        birth_year = item.birth_date[:4] if item.birth_date else "Unk."
-        death_year = item.death_date[:4] if item.death_date else "Pres."
+        birth_year = item.birth_date[:4] if item.birth_date else "?"
+        death_year = item.death_date[:4] if item.death_date else ""
 
         # Format the label
         label = format_html("{} ({} - {})", item.name, birth_year, death_year)
