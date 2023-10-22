@@ -6,10 +6,11 @@
     <div class="row">
         <div class="col-12">
             {% include "discover/discover_nav.html" %}
+            {% include "discover/discover_explain.html" %}
             <div class="row mt-3">
                 <div class="col-12">  
                     <h3>Posts</h3>
-                    <ol>
+                    <ol start="{{ start_index }}">
                         {% for post in posts %}
                             <li>
                                 <div class="d-flex align-items-start">
@@ -28,7 +29,6 @@
                     </ol>
                 </div>
             </div>
-            {% include "discover/discover_explain.html" %}
             {% include "discover/discover_pages.html" %}
         </div>
     </div>

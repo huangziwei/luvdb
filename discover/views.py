@@ -294,6 +294,12 @@ class DiscoverPostListView(ListView):
         context["posts"] = page_obj
         context["order_by"] = order_by
         context["current_page"] = "Posts"
+
+        # Calculate the starting index for each page
+        current_page_number = page_obj.number
+        start_index = (current_page_number - 1) * self.paginate_by
+        context["start_index"] = start_index + 1
+
         return context
 
 
@@ -343,10 +349,7 @@ class DiscoverPinListView(ListView):
 
         elif order_by == "random":
             pin_ids = list(Pin.objects.values_list("id", flat=True))
-
-            if len(pin_ids) > 10:
-                pin_ids = sample(pin_ids, 10)
-
+            pin_ids = sample(pin_ids, len(pin_ids))
             pins = Pin.objects.filter(id__in=pin_ids).order_by("?")
 
         paginator = Paginator(pins, self.paginate_by)
@@ -356,6 +359,12 @@ class DiscoverPinListView(ListView):
         context["pins"] = page_obj
         context["order_by"] = order_by
         context["current_page"] = "Pins"
+
+        # Calculate the starting index for each page
+        current_page_number = page_obj.number
+        start_index = (current_page_number - 1) * self.paginate_by
+        context["start_index"] = start_index + 1
+
         return context
 
 
@@ -418,6 +427,11 @@ class DiscoverLuvListListView(ListView):
         context["lists"] = page_obj
         context["order_by"] = order_by
         context["current_page"] = "Lists"
+
+        # Calculate the starting index for each page
+        current_page_number = page_obj.number
+        start_index = (current_page_number - 1) * self.paginate_by
+        context["start_index"] = start_index + 1
         return context
 
 
