@@ -336,13 +336,25 @@ class GameCheckIn(models.Model):
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
-        if is_new and self.share_to_feed:
-            # Only create activity if share_on_feed is True
-            Activity.objects.create(
-                user=self.user,
-                activity_type="game-check-in",
-                content_object=self,
+                # Attempt to fetch an existing Activity object for this check-in
+        try:
+            activity = Activity.objects.get(
+                content_type__model="gamecheckin", object_id=self.id
             )
+        except Activity.DoesNotExist:
+            activity = None
+
+        # Conditionally create an Activity object
+        if self.share_to_feed:
+            if is_new or activity is None:
+                Activity.objects.create(
+                    user=self.user,
+                    activity_type="game-check-in",
+                    content_object=self,
+                )
+        elif activity is not None:
+            # Optionally, remove the Activity if share_to_feed is False
+            activity.delete()
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)

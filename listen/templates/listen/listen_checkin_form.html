@@ -218,7 +218,9 @@
     }
     
     function setProgressType(event, type) {
-        event.preventDefault();
+        if (event) {
+            event.preventDefault();
+        }
         document.getElementById('progressTypeInput').value = type;
     
         let textContent;
@@ -233,7 +235,7 @@
                 textContent = 'Episode';
                 break;
             default:
-                textContent = 'Unknown';
+                textContent = 'Minutes';
         }
     
         document.getElementById('progressTypeInput').value = type;
