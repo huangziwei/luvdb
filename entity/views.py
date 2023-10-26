@@ -114,11 +114,10 @@ class CreatorDetailView(DetailView):
                     release_by_group.setdefault(group, []).append(release)
 
             for group, group_releases in release_by_group.items():
+                # Get the earliest release date for each group
                 release_by_group[group] = sorted(
                     group_releases, key=lambda r: r.release_date
-                )[
-                    0
-                ]  # Keep the oldest release
+                )[0]
 
             # For releases that do not belong to any group, treat them as individual "groups"
             individual_releases = [r for r in releases if not r.release_group.exists()]
@@ -317,37 +316,59 @@ class CreatorDetailView(DetailView):
         )
 
         # play
-        context["gameworks_as_writer"] = (
-            GameWork.objects.filter(
-                workrole__role__name="Writer", workrole__creator=creator
-            )
-            .distinct()
-            .order_by("first_release_date")
-        )
+        def get_games_by_role(role, creator):
+            # Find games where the creator has this role
+            games = Game.objects.filter(
+                gameroles__role__name=role, gameroles__creator=creator
+            ).distinct()
 
-        context["gameworks_as_artist"] = (
-            GameWork.objects.filter(
-                workrole__role__name="Artist", workrole__creator=creator
-            )
-            .distinct()
-            .order_by("first_release_date")
-        )
+            # Create a dictionary to map game IDs to games
+            game_dict = {game.id: game for game in games}
 
-        context["gameworks_as_musician"] = (
-            GameWork.objects.filter(
-                workrole__role__name="Musician", workrole__creator=creator
-            )
-            .distinct()
-            .order_by("first_release_date")
-        )
+            # Create a dictionary to hold game works
+            work_dict = {}
 
-        context["gameworks_as_producer"] = (
-            GameWork.objects.filter(
-                workrole__role__name="Producer", workrole__creator=creator
+            # Try to find any GameWork that matches the role and creator
+            game_works = GameWork.objects.filter(
+                workrole__role__name=role, workrole__creator=creator
+            ).distinct()
+
+            # Add works to the work_dict and remove any corresponding games from game_dict
+            for work in game_works:
+                related_games = Game.objects.filter(work=work)
+                for game in related_games:
+                    if game.id in game_dict:
+                        del game_dict[game.id]
+                work_dict[work.id] = work
+
+            # Combine dictionaries into one
+            combined_dict = {**game_dict, **work_dict}
+
+            # Sort by release date
+            final_list = sorted(
+                combined_dict.values(),
+                key=lambda x: x.first_release_date
+                if hasattr(x, "first_release_date")
+                else x.region_release_dates.aggregate(Min("release_date"))[
+                    "release_date__min"
+                ],
             )
-            .distinct()
-            .order_by("first_release_date")
-        )
+
+            return final_list
+
+        game_roles = [
+            "Writer",
+            "Artist",
+            "Musician",
+            "Producer",
+            "Director",
+            "Designer",
+            "Programmer",
+        ]
+
+        for role in game_roles:
+            context_key = f"games_as_{role.lower()}"
+            context[context_key] = get_games_by_role(role, creator)
 
         context["games_as_cast"] = (
             Game.objects.filter(gamecasts__creator=creator)
