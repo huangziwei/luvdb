@@ -79,7 +79,7 @@
                             {% endif %}
                             {% if books_as_introduction %}
                                 <div class="col-md-6 mt-2">
-                                    <h5>Afterword</h5>
+                                    <h5>Introduction</h5>
                                     <ul>
                                         {% for item in books_as_introduction %}
                                             <li>
@@ -93,11 +93,11 @@
                                     </ul>
                                 </div>
                             {% endif %}
-                            {% if books_as_forword %}
+                            {% if books_as_foreword %}
                                 <div class="col-md-6 mt-2">
-                                    <h5>Afterword</h5>
+                                    <h5>Foreword</h5>
                                     <ul>
-                                        {% for item in books_as_forword %}
+                                        {% for item in books_as_foreword %}
                                             <li>
                                                 {% if item.model_name == "Instance" %}
                                                     <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
