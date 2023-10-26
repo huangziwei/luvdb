@@ -300,7 +300,7 @@ class GenerateInvitationCodeView(View):
         messages.success(
             request,
             mark_safe(
-                f'Send this invitation code to your friend: <strong style="color:blue;">{code.code}</strong>.'
+                f'Send this invitation code to your friend: <strong style="color:gray;">{code.code}</strong>.'
             ),
         )
         messages.success(request, "Every invitation code can only be used once. ")
