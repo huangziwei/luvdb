@@ -1,6 +1,54 @@
+import pycountry
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from langcodes import Language
+
+
+class LanguageField(models.CharField):
+    def __init__(self, *args, **kwargs):
+        kwargs["max_length"] = 8
+        kwargs["blank"] = True
+        kwargs["null"] = True
+        kwargs["default"] = None
+        kwargs["choices"] = self.get_language_choices()
+        super(LanguageField, self).__init__(*args, **kwargs)
+
+    def get_language_choices(self):
+        ALL_LANGUAGES = [
+            (lang.alpha_2, f"{Language.make(lang.alpha_2).autonym()} ({lang.alpha_2})")
+            for lang in pycountry.languages
+            if hasattr(lang, "alpha_2")
+        ]
+
+        # Add Simplified and Traditional Chinese
+        ALL_LANGUAGES.extend(
+            [
+                ("zh-Hans", f"{Language.make('zh-Hans').autonym()} (zh-Hans)"),
+                ("zh-Hant", f"{Language.make('zh-Hant').autonym()} (zh-Hant)"),
+            ]
+        )
+
+        # Sort languages by their English name
+        ALL_LANGUAGES.sort(key=lambda x: x[1])
+
+        def popular_languages_first(language):
+            POPULAR_LANGUAGES = [
+                "en",
+                "es",
+                "fr",
+                "de",
+                "ja",
+                "ru",
+                "zh-Hans",
+                "zh-Hant",
+            ]
+            return language[0] not in POPULAR_LANGUAGES
+
+        # Move popular languages to the top
+        ALL_LANGUAGES.sort(key=popular_languages_first)
+
+        return ALL_LANGUAGES
 
 
 # Create your models here.

@@ -1,14 +1,12 @@
-from collections import defaultdict
 from datetime import timedelta
 
 from dal import autocomplete
-from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, OuterRef, Q, Subquery
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.html import format_html
@@ -20,8 +18,8 @@ from django.views.generic import (
     UpdateView,
 )
 
-from discover.models import Vote
 from discover.views import user_has_upvoted
+from entity.models import LanguageField
 from watch.models import Movie, Series
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
@@ -29,7 +27,6 @@ from write.models import Comment, ContentInList
 from .forms import (
     BookForm,
     BookInSeriesFormSet,
-    BookInstanceForm,
     BookInstanceFormSet,
     BookRoleFormSet,
     BookSeriesForm,
@@ -50,7 +47,6 @@ from .models import (
     Genre,
     Instance,
     Issue,
-    LanguageField,
     Periodical,
     ReadCheckIn,
     Role,

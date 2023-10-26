@@ -26,98 +26,149 @@
                 </div>
                 {% endif %}
                 <!--Read-->
-                {% if read_works or as_translator or as_editor or as_annotator or writings or as_narrator %}
+                {% if lit_works or books_as_author or books_as_translator or books_as_editor or books_as_annotator or books_as_introduction or books_as_forword or books_as_afterword or books_as_narrator %}
                     <h3 class="mt-2">Bibliography</h3>
-                    {% if read_works %}
+                    {% if lit_works %}
                         <div class="row">
                             <div class="col-12">
                                 <h4>Works</h4>
                                 <ul>
-                                    {% for work in read_works %}
+                                    {% for work in lit_works %}
                                         <li>
-                                            {% if work.work_type == 'NO' %}
-                                                <a href="{% url 'read:work_detail' work.pk %}" style="font-weight: bold">{{ work.title }}</a> ({{ work.publication_date }})
-                                            {% else %}
-                                                <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date }})
-                                            {% endif %}
+                                            <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date }})
                                         </li>
-                                    {% empty %}
-                                        <li>This person has no books.</li>
                                     {% endfor %}
                                 </ul>
                             </div>
                         </div>
                     {% endif %}
-                    {% if as_translator or writings %}
+                    {% if books_as_author or books_as_translator or books_as_editor or books_as_annotator or books_as_introduction or books_as_forword or books_as_afterword or books_as_narrator %}
                         <div class="row">
-                            {% if as_translator.count != 0 %}
+                            <h4>Books</h4>
+                            {% if books_as_author %}
                                 <div class="col-md-6 mt-2">
-                                    <h4>As Translator</h4>
+                                    <h5>As Author</h5>
                                     <ul>
-                                        {% for instance in as_translator.all %}
+                                        {% for item in books_as_author %}
                                             <li>
-                                                <a href="{% url 'read:instance_detail' instance.pk %}">{{ instance.title }}</a> ({{ instance.publication_date }})
-                                            </li>
-                                        {% empty %}
-                                            <li>This person has no translation works.</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-                            {% if writings.count != 0 %}
-                                <div class="col-md-6 mt-2">
-                                    <h4>Introduction / Afterword</h4>
-                                    <ul>
-                                        {% for book in writings.all %}
-                                            <li>
-                                                <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a> ({{ book.publication_date }})
+                                                {% if item.model_name == "Instance" %}
+                                                    <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% elif item.model_name == "Book" %}
+                                                    <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% endif %}
                                             </li>
                                         {% endfor %}
                                     </ul>
                                 </div>
                             {% endif %}
-                        </div>
-                    {% endif %}
-                    {% if as_editor or as_annotator %}
-                        <div class="row">
-                            {% if as_editor.count != 0 %}
+                            {% if books_as_translator %}
                                 <div class="col-md-6 mt-2">
-                                    <h4>As Editor</h4>
+                                    <h5>As Translator</h5>
                                     <ul>
-                                        {% for instance in as_editor.all %}
+                                        {% for item in books_as_translator %}
                                             <li>
-                                                <a href="{% url 'read:instance_detail' instance.pk %}">{{ instance.title }}</a> ({{ instance.publication_date }})
+                                                {% if item.model_name == "Instance" %}
+                                                    <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% elif item.model_name == "Book" %}
+                                                    <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% endif %}
                                             </li>
                                         {% endfor %}
                                     </ul>
                                 </div>
                             {% endif %}
-                            {% if as_annotator.count != 0 %}
+                            {% if books_as_introduction %}
                                 <div class="col-md-6 mt-2">
-                                    <h4>As Annotator</h4>
+                                    <h5>Afterword</h5>
                                     <ul>
-                                        {% for instance in as_annotator.all %}
+                                        {% for item in books_as_introduction %}
                                             <li>
-                                                <a href="{% url 'read:instance_detail' instance.pk %}">{{ instance.title }}</a> ({{ instance.publication_date }})
+                                                {% if item.model_name == "Instance" %}
+                                                    <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% elif item.model_name == "Book" %}
+                                                    <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% endif %}
                                             </li>
                                         {% endfor %}
                                     </ul>
                                 </div>
                             {% endif %}
-                        </div>
-                    {% endif %}
-                    {% if as_narrator %}
-                        <div class="row">
-                            {% if as_narrator.count != 0 %}
+                            {% if books_as_forword %}
+                                <div class="col-md-6 mt-2">
+                                    <h5>Afterword</h5>
+                                    <ul>
+                                        {% for item in books_as_forword %}
+                                            <li>
+                                                {% if item.model_name == "Instance" %}
+                                                    <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% elif item.model_name == "Book" %}
+                                                    <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                            {% if books_as_afterword %}
+                                <div class="col-md-6 mt-2">
+                                    <h5>Afterword</h5>
+                                    <ul>
+                                        {% for item in books_as_afterword %}
+                                            <li>
+                                                {% if item.model_name == "Instance" %}
+                                                    <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% elif item.model_name == "Book" %}
+                                                    <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                            {% if books_as_editor %}
+                                <div class="col-md-6 mt-2">
+                                    <h5>As Editor</h5>
+                                    <ul>
+                                        {% for item in books_as_editor %}
+                                            <li>
+                                                {% if item.model_name == "Instance" %}
+                                                    <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% elif item.model_name == "Book" %}
+                                                    <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                            {% if books_as_annotator %}
+                                <div class="col-md-6 mt-2">
+                                    <h5>As Annotator</h5>
+                                    <ul>
+                                        {% for item in books_as_annotator %}
+                                            <li>
+                                                {% if item.model_name == "Instance" %}
+                                                    <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% elif item.model_name == "Book" %}
+                                                    <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                            {% if books_as_narrator %}
                                 <div class="col-md-6 mt-2">
                                     <h4>As Narrator</h4>
-                                    <ul>
-                                        {% for audiobook in as_narrator.all %}
-                                            <li>
-                                                <a href="{% url 'listen:audiobook_detail' audiobook.pk %}">{{ audiobook.title }}</a> ({{ audiobook.release_date }})
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
+                                    {% for item in books_as_narrator %}
+                                        <li>
+                                            {% if item.model_name == "Instance" %}
+                                                <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                            {% elif item.model_name == "Book" %}
+                                                <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
                                 </div>
                             {% endif %}
                         </div>

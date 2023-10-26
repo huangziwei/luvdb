@@ -3,7 +3,6 @@ import re
 import uuid
 from io import BytesIO
 
-import pycountry
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -14,11 +13,10 @@ from django.db.models import signals
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.text import slugify
-from langcodes import Language
 from PIL import Image
 
 from activity_feed.models import Activity
-from entity.models import Company, Creator, Entity, Role
+from entity.models import Company, Creator, LanguageField, Role
 from write.models import create_mentions_notifications, handle_tags
 
 
@@ -96,52 +94,6 @@ def standardize_date(date_str):
 # models
 
 
-class LanguageField(models.CharField):
-    def __init__(self, *args, **kwargs):
-        kwargs["max_length"] = 8
-        kwargs["blank"] = True
-        kwargs["null"] = True
-        kwargs["default"] = None
-        kwargs["choices"] = self.get_language_choices()
-        super(LanguageField, self).__init__(*args, **kwargs)
-
-    def get_language_choices(self):
-        ALL_LANGUAGES = [
-            (lang.alpha_2, f"{Language.make(lang.alpha_2).autonym()} ({lang.alpha_2})")
-            for lang in pycountry.languages
-            if hasattr(lang, "alpha_2")
-        ]
-
-        # Add Simplified and Traditional Chinese
-        ALL_LANGUAGES.extend(
-            [
-                ("zh-Hans", f"{Language.make('zh-Hans').autonym()} (zh-Hans)"),
-                ("zh-Hant", f"{Language.make('zh-Hant').autonym()} (zh-Hant)"),
-            ]
-        )
-
-        # Sort languages by their English name
-        ALL_LANGUAGES.sort(key=lambda x: x[1])
-
-        def popular_languages_first(language):
-            POPULAR_LANGUAGES = [
-                "en",
-                "es",
-                "fr",
-                "de",
-                "ja",
-                "ru",
-                "zh-Hans",
-                "zh-Hant",
-            ]
-            return language[0] not in POPULAR_LANGUAGES
-
-        # Move popular languages to the top
-        ALL_LANGUAGES.sort(key=popular_languages_first)
-
-        return ALL_LANGUAGES
-
-
 class Genre(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
@@ -214,6 +166,9 @@ class Work(models.Model):  # Renamed from Book
         if self.publication_date:
             self.publication_date = standardize_date(self.publication_date)
         super(Work, self).save(*args, **kwargs)
+
+    def model_name(self):
+        return "Work"
 
 
 class WorkRole(models.Model):  # Renamed from BookRole
@@ -291,6 +246,9 @@ class Instance(models.Model):
         if self.publication_date:
             self.publication_date = standardize_date(self.publication_date)
         super(Instance, self).save(*args, **kwargs)
+
+    def model_name(self):
+        return "Instance"
 
 
 class InstanceRole(models.Model):
@@ -541,7 +499,7 @@ class ReadCheckIn(models.Model):
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
-        
+
         # Attempt to fetch an existing Activity object for this check-in
         try:
             activity = Activity.objects.get(

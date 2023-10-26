@@ -42,44 +42,91 @@ class CreatorDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         creator = self.object
+
         # read
-        # context["read_works"] = creator.read_works.all().order_by("publication_date")
-        roles_as_author = ["Author", "Ghost Writer", "Created By", "Novelization By"]
-        context["read_works"] = (
+        def get_books_by_role(role, creator):
+            # Dictionary to hold final items
+            final_dict = {}
+
+            # Step 1: Get books related to the role and creator
+            books = Book.objects.filter(
+                bookrole__role__name=role, bookrole__creator=creator
+            ).distinct()
+
+            for book in books:
+                # Check for instances
+                instances = LitInstance.objects.filter(books=book)
+
+                # No related instances
+                if not instances.exists():
+                    final_dict[book.id] = book
+                # Multiple related instances
+                elif instances.count() > 1:
+                    final_dict[book.id] = book
+                # Single related instance
+                else:
+                    instance = instances.first()
+                    # Check if instance has a related work
+                    final_dict[instance.id] = instance
+
+            # Sort the final list by publication date
+            final_list = sorted(
+                final_dict.values(), key=lambda x: getattr(x, "publication_date", None)
+            )
+
+            return final_list
+
+        book_roles = [
+            "Author",
+            "Ghost Writer",
+            "Created By",
+            "Novelization By",
+            "Translator",
+            "Editor",
+            "Introduction",
+            "Foreword",
+            "Afterword",
+            "Annotator",
+        ]
+        for role in book_roles:
+            context_key = f"books_as_{role.lower()}"
+            context[context_key] = get_books_by_role(role, creator)
+
+        context["lit_works"] = (
             LitWork.objects.filter(
-                Q(workrole__role__name__in=roles_as_author, workrole__creator=creator)
+                Q(workrole__role__name__in=book_roles, workrole__creator=creator)
             )
             .distinct()
             .order_by("publication_date")
         )
 
-        as_translator = LitInstance.objects.filter(
-            instancerole__role__name="Translator", instancerole__creator=creator
-        ).order_by("publication_date")
-        context["as_translator"] = as_translator
+        # as_translator = LitInstance.objects.filter(
+        #     instancerole__role__name="Translator", instancerole__creator=creator
+        # ).order_by("publication_date")
+        # context["as_translator"] = as_translator
 
-        as_narrator = Audiobook.objects.filter(
-            audiobookrole__role__name="Narrator", audiobookrole__creator=creator
-        ).order_by("release_date")
-        context["as_narrator"] = as_narrator
+        # as_narrator = Audiobook.objects.filter(
+        #     audiobookrole__role__name="Narrator", audiobookrole__creator=creator
+        # ).order_by("release_date")
+        # context["as_narrator"] = as_narrator
 
-        writings = Book.objects.filter(
-            Q(bookrole__role__name="Introduction")
-            | Q(bookrole__role__name="Afterword"),
-            bookrole__creator=creator,
-        ).order_by("publication_date")
+        # writings = Book.objects.filter(
+        #     Q(bookrole__role__name="Introduction")
+        #     | Q(bookrole__role__name="Afterword"),
+        #     bookrole__creator=creator,
+        # ).order_by("publication_date")
 
-        context["writings"] = writings
+        # context["writings"] = writings
 
-        as_editor = LitInstance.objects.filter(
-            instancerole__role__name="Editor", instancerole__creator=creator
-        ).order_by("publication_date")
-        context["as_editor"] = as_editor
+        # as_editor = LitInstance.objects.filter(
+        #     instancerole__role__name="Editor", instancerole__creator=creator
+        # ).order_by("publication_date")
+        # context["as_editor"] = as_editor
 
-        as_annotator = LitInstance.objects.filter(
-            instancerole__role__name="Annotator", instancerole__creator=creator
-        ).order_by("publication_date")
-        context["as_annotator"] = as_annotator
+        # as_annotator = LitInstance.objects.filter(
+        #     instancerole__role__name="Annotator", instancerole__creator=creator
+        # ).order_by("publication_date")
+        # context["as_annotator"] = as_annotator
 
         context["litworks_count"] = creator.read_works.distinct().count()
         context["litinstances_count"] = (

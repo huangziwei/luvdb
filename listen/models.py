@@ -14,8 +14,8 @@ from django.utils.text import slugify
 from PIL import Image
 
 from activity_feed.models import Activity
-from entity.models import Company, Creator, Role
-from read.models import Book, Instance, LanguageField, standardize_date
+from entity.models import Company, Creator, LanguageField, Role
+from read.models import Instance, standardize_date
 from write.models import create_mentions_notifications, handle_tags
 
 
