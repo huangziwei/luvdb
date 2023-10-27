@@ -100,34 +100,6 @@ class CreatorDetailView(DetailView):
             .order_by("publication_date")
         )
 
-        # as_translator = LitInstance.objects.filter(
-        #     instancerole__role__name="Translator", instancerole__creator=creator
-        # ).order_by("publication_date")
-        # context["as_translator"] = as_translator
-
-        # as_narrator = Audiobook.objects.filter(
-        #     audiobookrole__role__name="Narrator", audiobookrole__creator=creator
-        # ).order_by("release_date")
-        # context["as_narrator"] = as_narrator
-
-        # writings = Book.objects.filter(
-        #     Q(bookrole__role__name="Introduction")
-        #     | Q(bookrole__role__name="Afterword"),
-        #     bookrole__creator=creator,
-        # ).order_by("publication_date")
-
-        # context["writings"] = writings
-
-        # as_editor = LitInstance.objects.filter(
-        #     instancerole__role__name="Editor", instancerole__creator=creator
-        # ).order_by("publication_date")
-        # context["as_editor"] = as_editor
-
-        # as_annotator = LitInstance.objects.filter(
-        #     instancerole__role__name="Annotator", instancerole__creator=creator
-        # ).order_by("publication_date")
-        # context["as_annotator"] = as_annotator
-
         context["litworks_count"] = creator.read_works.distinct().count()
         context["litinstances_count"] = (
             LitInstance.objects.filter(instancerole__creator=creator).distinct().count()
@@ -220,6 +192,9 @@ class CreatorDetailView(DetailView):
         ).order_by("release_date")
         context["tracks_as_arranger"] = Track.objects.filter(
             trackrole__role__name="Arranger", trackrole__creator=creator
+        ).order_by("release_date")
+        context["audiobook_as_narrator"] = Audiobook.objects.filter(
+            audiobookrole__role__name="Narrator", audiobookrole__creator=creator
         ).order_by("release_date")
 
         context["listenworks_count"] = (

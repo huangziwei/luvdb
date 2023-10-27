@@ -26,7 +26,7 @@
                 </div>
                 {% endif %}
                 <!--Read-->
-                {% if lit_works or books_as_author or books_as_translator or books_as_editor or books_as_annotator or books_as_introduction or books_as_forword or books_as_afterword or books_as_narrator %}
+                {% if lit_works or books_as_author or books_as_translator or books_as_editor or books_as_annotator or books_as_introduction or books_as_forword or books_as_afterword or audiobook_as_narrator %}
                     <h3 class="mt-2">Bibliography</h3>
                     {% if lit_works %}
                         <div class="row">
@@ -42,11 +42,11 @@
                             </div>
                         </div>
                     {% endif %}
-                    {% if books_as_author or books_as_translator or books_as_editor or books_as_annotator or books_as_introduction or books_as_forword or books_as_afterword or books_as_narrator %}
+                    {% if books_as_author or books_as_translator or books_as_editor or books_as_annotator or books_as_introduction or books_as_forword or books_as_afterword or audiobook_as_narrator %}
                         <div class="row">
                             <h4>Books</h4>
                             {% if books_as_author %}
-                                <div class="col-md-6 mt-2">
+                                <div class="col-md-6">
                                     <h5>As Author</h5>
                                     <ul>
                                         {% for item in books_as_author %}
@@ -62,7 +62,7 @@
                                 </div>
                             {% endif %}
                             {% if books_as_translator %}
-                                <div class="col-md-6 mt-2">
+                                <div class="col-md-6">
                                     <h5>As Translator</h5>
                                     <ul>
                                         {% for item in books_as_translator %}
@@ -78,7 +78,7 @@
                                 </div>
                             {% endif %}
                             {% if books_as_introduction %}
-                                <div class="col-md-6 mt-2">
+                                <div class="col-md-6">
                                     <h5>Introduction</h5>
                                     <ul>
                                         {% for item in books_as_introduction %}
@@ -94,7 +94,7 @@
                                 </div>
                             {% endif %}
                             {% if books_as_foreword %}
-                                <div class="col-md-6 mt-2">
+                                <div class="col-md-6">
                                     <h5>Foreword</h5>
                                     <ul>
                                         {% for item in books_as_foreword %}
@@ -110,7 +110,7 @@
                                 </div>
                             {% endif %}
                             {% if books_as_afterword %}
-                                <div class="col-md-6 mt-2">
+                                <div class="col-md-6">
                                     <h5>Afterword</h5>
                                     <ul>
                                         {% for item in books_as_afterword %}
@@ -126,7 +126,7 @@
                                 </div>
                             {% endif %}
                             {% if books_as_editor %}
-                                <div class="col-md-6 mt-2">
+                                <div class="col-md-6">
                                     <h5>As Editor</h5>
                                     <ul>
                                         {% for item in books_as_editor %}
@@ -142,7 +142,7 @@
                                 </div>
                             {% endif %}
                             {% if books_as_annotator %}
-                                <div class="col-md-6 mt-2">
+                                <div class="col-md-6">
                                     <h5>As Annotator</h5>
                                     <ul>
                                         {% for item in books_as_annotator %}
@@ -157,16 +157,12 @@
                                     </ul>
                                 </div>
                             {% endif %}
-                            {% if books_as_narrator %}
-                                <div class="col-md-6 mt-2">
+                            {% if audiobook_as_narrator %}
+                                <div class="col-md-6">
                                     <h4>As Narrator</h4>
-                                    {% for item in books_as_narrator %}
+                                    {% for item in audiobook_as_narrator %}
                                         <li>
-                                            {% if item.model_name == "Instance" %}
-                                                <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
-                                            {% elif item.model_name == "Book" %}
-                                                <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
-                                            {% endif %}
+                                            <a href="{% url 'listen:audiobook_detail' item.pk %}">{{ item.title }}</a> ({{ item.release_date }})
                                         </li>
                                     {% endfor %}
                                 </div>
