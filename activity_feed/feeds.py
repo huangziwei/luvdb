@@ -1,9 +1,11 @@
+import markdown
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
 from django.http import Http404
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 from write.models import Say
 
@@ -58,7 +60,7 @@ class UserActivityFeed(Feed):
         ).model_class()
         model_name = related_model.__name__.lower()
         if model_name == "say" or model_name == "repost":
-            return related_object.content
+            return mark_safe(markdown.markdown(related_object.content))
         elif model_name == "post":
             return f'{related_object.user.username} posted "{related_object.title}"'
         elif model_name == "pin":

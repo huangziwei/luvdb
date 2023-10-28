@@ -1,10 +1,12 @@
 from itertools import chain
 
+import markdown
 from django.contrib.auth import get_user_model
 from django.contrib.syndication.views import Feed
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 from listen.models import ListenCheckIn
 from play.models import GameCheckIn
@@ -41,7 +43,7 @@ class UserSayFeed(Feed):
         )[:25]
 
     def item_title(self, say):
-        return say.content  # Taking the first 50 characters.
+        return mark_safe(markdown.markdown(say.content))
 
     def item_description(self, say):
         return None
@@ -76,10 +78,10 @@ class UserPostFeed(Feed):
         return Post.objects.filter(user=user).order_by("-timestamp")[:25]
 
     def item_title(self, post):
-        return post.title  # Assuming 'Post' model has a 'title' field.
+        return mark_safe(markdown.markdown(post.title))
 
     def item_description(self, post):
-        return post.content  # Assuming 'Post' model has a 'content' field.
+        return mark_safe(markdown.markdown(post.content))
 
     def item_link(self, post):
         return reverse("write:post_detail", args=[post.pk])
@@ -122,10 +124,10 @@ class UserPostProjectFeed(Feed):
         ).order_by("-timestamp")[:25]
 
     def item_title(self, post):
-        return post.title
+        return mark_safe(markdown.markdown(post.title))
 
     def item_description(self, post):
-        return post.content
+        return mark_safe(markdown.markdown(post.content))
 
     def item_link(self, post):
         return reverse("write:post_detail", args=[post.pk])
@@ -157,10 +159,10 @@ class UserPinFeed(Feed):
         return Pin.objects.filter(user=user).order_by("-timestamp")[:25]
 
     def item_title(self, pin):
-        return pin.title  # Assuming 'Pin' model has a 'title' field.
+        return pin.title
 
     def item_description(self, pin):
-        return pin.description  # Assuming 'Pin' model has a 'description' field.
+        return pin.description
 
     def item_link(self, pin):
         return reverse("write:pin_detail", args=[pin.pk])
@@ -223,7 +225,7 @@ class TagListFeed(Feed):
     def item_title(self, item):
         model_name = item.__class__.__name__.lower()
         if model_name == "say":
-            return item.content
+            return mark_safe(markdown.markdown(item.content))
         elif model_name == "post":
             return f'{item.user.username} posted "{item.title}"'
         elif model_name == "pin":
@@ -242,7 +244,7 @@ class TagListFeed(Feed):
         if model_name == "say":
             return None
         if hasattr(item, "content"):
-            return item.content
+            return mark_safe(markdown.markdown(item.content))
         elif model_name == "follow":
             return f"{item.follower.username} followed {item.followed.username}"
         else:
@@ -330,7 +332,7 @@ class TagUserListFeed(Feed):
     def item_title(self, item):
         model_name = item.__class__.__name__.lower()
         if model_name == "say":
-            return item.content
+            return mark_safe(markdown.markdown(item.content))
         elif model_name == "post":
             return f'{item.user.username} posted "{item.title}"'
         elif model_name == "pin":
@@ -349,7 +351,7 @@ class TagUserListFeed(Feed):
         if model_name == "say":
             return None
         if hasattr(item, "content"):
-            return item.content
+            return mark_safe(markdown.markdown(item.content))
         elif model_name == "follow":
             return f"{item.follower.username} followed {item.followed.username}"
         else:
