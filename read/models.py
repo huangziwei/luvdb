@@ -112,6 +112,9 @@ class Work(models.Model):  # Renamed from Book
     A Work entity
     """
 
+    # admin
+    locked = models.BooleanField(default=False)
+
     # work meta data
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
@@ -203,6 +206,10 @@ class Instance(models.Model):
     that is, a specific edition, a translation, an installment of a serialization, etc.
     """
 
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # instance meta
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     creators = models.ManyToManyField(
@@ -267,6 +274,9 @@ class Book(models.Model):
     """
     A Book entity of an Instance
     """
+
+    # admin
+    locked = models.BooleanField(default=False)
 
     # book meta data
     title = models.CharField(max_length=255)
@@ -526,6 +536,10 @@ class ReadCheckIn(models.Model):
 
 
 class Periodical(models.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # periodical meta data
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     FREQUENCY_CHOICES = (
@@ -575,6 +589,10 @@ class Periodical(models.Model):
 
 
 class Issue(models.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # issue meta data
     periodical = models.ForeignKey(
         Periodical, on_delete=models.CASCADE, related_name="issues"
     )
@@ -690,6 +708,10 @@ class IssueInstance(models.Model):
 
 
 class BookSeries(models.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # series meta data
     title = models.CharField(max_length=100)
     books = models.ManyToManyField(Book, through="BookInSeries", related_name="series")
     description = models.TextField(null=True, blank=True)

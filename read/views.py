@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, OuterRef, Q, Subquery
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -100,6 +101,13 @@ class WorkUpdateView(LoginRequiredMixin, UpdateView):
     model = Work
     form_class = WorkForm
     template_name = "read/work_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the Work object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -247,6 +255,13 @@ class InstanceUpdateView(LoginRequiredMixin, UpdateView):
     model = Instance
     form_class = InstanceForm
     template_name = "read/instance_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the Work object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -508,6 +523,13 @@ class BookUpdateView(LoginRequiredMixin, UpdateView):
     form_class = BookForm
     template_name = "read/book_update.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the Work object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse_lazy("read:book_detail", kwargs={"pk": self.object.pk})
 
@@ -574,6 +596,13 @@ class PeriodicalUpdateView(LoginRequiredMixin, UpdateView):
     model = Periodical
     form_class = PeriodicalForm
     template_name = "read/periodical_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy("read:periodical_detail", kwargs={"pk": self.object.pk})
@@ -772,6 +801,13 @@ class IssueUpdateView(LoginRequiredMixin, UpdateView):
     model = Issue
     form_class = IssueForm
     template_name = "read/periodical_issue_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the Work object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -1440,6 +1476,14 @@ class BookSeriesUpdateView(LoginRequiredMixin, UpdateView):
     model = BookSeries
     form_class = BookSeriesForm
     template_name = "read/series_update.html"
+
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)

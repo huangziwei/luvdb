@@ -154,7 +154,7 @@
             </div>
             <div class="d-flex flex-column col-sm-4">
                 <!--Related instances / Edit -->
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated and not object.locked %}
                     <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         <a href="{% url 'read:book_update' object.id %}"
                            class='fs-6 text-secondary'>Edit book data</a>

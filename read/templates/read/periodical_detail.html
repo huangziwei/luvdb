@@ -63,7 +63,7 @@
             <!-- Right column -->
             <div class="col-sm-4">
                 <!-- Related actions for authenticated users -->
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated and not periodical.locked %}
                     <div class="bg-light p-3 mb-3">
                         <a href="{% url 'read:periodical_update' periodical.id %}"
                            class='fs-6 text-secondary'>Edit periodical data</a>

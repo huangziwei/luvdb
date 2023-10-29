@@ -30,7 +30,7 @@ from .models import (
 class WorkForm(forms.ModelForm):
     class Meta:
         model = Work
-        exclude = ["created_by", "updated_by", "creators"]
+        exclude = ["created_by", "updated_by", "creators", "locked"]
         fields = "__all__"
         help_texts = {
             "title": "Enter the work's title in its original language. ",

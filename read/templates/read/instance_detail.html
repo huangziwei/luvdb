@@ -92,9 +92,11 @@
                 <!--Related Work / Edit -->
                 {% if user.is_authenticated %}
                     <div class="bg-light p-3 mb-3">
+                        {% if not object.locked %}
                         <a href="{% url 'read:instance_update' object.pk %}"
                            class='fs-6 text-secondary'>Edit Instance</a>
                         <br>
+                        {% endif %}
                         <a href="{% url 'read:book_create' %}" class='fs-6 text-secondary'>Add Book</a>
                     </div>
                 {% endif %}

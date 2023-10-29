@@ -82,7 +82,7 @@
                 <hr>
             </div>
             <div class="col-sm-4">
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated and not issue.locked %}
                     <div class="bg-light p-3 mb-3">
                         <a href="{% url 'read:issue_update' issue.periodical.id issue.pk %}"
                            class='fs-6 text-secondary'>Edit issue data</a>
