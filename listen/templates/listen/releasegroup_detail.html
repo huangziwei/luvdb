@@ -88,7 +88,7 @@
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
-                                    {% if release_in_group.release.label %}
+                                    {% if release_in_group.release.label.exists %}
                                         <div>
                                             <span class="text-muted">Label</span>: 
                                             {% for label in release_in_group.release.label.all %}
@@ -101,6 +101,9 @@
                                     {% endif %}
                                     {% if release_in_group.release.release_date %}
                                         <div><span class="text-muted">Date</span>: {{ release_in_group.release.release_date }}</div>
+                                    {% endif %}
+                                    {% if release_in_group.release.catalog_number %}
+                                        <div><span class="text-muted">Catalog Number</span>: {{ release_in_group.release.catalog_number }}</div>
                                     {% endif %}
                                 </div>
                             </div>
