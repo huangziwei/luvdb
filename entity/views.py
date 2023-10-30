@@ -412,7 +412,7 @@ class CreatorDetailView(DetailView):
         )
 
         # contributors
-        unique_usernames = {record.history_user for record in company.history.all()}
+        unique_usernames = {record.history_user for record in creator.history.all()}
         context["contributors"] = unique_usernames
 
         return context
