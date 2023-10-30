@@ -3,8 +3,10 @@ from django.urls import path
 from .views import (
     BookCreateView,
     BookDetailView,
+    BookHistoryView,
     BookSeriesCreateView,
     BookSeriesDetailView,
+    BookSeriesHistoryView,
     BookSeriesUpdateView,
     BookUpdateView,
     GenericCheckInAllListView,
@@ -15,13 +17,16 @@ from .views import (
     InstanceAutocomplete,
     InstanceCreateView,
     InstanceDetailView,
+    InstanceHistoryView,
     InstanceUpdateView,
     IssueCreateView,
     IssueDetailView,
+    IssueHistoryView,
     IssueUpdateView,
     LanguageAutocomplete,
     PeriodicalCreateView,
     PeriodicalDetailView,
+    PeriodicalHistoryView,
     PeriodicalUpdateView,
     ReadCheckInCreateView,
     ReadCheckInDeleteView,
@@ -32,6 +37,7 @@ from .views import (
     WorkAutocomplete,
     WorkCreateView,
     WorkDetailView,
+    WorkHistoryView,
     WorkUpdateView,
 )
 
@@ -96,14 +102,21 @@ urlpatterns = [
         InstanceUpdateView.as_view(),
         name="instance_update",
     ),
+    path(
+        "instance/<int:pk>/history/",
+        InstanceHistoryView.as_view(),
+        name="instance_history",
+    ),
     # work
     path("work/create/", WorkCreateView.as_view(), name="work_create"),
     path("work/<int:pk>/", WorkDetailView.as_view(), name="work_detail"),
     path("work/<int:pk>/update/", WorkUpdateView.as_view(), name="work_update"),
+    path("work/<int:pk>/history/", WorkHistoryView.as_view(), name="work_history"),
     # book
     path("book/create/", BookCreateView.as_view(), name="book_create"),
     path("book/<int:pk>/", BookDetailView.as_view(), name="book_detail"),
     path("book/<int:pk>/update/", BookUpdateView.as_view(), name="book_update"),
+    path("book/<int:pk>/history/", BookHistoryView.as_view(), name="book_history"),
     # periodical
     path(
         "periodical/create/", PeriodicalCreateView.as_view(), name="periodical_create"
@@ -115,6 +128,11 @@ urlpatterns = [
         "periodical/<int:pk>/update/",
         PeriodicalUpdateView.as_view(),
         name="periodical_update",
+    ),
+    path(
+        "periodical/<int:pk>/history/",
+        PeriodicalHistoryView.as_view(),
+        name="periodical_history",
     ),
     # issue of a periodical
     path(
@@ -131,6 +149,11 @@ urlpatterns = [
         "periodical/<int:periodical_id>/issue/<int:pk>/update/",
         IssueUpdateView.as_view(),
         name="issue_update",
+    ),
+    path(
+        "periodical/<int:periodical_id>/issue/<int:pk>/history/",
+        IssueHistoryView.as_view(),
+        name="issue_history",
     ),
     # autocomplete views
     path(
@@ -149,6 +172,11 @@ urlpatterns = [
     path("series/<int:pk>/", BookSeriesDetailView.as_view(), name="series_detail"),
     path(
         "series/<int:pk>/update/", BookSeriesUpdateView.as_view(), name="series_update"
+    ),
+    path(
+        "series/<int:pk>/history/",
+        BookSeriesHistoryView.as_view(),
+        name="series_history",
     ),
     # genre
     path("genre/<slug:slug>/", GenreDetailView.as_view(), name="genre_detail"),

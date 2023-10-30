@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "reversion",
     "storages",
     "corsheaders",
+    "simple_history",
     # local apps
     "notify",
     "activity_feed",
@@ -83,6 +84,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "config.middleware.TimezoneMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"

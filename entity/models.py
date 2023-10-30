@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from langcodes import Language
+from simple_history.models import HistoricalRecords
 
 
 class LanguageField(models.CharField):
@@ -81,6 +82,8 @@ class Entity(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+
+    history = HistoricalRecords(inherit=True)
 
     class Meta:
         abstract = True

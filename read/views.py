@@ -21,6 +21,7 @@ from django.views.generic import (
 
 from discover.views import user_has_upvoted
 from entity.models import LanguageField
+from entity.views import HistoryViewMixin
 from watch.models import Movie, Series
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
@@ -1477,7 +1478,6 @@ class BookSeriesUpdateView(LoginRequiredMixin, UpdateView):
     form_class = BookSeriesForm
     template_name = "read/series_update.html"
 
-
     def dispatch(self, request, *args, **kwargs):
         # Check if the object is locked for editing.
         obj = self.get_object()
@@ -1552,3 +1552,69 @@ class GenreAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__icontains=self.q)
 
         return qs
+
+
+#################
+# History Views #
+#################
+
+
+class WorkHistoryView(HistoryViewMixin, DetailView):
+    model = Work
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        creator = self.get_object()
+        context["history_data"] = self.get_history_data(creator)
+        return context
+
+class InstanceHistoryView(HistoryViewMixin, DetailView):
+    model = Instance
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        creator = self.get_object()
+        context["history_data"] = self.get_history_data(creator)
+        return context
+
+class IssueHistoryView(HistoryViewMixin, DetailView):
+    model = Issue
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        creator = self.get_object()
+        context["history_data"] = self.get_history_data(creator)
+        return context
+
+class PeriodicalHistoryView(HistoryViewMixin, DetailView):
+    model = Periodical
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        creator = self.get_object()
+        context["history_data"] = self.get_history_data(creator)
+        return context
+
+class BookHistoryView(HistoryViewMixin, DetailView):
+    model = Book
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        creator = self.get_object()
+        context["history_data"] = self.get_history_data(creator)
+        return context
+
+class BookSeriesHistoryView(HistoryViewMixin, DetailView):
+    model = Series
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        creator = self.get_object()
+        context["history_data"] = self.get_history_data(creator)
+        return context

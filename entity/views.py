@@ -650,3 +650,77 @@ class CompanyAutocomplete(autocomplete.Select2QuerySetView):
             return qs
 
         return Company.objects.none()
+
+
+class HistoryViewMixin:
+    excluded_fields = [
+        "id",
+        "created_at",
+        "updated_at",
+        "created_by",
+        "updated_by",
+        "locked",
+    ]
+
+    def get_history_data(self, model_instance):
+        history_data = []
+        history_queryset = model_instance.history.all().prefetch_related("history_user")
+        previous_record = None
+
+        for current_record in reversed(history_queryset):
+            changed_fields = {}
+            is_creation_record = previous_record is None
+
+            for field in model_instance._meta.fields:
+                if field.name in self.excluded_fields:
+                    continue
+
+                field_name = field.name
+                current_value = getattr(current_record, field_name)
+
+                if is_creation_record:
+                    changed_fields[field_name] = {"from": None, "to": current_value}
+                elif previous_record:
+                    previous_value = getattr(previous_record, field_name)
+                    if current_value != previous_value:
+                        changed_fields[field_name] = {
+                            "from": previous_value,
+                            "to": current_value,
+                        }
+
+            if changed_fields:
+                history_data.append(
+                    {
+                        "type": "creation" if is_creation_record else "change",
+                        "changed_by": current_record.history_user,
+                        "changed_at": current_record.history_date,
+                        "changed_fields": changed_fields,
+                    }
+                )
+
+            previous_record = current_record
+
+        history_data.reverse()
+        return history_data
+
+
+class CreatorHistoryView(HistoryViewMixin, DetailView):
+    model = Creator
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        creator = self.get_object()
+        context["history_data"] = self.get_history_data(creator)
+        return context
+
+
+class CompanyHistoryView(HistoryViewMixin, DetailView):
+    model = Company
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        company = self.get_object()
+        context["history_data"] = self.get_history_data(company)
+        return context

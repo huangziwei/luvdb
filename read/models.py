@@ -14,6 +14,7 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.text import slugify
 from PIL import Image
+from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
 from entity.models import Company, Creator, LanguageField, Role
@@ -158,6 +159,9 @@ class Work(models.Model):  # Renamed from Book
         null=True,
     )
 
+    # Add history
+    history = HistoricalRecords(inherit=True)
+
     def __str__(self):
         return self.title
 
@@ -195,6 +199,8 @@ class WorkRole(models.Model):  # Renamed from BookRole
         related_name="read_workrole_set",
     )
     alt_name = models.CharField(max_length=255, blank=True, null=True)
+
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.work} - {self.creator} - {self.role}"
@@ -242,6 +248,8 @@ class Instance(models.Model):
         null=True,
     )
 
+    history = HistoricalRecords(inherit=True)
+
     def __str__(self):
         return self.title
 
@@ -265,6 +273,8 @@ class InstanceRole(models.Model):
     )
     alt_name = models.CharField(max_length=255, blank=True, null=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.instance} - {self.creator} - {self.role}"
@@ -349,6 +359,8 @@ class Book(models.Model):
         null=True,
     )
 
+    history = HistoricalRecords(inherit=True)
+
     def __str__(self):
         return self.title
 
@@ -365,6 +377,9 @@ class Book(models.Model):
         )  # adjust this if your related name is different
 
     def save(self, *args, **kwargs):
+        # To hold a flag indicating if the cover is new or updated
+        new_or_updated_cover = False
+
         # If the instance already exists in the database
         if self.pk:
             # Get the existing instance from the database
@@ -373,10 +388,11 @@ class Book(models.Model):
             if old_instance.cover != self.cover:
                 # Delete the old cover
                 old_instance.cover.delete(save=False)
+                new_or_updated_cover = True
 
         super().save(*args, **kwargs)
 
-        if self.cover:
+        if new_or_updated_cover and self.cover:
             img = Image.open(self.cover.open(mode="rb"))
 
             if img.height > 500 or img.width > 500:
@@ -419,6 +435,8 @@ class BookRole(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=255, blank=True, null=True)
 
+    history = HistoricalRecords(inherit=True)
+
     def __str__(self):
         return f"{self.book} - {self.alt_name or self.creator.name} - {self.role}"
 
@@ -431,6 +449,8 @@ class BookInstance(models.Model):
     order = models.PositiveIntegerField(
         null=True, blank=True, default=1
     )  # Ordering of the works in a book
+
+    history = HistoricalRecords(inherit=True)
 
     class Meta:
         ordering = ["order"]
@@ -584,6 +604,8 @@ class Periodical(models.Model):
         null=True,
     )
 
+    history = HistoricalRecords(inherit=True)
+
     def __str__(self):
         return self.title
 
@@ -631,6 +653,9 @@ class Issue(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+
+    history = HistoricalRecords(inherit=True)
+
     readcheckin = GenericRelation("ReadCheckIn")
 
     def __str__(self):
@@ -700,6 +725,8 @@ class IssueInstance(models.Model):
         null=True, blank=True, default=1
     )  # Ordering of the works in a book
 
+    history = HistoricalRecords(inherit=True)
+
     class Meta:
         ordering = ["order"]
 
@@ -729,6 +756,8 @@ class BookSeries(models.Model):
         null=True,
     )
 
+    history = HistoricalRecords(inherit=True)
+
     def __str__(self):
         return self.title
 
@@ -740,6 +769,7 @@ class BookInSeries(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     series = models.ForeignKey(BookSeries, on_delete=models.CASCADE)
     order = models.PositiveIntegerField()
+    history = HistoricalRecords(inherit=True)
 
     class Meta:
         ordering = ["order"]

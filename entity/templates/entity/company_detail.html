@@ -255,6 +255,13 @@
                     {% endif %}
                 </div>
                 {% endif %}
+
+                {% if object.history %}
+                <div class="bg-light p-3 mb-3 order-2 order-sm-1">
+                    <a href="{% url 'entity:company_history' object.pk %}"
+                           class='fs-6 text-secondary'>Changelog</a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -4,10 +4,12 @@ from .views import (
     CompanyAutocomplete,
     CompanyCreateView,
     CompanyDetailView,
+    CompanyHistoryView,
     CompanyUpdateView,
     CreatorAutoComplete,
     CreatorCreateView,
     CreatorDetailView,
+    CreatorHistoryView,
     CreatorUpdateView,
     RoleAutocomplete,
     RoleCreateView,
@@ -25,6 +27,11 @@ urlpatterns = [
         "creator/<int:pk>/update/", CreatorUpdateView.as_view(), name="creator_update"
     ),
     path(
+        "creator/<int:pk>/history/",
+        CreatorHistoryView.as_view(),
+        name="creator_history",
+    ),
+    path(
         "creator-autocomplete/",
         CreatorAutoComplete.as_view(),
         name="creator-autocomplete",
@@ -39,6 +46,11 @@ urlpatterns = [
     path("company/<int:pk>/", CompanyDetailView.as_view(), name="company_detail"),
     path(
         "company/<int:pk>/update/", CompanyUpdateView.as_view(), name="company_update"
+    ),
+    path(
+        "company/<int:pk>/history/",
+        CompanyHistoryView.as_view(),
+        name="company_history",
     ),
     path(
         "company-autocomplete/",

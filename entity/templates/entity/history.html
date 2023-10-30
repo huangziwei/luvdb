@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+    <h1 class="mb-3">Change Log of {{ object.name }}</h1>
+
+    <div class="container">
+        {% for record in history_data %}
+        <div class="mb-4">
+            <h2>
+            {% if record.type == "change" %}
+                Changed by
+            {% else %}
+                Created by 
+            {% endif %}
+                <a href="{% url 'accounts:detail' record.changed_by.username %}">{{ record.changed_by.display_name|default:record.changed_by.username }}</a> at {{ record.changed_at|date:"Y.m.d H:i" }}
+            </h2>
+            
+            <table class="table table-striped table-fixed"> <!-- Add table-fixed class -->
+            <colgroup>
+                <col style="width: 10%">
+                {% if record.type == "change" %}
+                    <col style="width: 45%">
+                    <col style="width: 45%">
+                {% else %}
+                    <col style="width: 90%">
+                {% endif %}
+                
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col">Field</th>
+                    {% if record.type == "change" %}
+                        <th scope="col">From</th>
+                    {% endif %}
+                    <th scope="col">To</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for field, changes in record.changed_fields.items %}
+                <tr>
+                    <td>{{ field }}</td>
+                    {% if record.type == "change" %}
+                    <td>{{ changes.from }}</td>
+                    {% endif %}
+                    <td>{{ changes.to }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+    </div>
+</div>
+{% endblock %}

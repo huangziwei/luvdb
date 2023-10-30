@@ -590,7 +590,7 @@
                 </div>
                 {% endif %}
 
-                <div class="bg-light p-3">
+                <div class="bg-light p-3 mb-3">
                     <h5>Statistics</h5>
                     {% if litworks_count != 0 or litinstances_count != 0 or books_count != 0 %}
                     <div class="mt-3">
@@ -671,7 +671,13 @@
                     </div>
                     {% endif %}
                 </div>
+
+                {% if object.history %}
+                <div class="bg-light p-3 mb-3 order-2 order-sm-1">
+                    <a href="{% url 'entity:creator_history' object.pk %}"
+                           class='fs-6 text-secondary'>Changelog</a>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
