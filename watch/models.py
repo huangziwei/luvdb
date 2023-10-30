@@ -89,6 +89,7 @@ class Movie(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        new_or_updated_cover = False
         # If the instance already exists in the database
         if self.pk:
             # Get the existing instance from the database
@@ -97,10 +98,11 @@ class Movie(models.Model):
             if old_instance.poster != self.poster:
                 # Delete the old poster
                 old_instance.poster.delete(save=False)
+                new_or_updated_cover = True
 
         super().save(*args, **kwargs)
 
-        if self.poster:
+        if new_or_updated_cover and self.poster:
             img = Image.open(self.poster.open(mode="rb"))
 
             if img.height > 500 or img.width > 500:
@@ -233,6 +235,7 @@ class Series(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        new_or_updated_cover = False
         # If the instance already exists in the database
         if self.pk:
             # Get the existing instance from the database
@@ -241,10 +244,11 @@ class Series(models.Model):
             if old_instance.poster != self.poster:
                 # Delete the old poster
                 old_instance.poster.delete(save=False)
+                new_or_updated_cover = True
 
         super().save(*args, **kwargs)
 
-        if self.poster:
+        if new_or_updated_cover and self.poster:
             img = Image.open(self.poster.open(mode="rb"))
 
             if img.height > 500 or img.width > 500:

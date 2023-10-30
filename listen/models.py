@@ -251,6 +251,9 @@ class Release(models.Model):
         return reverse("listen:release_detail", kwargs={"pk": self.pk})
 
     def save(self, *args, **kwargs):
+        # To hold a flag indicating if the cover is new or updated
+        new_or_updated_cover = False
+
         # If the instance already exists in the database
         if self.pk:
             # Get the existing instance from the database
@@ -259,10 +262,11 @@ class Release(models.Model):
             if old_instance.cover != self.cover:
                 # Delete the old cover
                 old_instance.cover.delete(save=False)
+                new_or_updated_cover = True
 
         super().save(*args, **kwargs)
 
-        if self.cover:
+        if new_or_updated_cover and self.cover:
             img = Image.open(self.cover.open(mode="rb"))
 
             if img.height > 500 or img.width > 500:
@@ -450,9 +454,8 @@ class Podcast(models.Model):
         return "Podcast"
 
     def save(self, *args, **kwargs):
-        """
-        Override the save method to resize and convert the cover image to webp format.
-        """
+        # To hold a flag indicating if the cover is new or updated
+        new_or_updated_cover = False
 
         # Check if the instance already exists in the database.
         if self.pk:
@@ -461,12 +464,13 @@ class Podcast(models.Model):
             if old_instance.cover != self.cover:
                 # Delete the old cover.
                 old_instance.cover.delete(save=False)
+                new_or_updated_cover = True
 
         # Save the instance first, to generate a primary key if needed.
         super().save(*args, **kwargs)
 
         # Resize and convert cover image to webp format
-        if self.cover:
+        if new_or_updated_cover and self.cover:
             img = Image.open(self.cover.open(mode="rb"))
 
             if img.height > 500 or img.width > 500:
@@ -609,6 +613,8 @@ class Audiobook(models.Model):
         )  # adjust this if your related name is different
 
     def save(self, *args, **kwargs):
+        # To hold a flag indicating if the cover is new or updated
+        new_or_updated_cover = False
         # If the instance already exists in the database
         if self.pk:
             # Get the existing instance from the database
@@ -617,10 +623,11 @@ class Audiobook(models.Model):
             if old_instance.cover != self.cover:
                 # Delete the old cover
                 old_instance.cover.delete(save=False)
+                new_or_updated_cover = True
 
         super().save(*args, **kwargs)
 
-        if self.cover:
+        if new_or_updated_cover and self.cover:
             img = Image.open(self.cover.open(mode="rb"))
 
             if img.height > 500 or img.width > 500:
