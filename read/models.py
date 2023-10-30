@@ -671,6 +671,8 @@ class Issue(models.Model):
         return self.readcheckin_set.count()
 
     def save(self, *args, **kwargs):
+        new_or_updated_cover = False
+
         # If the instance already exists in the database
         if self.pk:
             # Get the existing instance from the database
@@ -679,10 +681,11 @@ class Issue(models.Model):
             if old_instance.cover != self.cover:
                 # Delete the old cover
                 old_instance.cover.delete(save=False)
+                new_or_updated_cover = True
 
         super().save(*args, **kwargs)
 
-        if self.cover:
+        if new_or_updated_cover and self.cover:
             img = Image.open(self.cover.open(mode="rb"))
 
             if img.height > 500 or img.width > 500:

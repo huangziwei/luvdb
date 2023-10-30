@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Any
 
 from dal import autocomplete
 from django.contrib.auth import get_user_model
@@ -208,6 +209,10 @@ class WorkDetailView(DetailView):
             )
         context["grouped_roles"] = grouped_roles
 
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+
         return context
 
 
@@ -313,6 +318,10 @@ class InstanceDetailView(DetailView):
         context["books"] = self.object.books.all().order_by("publication_date")
         context["issues"] = self.object.issues.all().order_by("publication_date")
         context["audiobooks"] = self.object.audiobooks.all().order_by("release_date")
+
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
         return context
 
 
@@ -500,6 +509,10 @@ class BookDetailView(DetailView):
         else:
             context["latest_user_status"] = "to_read"
 
+        # contributors
+        unique_usernames = {record.history_user for record in book.history.all()}
+        context["contributors"] = unique_usernames
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -589,6 +602,13 @@ class PeriodicalCreateView(LoginRequiredMixin, CreateView):
 class PeriodicalDetailView(DetailView):
     model = Periodical
     template_name = "read/periodical_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+        return context
 
 
 class PeriodicalUpdateView(LoginRequiredMixin, UpdateView):
@@ -773,6 +793,10 @@ class IssueDetailView(DetailView):
         ).order_by("luv_list__title")
 
         context["lists_containing_issue"] = lists_containing_issue
+
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
 
         return context
 
@@ -1469,6 +1493,13 @@ class BookSeriesCreateView(LoginRequiredMixin, CreateView):
 class BookSeriesDetailView(DetailView):
     model = BookSeries
     template_name = "read/series_detail.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+        return context
 
 
 class BookSeriesUpdateView(LoginRequiredMixin, UpdateView):
