@@ -61,10 +61,12 @@
                 <!--Related tracks / Edit -->
                 {% if user.is_authenticated %}
                     <div class="bg-light p-3 mb-3">
+                        {% if not object.locked %}
                         <div>
                             <a href="{% url 'listen:track_update' object.pk %}"
                                class='fs-6 text-secondary'>Edit Track</a>
                         </div>
+                        {% endif %}
                         <div>
                             <a href="{% url 'listen:release_create' %}" class='fs-6 text-secondary'>Add Release</a>
                         </div>

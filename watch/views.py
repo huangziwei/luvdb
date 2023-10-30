@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -239,9 +240,7 @@ class MovieDetailView(DetailView):
             if movie_role.role.name not in roles:
                 roles[movie_role.role.name] = []
             d = movie_role.alt_name or movie_role.creator.name
-            roles[movie_role.role.name].append(
-                (movie_role.creator, d)
-            )
+            roles[movie_role.role.name].append((movie_role.creator, d))
         context["roles"] = roles
 
         # Fetch the latest check-in from the current user for this book
@@ -294,6 +293,13 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
     model = Movie
     form_class = MovieForm
     template_name = "watch/movie_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy("watch:movie_detail", kwargs={"pk": self.object.pk})
@@ -364,6 +370,7 @@ class MovieCastDetailView(DetailView):
         context["moviecrew"] = self.object.movieroles.all()
 
         return context
+
 
 class WatchListView(TemplateView):
     template_name = "watch/watch_list.html"
@@ -666,6 +673,14 @@ class SeriesUpdateView(LoginRequiredMixin, UpdateView):
     form_class = SeriesForm
     template_name = "watch/series_update.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
+
+
     def get_success_url(self):
         return reverse_lazy("watch:series_detail", kwargs={"pk": self.object.pk})
 
@@ -868,6 +883,13 @@ class EpisodeUpdateView(LoginRequiredMixin, UpdateView):
     model = Episode
     form_class = EpisodeForm
     template_name = "watch/episode_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_initial(self):
         initial = super().get_initial()
@@ -1084,9 +1106,7 @@ class GenericCheckInListView(ListView):
                 if movie_role.role.name not in roles:
                     roles[movie_role.role.name] = []
                 d = movie_role.alt_name or movie_role.creator.name
-                roles[movie_role.role.name].append(
-                    (movie_role.creator, d)
-                )
+                roles[movie_role.role.name].append((movie_role.creator, d))
             context["roles"] = roles
             context["object"] = movie
         elif self.kwargs["model_name"] == "series":
@@ -1095,12 +1115,8 @@ class GenericCheckInListView(ListView):
             for series_role in series.seriesroles.all():
                 if series_role.role.name not in roles:
                     roles[series_role.role.name] = []
-                d = (
-                    series_role.alt_name or series_role.creator.name
-                )
-                roles[series_role.role.name].append(
-                    (series_role.creator, d)
-                )
+                d = series_role.alt_name or series_role.creator.name
+                roles[series_role.role.name].append((series_role.creator, d))
             context["roles"] = roles
             context["object"] = series
 
@@ -1201,9 +1217,7 @@ class GenericCheckInAllListView(ListView):
                 if movie_role.role.name not in roles:
                     roles[movie_role.role.name] = []
                 d = movie_role.alt_name or movie_role.creator.name
-                roles[movie_role.role.name].append(
-                    (movie_role.creator, d)
-                )
+                roles[movie_role.role.name].append((movie_role.creator, d))
 
         elif context["model_name"] == "series":
             series = model.objects.get(pk=self.kwargs["object_id"])
@@ -1211,12 +1225,8 @@ class GenericCheckInAllListView(ListView):
             for series_role in series.seriesroles.all():
                 if series_role.role.name not in roles:
                     roles[series_role.role.name] = []
-                d = (
-                    series_role.alt_name or series_role.creator.name
-                )
-                roles[series_role.role.name].append(
-                    (series_role.creator, d)
-                )
+                d = series_role.alt_name or series_role.creator.name
+                roles[series_role.role.name].append((series_role.creator, d))
         context["roles"] = roles
         return context
 
@@ -1370,6 +1380,14 @@ class CollectionUpdateView(LoginRequiredMixin, UpdateView):
     model = Collection
     form_class = CollectionForm
     template_name = "watch/collection_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
+
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)

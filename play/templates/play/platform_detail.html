@@ -36,7 +36,7 @@
 
             <div class="d-flex flex-column col-sm-4">
                 <!--Related Work / Edit -->
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated  and not object.locked %}
                 <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                     <div>
                         <a href="{% url 'play:platform_update' object.pk %}" class='fs-6 text-secondary'>Edit Platform</a>

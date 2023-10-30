@@ -30,7 +30,7 @@ from .models import (
 class WorkForm(forms.ModelForm):
     class Meta:
         model = Work
-        exclude = ["created_by", "updated_by", "creators", "romanized_title"]
+        exclude = ["created_by", "updated_by", "creators", "locked"]
         fields = "__all__"
         help_texts = {
             "title": "Enter the work's title in its original language. ",
@@ -108,7 +108,7 @@ WorkRoleFormSet = inlineformset_factory(
 class TrackForm(forms.ModelForm):
     class Meta:
         model = Track
-        exclude = ["created_by", "updated_by", "creators"]
+        exclude = ["created_by", "updated_by", "creators", "locked"]
         fields = "__all__"
         help_texts = {
             "title": "Enter the track's title. ",
@@ -191,13 +191,7 @@ TrackRoleFormSet = inlineformset_factory(
 class ReleaseForm(forms.ModelForm):
     class Meta:
         model = Release
-        exclude = [
-            "created_by",
-            "updated_by",
-            "works",
-            "tracks",
-            "creators",
-        ]
+        exclude = ["created_by", "updated_by", "works", "tracks", "creators", "locked"]
         fields = "__all__"
         widgets = {
             "track": autocomplete.ModelSelect2(
@@ -408,6 +402,7 @@ class AudiobookForm(forms.ModelForm):
             "works",
             "instances",
             "creators",
+            "locked",
         ]
         fields = "__all__"
         widgets = {

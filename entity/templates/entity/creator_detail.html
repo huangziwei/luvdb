@@ -568,7 +568,7 @@
             </div>
             <!--manage entry-->
             <div class="col-12 col-md-4">
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated and not object.locked %}
                     <div class="bg-light p-3 mb-3">
                         <a href="{% url 'entity:creator_update' object.pk %}"
                            class='fs-6 text-secondary'>Edit Creator</a>

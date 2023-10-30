@@ -67,14 +67,13 @@
             <!--right columns-->
             <div class="col-12 col-md-4">
                 <!--Related works / Edit -->
+                {% if user.is_authenticated and not object.locked %}
                 <div class="bg-light p-3">
-                    {% if user.is_authenticated %}
-                        <div>
-                            <a href="{% url 'watch:episode_update' object.series.id object.id %}"
+                    <a href="{% url 'watch:episode_update' object.series.id object.id %}"
                                class='fs-6 text-secondary'>Edit episode data</a>
-                        </div>
-                    {% endif %}
                 </div>
+                {% endif %}
+
             </div>
         </div>
     </div>

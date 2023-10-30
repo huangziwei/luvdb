@@ -2,6 +2,7 @@ from dal import autocomplete
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Min, Q
+from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.utils.html import format_html
 from django.views.generic.detail import DetailView
@@ -418,6 +419,13 @@ class CreatorUpdateView(LoginRequiredMixin, UpdateView):
     form_class = CreatorForm
     template_name = "entity/creator_update.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
@@ -607,6 +615,13 @@ class CompanyUpdateView(LoginRequiredMixin, UpdateView):
         "notes",
     ]
     template_name = "entity/company_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)

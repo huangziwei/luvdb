@@ -5,8 +5,6 @@ from io import BytesIO
 import feedparser
 import requests
 from dal import autocomplete
-from django import forms
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,6 +12,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import transaction
 from django.db.models import Count, F, Max, OuterRef, Q, Subquery
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -111,6 +110,13 @@ class WorkUpdateView(LoginRequiredMixin, UpdateView):
     model = Work
     form_class = WorkForm
     template_name = "listen/work_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -275,6 +281,13 @@ class TrackUpdateView(LoginRequiredMixin, UpdateView):
     model = Track
     form_class = TrackForm
     template_name = "listen/track_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -609,6 +622,13 @@ class ReleaseUpdateView(LoginRequiredMixin, UpdateView):
     model = Release
     form_class = ReleaseForm
     template_name = "listen/release_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy("listen:release_detail", kwargs={"pk": self.object.pk})
@@ -1133,6 +1153,13 @@ class PodcastUpdateView(UpdateView):
     def get_success_url(self):
         return reverse_lazy("listen:podcast_detail", kwargs={"pk": self.object.pk})
 
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
+
 
 class PodcastDetailView(DetailView):
     model = Podcast
@@ -1590,6 +1617,13 @@ class ReleaseGroupUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ReleaseGroupForm
     template_name = "listen/releasegroup_update.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
@@ -1839,6 +1873,13 @@ class AudiobookUpdateView(LoginRequiredMixin, UpdateView):
     model = Audiobook
     form_class = AudiobookForm
     template_name = "listen/audiobook_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy("listen:audiobook_detail", kwargs={"pk": self.object.pk})

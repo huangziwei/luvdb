@@ -57,10 +57,12 @@ class Work(models.Model):  # Renamed from Book
     A Work entity
     """
 
+    # admin
+    locked = models.BooleanField(default=False)
+
     # work meta data
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
-    romanized_title = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
     creators = models.ManyToManyField(
         Creator, through="WorkRole", related_name="play_works"
@@ -122,6 +124,7 @@ class Work(models.Model):  # Renamed from Book
     def model_name(self):
         return "GameWork"
 
+
 class WorkRole(models.Model):  # Renamed from BookRole
     """
     A Role of a Creator in a Work
@@ -149,9 +152,12 @@ class WorkRole(models.Model):  # Renamed from BookRole
 
 
 class Game(models.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # game meta data
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
-    romanized_title = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
     work = models.ForeignKey(
         Work, on_delete=models.CASCADE, null=True, blank=True, related_name="games"
@@ -338,7 +344,7 @@ class GameCheckIn(models.Model):
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
-                # Attempt to fetch an existing Activity object for this check-in
+        # Attempt to fetch an existing Activity object for this check-in
         try:
             activity = Activity.objects.get(
                 content_type__model="gamecheckin", object_id=self.id
@@ -363,6 +369,9 @@ class GameCheckIn(models.Model):
 
 
 class GameSeries(models.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
     # data
     title = models.CharField(max_length=100)
     other_titles = models.TextField(blank=True, null=True)

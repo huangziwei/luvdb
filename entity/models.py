@@ -57,6 +57,9 @@ class Entity(models.Model):
     An Entity base model
     """
 
+    # admin
+    locked = models.BooleanField(default=False)
+
     # entity meta data
     name = models.CharField(max_length=255)
     # romanized_name = models.CharField(max_length=255, blank=True, null=True)

@@ -110,7 +110,7 @@ WorkRoleFormSet = inlineformset_factory(
 class InstanceForm(forms.ModelForm):
     class Meta:
         model = Instance
-        exclude = ["created_by", "updated_by", "creators"]
+        exclude = ["created_by", "updated_by", "creators", "locked"]
         fields = "__all__"
         help_texts = {
             "title": "Enter the instance's title. ",
@@ -193,6 +193,7 @@ class BookForm(forms.ModelForm):
             "works",
             "instances",
             "creators",
+            "locked",
         ]
         fields = "__all__"
         widgets = {

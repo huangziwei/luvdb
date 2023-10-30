@@ -5,11 +5,10 @@ from io import BytesIO
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.text import slugify
 from PIL import Image
 
@@ -52,10 +51,13 @@ class Genre(models.Model):
 
 
 class Work(models.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # musical work meta data
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
-    romanized_title = models.CharField(max_length=200, blank=True, null=True)
     creators = models.ManyToManyField(
         Creator, through="WorkRole", related_name="listen_works"
     )
@@ -99,11 +101,13 @@ class Track(models.Model):
     A Work entity
     """
 
+    # admin
+    locked = models.BooleanField(default=False)
+
     # track meta data
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
-    romanized_title = models.CharField(max_length=255, blank=True, null=True)
     creators = models.ManyToManyField(
         Creator, through="TrackRole", related_name="tracks"
     )
@@ -163,13 +167,16 @@ class Release(models.Model):
     An Release Entity
     """
 
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # Release cover
     cover = models.ImageField(upload_to=rename_release_cover, null=True, blank=True)
     cover_sens = models.BooleanField(default=False, null=True, blank=True)
 
     # Release meta data
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
-    romanized_title = models.CharField(max_length=255, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
 
     creators = models.ManyToManyField(
@@ -407,6 +414,9 @@ class Podcast(models.Model):
     A Podcast Entity
     """
 
+    # admin
+    locked = models.BooleanField(default=False)
+
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_release_cover, null=True, blank=True)
@@ -485,6 +495,10 @@ class Podcast(models.Model):
 
 
 class ReleaseGroup(models.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # release group meta
     title = models.CharField(max_length=100)
     releases = models.ManyToManyField(
         Release, through="ReleaseInGroup", related_name="release_group"
@@ -526,7 +540,10 @@ class Audiobook(models.Model):
     A Audiobook entity of an Instance
     """
 
-    # book meta data
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # audiobook meta data
     title = models.CharField(max_length=255)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     cover = models.ImageField(upload_to=rename_release_cover, null=True, blank=True)

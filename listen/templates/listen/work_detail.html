@@ -63,10 +63,12 @@
                 <!--Related tracks / Edit -->
                 {% if user.is_authenticated %}
                     <div class="bg-light p-3 mb-3">
+                        {% if not object.locked %}
                         <div>
                             <a href="{% url 'listen:work_update' object.pk %}"
                                class='fs-6 text-secondary'>Edit Work</a>
                         </div>
+                        {% endif %}
                         <div>
                             <a href="{% url 'listen:track_create' %}" class='fs-6 text-secondary'>Add Track</a>
                         </div>

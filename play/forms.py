@@ -23,7 +23,7 @@ from .models import (
 class WorkForm(forms.ModelForm):
     class Meta:
         model = Work
-        exclude = ["created_by", "updated_by", "creators", "casts"]
+        exclude = ["created_by", "updated_by", "creators", "casts", "locked"]
         fields = "__all__"
         widgets = {
             "developers": autocomplete.ModelSelect2Multiple(
@@ -98,7 +98,7 @@ WorkRoleFormSet = inlineformset_factory(
 class GameForm(forms.ModelForm):
     class Meta:
         model = Game
-        exclude = ["created_by", "updated_by", "creators", "casts"]
+        exclude = ["created_by", "updated_by", "creators", "casts", "locked"]
         fields = "__all__"
         widgets = {
             "work": autocomplete.ModelSelect2(

@@ -37,9 +37,12 @@ class Genre(models.Model):
 
 
 class Movie(models.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # movie meta data
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
-    romanized_title = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
     studios = models.ManyToManyField(Company, related_name="movies")
     distributors = models.ManyToManyField(Company, related_name="movies_distributed")
@@ -182,9 +185,12 @@ class MovieCast(models.Model):
 
 
 class Series(models.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # series meta data
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
-    romanized_title = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
     studios = models.ManyToManyField(Company, related_name="series")
     distributors = models.ManyToManyField(Company, related_name="series_distributed")
@@ -290,12 +296,15 @@ class SeriesRole(models.Model):
 
 
 class Episode(models.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # episode meta data
     series = models.ForeignKey(
         Series, on_delete=models.CASCADE, related_name="episodes"
     )
     title = models.CharField(max_length=255, blank=True, null=True)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
-    romanized_title = models.CharField(max_length=255, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
     season = models.IntegerField(blank=True, null=True)
     episode = models.IntegerField(blank=True, null=True)
@@ -435,6 +444,10 @@ class WatchCheckIn(models.Model):
 
 
 class Collection(models.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # collection meta data
     title = models.CharField(max_length=100)
     notes = models.TextField(null=True, blank=True)
 

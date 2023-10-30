@@ -29,7 +29,7 @@ from .models import (
 class MovieForm(forms.ModelForm):
     class Meta:
         model = Movie
-        exclude = ["created_by", "updated_by", "creators", "casts"]
+        exclude = ["created_by", "updated_by", "creators", "casts", "locked"]
         fields = "__all__"
         widgets = {
             "studios": autocomplete.ModelSelect2Multiple(
@@ -196,7 +196,7 @@ MovieCastFormSet = inlineformset_factory(
 class SeriesForm(forms.ModelForm):
     class Meta:
         model = Series
-        exclude = ["created_by", "updated_by", "creators"]
+        exclude = ["created_by", "updated_by", "creators", "locked"]
         fields = "__all__"
         widgets = {
             "studios": autocomplete.ModelSelect2Multiple(
@@ -278,7 +278,7 @@ SeriesRoleFormSet = inlineformset_factory(
 class EpisodeForm(forms.ModelForm):
     class Meta:
         model = Episode
-        exclude = ["created_by", "updated_by", "creators", "casts"]
+        exclude = ["created_by", "updated_by", "creators", "casts", "locked"]
         fields = "__all__"
 
         widgets = {

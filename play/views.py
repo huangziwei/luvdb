@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -105,6 +106,13 @@ class WorkUpdateView(LoginRequiredMixin, UpdateView):
     model = Work
     form_class = WorkForm
     template_name = "play/work_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy("play:work_detail", kwargs={"pk": self.object.pk})
@@ -343,6 +351,13 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
     form_class = GameForm
     template_name = "play/game_update.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse_lazy("play:game_detail", kwargs={"pk": self.object.pk})
 
@@ -462,6 +477,13 @@ class PlatformUpdateView(LoginRequiredMixin, UpdateView):
     template_name = (
         "play/platform_update.html"  # Change the template name as per your requirement
     )
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -903,6 +925,13 @@ class GameSeriesUpdateView(LoginRequiredMixin, UpdateView):
     model = GameSeries
     form_class = GameSeriesForm
     template_name = "play/series_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)

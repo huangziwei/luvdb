@@ -103,7 +103,7 @@ class WorkUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "read/work_update.html"
 
     def dispatch(self, request, *args, **kwargs):
-        # Check if the Work object is locked for editing.
+        # Check if the object is locked for editing.
         obj = self.get_object()
         if obj.locked:
             return HttpResponseForbidden("This entry is locked and cannot be edited.")

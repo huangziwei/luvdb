@@ -152,7 +152,7 @@
             <!--Right columns-->
             <div class="d-flex flex-column col-sm-4">
                 <!--Related tracks / Edit -->
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated and not object.locked %}
                     <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         <a href="{% url 'listen:release_update' object.pk %}"
                            class='fs-6 text-secondary'>Edit Release</a>
