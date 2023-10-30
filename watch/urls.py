@@ -3,10 +3,12 @@ from django.urls import path
 from .views import (
     CollectionCreateView,
     CollectionDetailView,
+    CollectionHistoryView,
     CollectionUpdateView,
     EpisodeCastDetailView,
     EpisodeCreateView,
     EpisodeDetailView,
+    EpisodeHistoryView,
     EpisodeUpdateView,
     GenericCheckInAllListView,
     GenericCheckInListView,
@@ -16,10 +18,12 @@ from .views import (
     MovieCastDetailView,
     MovieCreateView,
     MovieDetailView,
+    MovieHistoryView,
     MovieUpdateView,
     SeriesCastDetailView,
     SeriesCreateView,
     SeriesDetailView,
+    SeriesHistoryView,
     SeriesUpdateView,
     WatchCheckInCreateView,
     WatchCheckInDeleteView,
@@ -43,6 +47,7 @@ urlpatterns = [
         name="movie_detail",
     ),
     path("movie/<int:pk>/update/", MovieUpdateView.as_view(), name="movie_update"),
+    path("movie/<int:pk>/history/", MovieHistoryView.as_view(), name="movie_history"),
     # series
     path("series/create/", SeriesCreateView.as_view(), name="series_create"),
     path(
@@ -52,6 +57,9 @@ urlpatterns = [
         name="series_detail",
     ),
     path("series/<int:pk>/update/", SeriesUpdateView.as_view(), name="series_update"),
+    path(
+        "series/<int:pk>/history/", SeriesHistoryView.as_view(), name="series_history"
+    ),
     # episode
     path(
         "series/<int:series_id>/episode/create/",
@@ -67,6 +75,11 @@ urlpatterns = [
         "series/<int:series_id>/episode/<int:pk>/update/",
         EpisodeUpdateView.as_view(),
         name="episode_update",
+    ),
+    path(
+        "series/<int:series_id>/episode/<int:pk>/history/",
+        EpisodeHistoryView.as_view(),
+        name="episode_history",
     ),
     # autocomplete
     path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),
@@ -146,5 +159,10 @@ urlpatterns = [
         "collection/<int:pk>/update/",
         CollectionUpdateView.as_view(),
         name="collection_update",
+    ),
+    path(
+        "collection/<int:pk>/history/",
+        CollectionHistoryView.as_view(),
+        name="collection_history",
     ),
 ]

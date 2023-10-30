@@ -29,6 +29,7 @@ from PIL import Image
 
 from discover.views import user_has_upvoted
 from entity.models import Creator, Role
+from entity.views import HistoryViewMixin
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
 
@@ -179,6 +180,10 @@ class WorkDetailView(DetailView):
             context["tracks"].append(
                 {"track": track, "items": items, "singers": singers}
             )
+
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
 
         return context
 
@@ -340,6 +345,11 @@ class TrackDetailView(DetailView):
             )
         context["grouped_roles"] = grouped_roles
         context["releases"] = track.releases.all().order_by("release_date")
+
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+
         return context
 
 
@@ -593,6 +603,10 @@ class ReleaseDetailView(DetailView):
                 context["latest_user_status"] = "to_listen"
         else:
             context["latest_user_status"] = "to_listen"
+
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
 
         return context
 
@@ -1300,6 +1314,10 @@ class PodcastDetailView(DetailView):
         else:
             context["latest_user_status"] = "to_listen"
 
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -1847,6 +1865,10 @@ class AudiobookDetailView(DetailView):
         else:
             context["latest_user_status"] = "to_listen"
 
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -1924,3 +1946,74 @@ class AudiobookUpdateView(LoginRequiredMixin, UpdateView):
                         audiobookinstances.save()
 
         return super().form_valid(form)
+
+
+#################
+# History Views #
+#################
+
+
+class WorkHistoryView(HistoryViewMixin, DetailView):
+    model = Work
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class TrackHistoryView(HistoryViewMixin, DetailView):
+    model = Track
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class ReleaseHistoryView(HistoryViewMixin, DetailView):
+    model = Release
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class ReleaseGroupHistoryView(HistoryViewMixin, DetailView):
+    model = ReleaseGroup
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class AudiobookHistoryView(HistoryViewMixin, DetailView):
+    model = Audiobook
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class PodcastHistoryView(HistoryViewMixin, DetailView):
+    model = Podcast
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context

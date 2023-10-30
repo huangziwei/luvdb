@@ -1,5 +1,6 @@
 from collections import defaultdict
 from datetime import timedelta
+from typing import Any
 
 from dal import autocomplete
 from django import forms
@@ -22,6 +23,7 @@ from django.views.generic import (
 )
 
 from discover.views import user_has_upvoted
+from entity.views import HistoryViewMixin
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
 
@@ -265,6 +267,10 @@ class MovieDetailView(DetailView):
             "release_date"
         )
 
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -368,7 +374,9 @@ class MovieCastDetailView(DetailView):
             "moviecasts"
         ] = self.object.moviecasts.all()  # Update with your correct related name
         context["moviecrew"] = self.object.movieroles.all()
-
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
         return context
 
 
@@ -644,6 +652,10 @@ class SeriesDetailView(DetailView):
         else:
             context["latest_user_status"] = "to_watch"
 
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -679,7 +691,6 @@ class SeriesUpdateView(LoginRequiredMixin, UpdateView):
         if obj.locked:
             return HttpResponseForbidden("This entry is locked and cannot be edited.")
         return super().dispatch(request, *args, **kwargs)
-
 
     def get_success_url(self):
         return reverse_lazy("watch:series_detail", kwargs={"pk": self.object.pk})
@@ -793,6 +804,10 @@ class SeriesCastDetailView(DetailView):
         context["series_crew"] = dict(series_crew_grouped)
         context["episodes_cast"] = dict(episodes_cast)
 
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+
         return context
 
 
@@ -876,6 +891,9 @@ class EpisodeDetailView(DetailView):
 
         context["episoderoles"] = dict(episoderoles_grouped)
 
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
         return context
 
 
@@ -957,6 +975,10 @@ class EpisodeCastDetailView(DetailView):
             "episodecasts"
         ] = self.object.episodecasts.all()  # Update with your correct related name
         context["episoderoles"] = self.object.episoderoles.all()
+
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
         return context
 
 
@@ -1375,6 +1397,13 @@ class CollectionDetailView(DetailView):
     model = Collection
     template_name = "watch/collection_detail.html"
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+        return context
+
 
 class CollectionUpdateView(LoginRequiredMixin, UpdateView):
     model = Collection
@@ -1387,7 +1416,6 @@ class CollectionUpdateView(LoginRequiredMixin, UpdateView):
         if obj.locked:
             return HttpResponseForbidden("This entry is locked and cannot be edited.")
         return super().dispatch(request, *args, **kwargs)
-
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -1415,3 +1443,52 @@ class CollectionUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("watch:collection_detail", kwargs={"pk": self.object.pk})
+
+
+#################
+# History Views #
+#################
+
+
+class MovieHistoryView(HistoryViewMixin, DetailView):
+    model = Movie
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class SeriesHistoryView(HistoryViewMixin, DetailView):
+    model = Series
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class EpisodeHistoryView(HistoryViewMixin, DetailView):
+    model = Episode
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class CollectionHistoryView(HistoryViewMixin, DetailView):
+    model = Collection
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context

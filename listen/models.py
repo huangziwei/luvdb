@@ -11,6 +11,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from PIL import Image
+from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
 from entity.models import Company, Creator, LanguageField, Role
@@ -67,6 +68,8 @@ class Work(models.Model):
     wikipedia = models.URLField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
+    history = HistoricalRecords(inherit=True)
+
     def __str__(self):
         return self.title
 
@@ -91,6 +94,7 @@ class WorkRole(models.Model):
         related_name="listen_workrole_set",
     )
     alt_name = models.CharField(max_length=255, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.role} of {self.work} by {self.creator}"
@@ -141,6 +145,7 @@ class Track(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return self.title
@@ -242,6 +247,7 @@ class Release(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    history = HistoricalRecords(inherit=True)
     listencheckin = GenericRelation("ListenCheckIn")
 
     def __str__(self):
@@ -307,6 +313,7 @@ class ReleaseRole(models.Model):
     )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=255, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.release} - {self.alt_name or self.creator.name} - {self.role}"
@@ -318,6 +325,7 @@ class ReleaseTrack(models.Model):
     alt_title = models.CharField(max_length=255, blank=True, null=True)
     disk = models.CharField(max_length=10, default="1")
     order = models.PositiveIntegerField(default=1, null=True, blank=True)
+    history = HistoricalRecords(inherit=True)
 
     class Meta:
         ordering = ["disk", "order"]
@@ -439,6 +447,7 @@ class Podcast(models.Model):
     explicit = models.BooleanField(null=True, blank=True, default=False)
     author = models.CharField(max_length=255, blank=True, null=True)
 
+    history = HistoricalRecords(inherit=True)
     listencheckin = GenericRelation("ListenCheckIn")
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -520,6 +529,7 @@ class ReleaseGroup(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return self.title
@@ -596,6 +606,7 @@ class Audiobook(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return self.title
@@ -669,6 +680,7 @@ class AudiobookRole(models.Model):
     )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=255, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.audiobook} - {self.alt_name or self.creator.name} - {self.role}"

@@ -68,12 +68,28 @@
             <div class="col-12 col-md-4">
                 <!--Related works / Edit -->
                 {% if user.is_authenticated and not object.locked %}
-                <div class="bg-light p-3">
+                <div class="bg-light p-3 mb-3">
                     <a href="{% url 'watch:episode_update' object.series.id object.id %}"
                                class='fs-6 text-secondary'>Edit episode data</a>
                 </div>
                 {% endif %}
 
+                <div class="bg-light p-3 mb-3 order-2 order-sm-3">
+                    <div class="d-flex justify-content-start">
+                        <h5 class="me-1">Contributors</h5>
+                        (<a href="{% url 'watch:episode_history' object.series.id object.pk %}" class="fs-6 text-secondary">Changelog</a>)
+                    </div>
+                    <div>
+                        {% for contributor in contributors %}
+                            <span>
+                                <a href="{% url 'accounts:detail' contributor.username %}">
+                                    {{ contributor.display_name|default:contributor.username }}
+                                </a>
+                            </span>
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>

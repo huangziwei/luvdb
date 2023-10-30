@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Any
 
 from dal import autocomplete
 from django import forms
@@ -21,6 +22,7 @@ from django.views.generic import (
 )
 
 from discover.views import user_has_upvoted
+from entity.views import HistoryViewMixin
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
 
@@ -99,6 +101,11 @@ class WorkDetailView(DetailView):
         )
 
         context["games"] = games
+
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+
         return context
 
 
@@ -324,6 +331,10 @@ class GameDetailView(DetailView):
             "release_date"
         )
 
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -422,6 +433,7 @@ class GameCastDetailView(DetailView):
             "gamecasts"
         ] = self.object.gamecasts.all()  # Update with your correct related name
         context["gamecrew"] = self.object.gameroles.all()
+
         return context
 
 
@@ -462,6 +474,10 @@ class PlatformDetailView(DetailView):
             .annotate(earliest_release_date=Min("region_release_dates__release_date"))
             .order_by("earliest_release_date")
         )
+
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
         return context
 
 
@@ -920,6 +936,13 @@ class GameSeriesDetailView(DetailView):
     model = GameSeries
     template_name = "play/series_detail.html"  # Update this
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        # contributors
+        unique_usernames = {record.history_user for record in self.object.history.all()}
+        context["contributors"] = unique_usernames
+        return context
+
 
 class GameSeriesUpdateView(LoginRequiredMixin, UpdateView):
     model = GameSeries
@@ -992,3 +1015,52 @@ class GenreAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__icontains=self.q)
 
         return qs
+
+
+#################
+# History Views #
+#################
+
+
+class WorkHistoryView(HistoryViewMixin, DetailView):
+    model = Work
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class GameHistoryView(HistoryViewMixin, DetailView):
+    model = Game
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class GameSeriesHistoryView(HistoryViewMixin, DetailView):
+    model = GameSeries
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class PlatformHistoryView(HistoryViewMixin, DetailView):
+    model = Platform
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context

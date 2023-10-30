@@ -11,6 +11,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from PIL import Image
+from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
 from entity.models import Company, Creator, LanguageField, Role
@@ -85,6 +86,8 @@ class Movie(models.Model):
         null=True,
     )
 
+    history = HistoricalRecords(inherit=True)
+
     def __str__(self):
         return self.title
 
@@ -145,6 +148,7 @@ class MovieReleaseDate(models.Model):
     )
     region = models.CharField(max_length=100, blank=True, null=True)
     release_date = models.CharField(max_length=10, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.movie} - {self.region} - {self.release_date}"
@@ -163,6 +167,7 @@ class MovieRole(models.Model):
     )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=100, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.movie} - {self.creator} - {self.role}"
@@ -181,6 +186,7 @@ class MovieCast(models.Model):
     )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     character_name = models.CharField(max_length=100, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.movie} - {self.creator} - {self.role}"
@@ -230,6 +236,7 @@ class Series(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return self.title
@@ -294,6 +301,7 @@ class SeriesRole(models.Model):
     )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=100, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.series} - {self.creator} - {self.role}"
@@ -322,6 +330,7 @@ class Episode(models.Model):
     casts = models.ManyToManyField(
         Creator, through="EpisodeCast", related_name="episodes_cast"
     )
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.series.title} - Season {self.season} - Episode {self.episode}"
@@ -343,6 +352,7 @@ class EpisodeRole(models.Model):
     )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=100, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.episode} - {self.creator} - {self.role}"
@@ -361,6 +371,7 @@ class EpisodeCast(models.Model):
     )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     character_name = models.CharField(max_length=100, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.episode} - {self.creator} - {self.role}"
@@ -467,6 +478,7 @@ class Collection(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return self.title

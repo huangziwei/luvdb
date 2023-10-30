@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     AudiobookCreateView,
     AudiobookDetailView,
+    AudiobookHistoryView,
     AudiobookUpdateView,
     GenericCheckInAllListView,
     GenericCheckInListView,
@@ -16,21 +17,26 @@ from .views import (
     ListenListView,
     PodcastCreateView,
     PodcastDetailView,
+    PodcastHistoryView,
     PodcastUpdateView,
     ReleaseCreateView,
     ReleaseCreditDetailView,
     ReleaseDetailView,
     ReleaseGroupCreateView,
     ReleaseGroupDetailView,
+    ReleaseGroupHistoryView,
     ReleaseGroupUpdateView,
+    ReleaseHistoryView,
     ReleaseUpdateView,
     TrackAutocomplete,
     TrackCreateView,
     TrackDetailView,
+    TrackHistoryView,
     TrackUpdateView,
     WorkAutocomplete,
     WorkCreateView,
     WorkDetailView,
+    WorkHistoryView,
     WorkUpdateView,
 )
 
@@ -40,10 +46,12 @@ urlpatterns = [
     path("work/create/", WorkCreateView.as_view(), name="work_create"),
     path("work/<int:pk>/", WorkDetailView.as_view(), name="work_detail"),
     path("work/<int:pk>/update/", WorkUpdateView.as_view(), name="work_update"),
+    path("work/<int:pk>/history/", WorkHistoryView.as_view(), name="work_history"),
     # track
     path("track/create/", TrackCreateView.as_view(), name="track_create"),
     path("track/<int:pk>/", TrackDetailView.as_view(), name="track_detail"),
     path("track/<int:pk>/update/", TrackUpdateView.as_view(), name="track_update"),
+    path("track/<int:pk>/history/", TrackHistoryView.as_view(), name="track_history"),
     # release
     path("release/create/", ReleaseCreateView.as_view(), name="release_create"),
     path("release/<int:pk>/", ReleaseDetailView.as_view(), name="release_detail"),
@@ -55,11 +63,21 @@ urlpatterns = [
         ReleaseCreditDetailView.as_view(),
         name="release_credit",
     ),
+    path(
+        "release/<int:pk>/history/",
+        ReleaseHistoryView.as_view(),
+        name="release_history",
+    ),
     # podcast
     path("podcast/create/", PodcastCreateView.as_view(), name="podcast_create"),
     path("podcast/<int:pk>/", PodcastDetailView.as_view(), name="podcast_detail"),
     path(
         "podcast/<int:pk>/update/", PodcastUpdateView.as_view(), name="podcast_update"
+    ),
+    path(
+        "podcast/<int:pk>/history/",
+        PodcastHistoryView.as_view(),
+        name="podcast_history",
     ),
     path("work-autocomplete/", WorkAutocomplete.as_view(), name="work-autocomplete"),
     path("track-autocomplete/", TrackAutocomplete.as_view(), name="track-autocomplete"),
@@ -149,5 +167,10 @@ urlpatterns = [
         "audiobook/<int:pk>/update/",
         AudiobookUpdateView.as_view(),
         name="audiobook_update",
+    ),
+    path(
+        "audiobook/<int:pk>/history/",
+        AudiobookHistoryView.as_view(),
+        name="audiobook_history",
     ),
 ]

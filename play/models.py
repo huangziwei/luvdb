@@ -11,6 +11,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from PIL import Image
+from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
 from entity.models import Company, Creator, Entity, Role
@@ -114,6 +115,7 @@ class Work(models.Model):  # Renamed from Book
         on_delete=models.SET_NULL,
         null=True,
     )
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return self.title
@@ -194,6 +196,7 @@ class Game(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return self.title
@@ -257,6 +260,7 @@ class GameReleaseDate(models.Model):
     )
     region = models.CharField(max_length=100, blank=True, null=True)
     release_date = models.CharField(max_length=10, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.game} - {self.region} - {self.release_date}"
@@ -273,6 +277,7 @@ class GameRole(models.Model):
     )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     alt_name = models.CharField(max_length=100, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.game} - {self.creator} - {self.role}"
@@ -289,6 +294,7 @@ class GameCast(models.Model):
     )
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
     character_name = models.CharField(max_length=100, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return f"{self.game} - {self.creator} - {self.role}"
@@ -396,6 +402,7 @@ class GameSeries(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         return self.title
