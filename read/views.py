@@ -353,6 +353,7 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
+            self.object = form.save()
 
             if bookroles.is_valid():
                 bookroles.instance = self.object

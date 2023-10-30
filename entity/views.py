@@ -411,6 +411,10 @@ class CreatorDetailView(DetailView):
             .count()
         )
 
+        # contributors
+        unique_usernames = {record.history_user for record in company.history.all()}
+        context["contributors"] = unique_usernames
+
         return context
 
 
@@ -598,6 +602,10 @@ class CompanyDetailView(DetailView):
             .annotate(earliest_release_date=Min("region_release_dates__release_date"))
             .order_by("earliest_release_date")
         )
+
+        # contributors
+        unique_usernames = {record.history_user for record in company.history.all()}
+        context["contributors"] = unique_usernames
 
         return context
 
