@@ -3,7 +3,11 @@
 {% block content %}
 <div class="container">
     <div class="row">
-    <h1 class="mb-3">Change Log of {{ object.name }}</h1>
+    <h1 class="mb-3">
+        Change Log of 
+        {% if object.name %}{{ object.name }}{% endif %}        
+        {% if object.title %}{{ object.title }}{% endif %}        
+    </h1>
 
     <div class="container">
         {% for record in history_data %}

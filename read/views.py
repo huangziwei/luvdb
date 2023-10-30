@@ -353,13 +353,15 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
-            self.object = form.save()
+
             if bookroles.is_valid():
                 bookroles.instance = self.object
                 bookroles.save()
+
             if bookinstances.is_valid():
                 bookinstances.instance = self.object
                 bookinstances.save()
+
         return super().form_valid(form)
 
 
@@ -557,19 +559,14 @@ class BookUpdateView(LoginRequiredMixin, UpdateView):
 
         with transaction.atomic():
             form.instance.updated_by = self.request.user
-            if self.request.method == "POST":
-                form = BookForm(
-                    self.request.POST, self.request.FILES, instance=self.object
-                )
-                if form.is_valid():
-                    self.object = form.save()
-                    if bookroles.is_valid():
-                        bookroles.instance = self.object
-                        bookroles.save()
 
-                    if bookinstances.is_valid():
-                        bookinstances.instance = self.object
-                        bookinstances.save()
+            if bookroles.is_valid():
+                bookroles.instance = self.object
+                bookroles.save()
+
+            if bookinstances.is_valid():
+                bookinstances.instance = self.object
+                bookinstances.save()
 
         return super().form_valid(form)
 
@@ -1565,9 +1562,10 @@ class WorkHistoryView(HistoryViewMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        creator = self.get_object()
-        context["history_data"] = self.get_history_data(creator)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
         return context
+
 
 class InstanceHistoryView(HistoryViewMixin, DetailView):
     model = Instance
@@ -1575,9 +1573,10 @@ class InstanceHistoryView(HistoryViewMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        creator = self.get_object()
-        context["history_data"] = self.get_history_data(creator)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
         return context
+
 
 class IssueHistoryView(HistoryViewMixin, DetailView):
     model = Issue
@@ -1585,9 +1584,10 @@ class IssueHistoryView(HistoryViewMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        creator = self.get_object()
-        context["history_data"] = self.get_history_data(creator)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
         return context
+
 
 class PeriodicalHistoryView(HistoryViewMixin, DetailView):
     model = Periodical
@@ -1595,9 +1595,10 @@ class PeriodicalHistoryView(HistoryViewMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        creator = self.get_object()
-        context["history_data"] = self.get_history_data(creator)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
         return context
+
 
 class BookHistoryView(HistoryViewMixin, DetailView):
     model = Book
@@ -1605,9 +1606,10 @@ class BookHistoryView(HistoryViewMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        creator = self.get_object()
-        context["history_data"] = self.get_history_data(creator)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
         return context
+
 
 class BookSeriesHistoryView(HistoryViewMixin, DetailView):
     model = Series
@@ -1615,6 +1617,6 @@ class BookSeriesHistoryView(HistoryViewMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        creator = self.get_object()
-        context["history_data"] = self.get_history_data(creator)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
         return context
