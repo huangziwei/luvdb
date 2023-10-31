@@ -36,27 +36,6 @@ class Follow(models.Model):
     class Meta:
         unique_together = ("follower", "followed")
 
-    def save(self, *args, **kwargs):
-        is_new = self.pk is None
-        super().save(*args, **kwargs)
-
-        if is_new:
-            follower_url = reverse("accounts:detail", args=[self.follower.username])
-            follower_name = (
-                self.follower.display_name
-                if self.follower.display_name
-                else self.follower.username
-            )
-            message = f'<a href="{follower_url}">@{follower_name}</a> followed you.'
-
-            Notification.objects.create(
-                recipient=self.followed,
-                sender_content_type=ContentType.objects.get_for_model(self.follower),
-                sender_object_id=self.follower.id,
-                notification_type="follow",
-                message=message,
-            )
-
 
 class Block(models.Model):
     blocker = models.ForeignKey(

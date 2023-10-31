@@ -657,21 +657,6 @@
                         <p>This user is not following anyone.</p>
                     {% endfor %}
                 </div>
-                <br>
-                <div>
-                    <!--followers-->
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4>Followers</h4>
-                        <a class="btn btn-outline-secondary btn-sm"
-                           href="{% url 'accounts:follower_list' object.username %}">All</a>
-                    </div>
-                    {% for follow in recent_followers %}
-                        <span class="me-2"><a href="{% url 'accounts:detail' username=follow.follower.username %}">{{ follow.follower.display_name|default:follow.follower.username }}</a></span>
-                    {% empty %}
-                        <p>This user has no followers.</p>
-                    {% endfor %}
-                </div>
-                <hr>
             </div>
 
             <!-- For larger screens: keep the existing layout -->
@@ -1316,21 +1301,6 @@
                             <p>This user is not following anyone.</p>
                         {% endfor %}
                     </div>
-                    <br>
-                    <div>
-                        <!--followers-->
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5>Followers</h5>
-                            <a class="btn btn-outline-secondary btn-sm"
-                               href="{% url 'accounts:follower_list' object.username %}">All</a>
-                        </div>
-                        {% for follow in recent_followers %}
-                            <span class="me-2"><a href="{% url 'accounts:detail' username=follow.follower.username %}">{{ follow.follower.display_name|default:follow.follower.username }}</a></span>
-                        {% empty %}
-                            <p>This user has no followers.</p>
-                        {% endfor %}
-                    </div>
-                    <hr>
                 </div>
             </div>
         </div>
