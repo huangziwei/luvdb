@@ -145,7 +145,7 @@ class AccountDetailView(DetailView):
             status__in=["reading", "rereading"]
         ).order_by("-timestamp")[:10]
         read = latest_read_checkins.filter(
-            status__in=["finished_reading", "reread"]
+            status__in=["finished_reading", "reread", "afterthought"]
         ).order_by("-timestamp")[:10]
         to_read = latest_read_checkins.filter(status="to_read").order_by("-timestamp")[
             :6
