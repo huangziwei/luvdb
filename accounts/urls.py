@@ -5,7 +5,6 @@ from activity_feed.feeds import UserActivityFeed
 from .views import (
     AccountDetailView,
     AccountUpdateView,
-    FollowerListView,
     FollowingListView,
     GenerateInvitationCodeView,
     InvitationRequestedSuccessView,
@@ -59,11 +58,6 @@ urlpatterns = [
         "<str:username>/following/",
         FollowingListView.as_view(),
         name="following_list",
-    ),
-    path(
-        "<str:username>/followers/",
-        FollowerListView.as_view(),
-        name="follower_list",
     ),
     path("<str:username>/update/", view=AccountUpdateView.as_view(), name="update"),
 ]

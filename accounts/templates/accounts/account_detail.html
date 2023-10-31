@@ -641,6 +641,7 @@
                 {% endif %}
             </div>
 
+            {% if object == request.user %}
             <!-- follow -->
             <div class="col-12 d-block d-md-none mb-1">
                 <!-- For mobile screens, this block will be after the left column. For desktop screens, it will be in the right column. -->
@@ -658,6 +659,7 @@
                     {% endfor %}
                 </div>
             </div>
+            {% endif %}
 
             <!-- For larger screens: keep the existing layout -->
             <!-- Left column -->
@@ -1285,6 +1287,7 @@
                         <hr>
                     {% endfor %}
                 </div>
+                {% if object == request.user %}
                 <!-- Following and Followers -->
                 <div class="col-12 order-3 order-md-2 mb-3">
                     <!-- For mobile screens, this block will be after the left column. For desktop screens, it will be in the right column. -->
@@ -1302,6 +1305,7 @@
                         {% endfor %}
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

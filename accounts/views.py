@@ -5,7 +5,7 @@ from datetime import timedelta
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.db.models import Count, Min, OuterRef, Q, Subquery
@@ -337,24 +337,18 @@ class PersonalActivityFeedView(LoginRequiredMixin, ListView):
         return super().get_queryset().filter(user=user).order_by("-timestamp")
 
 
-class FollowingListView(ListView):
+class FollowingListView(UserPassesTestMixin, ListView):
     model = Follow
     template_name = "accounts/following_list.html"
     context_object_name = "following_list"
 
+    def test_func(self):
+        user = get_object_or_404(User, username=self.kwargs["username"])
+        return self.request.user == user
+
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs["username"])
         return user.following.all()
-
-
-class FollowerListView(ListView):
-    model = Follow
-    template_name = "accounts/follower_list.html"
-    context_object_name = "follower_list"
-
-    def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs["username"])
-        return user.followers.all()
 
 
 @login_required
