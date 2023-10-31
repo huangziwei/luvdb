@@ -22,6 +22,19 @@ class Notification(models.Model):
     sender_object_id = models.PositiveIntegerField(null=True)
     sender_object = GenericForeignKey("sender_content_type", "sender_object_id")
 
+    # New fields
+    subject_content_type = models.ForeignKey(
+        ContentType,
+        related_name="notification_subjects",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    subject_object_id = models.PositiveIntegerField(null=True, blank=True)
+    subject_content_object = GenericForeignKey(
+        "subject_content_type", "subject_object_id"
+    )
+
     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -35,3 +48,13 @@ class Notification(models.Model):
             self.notification_type == "comment_on_deleted"
             or self.notification_type == "comment_deleted_by_author"
         )
+
+
+class MutedNotification(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    class Meta:
+        unique_together = ("user", "content_type", "object_id")

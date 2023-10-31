@@ -1,7 +1,6 @@
 import json
 import random
 import re
-from datetime import datetime, timedelta
 
 import pytz
 from django.contrib.auth import get_user_model
@@ -18,7 +17,7 @@ from django.utils.text import slugify
 
 from activity_feed.models import Activity
 from discover.models import Vote
-from notify.models import Notification
+from notify.models import MutedNotification, Notification
 from notify.views import create_mentions_notifications
 
 User = get_user_model()
@@ -87,19 +86,31 @@ class Comment(models.Model):
         is_new = self.pk is None
         super().save(*args, **kwargs)
 
-        if is_new and self.user != self.content_object.user:
+        has_muted = MutedNotification.objects.filter(
+            user=self.content_object.user,
+            content_type=ContentType.objects.get_for_model(self.content_object),
+            object_id=self.content_object.id,
+        ).exists()
+
+        if is_new and not has_muted and self.user != self.content_object.user:
             user_url = reverse("accounts:detail", args=[self.user.username])
             user_name = (
                 self.user.display_name if self.user.display_name else self.user.username
             )
             content_url = self.content_object.get_absolute_url()
             content_name = self.content_object.__class__.__name__.capitalize()
+            if "checkin" in content_name:
+                content_name = f"{content_name[:-7]} Check-in"
             message = f'<a href="{user_url}">@{user_name}</a> commented on your <a href="{content_url}">{content_name}</a>.'
 
             Notification.objects.create(
                 recipient=self.content_object.user,
                 sender_content_type=ContentType.objects.get_for_model(self.user),
                 sender_object_id=self.user.id,
+                subject_content_type=ContentType.objects.get_for_model(
+                    self.content_object
+                ),
+                subject_object_id=self.content_object.id,
                 notification_type="comment",
                 message=message,
             )
@@ -158,15 +169,36 @@ class Repost(models.Model):
                 content_object=self,
             )
 
+            original_activity_user = (
+                self.original_activity.user
+                if self.original_activity
+                else self.original_repost.user
+            )
+
+            # Check if user has muted notifications for the original activity
+            has_muted = MutedNotification.objects.filter(
+                user=original_activity_user,
+                content_type=ContentType.objects.get_for_model(
+                    self.original_activity.content_object
+                    if self.original_activity
+                    else self.original_repost.content_object
+                ),
+                object_id=(
+                    self.original_activity.content_object.id
+                    if self.original_activity
+                    else self.original_repost.content_object.id
+                ),
+            ).exists()
+
             # Create notification for repost
-            if self.user != self.original_activity.user:
+            if not has_muted and self.user != original_activity_user:
                 user_url = reverse("accounts:detail", args=[self.user.username])
                 content_url = self.original_activity.content_object.get_absolute_url()
                 content_name = (
                     self.original_activity.content_object.__class__.__name__.capitalize()
                 )
                 if "checkin" in content_name:
-                    content_name = "Check-in"
+                    content_name = f"{content_name[:-7]} Check-in"
 
                 repost_url = self.get_absolute_url()
                 message = f'<a href="{user_url}">@{self.user.username}</a> reposted your <a href="{content_url}">{content_name}</a>. See the <a href="{repost_url}">Repost</a>.'
@@ -175,6 +207,10 @@ class Repost(models.Model):
                     recipient=self.original_activity.user,
                     sender_content_type=ContentType.objects.get_for_model(self.user),
                     sender_object_id=self.user.id,
+                    subject_content_type=ContentType.objects.get_for_model(
+                        self.original_activity.content_object
+                    ),
+                    subject_object_id=self.original_activity.content_object.id,
                     notification_type="repost",
                     message=message,
                 )
