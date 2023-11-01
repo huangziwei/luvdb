@@ -29,12 +29,18 @@
 {% endif %}
 {% if user.is_authenticated %}
     {% if object.get_activity_id is not None %}
-        <form method="POST"
-              action="{% url 'write:repost_create' object.get_activity_id %}">
-            {% csrf_token %}
-            {{ repost_form | crispy }}
-            <button type="submit" class='btn btn-sm btn-primary'>Add Repost</button>
-        </form>
+        {% if not is_blocked %}
+            <form method="POST"
+                action="{% url 'write:repost_create' object.get_activity_id %}">
+                {% csrf_token %}
+                {{ repost_form | crispy }}
+                <button type="submit" class='btn btn-sm btn-primary'>Add Repost</button>
+            </form>
+        {% else %}
+            <div class="bg-black p-5 ps-3">
+                <p class="text-white">You are blocked by {{ object.user.display_name|default:object.user.username }} and cannot repost.</p>
+            </div>
+        {% endif %}
     {% else %}
         <p>Repost disabled.</p>
     {% endif %}

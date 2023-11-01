@@ -6,7 +6,7 @@ import pytz
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.db import models, transaction
 from django.db.models import Q
 from django.db.models.signals import m2m_changed, post_delete, pre_delete
@@ -15,7 +15,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 
-from activity_feed.models import Activity
+from activity_feed.models import Activity, Block
 from discover.models import Vote
 from notify.models import MutedNotification, Notification
 from notify.views import create_mentions_notifications
@@ -85,6 +85,13 @@ class Comment(models.Model):
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
+
+        is_blocked = Block.objects.filter(
+            blocker=self.content_object.user, blocked=self.user
+        ).exists()
+
+        if is_blocked:
+            raise PermissionDenied("You are blocked by the user and cannot comment.")
 
         has_muted = MutedNotification.objects.filter(
             user=self.content_object.user,
@@ -160,8 +167,16 @@ class Repost(models.Model):
         return "Repost"
 
     def save(self, *args, **kwargs):
+        is_blocked = Block.objects.filter(
+            blocker=self.content_object.user, blocked=self.user
+        ).exists()
+
+        if is_blocked:
+            raise PermissionDenied("You are blocked by the user and cannot comment.")
+
         is_new = self.pk is None
         super().save(*args, **kwargs)
+
         if is_new:
             Activity.objects.create(
                 user=self.user,

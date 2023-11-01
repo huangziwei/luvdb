@@ -35,7 +35,7 @@ class Notification(models.Model):
         "subject_content_type", "subject_object_id"
     )
 
-    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
+    notification_type = models.CharField(max_length=200, choices=NOTIFICATION_TYPES)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     read = models.BooleanField(default=False)

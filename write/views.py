@@ -22,7 +22,7 @@ from django.views.generic import (
     UpdateView,
 )
 
-from activity_feed.models import Activity
+from activity_feed.models import Activity, Block
 from discover.views import user_has_upvoted
 from listen.models import ListenCheckIn
 from play.models import GameCheckIn
@@ -68,6 +68,14 @@ class ShareDetailView(DetailView):
         context["repost_form"] = RepostForm()
         context["app_label"] = self.object._meta.app_label
         context["object_type"] = self.object._meta.model_name.lower()
+
+        context["is_blocked"] = (
+            Block.objects.filter(
+                blocker=self.object.user, blocked=self.request.user
+            ).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
 
         return context
 
@@ -164,6 +172,7 @@ class PostDetailView(ShareDetailView):
         context = super().get_context_data(**kwargs)
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
         context["projects"] = self.object.projects.all()
+
         return context
 
 

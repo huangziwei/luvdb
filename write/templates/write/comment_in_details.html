@@ -31,14 +31,20 @@
 {% endif %}
 {% if user.is_authenticated %}
     {% if object.comments_enabled %}
-        <form method="POST"
-              action="{% url 'write:comment_create' app_label object_type object.id %}"
-              id="comment-form">
-            {% csrf_token %}
-            {{ comment_form|crispy }}
-            <button type="submit" class='btn btn-sm btn-primary'>Add Comment</button>
-        </form>
-        <br>
+        {% if not is_blocked %}
+            <form method="POST"
+                  action="{% url 'write:comment_create' app_label object_type object.id %}"
+                  id="comment-form">
+                {% csrf_token %}
+                {{ comment_form|crispy }}
+                <button type="submit" class='btn btn-sm btn-primary'>Add Comment</button>
+            </form>
+            <br>
+        {% else %}
+            <div class="bg-black p-5 ps-3">
+                <p class="text-white">You are blocked by {{ object.user.display_name|default:object.user.username }} and cannot comment.</p>
+            </div>
+        {% endif %}
     {% else %}
         <p>Comment disabled.</p>
     {% endif %}

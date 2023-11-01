@@ -20,6 +20,7 @@ from django.views.generic import (
     UpdateView,
 )
 
+from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.models import LanguageField
 from entity.views import HistoryViewMixin
@@ -1148,6 +1149,14 @@ class ReadCheckInDetailView(DetailView):
 
         # Determine if the user has upvoted this ReadCheckIn object
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+
+        context["is_blocked"] = (
+            Block.objects.filter(
+                blocker=self.object.user, blocked=self.request.user
+            ).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
 
         return context
 
