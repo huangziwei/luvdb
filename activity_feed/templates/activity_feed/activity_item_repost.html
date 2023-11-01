@@ -24,10 +24,10 @@
             <!--Read Check In-->
             {% if activity.content_object.original_activity.activity_type == "read-check-in" %}
                 <div class="d-flex flex-wrap align-items-center">
-                    <a href="{% url 'accounts:detail' activity.user.username %}"
+                    <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}"
                        class="text-decoration-none hover-username me-1">
-                        {{ activity.user.display_name | default:activity.user.username }}
-                        <span class="username">@{{ activity.user.username }}</span>
+                        {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
+                        <span class="username">@{{ activity.content_object.original_activity.user.username }}</span>
                     </a>
                     <span class="me-1 text-muted">checked in</span>
                     <!--badge: checkin status-->
@@ -126,10 +126,10 @@
                 <!--Watch Check In-->
             {% elif activity.content_object.original_activity.activity_type == "watch-check-in" %}
                 <div class="d-flex flex-wrap align-items-center">
-                    <a href="{% url 'accounts:detail' activity.user.username %}"
+                    <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}"
                        class="text-decoration-none hover-username me-1">
-                        {{ activity.user.display_name | default:activity.user.username }}
-                        <span class="username">@{{ activity.user.username }}</span>
+                        {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
+                        <span class="username">@{{ activity.content_object.original_activity.user.username }}</span>
                     </a>
                     <span class="me-1 text-muted">checked in</span>
                     <!--badge: checkin status-->
@@ -249,10 +249,10 @@
                 <!--Game Check In-->
             {% elif activity.content_object.original_activity.activity_type == "game-check-in" %}
                 <div class="d-flex flex-wrap align-items-center">
-                    <a href="{% url 'accounts:detail' activity.user.username %}"
+                    <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}"
                        class="text-decoration-none hover-username me-1">
-                        {{ activity.user.display_name | default:activity.user.username }}
-                        <span class="username">@{{ activity.user.username }}</span>
+                        {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
+                        <span class="username">@{{ activity.content_object.original_activity.user.username }}</span>
                     </a>
                     <span class="me-1 text-muted">checked in</span>
                     <!--badge: checkin status-->
@@ -363,10 +363,10 @@
                 <!--Listen Check In-->
             {% elif activity.content_object.original_activity.activity_type == "listen-check-in" %}
                 <div class="d-flex flex-wrap align-items-center">
-                    <a href="{% url 'accounts:detail' activity.user.username %}"
+                    <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}"
                        class="text-decoration-none hover-username me-1">
-                        {{ activity.user.display_name | default:activity.user.username }}
-                        <span class="username">@{{ activity.user.username }}</span>
+                        {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
+                        <span class="username">@{{ activity.content_object.original_activity.user.username }}</span>
                     </a>
                     <span class="me-1 text-muted">checked in</span>
                     <!--badge: checkin status-->
