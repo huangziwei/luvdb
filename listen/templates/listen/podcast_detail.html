@@ -99,7 +99,7 @@
                         <h2>Episodes</h2>
                         <div class="d-flex">
                             <!-- Check the recently_updated context variable -->
-                            {% if not recently_updated %}
+                            {% if not recently_updated and user.is_authenticated%}
                                 <form method="post" action="{% url 'listen:podcast_detail' podcast.pk %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="recrawl">
