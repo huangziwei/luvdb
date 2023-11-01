@@ -17,7 +17,6 @@ from .views import (
     ListenListView,
     PodcastCreateView,
     PodcastDetailView,
-    PodcastHistoryView,
     PodcastUpdateView,
     ReleaseCreateView,
     ReleaseCreditDetailView,
@@ -73,11 +72,6 @@ urlpatterns = [
     path("podcast/<int:pk>/", PodcastDetailView.as_view(), name="podcast_detail"),
     path(
         "podcast/<int:pk>/update/", PodcastUpdateView.as_view(), name="podcast_update"
-    ),
-    path(
-        "podcast/<int:pk>/history/",
-        PodcastHistoryView.as_view(),
-        name="podcast_history",
     ),
     path("work-autocomplete/", WorkAutocomplete.as_view(), name="work-autocomplete"),
     path("track-autocomplete/", TrackAutocomplete.as_view(), name="track-autocomplete"),
@@ -159,6 +153,11 @@ urlpatterns = [
         "releasegroup/<int:pk>/update/",
         ReleaseGroupUpdateView.as_view(),
         name="releasegroup_update",
+    ),
+    path(
+        "releasegroup/<int:pk>/history/",
+        ReleaseGroupHistoryView.as_view(),
+        name="releasegroup_history",
     ),
     # audiobook
     path("audiobook/create/", AudiobookCreateView.as_view(), name="audiobook_create"),

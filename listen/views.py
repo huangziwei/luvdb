@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
 from io import BytesIO
+from typing import Any
 
 import feedparser
 import requests
@@ -1645,6 +1646,17 @@ class ReleaseGroupDetailView(DetailView):
     model = ReleaseGroup
     template_name = "listen/releasegroup_detail.html"
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        # contributors
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
+        context["contributors"] = unique_usernames
+        return context
+
 
 class ReleaseGroupUpdateView(LoginRequiredMixin, UpdateView):
     model = ReleaseGroup
@@ -2019,17 +2031,6 @@ class ReleaseGroupHistoryView(HistoryViewMixin, DetailView):
 
 class AudiobookHistoryView(HistoryViewMixin, DetailView):
     model = Audiobook
-    template_name = "entity/history.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        object = self.get_object()
-        context["history_data"] = self.get_history_data(object)
-        return context
-
-
-class PodcastHistoryView(HistoryViewMixin, DetailView):
-    model = Podcast
     template_name = "entity/history.html"
 
     def get_context_data(self, **kwargs):
