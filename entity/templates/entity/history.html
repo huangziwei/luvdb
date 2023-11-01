@@ -18,7 +18,11 @@
             {% else %}
                 Created by 
             {% endif %}
+            {% if record.changed_by.username %}
                 <a href="{% url 'accounts:detail' record.changed_by.username %}">{{ record.changed_by.display_name|default:record.changed_by.username }}</a> at {{ record.changed_at|date:"Y.m.d H:i" }}
+            {% else %}
+                {{ record.changed_by }} at {{ record.changed_at|date:"Y.m.d H:i" }}
+            {% endif %}
             </h2>
             
             <table class="table table-striped table-fixed"> <!-- Add table-fixed class -->
