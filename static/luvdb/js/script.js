@@ -338,8 +338,8 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
             option.style.paddingLeft = "5px"; // Reset padding
         }
         option.addEventListener("click", function () {
-            // Append selected username to textarea
-            textInput.value += item.username + " ";
+            const selectedUsername = this.username || this.innerText;
+            textInput.value = textInput.value.slice(0, lastPos) + selectedUsername + " ";
             dropdown.remove();
         });
         dropdown.appendChild(option);
