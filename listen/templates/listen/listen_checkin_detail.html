@@ -187,11 +187,9 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <button id="show-comments"
-                                class="btn btn-primary btn-sm mx-auto toggle-button">Comments ({{ comments|length }})</button>
+                                class="btn btn-primary btn-sm mx-auto toggle-button">Comments</button>
                         <button id="show-reposts"
-                                class="btn btn-secondary btn-sm mx-auto toggle-button">
-                            Reposts ({{ object.reposts.count }})
-                        </button>
+                                class="btn btn-secondary btn-sm mx-auto toggle-button">Reposts</button>
                     </div>
                     <div>
                         <a href="{% url 'discover:vote' 'listencheckin' checkin.id 'up' %}" 
