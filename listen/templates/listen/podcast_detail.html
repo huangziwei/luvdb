@@ -215,23 +215,6 @@
                         </div>
                     </div>
                 {% endif %}
-
-                <div class="bg-light p-3 mb-3 order-2 order-sm-3">
-                    <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
-                        (<a href="{% url 'listen:podcast_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
-                    </div>
-                    <div>
-                        {% for contributor in contributors %}
-                            <span>
-                                <a href="{% url 'accounts:detail' contributor.username %}">
-                                    {{ contributor.display_name|default:contributor.username }}
-                                </a>
-                            </span>
-                            {% if not forloop.last %} / {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
             </div>
         </div>
     </div>

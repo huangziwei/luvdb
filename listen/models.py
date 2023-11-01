@@ -447,7 +447,6 @@ class Podcast(models.Model):
     explicit = models.BooleanField(null=True, blank=True, default=False)
     author = models.CharField(max_length=255, blank=True, null=True)
 
-    history = HistoricalRecords(inherit=True)
     listencheckin = GenericRelation("ListenCheckIn")
 
     created_at = models.DateTimeField(auto_now_add=True)

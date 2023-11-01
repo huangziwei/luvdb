@@ -1334,14 +1334,6 @@ class PodcastDetailView(DetailView):
         else:
             context["latest_user_status"] = "to_listen"
 
-        # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
-
         return context
 
     def post(self, request, *args, **kwargs):
