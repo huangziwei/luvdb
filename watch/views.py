@@ -269,7 +269,11 @@ class MovieDetailView(DetailView):
         )
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context
@@ -376,7 +380,11 @@ class MovieCastDetailView(DetailView):
         ] = self.object.moviecasts.all()  # Update with your correct related name
         context["moviecrew"] = self.object.movieroles.all()
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
         return context
 
@@ -654,7 +662,11 @@ class SeriesDetailView(DetailView):
             context["latest_user_status"] = "to_watch"
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context
@@ -806,7 +818,11 @@ class SeriesCastDetailView(DetailView):
         context["episodes_cast"] = dict(episodes_cast)
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context
@@ -893,7 +909,11 @@ class EpisodeDetailView(DetailView):
         context["episoderoles"] = dict(episoderoles_grouped)
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
         return context
 
@@ -978,7 +998,11 @@ class EpisodeCastDetailView(DetailView):
         context["episoderoles"] = self.object.episoderoles.all()
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
         return context
 
@@ -1408,7 +1432,11 @@ class CollectionDetailView(DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
         return context
 

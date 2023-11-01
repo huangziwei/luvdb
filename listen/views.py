@@ -183,7 +183,11 @@ class WorkDetailView(DetailView):
             )
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context
@@ -348,7 +352,11 @@ class TrackDetailView(DetailView):
         context["releases"] = track.releases.all().order_by("release_date")
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context
@@ -606,7 +614,11 @@ class ReleaseDetailView(DetailView):
             context["latest_user_status"] = "to_listen"
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context
@@ -1323,7 +1335,11 @@ class PodcastDetailView(DetailView):
             context["latest_user_status"] = "to_listen"
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context
@@ -1874,7 +1890,11 @@ class AudiobookDetailView(DetailView):
             context["latest_user_status"] = "to_listen"
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context

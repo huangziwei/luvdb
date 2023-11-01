@@ -104,7 +104,11 @@ class WorkDetailView(DetailView):
         context["games"] = games
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context
@@ -333,7 +337,11 @@ class GameDetailView(DetailView):
         )
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context
@@ -477,7 +485,11 @@ class PlatformDetailView(DetailView):
         )
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
         return context
 
@@ -948,7 +960,11 @@ class GameSeriesDetailView(DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
         return context
 

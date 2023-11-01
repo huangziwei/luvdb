@@ -211,7 +211,11 @@ class WorkDetailView(DetailView):
         context["grouped_roles"] = grouped_roles
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context
@@ -321,7 +325,11 @@ class InstanceDetailView(DetailView):
         context["audiobooks"] = self.object.audiobooks.all().order_by("release_date")
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
         return context
 
@@ -607,7 +615,11 @@ class PeriodicalDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
         return context
 
@@ -796,7 +808,11 @@ class IssueDetailView(DetailView):
         context["lists_containing_issue"] = lists_containing_issue
 
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
 
         return context
@@ -1506,7 +1522,11 @@ class BookSeriesDetailView(DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         # contributors
-        unique_usernames = {record.history_user for record in self.object.history.all()}
+        unique_usernames = {
+            record.history_user
+            for record in self.object.history.all()
+            if record.history_user is not None
+        }
         context["contributors"] = unique_usernames
         return context
 
