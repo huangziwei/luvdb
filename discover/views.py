@@ -158,11 +158,19 @@ class DiscoverListAllView(ListView):
             context["says_and_reposts"] = says_and_reposts[:10]
 
             for model, model_name in models_list:
-                context[model_name] = (
-                    self.annotate_vote_count(model, time_condition)
-                    .filter(vote_count__gt=-1)
-                    .order_by("-vote_count", "-timestamp")
-                )[:10]
+                if not hasattr(model, "title") and hasattr(model, "content"):
+                    context[model_name] = (
+                        self.annotate_vote_count(model, time_condition)
+                        .filter(vote_count__gt=-1)
+                        .exclude(content="")
+                        .order_by("-vote_count", "-timestamp")
+                    )[:10]
+                else:
+                    context[model_name] = (
+                        self.annotate_vote_count(model, time_condition)
+                        .filter(vote_count__gt=-1)
+                        .order_by("-vote_count", "-timestamp")
+                    )[:10]
 
         elif order_by == "all_time":
             time_condition = None
@@ -182,11 +190,19 @@ class DiscoverListAllView(ListView):
             context["says_and_reposts"] = says_and_reposts[:10]
 
             for model, model_name in models_list:
-                context[model_name] = (
-                    self.annotate_vote_count(model, time_condition).order_by(
-                        "-vote_count", "-timestamp"
-                    )
-                )[:10]
+                if not hasattr(model, "title") and hasattr(model, "content"):
+                    context[model_name] = (
+                        self.annotate_vote_count(model, time_condition)
+                        .filter(vote_count__gt=-1)
+                        .exclude(content="")
+                        .order_by("-vote_count", "-timestamp")
+                    )[:10]
+                else:
+                    context[model_name] = (
+                        self.annotate_vote_count(model, time_condition)
+                        .filter(vote_count__gt=-1)
+                        .order_by("-vote_count", "-timestamp")
+                    )[:10]
 
         elif order_by == "newest":
             says_and_reposts = list(
@@ -203,7 +219,16 @@ class DiscoverListAllView(ListView):
             context["says_and_reposts"] = says_and_reposts[:10]
 
             for model, model_name in models_list:
-                context[model_name] = model.objects.all().order_by("-timestamp")[:10]
+                if not hasattr(model, "title") and hasattr(model, "content"):
+                    context[model_name] = (
+                        model.objects.all()
+                        .exclude(content="")
+                        .order_by("-timestamp")[:10]
+                    )
+                else:
+                    context[model_name] = model.objects.all().order_by("-timestamp")[
+                        :10
+                    ]
 
         elif order_by == "random":
             say_ids = list(
@@ -230,7 +255,12 @@ class DiscoverListAllView(ListView):
             context["says_and_reposts"] = says_and_reposts
 
             for model, model_name in models_list:
-                model_ids = list(model.objects.values_list("id", flat=True))
+                if not hasattr(model, "title") and hasattr(model, "content"):
+                    model_ids = list(
+                        model.objects.exclude(content="").values_list("id", flat=True)
+                    )
+                else:
+                    model_ids = list(model.objects.values_list("id", flat=True))
 
                 if len(model_ids) > 10:
                     model_ids = sample(model_ids, 10)

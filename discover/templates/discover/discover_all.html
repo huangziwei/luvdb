@@ -60,17 +60,28 @@
                     <h3>Pins</h3>
                     <ol>
                         {% for pin in pins %}
-                            <li>
+                            <li class="mb-2">
                                 <div class="d-flex align-items-start">
                                     <div>
-                                        <a href="{% url 'write:pin_detail' pin.id %}">{{pin.title}}</a>
-                                        <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
                                         <span class="d-flex">
-                                            <p class="me-2 text-muted">
-                                                by <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.username }}</a>
+                                            <p class="me-2 text-muted mb-2">
+                                                <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.username }}</a> pinned:
                                             </p>
+                                        </span>
+                                        <div class="bg-light p-3 mb-2">
+                                            <a href="{% url 'write:pin_detail' pin.id %}">{{pin.title}}</a>
+                                            <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
+                                        </div>
+
+                                        {% if pin.content %}
+                                        <div class="mb-2">
+                                            {{pin.content|truncatechars:300|linkify_tags|linkify_mentions|markdownify}}</a>
+                                        </div>
+                                        {% endif %}
+                                        <span>
                                             <p class="me-2 text-muted">{{ pin.timestamp|timesince }} ago</p>
                                         </span>
+                                        
                                     </div>
                                 </div>
                             </li>
