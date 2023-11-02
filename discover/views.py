@@ -139,20 +139,23 @@ class DiscoverListAllView(ListView):
         if order_by == "trending":
             seven_days_ago = timezone.now() - timedelta(days=7)
             time_condition = {"votes__timestamp__gte": seven_days_ago}
-            say_and_reposts = list(
+            says_and_reposts = list(
                 chain(
                     self.annotate_vote_count(Say, time_condition).filter(
-                        vote_count__gt=-1
+                        vote_count__gt=-1,
+                        is_direct_mention=False,
                     ),
                     self.annotate_vote_count(Repost, time_condition).filter(
                         vote_count__gt=-1
                     ),
                 )
             )
-            say_and_reposts = sorted(
-                say_and_reposts, key=lambda x: (x.vote_count, x.timestamp), reverse=True
+            says_and_reposts = sorted(
+                says_and_reposts,
+                key=lambda x: (x.vote_count, x.timestamp),
+                reverse=True,
             )
-            context["says_and_reposts"] = say_and_reposts[:10]
+            context["says_and_reposts"] = says_and_reposts[:10]
 
             for model, model_name in models_list:
                 context[model_name] = (
@@ -163,16 +166,20 @@ class DiscoverListAllView(ListView):
 
         elif order_by == "all_time":
             time_condition = None
-            say_and_reposts = list(
+            says_and_reposts = list(
                 chain(
-                    self.annotate_vote_count(Say, time_condition),
+                    self.annotate_vote_count(Say, time_condition).filter(
+                        is_direct_mention=False,
+                    ),
                     self.annotate_vote_count(Repost, time_condition),
                 )
             )
-            say_and_reposts = sorted(
-                say_and_reposts, key=lambda x: (x.vote_count, x.timestamp), reverse=True
+            says_and_reposts = sorted(
+                says_and_reposts,
+                key=lambda x: (x.vote_count, x.timestamp),
+                reverse=True,
             )
-            context["says_and_reposts"] = say_and_reposts[:10]
+            context["says_and_reposts"] = says_and_reposts[:10]
 
             for model, model_name in models_list:
                 context[model_name] = (
@@ -182,20 +189,26 @@ class DiscoverListAllView(ListView):
                 )[:10]
 
         elif order_by == "newest":
-            say_and_reposts = list(
+            says_and_reposts = list(
                 chain(
-                    Say.objects.all().order_by("-timestamp"),
+                    Say.objects.all()
+                    .order_by("-timestamp")
+                    .filter(
+                        is_direct_mention=False,
+                    ),
                     Repost.objects.all().order_by("-timestamp"),
                 )
             )
-            say_and_reposts.sort(key=lambda x: x.timestamp, reverse=True)
-            context["says_and_reposts"] = say_and_reposts[:10]
+            says_and_reposts.sort(key=lambda x: x.timestamp, reverse=True)
+            context["says_and_reposts"] = says_and_reposts[:10]
 
             for model, model_name in models_list:
                 context[model_name] = model.objects.all().order_by("-timestamp")[:10]
 
         elif order_by == "random":
-            say_ids = list(Say.objects.values_list("id", flat=True))
+            say_ids = list(
+                Say.objects.filter(is_direct_mention=False).values_list("id", flat=True)
+            )
             repost_ids = list(Repost.objects.values_list("id", flat=True))
             combined_ids = say_ids + repost_ids
 
@@ -207,14 +220,14 @@ class DiscoverListAllView(ListView):
             say_sampled = [id for id in sampled_ids if id in say_ids]
             repost_sampled = [id for id in sampled_ids if id in repost_ids]
 
-            say_and_reposts = list(
+            says_and_reposts = list(
                 chain(
                     Say.objects.filter(id__in=say_sampled),
                     Repost.objects.filter(id__in=repost_sampled),
                 )
             )
 
-            context["says_and_reposts"] = say_and_reposts
+            context["says_and_reposts"] = says_and_reposts
 
             for model, model_name in models_list:
                 model_ids = list(model.objects.values_list("id", flat=True))
@@ -466,14 +479,14 @@ class DiscoverLikedView(ListView):
             (GameCheckIn, "game_checkins"),
         ]
 
-        say_and_reposts = list(
+        says_and_reposts = list(
             chain(
                 self.fetch_voted_objects(Say),
                 self.fetch_voted_objects(Repost),
             )
         )
         context["says_and_reposts"] = sorted(
-            say_and_reposts, key=lambda x: x.vote_timestamp, reverse=True
+            says_and_reposts, key=lambda x: x.vote_timestamp, reverse=True
         )
 
         for model, model_name in models_list:
