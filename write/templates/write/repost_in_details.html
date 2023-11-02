@@ -28,7 +28,7 @@
     <hr>
 {% endif %}
 {% if user.is_authenticated %}
-    {% if object.get_activity_id is not None %}
+    {% if object.get_activity_id is not None and not object.is_direct_mention %}
         {% if not is_blocked %}
             <form method="POST"
                 action="{% url 'write:repost_create' object.get_activity_id %}">
