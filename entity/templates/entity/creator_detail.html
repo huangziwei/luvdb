@@ -54,7 +54,7 @@
                                                 {% if item.model_name == "Instance" %}
                                                     <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
                                                 {% elif item.model_name == "Book" %}
-                                                    <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                    <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> ({% if item.format %}{{item.format}}, {% endif %}{{ item.publication_date }})
                                                 {% endif %}
                                             </li>
                                         {% endfor %}
