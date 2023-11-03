@@ -482,17 +482,31 @@ class ReleaseDetailView(DetailView):
         release = get_object_or_404(Release, pk=self.kwargs["pk"])
         context["content_type"] = "release"
 
-        roles = {}
+        main_role_names = ["Performer", "Conductor"]
+        main_roles = {}
+        other_roles = {}
+
         for release_role in release.releaserole_set.all():
-            if release_role.role.name not in roles:
-                roles[release_role.role.name] = []
+            role_name = release_role.role.name
             alt_name_or_creator_name = (
                 release_role.alt_name or release_role.creator.name
             )
-            roles[release_role.role.name].append(
-                (release_role.creator, alt_name_or_creator_name)
-            )
-        context["roles"] = roles
+
+            if role_name in main_role_names:
+                if role_name not in main_roles:
+                    main_roles[role_name] = []
+                main_roles[role_name].append(
+                    (release_role.creator, alt_name_or_creator_name)
+                )
+            else:
+                if role_name not in other_roles:
+                    other_roles[role_name] = []
+                other_roles[role_name].append(
+                    (release_role.creator, alt_name_or_creator_name)
+                )
+
+        context["main_roles"] = main_roles
+        context["other_roles"] = other_roles
 
         content_type = ContentType.objects.get_for_model(Release)
         context["checkin_form"] = ListenCheckInForm(

@@ -111,16 +111,8 @@ class CreatorDetailView(DetailView):
 
         # listen
         roles_as_performer = [
-            "Singer",
-            "Pianist",
             "Conductor",
             "Performer",
-            "Drummer",
-            "Double-bassist",
-            "Orchestra",
-            "Choir",
-            "Ensemble",
-            "Trumpeter",
         ]
 
         def get_releases_by_type_and_group(releases):
