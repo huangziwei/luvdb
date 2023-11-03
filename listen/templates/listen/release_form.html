@@ -23,7 +23,7 @@
     {{ releaseroles.management_form|crispy }}
     <div id="release-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this release</strong>
-        <p class='text-muted'>E.g. Singer, Lyricist, Composer, etc.</p>
+        <p class='text-muted'>E.g. Performer, Producer, Lyricist, Composer, etc. Noted, only "Performer" will be shown as main role, while others will be hidden in the "More Metadata" section.</p>
         {% for form in releaseroles %}
             <div class="form-wrapper">
                 <div class="row">
