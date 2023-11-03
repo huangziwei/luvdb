@@ -63,15 +63,7 @@
                                     {% endif %}
                                 </p>
                                 <div class="game-meta">
-                                    {% for role, persons_altname_tuples in grouped_roles.items %}
-                                        <div class="mb-1">
-                                            <span class="text-muted">{{ role }}:</span>
-                                            {% for creator, name in persons_altname_tuples %}
-                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ name }}</a>
-                                                {% if not forloop.last %}/{% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    {% endfor %}
+                                    
                                     {% if object.developers.count != 0 %}
                                         <div class="mb-1">
                                             <span class="text-muted">Developer{% if object.developers.count > 1 %}s{% endif %}:</span>
@@ -130,6 +122,16 @@
                                             <span class="text-muted">More Metadata</span>
                                         </div>
                                         <div class="collapse" id="detailsCollapse">
+
+                                            {% for role, persons_altname_tuples in grouped_roles.items %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">{{ role }}:</span>
+                                                    {% for creator, name in persons_altname_tuples %}
+                                                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ name }}</a>
+                                                        {% if not forloop.last %}/{% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
                                             
                                             {% if object.rating %}
                                                 <div>

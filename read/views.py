@@ -393,15 +393,29 @@ class BookDetailView(DetailView):
 
         book = get_object_or_404(Book, pk=self.kwargs["pk"])
 
-        roles = {}
+        main_role_names = ["Author", "Translator", "Editor", "Created By", "Novelization By", "Ghost Writer"]
+        main_roles = {}
+        other_roles = {}
+
         for book_role in book.bookrole_set.all():
-            if book_role.role.name not in roles:
-                roles[book_role.role.name] = []
+            role_name = book_role.role.name
             alt_name_or_creator_name = book_role.alt_name or book_role.creator.name
-            roles[book_role.role.name].append(
-                (book_role.creator, alt_name_or_creator_name)
-            )
-        context["roles"] = roles
+
+            if role_name in main_role_names:
+                if role_name not in main_roles:
+                    main_roles[role_name] = []
+                main_roles[role_name].append(
+                    (book_role.creator, alt_name_or_creator_name)
+                )
+            else:
+                if role_name not in other_roles:
+                    other_roles[role_name] = []
+                other_roles[role_name].append(
+                    (book_role.creator, alt_name_or_creator_name)
+                )
+
+        context["main_roles"] = main_roles
+        context["other_roles"] = other_roles
 
         content_type = ContentType.objects.get_for_model(Book)
         context["checkin_form"] = ReadCheckInForm(
