@@ -6,6 +6,7 @@ from django.contrib.syndication.views import Feed
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils.feedgenerator import Atom1Feed
 from django.utils.safestring import mark_safe
 
 from listen.models import ListenCheckIn
@@ -13,12 +14,14 @@ from play.models import GameCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
 
-from .models import Pin, Post, Project, Repost, Say
+from .models import Pin, Post, Repost, Say
 
 User = get_user_model()
 
 
 class UserSayFeed(Feed):
+    feed_type = Atom1Feed
+
     def __call__(self, request, *args, **kwargs):
         user = self.get_object(request, *args, **kwargs)
         if not user.is_public:
@@ -56,6 +59,8 @@ class UserSayFeed(Feed):
 
 
 class UserPostFeed(Feed):
+    feed_type = Atom1Feed
+
     def __call__(self, request, *args, **kwargs):
         user = self.get_object(request, *args, **kwargs)
         if not user.is_public:
@@ -91,6 +96,8 @@ class UserPostFeed(Feed):
 
 
 class UserPostProjectFeed(Feed):
+    feed_type = Atom1Feed
+
     def __call__(self, request, *args, **kwargs):
         username = kwargs.get("username")
         project_name = kwargs.get("project")
@@ -137,6 +144,8 @@ class UserPostProjectFeed(Feed):
 
 
 class UserPinFeed(Feed):
+    feed_type = Atom1Feed
+
     def __call__(self, request, *args, **kwargs):
         user = self.get_object(request, *args, **kwargs)
         if not user.is_public:
@@ -172,6 +181,7 @@ class UserPinFeed(Feed):
 
 
 class TagListFeed(Feed):
+    feed_type = Atom1Feed
     request = None  # Initialize request to None
 
     def __call__(self, request, *args, **kwargs):
@@ -277,6 +287,7 @@ class TagListFeed(Feed):
 
 
 class TagUserListFeed(Feed):
+    feed_type = Atom1Feed
     request = None  # Initialize request to None
 
     def __call__(self, request, *args, **kwargs):
