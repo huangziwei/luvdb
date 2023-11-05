@@ -393,7 +393,14 @@ class BookDetailView(DetailView):
 
         book = get_object_or_404(Book, pk=self.kwargs["pk"])
 
-        main_role_names = ["Author", "Translator", "Editor", "Created By", "Novelization By", "Ghost Writer"]
+        main_role_names = [
+            "Author",
+            "Translator",
+            "Editor",
+            "Created By",
+            "Novelization By",
+            "Ghost Writer",
+        ]
         main_roles = {}
         other_roles = {}
 
@@ -1687,7 +1694,7 @@ class BookHistoryView(HistoryViewMixin, DetailView):
 
 
 class BookSeriesHistoryView(HistoryViewMixin, DetailView):
-    model = Series
+    model = BookSeries
     template_name = "entity/history.html"
 
     def get_context_data(self, **kwargs):
