@@ -744,7 +744,7 @@ class BookSeries(models.Model):
     # series meta data
     title = models.CharField(max_length=100)
     books = models.ManyToManyField(Book, through="BookInSeries", related_name="series")
-    description = models.TextField(null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
