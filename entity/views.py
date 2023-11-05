@@ -506,7 +506,7 @@ class RoleAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
-        return qs
+        return qs.order_by("name")
 
 
 class CompanyCreateView(LoginRequiredMixin, CreateView):
@@ -645,8 +645,9 @@ class CompanyAutocomplete(autocomplete.Select2QuerySetView):
         qs = Company.objects.all()
 
         if self.q:
-            qs = qs.filter(Q(name__icontains=self.q) | Q(other_names__icontains=self.q))
-
+            qs = qs.filter(
+                Q(name__icontains=self.q) | Q(other_names__icontains=self.q)
+            ).order_by("name")
             return qs
 
         return Company.objects.none()
