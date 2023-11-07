@@ -72,7 +72,7 @@
                 <div class="mt-4">
                     {% include "read/read_checkin_form.html" %}
                     <div class="d-flex justify-content-between mt-4 col-12 col-md-11">
-                        <h4>Latest Check-Ins</h4>
+                        <div class="fs-4">Latest Check-Ins</div>
                         <a class="btn btn-outline-secondary btn-sm"
                            href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}"
                            style="height:30px">All</a>
