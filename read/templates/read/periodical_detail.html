@@ -75,7 +75,7 @@
                 <!--Links-->
                 {% if periodical.wikipedia or periodical.website %}
                     <div class="bg-light p-3 mb-3">
-                        <h5>Links</h5>
+                        <div class="fs-5">Links</div>
                         {% if  periodical.wikipedia %}<a href="{{ periodical.wikipedia }}" target="_blank">Wikipedia</a>{% endif %}
                         <br>
                         {% if  periodical.website %}<a href="{{ periodical.website }}" target="_blank">Official Website</a>{% endif %}
@@ -84,7 +84,7 @@
                 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'read:periodical_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>

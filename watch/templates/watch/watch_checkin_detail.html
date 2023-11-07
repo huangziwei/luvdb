@@ -64,13 +64,13 @@
                             {% if object.content_type.model == 'movie' %}
                                 <a href="{% url 'watch:movie_detail' object.content_object.id %}"
                                    class="text-decoration-none hover-username">
-                                    <h5>{{ object.content_object.title }}</h5>
+                                    <div class="fs-5">{{ object.content_object.title }}</div>
                                 </a>
                             {% elif object.content_type.model == 'series' %}
-                                <h4>{{ object.content_object.series.title }}</h4>
+                                <div class="fs-4">{{ object.content_object.series.title }}</div>
                                 <a href="{% url 'watch:series_detail' object.content_object.id %}"
                                    class="text-decoration-none hover-username">
-                                    <h5>{{ object.content_object.title }}</h5>
+                                    <div class="fs-5">{{ object.content_object.title }}</div>
                                 </a>
                             {% endif %}
                             {% if object.content_type.model == 'movie' %}

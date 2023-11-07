@@ -61,10 +61,10 @@
             <span class="text-muted">{{ activity.activity_type | parse_activity_type }}:</span>
         </div>
         <div class="bg-light mt-2 p-3">
-            <h5>
+            <div class="fs-5">
                 <a href="{% url 'write:post_detail' activity.content_object.id %}"
                    class="text-decoration-none">{{ activity.content_object.title }}</a>
-            </h5>
+            </div>
             <div>{{ activity.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
         </div>
         <div class="d-flex mt-2">
@@ -235,13 +235,13 @@
                 {% if activity.content_object.content_type.model == 'book' %}
                     <a href=" {% url 'read:book_detail' activity.content_object.content_object.id %} "
                        class="text-decoration-none hover-username">
-                        <h5>{{ activity.content_object.content_object.title }}</h5>
+                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% elif activity.content_object.content_type.model == 'issue' %}
-                    <h5>{{ activity.content_object.content_object.periodical.title }}</h5>
+                    <div class="fs-5">{{ activity.content_object.content_object.periodical.title }}</div>
                     <a href=" {% url 'read:issue_detail' activity.content_object.content_object.periodical.id activity.content_object.content_object.id %} "
                        class="text-decoration-none hover-username">
-                        <h6>{{ activity.content_object.content_object.title }}</h6>
+                        <div class="fs-6">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% endif %}
                 {% if activity.content_object.content_type.model == 'book' %}
@@ -360,12 +360,12 @@
                 {% if activity.content_object.content_type.model == 'movie' %}
                     <a href=" {% url 'watch:movie_detail' activity.content_object.content_object.id %} "
                        class="text-decoration-none hover-username">
-                        <h5>{{ activity.content_object.content_object.title }}</h5>
+                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% elif activity.content_object.content_type.model == 'series' %}
                     <a href=" {% url 'watch:series_detail' activity.content_object.content_object.id %} "
                        class="text-decoration-none hover-username">
-                        <h5>{{ activity.content_object.content_object.title }}</h5>
+                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% endif %}
                 {% if activity.content_object.content_type.model == 'movie' %}
@@ -533,18 +533,18 @@
                 {% if activity.content_object.content_type.model == "release" %}
                     <a href="{% url 'listen:release_detail' activity.content_object.content_object.id %}"
                        class="text-decoration-none hover-username">
-                        <h5>{{ activity.content_object.content_object.title }}</h5>
+                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% elif activity.content_object.content_type.model == "podcast" %}
                     <a href="{% url 'listen:podcast_detail' activity.content_object.content_object.id %}"
                        class="text-decoration-none hover-username">
-                        <h5>{{ activity.content_object.content_object.title }}</h5>
+                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                     <div class="text-muted">{{ activity.content_object.content_object.notes|truncatechars:600 }}</div>
                 {% elif activity.content_object.content_type.model == "audiobook" %}
                     <a href="{% url 'listen:audiobook_detail' activity.content_object.content_object.id %}"
                        class="text-decoration-none hover-username">
-                        <h5>{{ activity.content_object.content_object.title }}</h5>
+                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% endif %}
                 {% regroup activity.content_object.content_object.releaserole_set.all by role as roles_list %}
@@ -694,7 +694,7 @@
             <div class="flex-grow-1 ms-3">
                 <a href="{% url 'play:game_detail' activity.content_object.game.id %}"
                    class="text-decoration-none hover-username">
-                    <h5>{{ activity.content_object.game.title }}</h5>
+                    <div class="fs-5">{{ activity.content_object.game.title }}</div>
                 </a>
                 {% regroup activity.content_object.game.gamerole_set.all by role as roles_list %}
                 {% for role in roles_list %}

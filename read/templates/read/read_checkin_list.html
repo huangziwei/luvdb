@@ -8,7 +8,7 @@
     <div class="row">
         <!--left column-->
         <div class="col-12 col-md-8">
-            <h4>
+            <div class="fs-4">
                 Check-ins by
                 <a href="{% url 'accounts:detail' profile_user.username %}">
                     {{ profile_user.display_name|default:profile_user.username }}
@@ -18,7 +18,7 @@
                 {% elif  model_name == "issue" %}
                     {{ object.periodical.title }} <a href="{% url 'read:issue_detail' object.periodical.id object.id %}"> Vol. {{ object.volume }} Nr. {{ object.number }}</a>
                 {% endif %}
-            </h4>
+            </div>
             <span class='d-flex mb-3'>
                 <div class="me-3">
                     <a href="?order=timestamp&status={{ status }}"
@@ -134,7 +134,7 @@ class="text-decoration-none">Delete</a></span>
                                 <h2>{{ object.title }}</h2>
                                 {% else %}
                                 <h2>Vol. {{object.volume}} Nr. {{object.number}}</h2>
-                                <h5>of {{ object.periodical.title }}</h5>
+                                <div class="fs-5">of {{ object.periodical.title }}</div>
                                 {% endif %}
                             </span>
                             <div class="book-meta">

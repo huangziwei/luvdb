@@ -44,7 +44,7 @@
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'play:game_detail' game_in_series.game.pk %}"
                                        class="text-decoration-none hover-username">
-                                        <h5>{{ game_in_series.game.title }}</h5>
+                                        <div class="fs-5">{{ game_in_series.game.title }}</div>
                                     </a>
                                     {% if game_in_series.game.subtitle %}
                                         <div class="mb-2 text-muted">{{ game_in_series.game.subtitle }}</div>
@@ -110,7 +110,7 @@
 
                 {% if object.wikipedia %}
                     <div class="bg-light p-3 mb-3">
-                        <h5>Links</h5>
+                        <div class="fs-5">Links</div>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
                         </div>
@@ -119,7 +119,7 @@
 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'play:series_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>

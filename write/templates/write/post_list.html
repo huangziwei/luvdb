@@ -26,9 +26,9 @@
                 <hr>
                 <div class="d-flex justify-content-between mb-3">
                     <div>
-                        <h5>
+                        <div class="fs-5">
                             <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a> posted
-                        </h5>
+                        </div>
                         {% if current_project %}
                             <div>
                                 (in project "<a class="text-muted" href="{% url 'write:post_list_project' object.username current_project.slug %}">{{current_project.name}}</a>")
@@ -67,7 +67,7 @@
                 <div class="col-12 col-md-5 right-column">
                     {% if all_projects %}
                     <div class="bg-light p-3 mb-3">
-                        <h5>Projects</h5>
+                        <div class="fs-5">Projects</div>
                         <div>
                         {% for project_info in all_projects %}
                             <a href="{% url 'write:post_list_project' object.username project_info.project.slug %}"
@@ -81,7 +81,7 @@
                     <!--All tags on the page-->
                     {% if all_tags %}
                     <div class="bg-light p-3 mb-3">
-                        <h5>Hashtags</h5>
+                        <div class="fs-5">Hashtags</div>
                         <span>
                             {% for tag, size in all_tags.items %}
                                 <a href="{% url 'write:tag_user_list' object.username tag.name %}"

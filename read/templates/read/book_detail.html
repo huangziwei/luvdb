@@ -173,7 +173,7 @@
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     {% if object.bookinstance_set.count == 1 %}
                             {% if object.bookinstance_set.first.instance.id %}
-                                <h5>Work</h5>
+                                <div class="fs-5">Work</div>
                                 <p>
                                     <a class="text-muted" href="{% url 'read:work_detail' object.bookinstance_set.first.instance.work.id %}">
                                         Other Editions
@@ -183,7 +183,7 @@
                         {% else %}
                         <div class="row">
                             <div class="d-flex align-items-center">
-                                <h5 class="mb-0">Table of Content</h5>
+                                <div class="mb-0 fs-5">Table of Content</div>
                                 <a class="text-muted mb-0 ms-1" type="button" data-bs-toggle="collapse" data-bs-target=".creditCollapse" aria-expanded="false" aria-controls="creditCollapse">
                                     (Show Credits)
                                 </a>
@@ -222,7 +222,7 @@
                 {% endif %}
                 <!--Book Stats-->
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <h5>Statistics</h5>
+                    <div class="fs-5">Statistics</div>
                     <div>
                         <strong class="text-muted">To Read:</strong> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=to_read">{{ to_read_count }}</a>
                     </div>
@@ -235,7 +235,7 @@
                 </div>
                 {% if object.internet_archive_url %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <h5>Read on</h5>
+                        <div class="fs-5">Read on</div>
                         <div>
                             <a href="{{ object.internet_archive_url }}">Internet Archive</a>
                         </div>
@@ -243,7 +243,7 @@
                 {% endif %}
                 {% if object.wikipedia %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <h5>Links</h5>
+                        <div class="fs-5">Links</div>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
                         </div>
@@ -252,7 +252,7 @@
                 {% if lists_containing_book.count != 0 %}
                     <!--LuvLists that included this book-->
                     <div class="bg-light p-3 mt-3 order-1 order-sm-2">
-                        <h5>Lists</h5>
+                        <div class="fs-5">Lists</div>
                         <div class='mb-0'>
                             {% for content_in_list in lists_containing_book %}
                                 <div>
@@ -268,7 +268,7 @@
 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'read:book_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>

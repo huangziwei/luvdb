@@ -42,7 +42,7 @@
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'read:book_detail' book_in_series.book.pk %}"
                                        class="text-decoration-none hover-username">
-                                        <h5>{{ book_in_series.book.title }}</h5>
+                                        <div class="fs-5">{{ book_in_series.book.title }}</div>
                                     </a>
                                     {% if book_in_series.book.subtitle %}<div class="mb-2 text-muted">{{ book_in_series.book.subtitle }}</div>{% endif %}
                                     {% regroup book_in_series.book.bookrole_set.all by role as roles_list %}
@@ -91,7 +91,7 @@
                 {% endif %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'read:series_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>

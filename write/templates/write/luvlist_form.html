@@ -7,7 +7,7 @@
         <dir class="col-md-12">{{ form.source|as_crispy_field }}</dir>
         <dir class="col-md-12">{{ form.wikipedia|as_crispy_field }}</dir>
     </div>
-    <h4>Items</h4>
+    <div class="fs-4">Items</div>
     {{ contents.management_form }}
     <div id="contentInListDiv">
         {% for form in contents %}

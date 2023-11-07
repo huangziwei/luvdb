@@ -8,10 +8,10 @@
             <!--left column-->
             <div class="col-12 col-md-8">
                 <div class="col-sm-12">
-                    <h4>
+                    <div class="fs-4">
                         All Watching Check-Ins from
                         <a href="{% url 'accounts:detail' profile_user.username %}"> {{ profile_user.display_name|default:profile_user.username }}</a>
-                    </h4>
+                    </div>
                     <span class='d-flex mb-3'>
                         <div class="me-3">
                             <a href="?order=timestamp&status={{ status }}"
@@ -86,12 +86,12 @@
                                         {% if checkin.content_type.model == 'movie' %}
                                             <a href=" {% url 'watch:movie_detail' checkin.content_object.id %} "
                                                 class="text-decoration-none hover-username">
-                                                <h5>{{ checkin.content_object.title }}</h5>
+                                                <div class="fs-5">{{ checkin.content_object.title }}</div>
                                             </a>
                                         {% elif checkin.content_type.model == 'series' %}
                                             <a href=" {% url 'watch:series_detail' checkin.content_object.id %} "
                                                 class="text-decoration-none hover-username">
-                                                <h5>{{ checkin.content_object.title }}</h5>
+                                                <div class="fs-5">{{ checkin.content_object.title }}</div>
                                             </a>
                                         {% endif %}
 

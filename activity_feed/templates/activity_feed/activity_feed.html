@@ -62,7 +62,7 @@
                 <div class="col-12 col-md-5 right-column">
 
                     <div class='bg-light p-3 mb-3'>
-                        <h5>
+                        <div class="fs-5">
                             On This Day (<input 
                                 type="date" 
                                 id="datePicker" 
@@ -71,7 +71,7 @@
                                 class="bg-light"
                                 style="border: none; outline: none;"
                             />)
-                        </h5>
+                        </div>
                         {% if current_date|slice:"5:10" == "06-10" %}
                             {% now "Y" as current_year %}
                             <div class="alert alert-success" role="alert">LʌvDB is {{ current_year|add:"-2023" }} years old today!</div>

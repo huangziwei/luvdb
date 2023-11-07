@@ -179,7 +179,7 @@
                     </div>
                 {% endif %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <h5>Links</h5>
+                    <div class="fs-5">Links</div>
                     {% if podcast.website_url %}
                         <div>
                             <a href="{{ podcast.website_url }}" target="_blank">Official Website</a>
@@ -193,7 +193,7 @@
                 </div>
                 <!--Stats-->
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <h5>Statistics</h5>
+                    <div class="fs-5">Statistics</div>
                     <div>
                         <strong>To Listen:</strong> <a href="{% url 'listen:podcast_checkin_all_list' podcast.id %}?status=to_listen">{{ to_listen_count }}</a>
                     </div>
@@ -204,7 +204,7 @@
                 {% if lists_containing_podcast.count != 0 %}
                     <!--LuvLists that included this series-->
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <h5>Lists</h5>
+                        <div class="fs-5">Lists</div>
                         <div class='mb-0'>
                             {% for content_in_list in lists_containing_podcast %}
                                 <div>

@@ -7,7 +7,7 @@
     <div class="row">
         <!--left column-->
         <div class="col-12 col-md-8">
-            <h4>
+            <div class="fs-4">
                 Check-ins by
                 <a href="{% url 'accounts:detail' profile_user.username %}">
                     {{ profile_user.display_name|default:profile_user.username }}
@@ -17,7 +17,7 @@
                 {% elif  model_name == "series" %}
                     <a href="{% url 'watch:series_detail' object.id %}">{{ object.title }}</a>
                 {% endif %}
-            </h4>
+            </div>
             <span class='d-flex mb-3'>
                 <div class="me-3">
                     <a href="?order=timestamp&status={{ status }}"
@@ -118,7 +118,7 @@ class="text-decoration-none">Delete</a></span>
                     <div class="col flex-grow-1">
                         <div class="card-body">
                             <span class='d-flex align-items-start'>
-                                <h4>{{ object.title }}</h4>
+                                <div class="fs-4">{{ object.title }}</div>
                             </span>
                             {% if object.other_titles %}<p class='text-muted'>{{ object.other_titles }}</p>{% endif %}
                             <div class="movie-meta">

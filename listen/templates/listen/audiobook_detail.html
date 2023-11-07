@@ -142,7 +142,7 @@
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         {% if object.audiobookinstance_set.count == 1 %}
                             {% if object.audiobookinstance_set.first.instance.id %}
-                                <h5>Work</h5>
+                                <div class="fs-5">Work</div>
                                 <p>
                                     <a class="text-muted" href="{% url 'read:work_detail' object.audiobookinstance_set.first.instance.work.id %}">
                                         Other Editions
@@ -151,7 +151,7 @@
                             {% endif %}
                         {% else %}
                             <div class="row">
-                                <h5>Table of Content</h5>
+                                <div class="fs-5">Table of Content</div>
                                 <!--list all related instances by order-->
                                 <div class="col-sm-12">
                                     {% for audiobook_instance in object.bookinstance_set.all %}
@@ -176,7 +176,7 @@
                 {% endif %}
                 <!--Book Stats-->
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <h5>Statistics</h5>
+                    <div class="fs-5">Statistics</div>
                     <div>
                         <strong>To Listen:</strong> <a href="{% url 'listen:audiobook_checkin_all_list' object.id %}?status=to_listen">{{ to_listen_count }}</a>
                     </div>
@@ -189,7 +189,7 @@
                 </div>
                 {% if object.wikipedia %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <h5>Links</h5>
+                        <div class="fs-5">Links</div>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
                         </div>
@@ -198,7 +198,7 @@
                 {% if lists_containing_audiobook.count != 0 %}
                     <!--LuvLists that included this book-->
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <h5>Lists</h5>
+                        <div class="fs-5">Lists</div>
                         <div class='mb-0'>
                             {% for content_in_list in lists_containing_audiobook %}
                                 <div>
@@ -214,7 +214,7 @@
 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'listen:audiobook_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>

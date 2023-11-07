@@ -51,7 +51,7 @@
                         <div class="col flex-grow-1 ms-lg-3">
                             <div class="card-body">
                                 <span class='d-flex align-items-start'>
-                                    <h4>{{ object.title }}</h4>
+                                    <div class="fs-4">{{ object.title }}</div>
                                 </span>
                                 <p class='d-flex'>
                                     {% if object.subtitle and object.other_titles %}
@@ -179,7 +179,7 @@
                 {% endif %}
                 {% if object.work.id %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <h5>Work</h5>
+                    <div class="fs-5">Work</div>
                     <p>
                         <a href={% url "play:work_detail" object.work.id %}>{{ object.work.title }}</a>
                         {% if object.work.first_release_date %}({{ object.work.first_release_date }}){% endif %}
@@ -188,7 +188,7 @@
                 {% endif %}
                 <!--stats-->
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <h5>Statistics</h5>
+                    <div class="fs-5">Statistics</div>
                     <div>
                         <strong class="text-muted">To Play:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=to_play">{{ to_play_count }}</a>
                     </div>
@@ -201,7 +201,7 @@
                 </div>
                 {% if object.wikipedia %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <h5>Links</h5>
+                        <div class="fs-5">Links</div>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
                         </div>
@@ -210,7 +210,7 @@
                 {% if lists_containing_game.count != 0 %}
                     <!--LuvLists that included this game-->
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <h5>Lists</h5>
+                        <div class="fs-5">Lists</div>
                         <div class='mb-0'>
                             {% for content_in_list in lists_containing_game %}
                                 <div>
@@ -226,7 +226,7 @@
 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'play:game_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>

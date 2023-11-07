@@ -5,7 +5,7 @@
             <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }}</a>
             Crew and Cast
         </h3>
-        <h4>Main Crew</h4>
+        <div class="fs-4">Main Crew</div>
         <ul>
             {% for role, roles_list in series_crew.items %}
                 <li>
@@ -17,7 +17,7 @@
                 </li>
             {% endfor %}
         </ul>
-        <h4>Episode Crew</h4>
+        <div class="fs-4">Episode Crew</div>
         {% if episodes_crew_by_role|length == 0 %}
             <p>There is no episode crew added yet.</p>
         {% else %}
@@ -51,7 +51,7 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <h4>Cast</h4>
+        <div class="fs-4">Cast</div>
         {% if episodes_cast|length == 0 %}
             <p>There is no episode cast added yet.</p>
         {% else %}

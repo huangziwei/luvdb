@@ -45,7 +45,7 @@
                     </div>
                 {% endif %}
                 <div class='mt-3'>
-                    <h5>Releases</h5>
+                    <div class="fs-5">Releases</div>
                     <ul>
                         {% for release in releases %}
                             <li>
@@ -74,7 +74,7 @@
                 {% endif %}
                 {% if object.work.id %}
                     <div class="bg-light p-3 mb-3">
-                        <h5>Work</h5>
+                        <div class="fs-5">Work</div>
                         <p>
                             <a href={% url "listen:work_detail" object.work.id %}>{{ object.work.title }}</a>
                             {% if object.work.release_date %}({{ object.work.release_date }}){% endif %}
@@ -83,7 +83,7 @@
                 {% endif %}
                 {% if object.wikipedia %}
                     <div class="bg-light p-3 mb-3">
-                        <h5>Links</h5>
+                        <div class="fs-5">Links</div>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
                         </div>
@@ -92,7 +92,7 @@
 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'listen:track_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>

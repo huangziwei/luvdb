@@ -32,7 +32,7 @@
                     {% with grouped_length=grouped_instances|length %}
                         {% for lang, instances in grouped_instances.items %}
                             {% if grouped_length > 1 %}
-                                <h5>{{ lang | language_name }}</h5>
+                                <div class="fs-5">{{ lang | language_name }}</div>
                                 <!-- Display the human-readable name only if more than one language -->
                             {% endif %}
                             <ul>
@@ -122,7 +122,7 @@
                 {% endif %}
                 {% if object.wikipedia %}
                     <div class="bg-light p-3">
-                        <h5>Links</h5>
+                        <div class="fs-5">Links</div>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
                         </div>
@@ -130,7 +130,7 @@
                 {% endif %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'read:work_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>

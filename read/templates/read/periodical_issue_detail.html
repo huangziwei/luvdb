@@ -50,10 +50,10 @@
                         <div class="col flex-grow-1 ms-lg-3">
                             <div class="card-body">
                                 <span class='align-items-start'>
-                                    <h4>
+                                    <div class="fs-4">
                                         <a href="{% url 'read:periodical_detail' issue.periodical.id %}">{{ issue.periodical.title }}</a>
-                                    </h4>
-                                    <h5 class="text-muted">Vol. {{ issue.volume }} Nr. {{ issue.number }}</h5>
+                                    </div>
+                                    <h5 class="text-muted">Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>
                                 </span>
                                 <div class="issue-meta mt-3">
                                     {% if issue.publication_date %}<p class='text-secondary'>Date: {{ issue.publication_date }}</p>{% endif %}
@@ -94,7 +94,7 @@
                     <!-- Related instances or issues etc. -->
                     <div class="row">
                         <div class="d-flex align-items-center">
-                            <h5>Table of Content</h5>
+                            <div class="fs-5">Table of Content</div>
                             <a class="text-muted mb-2 ms-1" type="button" data-bs-toggle="collapse" data-bs-target=".creditCollapse" aria-expanded="false" aria-controls="creditCollapse">
                                 (Show Credits)
                             </a>
@@ -131,7 +131,7 @@
 
                 <!--Issue Stats -->
                 <div class="bg-light p-3 mt-3">
-                    <h5>Statistics</h5>
+                    <div class="fs-5">Statistics</div>
                     <div>
                         <strong class="text-muted">To Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=to_read">{{ to_read_count }}</a>
                     </div>
@@ -144,7 +144,7 @@
                 </div>
                 {% if issue.internet_archive_url %}
                     <div class="bg-light p-3 mt-3">
-                        <h5>Read on</h5>
+                        <div class="fs-5">Read on</div>
                         <div>
                             <a href="{{ issue.internet_archive_url }}">Internet Archive</a>
                         </div>
@@ -153,7 +153,7 @@
                 {% if lists_containing_issue.count != 0 %}
                     <!--LuvLists that included this issue-->
                     <div class="bg-light p-3 mt-3">
-                        <h5>Lists</h5>
+                        <div class="fs-5">Lists</div>
                         <ul class='mb-0'>
                             {% for content_in_list in lists_containing_issue %}
                                 <li>
@@ -168,7 +168,7 @@
                 {% endif %}
                 <div class="bg-light p-3 mt-3 order-2 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'read:issue_history' issue.periodical.pk issue.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>

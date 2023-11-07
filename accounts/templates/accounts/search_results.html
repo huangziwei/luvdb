@@ -19,7 +19,7 @@
 
                 <!--User-->
                 {% if user_results %}
-                    <h4>Users</h4>
+                    <div class="fs-4">Users</div>
                     {% for user in user_results %}
                         <p>
                             <a href="{% url 'accounts:detail' username=user.username %}">{{ user.display_name | default:user.username }}</a>
@@ -32,7 +32,7 @@
                 {% if creator_results %}
                     <h3 class="mb-3">Entity</h3>
                     {% if creator_results %}
-                        <h4>Persons</h4>
+                        <div class="fs-4">Persons</div>
                         {% for creator in creator_results %}
                             <p>
                                 <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name|truncatechars:50 }}</a>
@@ -48,7 +48,7 @@
                     <div class="row">
                         {% if litwork_results %}
                         <div class="col-12 col-md-4 mb-3">
-                            <h4>Works</h4>
+                            <div class="fs-4">Works</div>
                             {% for work in litwork_results %}
                                 <p>
                                     <a href="{% url 'read:work_detail' work.id %}">{{ work.title|truncatechars:50 }}</a>
@@ -60,7 +60,7 @@
 
                         {% if litinstance_results %}
                         <div class="col-12 col-md-4 mb-3">
-                            <h4>Instances</h4>
+                            <div class="fs-4">Instances</div>
                             {% for instance in litinstance_results %}
                                 <p>
                                     <a href="{% url 'read:instance_detail' instance.id %}">{{ instance.title|truncatechars:50 }}</a>
@@ -72,7 +72,7 @@
 
                         {% if book_results %}
                         <div class="col-12 col-md-4 mb-3">
-                            <h4>Book</h4>
+                            <div class="fs-4">Book</div>
                             {% for book in book_results %}
                                 <p>
                                     <a href="{% url 'read:book_detail' book.id %}">{{ book.title|truncatechars:50 }}</a>
@@ -89,7 +89,7 @@
                     <div class="row mt-2">
                         {% if periodical_results %}
                         <div class="col-12 col-md-4 mb-3">
-                            <h4>Periodicals</h4>
+                            <div class="fs-4">Periodicals</div>
                             {% for periodical in periodical_results %}
                                 <p>
                                     <a href="{% url 'read:periodical_detail' periodical.id %}">{{ periodical.title|truncatechars:50 }}</a>
@@ -100,7 +100,7 @@
                         
                         {% if book_series %}
                         <div class="col-12 col-md-4 mb-3">
-                            <h4>Book Series</h4>
+                            <div class="fs-4">Book Series</div>
                             {% for series in book_series %}
                                 <p>
                                     <a href="{% url 'read:series_detail' series.id %}">{{ series.title|truncatechars:50 }}</a>
@@ -118,7 +118,7 @@
                     <h3 class="mb-3">Watch</h3>
                     {% if movie_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Movies</h4>
+                        <div class="fs-4">Movies</div>
                         {% for movie in movie_results %}
                             <p>
                                 <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title|truncatechars:50 }}</a>
@@ -130,7 +130,7 @@
 
                     {% if series_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Series</h4>
+                        <div class="fs-4">Series</div>
                         {% for serie in series_results %}
                             <p>
                                 <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title|truncatechars:50 }}</a>
@@ -150,7 +150,7 @@
                     <h3 class="mb-3">Listen</h3>
                     {% if musicwork_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Works</h4>
+                        <div class="fs-4">Works</div>
                         {% for work in musicwork_results %}
                             <p>
                                 <a href="{% url 'listen:work_detail' work.id %}">{{ work.title|truncatechars:50 }}</a>
@@ -161,7 +161,7 @@
                     {% endif %}
                     {% if track_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Tracks</h4>
+                        <div class="fs-4">Tracks</div>
                         {% for track in track_results %}
                             <p>
                                 <a href="{% url 'listen:track_detail' track.id %}">{{ track.title|truncatechars:50 }}</a>
@@ -172,7 +172,7 @@
                     {% endif %}
                     {% if release_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Releases</h4>
+                        <div class="fs-4">Releases</div>
                         {% for release in release_results %}
                             <p>
                                 <a href="{% url 'listen:release_detail' release.id %}">{{ release.title|truncatechars:50 }}</a>
@@ -183,7 +183,7 @@
                     {% endif %}
                     {% if podcast_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Podcasts</h4>
+                        <div class="fs-4">Podcasts</div>
                         {% for podcast in podcast_results %}
                             <p>
                                 <a href="{% url 'listen:podcast_detail' podcast.id %}">{{ podcast.title|truncatechars:50 }}</a>
@@ -193,7 +193,7 @@
                     {% endif %}
                     {% if audiobook_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Audiobooks</h4>
+                        <div class="fs-4">Audiobooks</div>
                         {% for audiobook in audiobook_results %}
                             <p>
                                 <a href="{% url 'listen:audiobook_detail' audiobook.id %}">{{ audiobook.title|truncatechars:50 }}</a>
@@ -213,7 +213,7 @@
                     
                     {% if gamework_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Works</h4>
+                        <div class="fs-4">Works</div>
                         {% for gamework in gamework_results %}
                             <p>
                                 <a href="{% url 'play:work_detail' gamework.id %}">{{ gamework.title|truncatechars:50 }}</a>
@@ -224,7 +224,7 @@
                     {% endif %}
                     {% if game_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Games</h4>
+                        <div class="fs-4">Games</div>
                         {% for game in game_results %}
                             <p>
                                 <a href="{% url 'play:game_detail' game.id %}">{{ game.title|truncatechars:50 }}</a>
@@ -243,7 +243,7 @@
                     <h3 class="mb-3">Others</h3>
                     {% if post_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Posts</h4>
+                        <div class="fs-4">Posts</div>
                         {% for post in post_results %}
                             <p>
                                 <a href="{% url 'write:post_detail' post.id %}">{{ post.title }}</a>
@@ -255,7 +255,7 @@
                     
                     {% if pin_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Pins</h4>
+                        <div class="fs-4">Pins</div>
                         {% for pin in pin_results %}
                             <p>
                                 <a href="{% url 'write:pin_detail' pin.id %}">{{ pin.title|truncatechars:50 }}</a>
@@ -266,7 +266,7 @@
                     {% endif %}
                     {% if luvlist_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Lists</h4>
+                        <div class="fs-4">Lists</div>
                         {% for luvlist in luvlist_results %}
                             <p>
                                 <a href="{% url 'write:luvlist_detail' luvlist.id %}">{{ luvlist.title }}</a>
@@ -277,7 +277,7 @@
                     {% endif %}
                     {% if say_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Says</h4>
+                        <div class="fs-4">Says</div>
                         {% for say in say_results %}
                             <p>
                                 <a href="{% url 'write:say_detail' say.id %}">{{ say.content|truncatechars:30 }}</a>
@@ -288,7 +288,7 @@
                     {% endif %}
                     {% if repost_results %}
                     <div class="col-12 col-md-4 mb-3">
-                        <h4>Reposts</h4>
+                        <div class="fs-4">Reposts</div>
                         {% for repost in repost_results %}
                             <p>
                                 <a href="{% url 'write:repost_detail' repost.id %}">{{ repost.content|truncatechars:30 }}</a>

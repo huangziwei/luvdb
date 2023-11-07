@@ -73,7 +73,7 @@
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'listen:release_detail' release_in_group.release.pk %}"
                                        class="text-decoration-none hover-username">
-                                        <h5>{{ release_in_group.release.title }}</h5>
+                                        <div class="fs-5">{{ release_in_group.release.title }}</div>
                                     </a>
                                     {% if release_in_group.release.subtitle %}<div class="mb-2 text-muted">{{ release_in_group.release.subtitle }}</div>{% endif %}
                                     {% regroup release_in_group.release.releaserole_set.all by role as roles_list %}
@@ -129,7 +129,7 @@
                 {% endif %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'listen:releasegroup_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>

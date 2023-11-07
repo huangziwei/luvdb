@@ -24,10 +24,10 @@
                 <!-- read -->
                 {% if object.books.count != 0 or object.audiobooks.count != 0%}
                 <div class="row mt-3">
-                    <h4 class="mb-0">As Book Publisher</h4>
+                    <div class="mb-0 fs-4">As Book Publisher</div>
                     {% if object.books.count != 0 %}
                     <div class="col-md-6 mt-2">
-                        <h5>Books</h5>
+                        <div class="fs-5">Books</div>
                         <ul>
                             {% for book in object.books.all %}
                                 <li>
@@ -42,7 +42,7 @@
     
                     {% if object.audiobooks.count != 0 %}
                     <div class="col-md-6 mt-2">
-                        <h5>Audiobooks</h5>
+                        <div class="fs-5">Audiobooks</div>
                         <ul>
                             {% for audiobook in object.audiobooks.all %}
                                 <li>
@@ -60,10 +60,10 @@
                 <!-- watch 1-->
                 {% if movies_as_production_company or  series_as_production_company%}
                 <div class="row mt-3">
-                    <h4 class="mb-0">As Production Company</h4>
+                    <div class="mb-0 fs-4">As Production Company</div>
                     {% if movies_as_production_company.count != 0 %}
                     <div class="col-md-6 mt-2">
-                        <h5>Movies</h5>
+                        <div class="fs-5">Movies</div>
                         <ul>
                             {% for movie in movies_as_production_company %}
                                 <li>
@@ -77,7 +77,7 @@
     
                     {% if series_as_production_company.count != 0 %}
                     <div class="col-md-6 mt-2">
-                        <h5>Series</h5>
+                        <div class="fs-5">Series</div>
                         <ul>
                             {% for serie in series_as_production_company %}
                                 <li>
@@ -93,10 +93,10 @@
 
                 {% if movies_as_distributor or  series_as_distributor%}
                 <div class="row mt-3">
-                    <h4 class="mb-0">As Distribution Company</h4>
+                    <div class="mb-0 fs-4">As Distribution Company</div>
                     {% if movies_as_distributor.count != 0 %}
                     <div class="col-md-6 mt-2">
-                        <h5>Movies</h5>
+                        <div class="fs-5">Movies</div>
                         <ul>
                             {% for movie in movies_as_distributor %}
                                 <li>
@@ -110,7 +110,7 @@
     
                     {% if series_as_distributor.count != 0 %}
                     <div class="col-md-6 mt-2">
-                        <h5>Series</h5>
+                        <div class="fs-5">Series</div>
                         <ul>
                             {% for serie in series_as_distributor %}
                                 <li>
@@ -127,12 +127,12 @@
                 <!-- listen 1-->
                 {% if singles or EPs or LPs or boxsets %}
                 <div class="row mt-3">
-                    <h4 class="mb-0">As Record Label</h4>
+                    <div class="mb-0 fs-4">As Record Label</div>
                     {% if singles or EPs %}
                     <div class="row">
                         {% if singles.count != 0 %}
                         <div class="col-md-6 mt-2">
-                            <h5>Singles</h5>
+                            <div class="fs-5">Singles</div>
                             <ul>
                                 {% for single in singles.all %}
                                     <li>
@@ -146,7 +146,7 @@
         
                         {% if EPs.count != 0 %}
                         <div class="col-md-6 mt-2">
-                            <h5>EPs</h5>
+                            <div class="fs-5">EPs</div>
                             <ul>
                                 {% for EP in EPs.all %}
                                     <li>
@@ -164,7 +164,7 @@
                     <div class="row">
                         {% if LPs.count != 0 %}
                         <div class="col-md-6 mt-2">
-                            <h5>LPs</h5>
+                            <div class="fs-5">LPs</div>
                             <ul>
                                 {% for LP in LPs.all %}
                                     <li>
@@ -178,7 +178,7 @@
         
                         {% if boxsets.count != 0 %}
                         <div class="col-md-6 mt-2">
-                            <h5>Box Sets</h5>
+                            <div class="fs-5">Box Sets</div>
                             <ul>
                                 {% for boxset in boxsets.all %}
                                     <li>
@@ -198,7 +198,7 @@
                 <div class="row mt-3">
                     {% if games_as_developer.count != 0 %}
                     <div class="col-md-6">
-                        <h5>As Game Developer</h5>
+                        <div class="fs-5">As Game Developer</div>
                         <ul>
                             {% for game in games_as_developer %}
                                 <li>
@@ -214,7 +214,7 @@
                     {% endif %}   
                     {% if games_as_publisher.count != 0 %}
                     <div class="col-md-6">
-                        <h5>As Game Publisher</h5>
+                        <div class="fs-5">As Game Publisher</div>
                         <ul>
                             {% for game in games_as_publisher %}
                                 <li>
@@ -242,7 +242,7 @@
 
                 {% if object.wikipedia or object.website %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <h5>Link</h5>
+                    <div class="fs-5">Link</div>
                     {% if object.wikipedia %}
                         <div>
                             <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>
@@ -258,7 +258,7 @@
 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'entity:company_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>

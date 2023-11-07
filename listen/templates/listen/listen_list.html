@@ -8,7 +8,7 @@
                     <div class="mb-3">
                         <h2>Trending</h2>
                         {% if objects.trending_releases %}
-                            <h4>Music</h4>
+                            <div class="fs-4">Music</div>
                             <div class="row ps-2 pe-2">
                                 {% for release in objects.trending_releases %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
@@ -40,7 +40,7 @@
                             </div>
                         {% endif %}
                         {% if objects.trending_podcasts %}
-                            <h4>Podcast</h4>
+                            <div class="fs-4">Podcast</div>
                             <div class="row ps-2 pe-2">
                                 {% for podcast in objects.trending_podcasts %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
@@ -71,7 +71,7 @@
                             </div>
                         {% endif %}
                         {% if objects.trending_audiobooks %}
-                            <h4>Audiobooks</h4>
+                            <div class="fs-4">Audiobooks</div>
                             <div class="row ps-2 pe-2">
                                 {% for audiobook in objects.trending_audiobooks %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
@@ -107,7 +107,7 @@
                     <div>
                         <h2>Recently Added</h2>
                         {% if objects.recent_releases %}
-                            <h4>Music</h4>
+                            <div class="fs-4">Music</div>
                             <div class="row ps-2 pe-2">
                                 {% for release in objects.recent_releases %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
@@ -138,7 +138,7 @@
                             </div>
                         {% endif %}
                         {% if objects.recent_podcasts %}
-                            <h4>Podcasts</h4>
+                            <div class="fs-4">Podcasts</div>
                             <div class="row ps-2 pe-2">
                                 {% for podcast in objects.recent_podcasts %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
@@ -169,7 +169,7 @@
                             </div>
                         {% endif %}
                         {% if objects.recent_audiobooks %}
-                            <h4>Audiobooks</h4>
+                            <div class="fs-4">Audiobooks</div>
                             <div class="row ps-2 pe-2">
                                 {% for audiobook in objects.recent_audiobooks %}
                                     <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
@@ -204,7 +204,7 @@
             </div>
             <div class='col-12 col-md-4'>
                 <div class="bg-light p-3 mb-3">
-                    <h5>Add New</h5>
+                    <div class="fs-5">Add New</div>
                     <div>
                         <a href="{% url "listen:work_create" %}" class="text-muted">Work</a>
                     </div>
@@ -225,7 +225,7 @@
                     </div>
                 </div>
                 <div class="bg-light p-3 mb-3">
-                    <h5>Statistics</h5>
+                    <div class="fs-5">Statistics</div>
                     <div>
                         <span class="text-muted">Works</span>: {{ works_count }}
                     </div>
@@ -244,7 +244,7 @@
                 </div>
                 {% if genres %}
                     <div class="bg-light p-3 mb-3">
-                        <h5>Genres</h5>
+                        <div class="fs-5">Genres</div>
                         <div class='d-flex flex-wrap'>
                             {% for genre in genres %}
                                 <a href="{% url 'listen:genre_detail' genre.slug %}" class="me-2">{{ genre.name }}</a>

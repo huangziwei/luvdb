@@ -11,7 +11,7 @@
                 </p>
                 {% if not user.is_authenticated %}
                 <div class="col-10">
-                    <h6 class="mb-2">Request an Invite</h6>
+                    <div class="mb-2 fs-6 fw-bold">Request an Invite</div>
                     <form method="post" action="{% url 'accounts:request_invitation' %}" class="d-flex">
                         {% csrf_token %}
                         <div class="form-group mb-2 col-10">

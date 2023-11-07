@@ -7,10 +7,10 @@
     <div class="row">
         <div class="col-12 col-md-8">
             <div class="col-sm-12">
-                <h4>
+                <div class="fs-4">
                     All Listening Check-Ins from
                     <a href="{% url 'accounts:detail' profile_user.username %}"> {{ profile_user.display_name|default:profile_user.username }}</a>
-                </h4>
+                </div>
                 <span class='d-flex mb-3'>
                     <div class="me-3">
                         <a href="?order=timestamp&status={{ status }}"
@@ -102,12 +102,12 @@
                                     {% if checkin.content_type.model == "release" %}
                                     <a href="{% url 'listen:release_detail' checkin.content_object.id %}"
                                         class="text-decoration-none hover-username">
-                                        <h5>{{ checkin.content_object.title }}</h5>
+                                        <div class="fs-5">{{ checkin.content_object.title }}</div>
                                     </a>
                                     {% elif checkin.content_type.model == "podcast" %}
                                     <a href="{% url 'listen:podcast_detail' checkin.content_object.id %}"
                                         class="text-decoration-none hover-username">
-                                        <h5>{{ checkin.content_object.title }}</h5>
+                                        <div class="fs-5">{{ checkin.content_object.title }}</div>
                                     </a>
                                     <div class="text-muted">
                                         {{ checkin.content_object.notes | truncatechars:300 }}
@@ -115,7 +115,7 @@
                                     {% elif checkin.content_type.model == "audiobook" %}
                                     <a href="{% url 'listen:audiobook_detail' checkin.content_object.id %}"
                                         class="text-decoration-none hover-username">
-                                        <h5>{{ checkin.content_object.title }}</h5>
+                                        <div class="fs-5">{{ checkin.content_object.title }}</div>
                                     </a>
                                     {% endif %}
                                     {% regroup checkin.content_object.releaserole_set.all by role as roles_list %}

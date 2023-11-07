@@ -7,7 +7,7 @@
     <div class="row">
         <!--left column-->
         <div class="col-12 col-md-8">
-            <h4>
+            <div class="fs-4">
                 Check-ins by
                 <a href="{% url 'accounts:detail' profile_user.username %}">
                     {{ profile_user.display_name|default:profile_user.username }}
@@ -19,7 +19,7 @@
                 {% elif model_name == "audiobook" %}
                     <a href="{% url 'listen:audiobook_detail' object.id %}">{{ object.title }}</a>
                 {% endif %}
-            </h4>
+            </div>
             <span class="d-flex mb-3">
                 <div class="me-3">
                     <a href="?order=timestamp&status={{ status }}"

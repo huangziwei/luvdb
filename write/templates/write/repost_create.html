@@ -55,7 +55,7 @@
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'read:book_detail' original_activity.content_object.book.id %}"
                                        class="text-decoration-none hover-username">
-                                        <h6>{{ original_activity.content_object.book.title }}</h6>
+                                        <div class="fs-6">{{ original_activity.content_object.book.title }}</div>
                                     </a>
                                     {% regroup original_activity.content_object.book.bookrole_set.all by role as roles_list %}
                                     {% for role in roles_list %}
@@ -122,7 +122,7 @@
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'play:game_detail' original_activity.content_object.game.id %}"
                                        class="text-decoration-none hover-username">
-                                        <h6>{{ original_activity.content_object.game.title }}</h6>
+                                        <div class="fs-6">{{ original_activity.content_object.game.title }}</div>
                                     </a>
                                     {% regroup original_activity.content_object.game.gamerole_set.all by role as roles_list %}
                                     {% for role in roles_list %}

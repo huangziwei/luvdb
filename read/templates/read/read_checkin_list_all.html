@@ -7,14 +7,14 @@
         <div class="col-12 col-md-8">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4>
+                    <div class="fs-4">
                         All Check-Ins of
                         {% if model_name == "book" %}
                             <a href="{% url 'read:book_detail' object.id %}">{{ object.title }}</a>
                         {% elif  model_name == "issue" %}
                             {{ object.periodical.title }} <a href="{% url 'read:issue_detail' object.periodical.id object.id %}">Vol. {{ object.volume}} Nr. {{ object.number }}</a>
                         {% endif %}
-                    </h4>
+                    </div>
                     <span class='d-flex mb-3'>
                         <div class="me-3">
                             <a href="?order=timestamp&status={{ status }}"
@@ -79,11 +79,11 @@
                     <div class="col flex-grow-1">
                         <div class="card-body">
                             {% if object.title %}
-                                <h4>{{ object.title }}</h4>
+                                <div class="fs-4">{{ object.title }}</div>
                             {% endif %}
                             {% if object.volume and object.number %}
-                                <h4>{{ object.periodical.title }}</h4>
-                                <h5>Vol. {{ object.volume }} Nr. {{ object.number }}</h5>
+                                <div class="fs-4">{{ object.periodical.title }}</div>
+                                <div class="fs-5">Vol. {{ object.volume }} Nr. {{ object.number }}</div>
                             {% endif %}
                             {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
                             <div class="book-meta">

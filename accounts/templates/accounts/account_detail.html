@@ -38,7 +38,7 @@
             <div class="col-12 d-block d-md-none mb-1">
                 <div class="bio p-3">
                     <div class="d-flex align-items-end">
-                        {% if object.display_name %}<h4 class="mb-0 h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">{{ object.display_name }}</h4>{% endif %}
+                        {% if object.display_name %}<div class="mb-0 h-card fs-4" href="https://luvdb.com{% url 'accounts:detail' object.username %}">{{ object.display_name }}</div>{% endif %}
                         <div class="h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">@{{ object.username }}</div>
                     </div>
                     <p>
@@ -135,7 +135,7 @@
             <div class="col-12 d-block d-md-none mb-1">
                 <!--Most recent activity-->
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5>Recent</h5>
+                    <div class="fs-5">Recent</div>
                     <a class="btn btn-outline-secondary btn-sm"
                        href="{% url 'accounts:feed' object.username %}">All</a>
                 </div>
@@ -150,7 +150,7 @@
                 {% if does_read_exist %}
                     <div class="row">
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <h4>Read</h4>
+                            <div class="fs-4">Read</div>
                             <div>
                                 <a class="btn btn-outline-secondary btn-sm"
                                 href="{% url 'read:read_checkin_user_list' object.username %}">All</a>
@@ -275,7 +275,7 @@
                 {% if does_watch_exist %}
                     <div class="row">
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <h4 class="mt-4">Watch</h4>
+                            <div class="mt-4 fs-4">Watch</div>
                             <div>
                                 <a class="btn btn-outline-secondary btn-sm"
                                 href="{% url 'watch:watch_checkin_user_list' object.username %}">All</a>
@@ -400,7 +400,7 @@
                 {% if does_listen_exist %}
                     <div class="row">
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <h4 class="mt-4">Listen</h4>
+                            <div class="mt-4 fs-4">Listen</div>
                             <div>
                                 <a class="btn btn-outline-secondary btn-sm"
                                 href="{% url 'listen:listen_checkin_user_list' object.username %}">All</a>
@@ -565,7 +565,7 @@
                 {% if does_play_exist %}
                     <div class="row">
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <h4 class="mt-4">Play</h4>
+                            <div class="mt-4 fs-4">Play</div>
                             <div>
                                 <a class="btn btn-outline-secondary btn-sm"
                                 href="{% url 'play:game_checkin_user_list' object.username %}">All</a>
@@ -648,7 +648,7 @@
                 <div>
                     <!--following-->
                     <div class="d-flex justify-content-between align-items-center">
-                        <h4>Following</h4>
+                        <div class="fs-4">Following</div>
                         <a class="btn btn-outline-secondary btn-sm"
                            href="{% url 'accounts:following_list' object.username %}">All</a>
                     </div>
@@ -690,7 +690,7 @@
                 {% if does_read_exist %}
                     <div class="row">
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <h4>Read</h4>
+                            <div class="fs-4">Read</div>
                             <div>
                                 <a class="btn btn-outline-secondary btn-sm"
                                    href="{% url 'read:read_checkin_user_list' object.username %}">All</a>
@@ -815,7 +815,7 @@
                 {% if does_watch_exist %}
                     <div class="row">
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <h4 class="mt-4">Watch</h4>
+                            <div class="mt-4 fs-4">Watch</div>
                             <div>
                                 <a class="btn btn-outline-secondary btn-sm"
                                    href="{% url 'watch:watch_checkin_user_list' object.username %}">All</a>
@@ -940,7 +940,7 @@
                 {% if does_listen_exist %}
                     <div class="row">
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <h4 class="mt-4">Listen</h4>
+                            <div class="mt-4 fs-4">Listen</div>
                             <div>
                                 <a class="btn btn-outline-secondary btn-sm"
                                    href="{% url 'listen:listen_checkin_user_list' object.username %}">All</a>
@@ -1105,7 +1105,7 @@
                 {% if does_play_exist %}
                     <div class="row">
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <h4 class="mt-4">Play</h4>
+                            <div class="mt-4 fs-4">Play</div>
                             <div>
                                 <a class="btn btn-outline-secondary btn-sm"
                                    href="{% url 'play:game_checkin_user_list' object.username %}">All</a>
@@ -1184,7 +1184,7 @@
             <div class="col-md-4 col-sm-12 d-none d-md-block">
                 <div class="bio p-3">
                     <div class="d-flex align-items-end">
-                        {% if object.display_name %}<h4 class="mb-0 h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">{{ object.display_name }}</h4>{% endif %}
+                        {% if object.display_name %}<div class="mb-0 h-card fs-4" href="https://luvdb.com{% url 'accounts:detail' object.username %}">{{ object.display_name }}</div>{% endif %}
                         <div class="h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">@{{ object.username }}</div>
                     </div>
                     <p>
@@ -1278,7 +1278,7 @@
                 <div>
                     <!--Most recent activity-->
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5>Recent</h5>
+                        <div class="fs-5">Recent</div>
                         <a class="btn btn-outline-secondary btn-sm"
                            href="{% url 'accounts:feed' object.username %}">All</a>
                     </div>
@@ -1293,7 +1293,7 @@
                     <div>
                         <!--following-->
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5>Following</h5>
+                            <div class="fs-5">Following</div>
                             <a class="btn btn-outline-secondary btn-sm"
                                href="{% url 'accounts:following_list' object.username %}">All</a>
                         </div>

@@ -168,7 +168,7 @@
                     </div>
                 {% endif %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <h5>Tracklist</h5>
+                    <div class="fs-5">Tracklist</div>
                     <!--list all related tracks by order-->
                     <div class="col-sm-12">
                         {% for release_track in object.releasetrack_set.all %}
@@ -195,7 +195,7 @@
                 </div>
                 <!--Release Stats-->
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <h5>Statistics</h5>
+                    <div class="fs-5">Statistics</div>
                     <div>
                         <strong>To Listen:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a>
                     </div>
@@ -209,7 +209,7 @@
                 <!--Listen on-->
                 {% if object.apple_music_url or object.spotify_url %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <h5>Listen on</h5>
+                        <div class="fs-5">Listen on</div>
                         {% if object.apple_music_url %}
                             <div>
                                 <a href="{{ object.apple_music_url }}">Apple Music</a>
@@ -224,7 +224,7 @@
                 {% endif %}
                 {% if object.wikipedia or object.discogs %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <h5>Links</h5>
+                        <div class="fs-5">Links</div>
                         {% if object.discogs %}
                         <div>
                             <a href="{{ object.discogs }}">Discogs</a>
@@ -240,7 +240,7 @@
                 {% if lists_containing_release.count != 0 %}
                     <!--LuvLists that included this release-->
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <h5>Lists</h5>
+                        <div class="fs-5">Lists</div>
                         <div class='mb-0'>
                             {% for content_in_list in lists_containing_release %}
                                 <div>
@@ -256,7 +256,7 @@
 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start">
-                        <h5 class="me-1">Contributors</h5>
+                        <div class="me-1 fs-5">Contributors</div>
                         (<a href="{% url 'listen:release_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
                     </div>
                     <div>
