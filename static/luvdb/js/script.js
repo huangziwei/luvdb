@@ -73,22 +73,22 @@ document.addEventListener("DOMContentLoaded", function () {
     let tags = [];
     let lastDropdownTriggerPos = -1;
 
-    // Fetch usernames
-    fetch("/u/get_followed_usernames/")
-        .then((response) => response.json())
-        .then((data) => {
-            usernames = data.usernames_with_display_names;
-        });
-
-    // Fetch tags
-    fetch("/u/get_user_tags/")
-        .then((response) => response.json())
-        .then((data) => {
-            tags = data.tags;
-        });
-
     const textInput = document.getElementById("text-input");
     if (textInput !== null) {
+        // Fetch usernames
+        fetch("/u/get_followed_usernames/")
+            .then((response) => response.json())
+            .then((data) => {
+                usernames = data.usernames_with_display_names;
+            });
+
+        // Fetch tags
+        fetch("/u/get_user_tags/")
+            .then((response) => response.json())
+            .then((data) => {
+                tags = data.tags;
+            });
+
         textInput.addEventListener("keyup", function (e) {
             const value = textInput.value;
             let lastSymbol = null;
