@@ -1630,7 +1630,7 @@ class GenreAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
-        return qs
+        return qs.order_by("name")
 
 
 #################
