@@ -53,7 +53,7 @@
                                     <div class="fs-4">
                                         <a href="{% url 'read:periodical_detail' issue.periodical.id %}">{{ issue.periodical.title }}</a>
                                     </div>
-                                    <h5 class="text-muted">Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>
+                                    <div class="text-muted fs-5">Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>
                                 </span>
                                 <div class="issue-meta mt-3">
                                     {% if issue.publication_date %}<p class='text-secondary'>Date: {{ issue.publication_date }}</p>{% endif %}
@@ -95,7 +95,7 @@
                     <div class="row">
                         <div class="d-flex align-items-center">
                             <div class="fs-5">Table of Content</div>
-                            <a class="text-muted mb-2 ms-1" type="button" data-bs-toggle="collapse" data-bs-target=".creditCollapse" aria-expanded="false" aria-controls="creditCollapse">
+                            <a class="text-muted ms-1" type="button" data-bs-toggle="collapse" data-bs-target=".creditCollapse" aria-expanded="false" aria-controls="creditCollapse">
                                 (Show Credits)
                             </a>
                         </div>
