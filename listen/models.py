@@ -269,6 +269,8 @@ class Release(models.Model):
                 # Delete the old cover
                 old_instance.cover.delete(save=False)
                 new_or_updated_cover = True
+        else:
+            new_or_updated_cover = True
 
         super().save(*args, **kwargs)
 
@@ -473,6 +475,8 @@ class Podcast(models.Model):
                 # Delete the old cover.
                 old_instance.cover.delete(save=False)
                 new_or_updated_cover = True
+        else:
+            new_or_updated_cover = True
 
         # Save the instance first, to generate a primary key if needed.
         super().save(*args, **kwargs)
@@ -634,6 +638,8 @@ class Audiobook(models.Model):
                 # Delete the old cover
                 old_instance.cover.delete(save=False)
                 new_or_updated_cover = True
+        else:
+            new_or_updated_cover = True
 
         super().save(*args, **kwargs)
 
