@@ -385,10 +385,6 @@ a {
     overflow-wrap: break-word;
 }
 
-.bio {
-    background-color: #fff6ed;
-}
-
 
 /* For Chrome */
 input[type="date"]::-webkit-inner-spin-button,
@@ -410,10 +406,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* Light / dark Mode */
 
 :root {
-    --bg-default: #ffffff;
-    --bg-highlight: #f5f5f5;
+    --bg-default: #f4f4f4; 
+    --bg-highlight: #e5ebef; 
     --text-default: #000000;
-    --bs-body-bg: #ffffff;
+    --bs-body-bg: #f4f4f4; 
 }
 
 [data-bs-theme="dark"] {
@@ -432,7 +428,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     --bg-highlight: #434d58 !important;
     --text-default: #ffffff !important;
     --bs-btn-border-color: #2B3035 !important;
-    /* box-shadow: 0 2px 4px rgba(160, 160, 160, 0.1); */
 }
 
 
