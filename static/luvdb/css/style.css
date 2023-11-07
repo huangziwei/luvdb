@@ -87,7 +87,6 @@ li:last-child {
 
 .cover-border {
     border: 2px solid #ddd;
-    /* background-color: #eee; */
 }
 
 .listen-cover-placeholder {
@@ -412,7 +411,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 :root {
     --bg-default: #ffffff;
-    --bg-highlight: #ccc;
+    --bg-highlight: #f5f5f5;
     --text-default: #000000;
     --bs-body-bg: #ffffff;
 }
@@ -424,13 +423,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     --bs-body-bg: #18191A;
 }
 
-/* .bg-light {
-    box-shadow: 0 2px 4px rgba(18, 18, 18, 0.1);
-} */
+.bg-light {
+    background-color: var(--bg-highlight) !important;
+}
 
 [data-bs-theme="dark"] .bg-light {
     background-color: var(--bg-default) !important;
-    --bg-highlight: #2B3035 !important;
+    --bg-highlight: #434d58 !important;
     --text-default: #ffffff !important;
     --bs-btn-border-color: #2B3035 !important;
     /* box-shadow: 0 2px 4px rgba(160, 160, 160, 0.1); */
