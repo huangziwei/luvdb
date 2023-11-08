@@ -126,7 +126,13 @@
                                         <div>
                                             <a href="{{ episode.episode_url }}"
                                                target="_blank"
-                                               class="btn btn-primary btn-sm">Listen</a>
+                                               class="btn btn-primary btn-sm">Listen
+                                                {% if episode.episode_url_type == "web" %}
+                                                (web)
+                                                {% elif episode.episode_url_type == "audio" %}
+                                                (audio)
+                                                {% endif %}
+                                            </a>
                                         </div>
                                     {% endif %}
                                 </div>
@@ -146,7 +152,13 @@
                                             <div>
                                                 <a href="{{ episode.episode_url }}"
                                                    target="_blank"
-                                                   class="btn btn-primary btn-sm">Listen</a>
+                                                   class="btn btn-primary btn-sm">Listen
+                                                   {% if episode.episode_url_type == "web" %}
+                                                   (web)
+                                                   {% elif episode.episode_url_type == "audio" %}
+                                                   (audio)
+                                                   {% endif %}
+                                                </a>
                                             </div>
                                         {% endif %}
                                     </div>

@@ -1119,10 +1119,21 @@ def parse_podcast(rss_feed_url):
         if release_date:
             release_date = release_date.strftime("%Y-%m-%d %H:%M:%S")
 
+        if hasattr(entry, "link"):
+            episode_url = entry.link
+            episode_url_type = "web"
+        elif entry.enclosures:
+            episode_url = entry.enclosures[0].href
+            episode_url_type = "audio"
+        else:
+            episode_url = None
+            episode_url_type = None
+
         episode_info = {
             "title": entry.title,
             "release_date": release_date,
-            "episode_url": entry.link if hasattr(entry, "link") else None,
+            "episode_url": episode_url,
+            "episode_url_type": episode_url_type,
         }
         episodes_info.append(episode_info)
 
