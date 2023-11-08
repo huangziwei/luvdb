@@ -19,8 +19,11 @@
                 </div>
                 <hr>
                 {% for notification in page_obj %}
-                    <div class="p-2 notification {% if notification.is_delete %}notification-delete{% else %}notification-default{% endif %}"
-                    style="{% if not notification.read%}background-color: #fff0f5{%endif%}">
+                    <div class="
+                        p-2 pt-3 notification 
+                        {% if notification.is_delete %}notification-delete{% else %}notification-default{% endif %}
+                        {% if not notification.read%}bg-light{%endif%}
+                        ">
                         <div>{{ notification.message | markdownify | safe }}</div>
                         <div class="d-flex">
                             <p class="d-inline-block me-2">
