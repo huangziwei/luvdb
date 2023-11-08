@@ -110,7 +110,7 @@ class Comment(models.Model):
                 content_name = f"{content_name[:-7]} Check-in"
             message = f'<a href="{user_url}">@{user_name}</a> commented on your <a href="{content_url}">{content_name}</a>.'
 
-            Notification.objects.create(
+            notification = Notification.objects.create(
                 recipient=self.content_object.user,
                 sender_content_type=ContentType.objects.get_for_model(self.user),
                 sender_object_id=self.user.id,
@@ -121,6 +121,12 @@ class Comment(models.Model):
                 notification_type="comment",
                 message=message,
             )
+            notification.save()
+            content_url_with_read_marker = f"{content_url}?mark_read={notification.id}"
+            # Update the message with the new URL containing the marker
+            notification.message = f'<a href="{user_url}">@{user_name}</a> commented on your <a href="{content_url_with_read_marker}">{content_name}</a>.'
+            notification.save()
+
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
@@ -218,7 +224,7 @@ class Repost(models.Model):
                 repost_url = self.get_absolute_url()
                 message = f'<a href="{user_url}">@{self.user.username}</a> reposted your <a href="{content_url}">{content_name}</a>. See the <a href="{repost_url}">Repost</a>.'
 
-                Notification.objects.create(
+                notification = Notification.objects.create(
                     recipient=self.original_activity.user,
                     sender_content_type=ContentType.objects.get_for_model(self.user),
                     sender_object_id=self.user.id,
@@ -229,6 +235,11 @@ class Repost(models.Model):
                     notification_type="repost",
                     message=message,
                 )
+                notification.save()
+                repost_url_with_read_marker = f"{repost_url}?mark_read={notification.id}"
+                # Update the message with the new URL containing the marker
+                notification.message = f'<a href="{user_url}">@{self.user.username}</a> reposted your <a href="{content_url}">{content_name}</a>. See the <a href="{repost_url_with_read_marker}">Repost</a>.'
+                notification.save()
 
         # Handle tags
         handle_tags(self, self.content)

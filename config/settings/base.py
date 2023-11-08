@@ -85,6 +85,7 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "config.middleware.TimezoneMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
+    "notify.middlewares.MarkNotificationReadMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"

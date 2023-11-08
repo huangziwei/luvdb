@@ -95,14 +95,15 @@ def create_mentions_notifications(user, text, content_object):
         try:
             mentioned_user = get_user_model().objects.get(username=username)
             if mentioned_user != user:
-                author_url = reverse("accounts:detail", args=[user.username])
+                user_url = reverse("accounts:detail", args=[user.username])
+                user_name = user.display_name if user.display_name else user.username
                 content_url = content_object.get_absolute_url()
                 content_name = content_object.__class__.__name__.capitalize()
                 if "checkin" in content_name:
                     content_name = f"{content_name[:-7]} Check-in"
-                message = f'<a href="{author_url}">@{user.username}</a> mentioned you in a <a href="{content_url}">{content_name}</a>.'
+                message = f'<a href="{user_url}">@{user.username}</a> mentioned you in a <a href="{content_url}">{content_name}</a>.'
 
-                Notification.objects.create(
+                notification = Notification.objects.create(
                     recipient=mentioned_user,
                     sender_content_type=ContentType.objects.get_for_model(user),
                     sender_object_id=user.id,
@@ -113,5 +114,13 @@ def create_mentions_notifications(user, text, content_object):
                     notification_type="mention",
                     message=message,
                 )
+                notification.save()
+                content_url_with_read_marker = (
+                    f"{content_url}?mark_read={notification.id}"
+                )
+                # Update the message with the new URL containing the marker
+                notification.message = f'<a href="{user_url}">@{user_name}</a> mentioned in a <a href="{content_url_with_read_marker}">{content_name}</a>.'
+                notification.save()
+
         except get_user_model().DoesNotExist:
             pass
