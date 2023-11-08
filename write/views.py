@@ -833,35 +833,6 @@ class LuvListUserListView(ListView):
         return context
 
 
-def content_detail_redirect(request, content_id):
-    content = get_object_or_404(ContentInList, id=content_id)
-
-    # Based on the content type, redirect to the appropriate detail view
-    if content.content_type.model == "luvlist":
-        return redirect("write:luvlist_detail", content.content_object.id)
-    elif content.content_type.model == "say":
-        return redirect("write:say_detail", content.content_object.id)
-    elif content.content_type.model == "pin":
-        return redirect("write:pin_detail", content.content_object.id)
-    elif content.content_type.model == "post":
-        return redirect("write:post_detail", content.content_object.id)
-    elif content.content_type.model == "book":
-        return redirect("read:book_detail", content.content_object.id)
-    elif content.content_type.model == "game":
-        return redirect("play:game_detail", content.content_object.id)
-    elif content.content_type.model == "movie":
-        return redirect("watch:movie_detail", content.content_object.id)
-    elif content.content_type.model == "series":
-        return redirect("watch:series_detail", content.content_object.id)
-    elif content.content_type.model == "release":
-        return redirect("listen:release_detail", content.content_object.id)
-    # Add more conditions if you have more content types
-    else:
-        return redirect(
-            "write:luvlist_detail", content.luv_list.id
-        )  # or redirect to some default
-
-
 class RandomizerDetailView(DetailView):
     model = LuvList
     template_name = "write/luvlist_randomizer.html"
