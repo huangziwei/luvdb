@@ -133,7 +133,5 @@ urlpatterns = [
     path(
         "u/<str:username>/luvlists/", LuvListUserListView.as_view(), name="luvlist_list"
     ),
-    path(
-        "luvlist/<int:pk>/surprise/", RandomizerDetailView.as_view(), name="randomizer"
-    ),
+    path("luvlist/<int:pk>/surprise/", RandomizerDetailView.as_view(), name="surprise"),
 ]
