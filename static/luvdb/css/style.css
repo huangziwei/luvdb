@@ -406,12 +406,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* Light / dark Mode */
 
 :root {
-    --bg-default: #f4f4f4; 
-    --bg-highlight: #e5ebef; 
-    --text-default: #000000;
-    --bs-body-bg: #f4f4f4; 
+    --bg-default: #f8f9f9; 
+    --bg-highlight: #ececec; 
+    --text-default: #000;
+    --bs-body-bg: var(--bg-default); 
 }
-
+  
 [data-bs-theme="dark"] {
     --bg-default: #2B3035;
     --bg-highlight: #2B3035;
