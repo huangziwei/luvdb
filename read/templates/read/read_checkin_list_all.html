@@ -140,6 +140,11 @@
                                         <span class="text-muted">ISBN-13:</span> {{ object.isbn_13 }}
                                     </div>
                                 {% endif %}
+                                {% if object.eisbn_13 %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">EISBN-13:</span> {{ object.eisbn_13 }}
+                                    </div>
+                                {% endif %}
                                 {% if object.asin %}
                                     <div class="mb-1">
                                         <span class="text-muted">ASIN:</span> {{ object.asin }}
