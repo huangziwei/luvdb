@@ -349,3 +349,112 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol, textInput) 
     document.body.appendChild(dropdown);
     restoreScrollPosition(); // Restore the last scroll position
 }
+
+//////////////////////
+// Dark Mode Button //
+//////////////////////
+
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleButton = document.getElementById("darkModeToggle");
+    toggleButton.style.display = "inline-block";
+
+    const htmlElement = document.documentElement;
+    const bgLightElements = document.querySelectorAll(".bg-light");
+    const stickyNoteElements = document.querySelectorAll(".sticky-note");
+    const faIcons = document.querySelectorAll(".fa-icon path");
+    const metaThemeColor = document.querySelector("meta[name=theme-color]");
+
+    // Load saved theme from localStorage
+    const savedTheme = localStorage.getItem("theme") || getSystemPreferredTheme();
+    applyTheme(savedTheme);
+
+    toggleButton.addEventListener("click", function () {
+        const currentTheme = htmlElement.getAttribute("data-bs-theme") === "dark" ? "dark" : "light";
+        const newTheme = currentTheme === "light" ? "dark" : "light";
+        applyTheme(newTheme);
+        localStorage.setItem("theme", newTheme);
+    });
+
+    function applyTheme(theme) {
+        if (theme === "dark") {
+            htmlElement.setAttribute("data-bs-theme", "dark");
+            metaThemeColor.setAttribute("content", "#2B3035");
+
+            bgLightElements.forEach((el) => el.classList.add("bg-dark-highlight"));
+            faIcons.forEach((el) => el.setAttribute("fill", "#ccc")); // Dark mode color for FontAwesome icons
+            stickyNoteElements.forEach((el) => el.classList.add("bg-dark"));
+        } else {
+            htmlElement.removeAttribute("data-bs-theme");
+            bgLightElements.forEach((el) => el.classList.remove("bg-dark-highlight"));
+            metaThemeColor.setAttribute("content", "#F6F7F9");
+            faIcons.forEach((el) => el.setAttribute("fill", "#6C757D")); // Original color for FontAwesome icons
+            stickyNoteElements.forEach((el) => el.classList.remove("bg-dark"));
+        }
+    }
+
+    function getSystemPreferredTheme() {
+        if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            return "dark";
+        }
+        return "light";
+    }
+});
+
+////////////////////
+// Popup Footnote //
+////////////////////
+
+// Select all footnote references in the main text
+var refs = document.querySelectorAll(".footnote-ref");
+
+// Loop through all references
+for (var i = 0; i < refs.length; i++) {
+    // Get the id of the corresponding footnote
+    var footnoteId = refs[i].getAttribute("href").slice(4);
+
+    // Select the corresponding footnote
+    var footnoteP = document
+        .querySelector('.footnote ol li p a[href="#fnref:' + footnoteId + '"]')
+        .parentElement.cloneNode(true);
+
+    // Create a new span element
+    var footnoteSpan = document.createElement("span");
+
+    // Copy the class and content from the p to the span
+    footnoteSpan.className = footnoteP.className;
+    footnoteSpan.innerHTML = footnoteP.innerHTML;
+
+    footnoteSpan.setAttribute("class", "popupnote");
+    refs[i].setAttribute("class", "popupnote-parent");
+
+    // Remove element with class 'footnote-backref'
+    var backref = footnoteSpan.getElementsByClassName("footnote-backref");
+    if (backref[0]) {
+        backref[0].remove();
+    }
+
+    // Append the footnote to the footnote reference
+    refs[i].appendChild(footnoteSpan);
+}
+
+var popupParents = document.getElementsByClassName("popupnote-parent");
+
+for (var i = 0; i < popupParents.length; i++) {
+    popupParents[i].onmouseover = function () {
+        var popup = this.getElementsByClassName("popupnote")[0];
+        // Get bounding rectangle of the popup.
+        var rect = popup.getBoundingClientRect();
+
+        // If it's out of the left boundary of the viewport.
+        if (rect.left < 0) {
+            popup.style.left = "0";
+            popup.style.transform = "translateX(0)";
+        }
+
+        // If it's out of the right boundary of the viewport.
+        else if (rect.right > window.innerWidth) {
+            var overflowAmount = rect.right - window.innerWidth;
+            popup.style.left = `calc(50% - ${overflowAmount}px)`;
+        }
+    };
+}

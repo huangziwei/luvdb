@@ -308,6 +308,12 @@ sup {
     box-sizing: border-box;
 }
 
+[data-bs-theme="dark"] .popupnote {
+    background-color: var(--bs-body-bg);
+    color: var(--text-default);
+    border: 1px solid var(--bg-highlight);
+}
+
 @media screen and (max-width: 600px) {
     .popupnote {
         max-width: calc(100vw - 20px);
@@ -327,7 +333,7 @@ sup {
     display: none;
 }
 
-
+/* citation */
 
 cite {
     font-style: normal;
