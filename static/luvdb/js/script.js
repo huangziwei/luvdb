@@ -73,103 +73,105 @@ document.addEventListener("DOMContentLoaded", function () {
     let tags = [];
     let lastDropdownTriggerPos = -1;
 
-    const textInput = document.getElementById("text-input");
-    if (textInput !== null) {
-        // Fetch usernames
-        fetch("/u/get_followed_usernames/")
-            .then((response) => response.json())
-            .then((data) => {
-                usernames = data.usernames_with_display_names;
+    const textInputs = Array.from(document.querySelectorAll('[id="text-input"]'));
+    textInputs.forEach((textInput) => {
+        if (textInput !== null) {
+            // Fetch usernames
+            fetch("/u/get_followed_usernames/")
+                .then((response) => response.json())
+                .then((data) => {
+                    usernames = data.usernames_with_display_names;
+                });
+
+            // Fetch tags
+            fetch("/u/get_user_tags/")
+                .then((response) => response.json())
+                .then((data) => {
+                    tags = data.tags;
+                });
+
+            textInput.addEventListener("keyup", function (e) {
+                const value = textInput.value;
+                let lastSymbol = null;
+                let lastPos = -1;
+
+                // Check for '@' and '#'
+                const lastAt = value.lastIndexOf("@");
+                const lastHash = value.lastIndexOf("#");
+
+                if (lastAt > lastHash) {
+                    lastSymbol = "@";
+                    lastPos = lastAt;
+                } else if (lastHash > lastAt) {
+                    lastSymbol = "#";
+                    lastPos = lastHash;
+                }
+
+                // Update lastDropdownTriggerPos when a dropdown is shown
+                if (lastPos !== -1) {
+                    lastDropdownTriggerPos = lastPos;
+                }
+
+                // Check the current last @ or # in the text
+                const currentLastAt = textInput.value.lastIndexOf("@");
+                const currentLastHash = textInput.value.lastIndexOf("#");
+                const currentLastPos = Math.max(currentLastAt, currentLastHash);
+
+                // Remove dropdown if the last trigger symbol is different from the current last symbol
+                if (lastDropdownTriggerPos == currentLastPos) {
+                    const existingDropdown = document.getElementById("autocomplete-dropdown");
+                    if (existingDropdown) {
+                        existingDropdown.remove();
+                    }
+                    lastDropdownTriggerPos = -1; // Reset the last dropdown trigger position
+                }
+
+                const filter = value.slice(lastPos + 1).toLowerCase();
+                let filteredItems = [];
+
+                if (lastSymbol === "@") {
+                    filteredItems = usernames.filter(
+                        (user) =>
+                            user.username.toLowerCase().startsWith(filter) ||
+                            (user.display_name && user.display_name.toLowerCase().startsWith(filter))
+                    );
+                } else if (lastSymbol === "#") {
+                    filteredItems = tags.filter((tag) => tag.toLowerCase().startsWith(filter));
+                }
+
+                showDropdown(filteredItems, filter, lastPos + 1, lastSymbol, textInput); // Pass the position of the last symbol
             });
 
-        // Fetch tags
-        fetch("/u/get_user_tags/")
-            .then((response) => response.json())
-            .then((data) => {
-                tags = data.tags;
+            textInput.addEventListener("keydown", function (e) {
+                let lastSymbol = null;
+                const value = textInput.value;
+                const lastAt = value.lastIndexOf("@");
+                const lastHash = value.lastIndexOf("#");
+                const dropdown = document.getElementById("autocomplete-dropdown");
+
+                if (lastAt > lastHash) {
+                    lastSymbol = "@";
+                } else if (lastHash > lastAt) {
+                    lastSymbol = "#";
+                }
+
+                if (e.key === "ArrowDown") {
+                    currentSelection++;
+                    highlightSelection();
+                } else if (e.key === "ArrowUp") {
+                    currentSelection--;
+                    highlightSelection();
+                } else if (e.key === "Enter") {
+                    if (dropdown && lastSymbol) {
+                        // Only prevent default if dropdown is visible and a symbol is present
+                        e.preventDefault();
+                        selectItem(lastSymbol, textInput);
+                    }
+                    // If dropdown is not visible or no symbol, the default "Enter" behavior will occur, creating a line break.
+                }
             });
-
-        textInput.addEventListener("keyup", function (e) {
-            const value = textInput.value;
-            let lastSymbol = null;
-            let lastPos = -1;
-
-            // Check for '@' and '#'
-            const lastAt = value.lastIndexOf("@");
-            const lastHash = value.lastIndexOf("#");
-
-            if (lastAt > lastHash) {
-                lastSymbol = "@";
-                lastPos = lastAt;
-            } else if (lastHash > lastAt) {
-                lastSymbol = "#";
-                lastPos = lastHash;
-            }
-
-            // Update lastDropdownTriggerPos when a dropdown is shown
-            if (lastPos !== -1) {
-                lastDropdownTriggerPos = lastPos;
-            }
-
-            // Check the current last @ or # in the text
-            const currentLastAt = textInput.value.lastIndexOf("@");
-            const currentLastHash = textInput.value.lastIndexOf("#");
-            const currentLastPos = Math.max(currentLastAt, currentLastHash);
-
-            // Remove dropdown if the last trigger symbol is different from the current last symbol
-            if (lastDropdownTriggerPos == currentLastPos) {
-                const existingDropdown = document.getElementById("autocomplete-dropdown");
-                if (existingDropdown) {
-                    existingDropdown.remove();
-                }
-                lastDropdownTriggerPos = -1; // Reset the last dropdown trigger position
-            }
-
-            const filter = value.slice(lastPos + 1).toLowerCase();
-            let filteredItems = [];
-
-            if (lastSymbol === "@") {
-                filteredItems = usernames.filter(
-                    (user) =>
-                        user.username.toLowerCase().startsWith(filter) ||
-                        (user.display_name && user.display_name.toLowerCase().startsWith(filter))
-                );
-            } else if (lastSymbol === "#") {
-                filteredItems = tags.filter((tag) => tag.toLowerCase().startsWith(filter));
-            }
-
-            showDropdown(filteredItems, filter, lastPos + 1, lastSymbol); // Pass the position of the last symbol
-        });
-
-        textInput.addEventListener("keydown", function (e) {
-            let lastSymbol = null;
-            const value = textInput.value;
-            const lastAt = value.lastIndexOf("@");
-            const lastHash = value.lastIndexOf("#");
-            const dropdown = document.getElementById("autocomplete-dropdown");
-
-            if (lastAt > lastHash) {
-                lastSymbol = "@";
-            } else if (lastHash > lastAt) {
-                lastSymbol = "#";
-            }
-
-            if (e.key === "ArrowDown") {
-                currentSelection++;
-                highlightSelection();
-            } else if (e.key === "ArrowUp") {
-                currentSelection--;
-                highlightSelection();
-            } else if (e.key === "Enter") {
-                if (dropdown && lastSymbol) {
-                    // Only prevent default if dropdown is visible and a symbol is present
-                    e.preventDefault();
-                    selectItem(lastSymbol);
-                }
-                // If dropdown is not visible or no symbol, the default "Enter" behavior will occur, creating a line break.
-            }
-        });
-    }
+        }
+    });
 });
 
 // Declare currentSelection at the top of your script
@@ -266,7 +268,7 @@ function restoreScrollPosition() {
     }
 }
 
-function selectItem(symbol) {
+function selectItem(symbol, textInput) {
     const dropdown = document.getElementById("autocomplete-dropdown");
     if (!dropdown) return;
 
@@ -276,7 +278,6 @@ function selectItem(symbol) {
             ? options[currentSelection].username
             : options[currentSelection].innerText;
 
-        const textInput = document.getElementById("text-input");
         const value = textInput.value;
         const lastSymbolPos = value.lastIndexOf(symbol);
         textInput.value = value.slice(0, lastSymbolPos) + symbol + selectedItem + " ";
@@ -285,7 +286,7 @@ function selectItem(symbol) {
     }
 }
 
-function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
+function showDropdown(items, typedLetters = "", lastPos, lastSymbol, textInput) {
     if (items.length === 0) return;
     // Remove existing dropdown if any
     const existingDropdown = document.getElementById("autocomplete-dropdown");
@@ -306,7 +307,7 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
         dropdown.classList.add("bg-light"); // Add this if you use bg-light in light mode
     }
     // Get textarea element and its position
-    const textInput = document.getElementById("text-input");
+    // const textInput = document.getElementById("text-input");
     const textAreaRect = textInput.getBoundingClientRect();
     const { x, y } = getCaretCoordinates(textInput, lastPos); // Pass the position of the last '@' symbol
 
@@ -315,8 +316,8 @@ function showDropdown(items, typedLetters = "", lastPos, lastSymbol) {
     const lineHeight = parseFloat(computed.lineHeight);
 
     // Position dropdown
-    dropdown.style.left = `${textAreaRect.left + x}px`;
-    dropdown.style.top = `${textAreaRect.top + y + lineHeight}px`;
+    dropdown.style.left = `${textAreaRect.left + x + window.scrollX}px`;
+    dropdown.style.top = `${textAreaRect.top + y + lineHeight + window.scrollY}px`;
 
     items.forEach((item, index) => {
         const option = document.createElement("div");
