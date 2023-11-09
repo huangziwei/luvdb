@@ -20,12 +20,12 @@
                 <hr>
                 {% for notification in page_obj %}
 
-                    <div class="p-2 pt-3 notification 
+                    <div class="p-2 pt-3 notification align-items-center
                         {% if notification.is_delete %}notification-delete{% else %}notification-default{% endif %}
                         {% if not notification.read%}bg-light{%endif%}"
                         {% if not notification.read%}data-message="{{ notification.message }}"{%endif%}>
                         <div class="me-2">{{ notification.message | markdownify | safe }}</div>
-                        <div class="d-flex">
+                        <div class="d-flex  align-items-center">
                             <div class="d-inline-block me-2">
                                 <small class='text-muted'>{{ notification.timestamp | date:"Y.m.d H:i" }}</small>
                             </div>
