@@ -119,7 +119,7 @@ def create_mentions_notifications(user, text, content_object):
                     f"{content_url}?mark_read={notification.id}"
                 )
                 # Update the message with the new URL containing the marker
-                notification.message = f'<a href="{user_url}">@{user_name}</a> mentioned in a <a href="{content_url_with_read_marker}">{content_name}</a>.'
+                notification.message = f'<a href="{user_url}">@{user_name}</a> mentioned you in a <a href="{content_url_with_read_marker}">{content_name}</a>.'
                 notification.save()
 
         except get_user_model().DoesNotExist:
