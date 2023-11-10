@@ -1,6 +1,7 @@
 import json
 import random
 import re
+import string
 
 import pytz
 from django.contrib.auth import get_user_model
@@ -73,6 +74,8 @@ class Comment(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
+    anchor = models.CharField(max_length=4, blank=True, editable=True)
+
     def __str__(self):
         return f"Comment by {self.user} on {self.content_object}"
 
@@ -83,6 +86,9 @@ class Comment(models.Model):
         return "Comment"
 
     def save(self, *args, **kwargs):
+        if not self.anchor:
+            self.anchor = self.generate_unique_anchor()
+
         is_new = self.pk is None
         super().save(*args, **kwargs)
 
@@ -130,6 +136,18 @@ class Comment(models.Model):
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
+
+    def generate_unique_anchor(self):
+        existing_anchors = set(
+            Comment.objects.filter(
+                content_type=self.content_type, object_id=self.object_id
+            ).values_list("anchor", flat=True)
+        )
+
+        while True:
+            anchor = "".join(random.choices(string.ascii_letters + string.digits, k=4))
+            if anchor not in existing_anchors:
+                return anchor
 
 
 class Repost(models.Model):
@@ -236,7 +254,9 @@ class Repost(models.Model):
                     message=message,
                 )
                 notification.save()
-                repost_url_with_read_marker = f"{repost_url}?mark_read={notification.id}"
+                repost_url_with_read_marker = (
+                    f"{repost_url}?mark_read={notification.id}"
+                )
                 # Update the message with the new URL containing the marker
                 notification.message = f'<a href="{user_url}">@{self.user.username}</a> reposted your <a href="{content_url}">{content_name}</a>. See the <a href="{repost_url_with_read_marker}">Repost</a>.'
                 notification.save()

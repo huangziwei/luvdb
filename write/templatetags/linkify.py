@@ -10,6 +10,16 @@ register = template.Library()
 
 @register.filter
 def linkify_tags(value, user=None):
+    # Store original <a> tags and replace them with placeholders
+    a_tags = {}
+
+    def replace_a_tag(match):
+        placeholder = f"PLACEHOLDER{len(a_tags)}"
+        a_tags[placeholder] = match.group(0)
+        return placeholder
+
+    value = re.sub(r"<a.*?>.*?</a>", replace_a_tag, value)
+
     # Split the content by triple backticks to distinguish code blocks
     split_by_backticks = value.split("```")
 
@@ -30,6 +40,10 @@ def linkify_tags(value, user=None):
 
     # Join back the content
     value = "```".join(split_by_backticks)
+
+    # Restore the original <a> tags
+    for placeholder, original in a_tags.items():
+        value = value.replace(placeholder, original)
 
     return mark_safe(value)
 

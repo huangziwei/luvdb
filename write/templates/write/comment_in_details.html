@@ -3,24 +3,29 @@
 {% load crispy_forms_tags %}
 {% if comments %}
     {% for comment in comments %}
-        <div class="mt-3">
-            <span class='d-flex mt-2'>
-                <a href="{% url 'accounts:detail' comment.user.username %}" class="me-2">
-                    {{ comment.user.display_name | default:comment.user.username }}
-                </a>
-                <div class='me-2 text-secondary'>{{ comment.timestamp | date:"Y.m.d H:i" }}</div>
-                <a href="#"
-                   class="quote-link me-2"
-                   data-comment="{{ comment.content }}"
-                   data-user-username="{{ comment.user.username }}"
-                   data-user="{{ comment.user.display_name | default:comment.user.username }}"
-                   data-timestamp="{{ comment.timestamp | date:'Y.m.d H:i' }}">Quote</a>
-                {% if comment.user == request.user %}
-                    <a href="{% url "write:comment_update" comment.pk %}" class="me-2">Edit</a>
-                {% endif %}
-                {% if object.user == request.user or comment.user == request.user %}
-                    <a href="{% url "write:comment_delete" comment.pk %}" class="me-2">Delete</a>
-                {% endif %}
+        <div class="mt-3" id="{{ comment.anchor }}">
+            <span class='d-flex mt-2 justify-content-between'>
+                <div class='d-flex align-items-center'>
+                    <a href="{% url 'accounts:detail' comment.user.username %}" class="me-2">
+                        {{ comment.user.display_name | default:comment.user.username }}
+                    </a>
+                    <div class='me-2 text-secondary'>{{ comment.timestamp | date:"Y.m.d H:i" }}</div>
+                    <a href="#"
+                    class="quote-link me-2"
+                    data-comment="{{ comment.content }}"
+                    data-user-username="{{ comment.user.username }}"
+                    data-user="{{ comment.user.display_name | default:comment.user.username }}"
+                    data-timestamp="{{ comment.timestamp | date:'Y.m.d H:i' }}">Quote</a>
+                    {% if comment.user == request.user %}
+                        <a href="{% url "write:comment_update" comment.pk %}" class="me-2">Edit</a>
+                    {% endif %}
+                    {% if object.user == request.user or comment.user == request.user %}
+                        <a href="{% url "write:comment_delete" comment.pk %}" class="me-2">Delete</a>
+                    {% endif %}
+                </div>
+                <div>
+                    <a href="#{{ comment.anchor }}" class="comment-anchor text-secondary">#{{comment.anchor}}</a>
+                </div>
             </span>
             <div class="bg-light mt-2 p-3">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
         </div>
@@ -50,17 +55,22 @@
     {% endif %}
 {% endif %}
 <script>
-  document.querySelectorAll('.quote-link').forEach(function(link) {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      var comment = this.getAttribute('data-comment');
-      var user = this.getAttribute('data-user');
-      var userUsername = this.getAttribute('data-user-username');
-      var timestamp = this.getAttribute('data-timestamp');
-      var commentForm = document.getElementById('comment-form');
-      var textarea = commentForm.querySelector('textarea');
-      textarea.value = '> ' + user + ' (' + timestamp + ')\n> ' + comment.replace(/\n/g, '\n> ') + '\n\n@' + userUsername + ' ';
-      textarea.focus();
+    document.querySelectorAll('.quote-link').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var comment = this.getAttribute('data-comment');
+        var user = this.getAttribute('data-user');
+        var userUsername = this.getAttribute('data-user-username');
+        var timestamp = this.getAttribute('data-timestamp');
+        var anchor = this.closest('.mt-3').id; // Get the anchor of the comment
+        var anchorLink = '#' + anchor; // Create a link to the anchor
+  
+        var commentForm = document.getElementById('comment-form');
+        var textarea = commentForm.querySelector('textarea');
+        // Include the anchor link in the quoted text
+        textarea.value = '> ' + user + ' (' + timestamp + ') <a href="' + anchorLink + '">↩</a>\n> ' + comment.replace(/\n/g, '\n> ') + '\n\n@' + userUsername + ' ';
+        textarea.focus();
+      });
     });
-  });
-</script>
+  </script>
+  
