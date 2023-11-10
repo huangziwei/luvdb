@@ -1,3 +1,4 @@
+import json
 import sys
 
 from django.conf import settings
@@ -5,7 +6,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.sitemaps.views import sitemap
-from django.http import Http404, HttpResponseServerError
+from django.http import Http404, HttpResponse, HttpResponseServerError
 from django.template import loader
 from django.urls import include, path
 
@@ -44,6 +45,29 @@ def custom_500_view(request, *args, **argv):
     return HttpResponseServerError(template.render({"error_message": str(value)}))
 
 
+def site_manifest(request):
+    data = {
+        "name": "LʌvDB",
+        "short_name": "LʌvDB",
+        "display": "standalone",
+        "icons": [
+            {
+                "src": "https://img-luvdb.s3.amazonaws.com/static/img/android-chrome-192x192.png",
+                "sizes": "192x192",
+                "type": "image/png",
+            },
+            {
+                "src": "https://img-luvdb.s3.amazonaws.com/static/img/android-chrome-512x512.png",
+                "sizes": "512x512",
+                "type": "image/png",
+            },
+        ],
+        "theme_color": "#ffffff",
+        "background_color": "#ffffff",
+    }
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+
 urlpatterns = [
     path("admin/login/", custom_admin_login, name="custom_admin_login"),
     path("admin/", admin.site.urls),
@@ -64,6 +88,7 @@ urlpatterns = [
         {"sitemaps": sitemaps},
         name="django.contrib.sitemaps.views.sitemap",
     ),
+    path("site.webmanifest", site_manifest, name="site-manifest"),
     path("auth/", include("django.contrib.auth.urls")),  # Moved to the end
 ]
 
