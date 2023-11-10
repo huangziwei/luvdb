@@ -37,7 +37,7 @@
             <!-- bio -->
             <div class="col-12 d-block d-md-none mb-1">
                 <div class="bio p-3 bg-light">
-                    <div class="d-flex align-items-end">
+                    <div>
                         {% if object.display_name %}<div class="mb-0 h-card fs-4" href="https://luvdb.com{% url 'accounts:detail' object.username %}">{{ object.display_name }}</div>{% endif %}
                         <div class="h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">@{{ object.username }}</div>
                     </div>
@@ -1183,7 +1183,7 @@
             <!-- Right column -->
             <div class="col-md-4 col-sm-12 d-none d-md-block">
                 <div class="bio p-3 bg-light">
-                    <div class="d-flex align-items-end">
+                    <div>
                         {% if object.display_name %}<div class="mb-0 h-card fs-4" href="https://luvdb.com{% url 'accounts:detail' object.username %}">{{ object.display_name }}</div>{% endif %}
                         <div class="h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">@{{ object.username }}</div>
                     </div>
