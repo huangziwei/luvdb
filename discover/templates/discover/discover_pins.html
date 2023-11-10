@@ -21,7 +21,7 @@
                                         <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
                                         <span class="d-flex">
                                             <p class="me-2 text-muted">
-                                                by <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.username }}</a>
+                                                by <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.display_name|default:pin.user.username }}</a>
                                             </p>
                                             <p class="me-2 text-muted">{{ pin.timestamp|timesince }} ago</p>
                                         </span>

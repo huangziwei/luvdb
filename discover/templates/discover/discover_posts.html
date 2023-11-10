@@ -18,7 +18,7 @@
                                         <a href="{% url 'write:post_detail' post.id %}">{{post.title}}</a>
                                         <span class="d-flex">
                                             <p class="me-2 text-muted">
-                                                by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.username }}</a>
+                                                by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.display_name|default:post.user.username }}</a>
                                             </p>
                                             <p class="me-2 text-muted">{{ post.timestamp|timesince }} ago</p>
                                         </span>

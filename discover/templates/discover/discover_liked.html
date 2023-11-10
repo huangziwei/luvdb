@@ -39,7 +39,7 @@
                                     <a href="{% url 'write:luvlist_detail' list.id %}">{{list.title}}</a>
                                     <span class="d-flex">
                                         <p class="me-2 text-muted">
-                                            by <a href="{% url 'accounts:detail' list.user.username %}">{{ list.user.username }}</a>
+                                            by <a href="{% url 'accounts:detail' list.user.username %}">{{ list.user.display_name|default:list.user.username }}</a>
                                         </p>
                                         <p class="me-2 text-muted">{{ list.timestamp|timesince }} ago / Liked {{list.vote_timestamp|timesince}} ago</p>
                                     </span>
@@ -63,7 +63,7 @@
                                     <a href="{% url 'write:post_detail' post.id %}">{{post.title}}</a>
                                     <span class="d-flex">
                                         <p class="me-2 text-muted">
-                                            by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.username }}</a>
+                                            by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.display_name|default:post.user.username }}</a>
                                         </p>
                                         <p class="me-2 text-muted">{{ post.timestamp|timesince }} ago / Liked {{post.vote_timestamp|timesince}} ago</p>
                                     </span>
@@ -88,7 +88,7 @@
                                     <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
                                     <span class="d-flex">
                                         <p class="me-2 text-muted">
-                                            by <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.username }}</a>
+                                            by <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.display_name|default:pin.user.username }}</a>
                                         </p>
                                         <p class="me-2 text-muted">{{ pin.timestamp|timesince }} ago / Liked {{pin.vote_timestamp|timesince}} ago</p>
                                     </span>
@@ -111,7 +111,7 @@
                                 <div>
                                     <span class="d-flex">
                                         <p class="me-2 text-muted mb-2">
-                                            <a href="{% url 'accounts:detail' activity.user.username %}">{{ activity.user.username }}</a>
+                                            <a href="{% url 'accounts:detail' activity.user.username %}">{{ activity.user.display_name|default:activity.user.username }}</a>
                                             {% if activity.model_name == "Say" %}said: {% else %}reposted: {% endif %}
                                         </p>
                                     </span>
@@ -151,7 +151,7 @@
                                     <div>
                                         <span class="d-flex">
                                             <div class="me-2 text-muted mb-2">
-                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.display_name|default:checkin.user.username }}</a>
                                                 checked in to 
                                                 {% if checkin.content_type.model == 'book' %}
                                                     <a href="{% url 'read:book_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
@@ -194,7 +194,7 @@
                                     <div>
                                         <span class="d-flex">
                                             <div class="me-2 text-muted mb-2">
-                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.display_name|default:checkin.user.username }}</a>
                                                 checked in to 
                                                 {% if checkin.content_type.model == 'movie' %}
                                                     <a href="{% url 'watch:movie_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
@@ -240,7 +240,7 @@
                                     <div>
                                         <span class="d-flex">
                                             <div class="me-2 text-muted mb-2">
-                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.display_name|default:checkin.user.username }}</a>
                                                 checked in to 
                                                 {% if checkin.content_type.model == 'release' %}
                                                     <a href="{% url 'listen:release_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
@@ -284,7 +284,7 @@
                                     <div>
                                         <span class="d-flex">
                                             <div class="me-2 text-muted mb-2">
-                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.username }}</a>
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.display_name|default:checkin.user.username }}</a>
                                                 checked in to 
                                                 <a href="{% url 'play:game_detail' checkin.game.id %}">{{checkin.game.title}}</a>
                                                 {% if checkin.game.region_release_dates.exists %}

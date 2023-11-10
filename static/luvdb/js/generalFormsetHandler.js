@@ -5,14 +5,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
         formsetRows.forEach(function (row, index) {
             var inputs = row.querySelectorAll('input[type="text"]');
+            var hasInputData = Array.from(inputs).some(function (input) {
+                return input.value.trim() !== "";
+            });
+
+            var instanceSelect = row.querySelector('select[name$="instance"]');
+            var hasInstanceSelected =
+                instanceSelect &&
+                instanceSelect.selectedOptions.length > 0 &&
+                instanceSelect.selectedOptions[0].value != "";
+
+            var trackSelect = row.querySelector('select[name$="track"]');
+            var hasTrackSelected =
+                trackSelect &&
+                trackSelect.selectedOptions.length > 0 &&
+                trackSelect.selectedOptions[0].value != "";
+
             var creatorSelect = row.querySelector('select[name$="creator"]');
             var hasCreatorSelected =
                 creatorSelect &&
                 creatorSelect.selectedOptions.length > 0 &&
                 creatorSelect.selectedOptions[0].value != "";
-            var hasInputData = Array.from(inputs).some(function (input) {
-                return input.value.trim() !== "";
-            });
 
             var shouldHide = index > 0 && !hasCreatorSelected && !hasInputData;
 
@@ -21,7 +34,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (formsetId === "#release-track-formset") {
-                shouldHide = index > 0 && !hasCreatorSelected;
+                shouldHide = index > 0 && !hasTrackSelected;
+            }
+
+            if (formsetId === "#book-instance-formset" || formsetId === "#issue-instance-formset") {
+                shouldHide = index > 0 && !hasInstanceSelected;
             }
 
             if (shouldHide) {
