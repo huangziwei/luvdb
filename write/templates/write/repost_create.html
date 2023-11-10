@@ -12,7 +12,7 @@
                     {% if original_activity %}
                         <!-- Display the reposted activity -->
                         {% if original_activity.activity_type == "book-check-in" %}
-                            <div class="d-flex justify-content-start align-items-center">
+                            <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' original_activity.user.username %}"
                                    class="text-decoration-none hover-username me-1">
                                     {{ original_activity.user.display_name | default:original_activity.user.username }}
@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                         {% elif original_activity.activity_type == "game-check-in" %}
-                            <div class="d-flex justify-content-start align-items-center">
+                            <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' original_activity.user.username %}"
                                    class="text-decoration-none hover-username me-1">
                                     {{ original_activity.user.display_name | default:original_activity.user.username }}

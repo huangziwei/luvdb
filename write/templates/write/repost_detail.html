@@ -22,7 +22,7 @@
                         <!-- Display the reposted activity -->
                         <!--Read Check In-->
                         {% if repost.original_activity.activity_type == "read-check-in" %}
-                            <div class="d-flex justify-content-start align-items-center">
+                            <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' repost.original_activity.user.username %}"
                                    class="text-decoration-none hover-username me-1">
                                     {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
@@ -118,7 +118,7 @@
                             </div>
                             <!--Watch Check In-->
                         {% elif repost.original_activity.activity_type == "watch-check-in" %}
-                            <div class="d-flex justify-content-start align-items-center">
+                            <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' repost.original_activity.user.username %}"
                                    class="text-decoration-none hover-username me-1">
                                     {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
@@ -238,7 +238,7 @@
                             </div>
                             <!--Listen Check In-->
                         {% elif repost.original_activity.activity_type == "listen-check-in" %}
-                            <div class="d-flex justify-content-start align-items-center">
+                            <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' repost.original_activity.user.username %}"
                                    class="text-decoration-none hover-username me-1">
                                     {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
@@ -353,7 +353,7 @@
                             </div>
                             <!--Game Check In-->
                         {% elif repost.original_activity.activity_type == "game-check-in" %}
-                            <div class="d-flex justify-content-start align-items-center">
+                            <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' repost.original_activity.user.username %}"
                                    class="text-decoration-none hover-username me-1">
                                     {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}

@@ -90,9 +90,9 @@
             </div>
 
             <div class="bg-light p-3 mb-3 order-1 order-sm-3">
-                <div class="d-flex justify-content-start align-items-center">
+                <div class="d-flex justify-content-start align-items-center flex-wrap">
                     <div class="me-1 fs-5">Contributors</div>
-                    (<a href="{% url 'watch:collection_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)
+                    (<a href="{% url 'watch:collection_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>
                 </div>
                 <div>
                     {% for contributor in contributors %}

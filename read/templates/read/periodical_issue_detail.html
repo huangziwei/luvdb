@@ -167,9 +167,9 @@
                     </div>
                 {% endif %}
                 <div class="bg-light p-3 mt-3 order-2 order-sm-3">
-                    <div class="d-flex justify-content-start align-items-center">
+                    <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5">Contributors</div>
-                        (<a href="{% url 'read:issue_history' issue.periodical.pk issue.pk %}" class="fs-6 text-secondary">Changelog</a>)
+                        <div>(<a href="{% url 'read:issue_history' issue.periodical.pk issue.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>
                     </div>
                     <div>
                         {% for contributor in contributors %}
