@@ -23,18 +23,24 @@ function focusTextInput() {
 
     var intervalId = setInterval(function () {
         if (urlParams.has("reply") && urlParams.get("reply") == "true") {
-            var replyInput = document.getElementById("text-input");
-            if (replyInput) {
-                replyInput.focus();
-                clearInterval(intervalId); // Clear the interval once the element is found
+            var commentsSection = document.getElementById("comments-section");
+            if (commentsSection.style.display !== "none") {
+                var replyInput = commentsSection.querySelector("#text-input");
+                if (replyInput) {
+                    replyInput.focus();
+                    clearInterval(intervalId); // Clear the interval once the element is found
+                }
             }
         }
 
         if (urlParams.has("repost") && urlParams.get("repost") == "true") {
-            var repostInput = document.getElementById("text-input");
-            if (repostInput) {
-                repostInput.focus();
-                clearInterval(intervalId); // Clear the interval once the element is found
+            var repostsSection = document.getElementById("reposts-section");
+            if (repostsSection.style.display !== "none") {
+                var repostInput = repostsSection.querySelector("#text-input");
+                if (repostInput) {
+                    repostInput.focus();
+                    clearInterval(intervalId); // Clear the interval once the element is found
+                }
             }
         }
     }, 100); // Check every 100ms
