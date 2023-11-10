@@ -64,7 +64,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <a href="{% url 'play:game_detail' object.game.id %}"
-                               class="text-decoration-none hover-username">
+                               class="text-decoration-none ">
                                 <div class="fs-5">{{ object.game.title }}</div>
                             </a>
                             {% regroup object.game.gameroles.all by role as roles_list %}

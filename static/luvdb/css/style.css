@@ -202,11 +202,11 @@ li:last-child {
     display: block;
 }
 
-.hover-username {
+. {
     position: relative;
 }
 
-.hover-username .username {
+. .username {
     position: absolute;
     display: none;
     background-color: #f9f9f9;
@@ -223,9 +223,6 @@ li:last-child {
     width: 100px;
 }
 
-.hover-username:hover .username {
-    display: block;
-}
 
 /* spoiler */
 a[href$="/spoiler"],

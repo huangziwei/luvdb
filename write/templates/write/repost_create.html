@@ -14,9 +14,8 @@
                         {% if original_activity.activity_type == "book-check-in" %}
                             <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' original_activity.user.username %}"
-                                   class="text-decoration-none hover-username me-1">
+                                   class="text-decoration-none  me-1">
                                     {{ original_activity.user.display_name | default:original_activity.user.username }}
-                                    <span class="username">@{{ original_activity.user.username }}</span>
                                 </a>
                                 <span class="me-1 text-muted">checked in</span>
                                 <!--badge: checkin status-->
@@ -54,7 +53,7 @@
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'read:book_detail' original_activity.content_object.book.id %}"
-                                       class="text-decoration-none hover-username">
+                                       class="text-decoration-none ">
                                         <div class="fs-6">{{ original_activity.content_object.book.title }}</div>
                                     </a>
                                     {% regroup original_activity.content_object.book.bookrole_set.all by role as roles_list %}
@@ -81,9 +80,8 @@
                         {% elif original_activity.activity_type == "game-check-in" %}
                             <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' original_activity.user.username %}"
-                                   class="text-decoration-none hover-username me-1">
+                                   class="text-decoration-none  me-1">
                                     {{ original_activity.user.display_name | default:original_activity.user.username }}
-                                    <span class="username">@{{ original_activity.user.username }}</span>
                                 </a>
                                 <span class="me-1 text-muted">checked in</span>
                                 <!--badge: checkin status-->
@@ -121,7 +119,7 @@
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'play:game_detail' original_activity.content_object.game.id %}"
-                                       class="text-decoration-none hover-username">
+                                       class="text-decoration-none ">
                                         <div class="fs-6">{{ original_activity.content_object.game.title }}</div>
                                     </a>
                                     {% regroup original_activity.content_object.game.gamerole_set.all by role as roles_list %}
@@ -170,9 +168,8 @@
                         {% else %}
                             <p>
                                 <a href="{% url 'accounts:detail' original_activity.user.username %}"
-                                   class="text-decoration-none hover-username">
+                                   class="text-decoration-none ">
                                     {{ original_activity.user.display_name | default:original_activity.user.username }}
-                                    <span class="username">@{{ original_activity.user.username }}</span>
                                 </a>
                                 {{ original_activity.activity_type | parse_activity_type }}:
                             </p>

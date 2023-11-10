@@ -72,7 +72,7 @@
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'listen:release_detail' release_in_group.release.pk %}"
-                                       class="text-decoration-none hover-username">
+                                       class="text-decoration-none ">
                                         <div class="fs-5">{{ release_in_group.release.title }}</div>
                                     </a>
                                     {% if release_in_group.release.subtitle %}<div class="mb-2 text-muted">{{ release_in_group.release.subtitle }}</div>{% endif %}

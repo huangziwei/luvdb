@@ -24,9 +24,8 @@
                         {% if repost.original_activity.activity_type == "read-check-in" %}
                             <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' repost.original_activity.user.username %}"
-                                   class="text-decoration-none hover-username me-1">
+                                   class="text-decoration-none  me-1">
                                     {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
-                                    <span class="username">@{{ repost.original_activity.user.username }}</span>
                                 </a>
                                 <span class="me-1 text-muted">checked in</span>
                                 <!--badge: checkin status-->
@@ -70,13 +69,13 @@
                                 <div class="flex-grow-1 ms-3">
                                     {% if repost.original_activity.content_object.content_type.model == "book" %}
                                         <a href="{% url 'read:book_detail' repost.original_activity.content_object.content_object.id %}"
-                                           class="text-decoration-none hover-username">
+                                           class="text-decoration-none ">
                                             <div class="fs-5">{{ repost.original_activity.content_object.content_object.title }}</div>
                                         </a>
                                     {% elif repost.original_activity.content_object.content_type.model == "issue" %}
                                         <div class="fs-5">{{ repost.original_activity.content_object.content_object.periodical.title }}</div>
                                         <a href="{% url 'read:issue_detail' repost.original_activity.content_object.content_object.periodical.id repost.original_activity.content_object.content_object.id %}"
-                                           class="text-decoration-none hover-username">
+                                           class="text-decoration-none ">
                                             <div class="fs-5">{{ repost.original_activity.content_object.content_object.title }}</div>
                                         </a>
                                     {% endif %}
@@ -120,9 +119,8 @@
                         {% elif repost.original_activity.activity_type == "watch-check-in" %}
                             <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' repost.original_activity.user.username %}"
-                                   class="text-decoration-none hover-username me-1">
+                                   class="text-decoration-none  me-1">
                                     {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
-                                    <span class="username">@{{ repost.original_activity.user.username }}</span>
                                 </a>
                                 <span class="me-1 text-muted">checked in</span>
                                 <!--badge: checkin status-->
@@ -162,12 +160,12 @@
                                 <div class="flex-grow-1 ms-3">
                                     {% if repost.original_activity.content_object.content_type.model == 'movie' %}
                                         <a href=" {% url 'watch:movie_detail' repost.original_activity.content_object.content_object.id %} "
-                                           class="text-decoration-none hover-username">
+                                           class="text-decoration-none ">
                                             <div class="fs-5">{{ repost.original_activity.content_object.content_object.title }}</div>
                                         </a>
                                     {% elif repost.original_activity.content_object.content_type.model == 'series' %}
                                         <a href=" {% url 'watch:series_detail' repost.original_activity.content_object.content_object.id %} "
-                                           class="text-decoration-none hover-username">
+                                           class="text-decoration-none ">
                                             <div class="fs-5">{{ repost.original_activity.content_object.content_object.title }}</div>
                                         </a>
                                     {% endif %}
@@ -240,9 +238,8 @@
                         {% elif repost.original_activity.activity_type == "listen-check-in" %}
                             <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' repost.original_activity.user.username %}"
-                                   class="text-decoration-none hover-username me-1">
+                                   class="text-decoration-none  me-1">
                                     {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
-                                    <span class="username">@{{ repost.original_activity.user.username }}</span>
                                 </a>
                                 <span class="me-1 text-muted">checked in</span>
                                 <!--badge: checkin status-->
@@ -295,7 +292,7 @@
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'listen:release_detail' repost.original_activity.content_object.content_object.id %}"
-                                       class="text-decoration-none hover-username">
+                                       class="text-decoration-none ">
                                         <div class="fs-5">{{ repost.original_activity.content_object.content_object.title }}</div>
                                     </a>
                                     {% regroup repost.original_activity.content_object.content_object.releaserole_set.all by role as roles_list %}
@@ -355,9 +352,8 @@
                         {% elif repost.original_activity.activity_type == "game-check-in" %}
                             <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' repost.original_activity.user.username %}"
-                                   class="text-decoration-none hover-username me-1">
+                                   class="text-decoration-none  me-1">
                                     {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
-                                    <span class="username">@{{ repost.original_activity.user.username }}</span>
                                 </a>
                                 <span class="me-1 text-muted">checked in</span>
                                 <!--badge: checkin status-->
@@ -400,7 +396,7 @@
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'play:game_detail' repost.original_activity.content_object.game.id %}"
-                                       class="text-decoration-none hover-username">
+                                       class="text-decoration-none ">
                                         <div class="fs-5">{{ repost.original_activity.content_object.game.title }}</div>
                                     </a>
                                     {% regroup repost.original_activity.content_object.game.gamerole_set.all by role as roles_list %}
@@ -458,9 +454,8 @@
                         {% else %}
                             <div class="mb-2">
                                 <a href="{% url 'accounts:detail' repost.original_activity.user.username %}"
-                                   class="text-decoration-none hover-username">
+                                   class="text-decoration-none ">
                                     {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
-                                    <span class="username">@{{ repost.original_activity.user.username }}</span>
                                 </a>
                                 {{ repost.original_activity.activity_type | parse_activity_type }}:
                             </div>

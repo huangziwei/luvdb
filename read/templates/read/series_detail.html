@@ -41,7 +41,7 @@
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <a href="{% url 'read:book_detail' book_in_series.book.pk %}"
-                                       class="text-decoration-none hover-username">
+                                       class="text-decoration-none ">
                                         <div class="fs-5">{{ book_in_series.book.title }}</div>
                                     </a>
                                     {% if book_in_series.book.subtitle %}<div class="mb-2 text-muted">{{ book_in_series.book.subtitle }}</div>{% endif %}

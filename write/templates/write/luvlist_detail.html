@@ -57,7 +57,7 @@
                                 <span class="sticky-note">{{ content.order }}</span>
                                 <div class="bg-white p-3">
                                     <a href="{% url 'write:luvlist_detail' content.content_object.id %}"
-                                       class="text-decoration-none hover-username">
+                                       class="text-decoration-none ">
                                         <div class="fs-5">{{ content.content_object.title }}</div>
                                     </a>
                                 </div>
@@ -205,13 +205,13 @@
                                     <div class="flex-grow-1 ms-3">
                                         {% if content.content_type.model == 'book' %}
                                             <a href=" {% url 'read:book_detail' content.content_object.id %} "
-                                               class="text-decoration-none hover-username">
+                                               class="text-decoration-none ">
                                                 <div class="fs-5">{{ content.content_object.title }}</div>
                                             </a>
                                         {% elif content.content_type.model == 'issue' %}
                                             <div class="fs-5">{{ content.content_object.periodical.title }}</div>
                                             <a href=" {% url 'read:issue_detail' content.content_object.periodical.id content.content_object.id %} "
-                                               class="text-decoration-none hover-username">
+                                               class="text-decoration-none ">
                                                 <div class="fs-6">{{ content.content_object.title }}</div>
                                             </a>
                                         {% endif %}
@@ -269,12 +269,12 @@
                                     <div class="flex-grow-1 ms-3">
                                         {% if content.content_type.model == 'movie' %}
                                             <a href=" {% url 'watch:movie_detail' content.content_object.id %} "
-                                               class="text-decoration-none hover-username">
+                                               class="text-decoration-none ">
                                                 <div class="fs-5">{{ content.content_object.title }}</div>
                                             </a>
                                         {% elif content.content_type.model == 'series' %}
                                             <a href=" {% url 'watch:series_detail' content.content_object.id %} "
-                                               class="text-decoration-none hover-username">
+                                               class="text-decoration-none ">
                                                 <div class="fs-5">{{ content.content_object.title }}</div>
                                             </a>
                                         {% endif %}
@@ -360,7 +360,7 @@
                                     </div>
                                     <div class="flex-grow-1 ms-3">
                                         <a href="{% url 'listen:release_detail' content.content_object.id %}"
-                                           class="text-decoration-none hover-username">
+                                           class="text-decoration-none ">
                                             <div class="fs-5">{{ content.content_object.title }}</div>
                                         </a>
                                         {% regroup content.content_object.releaserole_set.all by role as roles_list %}
@@ -460,7 +460,7 @@
                                     </div>
                                     <div class="flex-grow-1 ms-3">
                                         <a href="{% url 'play:game_detail' content.content_object.id %}"
-                                           class="text-decoration-none hover-username">
+                                           class="text-decoration-none ">
                                             <div class="fs-5">{{ content.content_object.title }}</div>
                                         </a>
                                         {% regroup content.content_object.gamerole_set.all by role as roles_list %}

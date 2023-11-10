@@ -45,10 +45,9 @@
                                     data-activity-type="{{ checkin.activity_type }}">
                                 <div class="d-flex flex-wrap align-items-center">
                                     <a href="{% url 'accounts:detail' checkin.user.username %}"
-                                        class="text-decoration-none hover-username me-1">
+                                        class="text-decoration-none  me-1">
                                         {{ checkin.user.display_name | default:checkin.user.username }}
-                                        <span class="username">@{{ checkin.user.username }}</span>
-                                    </a>
+                                        </a>
                                     <span class="me-1 text-muted">checked in</span>
                                     <!--badge: checkin status-->
                                     <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
@@ -85,12 +84,12 @@
                                     <div class="flex-grow-1 ms-3">
                                         {% if checkin.content_type.model == 'movie' %}
                                             <a href=" {% url 'watch:movie_detail' checkin.content_object.id %} "
-                                                class="text-decoration-none hover-username">
+                                                class="text-decoration-none ">
                                                 <div class="fs-5">{{ checkin.content_object.title }}</div>
                                             </a>
                                         {% elif checkin.content_type.model == 'series' %}
                                             <a href=" {% url 'watch:series_detail' checkin.content_object.id %} "
-                                                class="text-decoration-none hover-username">
+                                                class="text-decoration-none ">
                                                 <div class="fs-5">{{ checkin.content_object.title }}</div>
                                             </a>
                                         {% endif %}

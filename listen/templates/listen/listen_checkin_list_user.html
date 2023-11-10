@@ -46,9 +46,8 @@
                                 data-activity-type="{{ checkin.activity_type }}">
                             <div class="d-flex flex-wrap align-items-center">
                                 <a href="{% url 'accounts:detail' checkin.user.username %}"
-                                    class="text-decoration-none hover-username me-1">
+                                    class="text-decoration-none  me-1">
                                     {{ checkin.user.display_name | default:checkin.user.username }}
-                                    <span class="username">@{{ checkin.user.username }}</span>
                                 </a>
                                 <span class="me-1 text-muted">checked in</span>
                                 <!--badge: checkin status-->
@@ -101,12 +100,12 @@
                                 <div class="flex-grow-1 ms-3">
                                     {% if checkin.content_type.model == "release" %}
                                     <a href="{% url 'listen:release_detail' checkin.content_object.id %}"
-                                        class="text-decoration-none hover-username">
+                                        class="text-decoration-none ">
                                         <div class="fs-5">{{ checkin.content_object.title }}</div>
                                     </a>
                                     {% elif checkin.content_type.model == "podcast" %}
                                     <a href="{% url 'listen:podcast_detail' checkin.content_object.id %}"
-                                        class="text-decoration-none hover-username">
+                                        class="text-decoration-none ">
                                         <div class="fs-5">{{ checkin.content_object.title }}</div>
                                     </a>
                                     <div class="text-muted">
@@ -114,7 +113,7 @@
                                     </div>
                                     {% elif checkin.content_type.model == "audiobook" %}
                                     <a href="{% url 'listen:audiobook_detail' checkin.content_object.id %}"
-                                        class="text-decoration-none hover-username">
+                                        class="text-decoration-none ">
                                         <div class="fs-5">{{ checkin.content_object.title }}</div>
                                     </a>
                                     {% endif %}

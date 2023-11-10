@@ -42,12 +42,12 @@
                                 <div class="flex-grow-1 ms-3">
                                     {% if content_in_collection.content_type.model == 'movie' %}
                                         <a href="{% url 'watch:movie_detail' content_in_collection.content_object.pk %}"
-                                           class="text-decoration-none hover-username">
+                                           class="text-decoration-none ">
                                             <div class="fs-5">{{ content_in_collection.content_object.title }}</div>
                                         </a>
                                     {% elif content_in_collection.content_type.model == 'series' %}
                                         <a href="{% url 'watch:series_detail' content_in_collection.content_object.pk %}"
-                                           class="text-decoration-none hover-username">
+                                           class="text-decoration-none ">
                                             <div class="fs-5">{{ content_in_collection.content_object.title }}</div>
                                         </a>
                                     {% endif %}
