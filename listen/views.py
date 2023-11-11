@@ -482,7 +482,7 @@ class ReleaseDetailView(DetailView):
         release = get_object_or_404(Release, pk=self.kwargs["pk"])
         context["content_type"] = "release"
 
-        main_role_names = ["Performer", "Conductor"]
+        main_role_names = ["Performer", "Conductor", "Compiler"]
         main_roles = {}
         other_roles = {}
 

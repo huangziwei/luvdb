@@ -171,7 +171,8 @@
                     {% endif %}
                 {% endif %}
                 <!--Listen-->
-                {% if LPs_as_performer or EPs_as_performer or singles_as_performer or works_as_lyricist or works_as_composer or tracks_as_singer or  tracks_as_arranger or tracks_as_producer or releases_as_liner_notes_writer %}
+                {{releases_as_compiler}}
+                {% if LPs_as_performer or EPs_as_performer or singles_as_performer or works_as_lyricist or works_as_composer or tracks_as_singer or  tracks_as_arranger or tracks_as_producer or releases_as_liner_notes_writer or releases_as_compiler %}
                     <h3 class="mt-2">Discography</h3>
                     {% if LPs_as_performer or EPs_as_performer or singles_as_performer %}
                         <div class="row">
@@ -306,7 +307,7 @@
                         </div>
                     {% endif %}
 
-                    {% if releases_as_liner_notes_writer %}
+                    {% if releases_as_liner_notes_writer or releases_as_compiler %}
                         <div class="row">
                             <div class="fs-4">Releases</div>
                             {% if releases_as_liner_notes_writer %}
@@ -316,6 +317,24 @@
                                         {% for release in releases_as_liner_notes_writer %}
                                             <li>
                                                 <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a> ({{ release.release_date }})
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+
+                            {% if releases_as_compiler %}
+                                <div class="col-md-42">
+                                    <div class="fs-5">As Compiler</div>
+                                    <ul>
+                                        {% for release in releases_as_compiler %}
+                                            <li>
+                                                {% if release.release_group.exists %}
+                                                    <a href="{% url 'listen:releasegroup_detail' release.release_group.first.id %}">{{ release.title }}</a>
+                                                {% else %}
+                                                    <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a>
+                                                {% endif %}
+                                                ({{ release.release_date }})
                                             </li>
                                         {% endfor %}
                                     </ul>

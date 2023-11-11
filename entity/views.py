@@ -167,6 +167,14 @@ class CreatorDetailView(DetailView):
             single_releases
         )
 
+        compilation_releases = Release.objects.filter(
+            releaserole__role__name="Compiler",
+            releaserole__creator=creator,
+            recording_type="Compilation",
+        ).order_by("release_date")
+        context["releases_as_compiler"] = get_releases_by_type_and_group(
+            compilation_releases
+        )
         context["releases_as_liner_notes_writer"] = Release.objects.filter(
             releaserole__role__name="Liner Notes", releaserole__creator=creator
         ).order_by("release_date")
