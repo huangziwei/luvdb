@@ -28,7 +28,7 @@ class UserActivityFeed(Feed):
         return User.objects.get(username=username)
 
     def title(self, user):
-        return f"{user.username}'s Activity feed at LʌvDB"
+        return f"{user.username}'s Activity feed on LʌvDB"
 
     def link(self, user):
         return reverse(

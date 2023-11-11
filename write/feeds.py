@@ -32,7 +32,7 @@ class UserSayFeed(Feed):
         return User.objects.get(username=username)
 
     def title(self, user):
-        return f"{user.username}'s Say feed at LʌvDB"
+        return f"{user.username}'s Say feed on LʌvDB"
 
     def link(self, user):
         return reverse("write:say_list", args=[user.username])
@@ -71,7 +71,7 @@ class UserPostFeed(Feed):
         return User.objects.get(username=username)
 
     def title(self, user):
-        return f"{user.username}'s Post feed at LʌvDB"
+        return f"{user.username}'s Post feed on LʌvDB"
 
     def link(self, user):
         return reverse("write:post_list", args=[user.username])
@@ -114,7 +114,7 @@ class UserPostProjectFeed(Feed):
 
     def title(self, obj):
         username, project_name = obj
-        return f"{username}'s {project_name} Post feed at LʌvDB"
+        return f"{username}'s {project_name} Post feed on LʌvDB"
 
     def link(self, obj):
         username, project_name = obj
@@ -156,7 +156,7 @@ class UserPinFeed(Feed):
         return User.objects.get(username=username)
 
     def title(self, user):
-        return f"{user.username}'s Pin feed at LʌvDB"
+        return f"{user.username}'s Pin feed on LʌvDB"
 
     def link(self, user):
         return reverse("write:pin_list", args=[user.username])
@@ -192,7 +192,7 @@ class TagListFeed(Feed):
         return tag
 
     def title(self, tag):
-        return f"Tag feed for {tag} at LʌvDB"
+        return f"Tag feed for {tag} on LʌvDB"
 
     def link(self, tag):
         return reverse("write:tag_list", args=[tag])
