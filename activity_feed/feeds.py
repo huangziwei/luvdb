@@ -5,7 +5,6 @@ from django.contrib.syndication.views import Feed
 from django.db.models import Q
 from django.http import Http404
 from django.urls import reverse
-from django.utils.feedgenerator import Atom1Feed
 from django.utils.safestring import mark_safe
 
 from write.models import Say
@@ -16,8 +15,6 @@ User = get_user_model()
 
 
 class UserActivityFeed(Feed):
-    feed_type = Atom1Feed
-
     def __call__(self, request, *args, **kwargs):
         user = self.get_object(request, *args, **kwargs)
         if not user.is_public:
