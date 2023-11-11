@@ -25,7 +25,7 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="d-none d-md-block text-end">
+                <div class="text-end">
                     <a href="#{{ comment.anchor }}" class="comment-anchor text-secondary">#{{comment.anchor}}</a>
                 </div>
             </span>
@@ -44,9 +44,6 @@
                     {% if object.user == request.user or comment.user == request.user %}
                         <a href="{% url "write:comment_delete" comment.pk %}" class="me-2">Delete</a>
                     {% endif %}
-                </div>
-                <div class="d-block d-md-none text-end">
-                    <a href="#{{ comment.anchor }}" class="comment-anchor text-secondary">#{{comment.anchor}}</a>
                 </div>
             </div>
         </div>
