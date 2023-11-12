@@ -49,7 +49,7 @@ urlpatterns = [
     path("get_user_tags/", get_user_tags, name="get_user_tags"),
     path("<str:username>/", view=AccountDetailView.as_view(), name="detail"),
     path(
-        "<str:username>/feed",
+        "<str:username>/feed/",
         view=PersonalActivityFeedView.as_view(),
         name="feed",
     ),
