@@ -111,7 +111,7 @@
                                 <div>
                                     <span class="d-flex">
                                         <p class="me-2 text-muted mb-2">
-                                            <a href="{% url 'accounts:detail' activity.user.username %}">{{ activity.user.display_name|default:activity.user.username }}</a>
+                                            <a href="{% url 'accounts:detail' activity.user.username %}" class="p-author">{{ activity.user.display_name|default:activity.user.username }}</a>
                                             {% if activity.model_name == "Say" %}said: {% else %}reposted: {% endif %}
                                         </p>
                                     </span>

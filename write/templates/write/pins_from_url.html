@@ -11,7 +11,7 @@
                 </div>
                 {% for pin in pins %}
                     <!--Pin-->
-                    <div class="activity-item mb-3">
+                    <div class="activity-item mb-3 h-entry">
                         <div class="mb-2">
                             <a href="{% url 'accounts:detail' pin.user.username %}">{{ pin.user.display_name | default:pin.user.username }}</a> pinned:
                         </div>

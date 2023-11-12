@@ -5,11 +5,11 @@
 {% if activity.activity_type == 'say' %}
     {% if not activity.content_object.is_direct_mention or request.user in activity.content_object.visible_to.all or request.user == activity.user %}
         <!--Say-->
-        <div class="activity-item mb-3"
+        <div class="activity-item mb-3 h-entry"
             data-activity-type="{{ activity.activity_type }}">
             <div class="d-flex align-items-center">
                 <a href="{% url 'accounts:detail' activity.user.username %}"
-                class="text-decoration-none">
+                class="text-decoration-none p-author">
                     {{ activity.user.display_name | default:activity.user.username }}
                     
                 </a>
@@ -17,13 +17,13 @@
                     <path d="M 12 1 C 8.6761905 1 6 3.6761905 6 7 L 6 8 C 4.9 8 4 8.9 4 10 L 4 20 C 4 21.1 4.9 22 6 22 L 18 22 C 19.1 22 20 21.1 20 20 L 20 10 C 20 8.9 19.1 8 18 8 L 18 7 C 18 3.6761905 15.32381 1 12 1 z M 12 3 C 14.27619 3 16 4.7238095 16 7 L 16 8 L 8 8 L 8 7 C 8 4.7238095 9.7238095 3 12 3 z M 12 13 C 13.1 13 14 13.9 14 15 C 14 16.1 13.1 17 12 17 C 10.9 17 10 16.1 10 15 C 10 13.9 10.9 13 12 13 z"></path>
                 </svg>{% endif %}:</span>
             </div>
-            <div class="mt-2 truncatable-text">
+            <div class="mt-2 truncatable-text e-content">
                 {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
             </div>
             <div class="d-flex mt-2">
                 <p class="me-2">
                     <a href="{% url 'write:say_detail' activity.content_object.id %}"
-                    class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                    class="text-decoration-none text-secondary u-url dt-published">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
                 </p>
                 {% if activity.content_object.comments_enabled %}
                     <p class="ms-2 me-2">
@@ -50,26 +50,26 @@
     {% endif %}
 {% elif activity.activity_type == 'post' %}
     <!--Post-->
-    <div class="activity-item mb-3"
+    <div class="activity-item mb-3 h-entry"
          data-activity-type="{{ activity.activity_type }}">
         <div>
             <a href="{% url 'accounts:detail' activity.user.username %}"
-               class="text-decoration-none">
+               class="text-decoration-none p-author">
                 {{ activity.user.display_name | default:activity.user.username }}
             </a>
             <span class="text-muted">{{ activity.activity_type | parse_activity_type }}:</span>
         </div>
         <div class="bg-light mt-2 p-3">
-            <div class="fs-5">
+            <div class="fs-5 p-name">
                 <a href="{% url 'write:post_detail' activity.content_object.id %}"
                    class="text-decoration-none">{{ activity.content_object.title }}</a>
             </div>
-            <div>{{ activity.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
+            <div class="e-content">{{ activity.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
         </div>
         <div class="d-flex mt-2">
             <p class="me-2">
                 <a href="{% url 'write:post_detail' activity.content_object.id %}"
-                   class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                   class="text-decoration-none text-secondary u-url dt-published">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
@@ -95,24 +95,23 @@
     </div>
 {% elif activity.activity_type == 'pin' %}
     <!--Pin-->
-    <div class="activity-item mb-3"
+    <div class="activity-item mb-3 h-entry"
          data-activity-type="{{ activity.activity_type }}">
         <div>
             <a href="{% url 'accounts:detail' activity.user.username %}"
-               class="text-decoration-none">
+               class="text-decoration-none p-author">
                 {{ activity.user.display_name | default:activity.user.username }}
-                
             </a>
             <span class="text-muted">{{ activity.activity_type | parse_activity_type }}:</span>
         </div>
         <div class="mt-2">
             <div class="bg-light p-3">
-                <a href="{{ activity.content_object.url }}" class="text-decoration-none">{{ activity.content_object.title }}</a>
+                <a href="{{ activity.content_object.url }}" class="text-decoration-none p-name u-bookmark-of">{{ activity.content_object.title }}</a>
                 (<a href="{% url 'write:pins_from_url' activity.content_object.url|root_url %}"
    class="text-decoration-none text-secondary">{{ activity.content_object.url|root_url }}</a>)
             </div>
             {% if activity.content_object.content %}
-                <div class="mt-2 truncatable-text">
+                <div class="mt-2 truncatable-text e-content">
                     {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
                 </div>
             {% endif %}
@@ -120,7 +119,7 @@
         <div class="d-flex mt-2">
             <p class="me-2">
                 <a href="{% url 'write:pin_detail' activity.content_object.id %}"
-                   class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                   class="text-decoration-none text-secondary dt-published u-url">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
@@ -152,11 +151,11 @@
     </div>
 {% elif activity.activity_type == 'follow' %}
     <!--Follow-->
-    <div class="activity-item mb-3"
+    <div class="activity-item mb-3 h-entry"
          data-activity-type="{{ activity.activity_type }}">
         <div>
             <a href="{% url 'accounts:detail' activity.user.username %}"
-               class="text-decoration-none">
+               class="text-decoration-none p-author">
                 {{ activity.user.display_name | default:activity.user.username }}
             </a>
             <span class="text-muted">followed</span>
@@ -179,13 +178,12 @@
     {% include "activity_feed/activity_item_repost.html" %}
 {% elif activity.activity_type == 'read-check-in' %}
     <!--Read-Check-in-->
-    <div class="activity-item mb-3"
+    <div class="activity-item mb-3 h-entry"
          data-activity-type="{{ activity.activity_type }}">
         <div class="d-flex flex-wrap align-items-center">
             <a href="{% url 'accounts:detail' activity.user.username %}"
-               class="text-decoration-none me-1">
+               class="text-decoration-none me-1 p-author">
                 {{ activity.user.display_name | default:activity.user.username }}
-                
             </a>
             <span class="me-1 text-muted">checked in</span>
             <!--badge: checkin status-->
@@ -202,7 +200,7 @@
                 </span>
             {% endif %}
         </div>
-        <div class="mt-2 truncatable-text">
+        <div class="mt-2 truncatable-text e-content">
             {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
@@ -231,13 +229,13 @@
             <div class="flex-grow-1 ms-3">
                 {% if activity.content_object.content_type.model == 'book' %}
                     <a href=" {% url 'read:book_detail' activity.content_object.content_object.id %} "
-                       class="text-decoration-none">
+                       class="text-decoration-none h-cite p-name">
                         <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% elif activity.content_object.content_type.model == 'issue' %}
                     <div class="fs-5">{{ activity.content_object.content_object.periodical.title }}</div>
                     <a href=" {% url 'read:issue_detail' activity.content_object.content_object.periodical.id activity.content_object.content_object.id %} "
-                       class="text-decoration-none">
+                       class="text-decoration-none h-cite p-name">
                         <div class="fs-6">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% endif %}
@@ -278,7 +276,7 @@
         <div class="d-flex mt-2">
             <p class="me-2">
                 <a href="{% url 'read:read_checkin_detail' activity.content_object.id %}"
-                   class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                   class="text-decoration-none text-secondary u-url dt-published">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
@@ -305,13 +303,12 @@
     <!--Watch-->
 {% elif activity.activity_type == 'watch-check-in' %}
     <!--Watch-Check-in-->
-    <div class="activity-item mb-3"
+    <div class="activity-item mb-3 h-entry"
          data-activity-type="{{ activity.activity_type }}">
         <div class="d-flex flex-wrap align-items-center">
             <a href="{% url 'accounts:detail' activity.user.username %}"
-               class="text-decoration-none me-1">
+               class="text-decoration-none me-1 p-author">
                 {{ activity.user.display_name | default:activity.user.username }}
-                
             </a>
             <span class="me-1 text-muted">checked in</span>
             <!--badge: checkin status-->
@@ -327,7 +324,7 @@
                 </span>
             {% endif %}
         </div>
-        <div class="mt-2 truncatable-text">
+        <div class="mt-2 truncatable-text e-content">
             {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
@@ -356,12 +353,12 @@
             <div class="flex-grow-1 ms-3">
                 {% if activity.content_object.content_type.model == 'movie' %}
                     <a href=" {% url 'watch:movie_detail' activity.content_object.content_object.id %} "
-                       class="text-decoration-none">
+                       class="text-decoration-none h-cite p-name">
                         <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% elif activity.content_object.content_type.model == 'series' %}
                     <a href=" {% url 'watch:series_detail' activity.content_object.content_object.id %} "
-                       class="text-decoration-none">
+                       class="text-decoration-none h-cite p-name">
                         <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% endif %}
@@ -437,7 +434,7 @@
         <div class="d-flex mt-2">
             <p class="me-2">
                 <a href="{% url 'watch:watch_checkin_detail' activity.content_object.id %}"
-                   class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                   class="text-decoration-none text-secondary u-url dt-published">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
@@ -463,13 +460,12 @@
     </div>
     <!--Listen-->
 {% elif activity.activity_type == 'listen-check-in' %}
-    <div class="activity-item mb-3"
+    <div class="activity-item mb-3 h-entry"
          data-activity-type="{{ activity.activity_type }}">
         <div class="d-flex flex-wrap align-items-center">
             <a href="{% url 'accounts:detail' activity.user.username %}"
-               class="text-decoration-none me-1">
+               class="text-decoration-none me-1 p-author">
                 {{ activity.user.display_name | default:activity.user.username }}
-                
             </a>
             <span class="me-1 text-muted">checked in</span>
             <!--badge: checkin status-->
@@ -500,7 +496,7 @@
             {% endif %}
 
         </div>
-        <div class="mt-2 truncatable-text">
+        <div class="mt-2 truncatable-text e-content">
             {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
@@ -529,18 +525,18 @@
             <div class="flex-grow-1 ms-3">
                 {% if activity.content_object.content_type.model == "release" %}
                     <a href="{% url 'listen:release_detail' activity.content_object.content_object.id %}"
-                       class="text-decoration-none">
+                       class="text-decoration-none h-cite p-name">
                         <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% elif activity.content_object.content_type.model == "podcast" %}
                     <a href="{% url 'listen:podcast_detail' activity.content_object.content_object.id %}"
-                       class="text-decoration-none">
+                       class="text-decoration-none h-cite p-name">
                         <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                     <div class="text-muted">{{ activity.content_object.content_object.notes|truncatechars:600 }}</div>
                 {% elif activity.content_object.content_type.model == "audiobook" %}
                     <a href="{% url 'listen:audiobook_detail' activity.content_object.content_object.id %}"
-                       class="text-decoration-none">
+                       class="text-decoration-none h-cite p-name">
                         <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
                 {% endif %}
@@ -609,7 +605,7 @@
         <div class="d-flex mt-2">
             <p class="me-2">
                 <a href="{% url 'listen:listen_checkin_detail' activity.content_object.id %}"
-                   class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                   class="text-decoration-none text-secondary u-url dt-published">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
@@ -636,13 +632,12 @@
     <!--Play-->
 {% elif activity.activity_type == 'game-check-in' %}
     <!--Game-Check-in-->
-    <div class="activity-item mb-3"
+    <div class="activity-item mb-3 h-entry"
          data-activity-type="{{ activity.activity_type }}">
         <div class="d-flex flex-wrap align-items-center">
             <a href="{% url 'accounts:detail' activity.user.username %}"
-               class="text-decoration-none me-1">
+               class="text-decoration-none me-1 p-author">
                 {{ activity.user.display_name | default:activity.user.username }}
-                
             </a>
             <span class="me-1 text-muted">checked in</span>
             <!--badge: checkin status-->
@@ -662,7 +657,7 @@
                 </span>
             {% endif %}
         </div>
-        <div class="mt-2 truncatable-text">
+        <div class="mt-2 truncatable-text e-content">
             {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
@@ -690,7 +685,7 @@
             </div>
             <div class="flex-grow-1 ms-3">
                 <a href="{% url 'play:game_detail' activity.content_object.game.id %}"
-                   class="text-decoration-none">
+                   class="text-decoration-none h-cite p-name">
                     <div class="fs-5">{{ activity.content_object.game.title }}</div>
                 </a>
                 {% regroup activity.content_object.game.gamerole_set.all by role as roles_list %}
@@ -754,7 +749,7 @@
         <div class="d-flex mt-2">
             <p class="me-2">
                 <a href="{% url 'play:game_checkin_detail' activity.content_object.id %}"
-                   class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                   class="text-decoration-none text-secondary u-url dt-published">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">

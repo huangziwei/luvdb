@@ -3,18 +3,18 @@
 {% load linkify %}
 {% load parse_activity_type %}
 <!--Repost-->
-<div class="activity-item mb-3"
+<div class="activity-item mb-3 h-entry"
      data-activity-type="{{ activity.activity_type }}">
     <div class="mb-2">
         <a href="{% url 'accounts:detail' activity.user.username %}"
-           class="text-decoration-none ">
+           class="text-decoration-none p-author">
             {{ activity.user.display_name | default:activity.user.username }}
             
         </a>
         <span class="text-muted">{{ activity.activity_type | parse_activity_type }}:</span>
     </div>
     {% if activity.content_object.content %}
-        <div class="mb-2 truncatable-text">
+        <div class="mb-2 truncatable-text e-content">
             {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
         </div>
     {% endif %}
@@ -25,7 +25,7 @@
             {% if activity.content_object.original_activity.activity_type == "read-check-in" %}
                 <div class="d-flex flex-wrap align-items-center">
                     <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}"
-                       class="text-decoration-none  me-1">
+                       class="text-decoration-none me-1 p-author">
                         {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
                     </a>
                     <span class="me-1 text-muted">checked in</span>
@@ -528,7 +528,7 @@
                             </div>
                         {% endif %}
                         <div>
-                            <div class="mt-2 truncatable-text">
+                            <div class="mt-2 truncatable-text e-content">
                                 {{ activity.content_object.original_activity.content_object.content  | linkify_tags | linkify_mentions | markdownify }}
                             </div>
                             <div class="mt-2">
@@ -546,7 +546,7 @@
             <p class="me-2">
                 {% if activity.content_object.content %}
                     <a href="{% url 'write:repost_detail' activity.content_object.id %}"
-                       class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
+                       class="text-decoration-none text-secondary u-url dt-published">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
                 {% else %}
                     <span class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</span>
                 {% endif %}
