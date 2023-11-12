@@ -1183,16 +1183,16 @@
             <!-- Right column -->
             <div class="col-md-4 col-sm-12 d-none d-md-block">
                 <div class="bio p-3 bg-light">
-                    <div class="h-card">
+                    <div>
                         {% if object.display_name %}
-                            <a class="mb-0 fs-4" href="https://luvdb.com{% url 'accounts:detail' object.username %}" rel="me">
+                            <a class="mb-0 fs-4 h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}" rel="me">
                                 {{ object.display_name }}
                             </a>
                             <span>
                                 @{{ object.username }}
                             </span>
                         {% else %}
-                            <a href="https://luvdb.com{% url 'accounts:detail' object.username %}" rel="me">
+                            <a class="h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}" rel="me">
                                 @{{ object.username }}
                             </a>
                         {% endif %}
