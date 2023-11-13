@@ -2,29 +2,35 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from entity.models import Company, Creator
 from read.models import Book
 
+from .authentication import AppPasswordAuthentication
 from .serializers import BookSerializer, CompanySerializer, CreatorSerializer
 
 
-class CreatorViewSetV1(viewsets.ModelViewSet):
+class CreatorViewSetV1(viewsets.ReadOnlyModelViewSet):
     queryset = Creator.objects.all()
     serializer_class = CreatorSerializer
     http_method_names = ["get", "head", "options"]
+    authentication_classes = [AppPasswordAuthentication]
 
 
-class CompanyViewSetV1(viewsets.ModelViewSet):
+class CompanyViewSetV1(viewsets.ReadOnlyModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
     http_method_names = ["get", "head", "options"]
+    authentication_classes = [AppPasswordAuthentication]
 
 
 class BookViewSetV1(viewsets.ReadOnlyModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    authentication_classes = [AppPasswordAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         return Response(
