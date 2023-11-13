@@ -384,6 +384,7 @@ class GameCheckIn(models.Model):
                             + self.content
                             + "\n\n",
                             self.id,
+                            "GameCheckIn",
                         )
                     except Exception as e:
                         print(f"Error creating Bluesky post: {e}")

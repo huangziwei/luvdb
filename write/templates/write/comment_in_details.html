@@ -86,7 +86,7 @@
         var commentForm = document.getElementById('comment-form');
         var textarea = commentForm.querySelector('textarea');
         // Include the anchor link in the quoted text
-        textarea.value = '> @' + userUsername + ' (' + timestamp + ') <a href="' + anchorLink + '">⇱</a>\n> ' + comment.replace(/\n/g, '\n> ') + '\n\n';
+        textarea.value = '> @' + userUsername + ' (' + timestamp + ') [⇱](' + anchorLink + ')\n> ' + comment.replace(/\n/g, '\n> ') + '\n\n';
         textarea.focus();
       });
     });

@@ -893,7 +893,6 @@ def get_user_tags(request):
     user = request.user
 
     # Get ContentType for each model
-    comment_ct = ContentType.objects.get_for_model(Comment)
     repost_ct = ContentType.objects.get_for_model(Repost)
     post_ct = ContentType.objects.get_for_model(Post)
     say_ct = ContentType.objects.get_for_model(Say)
@@ -905,7 +904,6 @@ def get_user_tags(request):
 
     # Combine all content types into a list
     all_cts = [
-        comment_ct,
         repost_ct,
         post_ct,
         say_ct,

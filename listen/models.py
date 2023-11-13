@@ -427,6 +427,7 @@ class ListenCheckIn(models.Model):
                             + self.content
                             + "\n\n",
                             self.id,
+                            "ListenCheckIn",
                         )
                     except Exception as e:
                         print(f"Error creating Bluesky post: {e}")

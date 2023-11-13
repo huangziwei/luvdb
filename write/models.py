@@ -315,6 +315,7 @@ class Post(models.Model):
                         bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
                         f'I posted "{self.title}" on LʌvDB\n\n' + self.content + "\n\n",
                         self.id,
+                        "Post",
                     )
                 except Exception as e:
                     print(f"Error creating Bluesky post: {e}")
@@ -385,6 +386,7 @@ class Say(models.Model):
                         bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
                         self.content,
                         self.id,
+                        "Say",
                     )
                 except Exception as e:
                     print(f"Error creating Bluesky post: {e}")
@@ -444,6 +446,7 @@ class Pin(models.Model):
                         + self.content
                         + "\n\n",
                         self.id,
+                        "Pin",
                     )
                 except Exception as e:
                     print(f"Error creating Bluesky post: {e}")

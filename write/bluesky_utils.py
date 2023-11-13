@@ -52,7 +52,9 @@ def create_url_facets(text: str):
     ]
 
 
-def create_bluesky_post(handle: str, password: str, text: str, say_id: int):
+def create_bluesky_post(
+    handle: str, password: str, text: str, content_id: int, content_type: str
+):
     session = bsky_login_session(handle, password)
     pds_url = "https://bsky.social"
     access_token = session.get("accessJwt")
@@ -63,9 +65,24 @@ def create_bluesky_post(handle: str, password: str, text: str, say_id: int):
 
     # Create the link back to your site
     domain = settings.ROOT_URL  # Using domain from settings
-    say_url = domain + reverse("write:say_detail", args=[say_id])
-    truncated_text = text[: 300 - len(say_url) - 1]  # Adjust for space and URL length
-    post_content = f"{truncated_text} {say_url}"
+    if content_type == "Say":
+        content_url = domain + reverse("write:say_detail", args=[content_id])
+    elif content_type == "Post":
+        content_url = domain + reverse("write:post_detail", args=[content_id])
+    elif content_type == "Pin":
+        content_url = domain + reverse("write:pin_detail", args=[content_id])
+    elif content_type == "ReadCheckIn":
+        content_url = domain + reverse("read:read_checkin_detail", args=[content_id])
+    elif content_type == "WatchCheckIn":
+        content_url = domain + reverse("watch:watch_checkin_detail", args=[content_id])
+    elif content_type == "ListenCheckIn":
+        content_url = domain + reverse(
+            "listen:listen_checkin_detail", args=[content_id]
+        )
+    elif content_type == "GameCheckIn":
+        content_url = domain + reverse("game:game_checkin_detail", args=[content_id])
+    truncated_text = text[: 300 - len(content_url) - 1]
+    post_content = f"{truncated_text} {content_url}"
 
     # Prepare the post data
     now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
