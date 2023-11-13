@@ -71,7 +71,6 @@ class Comment(models.Model):
     content = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
-    tags = models.ManyToManyField(Tag, blank=True)
 
     # Polymorphic relationship to Post, Say, or Pin
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -137,8 +136,6 @@ class Comment(models.Model):
             notification.message = f'<a href="{user_url}">@{user_name}</a> commented on your <a href="{content_url_with_read_marker}">{content_name}</a>.'
             notification.save()
 
-        # Handle tags
-        handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
 
     def generate_unique_anchor(self):

@@ -29,7 +29,7 @@
                     <a href="#{{ comment.anchor }}" class="comment-anchor text-secondary">#{{comment.anchor}}</a>
                 </div>
             </span>
-            <div class="bg-light mt-2 p-3">{{ comment.content| linkify_tags | linkify_mentions | markdownify }}</div>
+            <div class="bg-light mt-2 p-3">{{ comment.content | linkify_mentions | markdownify }}</div>
             <div class="d-flex justify-content-between mt-2">
                 <div class="d-block d-md-none text-start">
                     <a href="#"
