@@ -15,6 +15,7 @@ from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
 from entity.models import Company, Creator, Entity, Role
+from write.bluesky_utils import create_bluesky_post
 from write.models import create_mentions_notifications, handle_tags
 
 
@@ -372,6 +373,21 @@ class GameCheckIn(models.Model):
                     activity_type="game-check-in",
                     content_object=self,
                 )
+
+                if self.user.bluesky_account:
+                    try:
+                        bluesky_account = self.user.bluesky_account
+                        create_bluesky_post(
+                            bluesky_account.bluesky_handle,
+                            bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
+                            f'I checked in to "{self.game.title}" on LʌvDB\n\n'
+                            + self.content
+                            + "\n\n",
+                            self.id,
+                        )
+                    except Exception as e:
+                        print(f"Error creating Bluesky post: {e}")
+
         elif activity is not None:
             # Optionally, remove the Activity if share_to_feed is False
             activity.delete()

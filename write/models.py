@@ -2,6 +2,7 @@ import json
 import random
 import re
 import string
+from urllib.parse import urlparse
 
 import pytz
 from django.conf import settings
@@ -308,6 +309,18 @@ class Post(models.Model):
                 activity_type="post",
                 content_object=self,
             )
+
+            if self.user.bluesky_account:
+                try:
+                    bluesky_account = self.user.bluesky_account
+                    create_bluesky_post(
+                        bluesky_account.bluesky_handle,
+                        bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
+                        f'I posted "{self.title}" on LʌvDB\n\n' + self.content + "\n\n",
+                        self.id,
+                    )
+                except Exception as e:
+                    print(f"Error creating Bluesky post: {e}")
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
@@ -368,13 +381,16 @@ class Say(models.Model):
             )
 
             if self.user.bluesky_account:
-                bluesky_account = self.user.bluesky_account
-                create_bluesky_post(
-                    bluesky_account.bluesky_handle,
-                    bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
-                    self.content,
-                    self.id,
-                )
+                try:
+                    bluesky_account = self.user.bluesky_account
+                    create_bluesky_post(
+                        bluesky_account.bluesky_handle,
+                        bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
+                        self.content,
+                        self.id,
+                    )
+                except Exception as e:
+                    print(f"Error creating Bluesky post: {e}")
 
         # Handle tags
         handle_tags(self, self.content)
@@ -420,6 +436,21 @@ class Pin(models.Model):
                 activity_type="pin",
                 content_object=self,
             )
+
+            if self.user.bluesky_account:
+                try:
+                    bluesky_account = self.user.bluesky_account
+                    create_bluesky_post(
+                        bluesky_account.bluesky_handle,
+                        bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
+                        f'I pinned "{self.title}" ({urlparse(self.url).netloc}) on LʌvDB\n\n'
+                        + self.content
+                        + "\n\n",
+                        self.id,
+                    )
+                except Exception as e:
+                    print(f"Error creating Bluesky post: {e}")
+
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
