@@ -82,6 +82,7 @@ urlpatterns = [
     path("", include("write.urls")),
     path("search/", search_view, name="search"),
     path("notify/", include("notify.urls")),
+    path("api/", include("api.urls")),
     path(
         "sitemap.xml",
         sitemap,

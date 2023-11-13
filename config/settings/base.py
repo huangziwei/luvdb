@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "storages",
     "corsheaders",
     "simple_history",
+    "rest_framework",
     # local apps
     "notify",
     "activity_feed",
@@ -71,6 +72,7 @@ INSTALLED_APPS = [
     "play",
     "watch",
     "discover",
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -283,4 +285,9 @@ MARKDOWNIFY = {
             "codehilite",
         ],
     }
+}
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
 }

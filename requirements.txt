@@ -25,4 +25,4 @@ pycountry
 langcodes[data]
 feedparser
 requests
-beautifulsoup4
+djangorestframework
