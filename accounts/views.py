@@ -38,12 +38,13 @@ from write.models import Comment, LuvList, Pin, Post, Repost, Say, Tag
 
 from .forms import (
     AppPasswordForm,
+    BlueSkyAccountForm,
     CustomUserChangeForm,
     CustomUserCreationForm,
     EmailRequestForm,
     InvitationRequestForm,
 )
-from .models import AppPassword, InvitationCode, InvitationRequest
+from .models import AppPassword, BlueSkyAccount, InvitationCode, InvitationRequest
 
 TIME_RESTRICTION = 30  # time restriction for generating invitation codes
 JOINING_TIME_RESTRICTION = 30
@@ -957,3 +958,35 @@ def delete_app_password(request, username, pk):
     AppPassword.objects.filter(id=pk, user=request.user).delete()
     messages.success(request, "App password deleted successfully.")
     return redirect("accounts:app_password", username=request.user.username)
+
+
+#############
+## BlueSky ##
+#############
+
+
+@login_required
+def manage_bluesky_account(request, username):
+    try:
+        bluesky_account = request.user.bluesky_account
+    except BlueSkyAccount.DoesNotExist:
+        bluesky_account = None
+
+    if request.method == "POST":
+        if "unlink" in request.POST:
+            if bluesky_account:
+                bluesky_account.delete()
+            return redirect("accounts:bluesky", username=request.user.username)
+
+        form = BlueSkyAccountForm(request.POST)
+        if form.is_valid():
+            form.save(request.user)
+            return redirect("accounts:bluesky", username=request.user.username)
+    else:
+        form = BlueSkyAccountForm()
+
+    context = {
+        "bluesky_account": bluesky_account,
+        "form": form,
+    }
+    return render(request, "accounts/bluesky.html", context)

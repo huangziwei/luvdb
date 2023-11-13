@@ -3,7 +3,13 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
-from .models import AppPassword, CustomUser, InvitationCode, InvitationRequest
+from .models import (
+    AppPassword,
+    BlueSkyAccount,
+    CustomUser,
+    InvitationCode,
+    InvitationRequest,
+)
 
 User = get_user_model()
 
@@ -125,3 +131,21 @@ class AppPasswordForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(attrs={"placeholder": "App Password Name"}),
         }
+
+
+class BlueSkyAccountForm(forms.ModelForm):
+    bluesky_app_password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = BlueSkyAccount
+        fields = ["bluesky_handle", "bluesky_app_password"]
+
+    def save(self, user, commit=True):
+        bluesky_account = super().save(commit=False)
+        bluesky_account.user = user
+        bluesky_account.set_bluesky_app_password(
+            self.cleaned_data["bluesky_app_password"]
+        )
+        if commit:
+            bluesky_account.save()
+        return bluesky_account

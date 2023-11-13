@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+            <h2>Manage BlueSky Account</h2>
+
+            <p>
+            <!-- Display Linked BlueSky Account -->
+            {% if bluesky_account %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p class="card-text">@{{ bluesky_account.bluesky_handle }}</p>
+                        <p class="text-muted">
+                          Your activities are currently being synced to your linked BlueSky account, 
+                          with links back to LuvDB. Unlinking will stop this synchronization.
+                        </p>
+                        <form method="post" class="d-inline">
+                            {% csrf_token %}
+                            <input type="submit" name="unlink" value="Unlink BlueSky Account" class="btn btn-danger btn-sm">
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Form to Link BlueSky Account -->
+                <div class="card">
+                    <div class="card-body">
+                        <p class="text-muted">
+                          By linking your BlueSky account, all your activities will be automatically synced 
+                          to BlueSky with links back to your LuvDB activites. 
+                        </p>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-primary">Link Account</button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

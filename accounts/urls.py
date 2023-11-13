@@ -17,6 +17,7 @@ from .views import (
     export_user_data,
     get_followed_usernames,
     get_user_tags,
+    manage_bluesky_account,
     redirect_to_profile,
 )
 
@@ -67,5 +68,10 @@ urlpatterns = [
         "<str:username>/app-passwords/delete/<int:pk>/",
         delete_app_password,
         name="delete_app_password",
+    ),
+    path(
+        "<str:username>/bluesky/",
+        manage_bluesky_account,
+        name="bluesky",
     ),
 ]

@@ -2,6 +2,7 @@ import secrets
 
 import pytz
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -155,3 +156,22 @@ class AppPassword(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.user.username}"
+
+
+class BlueSkyAccount(models.Model):
+    """Model for storing user's BlueSky account details."""
+
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="bluesky_account"
+    )
+    bluesky_handle = models.CharField(max_length=100, unique=True)
+    _bluesky_app_password = models.CharField(max_length=128)  # Store hashed password
+
+    def set_bluesky_app_password(self, raw_password):
+        self._bluesky_app_password = make_password(raw_password)
+
+    def check_bluesky_app_password(self, raw_password):
+        return check_password(raw_password, self._bluesky_app_password)
+
+    def __str__(self):
+        return self.bluesky_handle
