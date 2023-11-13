@@ -210,6 +210,33 @@ class Repost(models.Model):
                 content_object=self,
             )
 
+            if self.content and self.user.bluesky_account:
+                try:
+                    bluesky_account = self.user.bluesky_account
+                    create_bluesky_post(
+                        bluesky_account.bluesky_handle,
+                        bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
+                        self.content
+                        self.id,
+                        "Repost",
+                    )
+                except Exception as e:
+                    print(f"Error creating Bluesky post: {e}")
+
+            if self.content and self.user.mastodon_account:
+                try:
+                    mastodon_account = self.user.mastodon_account
+                    create_mastodon_post(
+                        mastodon_account.mastodon_handle,
+                        mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
+                        self.content,
+                        self.id,
+                        "Repost",
+                    )
+                except Exception as e:
+                    print(f"Error creating Mastodon post: {e}")
+
+
             original_activity_user = (
                 self.original_activity.user
                 if self.original_activity

@@ -72,6 +72,8 @@ def create_bluesky_post(
         content_url = domain + reverse("write:post_detail", args=[content_id])
     elif content_type == "Pin":
         content_url = domain + reverse("write:pin_detail", args=[content_id])
+    elif content_type == "Repost":
+        content_url = domain + reverse("write:repost_detail", args=[content_id])
     elif content_type == "ReadCheckIn":
         content_url = domain + reverse("read:read_checkin_detail", args=[content_id])
     elif content_type == "WatchCheckIn":
