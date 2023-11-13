@@ -140,6 +140,10 @@ class BlueSkyAccountForm(forms.ModelForm):
     class Meta:
         model = BlueSkyAccount
         fields = ["bluesky_handle", "bluesky_app_password"]
+        help_texts = {
+            "bluesky_handle": "e.g. handle.bsky.social or yourwebsite.com",
+            "bluesky_app_password": "You can get this from your BlueSky account settings. Specifically, go to Settings > App Passwords.",
+        }
 
     def save(self, user, commit=True):
         bluesky_account = super().save(commit=False)
@@ -159,7 +163,10 @@ class MastodonAccountForm(forms.ModelForm):
         model = MastodonAccount
         fields = ["mastodon_handle", "mastodon_access_token"]
 
-        help_texts = {"mastodon_handle": "e.g. yourhandle@mastodon.social"}
+        help_texts = {
+            "mastodon_handle": "e.g. yourhandle@mastodon.social",
+            "mastodon_access_token": "You can get this from your Mastodon account settings. Specifically, go to Preferences > Development > New application.",
+        }
 
     def save(self, user, commit=True):
         mastodon_account = super().save(commit=False)
