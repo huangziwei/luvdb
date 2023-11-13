@@ -4,6 +4,7 @@ import re
 import string
 
 import pytz
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -20,6 +21,8 @@ from activity_feed.models import Activity, Block
 from discover.models import Vote
 from notify.models import MutedNotification, Notification
 from notify.views import create_mentions_notifications
+
+from .bluesky_utils import create_bluesky_post
 
 User = get_user_model()
 
@@ -363,6 +366,15 @@ class Say(models.Model):
                 activity_type="say",
                 content_object=self,
             )
+
+            if self.user.bluesky_account:
+                bluesky_account = self.user.bluesky_account
+                create_bluesky_post(
+                    bluesky_account.bluesky_handle,
+                    bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
+                    self.content,
+                    self.id,
+                )
 
         # Handle tags
         handle_tags(self, self.content)

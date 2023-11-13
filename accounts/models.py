@@ -1,6 +1,8 @@
 import secrets
 
 import pytz
+from cryptography.fernet import Fernet
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import AbstractUser
@@ -158,6 +160,16 @@ class AppPassword(models.Model):
         return f"{self.name} - {self.user.username}"
 
 
+def encrypt_password(raw_password):
+    cipher_suite = Fernet(settings.FERNET_KEY)
+    return cipher_suite.encrypt(raw_password.encode()).decode()
+
+
+def decrypt_password(encrypted_password):
+    cipher_suite = Fernet(settings.FERNET_KEY)
+    return cipher_suite.decrypt(encrypted_password.encode()).decode()
+
+
 class BlueSkyAccount(models.Model):
     """Model for storing user's BlueSky account details."""
 
@@ -168,10 +180,10 @@ class BlueSkyAccount(models.Model):
     _bluesky_app_password = models.CharField(max_length=128)  # Store hashed password
 
     def set_bluesky_app_password(self, raw_password):
-        self._bluesky_app_password = make_password(raw_password)
+        self._bluesky_app_password = encrypt_password(raw_password)
 
-    def check_bluesky_app_password(self, raw_password):
-        return check_password(raw_password, self._bluesky_app_password)
+    def get_bluesky_app_password(self):
+        return decrypt_password(self._bluesky_app_password)
 
     def __str__(self):
         return self.bluesky_handle
