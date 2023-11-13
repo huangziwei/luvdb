@@ -8,26 +8,26 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-7 left-column">
-                <div class='mb-2'>
-                    <a href="{% url 'accounts:detail' object.user.username %}">
+            <div class="col-12 col-md-7 left-column h-entry">
+                <div class='mb-2 h-card'>
+                    <a href="{% url 'accounts:detail' object.user.username %}" class="p-author">
                         {{ object.user.display_name | default:object.user.username }}
                     </a> pinned:
                 </div>
                 <div class="mb-2">
                     <div class="bg-light p-3">
-                        <a href="{{ object.url }}">{{ object.title }}</a>
+                        <a href="{{ object.url }}" class="p-name u-bookmark-of">{{ object.title }}</a>
                         <a href="{% url 'write:pins_from_url' object.url|root_url %}"
                            class="link-secondary">({{ pin.url|root_url }})</a>
                     </div>
                     {% if object.content %}
-                        <div class="mt-2">{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify }}</div>
+                        <div class="mt-2 e-content">{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify }}</div>
                     {% endif %}
                 </div>
                 <span class="d-flex mb-2">
                     <div class='me-2 text-secondary'>
                         <a href="{% url 'write:pin_list' object.user.username %}"
-                           class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                           class="text-muted u-url dt-published">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
                     </div>
                     {% if object.user == request.user %}
                         <a href="{% url "write:pin_update" object.pk %}" class="me-2">Edit</a>

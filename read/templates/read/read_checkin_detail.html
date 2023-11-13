@@ -19,9 +19,9 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-7 left-column">
+            <div class="col-12 col-md-7 left-column h-entry">
                 <div class="d-flex align-items-center">
-                    <a href="{% url 'accounts:detail' object.user.username %}" class='me-1'>
+                    <a href="{% url 'accounts:detail' object.user.username %}" class='me-1 h-card p-author'>
                         {{ object.user.display_name | default:object.user.username }}
                     </a>
                     <span class="me-2">checked in</span>
@@ -37,7 +37,7 @@
                         </span>
                     {% endif %}
                 </div>
-                <div class="mt-2">{{ object.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                <div class="mt-2 e-content">{{ object.content | linkify_tags | linkify_mentions | markdownify }}</div>
                 <div class="bg-light p-3 mt-2">
                     <div class="d-flex flex-row bg-light mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -111,7 +111,7 @@
                     <p class='me-2 text-secondary mb-2'>
                         {% if object.content_type.model == 'book' %}
                             <a href="{% url 'read:book_checkin_list' object.content_object.id object.user.username %}"
-                                class="text-muted">
+                                class="text-muted u-url dt-published">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
                                 {% else %}
@@ -120,7 +120,7 @@
                             </a>
                         {% elif object.content_type.model == 'issue' %}
                             <a href="{% url 'read:issue_checkin_list' object.content_object.periodical.id object.content_object.id object.user.username %}"
-                                class="text-muted">
+                                class="text-muted u-url dt-published">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
                                 {% else %}

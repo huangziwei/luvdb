@@ -8,14 +8,14 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-7 left-column">
-                <div>
-                    <a href="{% url 'accounts:detail' repost.user.username %}">
+            <div class="col-12 col-md-7 left-column h-entry">
+                <div class="h-card">
+                    <a href="{% url 'accounts:detail' repost.user.username %}" class="p-author">
                         {{ repost.user.display_name | default:repost.user.username }}
                     </a> reposted:
                 </div>
                 {% if repost.content %}
-                    <div class="mt-2">{{ repost.content | linkify_tags:repost.user | linkify_mentions | markdownify }}</div>
+                    <div class="mt-2 e-content">{{ repost.content | linkify_tags:repost.user | linkify_mentions | markdownify }}</div>
                 {% endif %}
                 <div class="bg-light mt-2 p-3">
                     {% if repost.original_activity %}
@@ -485,7 +485,8 @@
                     {% endif %}
                 </div>
                 <span class="d-flex mt-2">
-                    <p class='mb-2 me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }}</p>
+                    <a href="{% url 'write:say_list' repost.user.username %}"
+                        class='mb-2 me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }}</a>
                     {% if object.user == request.user %}
                         <a href="{% url "write:repost_update" object.pk %}" class="me-2">Edit</a>
                         <a href="{% url "write:repost_delete" object.pk %}" class="me-2">Delete</a>

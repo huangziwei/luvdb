@@ -38,8 +38,18 @@
             <div class="col-12 d-block d-md-none mb-1">
                 <div class="bio p-3 bg-light">
                     <div>
-                        {% if object.display_name %}<div class="mb-0 h-card fs-4" href="https://luvdb.com{% url 'accounts:detail' object.username %}">{{ object.display_name }}</div>{% endif %}
-                        <div class="h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}">@{{ object.username }}</div>
+                        {% if object.display_name %}
+                            <a class="mb-0 fs-4 h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}" rel="me">
+                                {{ object.display_name }}
+                            </a>
+                            <span>
+                                @{{ object.username }}
+                            </span>
+                        {% else %}
+                            <a class="h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}" rel="me">
+                                @{{ object.username }}
+                            </a>
+                        {% endif %}
                     </div>
                     <p>
                         <span class="text-muted">Since {{ object.date_joined|date:"Y.m.d" }}</span>
