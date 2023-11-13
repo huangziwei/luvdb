@@ -177,7 +177,7 @@ class BlueSkyAccount(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="bluesky_account"
     )
     bluesky_handle = models.CharField(max_length=100, unique=True)
-    _bluesky_app_password = models.CharField(max_length=128)  # Store hashed password
+    _bluesky_app_password = models.CharField(max_length=128)
 
     def set_bluesky_app_password(self, raw_password):
         self._bluesky_app_password = encrypt_password(raw_password)

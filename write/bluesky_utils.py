@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timezone
 
 import requests
@@ -13,6 +14,43 @@ def bsky_login_session(handle: str, password: str) -> dict:
     )
     resp.raise_for_status()
     return resp.json()
+
+
+def parse_urls(text: str):
+    spans = []
+    # partial/naive URL regex based on: https://stackoverflow.com/a/3809435
+    # tweaked to disallow some training punctuation
+    url_regex = rb"[$|\W](https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*[-a-zA-Z0-9@%_\+~#//=])?)"
+    text_bytes = text.encode("UTF-8")
+    for m in re.finditer(url_regex, text_bytes):
+        spans.append(
+            {
+                "start": m.start(1),
+                "end": m.end(1),
+                "url": m.group(1).decode("UTF-8"),
+            }
+        )
+    return spans
+
+
+def create_url_facets(text: str):
+    url_facets = []
+    for url_info in parse_urls(text):
+        url_facets.append(
+            {
+                "index": {
+                    "byteStart": url_info["start"],
+                    "byteEnd": url_info["end"],
+                },
+                "features": [
+                    {
+                        "$type": "app.bsky.richtext.facet#link",
+                        "uri": url_info["url"],
+                    }
+                ],
+            }
+        )
+    return url_facets
 
 
 def create_bluesky_post(handle: str, password: str, text: str, say_id: int):
@@ -37,6 +75,10 @@ def create_bluesky_post(handle: str, password: str, text: str, say_id: int):
         "text": post_content,
         "createdAt": now,
     }
+    # Parse URLs and create facets
+    url_facets = create_url_facets(post_content)
+    if url_facets:
+        post_data["facets"] = url_facets
 
     # Send the post request to BlueSky
     response = requests.post(
