@@ -12,6 +12,8 @@ from .views import (
     PersonalActivityFeedView,
     RequestInvitationView,
     SignUpView,
+    app_password_list,
+    delete_app_password,
     export_user_data,
     get_followed_usernames,
     get_user_tags,
@@ -60,4 +62,10 @@ urlpatterns = [
         name="following_list",
     ),
     path("<str:username>/update/", view=AccountUpdateView.as_view(), name="update"),
+    path("<str:username>/app-passwords/", app_password_list, name="app_password"),
+    path(
+        "<str:username>/app-passwords/delete/<int:pk>/",
+        delete_app_password,
+        name="delete_app_password",
+    ),
 ]

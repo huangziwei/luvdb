@@ -290,4 +290,7 @@ MARKDOWNIFY = {
 
 REST_FRAMEWORK = {
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "api.v1.authentication.AppPasswordAuthentication"
+    ],
 }

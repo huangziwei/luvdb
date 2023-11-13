@@ -1,3 +1,5 @@
+import secrets
+
 import pytz
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AbstractUser
@@ -136,3 +138,20 @@ def get_followed_usernames(request):
         )
     )
     return JsonResponse({"usernames": usernames})
+
+
+class AppPassword(models.Model):
+    user = models.ForeignKey(
+        "accounts.CustomUser", on_delete=models.CASCADE, related_name="app_passwords"
+    )
+    name = models.CharField(max_length=100)
+    token = models.CharField(max_length=100, unique=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.token:
+            self.token = secrets.token_urlsafe(20)  # Generates a secure token
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} - {self.user.username}"

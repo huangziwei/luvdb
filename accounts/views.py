@@ -37,12 +37,13 @@ from watch.models import Movie, Series, WatchCheckIn
 from write.models import Comment, LuvList, Pin, Post, Repost, Say, Tag
 
 from .forms import (
+    AppPasswordForm,
     CustomUserChangeForm,
     CustomUserCreationForm,
     EmailRequestForm,
     InvitationRequestForm,
 )
-from .models import InvitationCode, InvitationRequest
+from .models import AppPassword, InvitationCode, InvitationRequest
 
 TIME_RESTRICTION = 30  # time restriction for generating invitation codes
 JOINING_TIME_RESTRICTION = 30
@@ -925,3 +926,34 @@ def get_user_tags(request):
                 unique_tags.append(tag["name"])
 
     return JsonResponse({"tags": unique_tags})
+
+
+##################
+## App Password ##
+##################
+
+
+@login_required
+def app_password_list(request, username):
+    if request.method == "POST":
+        form = AppPasswordForm(request.POST)
+        if form.is_valid():
+            app_password = form.save(commit=False)
+            app_password.user = request.user
+            app_password.save()
+            messages.success(request, "App password created successfully.")
+            return redirect("accounts:app_password", username=request.user.username)
+    else:
+        form = AppPasswordForm()
+
+    passwords = AppPassword.objects.filter(user=request.user)
+    return render(
+        request, "accounts/app_password.html", {"passwords": passwords, "form": form}
+    )
+
+
+@login_required
+def delete_app_password(request, username, pk):
+    AppPassword.objects.filter(id=pk, user=request.user).delete()
+    messages.success(request, "App password deleted successfully.")
+    return redirect("accounts:app_password", username=request.user.username)
