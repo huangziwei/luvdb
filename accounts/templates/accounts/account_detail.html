@@ -98,6 +98,17 @@
                             </div>
                         </div>
                     {% endif %}
+                    {% if messages %}
+                        <div class="messages rounded p-3 mt-3 bg-light" style="border: 1px solid var(--bs-gray-300);">
+                            {% for message in messages %}
+                                {% if 'invitation' in message.tags %}
+                                    <p class="mb-0 {% if message.tags %}{{ message.tags }}{% endif %}">
+                                        {{ message|safe }}
+                                    </p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                     {% if object != request.user %}
                         <div class='d-flex'>
                             {% if not request.user|is_blocking:object %}
@@ -1257,9 +1268,11 @@
                         {% if messages %}
                             <div class="messages rounded p-3 mt-3 bg-light" style="border: 1px solid var(--bs-gray-300);">
                                 {% for message in messages %}
-                                    <p class="mb-0 {% if message.tags %}{{ message.tags }}{% endif %}">
-                                        {{ message|safe }}
-                                    </p>
+                                    {% if 'invitation' in message.tags %}
+                                        <p class="mb-0 {% if message.tags %}{{ message.tags }}{% endif %}">
+                                            {{ message|safe }}
+                                        </p>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
                         {% endif %}

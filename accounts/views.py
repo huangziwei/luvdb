@@ -281,6 +281,7 @@ class GenerateInvitationCodeView(View):
                 "You can start inviting friends {} days after you join.".format(
                     JOINING_TIME_RESTRICTION
                 ),
+                extra_tags="invitation",
             )
             return redirect("accounts:profile")
 
@@ -296,7 +297,9 @@ class GenerateInvitationCodeView(View):
         else:
             # User has already generated a code this month
             messages.error(
-                request, "You can only generate one invitation code per month."
+                request,
+                "You can only generate one invitation code per month.",
+                extra_tags="invitation",
             )
             return redirect("accounts:profile")
         messages.success(
@@ -304,9 +307,18 @@ class GenerateInvitationCodeView(View):
             mark_safe(
                 f'Send this invitation code to your friend: <strong style="color:gray;">{code.code}</strong>.'
             ),
+            extra_tags="invitation",
         )
-        messages.success(request, "Every invitation code can only be used once. ")
-        messages.success(request, "You can only invite one friend every month. ")
+        messages.success(
+            request,
+            "Every invitation code can only be used once. ",
+            extra_tags="invitation",
+        )
+        messages.success(
+            request,
+            "You can only invite one friend every month. ",
+            extra_tags="invitation",
+        )
         return redirect("accounts:profile")
 
 
