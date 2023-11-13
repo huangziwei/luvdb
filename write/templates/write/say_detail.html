@@ -2,6 +2,7 @@
 {% load static %}
 {% load markdownify %}
 {% load linkify %}
+{% load account_tags %}
 {% load crispy_forms_tags %}
 {% block title %}Say{% endblock %}
 {% block content %}
@@ -20,7 +21,7 @@
                     <span class="d-flex mt-2">
                         <p class='me-2 text-secondary mb-2'>
                             <a href="{% url "write:say_list" object.user.username %}"
-                               class="text-muted u-url">
+                               class="text-muted u-url dt-published">
                                {{ object.timestamp|date:"Y.m.d H:i" }}
                             </a>
                         </p>

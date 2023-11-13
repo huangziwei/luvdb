@@ -2,6 +2,7 @@
 {% load url_filters %}
 {% load markdownify %}
 {% load linkify %}
+{% load account_tags %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
@@ -58,6 +59,7 @@
                     </div>
                 {% endif %}
             </div>
+            
             {% if feed_type == "public" %}
                 <div class="col-12 col-md-5 right-column">
 
@@ -101,271 +103,378 @@
                                                 </li>
                                             {% endfor %}
                                         </ul>
-                            </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if movies_released_today or series_released_today %}
+                                <div class="card mb-3">
+                                    <div class="card-header"
+                                        id="moviesSeriesHeading"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#moviesSeriesCollapse"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls="moviesSeriesCollapse">
+                                        <b>Movies / Series</b>
+                                    </div>
+                                    <div id="moviesSeriesCollapse"
+                                        class="collapse"
+                                        aria-labelledby="moviesSeriesHeading">
+                                        <ul class="list-group list-group-flush">
+                                            {% for movie in movies_released_today %}
+                                                <li class="list-group-item">
+                                                    <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
+                                                    {# djlint:off #}
+                                                    ({{ movie.earliest_release|slice:":4" }}{% if movie.since == 0 %}, today{% else %}, {{ movie.since }} years ago{% endif %})
+                                                    {# djlint:on #}
+                                                </li>
+                                            {% endfor %}
+                                            {% for serie in series_released_today %}
+                                                <li class="list-group-item">
+                                                    <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a>
+                                                    {# djlint:off #}
+                                                    ({{ serie.release_date|slice:":4" }}{% if serie.since == 0 %}, today{% else %}, {{ serie.since }} years ago{% endif %})
+                                                    {# djlint:on #}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if music_released_today %}
+                                <div class="card mb-3">
+                                    <div class="card-header"
+                                        id="musicHeading"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#musicCollapse"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls="musicCollapse">
+                                        <b>Music</b>
+                                    </div>
+                                    <div id="musicCollapse" class="collapse" aria-labelledby="musicHeading">
+                                        <ul class="list-group list-group-flush">
+                                            {% for music in music_released_today %}
+                                                <li class="list-group-item">
+                                                    <a href="{% url 'listen:release_detail' music.id %}">{{ music.title }}</a>
+                                                    {# djlint:off #}
+                                                    ({{ music.release_date|slice:":4" }}{% if music.since == 0 %}, today{% else %}, {{ music.since }} years ago{% endif %})
+                                                    {# djlint:on #}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if games_released_today %}
+                                <div class="card mb-3">
+                                    <div class="card-header"
+                                        id="gamesHeading"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#gamesCollapse"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls="gamesCollapse">
+                                        <b>Games</b>
+                                    </div>
+                                    <div id="gamesCollapse" class="collapse" aria-labelledby="gamesHeading">
+                                        <ul class="list-group list-group-flush">
+                                            {% for game in games_released_today %}
+                                                <li class="list-group-item">
+                                                    <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
+                                                    {# djlint:off #}
+                                                    ({{ game.earliest_release|slice:":4" }}{% if game.since == 0 %}, today{% else %}, {{ game.since }} years ago{% endif %})
+                                                    {# djlint:on #}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if born_today or died_today or formed_today or dissolved_today%}
+                                <div class="card mb-3">
+                                    <div class="card-header"
+                                        id="personsHeading"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#personsCollapse"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls="personsCollapse">
+                                        <b>Creators</b>
+                                    </div>
+                                    <div id="personsCollapse"
+                                        class="collapse"
+                                        aria-labelledby="personsHeading">
+                                        <ul class="list-group list-group-flush">
+                                            {% if born_today %}
+                                                <li class="list-group-item">
+                                                    <b>Born</b>
+                                                </li>
+                                                {% for creator in born_today %}
+                                                    <li class="list-group-item">
+                                                        {# djlint:off #}
+                                                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                                        ({{ creator.birth_date|slice:":4" }}{% if creator.death_date %}-{{ creator.death_date|slice:":4" }}{% else %} - {% endif %}, {{ creator.since }} years ago)
+                                                        {# djlint:on #}
+                                                    </li>
+                                                {% endfor %}
+                                            {% endif %}
+                                            {% if formed_today %}
+                                                <li class="list-group-item">
+                                                    <b>Formed</b>
+                                                </li>
+                                                {% for creator in formed_today %}
+                                                    <li class="list-group-item">
+                                                        {# djlint:off #}
+                                                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                                        ({{ creator.birth_date|slice:":4" }}{% if creator.death_date %}-{{ creator.death_date|slice:":4" }}{% else %} - {% endif %}, {{ creator.since }} years ago)
+                                                        {# djlint:on #}
+                                                    </li>
+                                                {% endfor %}
+                                            {% endif %}
+                                            {% if died_today %}
+                                                <li class="list-group-item">
+                                                    <b>Died</b>
+                                                </li>
+                                                {% for creator in died_today %}
+                                                    <li class="list-group-item">
+                                                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                                        {# djlint:off #}
+                                                        ({% if creator.birth_date %}{{ creator.birth_date|slice:":4" }}{% else %}?{% endif %}-{{ creator.death_date|slice:":4" }}, {{ creator.since }} years ago)
+                                                        {# djlint:on #}
+                                                    </li>
+                                                {% endfor %}
+                                            {% endif %}
+                                            {% if dissolved_today %}
+                                                <li class="list-group-item">
+                                                    <b>Dissolved</b>
+                                                </li>
+                                                {% for creator in dissolved_today %}
+                                                    <li class="list-group-item">
+                                                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                                        {# djlint:off #}
+                                                        ({% if creator.birth_date %}{{ creator.birth_date|slice:":4" }}{% else %}?{% endif %}-{{ creator.death_date|slice:":4" }}, {{ creator.since }} years ago)
+                                                        {# djlint:on #}
+                                                    </li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% elif feed_type == "personal" %}
+                <div class="col-12 col-md-4 right-column">
+                    <div class="bio p-3 bg-light">
+                        <div>
+                            {% if feed_user.display_name %}
+                                <a class="mb-0 fs-4 h-card" href="https://luvdb.com{% url 'accounts:detail' feed_user.username %}" rel="me">
+                                    {{ feed_user.display_name }}
+                                </a>
+                                <span>
+                                    @{{ feed_user.username }}
+                                </span>
+                            {% else %}
+                                <a class="h-card" href="https://luvdb.com{% url 'accounts:detail' feed_user.username %}" rel="me">
+                                    @{{ feed_user.username }}
+                                </a>
+                            {% endif %}
                         </div>
-                    {% endif %}
-                    {% if movies_released_today or series_released_today %}
-                        <div class="card mb-3">
-                            <div class="card-header"
-                                 id="moviesSeriesHeading"
-                                 data-bs-toggle="collapse"
-                                 data-bs-target="#moviesSeriesCollapse"
-                                 role="button"
-                                 aria-expanded="false"
-                                 aria-controls="moviesSeriesCollapse">
-                                <b>Movies / Series</b>
-                            </div>
-                            <div id="moviesSeriesCollapse"
-                                 class="collapse"
-                                 aria-labelledby="moviesSeriesHeading">
-                                <ul class="list-group list-group-flush">
-                                    {% for movie in movies_released_today %}
-                                        <li class="list-group-item">
-                                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
-                                            {# djlint:off #}
-                                            ({{ movie.earliest_release|slice:":4" }}{% if movie.since == 0 %}, today{% else %}, {{ movie.since }} years ago{% endif %})
-                                            {# djlint:on #}
-                                        </li>
-                                    {% endfor %}
-                                    {% for serie in series_released_today %}
-                                        <li class="list-group-item">
-                                            <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a>
-                                            {# djlint:off #}
-                                            ({{ serie.release_date|slice:":4" }}{% if serie.since == 0 %}, today{% else %}, {{ serie.since }} years ago{% endif %})
-                                            {# djlint:on #}
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if music_released_today %}
-                        <div class="card mb-3">
-                            <div class="card-header"
-                                 id="musicHeading"
-                                 data-bs-toggle="collapse"
-                                 data-bs-target="#musicCollapse"
-                                 role="button"
-                                 aria-expanded="false"
-                                 aria-controls="musicCollapse">
-                                <b>Music</b>
-                            </div>
-                            <div id="musicCollapse" class="collapse" aria-labelledby="musicHeading">
-                                <ul class="list-group list-group-flush">
-                                    {% for music in music_released_today %}
-                                        <li class="list-group-item">
-                                            <a href="{% url 'listen:release_detail' music.id %}">{{ music.title }}</a>
-                                            {# djlint:off #}
-                                            ({{ music.release_date|slice:":4" }}{% if music.since == 0 %}, today{% else %}, {{ music.since }} years ago{% endif %})
-                                            {# djlint:on #}
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if games_released_today %}
-                        <div class="card mb-3">
-                            <div class="card-header"
-                                 id="gamesHeading"
-                                 data-bs-toggle="collapse"
-                                 data-bs-target="#gamesCollapse"
-                                 role="button"
-                                 aria-expanded="false"
-                                 aria-controls="gamesCollapse">
-                                <b>Games</b>
-                            </div>
-                            <div id="gamesCollapse" class="collapse" aria-labelledby="gamesHeading">
-                                <ul class="list-group list-group-flush">
-                                    {% for game in games_released_today %}
-                                        <li class="list-group-item">
-                                            <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
-                                            {# djlint:off #}
-                                            ({{ game.earliest_release|slice:":4" }}{% if game.since == 0 %}, today{% else %}, {{ game.since }} years ago{% endif %})
-                                            {# djlint:on #}
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if born_today or died_today or formed_today or dissolved_today%}
-                        <div class="card mb-3">
-                            <div class="card-header"
-                                 id="personsHeading"
-                                 data-bs-toggle="collapse"
-                                 data-bs-target="#personsCollapse"
-                                 role="button"
-                                 aria-expanded="false"
-                                 aria-controls="personsCollapse">
-                                <b>Creators</b>
-                            </div>
-                            <div id="personsCollapse"
-                                 class="collapse"
-                                 aria-labelledby="personsHeading">
-                                <ul class="list-group list-group-flush">
-                                    {% if born_today %}
-                                        <li class="list-group-item">
-                                            <b>Born</b>
-                                        </li>
-                                        {% for creator in born_today %}
-                                            <li class="list-group-item">
-                                                {# djlint:off #}
-                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                                ({{ creator.birth_date|slice:":4" }}{% if creator.death_date %}-{{ creator.death_date|slice:":4" }}{% else %} - {% endif %}, {{ creator.since }} years ago)
-                                                {# djlint:on #}
+                        <p>
+                            <span class="text-muted">Since {{ feed_user.date_joined|date:"Y.m.d" }}</span>
+                        </p>
+                        {% if feed_user.bio %}
+                            <div>{{ feed_user.bio | linkify_tags | linkify_mentions | markdownify }}</div>
+                        {% endif %}
+                        {% if feed_user == request.user %}
+                            <div class='d-flex '>
+                                <!-- Action buttons -->
+                                <a class="btn btn-primary btn-sm mt-3 me-1"
+                                href="{% url 'accounts:update' feed_user.username %}"
+                                role="button">Update Profile</a>
+                                <div class="dropdown mt-3">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                            type="button"
+                                            id="actionMenu"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">More</button>
+                                    <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                                        {% if can_generate_code %}
+                                            <li>
+                                                <form method="post" action="{% url 'accounts:generate_invitation_code' %}">
+                                                    {% csrf_token %}
+                                                    <button class="dropdown-item" type="submit">Invite</button>
+                                                </form>
                                             </li>
-                                        {% endfor %}
-                                    {% endif %}
-                                    {% if formed_today %}
-                                        <li class="list-group-item">
-                                            <b>Formed</b>
+                                        {% endif %}
+                                        <li>
+                                            <a class="dropdown-item"
+                                            href="{% url 'accounts:export_user_data' %}"
+                                            role="button">Export User Data</a>
                                         </li>
-                                        {% for creator in formed_today %}
-                                            <li class="list-group-item">
-                                                {# djlint:off #}
-                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                                ({{ creator.birth_date|slice:":4" }}{% if creator.death_date %}-{{ creator.death_date|slice:":4" }}{% else %} - {% endif %}, {{ creator.since }} years ago)
-                                                {# djlint:on #}
-                                            </li>
-                                        {% endfor %}
-                                    {% endif %}
-                                    {% if died_today %}
-                                        <li class="list-group-item">
-                                            <b>Died</b>
-                                        </li>
-                                        {% for creator in died_today %}
-                                            <li class="list-group-item">
-                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                                {# djlint:off #}
-                                                ({% if creator.birth_date %}{{ creator.birth_date|slice:":4" }}{% else %}?{% endif %}-{{ creator.death_date|slice:":4" }}, {{ creator.since }} years ago)
-                                                {# djlint:on #}
-                                            </li>
-                                        {% endfor %}
-                                    {% endif %}
-                                    {% if dissolved_today %}
-                                        <li class="list-group-item">
-                                            <b>Dissolved</b>
-                                        </li>
-                                        {% for creator in dissolved_today %}
-                                            <li class="list-group-item">
-                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                                {# djlint:off #}
-                                                ({% if creator.birth_date %}{{ creator.birth_date|slice:":4" }}{% else %}?{% endif %}-{{ creator.death_date|slice:":4" }}, {{ creator.since }} years ago)
-                                                {# djlint:on #}
-                                            </li>
-                                        {% endfor %}
-                                    {% endif %}
-                                </ul>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    {% endif %}
-                {% endif %}
-            </div>
+                            {% if messages %}
+                                <div class="messages rounded p-3 mt-3 bg-light" style="border: 1px solid var(--bs-gray-300);">
+                                    {% for message in messages %}
+                                        <p class="mb-0 {% if message.tags %}{{ message.tags }}{% endif %}">
+                                            {{ message|safe }}
+                                        </p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        {% if feed_user != request.user %}
+                            <div class='d-flex'>
+                                {% if not request.user|is_blocking:feed_user %}
+                                    {% if request.user|is_following:feed_user %}
+                                        <form method="POST" action="{% url 'activity_feed:unfollow' feed_user.id %}">
+                                            {% csrf_token %}
+                                            <button class="btn btn-primary btn-sm mt-3 me-1" type="submit">Unfollow</button>
+                                        </form>
+                                    {% else %}
+                                        <form method="POST" action="{% url 'activity_feed:follow' feed_user.id %}">
+                                            {% csrf_token %}
+                                            <button class="btn btn-primary btn-sm mt-3 me-1" type="submit">Follow</button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+                                <div class="dropdown mt-3">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                            type="button"
+                                            id="actionMenu"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">More</button>
+                                    <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                                        {% if request.user|is_blocking:feed_user %}
+                                            <li>
+                                                <form method="POST" action="{% url 'activity_feed:unblock' feed_user.id %}">
+                                                    {% csrf_token %}
+                                                    <button class="dropdown-item" type="submit">Unblock</button>
+                                                </form>
+                                            </li>
+                                        {% else %}
+                                            <li>
+                                                <form method="POST" action="{% url 'activity_feed:block' feed_user.id %}">
+                                                    {% csrf_token %}
+                                                    <button class="dropdown-item" type="submit">Block</button>
+                                                </form>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>                
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
-</div>
-</div>
-<script>
-    function smartTruncate(str, maxLength) {
-        if (str.length <= maxLength) return str;
 
-        if (str.includes(" ")) {
-            let truncated = str.substr(0, maxLength);
-            return truncated.substr(0, Math.min(truncated.length, truncated.lastIndexOf(' ')));
-        } else {
-            return str.substr(0, maxLength);
+
+    </div>
+    <script>
+        function smartTruncate(str, maxLength) {
+            if (str.length <= maxLength) return str;
+
+            if (str.includes(" ")) {
+                let truncated = str.substr(0, maxLength);
+                return truncated.substr(0, Math.min(truncated.length, truncated.lastIndexOf(' ')));
+            } else {
+                return str.substr(0, maxLength);
+            }
         }
-    }
 
-    document.addEventListener("DOMContentLoaded", function() {
-        const threshold = 300;
-        const elements = document.querySelectorAll('.truncatable-text');
+        document.addEventListener("DOMContentLoaded", function() {
+            const threshold = 300;
+            const elements = document.querySelectorAll('.truncatable-text');
 
-        elements.forEach(el => {
-            let allTextContent = '';
-            el.childNodes.forEach(child => {
-                allTextContent += child.textContent;
-            });
-
-            if (allTextContent.length > threshold) {
-                let totalChars = 0;
-                let truncatedElement = el.cloneNode(true);
-                let isTruncated = false;
-
-                const iterateNodes = function(node) {
-                    if (node.nodeType === Node.TEXT_NODE) {
-                        totalChars += node.textContent.length;
-
-                        if (totalChars > threshold) {
-                            node.textContent = smartTruncate(node.textContent, threshold - (totalChars - node.textContent.length));
-                            isTruncated = true;
-                            return false;
-                        }
-                    } else if (node.nodeType === Node.ELEMENT_NODE) {
-                        for (let i = 0; i < node.childNodes.length; i++) {
-                            if (!iterateNodes(node.childNodes[i])) {
-                                while (node.childNodes[i + 1]) {
-                                    node.removeChild(node.childNodes[i + 1]);
-                                }
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                };
-
-                iterateNodes(truncatedElement);
-
-                const moreContentDiv = document.createElement('div');
-                moreContentDiv.classList.add('truncated-more-content');
-                moreContentDiv.style.display = 'none';
+            elements.forEach(el => {
+                let allTextContent = '';
                 el.childNodes.forEach(child => {
-                    moreContentDiv.appendChild(child.cloneNode(true));
+                    allTextContent += child.textContent;
                 });
 
-                // Check if truncation actually happened
-                if (isTruncated && truncatedElement.innerHTML.trim() !== moreContentDiv.innerHTML.trim()) {
-                    el.innerHTML = "";
-                    el.appendChild(truncatedElement);
-                    el.appendChild(moreContentDiv);
+                if (allTextContent.length > threshold) {
+                    let totalChars = 0;
+                    let truncatedElement = el.cloneNode(true);
+                    let isTruncated = false;
 
-                    const showMoreLink = document.createElement('a');
-                    showMoreLink.href = "javascript:void(0);";
-                    showMoreLink.textContent = '(Show More)';
-                    showMoreLink.classList.add('show-more-link');
-                    el.appendChild(showMoreLink);
+                    const iterateNodes = function(node) {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            totalChars += node.textContent.length;
 
-                    showMoreLink.addEventListener('click', function() {
-                        if (this.textContent === '(Show More)') {
-                            moreContentDiv.style.display = 'block';
-                            truncatedElement.style.display = 'none';
-                            this.textContent = '(Show Less)';
-                        } else {
-                            moreContentDiv.style.display = 'none';
-                            truncatedElement.style.display = 'block';
-                            this.textContent = '(Show More)';
+                            if (totalChars > threshold) {
+                                node.textContent = smartTruncate(node.textContent, threshold - (totalChars - node.textContent.length));
+                                isTruncated = true;
+                                return false;
+                            }
+                        } else if (node.nodeType === Node.ELEMENT_NODE) {
+                            for (let i = 0; i < node.childNodes.length; i++) {
+                                if (!iterateNodes(node.childNodes[i])) {
+                                    while (node.childNodes[i + 1]) {
+                                        node.removeChild(node.childNodes[i + 1]);
+                                    }
+                                    return false;
+                                }
+                            }
                         }
+                        return true;
+                    };
+
+                    iterateNodes(truncatedElement);
+
+                    const moreContentDiv = document.createElement('div');
+                    moreContentDiv.classList.add('truncated-more-content');
+                    moreContentDiv.style.display = 'none';
+                    el.childNodes.forEach(child => {
+                        moreContentDiv.appendChild(child.cloneNode(true));
                     });
+
+                    // Check if truncation actually happened
+                    if (isTruncated && truncatedElement.innerHTML.trim() !== moreContentDiv.innerHTML.trim()) {
+                        el.innerHTML = "";
+                        el.appendChild(truncatedElement);
+                        el.appendChild(moreContentDiv);
+
+                        const showMoreLink = document.createElement('a');
+                        showMoreLink.href = "javascript:void(0);";
+                        showMoreLink.textContent = '(Show More)';
+                        showMoreLink.classList.add('show-more-link');
+                        el.appendChild(showMoreLink);
+
+                        showMoreLink.addEventListener('click', function() {
+                            if (this.textContent === '(Show More)') {
+                                moreContentDiv.style.display = 'block';
+                                truncatedElement.style.display = 'none';
+                                this.textContent = '(Show Less)';
+                            } else {
+                                moreContentDiv.style.display = 'none';
+                                truncatedElement.style.display = 'block';
+                                this.textContent = '(Show More)';
+                            }
+                        });
+                    }
                 }
-            }
+            });
         });
-    });
-</script>
-<script>
-    // JavaScript code for a simple calendar
-    function goToSelectedDate() {
-        const selectedDate = document.getElementById("datePicker").value;
-        if (selectedDate) {
-            window.location.href = `/calendar/${selectedDate}/`;
+    </script>
+    <script>
+        // JavaScript code for a simple calendar
+        function goToSelectedDate() {
+            const selectedDate = document.getElementById("datePicker").value;
+            if (selectedDate) {
+                window.location.href = `/calendar/${selectedDate}/`;
+            }
         }
-    }
-</script>
-<style>
-    .show-more-link {
-        color: #657786; 
-        cursor: pointer;
-        text-decoration: none;
-    }
-</style>
+    </script>
+    <style>
+        .show-more-link {
+            color: #657786; 
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
 {% endblock %}
