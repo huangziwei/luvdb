@@ -418,7 +418,7 @@ class ListenCheckIn(models.Model):
                     content_object=self,
                 )
 
-                if self.user.bluesky_account:
+                if hasattr(self.user, "bluesky_account"):
                     try:
                         bluesky_account = self.user.bluesky_account
                         create_bluesky_post(
@@ -433,7 +433,7 @@ class ListenCheckIn(models.Model):
                     except Exception as e:
                         print(f"Error creating Bluesky post: {e}")
 
-                if self.user.mastodon_account:
+                if hasattr(self.user, "mastodon_account"):
                     try:
                         mastodon_account = self.user.mastodon_account
                         create_mastodon_post(

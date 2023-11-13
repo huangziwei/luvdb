@@ -210,20 +210,20 @@ class Repost(models.Model):
                 content_object=self,
             )
 
-            if self.content and self.user.bluesky_account:
+            if self.content and hasattr(self.user, 'bluesky_account'):
                 try:
                     bluesky_account = self.user.bluesky_account
                     create_bluesky_post(
                         bluesky_account.bluesky_handle,
                         bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
-                        self.content
+                        self.content,
                         self.id,
                         "Repost",
                     )
                 except Exception as e:
                     print(f"Error creating Bluesky post: {e}")
 
-            if self.content and self.user.mastodon_account:
+            if self.content and hasattr(self.user, 'mastodon_account'):
                 try:
                     mastodon_account = self.user.mastodon_account
                     create_mastodon_post(
@@ -335,7 +335,7 @@ class Post(models.Model):
                 content_object=self,
             )
 
-            if self.user.bluesky_account:
+            if hasattr(self.user, 'bluesky_account'):
                 try:
                     bluesky_account = self.user.bluesky_account
                     create_bluesky_post(
@@ -348,7 +348,7 @@ class Post(models.Model):
                 except Exception as e:
                     print(f"Error creating Bluesky post: {e}")
 
-            if self.user.mastodon_account:
+            if hasattr(self.user, 'mastodon_account'):
                 try:
                     mastodon_account = self.user.mastodon_account
                     create_mastodon_post(
@@ -419,7 +419,7 @@ class Say(models.Model):
                 content_object=self,
             )
 
-            if self.user.bluesky_account:
+            if hasattr(self.user, 'bluesky_account'):
                 try:
                     bluesky_account = self.user.bluesky_account
                     create_bluesky_post(
@@ -432,7 +432,7 @@ class Say(models.Model):
                 except Exception as e:
                     print(f"Error creating Bluesky post: {e}")
 
-            if self.user.mastodon_account:
+            if hasattr(self.user, 'mastodon_account'):
                 try:
                     mastodon_account = self.user.mastodon_account
                     create_mastodon_post(
@@ -490,7 +490,7 @@ class Pin(models.Model):
                 content_object=self,
             )
 
-            if self.user.bluesky_account:
+            if hasattr(self.user, 'bluesky_account'):
                 try:
                     bluesky_account = self.user.bluesky_account
                     create_bluesky_post(
@@ -505,7 +505,7 @@ class Pin(models.Model):
                 except Exception as e:
                     print(f"Error creating Bluesky post: {e}")
 
-            if self.user.mastodon_account:
+            if hasattr(self.user, 'mastodon_account'):
                 try:
                     mastodon_account = self.user.mastodon_account
                     create_mastodon_post(
