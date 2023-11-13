@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 import requests
 from django.conf import settings
 from django.urls import reverse
+from mastodon import Mastodon
 
 
 def bsky_login_session(handle: str, password: str) -> dict:

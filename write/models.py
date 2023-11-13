@@ -24,6 +24,7 @@ from notify.models import MutedNotification, Notification
 from notify.views import create_mentions_notifications
 
 from .bluesky_utils import create_bluesky_post
+from .mastodon_utils import create_mastodon_post
 
 User = get_user_model()
 
@@ -319,6 +320,19 @@ class Post(models.Model):
                     )
                 except Exception as e:
                     print(f"Error creating Bluesky post: {e}")
+
+            if self.user.mastodon_account:
+                try:
+                    mastodon_account = self.user.mastodon_account
+                    create_mastodon_post(
+                        mastodon_account.mastodon_handle,
+                        mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
+                        f'I posted "{self.title}" on LʌvDB\n\n' + self.content + "\n\n",
+                        self.id,
+                        "Post",
+                    )
+                except Exception as e:
+                    print(f"Error creating Mastodon post: {e}")
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
@@ -391,6 +405,19 @@ class Say(models.Model):
                 except Exception as e:
                     print(f"Error creating Bluesky post: {e}")
 
+            if self.user.mastodon_account:
+                try:
+                    mastodon_account = self.user.mastodon_account
+                    create_mastodon_post(
+                        mastodon_account.mastodon_handle,
+                        mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
+                        self.content,
+                        self.id,
+                        "Say",
+                    )
+                except Exception as e:
+                    print(f"Error creating Mastodon post: {e}")
+
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
@@ -450,6 +477,21 @@ class Pin(models.Model):
                     )
                 except Exception as e:
                     print(f"Error creating Bluesky post: {e}")
+
+            if self.user.mastodon_account:
+                try:
+                    mastodon_account = self.user.mastodon_account
+                    create_mastodon_post(
+                        mastodon_account.mastodon_handle,
+                        mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
+                        f'I pinned "{self.title}" ({urlparse(self.url).netloc}) on LʌvDB\n\n'
+                        + self.content
+                        + "\n\n",
+                        self.id,
+                        "Pin",
+                    )
+                except Exception as e:
+                    print(f"Error creating Mastodon post: {e}")
 
         # Handle tags
         handle_tags(self, self.content)

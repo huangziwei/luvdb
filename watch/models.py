@@ -17,6 +17,7 @@ from activity_feed.models import Activity
 from entity.models import Company, Creator, LanguageField, Role
 from read.models import Work as LitWork
 from write.bluesky_utils import create_bluesky_post
+from write.mastodon_utils import create_mastodon_post
 from write.models import create_mentions_notifications, handle_tags
 
 
@@ -470,6 +471,21 @@ class WatchCheckIn(models.Model):
                         )
                     except Exception as e:
                         print(f"Error creating Bluesky post: {e}")
+
+                if self.user.mastodon_account:
+                    try:
+                        mastodon_account = self.user.mastodon_account
+                        create_mastodon_post(
+                            mastodon_account.mastodon_handle,
+                            mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
+                            f'I checked in to "{self.content_object.title}" on LʌvDB\n\n'
+                            + self.content
+                            + "\n\n",
+                            self.id,
+                            "WatchCheckIn",
+                        )
+                    except Exception as e:
+                        print(f"Error creating Mastodon post: {e}")
 
         elif activity is not None:
             # Optionally, remove the Activity if share_to_feed is False

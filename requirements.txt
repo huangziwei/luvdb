@@ -27,3 +27,4 @@ feedparser
 requests
 djangorestframework
 cryptography
+Mastodon.py

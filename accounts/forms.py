@@ -9,6 +9,7 @@ from .models import (
     CustomUser,
     InvitationCode,
     InvitationRequest,
+    MastodonAccount,
 )
 
 User = get_user_model()
@@ -149,3 +150,23 @@ class BlueSkyAccountForm(forms.ModelForm):
         if commit:
             bluesky_account.save()
         return bluesky_account
+
+
+class MastodonAccountForm(forms.ModelForm):
+    mastodon_access_token = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = MastodonAccount
+        fields = ["mastodon_handle", "mastodon_access_token"]
+
+        help_texts = {"mastodon_handle": "e.g. yourhandle@mastodon.social"}
+
+    def save(self, user, commit=True):
+        mastodon_account = super().save(commit=False)
+        mastodon_account.user = user
+        mastodon_account.set_mastodon_access_token(
+            self.cleaned_data["mastodon_access_token"]
+        )
+        if commit:
+            mastodon_account.save()
+        return mastodon_account

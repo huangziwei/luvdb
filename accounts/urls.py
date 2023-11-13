@@ -18,6 +18,7 @@ from .views import (
     get_followed_usernames,
     get_user_tags,
     manage_bluesky_account,
+    manage_mastodon_account,
     redirect_to_profile,
 )
 
@@ -73,5 +74,10 @@ urlpatterns = [
         "<str:username>/bluesky/",
         manage_bluesky_account,
         name="bluesky",
+    ),
+    path(
+        "<str:username>/mastodon/",
+        manage_mastodon_account,
+        name="mastodon",
     ),
 ]

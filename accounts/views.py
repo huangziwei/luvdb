@@ -43,8 +43,15 @@ from .forms import (
     CustomUserCreationForm,
     EmailRequestForm,
     InvitationRequestForm,
+    MastodonAccountForm,
 )
-from .models import AppPassword, BlueSkyAccount, InvitationCode, InvitationRequest
+from .models import (
+    AppPassword,
+    BlueSkyAccount,
+    InvitationCode,
+    InvitationRequest,
+    MastodonAccount,
+)
 
 TIME_RESTRICTION = 30  # time restriction for generating invitation codes
 JOINING_TIME_RESTRICTION = 30
@@ -1000,3 +1007,35 @@ def manage_bluesky_account(request, username):
         "form": form,
     }
     return render(request, "accounts/bluesky.html", context)
+
+
+##############
+## Mastodon ##
+##############
+
+
+@login_required
+def manage_mastodon_account(request, username):
+    try:
+        mastodon_account = request.user.mastodon_account
+    except MastodonAccount.DoesNotExist:
+        mastodon_account = None
+
+    if request.method == "POST":
+        if "unlink" in request.POST:
+            if mastodon_account:
+                mastodon_account.delete()
+            return redirect("accounts:mastodon", username=request.user.username)
+
+        form = MastodonAccountForm(request.POST)
+        if form.is_valid():
+            form.save(request.user)
+            return redirect("accounts:mastodon", username=request.user.username)
+    else:
+        form = MastodonAccountForm()
+
+    context = {
+        "mastodon_account": mastodon_account,
+        "form": form,
+    }
+    return render(request, "accounts/mastodon.html", context)

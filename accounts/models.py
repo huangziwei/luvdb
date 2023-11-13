@@ -187,3 +187,26 @@ class BlueSkyAccount(models.Model):
 
     def __str__(self):
         return self.bluesky_handle
+
+
+class MastodonAccount(models.Model):
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="mastodon_account"
+    )
+    mastodon_handle = models.CharField(max_length=100, unique=True)
+    _mastodon_access_token = models.CharField(max_length=255)
+
+    # Method to set the encrypted access token
+    def set_mastodon_access_token(self, raw_token):
+        self._mastodon_access_token = encrypt_password(
+            raw_token
+        )  # Assuming you have an encryption method
+
+    # Method to get the decrypted access token
+    def get_mastodon_access_token(self):
+        return decrypt_password(
+            self._mastodon_access_token
+        )  # Assuming you have a decryption method
+
+    def __str__(self):
+        return self.mastodon_handle
