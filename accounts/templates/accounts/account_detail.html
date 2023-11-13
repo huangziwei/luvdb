@@ -94,6 +94,11 @@
                                            href="{% url 'accounts:bluesky' object.username %}"
                                            role="button">Link BlueSky</a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="{% url 'accounts:mastodon' object.username %}"
+                                           role="button">Link Mastodon</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -1261,6 +1266,11 @@
                                         <a class="dropdown-item"
                                            href="{% url 'accounts:bluesky' object.username %}"
                                            role="button">Link BlueSky</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="{% url 'accounts:mastodon' object.username %}"
+                                           role="button">Link Mastodon</a>
                                     </li>
                                 </ul>
                             </div>
