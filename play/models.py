@@ -15,9 +15,9 @@ from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
 from entity.models import Company, Creator, Entity, Role
-from write.bluesky_utils import create_bluesky_post
-from write.mastodon_utils import create_mastodon_post
 from write.models import create_mentions_notifications, handle_tags
+from write.utils_bluesky import create_bluesky_post
+from write.utils_mastodon import create_mastodon_post
 
 
 # helpers

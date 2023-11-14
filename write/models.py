@@ -23,8 +23,8 @@ from discover.models import Vote
 from notify.models import MutedNotification, Notification
 from notify.views import create_mentions_notifications
 
-from .bluesky_utils import create_bluesky_post
-from .mastodon_utils import create_mastodon_post
+from .utils_bluesky import create_bluesky_post
+from .utils_mastodon import create_mastodon_post
 
 User = get_user_model()
 
@@ -235,7 +235,6 @@ class Repost(models.Model):
                     )
                 except Exception as e:
                     print(f"Error creating Mastodon post: {e}")
-
 
             original_activity_user = (
                 self.original_activity.user
