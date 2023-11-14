@@ -215,6 +215,7 @@ class Repost(models.Model):
                     bluesky_account = self.user.bluesky_account
                     create_bluesky_post(
                         bluesky_account.bluesky_handle,
+                        bluesky_account.bluesky_pds_url,
                         bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
                         self.content,
                         self.id,
@@ -339,6 +340,7 @@ class Post(models.Model):
                     bluesky_account = self.user.bluesky_account
                     create_bluesky_post(
                         bluesky_account.bluesky_handle,
+                        bluesky_account.bluesky_pds_url,
                         bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
                         f'I posted "{self.title}" on LʌvDB\n\n' + self.content + "\n\n",
                         self.id,
@@ -423,6 +425,7 @@ class Say(models.Model):
                     bluesky_account = self.user.bluesky_account
                     create_bluesky_post(
                         bluesky_account.bluesky_handle,
+                        bluesky_account.bluesky_pds_url,
                         bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
                         self.content,
                         self.id,
@@ -494,6 +497,7 @@ class Pin(models.Model):
                     bluesky_account = self.user.bluesky_account
                     create_bluesky_post(
                         bluesky_account.bluesky_handle,
+                        bluesky_account.bluesky_pds_url,
                         bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
                         f'I pinned "{self.title}" ({urlparse(self.url).netloc}) on LʌvDB\n\n'
                         + self.content

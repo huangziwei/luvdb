@@ -138,13 +138,19 @@ class BlueSkyAccountForm(forms.ModelForm):
     bluesky_app_password = forms.CharField(
         widget=forms.PasswordInput,
         help_text="You can get this from your BlueSky account settings. Specifically, go to Settings > App Passwords.",
+        label="App Password",
     )
 
     class Meta:
         model = BlueSkyAccount
-        fields = ["bluesky_handle", "bluesky_app_password"]
+        fields = ["bluesky_handle", "bluesky_pds_url", "bluesky_app_password"]
         help_texts = {
             "bluesky_handle": "e.g. handle.bsky.social or yourwebsite.com",
+            "bluesky_pds_url": "URL of your Personal Data Server (PDS), e.g. https://bsky.social",
+        }
+        labels = {
+            "bluesky_handle": "Handle",
+            "bluesky_pds_url": "PDS URL",
         }
 
     def save(self, user, commit=True):
@@ -161,13 +167,16 @@ class BlueSkyAccountForm(forms.ModelForm):
 class MastodonAccountForm(forms.ModelForm):
     mastodon_access_token = forms.CharField(
         widget=forms.PasswordInput,
+        label="Access Token",
         help_text="You can get this from your Mastodon account settings. Specifically, go to Preferences > Development > New application.",
     )
 
     class Meta:
         model = MastodonAccount
         fields = ["mastodon_handle", "mastodon_access_token"]
-
+        labels = {
+            "mastodon_handle": "Handle",
+        }
         help_texts = {
             "mastodon_handle": "e.g. yourhandle@mastodon.social",
         }

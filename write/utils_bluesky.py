@@ -7,8 +7,7 @@ from django.urls import reverse
 from mastodon import Mastodon
 
 
-def bsky_login_session(handle: str, password: str) -> dict:
-    pds_url = "https://bsky.social"
+def bsky_login_session(handle: str, pds_url: str, password: str) -> dict:
     resp = requests.post(
         pds_url + "/xrpc/com.atproto.server.createSession",
         json={"identifier": handle, "password": password},
@@ -54,10 +53,14 @@ def create_url_facets(text: str):
 
 
 def create_bluesky_post(
-    handle: str, password: str, text: str, content_id: int, content_type: str
+    handle: str,
+    pds_url: str,
+    password: str,
+    text: str,
+    content_id: int,
+    content_type: str,
 ):
-    session = bsky_login_session(handle, password)
-    pds_url = "https://bsky.social"
+    session = bsky_login_session(handle, pds_url, password)
     access_token = session.get("accessJwt")
     user_did = session.get("did")
 

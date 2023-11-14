@@ -177,6 +177,7 @@ class BlueSkyAccount(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="bluesky_account"
     )
     bluesky_handle = models.CharField(max_length=100, unique=True)
+    bluesky_pds_url = models.URLField(max_length=255)
     _bluesky_app_password = models.CharField(max_length=128)
 
     def set_bluesky_app_password(self, raw_password):

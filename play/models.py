@@ -380,6 +380,7 @@ class GameCheckIn(models.Model):
                         bluesky_account = self.user.bluesky_account
                         create_bluesky_post(
                             bluesky_account.bluesky_handle,
+                            bluesky_account.bluesky_pds_url,
                             bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
                             f'I checked in to "{self.game.title}" on LʌvDB\n\n'
                             + self.content
