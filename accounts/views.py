@@ -1,7 +1,10 @@
+import json
 import re
 import time
 from datetime import timedelta
 
+import requests
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -9,12 +12,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.db.models import Count, Min, OuterRef, Q, Subquery
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -48,6 +52,7 @@ from .forms import (
 from .models import (
     AppPassword,
     BlueSkyAccount,
+    FediverseFollower,
     InvitationCode,
     InvitationRequest,
     MastodonAccount,
@@ -1039,3 +1044,110 @@ def manage_mastodon_account(request, username):
         "form": form,
     }
     return render(request, "accounts/mastodon.html", context)
+
+
+#############################
+## ActivityPub / WebFinger ##
+#############################
+
+
+def webfinger(request):
+    # Extract the requested resource (username)
+    resource = request.GET.get("resource")
+    username = resource.split(":")[1].split("@")[0]
+
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User not found")
+
+    # Construct the response
+    response = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "subject": resource,
+        "links": [
+            {
+                "rel": "self",
+                "type": "application/activity+json",
+                "href": settings.ROOT_URL + f"/u/{username}/actor/",
+            }
+        ],
+    }
+
+    return JsonResponse(response)
+
+
+def ap_actor(request, username):
+    user = get_object_or_404(User, username=username)
+    root_url = settings.ROOT_URL
+    # Construct the response
+    response = {
+        "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+        ],
+        "id": root_url + f"/u/{user.username}/actor/",
+        "type": "Person",
+        "name": f"{user.display_name}" if user.display_name else f"{user.username}",
+        "preferredUsername": f"{user.username}",
+        "inbox": root_url + f"/u/{user.username}/inbox/",
+        "outbox": root_url + f"/u/{user.username}/outbox/",
+    }
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+def ap_inbox(request, username):
+    if request.method == "POST":
+        user = get_object_or_404(User, username=username)
+
+        try:
+            activity = json.loads(request.body)
+        except json.JSONDecodeError:
+            return HttpResponse(status=400, reason="Bad Request")
+
+        if activity.get("type") == "Follow":
+            follower_uri = activity.get("actor")
+
+            if follower_uri:
+                FediverseFollower.objects.update_or_create(
+                    user=user, follower_uri=follower_uri
+                )
+
+                accept_activity = {
+                    "type": "Accept",
+                    "actor": f"https://{request.get_host()}/u/{username}/actor/",
+                    "object": activity,
+                }
+
+                try:
+                    response = requests.get(follower_uri)
+                    response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+
+                    # Assuming the content type should be 'application/activity+json'
+                    if response.headers["Content-Type"] == "application/activity+json":
+                        follower_actor = response.json()
+                        follower_inbox = follower_actor.get("inbox")
+
+                        if follower_inbox:
+                            requests.post(
+                                follower_inbox,
+                                json=accept_activity,
+                                headers={"Content-Type": "application/activity+json"},
+                            )
+                    else:
+                        # Log non-JSON or unexpected content type
+                        print(f"Unexpected response content type for {follower_uri}")
+
+                except requests.RequestException as e:
+                    # Log request exceptions
+                    print(f"Error fetching actor data from {follower_uri}: {e}")
+
+                return HttpResponse(status=200)
+
+    return HttpResponse(status=405, reason="Method Not Allowed")
+
+
+def ap_outbox(request, username):
+    pass
