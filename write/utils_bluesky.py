@@ -87,8 +87,19 @@ def create_bluesky_post(
         )
     elif content_type == "GameCheckIn":
         content_url = domain + reverse("game:game_checkin_detail", args=[content_id])
-    truncated_text = text[: 300 - len(content_url) - 1]
-    post_content = f"{truncated_text} {content_url}"
+    else:
+        content_url = ""
+
+    # Determine if text needs to be truncated
+    max_length = (
+        300 - len(content_url) - 3
+    )  # 3 for newline characters and potential ellipsis
+    if len(text) > max_length:
+        truncated_text = text[:max_length] + "..."
+    else:
+        truncated_text = text
+
+    post_content = f"{truncated_text}\n\n{content_url}"
 
     # Prepare the post data
     now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
