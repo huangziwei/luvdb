@@ -1,16 +1,22 @@
 import base64
+import hashlib
+import hmac
 import json
-import os
 import re
 import time
 import uuid
-from datetime import timedelta
+from datetime import datetime, timedelta
+from email.utils import formatdate
+from urllib.parse import urlparse
 
 import requests
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives.serialization import load_pem_public_key
+from cryptography.hazmat.primitives.serialization import (
+    load_pem_private_key,
+    load_pem_public_key,
+)
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -34,6 +40,7 @@ from django.views.generic import (
     UpdateView,
 )
 from environs import Env
+from requests_http_signature import HTTPSignatureAuth, SingleKeyResolver, algorithms
 
 from activity_feed.models import Activity, Follow
 from entity.models import Creator
@@ -1107,89 +1114,135 @@ def ap_actor(request, username):
         "type": "Person",
         "name": f"{user.display_name}" if user.display_name else f"{user.username}",
         "preferredUsername": f"{user.username}",
+        "manuallyApprovesFollowers": False,
         "inbox": root_url + f"/u/{user.username}/inbox/",
         "outbox": root_url + f"/u/{user.username}/outbox/",
         "publicKey": {
-            "id": root_url + f"/u/{user.username}#main-key",
+            "id": root_url + f"/u/{user.username}/actor/#main-key",
             "owner": root_url + f"/u/{user.username}",
             "publicKeyPem": public_key_pem,
         },
+        "url": root_url + f"/u/{user.username}/",
     }
 
     return JsonResponse(response)
 
 
-def sign_data(data):
-    # Convert data to bytes if it's not already
-    if isinstance(data, str):
-        data = data.encode("utf-8")
+def fetch_public_key(key_id):
+    """
+    Fetches the public key from the given keyId URL.
 
-    with open(PRIVATE_KEY_PATH, "rb") as key_file:
-        private_key = serialization.load_pem_private_key(
-            key_file.read(), password=None, backend=default_backend()
-        )
+    Args:
+    key_id (str): The URL where the public key is located.
 
-    # Sign the data with the private key
-    signature = private_key.sign(data, padding.PKCS1v15(), hashes.SHA256())
-    return base64.b64encode(signature).decode()
+    Returns:
+    str: The public key in PEM format.
+    """
+    try:
+        response = requests.get(key_id)
+        response.raise_for_status()  # Raises an exception for HTTP errors
+
+        # Assuming the public key is in JSON format with a field `publicKeyPem`
+        public_key_data = response.json()
+        return public_key_data["publicKeyPem"]
+
+    except requests.RequestException as e:
+        # Handle any request-related errors
+        raise ValueError(f"Error fetching public key: {e}")
+
+    except KeyError:
+        # Handle cases where the expected 'publicKeyPem' field is missing
+        raise ValueError("Public key format is incorrect or missing")
 
 
-def create_signature_header(actor_url, data):
-    # Assuming `sign_data` returns the base64 encoded signature
-    signature = sign_data(data)
+# Helper function to load private key
+def load_private_key(path):
+    with open(path, "rb") as key_file:
+        return load_pem_private_key(key_file.read(), password=None)
 
-    # Construct the signature header
-    signature_header = f'keyId="{actor_url}#main-key",headers="(request-target) host date",signature="{signature}"'
-    return signature_header
+
+# Function to load public key
+def load_public_key(path):
+    with open(path, "rb") as key_file:
+        return load_pem_public_key(key_file.read())
 
 
 @csrf_exempt
 def ap_inbox(request, username):
-    if request.method != "POST":
-        return HttpResponse(status=405, reason="Method Not Allowed")
+    # Load the private key for signing the response
+    private_key = load_private_key(PRIVATE_KEY_PATH)
+    private_key_bytes = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        encryption_algorithm=serialization.NoEncryption(),
+    )
 
+    # Load the public key for verifying the incoming request
+    public_key = load_public_key(PUBLIC_KEY_PATH)
+    public_key_bytes = public_key.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo,
+    )
+
+    key_id = settings.ROOT_URL + f"/u/{username}/actor/#main-key"
+    key_resolver = SingleKeyResolver(key_id=key_id, key=public_key_bytes)
+
+    # Parse the incoming request
     try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        raise Http404("User not found")
+        data = json.loads(request.body)
+        if data["type"] != "Follow":
+            return HttpResponseBadRequest("Invalid request type or object")
+        else:
+            follower = data["actor"]
+            follower_inbox = follower + "/inbox"
+            target_domain = follower.split("/")[2]
+    except (json.JSONDecodeError, KeyError):
+        return HttpResponseBadRequest("Invalid request")
 
-    try:
-        activity = json.loads(request.body)
-    except json.JSONDecodeError:
-        return HttpResponse(status=400, reason="Bad Request")
+    # Construct the Accept response
+    accept_response = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": settings.ROOT_URL + f"/u/{username}/inbox/{uuid.uuid4()}",
+        "type": "Accept",
+        "actor": settings.ROOT_URL + f"/u/{username}/actor/",
+        "object": data,
+    }
 
-    if activity.get("type") == "Follow":
-        # Validate the structure of the follow request (can be more elaborate)
-        if "actor" not in activity:
-            return HttpResponse(status=400, reason="Bad Request")
+    # Prepare headers for the response
+    headers = {
+        "Host": target_domain,
+        "Date": datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT"),
+        "Content-Type": "application/ld+json",
+    }
 
-        headers = {"Accept": "application/json"}
-        follower_uri = activity["actor"]
-        follower_actor_json = requests.get(follower_uri, headers=headers).json()
-        follower_inbox = follower_actor_json.get("inbox")
-        # Create or update the follower record
-        FediverseFollower.objects.update_or_create(user=user, follower_uri=follower_uri)
+    # # Calculate the digest
+    # digest = hashlib.sha256(json.dumps(accept_response).encode()).digest()
+    # headers["Digest"] = f"SHA-256={base64.b64encode(digest).decode()}"
 
-        # Construct the accept response
-        accept_response = {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "id": f"{settings.ROOT_URL}/u/{username}/{uuid.uuid4()}",  # Unique ID for each message
-            "type": "Accept",
-            "actor": f"{settings.ROOT_URL}/u/{username}/actor/",
-            "object": activity,
-        }
-        accept_response_json = json.dumps(accept_response)
-        signature_header = create_signature_header(
-            f"{settings.ROOT_URL}/u/{username}/actor/", accept_response_json
-        )
-        headers = {"Signature": signature_header}
-        response = requests.post(
-            follower_inbox, data=accept_response_json, headers=headers
-        )
-        # Sending the response (You might need to adjust how you send this, especially with the headers)
-        return HttpResponse(status=response.status_code, reason=response.reason)
+    # Sign the response
+    private_key = load_private_key(PRIVATE_KEY_PATH)
+    auth = HTTPSignatureAuth(
+        signature_algorithm=algorithms.RSA_V1_5_SHA256,  # Adjust according to your use case
+        key=private_key_bytes,
+        key_id=key_id,  # Adjust according to your use case
+    )
 
-    return HttpResponse(status=200)
+    # Send the Accept response to the follower's inbox
+    print(follower_inbox)
+    response = requests.post(
+        follower_inbox,
+        data=json.dumps(accept_response),
+        auth=auth,
+        headers=headers,
+    )
+
+    print(response.status_code)
+
+    # Check the response status and return an appropriate response
+    if response.status_code == 200:
+        return JsonResponse({"status": "accepted"})
+    else:
+        return JsonResponse({"status": "error"}, status=500)
 
 
 def ap_outbox(request, username):
