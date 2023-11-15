@@ -32,9 +32,18 @@ def create_mastodon_post(
         )
     elif content_type == "GameCheckIn":
         content_url = domain + reverse("game:game_checkin_detail", args=[content_id])
+    else:
+        content_url = ""
 
-    # Truncate text and append content URL
-    truncated_text = text[: 490 - len(content_url) - 4]
+    # Determine if text needs to be truncated
+    max_length = (
+        500 - len(content_url) - 4
+    )  # 4 for newline characters and potential ellipsis
+    if len(text) > max_length:
+        truncated_text = text[:max_length] + "..."
+    else:
+        truncated_text = text
+
     post_content = f"{truncated_text}\n\n{content_url}"
 
     # Post the update

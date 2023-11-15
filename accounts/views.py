@@ -1,9 +1,16 @@
+import base64
 import json
+import os
 import re
 import time
+import uuid
 from datetime import timedelta
 
 import requests
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives.serialization import load_pem_public_key
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -26,6 +33,7 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
 )
+from environs import Env
 
 from activity_feed.models import Activity, Follow
 from entity.models import Creator
@@ -1050,6 +1058,11 @@ def manage_mastodon_account(request, username):
 ## ActivityPub / WebFinger ##
 #############################
 
+env = Env()
+env.read_env()
+PRIVATE_KEY_PATH = env.str("PRIVATE_KEY_PATH")
+PUBLIC_KEY_PATH = env.str("PUBLIC_KEY_PATH")
+
 
 def webfinger(request):
     # Extract the requested resource (username)
@@ -1080,6 +1093,10 @@ def webfinger(request):
 def ap_actor(request, username):
     user = get_object_or_404(User, username=username)
     root_url = settings.ROOT_URL
+
+    with open(PUBLIC_KEY_PATH, "r") as public_key_file:
+        public_key_pem = public_key_file.read()
+
     # Construct the response
     response = {
         "@context": [
@@ -1092,62 +1109,124 @@ def ap_actor(request, username):
         "preferredUsername": f"{user.username}",
         "inbox": root_url + f"/u/{user.username}/inbox/",
         "outbox": root_url + f"/u/{user.username}/outbox/",
+        "publicKey": {
+            "id": root_url + f"/u/{user.username}#main-key",
+            "owner": root_url + f"/u/{user.username}",
+            "publicKeyPem": public_key_pem,
+        },
     }
 
     return JsonResponse(response)
 
 
+def sign_data(data):
+    # Convert data to bytes if it's not already
+    if isinstance(data, str):
+        data = data.encode("utf-8")
+
+    with open(PRIVATE_KEY_PATH, "rb") as key_file:
+        private_key = serialization.load_pem_private_key(
+            key_file.read(), password=None, backend=default_backend()
+        )
+
+    # Sign the data with the private key
+    signature = private_key.sign(data, padding.PKCS1v15(), hashes.SHA256())
+    return base64.b64encode(signature).decode()
+
+
+def create_signature_header(actor_url, data):
+    # Assuming `sign_data` returns the base64 encoded signature
+    signature = sign_data(data)
+
+    # Construct the signature header
+    signature_header = f'keyId="{actor_url}#main-key",headers="(request-target) host date",signature="{signature}"'
+    return signature_header
+
+
 @csrf_exempt
 def ap_inbox(request, username):
-    if request.method == "POST":
-        user = get_object_or_404(User, username=username)
+    if request.method != "POST":
+        return HttpResponse(status=405, reason="Method Not Allowed")
 
-        try:
-            activity = json.loads(request.body)
-        except json.JSONDecodeError:
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User not found")
+
+    try:
+        activity = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse(status=400, reason="Bad Request")
+
+    if activity.get("type") == "Follow":
+        # Validate the structure of the follow request (can be more elaborate)
+        if "actor" not in activity:
             return HttpResponse(status=400, reason="Bad Request")
 
-        if activity.get("type") == "Follow":
-            follower_uri = activity.get("actor")
+        headers = {"Accept": "application/json"}
+        follower_uri = activity["actor"]
+        follower_actor_json = requests.get(follower_uri, headers=headers).json()
+        follower_inbox = follower_actor_json.get("inbox")
+        # Create or update the follower record
+        FediverseFollower.objects.update_or_create(user=user, follower_uri=follower_uri)
 
-            if follower_uri:
-                FediverseFollower.objects.update_or_create(
-                    user=user, follower_uri=follower_uri
-                )
+        # Construct the accept response
+        accept_response = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": f"{settings.ROOT_URL}/u/{username}/{uuid.uuid4()}",  # Unique ID for each message
+            "type": "Accept",
+            "actor": f"{settings.ROOT_URL}/u/{username}/actor/",
+            "object": activity,
+        }
+        accept_response_json = json.dumps(accept_response)
+        signature_header = create_signature_header(
+            f"{settings.ROOT_URL}/u/{username}/actor/", accept_response_json
+        )
+        headers = {"Signature": signature_header}
+        response = requests.post(
+            follower_inbox, data=accept_response_json, headers=headers
+        )
+        # Sending the response (You might need to adjust how you send this, especially with the headers)
+        return HttpResponse(status=response.status_code, reason=response.reason)
 
-                accept_activity = {
-                    "type": "Accept",
-                    "actor": f"https://{request.get_host()}/u/{username}/actor/",
-                    "object": activity,
-                }
-
-                try:
-                    response = requests.get(follower_uri)
-                    response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
-
-                    # Assuming the content type should be 'application/activity+json'
-                    if response.headers["Content-Type"] == "application/activity+json":
-                        follower_actor = response.json()
-                        follower_inbox = follower_actor.get("inbox")
-
-                        if follower_inbox:
-                            requests.post(
-                                follower_inbox,
-                                json=accept_activity,
-                                headers={"Content-Type": "application/activity+json"},
-                            )
-                    else:
-                        # Log non-JSON or unexpected content type
-                        print(f"Unexpected response content type for {follower_uri}")
-
-                except requests.RequestException as e:
-                    # Log request exceptions
-                    print(f"Error fetching actor data from {follower_uri}: {e}")
-
-                return HttpResponse(status=200)
-
-    return HttpResponse(status=405, reason="Method Not Allowed")
+    return HttpResponse(status=200)
 
 
 def ap_outbox(request, username):
-    pass
+    # Fetch the user
+    user = get_object_or_404(User, username=username)
+
+    # Fetch activities related to the user
+    activities = Activity.objects.filter(user=user)
+
+    # Format each activity
+    formatted_activities = []
+    for activity in activities:
+        related_object = activity.content_object
+        related_model = ContentType.objects.get_for_id(
+            activity.content_type_id
+        ).model_class()
+        model_name = related_model.__name__.lower()
+
+        if hasattr(related_object, "content"):
+            content = related_object.content
+
+        # Construct the activity object
+        formatted_activity = {
+            "type": activity.activity_type,
+            "actor": f"{settings.ROOT_URL}/u/{user.username}",
+            "object": content,
+            "published": activity.timestamp.isoformat(),
+        }
+        formatted_activities.append(formatted_activity)
+
+    # Construct the outbox response
+    outbox_response = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": f"{settings.ROOT_URL}/u/{user.username}/outbox",
+        "type": "OrderedCollection",
+        "totalItems": len(formatted_activities),
+        "orderedItems": formatted_activities,
+    }
+
+    return JsonResponse(outbox_response)

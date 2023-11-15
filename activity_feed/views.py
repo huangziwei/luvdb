@@ -72,10 +72,14 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
 
         # Calculate age at birth or death for persons
         for creator in born_today:
-            birth_year = int(
-                creator.birth_date.split("-" if "-" in creator.birth_date else ".")[0]
-            )
-            creator.since = now.year - birth_year
+            year_part = creator.birth_date.split(
+                "-" if "-" in creator.birth_date else "."
+            )[0]
+            if "?" in year_part:  # Check if the year part is numeric
+                creator.since = "?"
+            else:
+                birth_year = int(year_part)
+                creator.since = now.year - birth_year
 
         for creator in died_today:
             death_year = int(
@@ -424,10 +428,14 @@ class CalendarActivityFeedView(ActivityFeedView):
 
         # Calculate age at birth or death for persons
         for creator in born_today:
-            birth_year = int(
-                creator.birth_date.split("-" if "-" in creator.birth_date else ".")[0]
-            )
-            creator.since = selected_datetime.year - birth_year
+            year_part = creator.birth_date.split(
+                "-" if "-" in creator.birth_date else "."
+            )[0]
+            if "?" in year_part:  # Check if the year part is numeric
+                creator.since = "?"
+            else:
+                birth_year = int(year_part)
+                creator.since = selected_datetime.year - birth_year
 
         for creator in died_today:
             death_year = int(
