@@ -16,10 +16,10 @@ class InvitationRequestAdmin(admin.ModelAdmin):
 
 
 class FediverseFollowerAdmin(admin.ModelAdmin):
-    list_display = ("user", "follower_uri")
+    list_display = ("user", "follower_uri", "created_at")
     search_fields = ("user__username", "follower_uri")
     list_filter = ("user",)
-    ordering = ("user", "follower_uri")
+    ordering = ("created_at", "user", "follower_uri")
     fieldsets = ((None, {"fields": ("user", "follower_uri")}),)
 
 

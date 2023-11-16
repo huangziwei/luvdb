@@ -1177,8 +1177,10 @@ def sign_and_send(message, name, domain, target_domain, private_key):
             response.reason,
             "\n",
         )
+        return False
     else:
-        print("Response:", response.text)
+        print("Response:", "\n", response.text, "\n", header, "\n")
+        return True
 
 
 @csrf_exempt
@@ -1211,16 +1213,54 @@ def ap_inbox(request, username):
         "object": incoming_message,
     }
 
-    sign_and_send(outgoing_message, name, DOMAIN, target_domain, private_key)
-    follower, created = FediverseFollower.objects.get_or_create(
-        user=user,
-        follower_uri=follower_url,
-    )
-    if created:
-        print("New follower:", follower_url)
+    success = sign_and_send(outgoing_message, name, DOMAIN, target_domain, private_key)
+
+    if success:
+        follower, created = FediverseFollower.objects.get_or_create(
+            user=user,
+            follower_uri=follower_url,
+        )
+        if created:
+            print("New follower:", follower_url)
 
     return HttpResponse(status=200)
 
 
 def ap_outbox(request, username):
-    pass
+    # Fetch the user
+    user = get_object_or_404(User, username=username)
+
+    # Fetch activities related to the user
+    activities = Activity.objects.filter(user=user)
+
+    # Format each activity
+    formatted_activities = []
+    for activity in activities:
+        related_object = activity.content_object
+        related_model = ContentType.objects.get_for_id(
+            activity.content_type_id
+        ).model_class()
+        model_name = related_model.__name__.lower()
+
+        if hasattr(related_object, "content"):
+            content = related_object.content
+
+        # Construct the activity object
+        formatted_activity = {
+            "type": activity.activity_type,
+            "actor": f"{settings.ROOT_URL}/u/{user.username}",
+            "object": content,
+            "published": activity.timestamp.isoformat(),
+        }
+        formatted_activities.append(formatted_activity)
+
+    # Construct the outbox response
+    outbox_response = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": f"{settings.ROOT_URL}/u/{user.username}/outbox",
+        "type": "OrderedCollection",
+        "totalItems": len(formatted_activities),
+        "orderedItems": formatted_activities,
+    }
+
+    return JsonResponse(outbox_response)
