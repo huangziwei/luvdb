@@ -124,7 +124,7 @@ class CustomUser(AbstractUser):
             encoded_private_key = base64.b64encode(private_key).decode("utf-8")
 
             # Store the encoded private key in the environment file
-            with open(".privatekeys", "a") as file:
+            with open(settings.PRIVATEKEY_PATH, "a") as file:
                 file.write(f"{self.username}={encoded_private_key}\n")
 
             # Store public key in the database
@@ -132,9 +132,9 @@ class CustomUser(AbstractUser):
             super().save(*args, **kwargs)
         else:
             # Remove the private key from the environment file
-            with open(".privatekeys", "r") as file:
+            with open(settings.PRIVATEKEY_PATH, "r") as file:
                 lines = file.readlines()
-            with open(".privatekeys", "w") as file:
+            with open(settings.PRIVATEKEY_PATH, "w") as file:
                 for line in lines:
                     if not line.startswith(f"{self.username}="):
                         file.write(line)

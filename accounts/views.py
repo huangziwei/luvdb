@@ -57,6 +57,7 @@ from .forms import (
 from .models import (
     AppPassword,
     BlueSkyAccount,
+    FediverseFollower,
     InvitationCode,
     InvitationRequest,
     MastodonAccount,
@@ -1115,7 +1116,7 @@ def ap_actor(request, username):
 
 def import_private_key(username):
     env = Env()
-    env.read_env(".privatekeys")
+    env.read_env(settings.PRIVATEKEY_PATH)
 
     # Access and decode the key
     encoded_private_key = env.str(username)
@@ -1162,12 +1163,19 @@ def sign_and_send(message, name, domain, target_domain, private_key):
     if response.status_code >= 400:
         print(
             "Failed request",
+            "\n",
             response.text,
+            "\n",
             header,
+            "\n",
             signature,
+            "\n",
             target_domain,
+            "\n",
             response.status_code,
+            "\n",
             response.reason,
+            "\n",
         )
     else:
         print("Response:", response.text)
@@ -1175,17 +1183,14 @@ def sign_and_send(message, name, domain, target_domain, private_key):
 
 @csrf_exempt
 def ap_inbox(request, username):
-    # if request.method != "POST":
-    #     return HttpResponse(status=404)
     DOMAIN = settings.ROOT_URL
+
+    if request.method != "POST":
+        return HttpResponse(status=404)
 
     try:
         user = User.objects.get(username=username)
         private_key = import_private_key(username)
-        print(private_key)
-        public_key = user.public_key
-        print("\n")
-        print(public_key)
     except User.DoesNotExist:
         raise Http404("User not found")
 
@@ -1206,9 +1211,13 @@ def ap_inbox(request, username):
         "object": incoming_message,
     }
 
-    # print(outgoing_message['object'])
-
     sign_and_send(outgoing_message, name, DOMAIN, target_domain, private_key)
+    follower, created = FediverseFollower.objects.get_or_create(
+        user=user,
+        follower_uri=follower_url,
+    )
+    if created:
+        print("New follower:", follower_url)
 
     return HttpResponse(status=200)
 

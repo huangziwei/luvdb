@@ -39,3 +39,4 @@ ROOT_URL = "https://luvdb.com"
 CORS_ALLOWED_ORIGINS = [
     "https://luvdb.com",
 ]
+PRIVATEKEY_PATH = "/mnt/.privatekeys"
