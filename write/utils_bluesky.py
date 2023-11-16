@@ -17,18 +17,19 @@ def bsky_login_session(handle: str, pds_url: str, password: str) -> dict:
 
 
 url_regex = re.compile(
-    r"(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}([-a-zA-Z0-9()@:%_\+.~#?&//=]*))"
+    rb"(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}([-a-zA-Z0-9()@:%_\+.~#?&//=]*))"
 )
 
 
 def parse_urls(text: str):
     spans = []
-    for m in url_regex.finditer(text):
+    byte_text = text.encode("utf-8")
+    for m in url_regex.finditer(byte_text):
         spans.append(
             {
                 "start": m.start(1),
                 "end": m.end(1),
-                "url": m.group(1),
+                "url": m.group(1).decode("utf-8"),
             }
         )
     return spans
