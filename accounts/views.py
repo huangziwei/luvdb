@@ -6,6 +6,7 @@ import uuid
 from datetime import datetime, timedelta
 
 import requests
+from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from django.conf import settings
@@ -1183,26 +1184,93 @@ def sign_and_send(message, name, domain, target_domain, private_key):
         return True
 
 
+def verify_requests(request, public_key):
+    """
+    Verify the signature of the request using the public key of the sender.
+    """
+    signature_header = request.headers.get("Signature")
+    if not signature_header:
+        print("no signature header")
+        return False
+
+    try:
+        # Extracting the signature from the header
+        signature_header_parts = signature_header.split('signature="')
+        if len(signature_header_parts) < 2:
+            raise ValueError("Invalid Signature header format.")
+
+        signature_encoded = signature_header_parts[1].rstrip('"')
+        signature = base64.b64decode(signature_encoded)
+        # print("signature:", signature_encoded)
+        # Preparing the signed data
+        headers = {
+            "(request-target)": f"{request.method.lower()} {request.path}",
+            "host": request.get_host(),
+            "date": request.headers.get("Date"),
+            "digest": request.headers.get("Digest"),
+            "content-type": request.headers.get("Content-Type"),
+        }
+        signed_data = "\n".join(
+            f"{k}: {v}" for k, v in headers.items() if v is not None
+        )
+        # print("signed data:", signed_data)
+        # Verifying the signature
+
+        public_key.verify(
+            signature, signed_data.encode("utf-8"), padding.PKCS1v15(), hashes.SHA256()
+        )
+        print("valid signature")
+        return True
+    except InvalidSignature:
+        print("invalid signature")
+        return False
+    except Exception as e:
+        print("Error during signature verification:", str(e))
+        return False
+
+
 @csrf_exempt
 def ap_inbox(request, username):
     DOMAIN = settings.ROOT_URL
 
+    # only accept POST requests
     if request.method != "POST":
-        return HttpResponse(status=404)
+        return HttpResponse(status=404, reason="Not Found")
 
+    # only accept JSON requests
+    try:
+        incoming_message = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse(status=400, reason="Bad Request")
+
+    # only accept Follow requests for
+    if not incoming_message.get("type") == "Follow":
+        return HttpResponse(status=400, reason="Bad Request")
+
+    follower_url = incoming_message.get("actor")
+    target_domain = follower_url.split("/")[2]
+
+    # Fetch the actor information to get the public key
+    actor_response = requests.get(follower_url, headers={"Accept": "application/json"})
+    if actor_response.status_code != 200:
+        return HttpResponse(status=400, reason="Bad Request")
+
+    actor_data = actor_response.json()
+    public_key_pem = actor_data["publicKey"]["publicKeyPem"]
+    public_key = serialization.load_pem_public_key(public_key_pem.encode("utf-8"))
+    # Verify the request
+    if not verify_requests(request, public_key):
+        print("invalid signature")
+        return HttpResponse(status=400, reason="Unauthorized")
+
+    # Fetch the user and private key
     try:
         user = User.objects.get(username=username)
         private_key = import_private_key(username)
     except User.DoesNotExist:
         raise Http404("User not found")
 
-    try:
-        incoming_message = json.loads(request.body)
-    except json.JSONDecodeError:
-        return HttpResponse(status=400, reason="Bad Request")
-
-    follower_url = incoming_message.get("actor")
-    target_domain = follower_url.split("/")[2]
+    # our server name
     name = incoming_message.get("object").replace(DOMAIN, "")
 
     outgoing_message = {
