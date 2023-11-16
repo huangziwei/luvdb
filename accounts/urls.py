@@ -12,9 +12,6 @@ from .views import (
     PersonalActivityFeedView,
     RequestInvitationView,
     SignUpView,
-    ap_actor,
-    ap_inbox,
-    ap_outbox,
     app_password_list,
     delete_app_password,
     export_user_data,
@@ -83,8 +80,4 @@ urlpatterns = [
         manage_mastodon_account,
         name="mastodon",
     ),
-    # activitypub
-    path("<str:username>/actor/", ap_actor, name="ap_actor"),
-    path("<str:username>/inbox/", ap_inbox, name="ap_inbox"),
-    path("<str:username>/outbox/", ap_outbox, name="ap_outbox"),
 ]

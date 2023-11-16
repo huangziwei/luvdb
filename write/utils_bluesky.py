@@ -95,7 +95,7 @@ def create_bluesky_post(
         300 - len(content_url) - 3
     )  # 3 for newline characters and potential ellipsis
     if len(text) > max_length:
-        truncated_text = text[:max_length] + "..."
+        truncated_text = text[:max_length] + "…"
     else:
         truncated_text = text
 

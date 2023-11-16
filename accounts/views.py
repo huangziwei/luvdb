@@ -1,23 +1,7 @@
-import base64
-import hashlib
-import hmac
-import json
 import re
 import time
-import uuid
-from datetime import datetime, timedelta
-from email.utils import formatdate
-from urllib.parse import urlparse
+from datetime import timedelta
 
-import requests
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives.serialization import (
-    load_pem_private_key,
-    load_pem_public_key,
-)
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -25,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.db.models import Count, Min, OuterRef, Q, Subquery
-from django.http import Http404, HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -39,8 +23,6 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
 )
-from environs import Env
-from requests_http_signature import HTTPSignatureAuth, SingleKeyResolver, algorithms
 
 from activity_feed.models import Activity, Follow
 from entity.models import Creator
@@ -67,7 +49,6 @@ from .forms import (
 from .models import (
     AppPassword,
     BlueSkyAccount,
-    FediverseFollower,
     InvitationCode,
     InvitationRequest,
     MastodonAccount,
@@ -1059,227 +1040,3 @@ def manage_mastodon_account(request, username):
         "form": form,
     }
     return render(request, "accounts/mastodon.html", context)
-
-
-#############################
-## ActivityPub / WebFinger ##
-#############################
-
-env = Env()
-env.read_env()
-PRIVATE_KEY_PATH = env.str("PRIVATE_KEY_PATH")
-PUBLIC_KEY_PATH = env.str("PUBLIC_KEY_PATH")
-
-
-def webfinger(request):
-    # Extract the requested resource (username)
-    resource = request.GET.get("resource")
-    username = resource.split(":")[1].split("@")[0]
-
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        raise Http404("User not found")
-
-    # Construct the response
-    response = {
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "subject": resource,
-        "links": [
-            {
-                "rel": "self",
-                "type": "application/activity+json",
-                "href": settings.ROOT_URL + f"/u/{username}/actor/",
-            }
-        ],
-    }
-
-    return JsonResponse(response)
-
-
-def ap_actor(request, username):
-    user = get_object_or_404(User, username=username)
-    root_url = settings.ROOT_URL
-
-    with open(PUBLIC_KEY_PATH, "r") as public_key_file:
-        public_key_pem = public_key_file.read()
-
-    # Construct the response
-    response = {
-        "@context": [
-            "https://www.w3.org/ns/activitystreams",
-            "https://w3id.org/security/v1",
-        ],
-        "id": root_url + f"/u/{user.username}/actor/",
-        "type": "Person",
-        "name": f"{user.display_name}" if user.display_name else f"{user.username}",
-        "preferredUsername": f"{user.username}",
-        "manuallyApprovesFollowers": False,
-        "inbox": root_url + f"/u/{user.username}/inbox/",
-        "outbox": root_url + f"/u/{user.username}/outbox/",
-        "publicKey": {
-            "id": root_url + f"/u/{user.username}/actor/#main-key",
-            "owner": root_url + f"/u/{user.username}",
-            "publicKeyPem": public_key_pem,
-        },
-        "url": root_url + f"/u/{user.username}/",
-    }
-
-    return JsonResponse(response)
-
-
-def fetch_public_key(key_id):
-    """
-    Fetches the public key from the given keyId URL.
-
-    Args:
-    key_id (str): The URL where the public key is located.
-
-    Returns:
-    str: The public key in PEM format.
-    """
-    try:
-        response = requests.get(key_id)
-        response.raise_for_status()  # Raises an exception for HTTP errors
-
-        # Assuming the public key is in JSON format with a field `publicKeyPem`
-        public_key_data = response.json()
-        return public_key_data["publicKeyPem"]
-
-    except requests.RequestException as e:
-        # Handle any request-related errors
-        raise ValueError(f"Error fetching public key: {e}")
-
-    except KeyError:
-        # Handle cases where the expected 'publicKeyPem' field is missing
-        raise ValueError("Public key format is incorrect or missing")
-
-
-# Helper function to load private key
-def load_private_key(path):
-    with open(path, "rb") as key_file:
-        return load_pem_private_key(key_file.read(), password=None)
-
-
-# Function to load public key
-def load_public_key(path):
-    with open(path, "rb") as key_file:
-        return load_pem_public_key(key_file.read())
-
-
-@csrf_exempt
-def ap_inbox(request, username):
-    # Load the private key for signing the response
-    private_key = load_private_key(PRIVATE_KEY_PATH)
-    private_key_bytes = private_key.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
-        encryption_algorithm=serialization.NoEncryption(),
-    )
-
-    # Load the public key for verifying the incoming request
-    public_key = load_public_key(PUBLIC_KEY_PATH)
-    public_key_bytes = public_key.public_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.SubjectPublicKeyInfo,
-    )
-
-    key_id = settings.ROOT_URL + f"/u/{username}/actor/#main-key"
-    key_resolver = SingleKeyResolver(key_id=key_id, key=public_key_bytes)
-
-    # Parse the incoming request
-    try:
-        data = json.loads(request.body)
-        if data["type"] != "Follow":
-            return HttpResponseBadRequest("Invalid request type or object")
-        else:
-            follower = data["actor"]
-            follower_inbox = follower + "/inbox"
-            target_domain = follower.split("/")[2]
-    except (json.JSONDecodeError, KeyError):
-        return HttpResponseBadRequest("Invalid request")
-
-    # Construct the Accept response
-    accept_response = {
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "id": settings.ROOT_URL + f"/u/{username}/inbox/{uuid.uuid4()}",
-        "type": "Accept",
-        "actor": settings.ROOT_URL + f"/u/{username}/actor/",
-        "object": data,
-    }
-
-    # Prepare headers for the response
-    headers = {
-        "Host": target_domain,
-        "Date": datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT"),
-        "Content-Type": "application/ld+json",
-    }
-
-    # # Calculate the digest
-    # digest = hashlib.sha256(json.dumps(accept_response).encode()).digest()
-    # headers["Digest"] = f"SHA-256={base64.b64encode(digest).decode()}"
-
-    # Sign the response
-    private_key = load_private_key(PRIVATE_KEY_PATH)
-    auth = HTTPSignatureAuth(
-        signature_algorithm=algorithms.RSA_V1_5_SHA256,  # Adjust according to your use case
-        key=private_key_bytes,
-        key_id=key_id,  # Adjust according to your use case
-    )
-
-    # Send the Accept response to the follower's inbox
-    print(follower_inbox)
-    response = requests.post(
-        follower_inbox,
-        data=json.dumps(accept_response),
-        auth=auth,
-        headers=headers,
-    )
-
-    print(response.status_code)
-
-    # Check the response status and return an appropriate response
-    if response.status_code == 200:
-        return JsonResponse({"status": "accepted"})
-    else:
-        return JsonResponse({"status": "error"}, status=500)
-
-
-def ap_outbox(request, username):
-    # Fetch the user
-    user = get_object_or_404(User, username=username)
-
-    # Fetch activities related to the user
-    activities = Activity.objects.filter(user=user)
-
-    # Format each activity
-    formatted_activities = []
-    for activity in activities:
-        related_object = activity.content_object
-        related_model = ContentType.objects.get_for_id(
-            activity.content_type_id
-        ).model_class()
-        model_name = related_model.__name__.lower()
-
-        if hasattr(related_object, "content"):
-            content = related_object.content
-
-        # Construct the activity object
-        formatted_activity = {
-            "type": activity.activity_type,
-            "actor": f"{settings.ROOT_URL}/u/{user.username}",
-            "object": content,
-            "published": activity.timestamp.isoformat(),
-        }
-        formatted_activities.append(formatted_activity)
-
-    # Construct the outbox response
-    outbox_response = {
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "id": f"{settings.ROOT_URL}/u/{user.username}/outbox",
-        "type": "OrderedCollection",
-        "totalItems": len(formatted_activities),
-        "orderedItems": formatted_activities,
-    }
-
-    return JsonResponse(outbox_response)
