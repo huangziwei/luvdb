@@ -1229,24 +1229,8 @@ def verify_requests(request, public_key):
         return False
 
 
-@csrf_exempt
-def ap_inbox(request, username):
+def handle_follow_request(incoming_message, request, username):
     DOMAIN = settings.ROOT_URL
-
-    # only accept POST requests
-    if request.method != "POST":
-        return HttpResponse(status=404, reason="Not Found")
-
-    # only accept JSON requests
-    try:
-        incoming_message = json.loads(request.body)
-    except json.JSONDecodeError:
-        return HttpResponse(status=400, reason="Bad Request")
-
-    # only accept Follow requests for
-    if not incoming_message.get("type") == "Follow":
-        return HttpResponse(status=400, reason="Bad Request")
-
     follower_url = incoming_message.get("actor")
     target_domain = follower_url.split("/")[2]
 
@@ -1292,6 +1276,48 @@ def ap_inbox(request, username):
             print("New follower:", follower_url)
 
     return HttpResponse(status=200)
+
+
+def handle_undo_request(incoming_message, request, username):
+    # Check if the Undo activity is for a Follow activity
+    if incoming_message.get("object", {}).get("type") == "Follow":
+        follower_url = incoming_message["object"]["actor"]
+        user = User.objects.get(username=username)
+        try:
+            follower = FediverseFollower.objects.get(
+                user=user, follower_uri=follower_url
+            )
+            follower.delete()
+            print("Unfollowed by:", follower_url)
+        except FediverseFollower.DoesNotExist:
+            print("Follower not found:", follower_url)
+            return HttpResponse(status=404, reason="Follower Not Found")
+        return HttpResponse(status=200)
+    else:
+        return HttpResponse(status=400, reason="Bad Request")
+
+
+@csrf_exempt
+def ap_inbox(request, username):
+    # only accept POST requests
+    if request.method != "POST":
+        return HttpResponse(status=404, reason="Not Found")
+
+    # only accept JSON requests
+    try:
+        incoming_message = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse(status=400, reason="Bad Request")
+
+    request_type = incoming_message.get("type")
+    if request_type == "Follow":
+        return handle_follow_request(incoming_message, request, username)
+    elif request_type == "Undo":
+        return handle_undo_request(incoming_message, request, username)
+    else:
+        return HttpResponse(
+            status=400, reason="Only Follow and Undo Follow are supported"
+        )
 
 
 def ap_outbox(request, username):
