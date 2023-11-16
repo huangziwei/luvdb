@@ -84,11 +84,14 @@ class CustomUserChangeForm(UserChangeForm):
             "bio",
             "is_public",
             "pure_text_mode",
+            "enable_federation",
             "timezone",
         )
         help_texts = {
             "is_public": "Enable this option to make your profile visible to everyone, including non-logged-in users. If disabled, only logged-in users will have access to view your profile.",
             "pure_text_mode": "Enable this option to disable displaying images of the site.",
+            "enable_federation": "Enable this option to allow other ActivityPub services (e.g. Mastodon, etc.) to follow you.",
+            "public_key": "Your public key will be displayed on your profile page.",
             "timezone": "Set your preferred timezone. This will adjust the display of all timestamps to match your local date and time.",
         }
 

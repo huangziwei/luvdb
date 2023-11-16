@@ -1,7 +1,12 @@
+import base64
+import os
 import secrets
 
 import pytz
 from cryptography.fernet import Fernet
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password, make_password
@@ -57,6 +62,8 @@ class CustomUser(AbstractUser):
     bio = models.TextField(blank=True, null=True)
     is_public = models.BooleanField(default=False)
     pure_text_mode = models.BooleanField(default=False)
+    enable_federation = models.BooleanField(default=False)
+    public_key = models.TextField(blank=True, null=True, editable=False)
     timezone = models.CharField(
         max_length=50, choices=[(tz, tz) for tz in pytz.all_timezones], default="UTC"
     )
@@ -108,9 +115,53 @@ class CustomUser(AbstractUser):
             follow_inviter, created = Follow.objects.get_or_create(
                 follower=self.invited_by, followed=self
             )
-
         else:
             super().save(*args, **kwargs)
+
+        if self.enable_federation:
+            private_key, public_key = self.generate_key_pair()
+            # Base64 encode the private key
+            encoded_private_key = base64.b64encode(private_key).decode("utf-8")
+
+            # Store the encoded private key in the environment file
+            with open(".privatekeys", "a") as file:
+                file.write(f"{self.username}={encoded_private_key}\n")
+
+            # Store public key in the database
+            self.public_key = public_key.decode("utf-8")
+            super().save(*args, **kwargs)
+        else:
+            # Remove the private key from the environment file
+            with open(".privatekeys", "r") as file:
+                lines = file.readlines()
+            with open(".privatekeys", "w") as file:
+                for line in lines:
+                    if not line.startswith(f"{self.username}="):
+                        file.write(line)
+            self.public_key = None
+            super().save(*args, **kwargs)
+
+    def generate_key_pair(self):
+        # Generate private key
+        private_key = rsa.generate_private_key(
+            public_exponent=65537, key_size=2048, backend=default_backend()
+        )
+
+        # Serialize private key
+        private_key_bytes = private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption(),  # Can be replaced with actual encryption
+        )
+
+        # Generate public key
+        public_key = private_key.public_key()
+        public_key_bytes = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
+        )
+
+        return private_key_bytes, public_key_bytes
 
 
 @receiver(post_save, sender=Follow)
@@ -211,3 +262,11 @@ class MastodonAccount(models.Model):
 
     def __str__(self):
         return self.mastodon_handle
+
+
+class FediverseFollower(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    follower_uri = models.URLField(unique=True)
+
+    def __str__(self):
+        return self.follower_uri

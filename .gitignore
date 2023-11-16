@@ -1,6 +1,7 @@
 .luvdb
 .DS_Store
 .env
+.privatekeys
 db.sqlite3*
 *migrations/*.py
 !*migrations/__init__.py

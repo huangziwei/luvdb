@@ -1,7 +1,14 @@
+import base64
+import json
 import re
 import time
-from datetime import timedelta
+import uuid
+from datetime import datetime, timedelta
 
+import requests
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -9,7 +16,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.db.models import Count, Min, OuterRef, Q, Subquery
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -23,6 +30,7 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
 )
+from environs import Env
 
 from activity_feed.models import Activity, Follow
 from entity.models import Creator
@@ -1040,3 +1048,170 @@ def manage_mastodon_account(request, username):
         "form": form,
     }
     return render(request, "accounts/mastodon.html", context)
+
+
+#############################
+## ActivityPub / WebFinger ##
+#############################
+
+
+def webfinger(request):
+    # Extract the requested resource (username)
+    resource = request.GET.get("resource")
+    username = resource.split(":")[1].split("@")[0]
+
+    try:
+        user = User.objects.get(username=username)
+        if not user.enable_federation:
+            raise Http404("User not found")
+    except User.DoesNotExist:
+        raise Http404("User not found")
+
+    # Construct the response
+    response = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "subject": resource,
+        "links": [
+            {
+                "rel": "self",
+                "type": "application/activity+json",
+                "href": settings.ROOT_URL + f"/u/{username}/actor/",
+            }
+        ],
+    }
+
+    return JsonResponse(response)
+
+
+def ap_actor(request, username):
+    user = get_object_or_404(User, username=username)
+    root_url = settings.ROOT_URL
+
+    public_key_pem = user.public_key
+
+    # Construct the response
+    response = {
+        "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+        ],
+        "id": root_url + f"/u/{user.username}/actor/",
+        "type": "Person",
+        "name": f"{user.display_name}" if user.display_name else f"{user.username}",
+        "preferredUsername": f"{user.username}",
+        "manuallyApprovesFollowers": False,
+        "inbox": root_url + f"/u/{user.username}/inbox/",
+        "outbox": root_url + f"/u/{user.username}/outbox/",
+        "publicKey": {
+            "id": root_url + f"/u/{user.username}/actor/#main-key",
+            "owner": root_url + f"/u/{user.username}",
+            "publicKeyPem": public_key_pem,
+        },
+        "url": root_url + f"/u/{user.username}/",
+    }
+
+    return JsonResponse(response)
+
+
+def import_private_key(username):
+    env = Env()
+    env.read_env(".privatekeys")
+
+    # Access and decode the key
+    encoded_private_key = env.str(username)
+
+    private_key = serialization.load_pem_private_key(
+        base64.b64decode(encoded_private_key),
+        password=None,
+    )
+    return private_key
+
+
+def digest_message(message):
+    HASH = hashes.SHA256()
+    digest = hashes.Hash(HASH)
+    digest.update(message.encode("utf-8"))
+    return base64.b64encode(digest.finalize())
+
+
+def sign_and_send(message, name, domain, target_domain, private_key):
+    HASH = hashes.SHA256()
+    inbox = message["object"]["actor"] + "/inbox"
+    inbox_fragment = inbox.replace(f"https://{target_domain}", "")
+    digest_hash = digest_message(json.dumps(message))
+
+    d = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
+    string_to_sign = f"(request-target): post {inbox_fragment}\nhost: {target_domain}\ndate: {d}\ndigest: SHA-256={digest_hash.decode('utf-8')}"
+    signature = base64.b64encode(
+        private_key.sign(string_to_sign.encode("utf-8"), padding.PKCS1v15(), HASH)
+    ).decode("utf-8")
+
+    header = f'keyId="{domain}{name}",headers="(request-target) host date digest",signature="{signature}"'
+    response = requests.post(
+        inbox,
+        headers={
+            "Host": target_domain,
+            "Date": d,
+            "Digest": f'SHA-256={digest_hash.decode("utf-8")}',
+            "Content-Type": "application/json",
+            "Signature": header,
+        },
+        data=json.dumps(message),
+    )
+
+    if response.status_code >= 400:
+        print(
+            "Failed request",
+            response.text,
+            header,
+            signature,
+            target_domain,
+            response.status_code,
+            response.reason,
+        )
+    else:
+        print("Response:", response.text)
+
+
+@csrf_exempt
+def ap_inbox(request, username):
+    # if request.method != "POST":
+    #     return HttpResponse(status=404)
+    DOMAIN = settings.ROOT_URL
+
+    try:
+        user = User.objects.get(username=username)
+        private_key = import_private_key(username)
+        print(private_key)
+        public_key = user.public_key
+        print("\n")
+        print(public_key)
+    except User.DoesNotExist:
+        raise Http404("User not found")
+
+    try:
+        incoming_message = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse(status=400, reason="Bad Request")
+
+    follower_url = incoming_message.get("actor")
+    target_domain = follower_url.split("/")[2]
+    name = incoming_message.get("object").replace(DOMAIN, "")
+
+    outgoing_message = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": f"{DOMAIN}/u/{username}/{uuid.uuid4()}",  # Unique ID for each message
+        "type": "Accept",
+        "actor": f"{DOMAIN}/u/{username}/actor/",
+        "object": incoming_message,
+    }
+
+    # print(outgoing_message['object'])
+
+    sign_and_send(outgoing_message, name, DOMAIN, target_domain, private_key)
+
+    return HttpResponse(status=200)
+
+
+def ap_outbox(request, username):
+    pass

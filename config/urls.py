@@ -10,7 +10,7 @@ from django.http import Http404, HttpResponse, HttpResponseServerError
 from django.template import loader
 from django.urls import include, path
 
-from accounts.views import search_view
+from accounts.views import search_view, webfinger
 from entity.sitemaps import PersonSiteMap
 from listen.sitemaps import ReleaseSiteMap
 from play.sitemaps import GameSiteMap
@@ -69,6 +69,7 @@ def site_manifest(request):
 
 
 urlpatterns = [
+    path(".well-known/webfinger/", webfinger, name="webfinger"),
     path("admin/login/", custom_admin_login, name="custom_admin_login"),
     path("admin/", admin.site.urls),
     path("u/", include("accounts.urls")),
