@@ -1,9 +1,12 @@
 from datetime import datetime
+from urllib.parse import urlparse
 
+import markdown
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.utils.safestring import mark_safe
 
 from accounts.utils_activitypub import import_private_key, sign_and_send
 
@@ -100,8 +103,23 @@ class Activity(models.Model):
             updated_at = None
 
         if self.activity_type == "say":
-            content = self.content_object.content
             url = settings.ROOT_URL + self.content_object.get_absolute_url()
+            content = self.content_object.content + "\n\n" + url
+        elif self.activity_type == "repost":
+            url = settings.ROOT_URL + self.content_object.get_absolute_url()
+            content = self.content_object.content + "\n\n" + url
+        elif self.activity_type == "post":
+            url = settings.ROOT_URL + self.content_object.get_absolute_url()
+            content = "New Post:\n\n" + self.content_object.title + "\n\n" + url
+        elif self.activity_type == "pin":
+            url = settings.ROOT_URL + self.content_object.get_absolute_url()
+            content = (
+                "New Pinn:\n\n"
+                + self.content_object.title
+                + f"(from {urlparse(self.content_object.url).netloc})"
+                + "\n\n"
+                + url
+            )
         else:
             raise ValueError("Invalid activity type")
 
@@ -114,7 +132,7 @@ class Activity(models.Model):
             "object": {
                 "id": url,
                 "type": ap_object_type,
-                "content": content,
+                "content": mark_safe(markdown.markdown(content)),
                 "to": ["https://www.w3.org/ns/activitystreams#Public"],
                 "published": self.timestamp.isoformat(),
                 "attributedTo": settings.ROOT_URL + self.user.get_absolute_url(),
