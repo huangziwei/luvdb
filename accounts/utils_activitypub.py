@@ -87,42 +87,36 @@ def verify_requests(request, public_key):
     Verify the signature of the request using the public key of the sender.
     """
     signature_header = request.headers.get("Signature")
-    print("signature header:", signature_header)
     if not signature_header:
-        print("no signature header")
         return False
 
     try:
-        # Extracting the signature from the header
-        signature_header_parts = signature_header.split('signature="')
-        if len(signature_header_parts) < 2:
-            raise ValueError("Invalid Signature header format.")
+        # Parsing the signature header
+        parts = {}
+        for part in signature_header.split(","):
+            if "=" in part:
+                key, _, value = part.partition("=")
+                parts[key.strip()] = value.strip().strip('"')
 
-        signature_encoded = signature_header_parts[1].rstrip('"')
+        # Decode the signature
+        signature_encoded = parts["signature"]
         signature = base64.b64decode(signature_encoded)
-        # print("signature:", signature_encoded)
-        # Preparing the signed data
-        headers = {
-            "(request-target)": f"{request.method.lower()} {request.path}",
-            "host": request.get_host(),
-            "date": request.headers.get("Date"),
-            "digest": request.headers.get("Digest"),
-            "content-type": request.headers.get("Content-Type"),
-        }
-        signed_data = "\n".join(
-            f"{k}: {v}" for k, v in headers.items() if v is not None
-        )
-        print("signed data:", signed_data)
-        # Verifying the signature
 
+        # Extract and order the headers as per the 'headers' component
+        headers_to_sign = parts.get("headers").split()
+        signed_data = "\n".join(
+            f"{header}: {request.headers.get(header.capitalize(), '')}"
+            if header != "(request-target)"
+            else f"(request-target): {request.method.lower()} {request.path}"
+            for header in headers_to_sign
+        )
+
+        # Verifying the signature
         public_key.verify(
             signature, signed_data.encode("utf-8"), padding.PKCS1v15(), hashes.SHA256()
         )
-        print("valid signature")
         return True
     except InvalidSignature:
-        print("invalid signature")
         return False
     except Exception as e:
-        print("Error during signature verification:", str(e))
         return False
