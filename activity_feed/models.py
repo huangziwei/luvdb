@@ -39,8 +39,8 @@ class Activity(models.Model):
             follower_url = follower.follower_uri
             target_domain = follower_url.split("/")[2]
             print(follower_url, target_domain)
-            activitypub_message["cc"] = follower_url
-            activitypub_message["object"]["cc"] = follower_url
+            activitypub_message["cc"] = [follower_url]
+            activitypub_message["object"]["cc"] = [follower_url]
             success = sign_and_send(
                 activitypub_message,
                 "/u/" + self.user.username + "/actor/",

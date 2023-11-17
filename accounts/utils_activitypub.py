@@ -38,7 +38,7 @@ def sign_and_send(message, name, domain, target_domain, private_key):
     HASH = hashes.SHA256()
 
     if "cc" in message:
-        inbox = "https://" + message["cc"].split("/")[2] + "/inbox"
+        inbox = "https://" + message["cc"][0].split("/")[2] + "/inbox"
     else:
         inbox = message["object"]["actor"] + "/inbox"
     inbox_fragment = inbox.replace(f"https://{target_domain}", "")
