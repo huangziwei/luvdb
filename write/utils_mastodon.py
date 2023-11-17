@@ -53,7 +53,7 @@ def create_mastodon_post(
         )
     elif content_type == "GameCheckIn":
         content_url = domain + reverse(
-            "write:game_checkin_detail",
+            "write:play_checkin_detail",
             kwargs={"id": content_id, "username": content_username},
         )
     else:

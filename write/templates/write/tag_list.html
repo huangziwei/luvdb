@@ -484,7 +484,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-2">
-                                        <a href="{% url 'write:game_checkin_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                        <a href="{% url 'write:play_checkin_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                     </div>
                                 {% endif %}
                                 

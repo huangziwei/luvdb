@@ -103,7 +103,7 @@ class UserActivityFeed(Feed):
             "post": "write:post_detail",
             "pin": "write:pin_detail",
             "repost": "write:repost_detail",
-            "gamecheckin": "write:game_checkin_detail",
+            "gamecheckin": "write:play_checkin_detail",
             "readcheckin": "write:read_checkin_detail",
             "watchcheckin": "write:watch_checkin_detail",
             "listencheckin": "write:listen_checkin_detail",

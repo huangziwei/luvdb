@@ -166,7 +166,7 @@ class UserPinFeed(Feed):
         return pin.title
 
     def item_description(self, pin):
-        return pin.description
+        return pin.content
 
     def item_link(self, pin):
         return reverse("write:pin_detail", kwargs={"pk": pin.pk, "username": pin.user})
@@ -261,7 +261,7 @@ class TagListFeed(Feed):
             "post": "write:post_detail",
             "pin": "write:pin_detail",
             "repost": "write:repost_detail",
-            "gamecheckin": "write:game_checkin_detail",
+            "gamecheckin": "write:play_checkin_detail",
             "readcheckin": "write:read_checkin_detail",
             "watchcheckin": "write:watch_checkin_detail",
             "listencheckin": "write:listen_checkin_detail",
@@ -368,7 +368,7 @@ class TagUserListFeed(Feed):
             "post": "write:post_detail",
             "pin": "write:pin_detail",
             "repost": "write:repost_detail",
-            "gamecheckin": "write:game_checkin_detail",
+            "gamecheckin": "write:play_checkin_detail",
             "readcheckin": "write:read_checkin_detail",
             "watchcheckin": "write:watch_checkin_detail",
             "listencheckin": "write:listen_checkin_detail",
