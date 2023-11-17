@@ -1063,6 +1063,9 @@ def manage_mastodon_account(request, username):
 def webfinger(request):
     # Extract the requested resource (username)
     resource = request.GET.get("resource")
+    if not resource.startswith("acct:"):
+        raise Http404("Invalid resource format")
+
     username = resource.split(":")[1].split("@")[0]
 
     try:
@@ -1085,7 +1088,7 @@ def webfinger(request):
         ],
     }
 
-    return JsonResponse(response)
+    return JsonResponse(response, content_type="application/jrd+json")
 
 
 def ap_actor(request, username):
@@ -1115,7 +1118,7 @@ def ap_actor(request, username):
         "url": root_url + f"/u/{user.username}/",
     }
 
-    return JsonResponse(response)
+    return JsonResponse(response, content_type="application/activity+json")
 
 
 @csrf_exempt

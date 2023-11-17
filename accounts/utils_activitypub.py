@@ -66,19 +66,15 @@ def sign_and_send(message, name, domain, target_domain, private_key):
     if response.status_code >= 400:
         print(
             "Failed request",
+            response.status_code,
             "\n",
             response.text,
             "\n",
             header,
             "\n",
-            signature,
-            "\n",
             target_domain,
             "\n",
-            response.status_code,
-            "\n",
-            response.reason,
-            "\n",
+            inbox,
         )
         return False
     else:
@@ -91,6 +87,7 @@ def verify_requests(request, public_key):
     Verify the signature of the request using the public key of the sender.
     """
     signature_header = request.headers.get("Signature")
+    print("signature header:", signature_header)
     if not signature_header:
         print("no signature header")
         return False
@@ -115,7 +112,7 @@ def verify_requests(request, public_key):
         signed_data = "\n".join(
             f"{k}: {v}" for k, v in headers.items() if v is not None
         )
-        # print("signed data:", signed_data)
+        print("signed data:", signed_data)
         # Verifying the signature
 
         public_key.verify(
