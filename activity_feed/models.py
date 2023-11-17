@@ -21,6 +21,15 @@ class Activity(models.Model):
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
+        was_update = False
+        if not is_new:
+            # Retrieve the current content_object (Say instance)
+            current_content_object = self.content_object
+            # Compare timestamps to check for updates
+            was_update = (
+                current_content_object.updated_at > current_content_object.timestamp
+            )
+
         # Call the real save method
         super(Activity, self).save(*args, **kwargs)
 
@@ -28,6 +37,9 @@ class Activity(models.Model):
             print("New activity created")
             print("Updating user outbox")
             self.update_user_outbox(activity_type="Create")
+        elif was_update:
+            print("Activity updated")
+            self.update_user_outbox(activity_type="Update")
 
     def update_user_outbox(self, activity_type="Create"):
         activitypub_message = self.to_activitypub(activity_type=activity_type)
