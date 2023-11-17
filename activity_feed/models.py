@@ -46,12 +46,15 @@ class Activity(models.Model):
         activitypub_message = self.to_activitypub(activity_type=activity_type)
         followers = self.user.fediversefollower_set.all()
         private_key = import_private_key(self.user.username)
+        if activity_type == "Update":
+            updated_time = self.content_object.updated_at.isoformat()
         for follower in followers:
             follower_url = follower.follower_uri
             target_domain = follower_url.split("/")[2]
             print(follower_url, target_domain)
             activitypub_message["cc"] = [follower_url]
             activitypub_message["object"]["cc"] = [follower_url]
+            activitypub_message["object"]["updated"] = updated_time
             success = sign_and_send(
                 activitypub_message,
                 "/u/" + self.user.username + "/actor/",
