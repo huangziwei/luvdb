@@ -25,7 +25,6 @@ from .views import (
     SeriesDetailView,
     SeriesHistoryView,
     SeriesUpdateView,
-    WatchCheckInCreateView,
     WatchCheckInDeleteView,
     WatchCheckInDetailView,
     WatchCheckInUpdateView,
@@ -91,7 +90,7 @@ urlpatterns = [
         name="movie_checkin_all_list",
     ),
     path(
-        "movie/<int:object_id>/<str:username>/checkins/",
+        "movie/<int:object_id>/checkins/<str:username>/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "movie"},
         name="movie_checkin_list",
@@ -103,30 +102,10 @@ urlpatterns = [
         name="series_checkin_all_list",
     ),
     path(
-        "series/<int:object_id>/<str:username>/checkins/",
+        "series/<int:object_id>/checkins/<str:username>/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "series"},
         name="series_checkin_list",
-    ),
-    path(
-        "checkin/<int:pk>/",
-        WatchCheckInDetailView.as_view(),
-        name="watch_checkin_detail",
-    ),
-    path(
-        "checkin/<int:pk>/update/",
-        WatchCheckInUpdateView.as_view(),
-        name="watch_checkin_update",
-    ),
-    path(
-        "checkin/<int:pk>/delete/",
-        WatchCheckInDeleteView.as_view(),
-        name="watch_checkin_delete",
-    ),
-    path(
-        "<str:username>/checkins/",
-        GenericCheckInUserListView.as_view(),
-        name="watch_checkin_user_list",
     ),
     # cast
     path(

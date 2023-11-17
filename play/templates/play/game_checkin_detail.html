@@ -125,8 +125,8 @@
                         </a>
                     </p>
                     {% if object.user == request.user %}
-                        <a href="{% url "play:game_checkin_update" object.pk %}" class="me-2">Edit</a>
-                        <a href="{% url "play:game_checkin_delete" object.pk %}" class="me-2">Delete</a>
+                        <a href="{% url "write:play_checkin_update" object.user.username object.pk %}" class="me-2">Edit</a>
+                        <a href="{% url "write:play_checkin_delete" object.user.username object.pk %}" class="me-2">Delete</a>
                     {% endif %}
                 </div>
                 <div class="d-flex justify-content-between align-items-center">

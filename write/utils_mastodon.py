@@ -20,25 +20,42 @@ def create_mastodon_post(
     # Create the link back to your site
     domain = settings.ROOT_URL  # Using domain from settings
     if content_type == "Say":
-        content_url = domain + reverse("write:say_detail", args=[content_id])
+        content_url = domain + reverse(
+            "write:say_detail", kwargs={"id": content_id, "username": content_username}
+        )
     elif content_type == "Post":
-        content_url = domain + reverse("write:post_detail", args=[content_id])
+        content_url = domain + reverse(
+            "write:post_detail", kwargs={"id": content_id, "username": content_username}
+        )
     elif content_type == "Pin":
         content_url = domain + reverse(
             "write:pin_detail", kwargs={"id": content_id, "username": content_username}
         )
     elif content_type == "Repost":
-        content_url = domain + reverse("write:repost_detail", args=[content_id])
+        content_url = domain + reverse(
+            "write:repost_detail",
+            kwargs={"id": content_id, "username": content_username},
+        )
     elif content_type == "ReadCheckIn":
-        content_url = domain + reverse("read:read_checkin_detail", args=[content_id])
+        content_url = domain + reverse(
+            "write:read_checkin_detail",
+            kwargs={"id": content_id, "username": content_username},
+        )
     elif content_type == "WatchCheckIn":
-        content_url = domain + reverse("watch:watch_checkin_detail", args=[content_id])
+        content_url = domain + reverse(
+            "write:watch_checkin_detail",
+            kwargs={"id": content_id, "username": content_username},
+        )
     elif content_type == "ListenCheckIn":
         content_url = domain + reverse(
-            "listen:listen_checkin_detail", args=[content_id]
+            "write:listen_checkin_detail",
+            kwargs={"id": content_id, "username": content_username},
         )
     elif content_type == "GameCheckIn":
-        content_url = domain + reverse("game:game_checkin_detail", args=[content_id])
+        content_url = domain + reverse(
+            "write:game_checkin_detail",
+            kwargs={"id": content_id, "username": content_username},
+        )
     else:
         content_url = ""
 

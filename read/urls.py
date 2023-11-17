@@ -11,7 +11,6 @@ from .views import (
     BookUpdateView,
     GenericCheckInAllListView,
     GenericCheckInListView,
-    GenericCheckInUserListView,
     GenreAutocomplete,
     GenreDetailView,
     InstanceAutocomplete,
@@ -28,10 +27,6 @@ from .views import (
     PeriodicalDetailView,
     PeriodicalHistoryView,
     PeriodicalUpdateView,
-    ReadCheckInCreateView,
-    ReadCheckInDeleteView,
-    ReadCheckInDetailView,
-    ReadCheckInUpdateView,
     ReadListAllView,
     ReadListView,
     WorkAutocomplete,
@@ -48,18 +43,13 @@ urlpatterns = [
     path("all/", view=ReadListAllView.as_view(), name="read_list_all"),
     # checkin
     path(
-        "book/<int:book_id>/checkin/create/",
-        ReadCheckInCreateView.as_view(),
-        name="read_checkin_create",
-    ),
-    path(
         "book/<int:object_id>/checkins/",
         view=GenericCheckInAllListView.as_view(),
         kwargs={"model_name": "book"},
         name="book_checkin_all_list",
     ),
     path(
-        "book/<int:object_id>/<str:username>/checkins/",
+        "book/<int:object_id>/checkins/<str:username>/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "book"},
         name="book_checkin_list",
@@ -71,28 +61,10 @@ urlpatterns = [
         name="issue_checkin_all_list",
     ),
     path(
-        "periodical/<int:periodical_id>/issue/<int:object_id>/<str:username>/checkins/",
+        "periodical/<int:periodical_id>/issue/<int:object_id>/checkins/<str:username>/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "issue"},
         name="issue_checkin_list",
-    ),
-    path(
-        "checkin/<int:pk>/", ReadCheckInDetailView.as_view(), name="read_checkin_detail"
-    ),
-    path(
-        "checkin/<int:pk>/update/",
-        ReadCheckInUpdateView.as_view(),
-        name="read_checkin_update",
-    ),
-    path(
-        "checkin/<int:pk>/delete/",
-        ReadCheckInDeleteView.as_view(),
-        name="read_checkin_delete",
-    ),
-    path(
-        "<str:username>/checkins/",
-        view=GenericCheckInUserListView.as_view(),
-        name="read_checkin_user_list",
     ),
     # instance
     path("instance/create/", InstanceCreateView.as_view(), name="instance_create"),

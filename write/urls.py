@@ -1,5 +1,30 @@
 from django.urls import path, re_path
 
+from listen.views import GenericCheckInUserListView as GenericListenCheckInUserListView
+from listen.views import (
+    ListenCheckInDeleteView,
+    ListenCheckInDetailView,
+    ListenCheckInUpdateView,
+)
+from play.views import (
+    GameCheckInDeleteView,
+    GameCheckInDetailView,
+    GameCheckInUpdateView,
+    GameCheckInUserListView,
+)
+from read.views import GenericCheckInUserListView as GenericReadCheckInUserListView
+from read.views import (
+    ReadCheckInDeleteView,
+    ReadCheckInDetailView,
+    ReadCheckInUpdateView,
+)
+from watch.views import GenericCheckInUserListView as GenericWatchCheckInUserListView
+from watch.views import (
+    WatchCheckInDeleteView,
+    WatchCheckInDetailView,
+    WatchCheckInUpdateView,
+)
+
 from .feeds import (
     TagListFeed,
     TagUserListFeed,
@@ -193,5 +218,90 @@ urlpatterns = [
         "u/<str:username>/luvlist/<int:pk>/surprise/",
         RandomizerDetailView.as_view(),
         name="surprise",
+    ),
+    # move check-ins from individual apps/urls.py to write/urls.py
+    ## Read
+    path(
+        "u/<str:username>/read/checkin/<int:pk>/",
+        ReadCheckInDetailView.as_view(),
+        name="read_checkin_detail",
+    ),
+    path(
+        "u/<str:username>/read/checkin/<int:pk>/update/",
+        ReadCheckInUpdateView.as_view(),
+        name="read_checkin_update",
+    ),
+    path(
+        "u/<str:username>/read/checkin/<int:pk>/delete/",
+        ReadCheckInDeleteView.as_view(),
+        name="read_checkin_delete",
+    ),
+    path(
+        "u/<str:username>/read/checkins/",
+        view=GenericReadCheckInUserListView.as_view(),
+        name="read_checkin_user_list",
+    ),
+    ## Listen
+    path(
+        "u/<str:username>/listen/checkin/<int:pk>/",
+        ListenCheckInDetailView.as_view(),
+        name="listen_checkin_detail",
+    ),
+    path(
+        "u/<str:username>/listen/checkin/<int:pk>/update/",
+        ListenCheckInUpdateView.as_view(),
+        name="listen_checkin_update",
+    ),
+    path(
+        "u/<str:username>/listen/checkin/<int:pk>/delete/",
+        ListenCheckInDeleteView.as_view(),
+        name="listen_checkin_delete",
+    ),
+    path(
+        "u/<str:username>/listen/checkins/",
+        GenericListenCheckInUserListView.as_view(),
+        name="listen_checkin_user_list",
+    ),
+    # Watch
+    path(
+        "u/<str:username>/watch/checkin/<int:pk>/",
+        WatchCheckInDetailView.as_view(),
+        name="watch_checkin_detail",
+    ),
+    path(
+        "u/<str:username>/watch/checkin/<int:pk>/update/",
+        WatchCheckInUpdateView.as_view(),
+        name="watch_checkin_update",
+    ),
+    path(
+        "u/<str:username>/watch/checkin/<int:pk>/delete/",
+        WatchCheckInDeleteView.as_view(),
+        name="watch_checkin_delete",
+    ),
+    path(
+        "u/<str:username>/watch/checkins/",
+        GenericWatchCheckInUserListView.as_view(),
+        name="watch_checkin_user_list",
+    ),
+    # Play
+    path(
+        "u/<str:username>/play/checkin/<int:pk>/",
+        GameCheckInDetailView.as_view(),
+        name="play_checkin_detail",
+    ),
+    path(
+        "u/<str:username>/play/checkin/<int:pk>/update/",
+        GameCheckInUpdateView.as_view(),
+        name="play_checkin_update",
+    ),
+    path(
+        "u/<str:username>/play/checkin/<int:pk>/delete/",
+        GameCheckInDeleteView.as_view(),
+        name="play_checkin_delete",
+    ),
+    path(
+        "u/<str:username>/play/checkins/",
+        GameCheckInUserListView.as_view(),
+        name="play_checkin_user_list",
     ),
 ]

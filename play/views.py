@@ -614,7 +614,10 @@ class GameCheckInUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "play/game_checkin_update.html"
 
     def get_success_url(self):
-        return reverse_lazy("play:game_checkin_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy(
+            "write:play_checkin_detail",
+            kwargs={"pk": self.object.pk, "username": self.object.user.username},
+        )
 
 
 class GameCheckInDeleteView(LoginRequiredMixin, DeleteView):

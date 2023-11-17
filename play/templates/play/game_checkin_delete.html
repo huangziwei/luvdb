@@ -9,7 +9,7 @@
                 <form method="POST">
                     {% csrf_token %}
                     <button class="btn btn-danger" type="submit">Delete</button>
-                    <a href="{% url 'play:game_checkin_detail' object.id %}"
+                    <a href="{% url 'write:play_checkin_detail' object.user.username object.id %}"
                        class="btn btn-secondary">Cancel</a>
                 </form>
             </div>

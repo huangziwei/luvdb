@@ -130,8 +130,8 @@
                         {% endif %}
                     </p>
                     {% if object.user == request.user %}
-                        <a href="{% url "read:read_checkin_update" object.id %}" class="me-2">Edit</a>
-                        <a href="{% url "read:read_checkin_delete" object.id %}" class="me-2">Delete</a>
+                        <a href="{% url "write:read_checkin_update" object.user.username object.id %}" class="me-2">Edit</a>
+                        <a href="{% url "write:read_checkin_delete" object.user.username object.id %}" class="me-2">Delete</a>
                     {% endif %}
                 </div>
                 <div class="d-flex justify-content-between align-items-center">

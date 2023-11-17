@@ -59,18 +59,18 @@
                 </span>
                 {% if checkin.comments_enabled %}
                     <span class="ms-2 me-2">
-                        <a href="{% url 'listen:listen_checkin_detail' checkin.id %}"
+                        <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}"
                            class="text-decoration-none">Reply</a>
                     </span>
                 {% endif %}
                 {% if checkin.get_activity_id %}
-                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_detail' checkin.id %}?repost=true"
+                    <span class="ms-2 me-2"><a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}?repost=true"
    class="text-decoration-none">Repost</a></span>
                 {% endif %}
                 {% if checkin.user == request.user %}
-                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_update' checkin.id %}"
+                    <span class="ms-2 me-2"><a href="{% url 'write:listen_checkin_update' checkin.user.username checkin.id %}"
    class="text-decoration-none">Edit</a></span>
-                    <span class="ms-2 me-2"><a href="{% url 'listen:listen_checkin_delete' checkin.id %}"
+                    <span class="ms-2 me-2"><a href="{% url 'write:listen_checkin_delete' checkin.user.username checkin.id %}"
    class="text-decoration-none">Delete</a></span>
                 {% endif %}
             </div>

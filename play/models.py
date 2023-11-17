@@ -341,7 +341,10 @@ class GameCheckIn(models.Model):
     votes = GenericRelation("discover.Vote")
 
     def get_absolute_url(self):
-        return reverse("play:game_checkin_detail", args=[str(self.id)])
+        return reverse(
+            "write:play_checkin_detail",
+            kwargs={"pk": self.pk, "username": self.user.username},
+        )
 
     def get_activity_id(self):
         try:

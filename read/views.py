@@ -1144,23 +1144,6 @@ class ReadListAllView(ListView):
 ###########
 
 
-class ReadCheckInCreateView(LoginRequiredMixin, CreateView):
-    model = ReadCheckIn
-    form_class = ReadCheckInForm
-    template_name = "read/checkin_create.html"
-
-    def form_valid(self, form):
-        book = get_object_or_404(
-            Book, pk=self.kwargs.get("book_id")
-        )  # Fetch the book based on URL parameter
-        form.instance.book = book
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy("read:read_checkin_detail", kwargs={"pk": self.object.pk})
-
-
 class ReadCheckInDetailView(DetailView):
     model = ReadCheckIn
     template_name = "read/read_checkin_detail.html"
@@ -1204,7 +1187,10 @@ class ReadCheckInUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "read/read_checkin_update.html"
 
     def get_success_url(self):
-        return reverse_lazy("read:read_checkin_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy(
+            "write:read_checkin_detail",
+            kwargs={"pk": self.object.pk, "username": self.object.user.username},
+        )
 
 
 class ReadCheckInDeleteView(LoginRequiredMixin, DeleteView):
@@ -1216,7 +1202,10 @@ class ReadCheckInDeleteView(LoginRequiredMixin, DeleteView):
 
         if isinstance(content_object, Book):
             return reverse_lazy(
-                "read:book_detail", kwargs={"pk": self.object.content_object.pk}
+                "read:book_detail",
+                kwargs={
+                    "pk": self.object.content_object.pk,
+                },
             )
         elif isinstance(content_object, Issue):
             return reverse_lazy(

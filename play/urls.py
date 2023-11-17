@@ -75,31 +75,12 @@ urlpatterns = [
         name="game_checkin_all_list",
     ),
     path(
-        "game/<int:game_id>/<str:username>/checkins/",
+        "game/<int:game_id>/checkins/<str:username>/",
         view=GameCheckInListView.as_view(),
         name="game_checkin_list",
     ),
     # cast
     path("game/<int:pk>/cast/", GameCastDetailView.as_view(), name="game_cast_detail"),
-    # checkin
-    path(
-        "checkin/<int:pk>/", GameCheckInDetailView.as_view(), name="game_checkin_detail"
-    ),
-    path(
-        "checkin/<int:pk>/update/",
-        GameCheckInUpdateView.as_view(),
-        name="game_checkin_update",
-    ),
-    path(
-        "checkin/<int:pk>/delete/",
-        GameCheckInDeleteView.as_view(),
-        name="game_checkin_delete",
-    ),
-    path(
-        "<str:username>/checkins/",
-        GameCheckInUserListView.as_view(),
-        name="game_checkin_user_list",
-    ),
     # series
     path("series/create/", GameSeriesCreateView.as_view(), name="series_create"),
     path("series/<int:pk>/", GameSeriesDetailView.as_view(), name="series_detail"),

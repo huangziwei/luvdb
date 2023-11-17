@@ -178,9 +178,9 @@
                         {% endif %}
                     </p>
                     {% if object.user == request.user %}
-                        <a href="{% url "listen:listen_checkin_update" object.id %}"
+                        <a href="{% url "write:listen_checkin_update" object.user.username object.id %}"
                             class="me-2">Edit</a>
-                        <a href="{% url "listen:listen_checkin_delete" object.id %}"
+                        <a href="{% url "write:listen_checkin_delete" object.user.username object.id %}"
                             class="me-2">Delete</a>
                     {% endif %}
                 </div>

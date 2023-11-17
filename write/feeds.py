@@ -261,10 +261,10 @@ class TagListFeed(Feed):
             "post": "write:post_detail",
             "pin": "write:pin_detail",
             "repost": "write:repost_detail",
-            "gamecheckin": "play:game_checkin_detail",
-            "readcheckin": "read:read_checkin_detail",
-            "watchcheckin": "watch:watch_checkin_detail",
-            "listencheckin": "listen:listen_checkin_detail",
+            "gamecheckin": "write:game_checkin_detail",
+            "readcheckin": "write:read_checkin_detail",
+            "watchcheckin": "write:watch_checkin_detail",
+            "listencheckin": "write:listen_checkin_detail",
             "follow": "accounts:detail",
         }
         url_name = mapping.get(model_name)
@@ -368,10 +368,10 @@ class TagUserListFeed(Feed):
             "post": "write:post_detail",
             "pin": "write:pin_detail",
             "repost": "write:repost_detail",
-            "gamecheckin": "play:game_checkin_detail",
-            "readcheckin": "read:read_checkin_detail",
-            "watchcheckin": "watch:watch_checkin_detail",
-            "listencheckin": "listen:listen_checkin_detail",
+            "gamecheckin": "write:game_checkin_detail",
+            "readcheckin": "write:read_checkin_detail",
+            "watchcheckin": "write:watch_checkin_detail",
+            "listencheckin": "write:listen_checkin_detail",
             "follow": "accounts:detail",
         }
         url_name = mapping.get(model_name)

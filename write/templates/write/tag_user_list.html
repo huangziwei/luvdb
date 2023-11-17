@@ -33,7 +33,7 @@
                                 </div>
                                 <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
                                 <div class="mb-2">
-                                    <a href="{% url 'write:say_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                    <a href="{% url 'write:say_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                 </div>
                             </div>
                         {% elif item.model_name == "pin" %}
@@ -55,7 +55,7 @@
                                     <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
                                 {% endif %}                          
                                 <div class="mb-2">
-                                    <a href="{% url 'write:pin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                    <a href="{% url 'write:pin_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                 </div>
                             </div>
                         {% elif item.model_name == "post" %}
@@ -69,7 +69,7 @@
                                 </div>
                                 <div class="bg-light p-3 mb-2">{{ item.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify}}</div>
                                 <div class="mb-2">
-                                    <a href="{% url 'write:post_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                    <a href="{% url 'write:post_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                 </div>
                             </div>
                         {% elif item.model_name == "repost" %}
@@ -80,7 +80,7 @@
                                 </div>
                                 <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
                                 <div class="mb-2">
-                                    <a href="{% url 'write:repost_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                    <a href="{% url 'write:repost_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                 </div>
                             </div>
                         {% elif item.model_name == "luvlist" %}
@@ -196,7 +196,7 @@
                                     </div>
                                 </div>
                                 <div class="mb-2">
-                                    <a href="{% url 'read:read_checkin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                    <a href="{% url 'write:read_checkin_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                 </div>
 
                                 {% elif item.model_name == "watchcheckin" %}
@@ -293,7 +293,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-2">
-                                        <a href="{% url 'watch:watch_checkin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                        <a href="{% url 'write:watch_checkin_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                     </div>
                                 {% elif item.model_name == "listencheckin" %}
                                     <div class="mb-2">{{ item.content | linkify_tags | linkify_mentions | markdownify }}</div>
@@ -399,7 +399,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-2">
-                                        <a href="{% url 'listen:listen_checkin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                        <a href="{% url 'write:listen_checkin_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                     </div>
                                     
                                 {% elif item.model_name == "gamecheckin" %}
@@ -491,7 +491,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-2">
-                                        <a href="{% url 'play:game_checkin_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                        <a href="{% url 'write:game_checkin_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                     </div>
                                 {% endif %}
                                 

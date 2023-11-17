@@ -103,10 +103,10 @@ class UserActivityFeed(Feed):
             "post": "write:post_detail",
             "pin": "write:pin_detail",
             "repost": "write:repost_detail",
-            "gamecheckin": "play:game_checkin_detail",
-            "readcheckin": "read:read_checkin_detail",
-            "watchcheckin": "watch:watch_checkin_detail",
-            "listencheckin": "listen:listen_checkin_detail",
+            "gamecheckin": "write:game_checkin_detail",
+            "readcheckin": "write:read_checkin_detail",
+            "watchcheckin": "write:watch_checkin_detail",
+            "listencheckin": "write:listen_checkin_detail",
             "follow": "accounts:detail",
         }
 
@@ -115,7 +115,13 @@ class UserActivityFeed(Feed):
             raise ValueError(f"Unknown model name: {model_name}")
 
         if model_name != "follow":
-            return reverse(url_name, args=[related_object.pk])
+            return reverse(
+                url_name,
+                kwargs={
+                    "pk": related_object.pk,
+                    "username": related_object.user.username,
+                },
+            )
         else:
             return reverse(url_name, args=[related_object.followed.username])
 

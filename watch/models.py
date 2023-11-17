@@ -423,7 +423,10 @@ class WatchCheckIn(models.Model):
     votes = GenericRelation("discover.Vote")
 
     def get_absolute_url(self):
-        return reverse("watch:watch_checkin_detail", args=[str(self.id)])
+        return reverse(
+            "write:watch_checkin_detail",
+            kwargs={"pk": self.pk, "username": self.user.username},
+        )
 
     def get_activity_id(self):
         try:

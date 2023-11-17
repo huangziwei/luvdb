@@ -1012,23 +1012,6 @@ class EpisodeCastDetailView(DetailView):
 ###########
 
 
-class WatchCheckInCreateView(LoginRequiredMixin, CreateView):
-    model = WatchCheckIn
-    form_class = WatchCheckInForm
-    template_name = "watch/checkin_create.html"
-
-    def form_valid(self, form):
-        movie = get_object_or_404(
-            movie, pk=self.kwargs.get("movie_id")
-        )  # Fetch the movie based on URL parameter
-        form.instance.movie = movie
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy("watch:watch_checkin_detail", kwargs={"pk": self.object.pk})
-
-
 class WatchCheckInDetailView(DetailView):
     model = WatchCheckIn
     template_name = "watch/watch_checkin_detail.html"
@@ -1071,7 +1054,10 @@ class WatchCheckInUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "watch/watch_checkin_update.html"
 
     def get_success_url(self):
-        return reverse_lazy("watch:watch_checkin_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy(
+            "write:watch_checkin_detail",
+            kwargs={"pk": self.object.pk, "username": self.object.user.username},
+        )
 
 
 class WatchCheckInDeleteView(LoginRequiredMixin, DeleteView):

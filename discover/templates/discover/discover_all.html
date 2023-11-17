@@ -164,7 +164,7 @@
                                         {% endif %}
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
-                                                <a href="{% url 'read:read_checkin_detail' checkin.id %}" class="text-muted">
+                                                <a href="{% url 'write:read_checkin_detail' checkin.user.username checkin.id %}" class="text-muted">
                                                     {{ checkin.timestamp|timesince }} ago
                                                 </a>
                                             </div>
@@ -210,7 +210,7 @@
                                         {% endif %}
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
-                                                <a href="{% url 'watch:watch_checkin_detail' checkin.id %}" class="text-muted">
+                                                <a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}" class="text-muted">
                                                     {{ checkin.timestamp|timesince }} ago
                                                 </a>
                                             </div>
@@ -253,7 +253,7 @@
                                         {% endif %}
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
-                                                <a href="{% url 'listen:listen_checkin_detail' checkin.id %}" class="text-muted">
+                                                <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}" class="text-muted">
                                                     {{ checkin.timestamp|timesince }} ago
                                                 </a>
                                             </div>
@@ -293,7 +293,7 @@
                                         {% endif %}
                                         <span class="d-flex">
                                             <div class="me-2 text-muted">
-                                                <a href="{% url 'play:game_checkin_detail' checkin.id %}" class="text-muted">
+                                                <a href="{% url 'write:play_checkin_detail' checkin.user.username checkin.id %}" class="text-muted">
                                                     {{ checkin.timestamp|timesince }} ago
                                                 </a>
                                             </div>
