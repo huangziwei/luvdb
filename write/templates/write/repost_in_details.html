@@ -12,10 +12,10 @@
                     <a href="{{ repost.get_absolute_url }}" class="text-secondary">{{ repost.timestamp | date:"Y.m.d H:i" }}</a>
                 </div>
                 {% if repost.user == request.user %}
-                    <a href="{% url "write:repost_update" repost.pk %}" class="me-2">Edit</a>
+                    <a href="{% url "write:repost_update" repost.user.username repost.pk %}" class="me-2">Edit</a>
                 {% endif %}
                 {% if object.user == request.user or repost.user == request.user %}
-                    <a href="{% url "write:repost_delete" repost.pk %}" class="me-2">Delete</a>
+                    <a href="{% url "write:repost_delete" repost.user.username repost.pk %}" class="me-2">Delete</a>
                 {% endif %}
             </span>
             {% if repost.content %}
@@ -31,7 +31,7 @@
     {% if object.get_activity_id is not None and not object.is_direct_mention %}
         {% if not is_blocked %}
             <form method="POST"
-                action="{% url 'write:repost_create' object.get_activity_id %}">
+                action="{% url 'write:repost_create' user.username object.get_activity_id %}">
                 {% csrf_token %}
                 {{ repost_form | crispy }}
                 <button type="submit" class='btn btn-sm btn-primary'>Add Repost</button>

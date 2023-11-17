@@ -186,7 +186,10 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("write:post_detail", args=[str(self.object.id)])
+        return reverse(
+            "write:post_detail",
+            kwargs={"pk": self.object.id, "username": self.object.user.username},
+        )
 
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
@@ -195,7 +198,10 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     form_class = PostForm
 
     def get_success_url(self):
-        return reverse_lazy("write:post_detail", kwargs={"pk": self.object.id})
+        return reverse_lazy(
+            "write:post_detail",
+            kwargs={"pk": self.object.id, "username": self.object.user.username},
+        )
 
 
 class PostDeleteView(LoginRequiredMixin, DeleteView):
@@ -311,7 +317,10 @@ class SayCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("write:say_detail", args=[str(self.object.id)])
+        return reverse(
+            "write:say_detail",
+            kwargs={"pk": self.object.id, "username": self.object.user.username},
+        )
 
 
 class SayUpdateView(LoginRequiredMixin, UpdateView):
@@ -320,7 +329,10 @@ class SayUpdateView(LoginRequiredMixin, UpdateView):
     form_class = SayForm
 
     def get_success_url(self):
-        return reverse_lazy("write:say_detail", kwargs={"pk": self.object.id})
+        return reverse_lazy(
+            "write:say_detail",
+            kwargs={"pk": self.object.id, "username": self.object.user.username},
+        )
 
 
 class SayDeleteView(LoginRequiredMixin, DeleteView):
@@ -412,7 +424,10 @@ class PinCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("write:pin_detail", args=[str(self.object.id)])
+        return reverse(
+            "write:pin_detail",
+            kwargs={"pk": self.object.id, "username": self.object.user.username},
+        )
 
 
 class PinUpdateView(LoginRequiredMixin, UpdateView):
@@ -421,7 +436,10 @@ class PinUpdateView(LoginRequiredMixin, UpdateView):
     form_class = PinForm
 
     def get_success_url(self):
-        return reverse_lazy("write:pin_detail", kwargs={"pk": self.object.id})
+        return reverse_lazy(
+            "write:pin_detail",
+            kwargs={"pk": self.object.id, "username": self.object.user.username},
+        )
 
 
 class PinDeleteView(LoginRequiredMixin, DeleteView):
@@ -703,7 +721,10 @@ class LuvListCreateView(CreateView):
         return super(LuvListCreateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse("write:luvlist_detail", args=[str(self.object.id)])
+        return reverse(
+            "write:luvlist_detail",
+            kwargs={"pk": self.object.id, "username": self.object.user.username},
+        )
 
 
 class LuvListDetailView(DetailView):
@@ -762,7 +783,10 @@ class LuvListUpdateView(UpdateView):
         return super(LuvListUpdateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse("write:luvlist_detail", args=[str(self.object.id)])
+        return reverse(
+            "write:luvlist_detail",
+            kwargs={"pk": self.object.id, "username": self.object.user.username},
+        )
 
 
 class LuvListDeleteView(LoginRequiredMixin, DeleteView):

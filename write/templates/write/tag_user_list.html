@@ -93,7 +93,7 @@
                                     <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
                                 </div>
                                 <div class="mb-2">
-                                    <a href="{% url 'write:luvlist_detail' item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago | updated {{ item.updated_at|timesince }} ago</a>
+                                    <a href="{% url 'write:luvlist_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago | updated {{ item.updated_at|timesince }} ago</a>
                                 </div>
                             </div>
                         {% elif "checkin" in item.model_name %}

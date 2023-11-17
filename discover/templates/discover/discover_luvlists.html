@@ -14,7 +14,7 @@
                             <li>
                                 <div class="d-flex align-items-start">
                                     <div>
-                                        <a href="{% url 'write:luvlist_detail' list.id %}">{{list.title}}</a>
+                                        <a href="{% url 'write:luvlist_detail' list.user.username list.id %}">{{list.title}}</a>
                                         <span class="d-flex">
                                             <p class="me-2 text-muted">
                                                 by <a href="{% url 'accounts:detail' list.user.username %}">{{ list.user.display_name|default:list.user.username }}</a>

@@ -18,10 +18,10 @@
                             data-user="{{ comment.user.display_name | default:comment.user.username }}"
                             data-timestamp="{{ comment.timestamp | date:'Y.m.d H:i' }}">Quote</a>
                         {% if comment.user == request.user %}
-                            <a href="{% url "write:comment_update" comment.pk %}" class="me-2">Edit</a>
+                            <a href="{% url "write:comment_update" comment.user.username comment.pk %}" class="me-2">Edit</a>
                         {% endif %}
                         {% if object.user == request.user or comment.user == request.user %}
-                            <a href="{% url "write:comment_delete" comment.pk %}" class="me-2">Delete</a>
+                            <a href="{% url "write:comment_delete" comment.user.username comment.pk %}" class="me-2">Delete</a>
                         {% endif %}
                     </div>
                 </div>
@@ -39,10 +39,10 @@
                         data-user="{{ comment.user.display_name | default:comment.user.username }}"
                         data-timestamp="{{ comment.timestamp | date:'Y.m.d H:i' }}">Quote</a>
                     {% if comment.user == request.user %}
-                        <a href="{% url "write:comment_update" comment.pk %}" class="me-2">Edit</a>
+                        <a href="{% url "write:comment_update" comment.user.username comment.pk %}" class="me-2">Edit</a>
                     {% endif %}
                     {% if object.user == request.user or comment.user == request.user %}
-                        <a href="{% url "write:comment_delete" comment.pk %}" class="me-2">Delete</a>
+                        <a href="{% url "write:comment_delete" comment.user.username comment.pk %}" class="me-2">Delete</a>
                     {% endif %}
                 </div>
             </div>
@@ -56,7 +56,7 @@
     {% if object.comments_enabled %}
         {% if not is_blocked %}
             <form method="POST"
-                  action="{% url 'write:comment_create' app_label object_type object.id %}"
+                  action="{% url 'write:comment_create' user.username app_label object_type object.id %}"
                   id="comment-form">
                 {% csrf_token %}
                 {{ comment_form|crispy }}

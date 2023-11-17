@@ -488,8 +488,8 @@
                     <a href="{% url 'write:say_list' repost.user.username %}"
                         class='mb-2 me-2 text-secondary'>{{ object.timestamp|date:"Y.m.d H:i" }}</a>
                     {% if object.user == request.user %}
-                        <a href="{% url "write:repost_update" object.pk %}" class="me-2">Edit</a>
-                        <a href="{% url "write:repost_delete" object.pk %}" class="me-2">Delete</a>
+                        <a href="{% url "write:repost_update" object.user.username object.pk %}" class="me-2">Edit</a>
+                        <a href="{% url "write:repost_delete" object.user.username object.pk %}" class="me-2">Delete</a>
                     {% endif %}
                 </span>
                 <div class="d-flex justify-content-between align-items-center">

@@ -17,7 +17,7 @@
                             <li>
                                 <div class="d-flex align-items-start">
                                     <div>
-                                        <a href="{% url 'write:pin_detail' pin.id %}">{{pin.title}}</a>
+                                        <a href="{% url 'write:pin_detail' pin.user.username pin.id %}">{{pin.title}}</a>
                                         <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
                                         <span class="d-flex">
                                             <p class="me-2 text-muted">

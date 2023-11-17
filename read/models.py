@@ -561,6 +561,7 @@ class ReadCheckIn(models.Model):
                             + self.content
                             + "\n\n",
                             self.id,
+                            self.user.username,
                             "ReadCheckIn",
                         )
                     except Exception as e:
@@ -576,6 +577,7 @@ class ReadCheckIn(models.Model):
                             + self.content
                             + "\n\n",
                             self.id,
+                            self.user.username,
                             "ReadCheckIn",
                         )
                     except Exception as e:

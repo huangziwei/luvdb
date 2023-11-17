@@ -30,8 +30,8 @@
                            class="text-muted u-url dt-published">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
                     </div>
                     {% if object.user == request.user %}
-                        <a href="{% url "write:pin_update" object.pk %}" class="me-2">Edit</a>
-                        <a href="{% url "write:pin_delete" object.pk %}" class="me-2">Delete</a>
+                        <a href="{% url 'write:pin_update' object.user.username object.id %}" class="me-2">Edit</a>
+                        <a href="{% url 'write:pin_delete' object.user.username object.id %}" class="me-2">Delete</a>
                     {% endif %}
                 </span>
                 <div class="d-flex justify-content-between align-items-center">

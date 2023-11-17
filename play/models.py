@@ -386,6 +386,7 @@ class GameCheckIn(models.Model):
                             + self.content
                             + "\n\n",
                             self.id,
+                            self.user.username,
                             "GameCheckIn",
                         )
                     except Exception as e:
@@ -401,6 +402,7 @@ class GameCheckIn(models.Model):
                             + self.content
                             + "\n\n",
                             self.id,
+                            self.user.username,
                             "GameCheckIn",
                         )
                     except Exception as e:

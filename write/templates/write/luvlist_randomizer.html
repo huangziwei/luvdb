@@ -172,7 +172,7 @@
                             </h1>
                             <div class="mt-3 mb-3">
                                 <span>from</span>
-                                <a href="{% url 'write:luvlist_detail' luv_list.id %}" style="text-decoration: underline;">
+                                <a href="{% url 'write:luvlist_detail' luv_list.user.username luv_list.id %}" style="text-decoration: underline;">
                                     {{ luv_list.title }}
                                 </a>
                             </div>

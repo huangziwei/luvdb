@@ -13,13 +13,13 @@
                     <span style="display: flex;">
                         <p class="me-3">Say</p>
                         <p class="me-3">
-                            <a href="{% url 'write:post_create' %}">Post</a>
+                            <a href="{% url 'write:post_create' user.username %}">Post</a>
                         </p>
                         <p class="me-3">
-                            <a href="{% url 'write:pin_create' %}">Pin</a>
+                            <a href="{% url 'write:pin_create' user.username %}">Pin</a>
                         </p>
                         <p class="me-3">
-                            <a href="{% url 'write:luvlist_create' %}">List</a>
+                            <a href="{% url 'write:luvlist_create' user.username %}">List</a>
                         </p>
                     </span>
                     <form method="post">

@@ -49,7 +49,7 @@ class UserSayFeed(Feed):
         return None
 
     def item_link(self, say):
-        return reverse("write:say_detail", args=[say.pk])
+        return reverse("write:say_detail", kwargs={"pk": say.pk, "username": say.user})
 
     def item_pubdate(self, say):
         return say.timestamp
@@ -84,7 +84,9 @@ class UserPostFeed(Feed):
         return mark_safe(markdown.markdown(post.content))
 
     def item_link(self, post):
-        return reverse("write:post_detail", args=[post.pk])
+        return reverse(
+            "write:post_detail", kwargs={"pk": post.pk, "username": post.user}
+        )
 
     def item_pubdate(self, post):
         return post.timestamp
@@ -130,7 +132,9 @@ class UserPostProjectFeed(Feed):
         return mark_safe(markdown.markdown(post.content))
 
     def item_link(self, post):
-        return reverse("write:post_detail", args=[post.pk])
+        return reverse(
+            "write:post_detail", kwargs={"pk": post.pk, "username": post.user}
+        )
 
     def item_pubdate(self, post):
         return post.timestamp
@@ -165,7 +169,7 @@ class UserPinFeed(Feed):
         return pin.description
 
     def item_link(self, pin):
-        return reverse("write:pin_detail", args=[pin.pk])
+        return reverse("write:pin_detail", kwargs={"pk": pin.pk, "username": pin.user})
 
     def item_pubdate(self, pin):
         return pin.timestamp

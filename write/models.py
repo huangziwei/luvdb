@@ -174,7 +174,7 @@ class Repost(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
 
     def get_absolute_url(self):
-        return reverse("write:repost_detail", args=[str(self.id)])
+        return reverse("write:repost_detail", kwargs={"pk": self.id, "username": self.user.username})
 
     def get_activity_id(self):
         try:
@@ -221,6 +221,7 @@ class Repost(models.Model):
                         bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
                         self.content,
                         self.id,
+                        self.user.username,
                         "Repost",
                     )
                 except Exception as e:
@@ -234,6 +235,7 @@ class Repost(models.Model):
                         mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
                         self.content,
                         self.id,
+                        self.user.username,
                         "Repost",
                     )
                 except Exception as e:
@@ -311,7 +313,7 @@ class Post(models.Model):
     votes = GenericRelation(Vote)
 
     def get_absolute_url(self):
-        return reverse("write:post_detail", args=[str(self.id)])
+        return reverse("write:post_detail", kwargs={"pk": self.id, "username": self.user.username})
 
     def get_activity_id(self):
         try:
@@ -347,6 +349,7 @@ class Post(models.Model):
                         bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
                         f'I posted "{self.title}" on LʌvDB\n\n' + self.content + "\n\n",
                         self.id,
+                        self.user.username,
                         "Post",
                     )
                 except Exception as e:
@@ -360,6 +363,7 @@ class Post(models.Model):
                         mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
                         f'I posted "{self.title}" on LʌvDB\n\n' + self.content + "\n\n",
                         self.id,
+                        self.user.username,
                         "Post",
                     )
                 except Exception as e:
@@ -385,7 +389,9 @@ class Say(models.Model):
     visible_to = models.ManyToManyField(User, related_name="visible_says", blank=True)
 
     def get_absolute_url(self):
-        return reverse("write:say_detail", args=[str(self.id)])
+        return reverse(
+            "write:say_detail", kwargs={"pk": self.id, "username": self.user.username}
+        )
 
     def get_activity_id(self):
         try:
@@ -438,6 +444,7 @@ class Say(models.Model):
                         bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
                         self.content,
                         self.id,
+                        self.user.username,
                         "Say",
                     )
                 except Exception as e:
@@ -451,6 +458,7 @@ class Say(models.Model):
                         mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
                         self.content,
                         self.id,
+                        self.user.username,
                         "Say",
                     )
                 except Exception as e:
@@ -485,7 +493,9 @@ class Pin(models.Model):
     votes = GenericRelation(Vote)
 
     def get_absolute_url(self):
-        return reverse("write:pin_detail", args=[str(self.id)])
+        return reverse(
+            "write:pin_detail", kwargs={"pk": self.id, "username": self.user.username}
+        )
 
     def get_activity_id(self):
         try:
@@ -523,6 +533,7 @@ class Pin(models.Model):
                         + self.content
                         + "\n\n",
                         self.id,
+                        self.user.username,
                         "Pin",
                     )
                 except Exception as e:
@@ -538,6 +549,7 @@ class Pin(models.Model):
                         + self.content
                         + "\n\n",
                         self.id,
+                        self.user.username,
                         "Pin",
                     )
                 except Exception as e:

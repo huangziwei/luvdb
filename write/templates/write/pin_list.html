@@ -32,7 +32,7 @@
                     </div>
                     <div>
                         {% if object.username == request.user.username %}
-                            <a class="btn btn-sm btn-primary" href="{% url 'write:pin_create' %}">New</a>
+                            <a class="btn btn-sm btn-primary" href="{% url 'write:pin_create' object.username %}">New</a>
                         {% endif %}
                         {% if object.is_public %}
                             <a class="btn btn-sm btn-success" href="{% url 'write:user_pin_feed' object.username %}">RSS</a>
@@ -53,16 +53,16 @@
                         </div>
                         <span class="d-flex mt-2">
                             <p style='margin-right: 0.5em'>
-                                <a href="{% url 'write:pin_detail' pin.id %}" class="link-secondary">{{ pin.timestamp |date:"Y.m.d H:i" }}</a>
+                                <a href="{% url 'write:pin_detail' pin.user.username pin.id %}" class="link-secondary">{{ pin.timestamp |date:"Y.m.d H:i" }}</a>
                             </p>
                             {% if pin.comments_enabled %}
                                 <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:pin_detail' pin.id %}">Reply</a>
+                                    <a href="{% url 'write:pin_detail' pin.user.username pin.id %}">Reply</a>
                                 </p>
                             {% endif %}
                             {% if pin.get_activity_id is not None %}
                                 <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:pin_detail' pin.id %}?repost=true">Repost</a>
+                                    <a href="{% url 'write:pin_detail' pin.user.username pin.id %}?repost=true">Repost</a>
                                 </p>
                             {% endif %}
                             {% if pin.user != request.user %}
@@ -72,10 +72,10 @@
                             {% endif %}
                             {% if pin.user == request.user %}
                                 <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:pin_update' pin.id %}">Edit</a>
+                                    <a href="{% url 'write:pin_update' pin.user.username pin.id %}">Edit</a>
                                 </p>
                                 <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:pin_delete' pin.id %}">Delete</a>
+                                    <a href="{% url 'write:pin_delete' pin.user.username pin.id %}">Delete</a>
                                 </p>
                             {% endif %}
                         </span>

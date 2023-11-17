@@ -157,7 +157,7 @@
                         <ul class='mb-0'>
                             {% for content_in_list in lists_containing_issue %}
                                 <li>
-                                    <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
+                                    <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.user.username content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
                                 </li>
                                 {% if not forloop.last %}<hr class="m-1">{% endif %}
                             {% empty %}

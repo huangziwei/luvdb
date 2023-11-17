@@ -32,26 +32,26 @@
                     </div>
                     {% if object == request.user %}
                         <a class="btn btn-sm btn-primary"
-                           href="{% url 'write:luvlist_create' %}">New</a>
+                           href="{% url 'write:luvlist_create' object.username %}">New</a>
                     {% endif %}
                 </div>
                 {% for luvlist in luvlist_list %}
                     <!--LuvList-->
                     <div class="activity-item mb-3 h-entry">
                         <div>
-                            <a href="{% url 'write:luvlist_detail' luvlist.id %}">{{ luvlist.title }}</a>
+                            <a href="{% url 'write:luvlist_detail' luvlist.user.username luvlist.id %}">{{ luvlist.title }}</a>
                         </div>
                         <span class="d-flex mt-2">
                             <p style='margin-right: 0.5em'>
-                                <a href="{% url 'write:luvlist_detail' luvlist.id %}"
+                                <a href="{% url 'write:luvlist_detail' luvlist.user.username luvlist.id %}"
                                    class="link-secondary">{{ luvlist.updated_at |default:luvlist.timestamp |date:"Y.m.d H:i" }}</a>
                             </p>
                             {% if luvlist.user == request.user %}
                                 <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:luvlist_update' luvlist.id %}">Edit</a>
+                                    <a href="{% url 'write:luvlist_update' luvlist.user.username luvlist.id %}">Edit</a>
                                 </p>
                                 <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:luvlist_delete' luvlist.id %}">Delete</a>
+                                    <a href="{% url 'write:luvlist_delete' luvlist.user.username luvlist.id %}">Delete</a>
                                 </p>
                             {% endif %}
                         </span>

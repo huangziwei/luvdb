@@ -53,11 +53,21 @@ urlpatterns = [
         PinsFromURLView.as_view(),
         name="pins_from_url",
     ),
-    path("pin/create/", PinCreateView.as_view(), name="pin_create"),
-    path("pin/<int:pk>/", PinDetailView.as_view(), name="pin_detail"),
-    path("pin/<int:pk>/update/", PinUpdateView.as_view(), name="pin_update"),
-    path("pin/<int:pk>/delete/", PinDeleteView.as_view(), name="pin_delete"),
-    path("pin/copy/<int:pk>/", PinCreateView.as_view(), name="pin_copy"),
+    path("u/<str:username>/pin/create/", PinCreateView.as_view(), name="pin_create"),
+    path("u/<str:username>/pin/<int:pk>/", PinDetailView.as_view(), name="pin_detail"),
+    path(
+        "u/<str:username>/pin/<int:pk>/update/",
+        PinUpdateView.as_view(),
+        name="pin_update",
+    ),
+    path(
+        "u/<str:username>/pin/<int:pk>/delete/",
+        PinDeleteView.as_view(),
+        name="pin_delete",
+    ),
+    path(
+        "u/<str:username>/pin/copy/<int:pk>/", PinCreateView.as_view(), name="pin_copy"
+    ),
     # post
     path("u/<str:username>/posts/", PostListView.as_view(), name="post_list"),
     path("u/<str:username>/posts/rss/", UserPostFeed(), name="user_post_feed"),
@@ -76,38 +86,72 @@ urlpatterns = [
         ProjectAutocomplete.as_view(),
         name="project-autocomplete",
     ),
-    path("post/create/", PostCreateView.as_view(), name="post_create"),
-    path("post/<int:pk>/", PostDetailView.as_view(), name="post_detail"),
-    path("post/<int:pk>/update/", PostUpdateView.as_view(), name="post_update"),
-    path("post/<int:pk>/delete/", PostDeleteView.as_view(), name="post_delete"),
+    path("u/<str:username>/post/create/", PostCreateView.as_view(), name="post_create"),
+    path(
+        "u/<str:username>/post/<int:pk>/", PostDetailView.as_view(), name="post_detail"
+    ),
+    path(
+        "u/<str:username>/post/<int:pk>/update/",
+        PostUpdateView.as_view(),
+        name="post_update",
+    ),
+    path(
+        "u/<str:username>/post/<int:pk>/delete/",
+        PostDeleteView.as_view(),
+        name="post_delete",
+    ),
     # say
     path("u/<str:username>/says/", SayListView.as_view(), name="say_list"),
     path("u/<str:username>/says/rss/", UserSayFeed(), name="user_say_feed"),
-    path("say/create/", SayCreateView.as_view(), name="say_create"),
-    path("say/<int:pk>/", SayDetailView.as_view(), name="say_detail"),
-    path("say/<int:pk>/update/", SayUpdateView.as_view(), name="say_update"),
-    path("say/<int:pk>/delete/", SayDeleteView.as_view(), name="say_delete"),
+    path("u/<str:username>/say/create/", SayCreateView.as_view(), name="say_create"),
+    path("u/<str:username>/say/<int:pk>/", SayDetailView.as_view(), name="say_detail"),
+    path(
+        "u/<str:username>/say/<int:pk>/update/",
+        SayUpdateView.as_view(),
+        name="say_update",
+    ),
+    path(
+        "u/<str:username>/say/<int:pk>/delete/",
+        SayDeleteView.as_view(),
+        name="say_delete",
+    ),
     # comment
     path(
-        "comment/<str:app_label>/<str:model_name>/<int:object_id>/",
+        "u/<str:username>/comment/<str:app_label>/<str:model_name>/<int:object_id>/",
         CommentCreateView.as_view(),
         name="comment_create",
     ),
     path(
-        "comment/<int:pk>/update/", CommentUpdateView.as_view(), name="comment_update"
+        "u/<str:username>/comment/<int:pk>/update/",
+        CommentUpdateView.as_view(),
+        name="comment_update",
     ),
     path(
-        "comment/<int:pk>/delete/", CommentDeleteView.as_view(), name="comment_delete"
+        "u/<str:username>/comment/<int:pk>/delete/",
+        CommentDeleteView.as_view(),
+        name="comment_delete",
     ),
     # repost
     path(
-        "repost/new/<int:activity_id>/",
+        "u/<str:username>/repost/new/<int:activity_id>/",
         RepostCreateView.as_view(),
         name="repost_create",
     ),
-    path("repost/<int:pk>/", RepostDetailView.as_view(), name="repost_detail"),
-    path("repost/<int:pk>/delete/", RepostDeleteView.as_view(), name="repost_delete"),
-    path("repost/<int:pk>/update/", RepostUpdateView.as_view(), name="repost_update"),
+    path(
+        "u/<str:username>/repost/<int:pk>/",
+        RepostDetailView.as_view(),
+        name="repost_detail",
+    ),
+    path(
+        "u/<str:username>/repost/<int:pk>/delete/",
+        RepostDeleteView.as_view(),
+        name="repost_delete",
+    ),
+    path(
+        "u/<str:username>/repost/<int:pk>/update/",
+        RepostUpdateView.as_view(),
+        name="repost_update",
+    ),
     # tag
     path("tag/<str:tag>/", TagListView.as_view(), name="tag_list"),
     path(
@@ -122,16 +166,32 @@ urlpatterns = [
         name="tag_user_list_feed",
     ),
     # luvlist
-    path("luvlist/create/", LuvListCreateView.as_view(), name="luvlist_create"),
-    path("luvlist/<int:pk>/", LuvListDetailView.as_view(), name="luvlist_detail"),
     path(
-        "luvlist/<int:pk>/update/", LuvListUpdateView.as_view(), name="luvlist_update"
+        "u/<str:username>/luvlist/create/",
+        LuvListCreateView.as_view(),
+        name="luvlist_create",
     ),
     path(
-        "luvlist/<int:pk>/delete/", LuvListDeleteView.as_view(), name="luvlist_delete"
+        "u/<str:username>/luvlist/<int:pk>/",
+        LuvListDetailView.as_view(),
+        name="luvlist_detail",
+    ),
+    path(
+        "u/<str:username>/luvlist/<int:pk>/update/",
+        LuvListUpdateView.as_view(),
+        name="luvlist_update",
+    ),
+    path(
+        "u/<str:username>/luvlist/<int:pk>/delete/",
+        LuvListDeleteView.as_view(),
+        name="luvlist_delete",
     ),
     path(
         "u/<str:username>/luvlists/", LuvListUserListView.as_view(), name="luvlist_list"
     ),
-    path("luvlist/<int:pk>/surprise/", RandomizerDetailView.as_view(), name="surprise"),
+    path(
+        "u/<str:username>/luvlist/<int:pk>/surprise/",
+        RandomizerDetailView.as_view(),
+        name="surprise",
+    ),
 ]

@@ -429,6 +429,7 @@ class ListenCheckIn(models.Model):
                             + self.content
                             + "\n\n",
                             self.id,
+                            self.user.username,
                             "ListenCheckIn",
                         )
                     except Exception as e:
@@ -444,6 +445,7 @@ class ListenCheckIn(models.Model):
                             + self.content
                             + "\n\n",
                             self.id,
+                            self.user.username,
                             "ListenCheckIn",
                         )
                     except Exception as e:

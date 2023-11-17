@@ -516,7 +516,7 @@
                         {% endif %}
                         {% if activity.content_object.original_activity.activity_type == "post" %}
                             <div class="fs-5">
-                                <a href="{% url 'write:post_detail' activity.content_object.original_activity.content_object.id %}"
+                                <a href="{% url 'write:post_detail' activity.content_object.original_activity.content_object.user.username activity.content_object.original_activity.content_object.id %}"
                                    class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a>
                             </div>
                         {% elif activity.content_object.original_activity.activity_type == "pin" %}
@@ -545,7 +545,7 @@
         <div class="d-flex mt-2">
             <p class="me-2">
                 {% if activity.content_object.content %}
-                    <a href="{% url 'write:repost_detail' activity.content_object.id %}"
+                    <a href="{% url 'write:repost_detail' activity.user.username activity.content_object.id %}"
                        class="text-decoration-none text-secondary u-url dt-published">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
                 {% else %}
                     <span class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</span>
@@ -553,17 +553,17 @@
             </p>
             {% if activity.content_object.content %}
                 <p class="ms-2 me-2">
-                    <a href="{% url 'write:repost_detail' activity.content_object.id %}"
+                    <a href="{% url 'write:repost_detail' activity.user.username activity.content_object.id %}"
                        class="text-decoration-none">Reply</a>
                 </p>
                 <p class="ms-2 me-2">
-                    <a href="{% url 'write:repost_detail' activity.content_object.id %}?repost=true"
+                    <a href="{% url 'write:repost_detail' activity.user.username activity.content_object.id %}?repost=true"
                        class="text-decoration-none">Repost</a>
                 </p>
             {% endif %}
             {% if activity.user == request.user %}
                 <p class="ms-2 me-2">
-                    <a href="{% url 'write:repost_update' activity.content_object.id %}"
+                    <a href="{% url 'write:repost_update' activity.user.username activity.content_object.id %}"
                        class="text-decoration-none">Edit</a>
                 </p>
                 <p class="ms-2 me-2">

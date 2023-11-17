@@ -468,6 +468,7 @@ class WatchCheckIn(models.Model):
                             + self.content
                             + "\n\n",
                             self.id,
+                            self.user.username,
                             "WatchCheckIn",
                         )
                     except Exception as e:
@@ -483,6 +484,7 @@ class WatchCheckIn(models.Model):
                             + self.content
                             + "\n\n",
                             self.id,
+                            self.user.username,
                             "WatchCheckIn",
                         )
                     except Exception as e:

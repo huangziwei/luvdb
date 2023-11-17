@@ -36,7 +36,7 @@
                         <li>
                             <div class="d-flex align-items-start">
                                 <div>
-                                    <a href="{% url 'write:luvlist_detail' list.id %}">{{list.title}}</a>
+                                    <a href="{% url 'write:luvlist_detail' list.user.username list.id %}">{{list.title}}</a>
                                     <span class="d-flex">
                                         <p class="me-2 text-muted">
                                             by <a href="{% url 'accounts:detail' list.user.username %}">{{ list.user.display_name|default:list.user.username }}</a>
@@ -60,7 +60,7 @@
                         <li>
                             <div class="d-flex align-items-start">
                                 <div>
-                                    <a href="{% url 'write:post_detail' post.id %}">{{post.title}}</a>
+                                    <a href="{% url 'write:post_detail' post.user.username post.id %}">{{post.title}}</a>
                                     <span class="d-flex">
                                         <p class="me-2 text-muted">
                                             by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.display_name|default:post.user.username }}</a>
@@ -84,7 +84,7 @@
                         <li>
                             <div class="d-flex align-items-start">
                                 <div>
-                                    <a href="{% url 'write:pin_detail' pin.id %}">{{pin.title}}</a>
+                                    <a href="{% url 'write:pin_detail' pin.user.username pin.id %}">{{pin.title}}</a>
                                     <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
                                     <span class="d-flex">
                                         <p class="me-2 text-muted">
@@ -125,7 +125,7 @@
                                                 {{ activity.timestamp|timesince }} ago / Liked {{activity.vote_timestamp|timesince}} ago
                                             </a>
                                             {% else %}
-                                            <a href="{% url 'write:repost_detail' activity.id %}" class="text-muted">
+                                            <a href="{% url 'write:repost_detail' activity.user.username activity.id %}" class="text-muted">
                                                 {{ activity.timestamp|timesince }} ago / Liked {{activity.vote_timestamp|timesince}} ago
                                             </a>
                                             {% endif %}

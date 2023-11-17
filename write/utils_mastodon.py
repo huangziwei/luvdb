@@ -4,7 +4,12 @@ from mastodon import Mastodon
 
 
 def create_mastodon_post(
-    handle: str, access_token: str, text: str, content_id: int, content_type: str
+    handle: str,
+    access_token: str,
+    text: str,
+    content_id: int,
+    content_username: str,
+    content_type: str,
 ):
     # Extract instance URL from handle
     instance_url = f"https://{handle.split('@')[1]}"
@@ -19,7 +24,9 @@ def create_mastodon_post(
     elif content_type == "Post":
         content_url = domain + reverse("write:post_detail", args=[content_id])
     elif content_type == "Pin":
-        content_url = domain + reverse("write:pin_detail", args=[content_id])
+        content_url = domain + reverse(
+            "write:pin_detail", kwargs={"id": content_id, "username": content_username}
+        )
     elif content_type == "Repost":
         content_url = domain + reverse("write:repost_detail", args=[content_id])
     elif content_type == "ReadCheckIn":
