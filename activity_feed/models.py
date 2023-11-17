@@ -63,6 +63,7 @@ class Activity(models.Model):
 
         for follower in followers:
             follower_url = follower.follower_uri
+            preferred_headers = follower.preferred_headers
             target_domain = follower_url.split("/")[2]
             activitypub_message["cc"] = [follower_url]
             activitypub_message["object"]["cc"] = [follower_url]
@@ -72,6 +73,7 @@ class Activity(models.Model):
                 settings.ROOT_URL,
                 target_domain,
                 private_key,
+                preferred_headers,
             )
             if success:
                 print("Sent to:", follower_url)

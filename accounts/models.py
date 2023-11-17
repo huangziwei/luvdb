@@ -271,6 +271,7 @@ class MastodonAccount(models.Model):
 class FediverseFollower(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     follower_uri = models.URLField(unique=True)
+    preferred_headers = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

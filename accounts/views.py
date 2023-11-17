@@ -1158,7 +1158,10 @@ def handle_follow_request(incoming_message, request, username):
     public_key_pem = actor_data["publicKey"]["publicKeyPem"]
     public_key = serialization.load_pem_public_key(public_key_pem.encode("utf-8"))
     # Verify the request
-    if not verify_requests(request, public_key):
+    print("Verifying request...")
+    is_success, headers = verify_requests(request, public_key)
+    print("Finished verifying request")
+    if not is_success:
         print("invalid signature")
         return HttpResponse(status=400, reason="Unauthorized")
 
@@ -1180,12 +1183,20 @@ def handle_follow_request(incoming_message, request, username):
         "object": incoming_message,
     }
 
-    success = sign_and_send(outgoing_message, name, DOMAIN, target_domain, private_key)
+    success = sign_and_send(
+        outgoing_message,
+        name,
+        DOMAIN,
+        target_domain,
+        private_key,
+        preferred_headers=headers,
+    )
 
     if success:
         follower, created = FediverseFollower.objects.get_or_create(
             user=user,
             follower_uri=follower_url,
+            preferred_headers=headers,
         )
         if created:
             print("New follower:", follower_url)

@@ -34,23 +34,47 @@ def digest_message(message):
     return base64.b64encode(digest.finalize())
 
 
-def sign_and_send(message, name, domain, target_domain, private_key):
+def sign_and_send(
+    message, name, domain, target_domain, private_key, preferred_headers=None
+):
     HASH = hashes.SHA256()
 
     if "cc" in message:
         inbox = "https://" + message["cc"][0].split("/")[2] + "/inbox"
     else:
         inbox = message["object"]["actor"] + "/inbox"
+
+    if preferred_headers is None or preferred_headers == "":
+        preferred_headers = "(request-target) host date digest)"
+    print("Preferred headers:", preferred_headers, "\n")
     inbox_fragment = inbox.replace(f"https://{target_domain}", "")
     digest_hash = digest_message(json.dumps(message))
 
     d = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
-    string_to_sign = f"(request-target): post {inbox_fragment}\nhost: {target_domain}\ndate: {d}\ndigest: SHA-256={digest_hash.decode('utf-8')}"
+    headers_to_sign = {
+        "(request-target)": f"post {inbox_fragment}",
+        "host": target_domain,
+        "date": d,
+        "digest": f'SHA-256={digest_hash.decode("utf-8")}',
+        "content-type": "application/json",
+        "content-length": str(len(json.dumps(message))),
+        "user-agent": "(luvdb/0.1)",
+    }
+    string_to_sign = "\n".join(
+        f"{header}: {headers_to_sign[header]}"
+        for header in preferred_headers.split()
+        if header in headers_to_sign
+    )
+    print("String to sign:\n", string_to_sign, "\n")
+
+    # string_to_sign = f"(request-target): post {inbox_fragment}\nhost: {target_domain}\ndate: {d}\ndigest: SHA-256={digest_hash.decode('utf-8')}"
     signature = base64.b64encode(
         private_key.sign(string_to_sign.encode("utf-8"), padding.PKCS1v15(), HASH)
     ).decode("utf-8")
-
-    header = f'keyId="{domain}{name}",headers="(request-target) host date digest",signature="{signature}"'
+    header = (
+        f'keyId="{domain}{name}",headers="{preferred_headers}",signature="{signature}"'
+    )
+    # header = f'keyId="{domain}{name}",headers="(request-target) host date digest",signature="{signature}"'
     response = requests.post(
         inbox,
         headers={
@@ -65,7 +89,7 @@ def sign_and_send(message, name, domain, target_domain, private_key):
 
     if response.status_code >= 400:
         print(
-            "Failed request",
+            "Failed sending request:\n",
             response.status_code,
             "\n",
             response.text,
@@ -78,7 +102,7 @@ def sign_and_send(message, name, domain, target_domain, private_key):
         )
         return False
     else:
-        print("Response:", "\n", response.text, "\n", header, "\n")
+        print("Successfully sent request:", "\n", response.text, "\n", header, "\n")
         return True
 
 
@@ -86,7 +110,10 @@ def verify_requests(request, public_key):
     """
     Verify the signature of the request using the public key of the sender.
     """
+
+    print("Request headers:\n", request.headers)
     signature_header = request.headers.get("Signature")
+    print("Signature header:\n", signature_header)
     if not signature_header:
         return False
 
@@ -103,20 +130,22 @@ def verify_requests(request, public_key):
         signature = base64.b64decode(signature_encoded)
 
         # Extract and order the headers as per the 'headers' component
-        headers_to_sign = parts.get("headers").split()
+        headers = parts.get("headers")
+        headers_split = headers.split()
         signed_data = "\n".join(
             f"{header}: {request.headers.get(header.capitalize(), '')}"
             if header != "(request-target)"
             else f"(request-target): {request.method.lower()} {request.path}"
-            for header in headers_to_sign
+            for header in headers_split
         )
-
+        print("Signed data:\n", signed_data)
         # Verifying the signature
         public_key.verify(
             signature, signed_data.encode("utf-8"), padding.PKCS1v15(), hashes.SHA256()
         )
-        return True
+        is_success = True
+        return is_success, headers
     except InvalidSignature:
-        return False
+        return False, None
     except Exception as e:
-        return False
+        return False, None
