@@ -61,7 +61,6 @@ class Activity(models.Model):
         for follower in followers:
             follower_url = follower.follower_uri
             target_domain = follower_url.split("/")[2]
-            print(follower_url, target_domain)
             activitypub_message["cc"] = [follower_url]
             activitypub_message["object"]["cc"] = [follower_url]
             success = sign_and_send(
@@ -99,11 +98,6 @@ class Activity(models.Model):
             former_type = None
             deleted_at = None
             updated_at = None
-        print("Activity type:", ap_activity_type)
-        print("Object type:", ap_object_type)
-        print("Former type:", former_type)
-        print("Deleted at:", deleted_at)
-        print("Updated at:", updated_at)
 
         if self.activity_type == "say":
             content = self.content_object.content
