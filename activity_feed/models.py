@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -42,19 +44,26 @@ class Activity(models.Model):
                 print("Activity updated")
                 self.update_user_outbox(activity_type="Update")
 
+    def delete(self, *args, **kwargs):
+        if self.user.enable_federation:
+            # Create and send DELETE ActivityPub message
+            print("Deleting activity")
+            self.update_user_outbox(activity_type="Delete")
+
+        # Call the real delete method
+        super(Activity, self).delete(*args, **kwargs)
+
     def update_user_outbox(self, activity_type="Create"):
         activitypub_message = self.to_activitypub(activity_type=activity_type)
         followers = self.user.fediversefollower_set.all()
         private_key = import_private_key(self.user.username)
-        if activity_type == "Update":
-            updated_time = self.content_object.updated_at.isoformat()
+
         for follower in followers:
             follower_url = follower.follower_uri
             target_domain = follower_url.split("/")[2]
             print(follower_url, target_domain)
             activitypub_message["cc"] = [follower_url]
             activitypub_message["object"]["cc"] = [follower_url]
-            activitypub_message["object"]["updated"] = updated_time
             success = sign_and_send(
                 activitypub_message,
                 "/u/" + self.user.username + "/actor/",
@@ -69,10 +78,26 @@ class Activity(models.Model):
 
     def to_activitypub(self, activity_type="Create"):
         actor = settings.ROOT_URL + f"/u/{self.user.username}/actor/"
+
+        if self.activity_type == "Create":
+            object_type = "Note"
+            former_type = None
+            deleted_at = None
+            updated_at = None
+        elif self.activity_type == "Update":
+            object_type = "Note"
+            former_type = None
+            deleted_at = None
+            updated_at = self.content_object.updated_at.isoformat()
+        elif self.activity_type == "Delete":
+            object_type = "Tombstone"
+            former_type = "Note"
+            updated_at = None
+            deleted_at = datetime.utcnow().isoformat() + "Z"
+
         if self.activity_type == "say":
             content = self.content_object.content
             url = settings.ROOT_URL + self.content_object.get_absolute_url()
-
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "id": url,
@@ -81,7 +106,7 @@ class Activity(models.Model):
             "to": ["https://www.w3.org/ns/activitystreams#Public"],
             "object": {
                 "id": url,
-                "type": "Note",  # Change this depending on the content type
+                "type": object_type,  # Change this depending on the content type
                 "content": content,
                 "to": ["https://www.w3.org/ns/activitystreams#Public"],
                 "published": self.timestamp.isoformat(),
@@ -90,6 +115,14 @@ class Activity(models.Model):
             },
             "published": self.timestamp.isoformat(),
         }
+        if updated_at:
+            activity["object"]["updated"] = updated_at
+
+        if former_type:
+            activity["object"]["formerType"] = former_type
+
+        if deleted_at:
+            activity["object"]["deleted"] = deleted_at
         return activity
 
 
