@@ -33,13 +33,14 @@ class Activity(models.Model):
         # Call the real save method
         super(Activity, self).save(*args, **kwargs)
 
-        if is_new:
-            print("New activity created")
-            print("Updating user outbox")
-            self.update_user_outbox(activity_type="Create")
-        elif was_update:
-            print("Activity updated")
-            self.update_user_outbox(activity_type="Update")
+        if self.user.enable_federation:
+            if is_new:
+                print("New activity created")
+                print("Updating user outbox")
+                self.update_user_outbox(activity_type="Create")
+            elif was_update:
+                print("Activity updated")
+                self.update_user_outbox(activity_type="Update")
 
     def update_user_outbox(self, activity_type="Create"):
         activitypub_message = self.to_activitypub(activity_type=activity_type)

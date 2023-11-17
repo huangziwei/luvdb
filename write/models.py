@@ -405,6 +405,11 @@ class Say(models.Model):
     def save(self, *args, **kwargs):
         # Determine if the object is new (i.e., has no primary key)
         is_new = self.pk is None
+        was_updated = False
+
+        if not is_new:
+            # Check if updated
+            was_updated = self.updated_at > self.timestamp
 
         if self.content.startswith("@"):
             self.is_direct_mention = True
@@ -450,6 +455,16 @@ class Say(models.Model):
                     )
                 except Exception as e:
                     print(f"Error creating Mastodon post: {e}")
+
+        if was_updated:
+            # Fetch and update the related Activity object
+            try:
+                activity = Activity.objects.get(
+                    content_type__model="say", object_id=self.id
+                )
+                activity.save()  # This will trigger the update logic in Activity model
+            except Activity.DoesNotExist:
+                pass  # Handle the case where the Activity object does not exist
 
         # Handle tags
         handle_tags(self, self.content)
