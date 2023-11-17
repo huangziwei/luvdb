@@ -39,22 +39,22 @@ class Activity(models.Model):
             if is_new:
                 print("New activity created")
                 print("Updating user outbox")
-                self.update_user_outbox(activity_type="Create")
+                self.update_user_outbox(ap_activity_type="Create")
             elif was_update:
                 print("Activity updated")
-                self.update_user_outbox(activity_type="Update")
+                self.update_user_outbox(ap_activity_type="Update")
 
     def delete(self, *args, **kwargs):
         if self.user.enable_federation:
             # Create and send DELETE ActivityPub message
             print("Deleting activity")
-            self.update_user_outbox(activity_type="Delete")
+            self.update_user_outbox(ap_activity_type="Delete")
 
         # Call the real delete method
         super(Activity, self).delete(*args, **kwargs)
 
-    def update_user_outbox(self, activity_type="Create"):
-        activitypub_message = self.to_activitypub(activity_type=activity_type)
+    def update_user_outbox(self, ap_activity_type="Create"):
+        activitypub_message = self.to_activitypub(ap_activity_type=ap_activity_type)
         followers = self.user.fediversefollower_set.all()
         private_key = import_private_key(self.user.username)
 
@@ -76,37 +76,50 @@ class Activity(models.Model):
             else:
                 print("Failed to send to:", follower_url)
 
-    def to_activitypub(self, activity_type="Create"):
+    def to_activitypub(self, ap_activity_type="Create"):
         actor = settings.ROOT_URL + f"/u/{self.user.username}/actor/"
 
-        if self.activity_type == "Create":
-            object_type = "Note"
+        if ap_activity_type == "Create":
+            ap_object_type = "Note"
             former_type = None
             deleted_at = None
             updated_at = None
-        elif self.activity_type == "Update":
-            object_type = "Note"
+        elif ap_activity_type == "Update":
+            ap_object_type = "Note"
             former_type = None
             deleted_at = None
             updated_at = self.content_object.updated_at.isoformat()
-        elif self.activity_type == "Delete":
-            object_type = "Tombstone"
+        elif ap_activity_type == "Delete":
+            ap_object_type = "Tombstone"
             former_type = "Note"
             updated_at = None
             deleted_at = datetime.utcnow().isoformat() + "Z"
+        else:
+            ap_object_type = "Note"
+            former_type = None
+            deleted_at = None
+            updated_at = None
+        print("Activity type:", ap_activity_type)
+        print("Object type:", ap_object_type)
+        print("Former type:", former_type)
+        print("Deleted at:", deleted_at)
+        print("Updated at:", updated_at)
 
         if self.activity_type == "say":
             content = self.content_object.content
             url = settings.ROOT_URL + self.content_object.get_absolute_url()
+        else:
+            raise ValueError("Invalid activity type")
+
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "id": url,
-            "type": activity_type,
+            "type": ap_activity_type,
             "actor": actor,
             "to": ["https://www.w3.org/ns/activitystreams#Public"],
             "object": {
                 "id": url,
-                "type": object_type,  # Change this depending on the content type
+                "type": ap_object_type,
                 "content": content,
                 "to": ["https://www.w3.org/ns/activitystreams#Public"],
                 "published": self.timestamp.isoformat(),

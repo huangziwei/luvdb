@@ -560,7 +560,11 @@ class Pin(models.Model):
 @receiver(post_delete, sender="activity_feed.Follow")
 def delete_activity(sender, instance, **kwargs):
     content_type = ContentType.objects.get_for_model(instance)
-    Activity.objects.filter(content_type=content_type, object_id=instance.id).delete()
+    activities = Activity.objects.filter(
+        content_type=content_type, object_id=instance.id
+    )
+    for activity in activities:
+        activity.delete()
 
 
 # notify comment users when a `write` is deleted
