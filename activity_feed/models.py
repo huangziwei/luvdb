@@ -106,21 +106,22 @@ class Activity(models.Model):
 
         if self.activity_type == "say":
             url = settings.ROOT_URL + self.content_object.get_absolute_url()
-            content = self.content_object.content + "\n\n" + url
+            content = self.content_object.content + f"\n\n[{url}]({url})"
         elif self.activity_type == "repost":
             url = settings.ROOT_URL + self.content_object.get_absolute_url()
-            content = self.content_object.content + "\n\n" + url
+            content = self.content_object.content + f"\n\n[{url}]({url})"
         elif self.activity_type == "post":
             url = settings.ROOT_URL + self.content_object.get_absolute_url()
-            content = "New Post:\n\n" + self.content_object.title + "\n\n" + url
+            content = (
+                "New Post:\n\n" + self.content_object.title + f"\n\n[{url}]({url})"
+            )
         elif self.activity_type == "pin":
             url = settings.ROOT_URL + self.content_object.get_absolute_url()
             content = (
-                "New Pinn:\n\n"
+                "New Pin:\n\n"
                 + self.content_object.title
-                + f"(from {urlparse(self.content_object.url).netloc})"
-                + "\n\n"
-                + url
+                + f"(from [{urlparse(self.content_object.url).netloc}](self.content_object.url))"
+                + f"\n\n[{url}]({url})"
             )
         else:
             raise ValueError("Invalid activity type")
