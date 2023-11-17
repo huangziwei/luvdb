@@ -74,41 +74,41 @@ def create_bluesky_post(
     if content_type == "Say":
         content_url = domain + reverse(
             "write:say_detail",
-            kwargs={"id": content_id, "username": content_username},
+            kwargs={"pk": content_id, "username": content_username},
         )
     elif content_type == "Post":
         content_url = domain + reverse(
             "write:post_detail",
-            kwargs={"id": content_id, "username": content_username},
+            kwargs={"pk": content_id, "username": content_username},
         )
     elif content_type == "Pin":
         content_url = domain + reverse(
-            "write:pin_detail", kwargs={"id": content_id, "username": content_username}
+            "write:pin_detail", kwargs={"pk": content_id, "username": content_username}
         )
     elif content_type == "Repost":
         content_url = domain + reverse(
             "write:repost_detail",
-            kwargs={"id": content_id, "username": content_username},
+            kwargs={"pk": content_id, "username": content_username},
         )
     elif content_type == "ReadCheckIn":
         content_url = domain + reverse(
             "write:read_checkin_detail",
-            kwargs={"id": content_id, "username": content_username},
+            kwargs={"pk": content_id, "username": content_username},
         )
     elif content_type == "WatchCheckIn":
         content_url = domain + reverse(
             "write:watch_checkin_detail",
-            kwargs={"id": content_id, "username": content_username},
+            kwargs={"pk": content_id, "username": content_username},
         )
     elif content_type == "ListenCheckIn":
         content_url = domain + reverse(
             "write:listen_checkin_detail",
-            kwargs={"id": content_id, "username": content_username},
+            kwargs={"pk": content_id, "username": content_username},
         )
     elif content_type == "GameCheckIn":
         content_url = domain + reverse(
             "write:play_checkin_detail",
-            kwargs={"id": content_id, "username": content_username},
+            kwargs={"pk": content_id, "username": content_username},
         )
     else:
         content_url = ""
