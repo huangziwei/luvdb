@@ -8,23 +8,23 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("user", "title", "content", "timestamp")
+    list_display = ("user", "title", "content", "timestamp", "updated_at")
 
 
 class SayAdmin(admin.ModelAdmin):
-    list_display = ("user", "content", "timestamp")
+    list_display = ("user", "content", "timestamp", "updated_at")
 
 
 class PinAdmin(admin.ModelAdmin):
-    list_display = ("user", "title", "url", "content", "timestamp")
+    list_display = ("user", "title", "url", "content", "timestamp", "updated_at")
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("user", "content_type", "content", "timestamp")
+    list_display = ("user", "content_type", "content", "timestamp", "updated_at")
 
 
 class RepostAdmin(admin.ModelAdmin):
-    list_display = ("user", "content", "original_activity", "timestamp")
+    list_display = ("user", "content", "original_activity", "timestamp", "updated_at")
 
 
 class ContentInListInline(admin.TabularInline):
@@ -33,6 +33,7 @@ class ContentInListInline(admin.TabularInline):
 
 
 class LuvListAdmin(admin.ModelAdmin):
+    list_display = ("user", "title", "timestamp", "updated_at")
     inlines = [ContentInListInline]
 
 

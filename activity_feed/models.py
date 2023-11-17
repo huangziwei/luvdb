@@ -1,5 +1,3 @@
-import uuid
-
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -29,10 +27,10 @@ class Activity(models.Model):
         if is_new:
             print("New activity created")
             print("Updating user outbox")
-            self.update_user_outbox()
+            self.update_user_outbox(activity_type="Create")
 
-    def update_user_outbox(self):
-        activitypub_message = self.to_activitypub()
+    def update_user_outbox(self, activity_type="Create"):
+        activitypub_message = self.to_activitypub(activity_type=activity_type)
         followers = self.user.fediversefollower_set.all()
         private_key = import_private_key(self.user.username)
         for follower in followers:
@@ -53,7 +51,7 @@ class Activity(models.Model):
             else:
                 print("Failed to send to:", follower_url)
 
-    def to_activitypub(self):
+    def to_activitypub(self, activity_type="Create"):
         actor = settings.ROOT_URL + f"/u/{self.user.username}/actor/"
         if self.activity_type == "say":
             content = self.content_object.content
@@ -61,8 +59,8 @@ class Activity(models.Model):
 
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "id": url + f"{uuid.uuid4()}",
-            "type": "Create",
+            "id": url,
+            "type": activity_type,
             "actor": actor,
             "to": ["https://www.w3.org/ns/activitystreams#Public"],
             "object": {
