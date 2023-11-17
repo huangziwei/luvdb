@@ -1,14 +1,11 @@
-import base64
 import json
 import re
 import time
 import uuid
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import requests
-from cryptography.exceptions import InvalidSignature
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives import serialization
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -24,6 +21,7 @@ from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -31,7 +29,6 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
 )
-from environs import Env
 
 from activity_feed.models import Activity, Follow
 from entity.models import Creator
@@ -44,7 +41,7 @@ from read.models import Instance as LitInstance
 from read.models import Periodical, ReadCheckIn
 from read.models import Work as LitWork
 from watch.models import Movie, Series, WatchCheckIn
-from write.models import Comment, LuvList, Pin, Post, Repost, Say, Tag
+from write.models import LuvList, Pin, Post, Repost, Say, Tag
 
 from .forms import (
     AppPasswordForm,
@@ -62,6 +59,12 @@ from .models import (
     InvitationCode,
     InvitationRequest,
     MastodonAccount,
+)
+from .utils_activitypub import (
+    digest_message,
+    import_private_key,
+    sign_and_send,
+    verify_requests,
 )
 
 TIME_RESTRICTION = 30  # time restriction for generating invitation codes
@@ -1115,118 +1118,27 @@ def ap_actor(request, username):
     return JsonResponse(response)
 
 
-def import_private_key(username):
-    env = Env()
-    env.read_env(settings.PRIVATEKEY_PATH)
+@csrf_exempt
+def ap_inbox(request, username):
+    # only accept POST requests
+    if request.method != "POST":
+        return HttpResponse(status=404, reason="Not Found")
 
-    # Access and decode the key
-    encoded_private_key = env.str(username)
-
-    private_key = serialization.load_pem_private_key(
-        base64.b64decode(encoded_private_key),
-        password=None,
-    )
-    return private_key
-
-
-def digest_message(message):
-    HASH = hashes.SHA256()
-    digest = hashes.Hash(HASH)
-    digest.update(message.encode("utf-8"))
-    return base64.b64encode(digest.finalize())
-
-
-def sign_and_send(message, name, domain, target_domain, private_key):
-    HASH = hashes.SHA256()
-    inbox = message["object"]["actor"] + "/inbox"
-    inbox_fragment = inbox.replace(f"https://{target_domain}", "")
-    digest_hash = digest_message(json.dumps(message))
-
-    d = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
-    string_to_sign = f"(request-target): post {inbox_fragment}\nhost: {target_domain}\ndate: {d}\ndigest: SHA-256={digest_hash.decode('utf-8')}"
-    signature = base64.b64encode(
-        private_key.sign(string_to_sign.encode("utf-8"), padding.PKCS1v15(), HASH)
-    ).decode("utf-8")
-
-    header = f'keyId="{domain}{name}",headers="(request-target) host date digest",signature="{signature}"'
-    response = requests.post(
-        inbox,
-        headers={
-            "Host": target_domain,
-            "Date": d,
-            "Digest": f'SHA-256={digest_hash.decode("utf-8")}',
-            "Content-Type": "application/json",
-            "Signature": header,
-        },
-        data=json.dumps(message),
-    )
-
-    if response.status_code >= 400:
-        print(
-            "Failed request",
-            "\n",
-            response.text,
-            "\n",
-            header,
-            "\n",
-            signature,
-            "\n",
-            target_domain,
-            "\n",
-            response.status_code,
-            "\n",
-            response.reason,
-            "\n",
-        )
-        return False
-    else:
-        print("Response:", "\n", response.text, "\n", header, "\n")
-        return True
-
-
-def verify_requests(request, public_key):
-    """
-    Verify the signature of the request using the public key of the sender.
-    """
-    signature_header = request.headers.get("Signature")
-    if not signature_header:
-        print("no signature header")
-        return False
-
+    # only accept JSON requests
     try:
-        # Extracting the signature from the header
-        signature_header_parts = signature_header.split('signature="')
-        if len(signature_header_parts) < 2:
-            raise ValueError("Invalid Signature header format.")
+        incoming_message = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse(status=400, reason="Bad Request")
 
-        signature_encoded = signature_header_parts[1].rstrip('"')
-        signature = base64.b64decode(signature_encoded)
-        # print("signature:", signature_encoded)
-        # Preparing the signed data
-        headers = {
-            "(request-target)": f"{request.method.lower()} {request.path}",
-            "host": request.get_host(),
-            "date": request.headers.get("Date"),
-            "digest": request.headers.get("Digest"),
-            "content-type": request.headers.get("Content-Type"),
-        }
-        signed_data = "\n".join(
-            f"{k}: {v}" for k, v in headers.items() if v is not None
+    request_type = incoming_message.get("type")
+    if request_type == "Follow":
+        return handle_follow_request(incoming_message, request, username)
+    elif request_type == "Undo":
+        return handle_undo_request(incoming_message, request, username)
+    else:
+        return HttpResponse(
+            status=400, reason="Only Follow and Undo Follow are supported"
         )
-        # print("signed data:", signed_data)
-        # Verifying the signature
-
-        public_key.verify(
-            signature, signed_data.encode("utf-8"), padding.PKCS1v15(), hashes.SHA256()
-        )
-        print("valid signature")
-        return True
-    except InvalidSignature:
-        print("invalid signature")
-        return False
-    except Exception as e:
-        print("Error during signature verification:", str(e))
-        return False
 
 
 def handle_follow_request(incoming_message, request, username):
@@ -1298,63 +1210,17 @@ def handle_undo_request(incoming_message, request, username):
 
 
 @csrf_exempt
-def ap_inbox(request, username):
-    # only accept POST requests
-    if request.method != "POST":
-        return HttpResponse(status=404, reason="Not Found")
-
-    # only accept JSON requests
-    try:
-        incoming_message = json.loads(request.body)
-    except json.JSONDecodeError:
-        return HttpResponse(status=400, reason="Bad Request")
-
-    request_type = incoming_message.get("type")
-    if request_type == "Follow":
-        return handle_follow_request(incoming_message, request, username)
-    elif request_type == "Undo":
-        return handle_undo_request(incoming_message, request, username)
-    else:
-        return HttpResponse(
-            status=400, reason="Only Follow and Undo Follow are supported"
-        )
-
-
+@require_http_methods(["GET"])
 def ap_outbox(request, username):
-    # Fetch the user
-    user = get_object_or_404(User, username=username)
-
-    # Fetch activities related to the user
-    activities = Activity.objects.filter(user=user)
-
-    # Format each activity
-    formatted_activities = []
-    for activity in activities:
-        related_object = activity.content_object
-        related_model = ContentType.objects.get_for_id(
-            activity.content_type_id
-        ).model_class()
-        model_name = related_model.__name__.lower()
-
-        if hasattr(related_object, "content"):
-            content = related_object.content
-
-        # Construct the activity object
-        formatted_activity = {
-            "type": activity.activity_type,
-            "actor": f"{settings.ROOT_URL}/u/{user.username}",
-            "object": content,
-            "published": activity.timestamp.isoformat(),
-        }
-        formatted_activities.append(formatted_activity)
-
-    # Construct the outbox response
-    outbox_response = {
+    # For GET requests, return the list of activities in ActivityPub format
+    activities = Activity.objects.filter(user=request.user, activity_type="say")
+    outbox_activities = [activity.to_activitypub() for activity in activities]
+    response = {
         "@context": "https://www.w3.org/ns/activitystreams",
-        "id": f"{settings.ROOT_URL}/u/{user.username}/outbox",
+        "id": settings.ROOT_URL + f"/u/{username}/outbox",
         "type": "OrderedCollection",
-        "totalItems": len(formatted_activities),
-        "orderedItems": formatted_activities,
+        "totalItems": len(outbox_activities),
+        "orderedItems": outbox_activities,
     }
 
-    return JsonResponse(outbox_response)
+    return JsonResponse(response)

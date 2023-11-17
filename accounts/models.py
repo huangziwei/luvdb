@@ -16,6 +16,7 @@ from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.http import JsonResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 
@@ -96,6 +97,9 @@ class CustomUser(AbstractUser):
         "book",
         "periodical",
     ]
+
+    def get_absolute_url(self):
+        return reverse("accounts:detail", kwargs={"username": self.username})
 
     def save(self, *args, **kwargs):
         if self.username in self.RESERVED_USERNAMES:
