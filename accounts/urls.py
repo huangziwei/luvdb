@@ -20,8 +20,7 @@ from .views import (
     export_user_data,
     get_followed_usernames,
     get_user_tags,
-    manage_bluesky_account,
-    manage_mastodon_account,
+    manage_crossposters,
     redirect_to_profile,
 )
 
@@ -74,14 +73,9 @@ urlpatterns = [
         name="delete_app_password",
     ),
     path(
-        "<str:username>/bluesky/",
-        manage_bluesky_account,
-        name="bluesky",
-    ),
-    path(
-        "<str:username>/mastodon/",
-        manage_mastodon_account,
-        name="mastodon",
+        "<str:username>/crossposters/",
+        manage_crossposters,
+        name="crossposters",
     ),
     path("<str:username>/actor/", ap_actor, name="ap_actor"),
     path("<str:username>/inbox/", ap_inbox, name="ap_inbox"),

@@ -20,7 +20,6 @@ class FediverseFollowerAdmin(admin.ModelAdmin):
     search_fields = ("user__username", "follower_uri")
     list_filter = ("user",)
     ordering = ("created_at", "user", "follower_uri")
-    fieldsets = ((None, {"fields": ("user", "follower_uri", "preferred_headers")}),)
 
 
 admin.site.register(FediverseFollower, FediverseFollowerAdmin)

@@ -991,68 +991,54 @@ def delete_app_password(request, username, pk):
     return redirect("accounts:app_password", username=request.user.username)
 
 
-#############
-## BlueSky ##
-#############
-
-
+##################
+## Crossposters ##
+##################
 @login_required
-def manage_bluesky_account(request, username):
+def manage_crossposters(request, username):
     try:
         bluesky_account = request.user.bluesky_account
     except BlueSkyAccount.DoesNotExist:
         bluesky_account = None
 
-    if request.method == "POST":
-        if "unlink" in request.POST:
-            if bluesky_account:
-                bluesky_account.delete()
-            return redirect("accounts:bluesky", username=request.user.username)
-
-        form = BlueSkyAccountForm(request.POST)
-        if form.is_valid():
-            form.save(request.user)
-            return redirect("accounts:bluesky", username=request.user.username)
-    else:
-        form = BlueSkyAccountForm()
-
-    context = {
-        "bluesky_account": bluesky_account,
-        "form": form,
-    }
-    return render(request, "accounts/bluesky.html", context)
-
-
-##############
-## Mastodon ##
-##############
-
-
-@login_required
-def manage_mastodon_account(request, username):
     try:
         mastodon_account = request.user.mastodon_account
     except MastodonAccount.DoesNotExist:
         mastodon_account = None
 
     if request.method == "POST":
-        if "unlink" in request.POST:
+        if "unlink_bluesky" in request.POST:
+            if bluesky_account:
+                bluesky_account.delete()
+            return redirect("accounts:crossposters", username=request.user.username)
+
+        if "unlink_mastodon" in request.POST:
             if mastodon_account:
                 mastodon_account.delete()
-            return redirect("accounts:mastodon", username=request.user.username)
+            return redirect("accounts:crossposters", username=request.user.username)
 
-        form = MastodonAccountForm(request.POST)
-        if form.is_valid():
-            form.save(request.user)
-            return redirect("accounts:mastodon", username=request.user.username)
+        if "form_type" in request.POST and request.POST["form_type"] == "bluesky":
+            form_bluesky = BlueSkyAccountForm(request.POST)
+            if form_bluesky.is_valid():
+                form_bluesky.save(request.user)
+                return redirect("accounts:crossposters", username=request.user.username)
+
+        if "form_type" in request.POST and request.POST["form_type"] == "mastodon":
+            form_mastodon = MastodonAccountForm(request.POST)
+            if form_mastodon.is_valid():
+                form_mastodon.save(request.user)
+                return redirect("accounts:crossposters", username=request.user.username)
     else:
-        form = MastodonAccountForm()
+        form_bluesky = BlueSkyAccountForm()
+        form_mastodon = MastodonAccountForm()
 
     context = {
+        "bluesky_account": bluesky_account,
         "mastodon_account": mastodon_account,
-        "form": form,
+        "form_bluesky": form_bluesky,
+        "form_mastodon": form_mastodon,
     }
-    return render(request, "accounts/mastodon.html", context)
+    return render(request, "accounts/crossposters.html", context)
 
 
 #############################
@@ -1133,6 +1119,7 @@ def ap_inbox(request, username):
     except json.JSONDecodeError:
         return HttpResponse(status=400, reason="Bad Request")
 
+    print("Incoming message:", incoming_message)
     request_type = incoming_message.get("type")
     if request_type == "Follow":
         return handle_follow_request(incoming_message, request, username)
@@ -1150,11 +1137,15 @@ def handle_follow_request(incoming_message, request, username):
     target_domain = follower_url.split("/")[2]
 
     # Fetch the actor information to get the public key
-    actor_response = requests.get(follower_url, headers={"Accept": "application/json"})
+    actor_response = requests.get(
+        follower_url, headers={"Accept": "application/activity+json"}
+    )
     if actor_response.status_code != 200:
         return HttpResponse(status=400, reason="Bad Request")
 
     actor_data = actor_response.json()
+    actor_inbox = actor_data["inbox"]
+    actor_shared_inbox = actor_data["endpoints"]["sharedInbox"]
     public_key_pem = actor_data["publicKey"]["publicKeyPem"]
     public_key = serialization.load_pem_public_key(public_key_pem.encode("utf-8"))
     # Verify the request
@@ -1176,11 +1167,19 @@ def handle_follow_request(incoming_message, request, username):
     name = incoming_message.get("object").replace(DOMAIN, "")
 
     outgoing_message = {
-        "@context": "https://www.w3.org/ns/activitystreams",
+        "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+        ],
         "id": f"{DOMAIN}/u/{username}/{uuid.uuid4()}",  # Unique ID for each message
         "type": "Accept",
         "actor": f"{DOMAIN}/u/{username}/actor/",
-        "object": incoming_message,
+        "object": {
+            "id": incoming_message.get("id"),
+            "type": "Follow",
+            "actor": incoming_message.get("actor"),
+            "object": incoming_message.get("object"),
+        },
     }
 
     success = sign_and_send(
@@ -1190,12 +1189,15 @@ def handle_follow_request(incoming_message, request, username):
         target_domain,
         private_key,
         preferred_headers=headers,
+        inbox=actor_inbox,
     )
 
     if success:
         follower, created = FediverseFollower.objects.get_or_create(
             user=user,
             follower_uri=follower_url,
+            follower_inbox=actor_inbox,
+            follower_shared_inbox=actor_shared_inbox,
             preferred_headers=headers,
         )
         if created:

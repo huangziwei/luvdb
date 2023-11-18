@@ -63,7 +63,9 @@ class Activity(models.Model):
 
         for follower in followers:
             follower_url = follower.follower_uri
+            follower_shared_inbox = follower.follower_shared_inbox
             preferred_headers = follower.preferred_headers
+
             target_domain = follower_url.split("/")[2]
             activitypub_message["cc"] = [follower_url]
             activitypub_message["object"]["cc"] = [follower_url]
@@ -74,6 +76,7 @@ class Activity(models.Model):
                 target_domain,
                 private_key,
                 preferred_headers,
+                inbox=follower_shared_inbox,
             )
             if success:
                 print("Sent to:", follower_url)
@@ -127,7 +130,10 @@ class Activity(models.Model):
             raise ValueError("Invalid activity type")
 
         activity = {
-            "@context": "https://www.w3.org/ns/activitystreams",
+            "@context": [
+                "https://www.w3.org/ns/activitystreams",
+                "https://w3id.org/security/v1",
+            ],
             "id": url,
             "type": ap_activity_type,
             "actor": actor,

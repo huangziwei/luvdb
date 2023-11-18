@@ -81,23 +81,18 @@
                                     {% endif %}
                                     <li>
                                         <a class="dropdown-item"
-                                           href="{% url 'accounts:export_user_data' %}"
-                                           role="button">Export User Data</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item"
                                            href="{% url 'accounts:app_password' object.username %}"
-                                           role="button">App Passwords</a>
+                                           role="button">Manage App Passwords</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item"
-                                           href="{% url 'accounts:bluesky' object.username %}"
-                                           role="button">Link BlueSky</a>
+                                           href="{% url 'accounts:crossposters' object.username %}"
+                                           role="button">Manage Crossposters</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item"
-                                           href="{% url 'accounts:mastodon' object.username %}"
-                                           role="button">Link Mastodon</a>
+                                           href="{% url 'accounts:export_user_data' %}"
+                                           role="button">Export Your Data</a>
                                     </li>
                                 </ul>
                             </div>
@@ -1255,22 +1250,17 @@
                                     <li>
                                         <a class="dropdown-item"
                                            href="{% url 'accounts:export_user_data' %}"
-                                           role="button">Export User Data</a>
+                                           role="button">Export Your Data</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item"
                                            href="{% url 'accounts:app_password' object.username %}"
-                                           role="button">App Passwords</a>
+                                           role="button">Manage App Passwords</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item"
-                                           href="{% url 'accounts:bluesky' object.username %}"
-                                           role="button">Link BlueSky</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item"
-                                           href="{% url 'accounts:mastodon' object.username %}"
-                                           role="button">Link Mastodon</a>
+                                           href="{% url 'accounts:crossposters' object.username %}"
+                                           role="button">Manage Crossposters</a>
                                     </li>
                                 </ul>
                             </div>

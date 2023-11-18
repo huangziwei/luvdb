@@ -35,14 +35,21 @@ def digest_message(message):
 
 
 def sign_and_send(
-    message, name, domain, target_domain, private_key, preferred_headers=None
+    message,
+    name,
+    domain,
+    target_domain,
+    private_key,
+    preferred_headers=None,
+    inbox=None,
 ):
     HASH = hashes.SHA256()
 
-    if "cc" in message:
-        inbox = "https://" + message["cc"][0].split("/")[2] + "/inbox"
-    else:
-        inbox = message["object"]["actor"] + "/inbox"
+    if inbox is None:
+        if "cc" in message:
+            inbox = "https://" + message["cc"][0].split("/")[2] + "/inbox"
+        else:
+            inbox = message["object"]["actor"] + "/inbox"
 
     if preferred_headers is None or preferred_headers == "":
         preferred_headers = "(request-target) host date digest)"
@@ -75,17 +82,23 @@ def sign_and_send(
         f'keyId="{domain}{name}",headers="{preferred_headers}",signature="{signature}"'
     )
     # header = f'keyId="{domain}{name}",headers="(request-target) host date digest",signature="{signature}"'
-    response = requests.post(
-        inbox,
-        headers={
-            "Host": target_domain,
-            "Date": d,
-            "Digest": f'SHA-256={digest_hash.decode("utf-8")}',
-            "Content-Type": "application/json",
-            "Signature": header,
-        },
-        data=json.dumps(message),
-    )
+    try:
+        response = requests.post(
+            inbox,
+            headers={
+                "Host": target_domain,
+                "Date": d,
+                "Digest": f'SHA-256={digest_hash.decode("utf-8")}',
+                "Content-Type": "application/json",
+                "Signature": header,
+            },
+            data=json.dumps(message),
+            timeout=15,  # Timeout in seconds
+        )
+    except requests.exceptions.Timeout:
+        print("Request timed out")
+    except requests.exceptions.RequestException as e:
+        print(f"Error making request: {e}")
 
     if response.status_code >= 400:
         print(
