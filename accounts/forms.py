@@ -156,6 +156,15 @@ class BlueSkyAccountForm(forms.ModelForm):
             "bluesky_pds_url": "PDS URL",
         }
 
+    def clean_bluesky_handle(self):
+        # Get the bluesky handle
+        bluesky_handle = self.cleaned_data.get("bluesky_handle", "")
+
+        # Remove leading '@' if present
+        bluesky_handle = bluesky_handle.lstrip("@")
+
+        return bluesky_handle
+
     def save(self, user, commit=True):
         bluesky_account = super().save(commit=False)
         bluesky_account.user = user
@@ -181,8 +190,17 @@ class MastodonAccountForm(forms.ModelForm):
             "mastodon_handle": "Handle",
         }
         help_texts = {
-            "mastodon_handle": "e.g. yourhandle@mastodon.social",
+            "mastodon_handle": "Your mastodon handle, e.g. yourhandle@mastodon.social",
         }
+
+    def clean_mastodon_handle(self):
+        # Get the mastodon handle
+        mastodon_handle = self.cleaned_data.get("mastodon_handle", "")
+
+        # Remove leading '@' if present
+        mastodon_handle = mastodon_handle.lstrip("@")
+
+        return mastodon_handle
 
     def save(self, user, commit=True):
         mastodon_account = super().save(commit=False)
