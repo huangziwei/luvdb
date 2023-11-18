@@ -60,7 +60,7 @@
             <span class="text-muted">{{ activity.activity_type | parse_activity_type }}:</span>
         </div>
         <div class="bg-light mt-2 p-3">
-            <div class="fs-5 p-name">
+            <div class="mb-2">
                 <a href="{% url 'write:post_detail' activity.user.username activity.content_object.id %}"
                    class="text-decoration-none">{{ activity.content_object.title }}</a>
             </div>

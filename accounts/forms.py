@@ -88,7 +88,9 @@ class CustomUserChangeForm(UserChangeForm):
             "timezone",
         )
         help_texts = {
-            "is_public": "Enable this option to make your profile visible to everyone, including non-logged-in users. If disabled, only logged-in users will have access to view your profile.",
+            "is_public": "Enable this option to make your profile accessible to the public, including non-logged-in users. \
+                This will also enable RSS feeds. \
+                If disabled, RSS feeds will be disabled and your profile will only be visible to logged-in users.",
             "pure_text_mode": "Enable this option to disable displaying images of the site.",
             "enable_federation": "Enable this option to allow other ActivityPub services (e.g. Mastodon, etc.) to follow you.",
             "public_key": "Your public key will be displayed on your profile page.",
