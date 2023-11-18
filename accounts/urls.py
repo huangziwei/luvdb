@@ -13,6 +13,7 @@ from .views import (
     RequestInvitationView,
     SignUpView,
     ap_actor,
+    ap_followers,
     ap_inbox,
     ap_outbox,
     app_password_list,
@@ -77,7 +78,8 @@ urlpatterns = [
         manage_crossposters,
         name="crossposters",
     ),
-    path("<str:username>/actor/", ap_actor, name="ap_actor"),
+    # path("<str:username>/", ap_actor, name="ap_actor"), # AccountDetailView handles this now
     path("<str:username>/inbox/", ap_inbox, name="ap_inbox"),
     path("<str:username>/outbox/", ap_outbox, name="ap_outbox"),
+    path("<str:username>/followers/", ap_followers, name="ap_followers"),
 ]

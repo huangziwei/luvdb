@@ -67,11 +67,15 @@ class Activity(models.Model):
             preferred_headers = follower.preferred_headers
 
             target_domain = follower_url.split("/")[2]
-            activitypub_message["cc"] = [follower_url]
-            activitypub_message["object"]["cc"] = [follower_url]
+            activitypub_message["cc"] = [
+                settings.ROOT_URL + "/u/" + self.user.username + "/followers"
+            ]
+            activitypub_message["object"]["cc"] = [
+                settings.ROOT_URL + "/u/" + self.user.username + "/followers"
+            ]
             success = sign_and_send(
                 activitypub_message,
-                "/u/" + self.user.username + "/actor/",
+                "/u/" + self.user.username + "/",
                 settings.ROOT_URL,
                 target_domain,
                 private_key,
@@ -84,51 +88,33 @@ class Activity(models.Model):
                 print("Failed to send to:", follower_url)
 
     def to_activitypub(self, ap_activity_type="Create"):
-        actor = settings.ROOT_URL + f"/u/{self.user.username}/actor/"
+        actor = settings.ROOT_URL + f"/u/{self.user.username}/"
+        url = settings.ROOT_URL + self.content_object.get_absolute_url()
 
-        if ap_activity_type == "Create":
-            ap_object_type = "Note"
-            former_type = None
-            deleted_at = None
-            updated_at = None
-        elif ap_activity_type == "Update":
-            ap_object_type = "Note"
-            former_type = None
-            deleted_at = None
-            updated_at = self.content_object.updated_at.isoformat()
-        elif ap_activity_type == "Delete":
-            ap_object_type = "Tombstone"
-            former_type = "Note"
-            updated_at = None
-            deleted_at = datetime.utcnow().isoformat() + "Z"
-        else:
-            ap_object_type = "Note"
-            former_type = None
-            deleted_at = None
-            updated_at = None
-
+        # Content handling
+        content = ""
+        print(self.activity_type)
         if self.activity_type == "say":
-            url = settings.ROOT_URL + self.content_object.get_absolute_url()
-            content = self.content_object.content + f"\n\n[{url}]({url})"
+            content = self.content_object.content + f"\n[{url}]({url})"
         elif self.activity_type == "repost":
-            url = settings.ROOT_URL + self.content_object.get_absolute_url()
-            content = self.content_object.content + f"\n\n[{url}]({url})"
+            content = self.content_object.content + f"\n[{url}]({url})"
         elif self.activity_type == "post":
-            url = settings.ROOT_URL + self.content_object.get_absolute_url()
-            content = (
-                "New Post:\n\n" + self.content_object.title + f"\n\n[{url}]({url})"
-            )
+            content = "New Post:\n" + self.content_object.title + f"\n[{url}]({url})"
         elif self.activity_type == "pin":
-            url = settings.ROOT_URL + self.content_object.get_absolute_url()
             content = (
-                "New Pin:\n\n"
+                "New Pin:\n"
                 + self.content_object.title
                 + f"(from [{urlparse(self.content_object.url).netloc}](self.content_object.url))"
-                + f"\n\n[{url}]({url})"
+                + f"\n[{url}]({url})"
             )
+        elif "game" in self.activity_type:
+            content = self.content_object.content + f"\n[{url}]({url})"
+        elif "check-in" in self.activity_type and "game" not in self.activity_type:
+            content = self.content_object.content + f"\n[{url}]({url})"
         else:
             raise ValueError("Invalid activity type")
 
+        # Adding additional namespaces and properties for Pleroma compatibility
         activity = {
             "@context": [
                 "https://www.w3.org/ns/activitystreams",
@@ -139,24 +125,44 @@ class Activity(models.Model):
             "actor": actor,
             "to": ["https://www.w3.org/ns/activitystreams#Public"],
             "object": {
-                "id": url,
-                "type": ap_object_type,
-                "content": mark_safe(markdown.markdown(content)),
-                "to": ["https://www.w3.org/ns/activitystreams#Public"],
-                "published": self.timestamp.isoformat(),
+                "actor": actor,
+                "atomUri": url,
+                "attachment": [],
                 "attributedTo": settings.ROOT_URL + self.user.get_absolute_url(),
+                # "cc": [], # This is added later
+                "content": mark_safe(markdown.markdown(content)),
+                "contentMap": {"en": mark_safe(markdown.markdown(content))},
+                "context": {
+                    "https://www.w3.org/ns/activitystreams#partOf": {
+                        "https://www.w3.org/ns/activitystreams#name": "LuvDB"
+                    }
+                },
+                "conversation": "tag:"
+                + urlparse(settings.ROOT_URL).netloc
+                + ","
+                + self.timestamp.strftime("%Y-%m-%d")
+                + ":objectId="
+                + str(self.id)
+                + ":objectType=Conversation",
+                "id": url,
                 "inReplyTo": None,
+                "published": self.timestamp.isoformat(),
+                "sensitive": False,
+                "source": {"content": content, "mediaType": "text/plain"},
+                "summary": "",
+                "type": "Note",
+                "to": ["https://www.w3.org/ns/activitystreams#Public"],
+                "tag": [],
             },
             "published": self.timestamp.isoformat(),
         }
-        if updated_at:
-            activity["object"]["updated"] = updated_at
 
-        if former_type:
-            activity["object"]["formerType"] = former_type
+        if ap_activity_type in ["Update", "Delete"]:
+            activity["object"]["updated"] = self.content_object.updated_at.isoformat()
+            if ap_activity_type == "Delete":
+                activity["object"]["type"] = "Tombstone"
+                activity["object"]["deleted"] = datetime.utcnow().isoformat() + "Z"
 
-        if deleted_at:
-            activity["object"]["deleted"] = deleted_at
         return activity
 
 

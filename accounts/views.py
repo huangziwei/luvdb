@@ -112,6 +112,16 @@ class AccountDetailView(DetailView):
         # Otherwise, proceed as normal
         return super().dispatch(request, *args, **kwargs)
 
+    def get(self, request, *args, **kwargs):
+        # Check the Accept header
+        accept_header = request.headers.get("Accept", "")
+        if "application/activity+json" in accept_header:
+            # Delegate to ap_actor if the header matches
+            return ap_actor(request, *args, **kwargs)
+        else:
+            # Otherwise, proceed as normal
+            return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -1065,11 +1075,12 @@ def webfinger(request):
     response = {
         "@context": "https://www.w3.org/ns/activitystreams",
         "subject": resource,
+        "aliases": [settings.ROOT_URL + f"/u/{username}/"],
         "links": [
             {
                 "rel": "self",
                 "type": "application/activity+json",
-                "href": settings.ROOT_URL + f"/u/{username}/actor/",
+                "href": settings.ROOT_URL + f"/u/{username}/",
             }
         ],
     }
@@ -1078,7 +1089,13 @@ def webfinger(request):
 
 
 def ap_actor(request, username):
-    user = get_object_or_404(User, username=username)
+    try:
+        user = User.objects.get(username=username)
+        if not user.enable_federation:
+            raise Http404("User not found")
+    except User.DoesNotExist:
+        raise Http404("User not found")
+
     root_url = settings.ROOT_URL
 
     public_key_pem = user.public_key
@@ -1089,7 +1106,7 @@ def ap_actor(request, username):
             "https://www.w3.org/ns/activitystreams",
             "https://w3id.org/security/v1",
         ],
-        "id": root_url + f"/u/{user.username}/actor/",
+        "id": root_url + f"/u/{user.username}/",
         "type": "Person",
         "name": f"{user.display_name}" if user.display_name else f"{user.username}",
         "preferredUsername": f"{user.username}",
@@ -1097,7 +1114,7 @@ def ap_actor(request, username):
         "inbox": root_url + f"/u/{user.username}/inbox/",
         "outbox": root_url + f"/u/{user.username}/outbox/",
         "publicKey": {
-            "id": root_url + f"/u/{user.username}/actor/#main-key",
+            "id": root_url + f"/u/{user.username}/#main-key",
             "owner": root_url + f"/u/{user.username}",
             "publicKeyPem": public_key_pem,
         },
@@ -1109,6 +1126,13 @@ def ap_actor(request, username):
 
 @csrf_exempt
 def ap_inbox(request, username):
+    try:
+        user = User.objects.get(username=username)
+        if not user.enable_federation:
+            raise Http404("User not found")
+    except User.DoesNotExist:
+        raise Http404("User not found")
+
     # only accept POST requests
     if request.method != "POST":
         return HttpResponse(status=404, reason="Not Found")
@@ -1137,13 +1161,24 @@ def handle_follow_request(incoming_message, request, username):
     target_domain = follower_url.split("/")[2]
 
     # Fetch the actor information to get the public key
-    actor_response = requests.get(
-        follower_url, headers={"Accept": "application/activity+json"}
-    )
+    try:
+        actor_response = requests.get(
+            follower_url, headers={"Accept": "application/activity+json"}
+        )
+    except requests.exceptions.RequestException:
+        actor_response = requests.get(
+            follower_url, headers={"Accept": "application/json"}
+        )
+
     if actor_response.status_code != 200:
+        print("failed to fetch actor")
         return HttpResponse(status=400, reason="Bad Request")
 
-    actor_data = actor_response.json()
+    try:
+        actor_data = actor_response.json()
+    except json.JSONDecodeError:
+        print("failed to decode actor json")
+        return HttpResponse(status=400, reason="Bad Request")
     actor_inbox = actor_data["inbox"]
     actor_shared_inbox = actor_data["endpoints"]["sharedInbox"]
     public_key_pem = actor_data["publicKey"]["publicKeyPem"]
@@ -1161,6 +1196,7 @@ def handle_follow_request(incoming_message, request, username):
         user = User.objects.get(username=username)
         private_key = import_private_key(username)
     except User.DoesNotExist:
+        print("user not found")
         raise Http404("User not found")
 
     # our server name
@@ -1173,7 +1209,7 @@ def handle_follow_request(incoming_message, request, username):
         ],
         "id": f"{DOMAIN}/u/{username}/{uuid.uuid4()}",  # Unique ID for each message
         "type": "Accept",
-        "actor": f"{DOMAIN}/u/{username}/actor/",
+        "actor": f"{DOMAIN}/u/{username}/",
         "object": {
             "id": incoming_message.get("id"),
             "type": "Follow",
@@ -1228,8 +1264,30 @@ def handle_undo_request(incoming_message, request, username):
 @csrf_exempt
 @require_http_methods(["GET"])
 def ap_outbox(request, username):
+    try:
+        user = User.objects.get(username=username)
+        if not user.enable_federation:
+            raise Http404("User not found")
+    except User.DoesNotExist:
+        raise Http404("User not found")
+
     # For GET requests, return the list of activities in ActivityPub format
-    activities = Activity.objects.filter(user=request.user, activity_type="say")
+    activity_types = [
+        "say",
+        "post",
+        "pin",
+        "repost",
+        "read-check-in",
+        "watch-check-in",
+        "listen-check-in",
+        "game-check-in",
+    ]
+
+    # Fetch activities of specified types for the user
+    activities = Activity.objects.filter(
+        user=request.user, activity_type__in=activity_types
+    )
+
     outbox_activities = [activity.to_activitypub() for activity in activities]
     response = {
         "@context": "https://www.w3.org/ns/activitystreams",
@@ -1237,6 +1295,37 @@ def ap_outbox(request, username):
         "type": "OrderedCollection",
         "totalItems": len(outbox_activities),
         "orderedItems": outbox_activities,
+    }
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def ap_followers(request, username):
+    # Fetch the user and private key
+    try:
+        user = User.objects.get(username=username)
+        if not user.enable_federation:
+            raise Http404("User not found")
+    except User.DoesNotExist:
+        print("user not found")
+        raise Http404("User not found")
+
+    # For GET requests, return the list of followers in ActivityPub format
+    followers = FediverseFollower.objects.filter(user=user)
+    # follower_uris = [follower.follower_uri for follower in followers]
+    # Construct the response
+    response = {
+        "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+        ],
+        "id": settings.ROOT_URL + f"/u/{username}/followers",
+        "partOf": settings.ROOT_URL + f"/u/{username}/followers",
+        "type": "OrderedCollection",
+        "totalItems": len(followers),
+        "first": settings.ROOT_URL + f"/u/{username}/followers?page=True",
     }
 
     return JsonResponse(response)

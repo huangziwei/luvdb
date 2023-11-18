@@ -203,7 +203,12 @@ class Repost(models.Model):
             raise PermissionDenied("You are blocked by the user and cannot comment.")
 
         is_new = self.pk is None
+        was_updated = False
         super().save(*args, **kwargs)
+
+        if not is_new:
+            # Check if updated
+            was_updated = self.updated_at > self.timestamp
 
         if is_new:
             Activity.objects.create(
@@ -240,6 +245,17 @@ class Repost(models.Model):
                     )
                 except Exception as e:
                     print(f"Error creating Mastodon post: {e}")
+
+            if was_updated:
+                # Fetch and update the related Activity object
+                try:
+                    activity = Activity.objects.get(
+                        content_type__model="repost", object_id=self.id
+                    )
+                    activity.save()  # This will trigger the update logic in Activity model
+                except Activity.DoesNotExist:
+                    pass  # Handle the case where the Activity object does not exist
+
 
             original_activity_user = (
                 self.original_activity.user

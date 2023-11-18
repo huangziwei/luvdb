@@ -63,8 +63,8 @@ def sign_and_send(
         "host": target_domain,
         "date": d,
         "digest": f'SHA-256={digest_hash.decode("utf-8")}',
-        "content-type": "application/json",
-        "content-length": str(len(json.dumps(message))),
+        "content-type": "application/activity+json",
+        "content-length": str(len(json.dumps(message).encode("utf-8"))),
         "user-agent": "(luvdb/0.1)",
     }
     string_to_sign = "\n".join(
@@ -74,14 +74,10 @@ def sign_and_send(
     )
     print("String to sign:\n", string_to_sign, "\n")
 
-    # string_to_sign = f"(request-target): post {inbox_fragment}\nhost: {target_domain}\ndate: {d}\ndigest: SHA-256={digest_hash.decode('utf-8')}"
     signature = base64.b64encode(
         private_key.sign(string_to_sign.encode("utf-8"), padding.PKCS1v15(), HASH)
     ).decode("utf-8")
-    header = (
-        f'keyId="{domain}{name}",headers="{preferred_headers}",signature="{signature}"'
-    )
-    # header = f'keyId="{domain}{name}",headers="(request-target) host date digest",signature="{signature}"'
+    header = f'keyId="{domain}{name}",headers="{preferred_headers}",algorithm="rsa-sha256",signature="{signature}"'
     try:
         response = requests.post(
             inbox,
@@ -89,7 +85,7 @@ def sign_and_send(
                 "Host": target_domain,
                 "Date": d,
                 "Digest": f'SHA-256={digest_hash.decode("utf-8")}',
-                "Content-Type": "application/json",
+                "Content-Type": "application/activity+json",
                 "Signature": header,
             },
             data=json.dumps(message),
