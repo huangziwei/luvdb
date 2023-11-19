@@ -105,7 +105,7 @@ class CustomUser(AbstractUser):
         if self.username in self.RESERVED_USERNAMES:
             raise ValidationError("This username is reserved and cannot be registered.")
 
-        # Check if the user has used an invitation code and hasn't been assigned an inviter yet
+        # Check if the user has used an invitation code
         if self.code_used:
             # # Save the user instance before creating the Follow and Activity instances
             super().save(*args, **kwargs)
@@ -123,19 +123,9 @@ class CustomUser(AbstractUser):
             super().save(*args, **kwargs)
 
         if self.enable_federation:
-            # Check if a key for the current username already exists
-            key_exists = False
-            with open(settings.PRIVATEKEY_PATH, "r") as file:
-                lines = file.readlines()
-                for line in lines:
-                    if line.startswith(f"{self.username}="):
-                        key_exists = True
-                        break
-
-            # Proceed only if no key exists for this username
-            if not key_exists:
+            # Check if the user already has a public key
+            if not self.public_key:
                 private_key, public_key = self.generate_key_pair()
-                # Base64 encode the private key
                 encoded_private_key = base64.b64encode(private_key).decode("utf-8")
 
                 # Store the encoded private key in the environment file
@@ -144,21 +134,6 @@ class CustomUser(AbstractUser):
 
                 # Store public key in the database
                 self.public_key = public_key.decode("utf-8")
-                super().save(*args, **kwargs)
-            else:
-                # Handle the scenario where a key already exists for the user
-                # This could involve logging a message, throwing an exception, or simply skipping the key generation
-                print("Key already exists for this user")
-        else:
-            # Remove the private key from the environment file
-            with open(settings.PRIVATEKEY_PATH, "r") as file:
-                lines = file.readlines()
-            with open(settings.PRIVATEKEY_PATH, "w") as file:
-                for line in lines:
-                    if not line.startswith(f"{self.username}="):
-                        file.write(line)
-            self.public_key = None
-            super().save(*args, **kwargs)
 
     def generate_key_pair(self):
         # Generate private key

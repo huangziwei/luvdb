@@ -105,12 +105,13 @@ class Activity(models.Model):
         elif self.activity_type == "repost":
             content = self.content_object.content + f"\n[{url}]({url})"
         elif self.activity_type == "post":
-            content = "New Post: " + self.content_object.title + f"\n[{url}]({url})"
+            content = f'I posted "{self.content_object.title}"' + f"\n[{url}]({url})"
         elif self.activity_type == "pin":
             content = (
-                "New Pin: "
-                + self.content_object.title
-                + f" (from [{urlparse(self.content_object.url).netloc}](self.content_object.url))"
+                "I Pinned "
+                + f'"{self.content_object.title}"'
+                + f" (from [{urlparse(self.content_object.url).netloc}]({self.content_object.url}))"
+                + self.content_object.content
                 + f"\n[{url}]({url})"
             )
         elif "game" in self.activity_type:
@@ -138,11 +139,6 @@ class Activity(models.Model):
                 # "cc": [], # This is added later
                 "content": mark_safe(markdown.markdown(content)),
                 "contentMap": {"en": mark_safe(markdown.markdown(content))},
-                "context": {
-                    "https://www.w3.org/ns/activitystreams#partOf": {
-                        "https://www.w3.org/ns/activitystreams#name": "LuvDB"
-                    }
-                },
                 "conversation": "tag:"
                 + urlparse(settings.ROOT_URL).netloc
                 + ","

@@ -113,9 +113,13 @@ class AccountDetailView(DetailView):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        # Check the Accept header
-        accept_header = request.headers.get("Accept", "")
-        if "application/activity+json" in accept_header:
+        # Define a tuple of acceptable header values
+        acceptable_headers = ("application/activity+json", "application/json")
+
+        # Use any() to check if any acceptable header is in the request's Accept header
+        if any(
+            header in request.headers.get("Accept", "") for header in acceptable_headers
+        ):
             # Delegate to ap_actor if the header matches
             return ap_actor(request, *args, **kwargs)
         else:

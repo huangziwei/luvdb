@@ -111,7 +111,14 @@ def sign_and_send(
         )
         return False
     else:
-        print("Successfully sent request:", "\n", response.text, "\n", header, "\n")
+        print(
+            f"Successfully sent request: {response.status_code}",
+            "\n",
+            response.text,
+            "\n",
+            header,
+            "\n",
+        )
         return True
 
 
