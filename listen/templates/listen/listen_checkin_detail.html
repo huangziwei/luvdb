@@ -15,7 +15,7 @@
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:type" content="article">
 {% endblock meta %}
-{% block title %}Listen Check In{% endblock %}
+{% block title %}{{ object.user.display_name | default:object.user.username }}'s Check In{% endblock %}
 {% block content %}
     <div class="container">
         <div class="row">

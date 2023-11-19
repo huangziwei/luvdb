@@ -4,7 +4,18 @@
 {% load linkify %}
 {% load crispy_forms_tags %}
 {% load parse_activity_type %}
-{% load url_filters %}
+{% load url_filters %}{% block meta %}
+<meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Repost">
+{% if object.content %}
+    <meta property="og:description" content="{{ object.notes|truncatewords:150 }}">
+{% else %}
+    <meta property="og:description" content="Check out {{ object.user.display_name | default:object.user.username }}'s Repost on luvdb.com">
+{% endif %}
+<meta property="og:image" content="{% static 'img/apple-touch-icon.png' %}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:type" content="article">
+{% endblock meta %}
+{% block title %}{{ object.user.display_name | default:object.user.username }}'s Repost{% endblock title %}
 {% block content %}
     <div class="container">
         <div class="row">
