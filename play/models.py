@@ -323,7 +323,7 @@ class GameCheckIn(models.Model):
         null=True, blank=True
     )  # Any thoughts or comments at this check-in.
     timestamp = models.DateTimeField(auto_now_add=True)
-
+    updated_at = models.DateTimeField(auto_now=True)
     progress = models.IntegerField(null=True, blank=True)
     TOTAL_PLAYED_TIME = "TT"
     PROGRESS_TYPE_CHOICES = [

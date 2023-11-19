@@ -146,7 +146,7 @@ class Activity(models.Model):
                 + ":objectType=Conversation",
                 "id": url,
                 "inReplyTo": None,
-                "published": self.timestamp.isoformat(),
+                "published": self.timestamp.isoformat() + "Z",
                 "sensitive": False,
                 "source": {"content": content, "mediaType": "text/plain"},
                 "summary": "",
@@ -154,11 +154,13 @@ class Activity(models.Model):
                 "to": ["https://www.w3.org/ns/activitystreams#Public"],
                 "tag": [],
             },
-            "published": self.timestamp.isoformat(),
+            "published": self.timestamp.isoformat() + "Z",
         }
 
         if ap_activity_type in ["Update", "Delete"]:
-            activity["object"]["updated"] = self.content_object.updated_at.isoformat()
+            activity["object"]["updated"] = (
+                self.content_object.updated_at.isoformat() + "Z"
+            )
             if ap_activity_type == "Delete":
                 activity["object"]["type"] = "Tombstone"
                 activity["object"]["deleted"] = datetime.utcnow().isoformat() + "Z"

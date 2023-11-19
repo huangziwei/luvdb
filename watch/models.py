@@ -404,6 +404,7 @@ class WatchCheckIn(models.Model):
         null=True, blank=True
     )  # Any thoughts or comments at this check-in.
     timestamp = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     progress = models.CharField(max_length=20, null=True, blank=True)
     TIME = "TM"
     EPISODE = "EP"
