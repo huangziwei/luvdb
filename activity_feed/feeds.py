@@ -1,3 +1,4 @@
+import markdown
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.syndication.views import Feed
@@ -83,7 +84,7 @@ class UserActivityFeed(Feed):
             return None
 
         if hasattr(related_object, "content"):
-            return related_object.content
+            return markdown.markdown(related_object.content)
         elif model_name == "follow":
             return f"{related_object.follower.username} followed {related_object.followed.username}"
         else:
