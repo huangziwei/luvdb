@@ -31,7 +31,7 @@ from django.views.generic import (
 )
 
 from activity_feed.models import Activity, Follow
-from entity.models import Creator
+from entity.models import Company, Creator
 from listen.models import Audiobook, ListenCheckIn, Podcast, Release, Track
 from listen.models import Work as MusicWork
 from play.models import Game, GameCast, GameCheckIn, GameRole
@@ -544,6 +544,10 @@ def filter_write(query, search_terms):
     pin_results = Pin.objects.all()
     repost_results = Repost.objects.all()
     luvlist_results = LuvList.objects.all()
+    read_checkin_results = ReadCheckIn.objects.all()
+    listen_checkin_results = ListenCheckIn.objects.all()
+    watch_checkin_results = WatchCheckIn.objects.all()
+    game_checkin_results = GameCheckIn.objects.all()
 
     for term in search_terms:
         post_results = (
@@ -573,8 +577,38 @@ def filter_write(query, search_terms):
             .distinct()
             .order_by("timestamp")
         )
+        read_checkin_results = (
+            read_checkin_results.filter(content__icontains=term)
+            .distinct()
+            .order_by("timestamp")
+        )
+        watch_checkin_results = (
+            watch_checkin_results.filter(content__icontains=term)
+            .distinct()
+            .order_by("timestamp")
+        )
+        listen_checkin_results = (
+            listen_checkin_results.filter(content__icontains=term)
+            .distinct()
+            .order_by("timestamp")
+        )
+        game_checkin_results = (
+            game_checkin_results.filter(content__icontains=term)
+            .distinct()
+            .order_by("timestamp")
+        )
 
-    return post_results, say_results, pin_results, repost_results, luvlist_results
+    return (
+        post_results,
+        say_results,
+        pin_results,
+        repost_results,
+        luvlist_results,
+        read_checkin_results,
+        watch_checkin_results,
+        listen_checkin_results,
+        game_checkin_results,
+    )
 
 
 def filter_read(query, search_terms):
@@ -774,15 +808,20 @@ def filter_watch(query, search_terms):
     return movie_results, series_results
 
 
-def filter_creator(query, search_terms):
+def filter_entity(query, search_terms):
     creator_results = Creator.objects.all()
+    company_results = Company.objects.all()
 
     for term in search_terms:
         creator_results = creator_results.filter(
             Q(name__icontains=term) | Q(other_names__icontains=term)
         ).distinct()
 
-    return creator_results
+        company_results = company_results.filter(
+            Q(name__icontains=term) | Q(other_names__icontains=term)
+        ).distinct()
+
+    return creator_results, company_results
 
 
 def parse_query(query):
@@ -800,12 +839,18 @@ def search_view(request):
     user_results = []
     # entity
     creator_results = []
+    company_results = []
     # write
     post_results = []
     say_results = []
     pin_results = []
     repost_results = []
     luvlist_results = []
+    read_checkin_results = []
+    watch_checkin_results = []
+    listen_checkin_results = []
+    game_checkin_results = []
+
     # read
     litwork_results = []
     litinstance_results = []
@@ -838,6 +883,10 @@ def search_view(request):
                 pin_results,
                 repost_results,
                 luvlist_results,
+                read_checkin_results,
+                watch_checkin_results,
+                listen_checkin_results,
+                game_checkin_results,
             ) = filter_write(query, search_terms)
 
         if model in ["all", "read"]:
@@ -864,8 +913,8 @@ def search_view(request):
         if model in ["all", "watch"]:
             movie_results, series_results = filter_watch(query, search_terms)
 
-        if model in ["all", "creator"]:
-            creator_results = filter_creator(query, search_terms)
+        if model in ["all", "entity"]:
+            creator_results, company_results = filter_entity(query, search_terms)
 
     execution_time = time.time() - start_time
 
@@ -877,12 +926,17 @@ def search_view(request):
             "user_results": user_results,
             # entity
             "creator_results": creator_results,
+            "company_results": company_results,
             # write
             "post_results": post_results,
             "say_results": say_results,
             "pin_results": pin_results,
             "repost_results": repost_results,
             "luvlist_results": luvlist_results,
+            "read_checkin_results": read_checkin_results,
+            "watch_checkin_results": watch_checkin_results,
+            "listen_checkin_results": listen_checkin_results,
+            "game_checkin_results": game_checkin_results,
             # read
             "litwork_results": litwork_results,
             "litinstance_results": litinstance_results,

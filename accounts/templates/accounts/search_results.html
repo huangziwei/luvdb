@@ -29,21 +29,32 @@
                 {% endif %}
 
                 <!--Entity-->
-                {% if creator_results %}
+                {% if creator_results or company_results %}
                     <h3 class="mb-3">Entity</h3>
-                    {% if creator_results %}
-                        <div class="fs-4">Persons</div>
+                    <div class="row">
+                        {% if creator_results %}
+                        <div class="fs-4">Creators</div>
                         {% for creator in creator_results %}
                             <p>
                                 <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name|truncatechars:50 }}</a>
                             </p>
                         {% endfor %}
                     {% endif %}
+                    {% if company_results %}
+                        <div class="fs-4">Companies</div>
+                        {% for company in company_results %}
+                            <p>
+                                <a href="{% url 'entity:company_detail' company.id %}">{{ company.name|truncatechars:50 }}</a>
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+                    
                     <hr>
                 {% endif %}
 
                 <!--Read-->
-                {% if litwork_results or litinstance_results or book_results or periodical_results or book_series %}
+                {% if litwork_results or litinstance_results or book_results or periodical_results or book_series or read_checkin_results%}
                     <h3 class="mb-3">Read</h3>
                     <div class="row">
                         {% if litwork_results %}
@@ -108,12 +119,24 @@
                             {% endfor %}
                         </div>
                         {% endif %}
+
+                        {% if read_checkin_results %}
+                        <div class="col-12 col-md-4 mb-3">
+                                <div class="fs-4">Check-ins</div>
+                                {% for checkin in read_checkin_results %}
+                                    <p>
+                                        <a href="{% url 'write:read_checkin_detail' checkin.user.username checkin.id %}">{{ checkin.content|truncatechars:30 }}</a>
+                                        ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|date:"Y.m.d" }})
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                     <hr>
                 {% endif %}
 
                 <!--Watch-->
-                {% if movie_results or series_results %}
+                {% if movie_results or series_results or watch_checkin_results %}
                 <div class="row">
                     <h3 class="mb-3">Watch</h3>
                     {% if movie_results %}
@@ -139,13 +162,28 @@
                         {% endfor %}
                     </div>
                     {% endif %}
+                    {% if watch_checkin_results %}
+                    <div class="row">
+                        <div class="col-12 col-md-4 mb-3">
+                            <div class="fs-4">Check-ins</div>
+                            {% for checkin in watch_checkin_results %}
+                                <p>
+                                    <a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}">{{ checkin.content|truncatechars:30 }}</a>
+                                    ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|date:"Y.m.d" }})
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
                     <hr>
                 </div>
                 {% endif %}
+                    
+                
 
 
                 <!--Listen-->
-                {% if musicwork_results or track_results or release_results or podcast_results or audiobook_results %}
+                {% if musicwork_results or track_results or release_results or podcast_results or audiobook_results or listen_checkin_results%}
                 <div class="row mb-4">
                     <h3 class="mb-3">Listen</h3>
                     {% if musicwork_results %}
@@ -202,12 +240,23 @@
                         {% endfor %}
                     </div>
                     {% endif %}
+                    {% if listen_checkin_results %}
+                    <div class="col-12 col-md-4 mb-3">
+                        <div class="fs-4">Check-ins</div>
+                        {% for checkin in listen_checkin_results %}
+                            <p>
+                                <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}">{{ checkin.content|truncatechars:30 }}</a>
+                                ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|date:"Y.m.d" }})
+                            </p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                     <hr>
                 </div>
                 {% endif %}
 
                 <!--Play-->
-                {% if game_results or gamework_results %}
+                {% if game_results or gamework_results or game_checkin_results%}
                 <div class="row">
                     <h3 class="mb-3">Play</h3>
                     
@@ -229,6 +278,17 @@
                             <p>
                                 <a href="{% url 'play:game_detail' game.id %}">{{ game.title|truncatechars:50 }}</a>
                                 ({{ game.earliest_release_date }})
+                            </p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if game_checkin_results %}
+                    <div class="col-12 col-md-4 mb-3">
+                        <div class="fs-4">Check-ins</div>
+                        {% for checkin in game_checkin_results %}
+                            <p>
+                                <a href="{% url 'write:play_checkin_detail' checkin.user.username checkin.id %}">{{ checkin.content|truncatechars:30 }}</a>
+                                ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|date:"Y.m.d" }})
                             </p>
                         {% endfor %}
                     </div>
