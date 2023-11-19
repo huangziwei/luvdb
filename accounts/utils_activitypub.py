@@ -1,7 +1,7 @@
 import base64
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 import requests
 from cryptography.exceptions import InvalidSignature
@@ -57,7 +57,7 @@ def sign_and_send(
     inbox_fragment = inbox.replace(f"https://{target_domain}", "")
     digest_hash = digest_message(json.dumps(message))
 
-    d = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
+    d = datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT")
     headers_to_sign = {
         "(request-target)": f"post {inbox_fragment}",
         "host": target_domain,

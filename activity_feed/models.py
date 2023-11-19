@@ -1,6 +1,6 @@
 import base64
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 import markdown
@@ -169,7 +169,9 @@ class Activity(models.Model):
             )
             if ap_activity_type == "Delete":
                 activity["object"]["type"] = "Tombstone"
-                activity["object"]["deleted"] = datetime.utcnow().isoformat() + "Z"
+                activity["object"]["deleted"] = (
+                    datetime.now(timezone.utc).isoformat() + "Z"
+                )
 
         private_key = import_private_key(self.user.username)
         message = json.dumps(activity, sort_keys=True).encode()
@@ -186,7 +188,7 @@ class Activity(models.Model):
         activity["signature"] = {
             "type": "RsaSignature2017",
             "creator": actor,  # URL of the actor's public key
-            "created": datetime.utcnow().isoformat() + "Z",
+            "created": datetime.now(timezone.utc).isoformat() + "Z",
             "signatureValue": base64.b64encode(signature).decode(),
         }
 
