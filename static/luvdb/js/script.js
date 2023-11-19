@@ -408,53 +408,42 @@ document.addEventListener("DOMContentLoaded", function () {
 var refs = document.querySelectorAll(".footnote-ref");
 
 // Loop through all references
-for (var i = 0; i < refs.length; i++) {
+refs.forEach(function (ref) {
     // Get the id of the corresponding footnote
-    var footnoteId = refs[i].getAttribute("href").slice(4);
+    var footnoteId = ref.getAttribute("href").slice(1);
 
     // Select the corresponding footnote
-    var footnoteP = document
-        .querySelector('.footnote ol li p a[href="#fnref:' + footnoteId + '"]')
-        .parentElement.cloneNode(true);
+    var footnoteLi = document.getElementById(footnoteId);
+    if (!footnoteLi) return; // Skip if no matching footnote found
 
-    // Create a new span element
     var footnoteSpan = document.createElement("span");
+    footnoteSpan.className = "popupnote";
+    ref.className = "popupnote-parent";
 
-    // Copy the class and content from the p to the span
-    footnoteSpan.className = footnoteP.className;
-    footnoteSpan.innerHTML = footnoteP.innerHTML;
+    // Clone and clean content from the li to the span
+    var clonedFootnote = footnoteLi.cloneNode(true);
+    var backref = clonedFootnote.querySelector(".footnote-backref");
+    if (backref) backref.remove();
 
-    footnoteSpan.setAttribute("class", "popupnote");
-    refs[i].setAttribute("class", "popupnote-parent");
-
-    // Remove element with class 'footnote-backref'
-    var backref = footnoteSpan.getElementsByClassName("footnote-backref");
-    if (backref[0]) {
-        backref[0].remove();
-    }
+    footnoteSpan.innerHTML = clonedFootnote.innerHTML;
 
     // Append the footnote to the footnote reference
-    refs[i].appendChild(footnoteSpan);
-}
+    ref.appendChild(footnoteSpan);
+});
 
-var popupParents = document.getElementsByClassName("popupnote-parent");
-
-for (var i = 0; i < popupParents.length; i++) {
-    popupParents[i].onmouseover = function () {
-        var popup = this.getElementsByClassName("popupnote")[0];
-        // Get bounding rectangle of the popup.
+// Adjust popup position on mouseover
+var popupParents = document.querySelectorAll(".popupnote-parent");
+popupParents.forEach(function (parent) {
+    parent.onmouseover = function () {
+        var popup = this.querySelector(".popupnote");
         var rect = popup.getBoundingClientRect();
 
-        // If it's out of the left boundary of the viewport.
         if (rect.left < 0) {
             popup.style.left = "0";
             popup.style.transform = "translateX(0)";
-        }
-
-        // If it's out of the right boundary of the viewport.
-        else if (rect.right > window.innerWidth) {
+        } else if (rect.right > window.innerWidth) {
             var overflowAmount = rect.right - window.innerWidth;
             popup.style.left = `calc(50% - ${overflowAmount}px)`;
         }
     };
-}
+});

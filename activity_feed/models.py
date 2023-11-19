@@ -1,7 +1,11 @@
+import base64
+import json
 from datetime import datetime
 from urllib.parse import urlparse
 
 import markdown
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -166,6 +170,25 @@ class Activity(models.Model):
             if ap_activity_type == "Delete":
                 activity["object"]["type"] = "Tombstone"
                 activity["object"]["deleted"] = datetime.utcnow().isoformat() + "Z"
+
+        private_key = import_private_key(self.user.username)
+        message = json.dumps(activity, sort_keys=True).encode()
+        signature = private_key.sign(
+            message,
+            padding.PSS(
+                mgf=padding.MGF1(hashes.SHA256()),
+                salt_length=padding.PSS.MAX_LENGTH,
+            ),
+            hashes.SHA256(),
+        )
+
+        # Add the signature to the activity JSON
+        activity["signature"] = {
+            "type": "RsaSignature2017",
+            "creator": actor,  # URL of the actor's public key
+            "created": datetime.utcnow().isoformat() + "Z",
+            "signatureValue": base64.b64encode(signature).decode(),
+        }
 
         return activity
 

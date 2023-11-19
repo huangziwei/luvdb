@@ -305,6 +305,10 @@ sup {
     box-sizing: border-box;
 }
 
+.popupnote blockquote {
+    font-size: 1em;
+}
+
 [data-bs-theme="dark"] .popupnote {
     background-color: var(--bs-body-bg);
     color: var(--text-default);
