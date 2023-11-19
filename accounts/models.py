@@ -123,17 +123,32 @@ class CustomUser(AbstractUser):
             super().save(*args, **kwargs)
 
         if self.enable_federation:
-            private_key, public_key = self.generate_key_pair()
-            # Base64 encode the private key
-            encoded_private_key = base64.b64encode(private_key).decode("utf-8")
+            # Check if a key for the current username already exists
+            key_exists = False
+            with open(settings.PRIVATEKEY_PATH, "r") as file:
+                lines = file.readlines()
+                for line in lines:
+                    if line.startswith(f"{self.username}="):
+                        key_exists = True
+                        break
 
-            # Store the encoded private key in the environment file
-            with open(settings.PRIVATEKEY_PATH, "a") as file:
-                file.write(f"{self.username}={encoded_private_key}\n")
+            # Proceed only if no key exists for this username
+            if not key_exists:
+                private_key, public_key = self.generate_key_pair()
+                # Base64 encode the private key
+                encoded_private_key = base64.b64encode(private_key).decode("utf-8")
 
-            # Store public key in the database
-            self.public_key = public_key.decode("utf-8")
-            super().save(*args, **kwargs)
+                # Store the encoded private key in the environment file
+                with open(settings.PRIVATEKEY_PATH, "a") as file:
+                    file.write(f"{self.username}={encoded_private_key}\n")
+
+                # Store public key in the database
+                self.public_key = public_key.decode("utf-8")
+                super().save(*args, **kwargs)
+            else:
+                # Handle the scenario where a key already exists for the user
+                # This could involve logging a message, throwing an exception, or simply skipping the key generation
+                print("Key already exists for this user")
         else:
             # Remove the private key from the environment file
             with open(settings.PRIVATEKEY_PATH, "r") as file:
