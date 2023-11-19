@@ -68,10 +68,12 @@ class Activity(models.Model):
 
             target_domain = follower_url.split("/")[2]
             activitypub_message["cc"] = [
-                settings.ROOT_URL + "/u/" + self.user.username + "/followers"
+                # settings.ROOT_URL + "/u/" + self.user.username + "/followers"
+                follower_url
             ]
             activitypub_message["object"]["cc"] = [
-                settings.ROOT_URL + "/u/" + self.user.username + "/followers"
+                # settings.ROOT_URL + "/u/" + self.user.username + "/followers"
+                follower_url
             ]
             success = sign_and_send(
                 activitypub_message,
@@ -99,12 +101,12 @@ class Activity(models.Model):
         elif self.activity_type == "repost":
             content = self.content_object.content + f"\n[{url}]({url})"
         elif self.activity_type == "post":
-            content = "New Post:\n" + self.content_object.title + f"\n[{url}]({url})"
+            content = "New Post: " + self.content_object.title + f"\n[{url}]({url})"
         elif self.activity_type == "pin":
             content = (
-                "New Pin:\n"
+                "New Pin: "
                 + self.content_object.title
-                + f"(from [{urlparse(self.content_object.url).netloc}](self.content_object.url))"
+                + f" (from [{urlparse(self.content_object.url).netloc}](self.content_object.url))"
                 + f"\n[{url}]({url})"
             )
         elif "game" in self.activity_type:
@@ -152,7 +154,7 @@ class Activity(models.Model):
                 "summary": "",
                 "type": "Note",
                 "to": ["https://www.w3.org/ns/activitystreams#Public"],
-                "tag": [],
+                "tag": [tag.name for tag in self.content_object.tags.all()],
             },
             "published": self.timestamp.isoformat() + "Z",
         }

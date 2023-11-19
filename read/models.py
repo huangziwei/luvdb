@@ -536,6 +536,7 @@ class ReadCheckIn(models.Model):
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
+        was_updated = False
         super().save(*args, **kwargs)
 
         # Attempt to fetch an existing Activity object for this check-in
@@ -548,12 +549,27 @@ class ReadCheckIn(models.Model):
 
         # Conditionally create an Activity object
         if self.share_to_feed:
+            if not is_new:
+                # Check if updated
+                was_updated = self.updated_at > self.timestamp
+
+            if was_updated:
+                # Fetch and update the related Activity object
+                try:
+                    activity = Activity.objects.get(
+                        content_type__model="readcheckin", object_id=self.id
+                    )
+                    activity.save()  # This will trigger the update logic in Activity model
+                except Activity.DoesNotExist:
+                    pass  # Handle the case where the Activity object does not exist
+
             if is_new or activity is None:
                 Activity.objects.create(
                     user=self.user,
                     activity_type="read-check-in",
                     content_object=self,
                 )
+
                 if hasattr(self.user, "bluesky_account"):
                     try:
                         bluesky_account = self.user.bluesky_account
