@@ -81,7 +81,6 @@
                     <!--All tags on the page-->
                     {% if all_tags %}
                     <div class="bg-light p-3 mb-3">
-                        <div class="fs-5">Hashtags</div>
                         <span>
                             {% for tag, size in all_tags.items %}
                                 <a href="{% url 'write:tag_user_list' object.username tag.name %}"
