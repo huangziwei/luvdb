@@ -42,55 +42,55 @@
                 {% for activity in object_list %}
                     <div class="activity-item mb-3 h-entry">
                         {% if activity.model_name == "Say" %}
-                        <div>{{ activity.content | linkify_tags | linkify_mentions | markdownify }}</div>
-                        <span class="d-flex mt-2">
-                            <div class="me-2">
-                                <a href="{% url 'write:say_detail' activity.user.username activity.id %}" class="link-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }} | {{activity.model_name }}</a>
-                            </div>
-                            {% if activity.comments_enabled %}
-                                <p class="ms-2 me-2">
-                                    <a href="{% url 'write:say_detail' activity.user.username activity.id %}">Reply</a>
-                                </p>
-                            {% endif %}
-                            {% if activity.get_activity_id is not None %}
-                                <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:say_detail' activity.user.username activity.id %}?repost=true">Repost</a>
-                                </p>
-                            {% endif %}
-                            {% if object == request.user %}
-                                <p class="ms-2 me-2">
-                                    <a href="{% url 'write:say_update' activity.user.username activity.id %}">Edit</a>
-                                </p>
-                                <p class="ms-2 me-2">
-                                    <a href="{% url 'write:say_delete' activity.user.username activity.id %}">Delete</a>
-                                </p>
-                            {% endif %}
-                        </span>
-                        {% elif activity.model_name == "Repost" %}
-                        <div>{{ activity.content | linkify_tags | linkify_mentions | markdownify }}</div>
-                        <span class="d-flex mt-2">
-                            <div class="me-2">
-                                <a href="{% url 'write:repost_detail' activity.user.username activity.id %}" class="link-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }} | {{ activity.model_name }}</a>
-                            </div>
-                            {% if activity.comments_enabled %}
-                                <p class="ms-2 me-2">
-                                    <a href="{% url 'write:repost_detail' activity.user.username activity.id %}">Reply</a>
-                                </p>
-                            {% endif %}
-                            {% if activity.get_activity_id is not None %}
-                                <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:repost_detail' activity.user.username activity.id %}?repost=true">Repost</a>
-                                </p>
-                            {% endif %}
-                            {% if object == request.user %}
-                                <p class="ms-2 me-2">
-                                    <a href="{% url 'write:repost_update' activity.user.username activity.id %}">Edit</a>
-                                </p>
-                                <p class="ms-2 me-2">
-                                    <a href="{% url 'write:repost_delete' activity.user.username activity.id %}">Delete</a>
-                                </p>
-                            {% endif %}
-                        </span>
+                            <div>{{ activity.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                            <span class="d-flex mt-2">
+                                <div class="me-2">
+                                    <a href="{% url 'write:say_detail' activity.user.username activity.id %}" class="link-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }} | {{activity.model_name }}</a>
+                                </div>
+                                {% if activity.comments_enabled %}
+                                    <p class="ms-2 me-2">
+                                        <a href="{% url 'write:say_detail' activity.user.username activity.id %}">Reply</a>
+                                    </p>
+                                {% endif %}
+                                {% if activity.get_activity_id is not None %}
+                                    <p style='margin: 0 0.5em'>
+                                        <a href="{% url 'write:say_detail' activity.user.username activity.id %}?repost=true">Repost</a>
+                                    </p>
+                                {% endif %}
+                                {% if object == request.user %}
+                                    <p class="ms-2 me-2">
+                                        <a href="{% url 'write:say_update' activity.user.username activity.id %}">Edit</a>
+                                    </p>
+                                    <p class="ms-2 me-2">
+                                        <a href="{% url 'write:say_delete' activity.user.username activity.id %}">Delete</a>
+                                    </p>
+                                {% endif %}
+                            </span>
+                        {% elif activity.model_name == "Repost" and activity.content %}
+                            <div>{{ activity.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                            <span class="d-flex mt-2">
+                                <div class="me-2">
+                                    <a href="{% url 'write:repost_detail' activity.user.username activity.id %}" class="link-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }} | {{ activity.model_name }}</a>
+                                </div>
+                                {% if activity.comments_enabled %}
+                                    <p class="ms-2 me-2">
+                                        <a href="{% url 'write:repost_detail' activity.user.username activity.id %}">Reply</a>
+                                    </p>
+                                {% endif %}
+                                {% if activity.get_activity_id is not None %}
+                                    <p style='margin: 0 0.5em'>
+                                        <a href="{% url 'write:repost_detail' activity.user.username activity.id %}?repost=true">Repost</a>
+                                    </p>
+                                {% endif %}
+                                {% if object == request.user %}
+                                    <p class="ms-2 me-2">
+                                        <a href="{% url 'write:repost_update' activity.user.username activity.id %}">Edit</a>
+                                    </p>
+                                    <p class="ms-2 me-2">
+                                        <a href="{% url 'write:repost_delete' activity.user.username activity.id %}">Delete</a>
+                                    </p>
+                                {% endif %}
+                            </span>
                         {% endif %}
                     </div>
                 {% empty %}
