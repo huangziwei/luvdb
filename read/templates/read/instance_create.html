@@ -10,14 +10,23 @@
             </div>
             <div class="col-12 col-md-5 right-column">
                 <div class="bg-light p-3">
-                    <div class="fs-4">Guide to Creating an Instance</div>
-                    <div class="fs-5">Instance: The Edition Level</div>
+                    <div class="fs-4">Guide</div>
                     <p>
-                        An Instance represents a specific edition or translation of a Work. It's a unique realization of the abstract Work, capturing details that vary between editions. For information about the physical copy, create a <a href="{% url "read:book_create" %}">Book</a> entry.
+                        You are creating an <strong>Instance</strong> entry.
                     </p>
-                    <div class="fs-5">What to Include in an Instance</div>
                     <p>
-                        Include details that define the edition, such as publication date of the instance, language of the instance, etc. Link it to the appropriate Work to build a detailed view of the book's different versions.
+                        An Instance is an edition or translation of a book. It is the second level of the <a href="https://en.wikipedia.org/wiki/BIBFRAME">3-level model</a> of representing books: <strong>Work</strong> > <strong>Instance</strong> > <strong>Book</strong>. This model enable us to create better linkage between different editions of a book, and build comprehensive bibliography for the author. 
+                    </p>
+
+                    <p>
+                        An Instance is related to only one Work, but can be related to multiple Books.
+                    </p>
+                    <div class="fs-4">Examples</div>
+                    <p>
+                        <a href="https://luvdb.com/read/instance/53/"><em>The Annotated Pride and Prejudice</em></a>, annotated and edited by <a href="https://luvdb.com/entity/creator/144/">David M. Shapard</a> is an Instance of <a href="https://luvdb.com/entity/creator/143/">Jane Austen</a>'s <a href="https://luvdb.com/read/work/52/">Work</a>.
+                    </p>
+                    <p>
+                        This Instance has two Books: a <a href="https://luvdb.com/read/book/161/">hardcover</a> in 2003 and a <a href="https://luvdb.com/read/book/162/">paperback</a> in 2007.
                     </p>
                 </div>
             </div>

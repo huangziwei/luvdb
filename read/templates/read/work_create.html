@@ -18,23 +18,25 @@
                         A <strong>Work</strong> is an abstraction that encapsulates the core concept of a book, irrespective of its editions or formats. 
                     </p>
                     <p>
-                        On LʌvDB, we use a 3-level model to represent books, similar to <a href="https://en.wikipedia.org/wiki/BIBFRAME">BIBFRAME</a>: <strong>Work</strong> > <strong>Instance</strong> > <strong>Book</strong>. This model enable us to create better linkage between different editions of a book, and build comprehensive bibliography for the author. 
+                        On LʌvDB, we use a <a href="https://en.wikipedia.org/wiki/BIBFRAME">3-level model</a> to represent books</a>: <strong>Work</strong> > <strong>Instance</strong> > <strong>Book</strong>. This model enable us to create better linkage between different editions of a book, and build comprehensive bibliography for the author. 
                     </p>
                     <p> 
-                        A <strong>Work</strong> entry is not check-in-able. If you want to check-in a book, you need to create a <a href="{% url "read:book_create" %}"><strong>Book</strong></a> entry.
+                        A <strong>Work</strong> entry is not check-in-able. If you want to check in to a book, you need to create a <a href="{% url "read:book_create" %}"><strong>Book</strong></a> entry.
                     </p>
                     <p>
                         If you're entering specific details about a particular edition, please create an <a href="{% url "read:instance_create" %}"><strong>Instance</strong></a> entry. 
                     </p>
                     <p>
-                        Remember, in our system, only 'Book' entries are check-in-able.
+                        A <strong>Work</strong> can be related to multiple instances, and an <strong>Instance</strong> can be related to multiple books.
                     </p>
                     <div class="fs-4">Examples</div>
                     <p>
-                        <a href="https://luvdb.com/read/work/52/"><em>Pride and Prejudice</em></a> was a <strong>Work</strong> written by <a href="https://luvdb.com/entity/creator/143/">Jane Austen</a>, and first published in January, 28, 1813.
+                        <a href="https://luvdb.com/read/work/52/"><em>Pride and Prejudice</em></a> was a <strong>Work</strong> (a novel) written by <a href="https://luvdb.com/entity/creator/143/">Jane Austen</a>, and first published in January, 28, 1813.
+                    </p>
+                    <p>
+                        <a href="https://luvdb.com/entity/creator/144/">David M. Shapard</a> has edited and annotated an <a href="https://luvdb.com/read/instance/53/">Instance</a> of <em>Pride and Prejudice</em>, which published as two books: a <a href="https://luvdb.com/read/book/161/">hardcover</a> in 2003 and a <a href="https://luvdb.com/read/book/162/">paperback</a> in 2007. In 2012, a <a href="https://luvdb.com/read/instance/54/">revised and updated Instance</a> of The Annotated Pride and Prejudice was published as a <a href="https://luvdb.com/read/book/51/">paperback</a>.
                     </p>
                 </div>
-                
             </div>
         </div>
     </div>

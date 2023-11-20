@@ -11,15 +11,29 @@
             </div>
             <div class="col-12 col-md-5 right-column">
                 <div class="bg-light p-3">
-                    <div class="fs-4">Guide to Creating a Book</div>
-                    <div class="fs-5">Book: The Physical Entity</div>
+                    <div class="fs-4">Guide</div>
                     <p>
-                        A Book represents the tangible item, a specific physical copy of an Instance. This is where you log details about the individual volume in hand. If you need to create an Instance first, go to the <a href="{% url "read:instance_create" %}">Instance</a> section.
+                        You are creating a <strong>Book</strong> entry.
                     </p>
-                    <div class="fs-5">What to Include in a Book</div>
                     <p>
-                        Log specifics about the physical object, such as covers, publisher, ISBN, etc. Linking it to the corresponding Instance will create a complete record from the conceptual Work to the actual Book.
+                        A <strong>Book</strong> is a physical copy in the <a href="https://en.wikipedia.org/wiki/BIBFRAME">3-level model</a> of the represention of books: <strong>Work</strong> > <strong>Instance</strong> > <strong>Book</strong>. This model enable us to create better linkage between different editions of a book, and build comprehensive bibliography for the author. 
                     </p>
+                    <p>
+                        A <strong>Book</strong> entry contains more information about the physical copy of the book, such as the ISBN, the publisher, the publication date, etc.
+                    </p>
+                    <p>
+                        A <strong>Book</strong> can be linked to one Instances (e.g. a novel), or multiple instances (e.g. a compilation of short stories or essays). 
+                    </p>
+                    <div class="fs-4">Examples</div>
+
+                    <ul>
+                        <li>
+                            This 2007 <a href="https://luvdb.com/read/book/162/">paperback</a> edition of <em>The Annotated Prided and Prejudice</em> is a reprint of the 2003 <a href="https://luvdb.com/read/book/161/">hardcover</a> edition, both are Books of <a href="https://luvdb.com/read/instance/53/">the same Instance</a>.
+                        </li>
+                        <li>
+                            <a href="https://luvdb.com/read/book/63/"><em>All But Impossible</em></a> is a short story collection by <a href="https://luvdb.com/entity/creator/157/">Edward D. Hoch</a>, which links to 15 Instances of short stories.
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -38,7 +52,7 @@
     });
     
     $(document).ready(function() {
-        $('select:not([name="model"])').removeClass('form-select');
+        $('select:not([name="cover_sens"], [name="model"])').removeClass('form-select');
     });
     
     </script>
