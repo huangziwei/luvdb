@@ -25,7 +25,7 @@
     });
     
     $(document).ready(function() {
-        $('select:not([name="model"])').removeClass('form-select');
+        $('select:not([name="model"], [name="poster_sens"])').removeClass('form-select');
     });
     </script>
     {{ form.media }}

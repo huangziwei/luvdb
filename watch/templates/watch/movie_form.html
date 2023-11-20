@@ -4,6 +4,7 @@
     {{ form.title|as_crispy_field }}
     {{ form.other_titles|as_crispy_field }}
     {{ form.poster|as_crispy_field }}
+    {{ form.poster_sens|as_crispy_field}}
     <div class="mb-3">
         {{ form.studios|as_crispy_field }}
         <a href="{% url 'entity:company_create' %}?next={{ request.path }}"

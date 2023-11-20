@@ -202,27 +202,6 @@ li:last-child {
     display: block;
 }
 
-. {
-    position: relative;
-}
-
-. .username {
-    position: absolute;
-    display: none;
-    background-color: #f9f9f9;
-    color: #333;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 2px 2px;
-    font-size: 0.8em;
-    z-index: 1;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -50px;
-    width: 100px;
-}
-
 
 /* spoiler */
 a[href$="/spoiler"],
