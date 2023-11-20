@@ -92,7 +92,7 @@ class CustomUserChangeForm(UserChangeForm):
                 This will also enable RSS feeds. \
                 If disabled, RSS feeds will be disabled and your profile will only be visible to logged-in users.",
             "pure_text_mode": "Enable this option to disable displaying images of the site.",
-            "enable_federation": "Enable this option to allow other ActivityPub services (e.g. Mastodon, etc.) to follow you.",
+            "enable_federation": "Enable this to allow other ActivityPub services (Mastodon only, for now) to follow you feed with handle @username@luvdb.com.",
             "public_key": "Your public key will be displayed on your profile page.",
             "timezone": "Set your preferred timezone. This will adjust the display of all timestamps to match your local date and time.",
         }
@@ -101,6 +101,7 @@ class CustomUserChangeForm(UserChangeForm):
         super(CustomUserChangeForm, self).__init__(*args, **kwargs)
         self.fields["is_public"].label = "Everyone can view my profile"
         self.fields["pure_text_mode"].label = "Don't display images"
+        self.fields["enable_federation"].label = "Enable Federation (experimental)"
 
         del self.fields["password"]
 
