@@ -107,6 +107,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "notify.context_processors.notifications",
+                "config.context_processors.version_context",
             ],
             "libraries": {
                 "account_tags": "accounts.templatetags.account_tags",
