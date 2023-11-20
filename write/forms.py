@@ -35,7 +35,7 @@ class PostForm(forms.ModelForm):
         super(PostForm, self).__init__(*args, **kwargs)
         self.fields["title"].label = ""
         self.fields["content"].label = ""
-        self.fields["comments_enabled"].label = "Enable comments"
+        self.fields["comments_enabled"].label = "Enable replies"
         self.fields["projects"].label = ""
         self.fields[
             "projects"
@@ -58,7 +58,7 @@ class SayForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SayForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
-        self.fields["comments_enabled"].label = "Enable comments"
+        self.fields["comments_enabled"].label = "Enable replies"
 
 
 class PinForm(forms.ModelForm):
@@ -81,7 +81,7 @@ class PinForm(forms.ModelForm):
         self.fields["title"].label = ""
         self.fields["url"].label = ""
         self.fields["content"].label = ""
-        self.fields["comments_enabled"].label = "Enable comments"
+        self.fields["comments_enabled"].label = "Enable replies"
 
 
 class CommentForm(forms.ModelForm):
@@ -106,7 +106,7 @@ class ActivityFeedSayForm(SayForm):
     def __init__(self, *args, **kwargs):
         super(ActivityFeedSayForm, self).__init__(*args, **kwargs)
         self.fields["comments_enabled"].initial = True
-        self.fields["comments_enabled"].label = "Enable comments"
+        self.fields["comments_enabled"].label = "Enable replies"
 
 
 class RepostForm(forms.ModelForm):
@@ -119,7 +119,7 @@ class RepostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RepostForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
-        self.fields["comments_enabled"].label = "Enable comments"
+        self.fields["comments_enabled"].label = "Enable replies"
         self.fields["content"].required = False
 
 

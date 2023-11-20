@@ -297,7 +297,7 @@ class GameCheckInForm(forms.ModelForm):
         super(GameCheckInForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
         self.fields["content"].required = False
-        self.fields["comments_enabled"].label = "Enable comments"
+        self.fields["comments_enabled"].label = "Enable replies"
 
 
 class GameSeriesForm(forms.ModelForm):

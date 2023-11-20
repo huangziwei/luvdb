@@ -454,7 +454,7 @@ class BookInstance(models.Model):
         null=True, blank=True, default=1
     )  # Ordering of the works in a book
 
-    history = HistoricalRecords(inherit=True)
+    # history = HistoricalRecords(inherit=True)
 
     class Meta:
         ordering = ["order"]

@@ -60,7 +60,7 @@
                   id="comment-form">
                 {% csrf_token %}
                 {{ comment_form|crispy }}
-                <button type="submit" class='btn btn-sm btn-primary'>Add Comment</button>
+                <button type="submit" class='btn btn-sm btn-primary'>Add Reply</button>
             </form>
             <br>
         {% else %}
@@ -69,7 +69,7 @@
             </div>
         {% endif %}
     {% else %}
-        <p>Comment disabled.</p>
+        <p>Reply disabled.</p>
     {% endif %}
 {% endif %}
 <script>

@@ -10,16 +10,31 @@
             </div>
             <div class="col-12 col-md-5 right-column">
                 <div class="bg-light p-3">
-                    <div class="fs-4">Guide to Creating a Work</div>
-                    <div class="fs-5">Work: The Conceptual Entity</div>
+                    <div class="fs-4">Guide</div>
                     <p>
-                        A Work represents the high-level intellectual or artistic concept of a book. It's the abstraction of the idea, irrespective of individual editions or formats. If you're entering specific details about a particular edition, navigate to the <a href="{% url "read:instance_create" %}">Instance</a> section.
+                        You are creating a <strong>Work</strong> entry.
                     </p>
-                    <div class="fs-5">What to Include in a Work</div>
                     <p>
-                        Define the Work by its universal attributes such as title, author, and genre. These details remain constant across all Instances and Books related to this Work.
+                        A <strong>Work</strong> is an abstraction that encapsulates the core concept of a book, irrespective of its editions or formats. 
+                    </p>
+                    <p>
+                        On LʌvDB, we use a 3-level model to represent books, similar to <a href="https://en.wikipedia.org/wiki/BIBFRAME">BIBFRAME</a>: <strong>Work</strong> > <strong>Instance</strong> > <strong>Book</strong>. This model enable us to create better linkage between different editions of a book, and build comprehensive bibliography for the author. 
+                    </p>
+                    <p> 
+                        A <strong>Work</strong> entry is not check-in-able. If you want to check-in a book, you need to create a <a href="{% url "read:book_create" %}"><strong>Book</strong></a> entry.
+                    </p>
+                    <p>
+                        If you're entering specific details about a particular edition, please create an <a href="{% url "read:instance_create" %}"><strong>Instance</strong></a> entry. 
+                    </p>
+                    <p>
+                        Remember, in our system, only 'Book' entries are check-in-able.
+                    </p>
+                    <div class="fs-4">Examples</div>
+                    <p>
+                        <a href="https://luvdb.com/read/work/52/"><em>Pride and Prejudice</em></a> was a <strong>Work</strong> written by <a href="https://luvdb.com/entity/creator/143/">Jane Austen</a>, and first published in January, 28, 1813.
                     </p>
                 </div>
+                
             </div>
         </div>
     </div>
