@@ -119,9 +119,21 @@ class PostListView(ListView):
         context = super().get_context_data(**kwargs)
         context["object"] = self.user
 
+        # Determine current project, if any
+        current_project_slug = self.kwargs.get("project", None)
+        current_project = Project.objects.filter(
+            slug=current_project_slug, post__user=self.user
+        ).first()
+
+        # Filter tags based on the selected project
+        if current_project:
+            posts = Post.objects.filter(user=self.user, projects=current_project)
+        else:
+            posts = Post.objects.filter(user=self.user, projects__isnull=True)
+
         # Get all tags for this user's pins
         all_tags = []
-        for post in Post.objects.filter(user=self.user):
+        for post in posts:
             for tag in post.tags.all():
                 all_tags.append(tag)
 
