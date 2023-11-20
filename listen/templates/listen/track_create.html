@@ -10,15 +10,18 @@
             </div>
             <div class="col-12 col-md-5 right-column">
                 <div class="bg-light p-3">
-                    <div class="fs-4">Guide to Creating a Track</div>
-                    <div class="fs-5">Track: The Performed Version</div>
+                    <div class="fs-4">Guide</div>
                     <p>
-                        A Track represents a specific performance or recorded version of a Work or part of a Work. This includes the individual renditions you might find within an album. To group tracks into a physical or digital format, create a <a href="{% url "listen:release_create" %}">Release</a> entry.
+                        A Track is a specific performance or recording of a Work or part of it. This includes the individual renditions you might find within an album. To group tracks into a physical or digital format, create a <a href="{% url "listen:release_create" %}">Release</a> entry.
                     </p>
-                    <div class="fs-5">What to Include in a Track</div>
+                    <p> 
+                        A <strong>Track</strong> entry is not check-in-able. You need to create a <a href="{% url "listen:release_create" %}"><strong>Release</strong></a> entry for checking in.
+                    </p>
+                    <div class="fs-4">Examples</div>
                     <p>
-                        Include the details that are unique to the particular performance or recording, such as the performers, the arrangement, and any specific variations from the original Work. Link it to the Work it's derived from to maintain the connection.
+                        <a href="https://luvdb.com/listen/track/35/"><em>Just in Time</em></a> performed by <a href="https://luvdb.com/entity/creator/194/">Nina Simone</a> in 1968 at Montreux Jazz Festival is a Track of the <a href="https://luvdb.com/listen/work/22/">Work</a>, written by Jule Styne, Betty Comden, and Adolph Green.
                     </p>
+                    <p>Nina Simone performed the Work multiple times, each recording is a Track, and collected in different Releases</p>
                 </div>
             </div>
         </div>
