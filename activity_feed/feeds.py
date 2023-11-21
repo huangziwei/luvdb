@@ -66,9 +66,7 @@ class UserActivityFeed(Feed):
             return f'{related_object.user.username} pinned "{related_object.title}"'
         elif model_name == "follow":
             return f"{related_object.follower.username} followed {related_object.followed.username}"
-        elif model_name == "playcheckin":
-            return f"{related_object.user.username} checked in to {related_object.game.title}"
-        elif "checkin" in model_name and "play" not in model_name:
+        elif "checkin" in model_name:
             return f"{related_object.user.username} checked in to {related_object.content_object.title}"
         else:
             return str(related_object)

@@ -3,7 +3,7 @@ import uuid
 from io import BytesIO
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.files.base import ContentFile
@@ -182,6 +182,7 @@ class Game(models.Model):
     platforms = models.ManyToManyField(Platform, related_name="games")
     rating = models.TextField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
+    playcheckin = GenericRelation("PlayCheckIn")
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -305,7 +306,10 @@ class GameCast(models.Model):
 
 
 class PlayCheckIn(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+    object_id = models.PositiveIntegerField(null=True)
+    content_object = GenericForeignKey("content_type", "object_id")
+    # game = models.ForeignKey(Game, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ("to_play", "To Play"),
@@ -400,7 +404,7 @@ class PlayCheckIn(models.Model):
                             bluesky_account.bluesky_handle,
                             bluesky_account.bluesky_pds_url,
                             bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
-                            f'I checked in to "{self.game.title}" on LʌvDB\n\n'
+                            f'I checked in to "{self.content_object.title}" on LʌvDB\n\n'
                             + self.content
                             + "\n\n",
                             self.id,
@@ -416,7 +420,7 @@ class PlayCheckIn(models.Model):
                         create_mastodon_post(
                             mastodon_account.mastodon_handle,
                             mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
-                            f'I checked in to "{self.game.title}" on LʌvDB\n\n'
+                            f'I checked in to "{self.content_object.title}" on LʌvDB\n\n'
                             + self.content
                             + "\n\n",
                             self.id,

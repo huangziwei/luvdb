@@ -401,31 +401,31 @@
                                     <div class="d-flex flex-row bg-light p-3 mb-2">
                                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                             {% if user.pure_text_mode %}
-                                                <div class="cover-placeholder bg-light">{{ item.game.title }}</div>
+                                                <div class="cover-placeholder bg-light">{{ item.content_object.title }}</div>
                                             {% else %}
-                                                {% if item.game.cover %}
-                                                    {% if item.game.cover_sens %}
-                                                        <img src="{{ item.game.cover.url }}"
-                                                            alt="{{ item.game.title }} cover"
+                                                {% if item.content_object.cover %}
+                                                    {% if item.content_object.cover_sens %}
+                                                        <img src="{{ item.content_object.cover.url }}"
+                                                            alt="{{ item.content_object.title }} cover"
                                                             class="img-fluid blur cover-border"
                                                             onclick="this.classList.toggle('blur')">
                                                     {% else %}
-                                                        <img src="{{ item.game.cover.url }}"
-                                                            alt="{{ item.game.title }} cover"
+                                                        <img src="{{ item.content_object.cover.url }}"
+                                                            alt="{{ item.content_object.title }} cover"
                                                             class="img-fluid cover-border"
-                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ item.game.title }}</div>';">
+                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ item.content_object.title }}</div>';">
                                                     {% endif %}
                                                 {% else %}
-                                                    <div class="cover-placeholder">{{ item.game.title }}</div>
+                                                    <div class="cover-placeholder">{{ item.content_object.title }}</div>
                                                 {% endif %}
                                             {% endif %}
                                         </div>
                                         <div class="flex-grow-1 ms-3">
-                                            <a href="{% url 'play:game_detail' item.game.id %}"
+                                            <a href="{% url 'play:game_detail' item.content_object.id %}"
                                                class="text-decoration-none ">
-                                                <div class="fs-5">{{ item.game.title }}</div>
+                                                <div class="fs-5">{{ item.content_object.title }}</div>
                                             </a>
-                                            {% regroup item.game.gamerole_set.all by role as roles_list %}
+                                            {% regroup item.content_object.gamerole_set.all by role as roles_list %}
                                             {% for role in roles_list %}
                                                 <div>
                                                     {# djlint:off #}
@@ -439,46 +439,46 @@
                                                     {% endfor %}
                                                 </div>
                                             {% endfor %}
-                                            {% if item.game.developers.exists %}
+                                            {% if item.content_object.developers.exists %}
                                             <div>
                                                 {# djlint:off #}
-                                                <span class="text-muted">Developer{% if item.game.developers.count > 1 %}s{% endif %}:</span>
+                                                <span class="text-muted">Developer{% if item.content_object.developers.count > 1 %}s{% endif %}:</span>
                                                 {# djlint:on #}
-                                                {% for developer in item.game.developers.all %}
+                                                {% for developer in item.content_object.developers.all %}
                                                     {% if not forloop.first %}/{% endif %}
                                                     <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
                                                 {% endfor %}
                                             </div>
                                             {% endif %}
 
-                                            {% if item.game.publishers.exists %}
+                                            {% if item.content_object.publishers.exists %}
                                             <div>
                                                 {# djlint:off #}
                                                 <span class="text-muted">Publisher
-                                                    {% if item.game.publishers.count > 1 %}s{% endif %}:</span>
+                                                    {% if item.content_object.publishers.count > 1 %}s{% endif %}:</span>
                                                 {# djlint:on #}
-                                                {% for publisher in item.game.publishers.all %}
+                                                {% for publisher in item.content_object.publishers.all %}
                                                     {% if not forloop.first %}/{% endif %}
                                                     <a href="{% url 'entity:company_detail' publisher.id %}">{{ publisher.name }}</a>
                                                 {% endfor %}
                                             </div>
                                             {% endif %}
 
-                                            {% if item.game.platforms.exists %}
+                                            {% if item.content_object.platforms.exists %}
                                             <div>
                                                 {# djlint:off #}
-                                                <span class="text-muted">Platform{% if item.game.platforms.list|length > 1 %}s{% endif %}:</span>
+                                                <span class="text-muted">Platform{% if item.content_object.platforms.list|length > 1 %}s{% endif %}:</span>
                                                 {# djlint:on #}
-                                                {% for platform in item.game.platforms.all %}
+                                                {% for platform in item.content_object.platforms.all %}
                                                     {% if not forloop.first %},{% endif %}
                                                     <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
                                                 {% endfor %}
                                             </div>
                                             {% endif %}
-                                            {% if item.game.region_release_dates.all %}
+                                            {% if item.content_object.region_release_dates.all %}
                                             <div>
                                                 <span class="text-muted">Release Date:</span>
-                                                {% with earliest_region_release_date=item.game.region_release_dates.all|first %}
+                                                {% with earliest_region_release_date=item.content_object.region_release_dates.all|first %}
                                                     {{ earliest_region_release_date.release_date }} ({{ earliest_region_release_date.region }})
                                                 {% endwith %}
                                             </div>

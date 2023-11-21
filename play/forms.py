@@ -272,7 +272,8 @@ class PlayCheckInForm(forms.ModelForm):
     class Meta:
         model = PlayCheckIn
         fields = [
-            "game",
+            "content_type",
+            "object_id",
             "user",
             "status",
             "progress",
@@ -282,7 +283,8 @@ class PlayCheckInForm(forms.ModelForm):
             "share_to_feed",
         ]
         widgets = {
-            "game": forms.HiddenInput(),
+            "content_type": forms.HiddenInput(),
+            "object_id": forms.HiddenInput(),
             "user": forms.HiddenInput(),  # author is now included
             "content": forms.Textarea(
                 attrs={

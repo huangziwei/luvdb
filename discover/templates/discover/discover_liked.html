@@ -286,9 +286,9 @@
                                             <div class="me-2 text-muted mb-2">
                                                 <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.display_name|default:checkin.user.username }}</a>
                                                 checked in to 
-                                                <a href="{% url 'play:game_detail' checkin.game.id %}">{{checkin.game.title}}</a>
-                                                {% if checkin.game.region_release_dates.exists %}
-                                                    {% with earliest_region_release_date=checkin.game.region_release_dates.all|first %}
+                                                <a href="{% url 'play:game_detail' checkin.content_object.id %}">{{checkin.content_object.title}}</a>
+                                                {% if checkin.content_object.region_release_dates.exists %}
+                                                    {% with earliest_region_release_date=checkin.content_object.region_release_dates.all|first %}
                                                         ({{ earliest_region_release_date.release_date }}, {{ earliest_region_release_date.region }})
                                                     {% endwith %}
                                                 {% endif %}

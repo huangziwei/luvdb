@@ -8,7 +8,7 @@
             <div class="col-12 col-md-8">
                 <div class="col-sm-12">
                     <div class="fs-4">
-                        All Playing Check-Ins from
+                        All Play Check-Ins from
                         <a href="{% url 'accounts:detail' profile_user.username %}"> {{ profile_user.display_name|default:profile_user.username }}</a>
                     </div>
                     <span class='d-flex mb-3'>
@@ -65,35 +65,35 @@
                                 <div class="d-flex flex-row bg-light p-3 mt-2">
                                     <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                         {% if user.pure_text_mode %}
-                                            <div class="cover-placeholder bg-light">{{ checkin.game.title }}</div>
+                                            <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
                                         {% else %}
-                                            {% if checkin.game.cover %}
-                                                {% if checkin.game.cover_sens %}
-                                                    <img src="{{ checkin.game.cover.url }}"
-                                                        alt="{{ checkin.game.title }} cover"
+                                            {% if checkin.content_object.cover %}
+                                                {% if checkin.content_object.cover_sens %}
+                                                    <img src="{{ checkin.content_object.cover.url }}"
+                                                        alt="{{ checkin.content_object.title }} cover"
                                                         class="img-fluid blur cover-border"
                                                         onclick="this.classList.toggle('blur')">
                                                 {% else %}
-                                                    <img src="{{ checkin.game.cover.url }}"
-                                                        alt="{{ checkin.game.title }} cover"
+                                                    <img src="{{ checkin.content_object.cover.url }}"
+                                                        alt="{{ checkin.content_object.title }} cover"
                                                         class="img-fluid cover-border"
-                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.game.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';">
+                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';">
                                                 {% endif %}
                                             {% else %}
-                                                <div class="cover-placeholder bg-light">{{ checkin.game.title }}</div>
+                                                <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
                                             {% endif %}
                                         {% endif %}
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <a href="{% url 'play:game_detail' checkin.game.id %}"
+                                        <a href="{% url 'play:game_detail' checkin.content_object.id %}"
                                         class="text-decoration-none ">
-                                            <div class="fs-5">{{ checkin.game.title }}</div>
+                                            <div class="fs-5">{{ checkin.content_object.title }}</div>
                                         </a>
-                                        {% regroup checkin.game.gameroles.all by role as roles_list %}
+                                        {% regroup checkin.content_object.gameroles.all by role as roles_list %}
                                         {% for role in roles_list %}
                                             <div>
                                                 {# djlint:off #}
-                                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                                <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}</span>:
                                                 {# djlint:on #}
                                                 {% for game_role in role.list %}
                                                     {% if not forloop.first %}/{% endif %}
@@ -103,10 +103,47 @@
                                                 {% endfor %}
                                             </div>
                                         {% endfor %}
-                                        {% if checkin.game.region_release_dates.all %}
+                                        
                                         <div>
-                                            Release Date:
-                                            {% with earliest_region_release_date=checkin.game.region_release_dates.all|first %}
+                                            {% if checkin.content_object.developers.exists %}
+                                                {# djlint:off #}
+                                                <span class="text-muted">Developer{% if checkin.content_object.developers.count > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                {% for developer in checkin.content_object.developers.all %}
+                                                    {% if not forloop.first %}/{% endif %}
+                                                    <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            {% if checkin.content_object.publishers.exists %}
+                                                {# djlint:off #}
+                                                <span class="text-muted">Publisher
+                                                    {% if checkin.content_object.publishers.count > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                {% for publisher in checkin.content_object.publishers.all %}
+                                                    {% if not forloop.first %}/{% endif %}
+                                                    <a href="{% url 'entity:company_detail' publisher.id %}">{{ publisher.name }}</a>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            {% if checkin.content_object.platforms.exists %}
+                                                {# djlint:off #}
+                                                <span class="text-muted">Platform{% if checkin.content_object.platforms.list|length > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                {% for platform in checkin.content_object.platforms.all %}
+                                                    {% if not forloop.first %},{% endif %}
+                                                    <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+
+
+                                        {% if checkin.content_object.region_release_dates.all %}
+                                        <div>
+                                            <span class="text-muted">Release Date</span>:
+                                            {% with earliest_region_release_date=checkin.content_object.region_release_dates.all|first %}
                                                 {{ earliest_region_release_date.release_date }} ({{ earliest_region_release_date.region }})
                                             {% endwith %}
                                         </div>
@@ -115,7 +152,7 @@
                                 </div>
                                 <div class="d-flex mt-2">
                                     <p class="me-2">
-                                        <a href="{% url 'play:play_checkin_list' checkin.game.id checkin.user.username %}"
+                                        <a href="{% url 'play:play_checkin_list' checkin.content_object.id checkin.user.username %}"
                                         class="text-decoration-none text-secondary">
                                             <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                                             <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>

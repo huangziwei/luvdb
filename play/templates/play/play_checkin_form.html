@@ -1,6 +1,8 @@
 {% load crispy_forms_tags %}
 <form method="post" id="checkinForm">
     {% csrf_token %}
+    {{ checkin_form.content_type }}
+    {{ checkin_form.object_id }}
     {{ checkin_form.game }}
     {{ checkin_form.user }}
     <div class="row">

@@ -236,9 +236,7 @@ class TagListFeed(Feed):
             return f'{item.user.username} pinned "{item.title}"'
         elif model_name == "follow":
             return f"{item.follower.username} followed {item.followed.username}"
-        elif model_name == "playcheckin":
-            return f"{item.user.username} checked in to {item.game.title}"
-        elif "checkin" in model_name and "play" not in model_name:
+        elif "checkin" in model_name:
             return f"{item.user.username} checked in to {item.content_object.title}"
         else:
             return str(item)
@@ -343,9 +341,7 @@ class TagUserListFeed(Feed):
             return f'{item.user.username} pinned "{item.title}"'
         elif model_name == "follow":
             return f"{item.follower.username} followed {item.followed.username}"
-        elif model_name == "playcheckin":
-            return f"{item.user.username} checked in to {item.game.title}"
-        elif "checkin" in model_name and "game" not in model_name:
+        elif "checkin" in model_name:
             return f"{item.user.username} checked in to {item.content_object.title}"
         else:
             return str(item)

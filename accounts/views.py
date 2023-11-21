@@ -264,7 +264,11 @@ class AccountDetailView(DetailView):
         latest_play_checkins = PlayCheckIn.objects.filter(
             user=self.object,
             timestamp=Subquery(
-                PlayCheckIn.objects.filter(user=self.object, game=OuterRef("game"))
+                PlayCheckIn.objects.filter(                  
+                    content_type=OuterRef("content_type"),
+                    object_id=OuterRef("object_id"),
+                    user=self.object,   
+                )
                 .order_by("-timestamp")
                 .values("timestamp")[:1]
             ),

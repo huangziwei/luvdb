@@ -114,9 +114,7 @@ class Activity(models.Model):
                 + self.content_object.content
                 + f"\n[{url}]({url})"
             )
-        elif "game" in self.activity_type:
-            content = self.content_object.content + f"\n[{url}]({url})"
-        elif "check-in" in self.activity_type and "game" not in self.activity_type:
+        elif "check-in" in self.activity_type:
             content = self.content_object.content + f"\n[{url}]({url})"
         else:
             raise ValueError("Invalid activity type")

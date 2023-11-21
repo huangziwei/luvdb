@@ -70,12 +70,12 @@ urlpatterns = [
     path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),
     # checkin
     path(
-        "game/<int:game_id>/checkins/",
+        "game/<int:object_id>/checkins/",
         view=PlayCheckInAllListView.as_view(),
         name="play_checkin_all_list",
     ),
     path(
-        "game/<int:game_id>/checkins/<str:username>/",
+        "game/<int:object_id>/checkins/<str:username>/",
         view=PlayCheckInListView.as_view(),
         name="play_checkin_list",
     ),

@@ -5,13 +5,13 @@
 {% load crispy_forms_tags %}
 {% load parse_activity_type %}
 {% block meta %}
-    <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Check-in to &quot;{{ object.game.title }}&quot;">
+    <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Check-in to &quot;{{ object.content_object.title }}&quot;">
     {% if object.notes %}
         <meta property="og:description" content="{{ object.notes|truncatewords:150 }}">
     {% else %}
-        <meta property="og:description" content="Check out {{ object.user.display_name | default:object.user.username }}'s Check-in to &quot;{{ object.game.title }}&quot; on luvdb.com">
+        <meta property="og:description" content="Check out {{ object.user.display_name | default:object.user.username }}'s Check-in to &quot;{{ object.content_object.title }}&quot; on luvdb.com">
     {% endif %}
-    <meta property="og:image" content="{{ object.game.cover.url }}">
+    <meta property="og:image" content="{{ object.content_object.cover.url }}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:type" content="book">
 {% endblock meta %}
@@ -43,31 +43,31 @@
                     <div class="d-flex flex-row bg-light mt-2">
                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                             {% if user.pure_text_mode %}
-                                <div class="cover-placeholder bg-light">{{ object.game.title }}</div>
+                                <div class="cover-placeholder bg-light">{{ object.content_object.title }}</div>
                             {% else %}
-                                {% if object.game.cover %}
-                                    {% if object.game.cover_sens %}
-                                        <img src="{{ object.game.cover.url }}"
-                                            alt="{{ object.game.title }} cover"
+                                {% if object.content_object.cover %}
+                                    {% if object.content_object.cover_sens %}
+                                        <img src="{{ object.content_object.cover.url }}"
+                                            alt="{{ object.content_object.title }} cover"
                                             class="img-fluid blur cover-border"
                                             onclick="this.classList.toggle('blur')">
                                     {% else %}
-                                        <img src="{{ object.game.cover.url }}"
-                                            alt="{{ object.game.title }} cover"
+                                        <img src="{{ object.content_object.cover.url }}"
+                                            alt="{{ object.content_object.title }} cover"
                                             class="img-fluid cover-border"
-                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.game.title }}</div>';">
+                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.content_object.title }}</div>';">
                                     {% endif %}
                                 {% else %}
-                                    <div class="cover-placeholder bg-light">{{ object.game.title }}</div>
+                                    <div class="cover-placeholder bg-light">{{ object.content_object.title }}</div>
                                 {% endif %}
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <a href="{% url 'play:game_detail' object.game.id %}"
+                            <a href="{% url 'play:game_detail' object.content_object.id %}"
                                class="text-decoration-none ">
-                                <div class="fs-5">{{ object.game.title }}</div>
+                                <div class="fs-5">{{ object.content_object.title }}</div>
                             </a>
-                            {% regroup object.game.gameroles.all by role as roles_list %}
+                            {% regroup object.content_object.gameroles.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
                                     {# djlint:off #}
@@ -82,31 +82,31 @@
                                 </div>
                             {% endfor %}
                             <div>
-                                {% if object.game.developers %}
+                                {% if object.content_object.developers %}
                                     {# djlint:off #}
-                                    <span class="text-muted">Developer{% if object.game.developers.list|length > 1 %}s{% endif %}:</span>
+                                    <span class="text-muted">Developer{% if object.content_object.developers.list|length > 1 %}s{% endif %}:</span>
                                     {# djlint:on #}
-                                    {% for developer in object.game.developers.all %}
+                                    {% for developer in object.content_object.developers.all %}
                                         {% if not forloop.first %},{% endif %}
                                         <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
                                     {% endfor %}
                                 {% endif %}
                             </div>
                             <div>
-                                {% if object.game.platforms %}
+                                {% if object.content_object.platforms %}
                                     {# djlint:off #}
-                                    <span class="text-muted">Platform{% if object.game.platforms.list|length > 1 %}s{% endif %}:</span>
+                                    <span class="text-muted">Platform{% if object.content_object.platforms.list|length > 1 %}s{% endif %}:</span>
                                     {# djlint:on #}
-                                    {% for platform in object.game.platforms.all %}
+                                    {% for platform in object.content_object.platforms.all %}
                                         {% if not forloop.first %},{% endif %}
                                         <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
                                     {% endfor %}
                                 {% endif %}
                             </div>
-                            {% if object.game.region_release_dates.all %}
+                            {% if object.content_object.region_release_dates.all %}
                                 <div>
                                     <span class="text-muted">Date:</span>
-                                    {% with earliest_region_release_date=object.game.region_release_dates.all|first %}
+                                    {% with earliest_region_release_date=object.content_object.region_release_dates.all|first %}
                                         {{ earliest_region_release_date.release_date }} ({{ earliest_region_release_date.region }})
                                     {% endwith %}
                                 </div>
@@ -116,7 +116,7 @@
                 </div>
                 <div class="d-flex mt-2">
                     <p class='me-2 text-secondary mb-2'>
-                        <a href="{% url 'play:play_checkin_list' object.game.id object.user.username %}" class="text-muted">
+                        <a href="{% url 'play:play_checkin_list' object.content_object.id object.user.username %}" class="text-muted">
                             {% if checkin_count > 0 %}
                                 {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
                             {% else %}
