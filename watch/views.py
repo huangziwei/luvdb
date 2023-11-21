@@ -462,7 +462,7 @@ class WatchListView(TemplateView):
         return context
 
 
-class WatchListAllView(TemplateView):
+class WatchListAllView(LoginRequiredMixin, TemplateView):
     template_name = "watch/watch_list_all.html"
 
     def get_context_data(self, **kwargs):

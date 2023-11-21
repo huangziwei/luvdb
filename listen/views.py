@@ -816,7 +816,8 @@ class ListenCheckInUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy(
-            "write:listen_checkin_detail", kwargs={"pk": self.object.pk, "username": self.object.user.username}
+            "write:listen_checkin_detail",
+            kwargs={"pk": self.object.pk, "username": self.object.user.username},
         )
 
 
@@ -933,7 +934,7 @@ class ListenListView(ListView):
         return context
 
 
-class ListenListAllView(ListView):
+class ListenListAllView(LoginRequiredMixin, ListView):
     template_name = "listen/listen_list_all.html"
     context_object_name = "objects"
 

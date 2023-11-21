@@ -895,7 +895,7 @@ class PlayListView(ListView):
         return context
 
 
-class PlayListAllView(ListView):
+class PlayListAllView(LoginRequiredMixin, ListView):
     model = Game
     template_name = "play/play_list_all.html"
 

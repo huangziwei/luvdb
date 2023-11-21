@@ -1113,7 +1113,7 @@ class ReadListView(ListView):
         return context
 
 
-class ReadListAllView(ListView):
+class ReadListAllView(LoginRequiredMixin, ListView):
     template_name = "read/read_list_all.html"
     context_object_name = "objects"
 
