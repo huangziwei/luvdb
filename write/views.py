@@ -746,15 +746,18 @@ class LuvListDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         visitor_order_preference = request.POST.get("order")
+        session_key = f"order_{self.object.id}"  # Unique key for each list
         if visitor_order_preference in ["ASC", "DESC"]:
-            request.session["order"] = visitor_order_preference
+            request.session[session_key] = visitor_order_preference
         return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         contents = self.object.contents.all()
         # Implementing sorting based on order_preference
-        order = self.request.session.get("order", self.object.order_preference)
+        session_key = f"order_{self.object.id}"  # Unique key for each list
+        order = self.request.session.get(session_key, self.object.order_preference)
+
         context["order"] = order
         if order == "ASC":
             contents = contents.order_by("order")
