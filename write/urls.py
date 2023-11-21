@@ -192,30 +192,28 @@ urlpatterns = [
     ),
     # luvlist
     path(
-        "u/<str:username>/luvlist/create/",
+        "u/<str:username>/list/create/",
         LuvListCreateView.as_view(),
         name="luvlist_create",
     ),
     path(
-        "u/<str:username>/luvlist/<int:pk>/",
+        "u/<str:username>/list/<int:pk>/",
         LuvListDetailView.as_view(),
         name="luvlist_detail",
     ),
     path(
-        "u/<str:username>/luvlist/<int:pk>/update/",
+        "u/<str:username>/list/<int:pk>/update/",
         LuvListUpdateView.as_view(),
         name="luvlist_update",
     ),
     path(
-        "u/<str:username>/luvlist/<int:pk>/delete/",
+        "u/<str:username>/list/<int:pk>/delete/",
         LuvListDeleteView.as_view(),
         name="luvlist_delete",
     ),
+    path("u/<str:username>/lists/", LuvListUserListView.as_view(), name="luvlist_list"),
     path(
-        "u/<str:username>/luvlists/", LuvListUserListView.as_view(), name="luvlist_list"
-    ),
-    path(
-        "u/<str:username>/luvlist/<int:pk>/surprise/",
+        "u/<str:username>/list/<int:pk>/surprise/",
         RandomizerDetailView.as_view(),
         name="surprise",
     ),
