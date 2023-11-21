@@ -174,7 +174,10 @@ class Repost(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
 
     def get_absolute_url(self):
-        return reverse("write:repost_detail", kwargs={"pk": self.id, "username": self.user.username})
+        return reverse(
+            "write:repost_detail",
+            kwargs={"pk": self.id, "username": self.user.username},
+        )
 
     def get_activity_id(self):
         try:
@@ -256,7 +259,6 @@ class Repost(models.Model):
                 except Activity.DoesNotExist:
                     pass  # Handle the case where the Activity object does not exist
 
-
             original_activity_user = (
                 self.original_activity.user
                 if self.original_activity
@@ -329,7 +331,9 @@ class Post(models.Model):
     votes = GenericRelation(Vote)
 
     def get_absolute_url(self):
-        return reverse("write:post_detail", kwargs={"pk": self.id, "username": self.user.username})
+        return reverse(
+            "write:post_detail", kwargs={"pk": self.id, "username": self.user.username}
+        )
 
     def get_activity_id(self):
         try:
@@ -691,6 +695,10 @@ class LuvList(models.Model):
     notes = models.TextField(blank=True, null=True)
     source = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
+    ORDER_CHOICES = [("ASC", "Ascending"), ("DESC", "Descending")]
+    order_preference = models.CharField(
+        max_length=4, choices=ORDER_CHOICES, default="ASC"
+    )
 
     user = models.ForeignKey(
         User,

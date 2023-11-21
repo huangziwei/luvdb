@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -743,13 +743,24 @@ class LuvListDetailView(DetailView):
     model = LuvList
     template_name = "write/luvlist_detail.html"  # Assuming 'luvlist_detail.html' is the template for the detail view
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        visitor_order_preference = request.POST.get("order")
+        if visitor_order_preference in ["ASC", "DESC"]:
+            request.session["order"] = visitor_order_preference
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         contents = self.object.contents.all()
+        # Implementing sorting based on order_preference
+        order = self.request.session.get("order", self.object.order_preference)
+        context["order"] = order
+        if order == "ASC":
+            contents = contents.order_by("order")
+        else:
+            contents = contents.order_by("-order")
         context["contents"] = contents
-
-        # Get a random content from the LuvList
-        context["random_content"] = random.choice(contents) if contents else None
 
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
 
@@ -768,6 +779,12 @@ class LuvListDetailView(DetailView):
         ).count()
         context["game_count"] = contents.filter(content_type__model="game").count()
         return context
+
+    def get_success_url(self):
+        return reverse(
+            "write:luvlist_detail",
+            kwargs={"pk": self.object.id, "username": self.object.user.username},
+        )
 
 
 class LuvListUpdateView(UpdateView):

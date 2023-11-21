@@ -131,6 +131,7 @@ class LuvListForm(forms.ModelForm):
             "notes",
             "source",
             "wikipedia",
+            "order_preference",
         ]
 
 
