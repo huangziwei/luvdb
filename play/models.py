@@ -304,7 +304,7 @@ class GameCast(models.Model):
         return f"{self.game} - {self.creator} - {self.role}"
 
 
-class GameCheckIn(models.Model):
+class PlayCheckIn(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     STATUS_CHOICES = [
@@ -349,7 +349,7 @@ class GameCheckIn(models.Model):
     def get_activity_id(self):
         try:
             activity = Activity.objects.get(
-                content_type__model="gamecheckin", object_id=self.id
+                content_type__model="playcheckin", object_id=self.id
             )
             return activity.id
         except ObjectDoesNotExist:
@@ -365,7 +365,7 @@ class GameCheckIn(models.Model):
         # Attempt to fetch an existing Activity object for this check-in
         try:
             activity = Activity.objects.get(
-                content_type__model="gamecheckin", object_id=self.id
+                content_type__model="playcheckin", object_id=self.id
             )
         except Activity.DoesNotExist:
             activity = None
@@ -380,7 +380,7 @@ class GameCheckIn(models.Model):
                 # Fetch and update the related Activity object
                 try:
                     activity = Activity.objects.get(
-                        content_type__model="gamecheckin", object_id=self.id
+                        content_type__model="playcheckin", object_id=self.id
                     )
                     activity.save()  # This will trigger the update logic in Activity model
                 except Activity.DoesNotExist:
@@ -389,7 +389,7 @@ class GameCheckIn(models.Model):
             if is_new or activity is None:
                 Activity.objects.create(
                     user=self.user,
-                    activity_type="game-check-in",
+                    activity_type="play-check-in",
                     content_object=self,
                 )
 
@@ -405,7 +405,7 @@ class GameCheckIn(models.Model):
                             + "\n\n",
                             self.id,
                             self.user.username,
-                            "GameCheckIn",
+                            "PlayCheckIn",
                         )
                     except Exception as e:
                         print(f"Error creating Bluesky post: {e}")
@@ -421,7 +421,7 @@ class GameCheckIn(models.Model):
                             + "\n\n",
                             self.id,
                             self.user.username,
-                            "GameCheckIn",
+                            "PlayCheckIn",
                         )
                     except Exception as e:
                         print(f"Error creating Mastodon post: {e}")

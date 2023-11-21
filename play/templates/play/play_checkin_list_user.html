@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="d-flex mt-2">
                                     <p class="me-2">
-                                        <a href="{% url 'play:game_checkin_list' checkin.game.id checkin.user.username %}"
+                                        <a href="{% url 'play:play_checkin_list' checkin.game.id checkin.user.username %}"
                                         class="text-decoration-none text-secondary">
                                             <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                                             <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>

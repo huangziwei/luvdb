@@ -10,11 +10,11 @@ from django.urls import reverse_lazy
 from .models import (
     Game,
     GameCast,
-    GameCheckIn,
     GameInSeries,
     GameReleaseDate,
     GameRole,
     GameSeries,
+    PlayCheckIn,
     Work,
     WorkRole,
 )
@@ -268,9 +268,9 @@ GameCastFormSet = inlineformset_factory(
 )
 
 
-class GameCheckInForm(forms.ModelForm):
+class PlayCheckInForm(forms.ModelForm):
     class Meta:
-        model = GameCheckIn
+        model = PlayCheckIn
         fields = [
             "game",
             "user",
@@ -294,7 +294,7 @@ class GameCheckInForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(GameCheckInForm, self).__init__(*args, **kwargs)
+        super(PlayCheckInForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
         self.fields["content"].required = False
         self.fields["comments_enabled"].label = "Enable replies"

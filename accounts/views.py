@@ -34,7 +34,7 @@ from activity_feed.models import Activity, Follow
 from entity.models import Company, Creator
 from listen.models import Audiobook, ListenCheckIn, Podcast, Release, Track
 from listen.models import Work as MusicWork
-from play.models import Game, GameCast, GameCheckIn, GameRole
+from play.models import Game, GameCast, GameRole, PlayCheckIn
 from play.models import Work as GameWork
 from read.models import Book, BookSeries
 from read.models import Instance as LitInstance
@@ -261,10 +261,10 @@ class AccountDetailView(DetailView):
         context["does_watch_exist"] = watched.exists() or watching.exists()
 
         # First, get the latest check-in for each game
-        latest_play_checkins = GameCheckIn.objects.filter(
+        latest_play_checkins = PlayCheckIn.objects.filter(
             user=self.object,
             timestamp=Subquery(
-                GameCheckIn.objects.filter(user=self.object, game=OuterRef("game"))
+                PlayCheckIn.objects.filter(user=self.object, game=OuterRef("game"))
                 .order_by("-timestamp")
                 .values("timestamp")[:1]
             ),
@@ -547,7 +547,7 @@ def filter_write(query, search_terms):
     read_checkin_results = ReadCheckIn.objects.all()
     listen_checkin_results = ListenCheckIn.objects.all()
     watch_checkin_results = WatchCheckIn.objects.all()
-    game_checkin_results = GameCheckIn.objects.all()
+    play_checkin_results = PlayCheckIn.objects.all()
 
     for term in search_terms:
         post_results = (
@@ -592,8 +592,8 @@ def filter_write(query, search_terms):
             .distinct()
             .order_by("timestamp")
         )
-        game_checkin_results = (
-            game_checkin_results.filter(content__icontains=term)
+        play_checkin_results = (
+            play_checkin_results.filter(content__icontains=term)
             .distinct()
             .order_by("timestamp")
         )
@@ -607,7 +607,7 @@ def filter_write(query, search_terms):
         read_checkin_results,
         watch_checkin_results,
         listen_checkin_results,
-        game_checkin_results,
+        play_checkin_results,
     )
 
 
@@ -849,7 +849,7 @@ def search_view(request):
     read_checkin_results = []
     watch_checkin_results = []
     listen_checkin_results = []
-    game_checkin_results = []
+    play_checkin_results = []
 
     # read
     litwork_results = []
@@ -886,7 +886,7 @@ def search_view(request):
                 read_checkin_results,
                 watch_checkin_results,
                 listen_checkin_results,
-                game_checkin_results,
+                play_checkin_results,
             ) = filter_write(query, search_terms)
 
         if model in ["all", "read"]:
@@ -936,7 +936,7 @@ def search_view(request):
             "read_checkin_results": read_checkin_results,
             "watch_checkin_results": watch_checkin_results,
             "listen_checkin_results": listen_checkin_results,
-            "game_checkin_results": game_checkin_results,
+            "play_checkin_results": play_checkin_results,
             # read
             "litwork_results": litwork_results,
             "litinstance_results": litinstance_results,
@@ -989,7 +989,7 @@ def get_user_tags(request):
     readcheckin_ct = ContentType.objects.get_for_model(ReadCheckIn)
     listencheckin_ct = ContentType.objects.get_for_model(ListenCheckIn)
     watchcheckin_ct = ContentType.objects.get_for_model(WatchCheckIn)
-    gamecheckin_ct = ContentType.objects.get_for_model(GameCheckIn)
+    gamecheckin_ct = ContentType.objects.get_for_model(PlayCheckIn)
 
     # Combine all content types into a list
     all_cts = [
@@ -1338,7 +1338,7 @@ def ap_outbox(request, username):
         "read-check-in",
         "watch-check-in",
         "listen-check-in",
-        "game-check-in",
+        "play-check-in",
     ]
 
     # Fetch activities of specified types for the user

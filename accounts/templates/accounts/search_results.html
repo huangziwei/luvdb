@@ -256,7 +256,7 @@
                 {% endif %}
 
                 <!--Play-->
-                {% if game_results or gamework_results or game_checkin_results%}
+                {% if game_results or gamework_results or play_checkin_results%}
                 <div class="row">
                     <h3 class="mb-3">Play</h3>
                     
@@ -282,10 +282,10 @@
                         {% endfor %}
                     </div>
                     {% endif %}
-                    {% if game_checkin_results %}
+                    {% if play_checkin_results %}
                     <div class="col-12 col-md-4 mb-3">
                         <div class="fs-4">Check-ins</div>
-                        {% for checkin in game_checkin_results %}
+                        {% for checkin in play_checkin_results %}
                             <p>
                                 <a href="{% url 'write:play_checkin_detail' checkin.user.username checkin.id %}">{{ checkin.content|truncatechars:30 }}</a>
                                 ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|date:"Y.m.d" }})

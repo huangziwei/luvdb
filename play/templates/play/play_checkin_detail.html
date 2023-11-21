@@ -116,7 +116,7 @@
                 </div>
                 <div class="d-flex mt-2">
                     <p class='me-2 text-secondary mb-2'>
-                        <a href="{% url 'play:game_checkin_list' object.game.id object.user.username %}" class="text-muted">
+                        <a href="{% url 'play:play_checkin_list' object.game.id object.user.username %}" class="text-muted">
                             {% if checkin_count > 0 %}
                                 {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
                             {% else %}
@@ -137,7 +137,7 @@
                                 class="btn btn-secondary btn-sm mx-auto toggle-button">Reposts</button>
                     </div>
                     <div>
-                        <a href="{% url 'discover:vote' 'gamecheckin' checkin.id 'up' %}" 
+                        <a href="{% url 'discover:vote' 'playcheckin' checkin.id 'up' %}" 
                             class="me-2 btn btn-sm {% if has_voted %}btn-outline-danger active{% else %}btn-outline-danger{% endif %}" 
                             title="Like this check-in">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
@@ -148,7 +148,7 @@
                 </div>
                 <hr>
                 <div id="comments-section">
-                    {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='gamecheckin' %}
+                    {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='playcheckin' %}
                 </div>
                 <div id="reposts-section" style="display: none;">
                     {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts %}

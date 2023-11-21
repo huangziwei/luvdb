@@ -157,14 +157,14 @@
                 </div>
                 <!--Game Check-In-->
                 <div class="mt-4">
-                    {% include "play/game_checkin_form.html" %}
+                    {% include "play/play_checkin_form.html" %}
                     <div class="d-flex justify-content-between mt-4 col-12 col-md-11">
                         <div class="fs-4">Latest Check-Ins</div>
                         <a class="btn btn-outline-secondary btn-sm"
-                           href="{% url 'play:game_checkin_all_list' game.id %}"
+                           href="{% url 'play:play_checkin_all_list' game.id %}"
                            style="height:30px">All</a>
                     </div>
-                    {% include "play/game_checkin_in_game_detail.html" %}
+                    {% include "play/play_checkin_in_game_detail.html" %}
                 </div>
                 <hr>
             </div>
@@ -190,13 +190,13 @@
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Statistics</div>
                     <div>
-                        <strong class="text-muted">To Play:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=to_play">{{ to_play_count }}</a>
+                        <strong class="text-muted">To Play:</strong> <a href="{% url 'play:play_checkin_all_list' object.id %}?status=to_play">{{ to_play_count }}</a>
                     </div>
                     <div>
-                        <strong class="text-muted">Playing:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=playing_replaying">{{ playing_count }}</a>
+                        <strong class="text-muted">Playing:</strong> <a href="{% url 'play:play_checkin_all_list' object.id %}?status=playing_replaying">{{ playing_count }}</a>
                     </div>
                     <div>
-                        <strong class="text-muted">Played:</strong> <a href="{% url 'play:game_checkin_all_list' object.id %}?status=played_replayed">{{ played_count }}</a>
+                        <strong class="text-muted">Played:</strong> <a href="{% url 'play:play_checkin_all_list' object.id %}?status=played_replayed">{{ played_count }}</a>
                     </div>
                 </div>
                 {% if object.wikipedia %}

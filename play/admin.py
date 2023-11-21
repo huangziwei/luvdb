@@ -3,13 +3,13 @@ from django.contrib import admin
 from .models import (
     Game,
     GameCast,
-    GameCheckIn,
     GameInSeries,
     GameReleaseDate,
     GameRole,
     GameSeries,
     Genre,
     Platform,
+    PlayCheckIn,
 )
 
 
@@ -63,8 +63,8 @@ class GameCastAdmin(admin.ModelAdmin):
     search_fields = ["game__title", "creator__name", "role__name"]
 
 
-@admin.register(GameCheckIn)
-class GameCheckInAdmin(admin.ModelAdmin):
+@admin.register(PlayCheckIn)
+class PlayCheckInAdmin(admin.ModelAdmin):
     list_display = [
         "game",
         "user",

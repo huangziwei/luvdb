@@ -77,7 +77,7 @@
                                     </div>
                                 </div>
                             </div>
-                        {% elif original_activity.activity_type == "game-check-in" %}
+                        {% elif original_activity.activity_type == "play-check-in" %}
                             <div class="d-flex justify-content-start align-items-center flex-wrap">
                                 <a href="{% url 'accounts:detail' original_activity.user.username %}"
                                    class="text-decoration-none  me-1">

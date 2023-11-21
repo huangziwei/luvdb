@@ -245,7 +245,7 @@
                     </p>
                 </div>
                 <!--Game Check In-->
-            {% elif activity.content_object.original_activity.activity_type == "game-check-in" %}
+            {% elif activity.content_object.original_activity.activity_type == "play-check-in" %}
                 <div class="d-flex flex-wrap align-items-center">
                     <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}"
                        class="text-decoration-none  me-1">

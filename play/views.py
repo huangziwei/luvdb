@@ -29,16 +29,16 @@ from write.models import Comment, ContentInList
 
 from .forms import (
     GameCastFormSet,
-    GameCheckInForm,
     GameForm,
     GameInSeriesFormSet,
     GameReleaseDateFormSet,
     GameRoleFormSet,
     GameSeriesForm,
+    PlayCheckInForm,
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import Game, GameCheckIn, GameSeries, Genre, Platform, Work
+from .models import Game, GameSeries, Genre, Platform, PlayCheckIn, Work
 
 User = get_user_model()
 
@@ -231,16 +231,16 @@ class GameDetailView(DetailView):
             )
         context["grouped_roles"] = grouped_roles
 
-        context["checkin_form"] = GameCheckInForm(
+        context["checkin_form"] = PlayCheckInForm(
             initial={"game": self.object, "user": self.request.user}
         )
 
         # Fetch the latest check-in from each user.
-        latest_checkin_subquery = GameCheckIn.objects.filter(
+        latest_checkin_subquery = PlayCheckIn.objects.filter(
             game=self.object, user=OuterRef("user")
         ).order_by("-timestamp")
         checkins = (
-            GameCheckIn.objects.filter(game=self.object)
+            PlayCheckIn.objects.filter(game=self.object)
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
@@ -251,7 +251,7 @@ class GameDetailView(DetailView):
 
         # Get the count of check-ins for each user for this game
         user_checkin_counts = (
-            GameCheckIn.objects.filter(game=self.object)
+            PlayCheckIn.objects.filter(game=self.object)
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
         )
@@ -270,12 +270,12 @@ class GameDetailView(DetailView):
 
         # Game check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
-            GameCheckIn.objects.filter(game=self.object, user=OuterRef("user"))
+            PlayCheckIn.objects.filter(game=self.object, user=OuterRef("user"))
             .order_by("-timestamp")
             .values("status")[:1]
         )
         latest_checkins = (
-            GameCheckIn.objects.filter(game=self.object)
+            PlayCheckIn.objects.filter(game=self.object)
             .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
             .values("user", "latest_checkin_status")
             .distinct()
@@ -318,7 +318,7 @@ class GameDetailView(DetailView):
         # Fetch the latest check-in from the current user for this book
         if self.request.user.is_authenticated:
             latest_user_checkin = (
-                GameCheckIn.objects.filter(
+                PlayCheckIn.objects.filter(
                     game=self.object,
                     user=self.request.user,
                 )
@@ -348,7 +348,7 @@ class GameDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = GameCheckInForm(
+        form = PlayCheckInForm(
             data=request.POST,
             initial={
                 "game": self.object,
@@ -572,9 +572,9 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         return label
 
 
-class GameCheckInDetailView(DetailView):
-    model = GameCheckIn
-    template_name = "play/game_checkin_detail.html"
+class PlayCheckInDetailView(DetailView):
+    model = PlayCheckIn
+    template_name = "play/play_checkin_detail.html"
     context_object_name = "checkin"  # This name will be used in your template
 
     def get_context_data(self, **kwargs):
@@ -588,7 +588,7 @@ class GameCheckInDetailView(DetailView):
         context["app_label"] = self.object._meta.app_label
         context["object_type"] = self.object._meta.model_name.lower()
 
-        checkin_count = GameCheckIn.objects.filter(
+        checkin_count = PlayCheckIn.objects.filter(
             user=self.object.user,
             game=self.object.game.id,
         ).count()
@@ -608,10 +608,10 @@ class GameCheckInDetailView(DetailView):
         return context
 
 
-class GameCheckInUpdateView(LoginRequiredMixin, UpdateView):
-    model = GameCheckIn
-    form_class = GameCheckInForm
-    template_name = "play/game_checkin_update.html"
+class PlayCheckInUpdateView(LoginRequiredMixin, UpdateView):
+    model = PlayCheckIn
+    form_class = PlayCheckInForm
+    template_name = "play/play_checkin_update.html"
 
     def get_success_url(self):
         return reverse_lazy(
@@ -620,17 +620,17 @@ class GameCheckInUpdateView(LoginRequiredMixin, UpdateView):
         )
 
 
-class GameCheckInDeleteView(LoginRequiredMixin, DeleteView):
-    model = GameCheckIn
-    template_name = "play/game_checkin_delete.html"
+class PlayCheckInDeleteView(LoginRequiredMixin, DeleteView):
+    model = PlayCheckIn
+    template_name = "play/play_checkin_delete.html"
 
     def get_success_url(self):
         return reverse_lazy("play:game_detail", kwargs={"pk": self.object.game.pk})
 
 
-class GameCheckInListView(ListView):
-    model = GameCheckIn
-    template_name = "play/game_checkin_list.html"
+class PlayCheckInListView(ListView):
+    model = PlayCheckIn
+    template_name = "play/play_checkin_list.html"
     context_object_name = "checkins"
 
     def get_queryset(self):
@@ -641,7 +641,7 @@ class GameCheckInListView(ListView):
         )  # Get user from url param
         game_id = self.kwargs["game_id"]  # Get game id from url param
 
-        queryset = GameCheckIn.objects.filter(user=profile_user, game__id=game_id)
+        queryset = PlayCheckIn.objects.filter(user=profile_user, game__id=game_id)
 
         # if status is specified, filter by status
         if status:
@@ -659,7 +659,7 @@ class GameCheckInListView(ListView):
         context["profile_user"] = profile_user
         context["order"] = order
         context["status"] = status  # pass the status to the context
-        checkins = GameCheckIn.objects.filter(
+        checkins = PlayCheckIn.objects.filter(
             user__username=self.kwargs["username"], game__id=self.kwargs["game_id"]
         )
 
@@ -689,19 +689,19 @@ class GameCheckInListView(ListView):
         return context
 
 
-class GameCheckInAllListView(ListView):
-    model = GameCheckIn
-    template_name = "play/game_checkin_list_all.html"
+class PlayCheckInAllListView(ListView):
+    model = PlayCheckIn
+    template_name = "play/play_checkin_list_all.html"
     context_object_name = "checkins"
 
     def get_queryset(self):
         # Fetch the latest check-in from each user.
-        latest_checkin_subquery = GameCheckIn.objects.filter(
+        latest_checkin_subquery = PlayCheckIn.objects.filter(
             game=self.kwargs["game_id"], user=OuterRef("user")
         ).order_by("-timestamp")
 
         checkins = (
-            GameCheckIn.objects.filter(game=self.kwargs["game_id"])
+            PlayCheckIn.objects.filter(game=self.kwargs["game_id"])
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
@@ -725,7 +725,7 @@ class GameCheckInAllListView(ListView):
 
         # Get the count of check-ins for each user for this game
         user_checkin_counts = (
-            GameCheckIn.objects.filter(game=self.kwargs["game_id"])
+            PlayCheckIn.objects.filter(game=self.kwargs["game_id"])
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
         )
@@ -767,24 +767,24 @@ class GameCheckInAllListView(ListView):
         return context
 
 
-class GameCheckInUserListView(ListView):
+class PlayCheckInUserListView(ListView):
     """
     All latest check-ins from a given user of all games.
     """
 
-    model = GameCheckIn
-    template_name = "play/game_checkin_list_user.html"
+    model = PlayCheckIn
+    template_name = "play/play_checkin_list_user.html"
     context_object_name = "checkins"
 
     def get_queryset(self):
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
 
-        latest_checkin_subquery = GameCheckIn.objects.filter(
+        latest_checkin_subquery = PlayCheckIn.objects.filter(
             user=OuterRef("user"), game=OuterRef("game")
         ).order_by("-timestamp")
 
         checkins = (
-            GameCheckIn.objects.filter(user=profile_user)
+            PlayCheckIn.objects.filter(user=profile_user)
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
@@ -808,7 +808,7 @@ class GameCheckInUserListView(ListView):
 
         # Count the check-ins for each game for this user
         user_checkin_counts = (
-            GameCheckIn.objects.filter(user=profile_user)
+            PlayCheckIn.objects.filter(user=profile_user)
             .values("game")
             .annotate(total_checkins=Count("id"))
         )
@@ -852,13 +852,13 @@ class PlayListView(ListView):
         trending_games = (
             Game.objects.annotate(
                 checkins=Count(
-                    "gamecheckin",
-                    filter=Q(gamecheckin__timestamp__gte=recent_date),
+                    "playcheckin",
+                    filter=Q(playcheckin__timestamp__gte=recent_date),
                     distinct=True,
                 ),
                 latest_checkin=Max(
-                    "gamecheckin__timestamp",
-                    filter=Q(gamecheckin__timestamp__gte=recent_date),
+                    "playcheckin__timestamp",
+                    filter=Q(playcheckin__timestamp__gte=recent_date),
                 ),
             )
             .exclude(checkins=0)

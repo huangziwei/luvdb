@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from listen.models import ListenCheckIn
-from play.models import GameCheckIn
+from play.models import PlayCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
 
@@ -202,7 +202,7 @@ class TagListFeed(Feed):
         read_checkins = ReadCheckIn.objects.filter(tags__name=tag)
         watch_checkins = WatchCheckIn.objects.filter(tags__name=tag)
         listen_checkins = ListenCheckIn.objects.filter(tags__name=tag)
-        game_checkins = GameCheckIn.objects.filter(tags__name=tag)
+        play_checkins = PlayCheckIn.objects.filter(tags__name=tag)
         reposts = Repost.objects.filter(tags__name=tag)
 
         # Combine all querysets into a single list and sort by timestamp
@@ -214,7 +214,7 @@ class TagListFeed(Feed):
                 read_checkins,
                 watch_checkins,
                 listen_checkins,
-                game_checkins,
+                play_checkins,
                 reposts,
             )
         )
@@ -236,9 +236,9 @@ class TagListFeed(Feed):
             return f'{item.user.username} pinned "{item.title}"'
         elif model_name == "follow":
             return f"{item.follower.username} followed {item.followed.username}"
-        elif model_name == "gamecheckin":
+        elif model_name == "playcheckin":
             return f"{item.user.username} checked in to {item.game.title}"
-        elif "checkin" in model_name and "game" not in model_name:
+        elif "checkin" in model_name and "play" not in model_name:
             return f"{item.user.username} checked in to {item.content_object.title}"
         else:
             return str(item)
@@ -261,7 +261,7 @@ class TagListFeed(Feed):
             "post": "write:post_detail",
             "pin": "write:pin_detail",
             "repost": "write:repost_detail",
-            "gamecheckin": "write:play_checkin_detail",
+            "playcheckin": "write:play_checkin_detail",
             "readcheckin": "write:read_checkin_detail",
             "watchcheckin": "write:watch_checkin_detail",
             "listencheckin": "write:listen_checkin_detail",
@@ -314,7 +314,7 @@ class TagUserListFeed(Feed):
         read_checkins = ReadCheckIn.objects.filter(tags__name=tag, user=user)
         watch_checkins = WatchCheckIn.objects.filter(tags__name=tag, user=user)
         listen_checkins = ListenCheckIn.objects.filter(tags__name=tag, user=user)
-        game_checkins = GameCheckIn.objects.filter(tags__name=tag, user=user)
+        play_checkins = PlayCheckIn.objects.filter(tags__name=tag, user=user)
 
         # Combine all querysets into a single list and sort by timestamp
         combined_list = list(
@@ -325,7 +325,7 @@ class TagUserListFeed(Feed):
                 read_checkins,
                 watch_checkins,
                 listen_checkins,
-                game_checkins,
+                play_checkins,
                 reposts,
             )
         )
@@ -343,7 +343,7 @@ class TagUserListFeed(Feed):
             return f'{item.user.username} pinned "{item.title}"'
         elif model_name == "follow":
             return f"{item.follower.username} followed {item.followed.username}"
-        elif model_name == "gamecheckin":
+        elif model_name == "playcheckin":
             return f"{item.user.username} checked in to {item.game.title}"
         elif "checkin" in model_name and "game" not in model_name:
             return f"{item.user.username} checked in to {item.content_object.title}"
@@ -368,7 +368,7 @@ class TagUserListFeed(Feed):
             "post": "write:post_detail",
             "pin": "write:pin_detail",
             "repost": "write:repost_detail",
-            "gamecheckin": "write:play_checkin_detail",
+            "playcheckin": "write:play_checkin_detail",
             "readcheckin": "write:read_checkin_detail",
             "watchcheckin": "write:watch_checkin_detail",
             "listencheckin": "write:listen_checkin_detail",

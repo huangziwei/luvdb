@@ -2,12 +2,6 @@ from django.urls import path
 
 from .views import (
     GameCastDetailView,
-    GameCheckInAllListView,
-    GameCheckInDeleteView,
-    GameCheckInDetailView,
-    GameCheckInListView,
-    GameCheckInUpdateView,
-    GameCheckInUserListView,
     GameCreateView,
     GameDetailView,
     GameHistoryView,
@@ -23,6 +17,12 @@ from .views import (
     PlatformDetailView,
     PlatformHistoryView,
     PlatformUpdateView,
+    PlayCheckInAllListView,
+    PlayCheckInDeleteView,
+    PlayCheckInDetailView,
+    PlayCheckInListView,
+    PlayCheckInUpdateView,
+    PlayCheckInUserListView,
     PlayListAllView,
     PlayListView,
     WorkAutocomplete,
@@ -71,13 +71,13 @@ urlpatterns = [
     # checkin
     path(
         "game/<int:game_id>/checkins/",
-        view=GameCheckInAllListView.as_view(),
-        name="game_checkin_all_list",
+        view=PlayCheckInAllListView.as_view(),
+        name="play_checkin_all_list",
     ),
     path(
         "game/<int:game_id>/checkins/<str:username>/",
-        view=GameCheckInListView.as_view(),
-        name="game_checkin_list",
+        view=PlayCheckInListView.as_view(),
+        name="play_checkin_list",
     ),
     # cast
     path("game/<int:pk>/cast/", GameCastDetailView.as_view(), name="game_cast_detail"),

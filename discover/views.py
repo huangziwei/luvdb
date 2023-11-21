@@ -14,7 +14,7 @@ from django.utils import timezone
 from django.views.generic import ListView
 
 from listen.models import ListenCheckIn
-from play.models import GameCheckIn
+from play.models import PlayCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
 from write.models import LuvList, Pin, Post, Repost, Say
@@ -134,7 +134,7 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
             (ReadCheckIn, "read_checkins"),
             (WatchCheckIn, "watch_checkins"),
             (ListenCheckIn, "listen_checkins"),
-            (GameCheckIn, "game_checkins"),
+            (PlayCheckIn, "play_checkins"),
         ]
 
         if order_by == "trending":
@@ -507,7 +507,7 @@ class DiscoverLikedView(LoginRequiredMixin, ListView):
             (ReadCheckIn, "read_checkins"),
             (WatchCheckIn, "watch_checkins"),
             (ListenCheckIn, "listen_checkins"),
-            (GameCheckIn, "game_checkins"),
+            (PlayCheckIn, "play_checkins"),
         ]
 
         says_and_reposts = list(

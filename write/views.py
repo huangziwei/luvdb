@@ -25,7 +25,7 @@ from django.views.generic import (
 from activity_feed.models import Activity, Block
 from discover.views import user_has_upvoted
 from listen.models import ListenCheckIn
-from play.models import GameCheckIn
+from play.models import PlayCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
 
@@ -531,7 +531,7 @@ class TagListView(ListView):
         read_checkins = ReadCheckIn.objects.filter(tags__name=tag)
         watch_checkins = WatchCheckIn.objects.filter(tags__name=tag)
         listen_checkins = ListenCheckIn.objects.filter(tags__name=tag)
-        game_checkins = GameCheckIn.objects.filter(tags__name=tag)
+        play_checkins = PlayCheckIn.objects.filter(tags__name=tag)
         reposts = Repost.objects.filter(tags__name=tag)
 
         # Combine all querysets into a single list and sort by timestamp
@@ -544,7 +544,7 @@ class TagListView(ListView):
                 read_checkins,
                 watch_checkins,
                 listen_checkins,
-                game_checkins,
+                play_checkins,
                 reposts,
             )
         )
@@ -607,7 +607,7 @@ class TagUserListView(ListView):
         read_checkins = ReadCheckIn.objects.filter(tags__name=tag, user=user)
         watch_checkins = WatchCheckIn.objects.filter(tags__name=tag, user=user)
         listen_checkins = ListenCheckIn.objects.filter(tags__name=tag, user=user)
-        game_checkins = GameCheckIn.objects.filter(tags__name=tag, user=user)
+        play_checkins = PlayCheckIn.objects.filter(tags__name=tag, user=user)
         reposts = Repost.objects.filter(tags__name=tag, user=user)
 
         # Combine all querysets into a single list and sort by timestamp
@@ -620,7 +620,7 @@ class TagUserListView(ListView):
                 read_checkins,
                 watch_checkins,
                 listen_checkins,
-                game_checkins,
+                play_checkins,
                 reposts,
             )
         )

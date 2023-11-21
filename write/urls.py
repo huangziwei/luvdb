@@ -7,10 +7,10 @@ from listen.views import (
     ListenCheckInUpdateView,
 )
 from play.views import (
-    GameCheckInDeleteView,
-    GameCheckInDetailView,
-    GameCheckInUpdateView,
-    GameCheckInUserListView,
+    PlayCheckInDeleteView,
+    PlayCheckInDetailView,
+    PlayCheckInUpdateView,
+    PlayCheckInUserListView,
 )
 from read.views import GenericCheckInUserListView as GenericReadCheckInUserListView
 from read.views import (
@@ -284,22 +284,22 @@ urlpatterns = [
     # Play
     path(
         "u/<str:username>/play/checkin/<int:pk>/",
-        GameCheckInDetailView.as_view(),
+        PlayCheckInDetailView.as_view(),
         name="play_checkin_detail",
     ),
     path(
         "u/<str:username>/play/checkin/<int:pk>/update/",
-        GameCheckInUpdateView.as_view(),
+        PlayCheckInUpdateView.as_view(),
         name="play_checkin_update",
     ),
     path(
         "u/<str:username>/play/checkin/<int:pk>/delete/",
-        GameCheckInDeleteView.as_view(),
+        PlayCheckInDeleteView.as_view(),
         name="play_checkin_delete",
     ),
     path(
         "u/<str:username>/play/checkins/",
-        GameCheckInUserListView.as_view(),
+        PlayCheckInUserListView.as_view(),
         name="play_checkin_user_list",
     ),
 ]

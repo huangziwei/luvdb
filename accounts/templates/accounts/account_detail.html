@@ -600,7 +600,7 @@
                                     <div class="rotate text-muted">Playing</div>
                                     {% for item in playing %}
                                         <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
-                                            <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
+                                            <a href="{% url 'play:play_checkin_list' item.game.id item.user.username %}">
                                                 {% if user.pure_text_mode %}
                                                     <div class="cover-placeholder bg-light">{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>
                                                 {% else %}
@@ -632,7 +632,7 @@
                                     <div class="rotate text-muted">Played</div>
                                     {% for item in played %}
                                         <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
-                                            <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
+                                            <a href="{% url 'play:play_checkin_list' item.game.id item.user.username %}">
                                                 {% if user.pure_text_mode %}
                                                     <div class="cover-placeholder bg-light">{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>
                                                 {% else %}
@@ -1140,7 +1140,7 @@
                                     <div class="rotate text-muted">Playing</div>
                                     {% for item in playing %}
                                         <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
-                                            <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
+                                            <a href="{% url 'play:play_checkin_list' item.game.id item.user.username %}">
                                                 {% if user.pure_text_mode %}
                                                     <div class="cover-placeholder bg-light">{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>
                                                 {% else %}
@@ -1172,7 +1172,7 @@
                                     <div class="rotate text-muted">Played</div>
                                     {% for item in played %}
                                         <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
-                                            <a href="{% url 'play:game_checkin_list' item.game.id item.user.username %}">
+                                            <a href="{% url 'play:play_checkin_list' item.game.id item.user.username %}">
                                                 {% if user.pure_text_mode %}
                                                     <div class="cover-placeholder bg-light">{{ item.game.title }}{% if item.game.subtitle %}: {{item.game.subtitle}}{% endif %}</div>
                                                 {% else %}
