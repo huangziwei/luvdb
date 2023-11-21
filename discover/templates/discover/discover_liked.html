@@ -21,7 +21,7 @@
                 </span>
                 {% if object == user %}
                     <span class="me-3">
-                        <a href="{% url 'discover:liked' %}">Liked</a>
+                        <a href="{% url 'accounts:liked' user.username %}">Liked</a>
                     </span>
                 {% endif %}
             </div>

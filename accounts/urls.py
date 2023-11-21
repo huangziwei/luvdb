@@ -1,6 +1,7 @@
 from django.urls import path
 
 from activity_feed.feeds import UserActivityFeed
+from discover.views import DiscoverLikedView
 
 from .views import (
     AccountDetailView,
@@ -66,6 +67,7 @@ urlpatterns = [
         FollowingListView.as_view(),
         name="following_list",
     ),
+    path("<str:username>/liked/", DiscoverLikedView.as_view(), name="liked"),
     path("<str:username>/update/", view=AccountUpdateView.as_view(), name="update"),
     path("<str:username>/app-passwords/", app_password_list, name="app_password"),
     path(

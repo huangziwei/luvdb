@@ -4,6 +4,7 @@ from random import sample
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import Case, Count, F, IntegerField, Q, Sum, Value, When
@@ -93,7 +94,7 @@ def vote(request, content_type, object_id, vote_type):
     return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
 
 
-class DiscoverListAllView(ListView):
+class DiscoverListAllView(LoginRequiredMixin, ListView):
     template_name = "discover/discover_all.html"
 
     def get_queryset(self):
@@ -274,7 +275,7 @@ class DiscoverListAllView(ListView):
         return context
 
 
-class DiscoverPostListView(ListView):
+class DiscoverPostListView(LoginRequiredMixin, ListView):
     template_name = "discover/discover_posts.html"
     paginate_by = 10
 
@@ -346,7 +347,7 @@ class DiscoverPostListView(ListView):
         return context
 
 
-class DiscoverPinListView(ListView):
+class DiscoverPinListView(LoginRequiredMixin, ListView):
     template_name = "discover/discover_pins.html"
     paginate_by = 10
 
@@ -411,7 +412,7 @@ class DiscoverPinListView(ListView):
         return context
 
 
-class DiscoverLuvListListView(ListView):
+class DiscoverLuvListListView(LoginRequiredMixin, ListView):
     template_name = "discover/discover_luvlists.html"
     paginate_by = 10
 
@@ -478,7 +479,7 @@ class DiscoverLuvListListView(ListView):
         return context
 
 
-class DiscoverLikedView(ListView):
+class DiscoverLikedView(LoginRequiredMixin, ListView):
     template_name = "discover/discover_liked.html"
 
     def get_queryset(self):
