@@ -409,6 +409,7 @@
 
                             if (totalChars > threshold) {
                                 node.textContent = smartTruncate(node.textContent, threshold - (totalChars - node.textContent.length));
+                                node.textContent += '...';
                                 isTruncated = true;
                                 return false;
                             }
