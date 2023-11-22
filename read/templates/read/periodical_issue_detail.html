@@ -152,18 +152,21 @@
                 {% endif %}
                 {% if lists_containing_issue.count != 0 %}
                     <!--LuvLists that included this issue-->
-                    <div class="bg-light p-3 mt-3">
+                    <div class="bg-light p-3 mt-3 order-1 order-sm-2">
                         <div class="fs-5">Lists</div>
-                        <ul class='mb-0'>
+                        <div class='mb-0'>
                             {% for content_in_list in lists_containing_issue %}
-                                <li>
-                                    <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.user.username content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
-                                </li>
+                                <div class="d-flex flex-nowrap justify-content-start">
+                                    <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.user.username content_in_list.luv_list.id %}" class="text-truncate" style="max-width: 80%;">
+                                        {{ content_in_list.luv_list.title }}
+                                    </a>
+                                    <span class="ml-2">(by <a href="{% url 'accounts:detail' content_in_list.luv_list.user.username %}">{{content_in_list.luv_list.user.display_name|default:content_in_list.luv_list.user.username}}</a>)</span>
+                                </div>
                                 {% if not forloop.last %}<hr class="m-1">{% endif %}
                             {% empty %}
-                                <p>This issue is not included in any LuvLists.</p>
+                                <div>This release is not included in any LuvLists.</div>
                             {% endfor %}
-                        </ul>
+                        </div>
                     </div>
                 {% endif %}
                 <div class="bg-light p-3 mt-3 order-2 order-sm-3">

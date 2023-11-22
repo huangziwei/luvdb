@@ -201,12 +201,15 @@
                         <div class="fs-5">Lists</div>
                         <div class='mb-0'>
                             {% for content_in_list in lists_containing_audiobook %}
-                                <div>
-                                    <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.user.username content_in_list.luv_list.id %}">{{ content_in_list.luv_list.title }}</a>
+                                <div class="d-flex flex-nowrap justify-content-start">
+                                    <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.user.username content_in_list.luv_list.id %}" class="text-truncate" style="max-width: 80%;">
+                                        {{ content_in_list.luv_list.title }}
+                                    </a>
+                                    <span class="ml-2">(by <a href="{% url 'accounts:detail' content_in_list.luv_list.user.username %}">{{content_in_list.luv_list.user.display_name|default:content_in_list.luv_list.user.username}}</a>)</span>
                                 </div>
                                 {% if not forloop.last %}<hr class="m-1">{% endif %}
                             {% empty %}
-                                <div>This audiobook is not included in any LuvLists.</div>
+                                <div>This release is not included in any LuvLists.</div>
                             {% endfor %}
                         </div>
                     </div>
