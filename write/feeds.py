@@ -220,9 +220,8 @@ class TagListFeed(Feed):
         )
         sorted_list = sorted(combined_list, key=lambda x: x.timestamp, reverse=True)
 
-        # Filter out items from non-public profiles if the user is not logged in
-        if not self.request.user.is_authenticated:
-            sorted_list = [item for item in sorted_list if item.user.is_public]
+        # Filter out items from non-public profiles
+        sorted_list = [item for item in sorted_list if item.user.is_public]
 
         return sorted_list[:25]
 
@@ -270,7 +269,9 @@ class TagListFeed(Feed):
             raise ValueError(f"Unknown model name: {model_name}")
 
         if model_name != "follow":
-            return reverse(url_name, args=[item.pk])
+            return reverse(
+                url_name, kwargs={"pk": item.pk, "username": item.user.username}
+            )
         else:
             return reverse(url_name, args=[item.followed.username])
 
@@ -375,7 +376,9 @@ class TagUserListFeed(Feed):
             raise ValueError(f"Unknown model name: {model_name}")
 
         if model_name != "follow":
-            return reverse(url_name, args=[item.pk])
+            return reverse(
+                url_name, kwargs={"pk": item.pk, "username": item.user.username}
+            )
         else:
             return reverse(url_name, args=[item.followed.username])
 

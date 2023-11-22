@@ -1,28 +1,47 @@
-# LʌvDB is... <sup>[1](#f1)</sup>
+# LʌvDB
 
--   an opinionated, self-hosted alternative to Goodreads, IMDB, Discogs, and ultimately, Douban. This Django-based media cataloging application enables you to log and manage your books, movies, music, and games. An inclusive activity feed is also available to stay updated on your friends' activities, including their current readings, watched movies, listened music, and played games.
+LʌvDB is your self-hosted inner space. Primarily a media cataloging app, it centers on books and periodicals, movies and series, music, podcasts, audiobooks, and games. The app features an activity feed that allows you to share your media check-ins with friends. Additionally, it supports microblogging (Say), blogging (Post), bookmarking (Pin), and curating lists of in-site content (List).
 
--   LʌvDB is opinionated in the sense that it has no ratings (what's the point?), no reviews (replaced by check-ins), no recommendation (replaced by your friends, if you have any), and most importantly, no imports from other services (you should love it enough to create an entry).
-
-<sup id="f1">[1]</sup> Most of the code in this repository, including this README, has been written by ChatGPT-4, prompted and modified by me.
-
-## Screenshots
+## Screenshots / Features
 
 #### Activity Feed (Home Page)
 
 ![activity_feed](.github/screenshots/activity_feed.png)
 
+A purely reverse chronological feed displays your activity on the site. You can send updates as a "Say" directly from the feed or link to the page to create a "Post," a "Pin" (bookmark), or a "List". The feed can be filtered by media type (Read, Watch, Listen, Play) of the Check-ins or by content type (Say, Post, Pin, List, and Follow).
+
+#### Profile page
+
+![profile](.github/screenshots/profile.png)
+
+A profile page displays your progress. You can set it to public or private (only logged-in users can see it).
+
 #### Recent page of the Read App
 
 ![read_recent](.github/screenshots/read_recent.png)
+
+The recent page shows the current trending and most recent additions to the Read app.
 
 #### Book Detail of the Read App
 
 ![book_detail](.github/screenshots/book_detail.png)
 
+On the book page, you can check in your fleeting thoughts and progress while you read.
+
+#### Creator Detail
+
+![creator_detail](.github/screenshots/creator_detail.png)
+
+We can curate a comprehensive bibliography, filmography, discography, and gameography for creators with linked data.
+
+#### Others
+
+-   LʌvDB offers comprehensive RSS support. If you set your profile to public, others can subscribe to your activity feed, or to specific content such as your Say, Post, or Pin, and even your updates with a specific hashtag, using RSS readers.
+-   LʌvDB is also lightly federated: it currently operates as a one-way federation, where users on Mastodon instances can follow your activity feed updates, but interactions are not aggregated back to LʌvDB.
+
 #### Live Sneak Peek
 
-You can also explore LʌvDB at [luvdb.com](https://luvdb.com). This instance is not currently accepting new registrations (and probably never will). To familiarize yourself with the app, you may visit some of the following pages:
+You can also explore LʌvDB at [luvdb.com](https://luvdb.com). This instance is currently reserved for friends and is not accepting new registrations. Before deciding to spin up your own instance, you can familiarize yourself with the app through the following pages:
 
 -   [Read](https://luvdb.com/read/recent/)
 -   [Watch](https://luvdb.com/watch/recent/)
