@@ -260,6 +260,7 @@ sup {
 .popupnote-parent {
     position: relative;
     display: inline-block;
+    text-align: left;
 }
 
 .popupnote {
@@ -270,7 +271,7 @@ sup {
     text-align: left;
     border: 1px solid #ddd;
     border-radius: 6px;
-    padding: 1em 0.5em;
+    padding: 1em;
     font-size: 1em;
     z-index: 1;
     bottom: 100%;
@@ -305,8 +306,8 @@ sup {
 .popupnote-parent:hover .popupnote {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: left;
+    justify-content: start;
 }
 
 .footnote {
