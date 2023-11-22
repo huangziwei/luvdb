@@ -120,16 +120,15 @@
                                                 {% endfor %}
                                             {% endif %}
                                             {% if checkin.content_object.publisher %}
-                                            <div>
-                                                Publisher: <a href="{% url 'entity:company_detail' checkin.content_object.publisher.id %}">{{checkin.content_object.publisher}}</a>
-                                            </div>
-                                                   
+                                                <div>
+                                                    Publisher: <a href="{% url 'entity:company_detail' checkin.content_object.publisher.id %}">{{checkin.content_object.publisher}}</a>
+                                                </div>
                                             {% endif %}
-                                            <div>
-                                                {% if checkin.content_object.publication_date %}
+                                            {% if checkin.content_object.publication_date %}
+                                                <div>
                                                     Date: {{ checkin.content_object.publication_date }}
-                                                {% endif %}
-                                            </div>
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="d-flex mt-2">

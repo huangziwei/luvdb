@@ -37,8 +37,6 @@
                     </div>
                 </span>
             </div>
-            <!-- Here goes the replaced content -->
-            <!-- Assumption: 'checkins' is the context variable containing the check-ins for the user -->
             {% if profile_user.is_public  or request.user.is_authenticated %}
                 {% for checkin in checkins %}
                 <div class="col-sm-12 mt-4">
@@ -149,9 +147,37 @@
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
-                                    <div>
-                                        {% if checkin.content_object.release_date %}Date: {{ checkin.content_object.release_date }}{% endif %}
-                                    </div>
+
+                                    {% if checkin.content_object.label %}
+                                        <div>
+                                            {# djlint:off #}
+                                            Label{% if checkin.content_object.label.list|length > 1 %}s{% endif %}:
+                                            {# djlint:on #}
+                                            {% for label in checkin.content_object.label.all %}
+                                                {% if not forloop.first %},{% endif %}
+                                                <a href="{% url 'entity:company_detail' label.id %}">{{ label.name }}</a>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if checkin.content_object.publisher %}
+                                        <div>
+                                            {# djlint:off #}
+                                            Publisher{% if checkin.content_object.publisher.list|length > 1 %}s{% endif %}:
+                                            {# djlint:on #}
+                                            <a href="{% url 'entity:company_detail' checkin.content_object.publisher.id %}">{{ activity.content_object.content_object.publisher.name }}</a>
+                                        </div>
+                                    {% endif %}
+                                    {% if checkin.content_object.catalog_number %}
+                                        <div>
+                                            Catalog Number:
+                                            {{checkin.content_object.catalog_number}}
+                                        </div>
+                                    {% endif %}
+                                    {% if checkin.content_object.release_date %}
+                                        <div>
+                                            Date: {{ checkin.content_object.release_date }}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="d-flex mt-2">
