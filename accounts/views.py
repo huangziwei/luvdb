@@ -264,10 +264,10 @@ class AccountDetailView(DetailView):
         latest_play_checkins = PlayCheckIn.objects.filter(
             user=self.object,
             timestamp=Subquery(
-                PlayCheckIn.objects.filter(                  
+                PlayCheckIn.objects.filter(
                     content_type=OuterRef("content_type"),
                     object_id=OuterRef("object_id"),
-                    user=self.object,   
+                    user=self.object,
                 )
                 .order_by("-timestamp")
                 .values("timestamp")[:1]
@@ -834,7 +834,13 @@ def parse_query(query):
 
 
 def search_view(request):
+    last_search_time = request.session.get("last_search_time")
+
     start_time = time.time()
+
+    if last_search_time and (start_time - last_search_time) < 2:
+        return render(request, "429.html", status=429)
+    request.session["last_search_time"] = start_time
 
     query = request.GET.get("q")
     model = request.GET.get("model", "all")
