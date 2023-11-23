@@ -3,6 +3,7 @@
 {% load url_filters %}
 {% load markdownify %}
 {% load linkify %}
+{% load latexify %}
 {% load crispy_forms_tags %}
 {% block meta %}
     <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Pin">
@@ -32,7 +33,10 @@
                            class="link-secondary">({{ pin.url|root_url }})</a>
                     </div>
                     {% if object.content %}
-                        <div class="mt-2 e-content">{{ object.content | linkify_tags:object.user | linkify_mentions | markdownify }}</div>
+                        <div class="mt-2 e-content">
+                            {% latexify object.content as content %}
+                            {{ content|linkify_tags:object.user|linkify_mentions|markdownify}}
+                        </div>
                     {% endif %}
                 </div>
                 <span class="d-flex mb-2">
@@ -73,4 +77,17 @@
         </div>
     </div>
     <script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
+    {% if include_mathjax %}
+        <script type="text/javascript">
+            window.MathJax = {
+                tex: {
+                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                    processEscapes: true
+                },
+            };
+        </script>
+        <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        </script>
+    {% endif %}
 {% endblock content %}

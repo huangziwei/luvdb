@@ -3,9 +3,11 @@ import re
 from dal import autocomplete
 from django import forms
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
+
+from entity.models import Role
 
 from .models import (
     Book,
@@ -220,6 +222,16 @@ class BookForm(forms.ModelForm):
 
 class BookRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="read", widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        super(BookRoleForm, self).__init__(*args, **kwargs)
+        # Set default role to "Performer"
+        try:
+            default_role = Role.objects.get(name="Author")
+            self.fields["role"].initial = default_role
+        except ObjectDoesNotExist:
+            # If "Performer" role does not exist, the initial will be None as before
+            pass
 
     class Meta:
         model = BookRole

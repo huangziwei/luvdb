@@ -1,5 +1,6 @@
 {% load url_filters %}
 {% load markdownify %}
+{% load latexify %}
 {% load linkify %}
 {% load parse_activity_type %}
 {% if activity.activity_type == 'say' %}
@@ -18,7 +19,8 @@
                 </svg>{% endif %}:</span>
             </div>
             <div class="mt-2 truncatable-text e-content">
-                {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
+                {% latexify activity.content_object.content as content %}
+                {{ content|linkify_tags|linkify_mentions|markdownify}}
             </div>
             <div class="d-flex mt-2">
                 <p class="me-2">
@@ -64,7 +66,9 @@
                 <a href="{% url 'write:post_detail' activity.user.username activity.content_object.id %}"
                    class="text-decoration-none">{{ activity.content_object.title }}</a>
             </div>
-            <div class="e-content">{{ activity.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
+            <div class="e-content">
+                {{ activity.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
+            </div>
         </div>
         <div class="d-flex mt-2">
             <p class="me-2">
@@ -112,7 +116,8 @@
             </div>
             {% if activity.content_object.content %}
                 <div class="mt-2 truncatable-text e-content">
-                    {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
+                {% latexify activity.content_object.content as content %}
+                {{ content|linkify_tags|linkify_mentions|markdownify}}
                 </div>
             {% endif %}
         </div>
@@ -201,7 +206,8 @@
             {% endif %}
         </div>
         <div class="mt-2 truncatable-text e-content">
-            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
+                {% latexify activity.content_object.content as content %}
+                {{ content|linkify_tags|linkify_mentions|markdownify}}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -325,7 +331,8 @@
             {% endif %}
         </div>
         <div class="mt-2 truncatable-text e-content">
-            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
+                {% latexify activity.content_object.content as content %}
+                {{ content|linkify_tags|linkify_mentions|markdownify}}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -497,7 +504,8 @@
 
         </div>
         <div class="mt-2 truncatable-text e-content">
-            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
+                {% latexify activity.content_object.content as content %}
+                {{ content|linkify_tags|linkify_mentions|markdownify}}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -658,7 +666,8 @@
             {% endif %}
         </div>
         <div class="mt-2 truncatable-text e-content">
-            {{ activity.content_object.content | linkify_tags | linkify_mentions | markdownify }}
+                {% latexify activity.content_object.content as content %}
+                {{ content|linkify_tags|linkify_mentions|markdownify}}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -773,4 +782,19 @@
             {% endif %}
         </div>
     </div>
+{% endif %}
+
+{% if include_mathjax %}
+    <!--Math Jax support -->
+    <script type="text/javascript">
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true
+            },
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
 {% endif %}

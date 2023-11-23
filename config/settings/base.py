@@ -113,6 +113,7 @@ TEMPLATES = [
                 "account_tags": "accounts.templatetags.account_tags",
                 "url_filters": "activity_feed.templatetags.url_filters",
                 "linkify": "write.templatetags.linkify",
+                "latexify": "write.templatetags.latexify",
                 "parse_activity_type": "activity_feed.templatetags.parse_activity_type",
                 "concat_sets": "read.templatetags.concat_sets",
                 "language_name": "read.templatetags.language_name",
