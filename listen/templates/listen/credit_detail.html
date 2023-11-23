@@ -1,50 +1,56 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="container">
-        <div class="col-12 col-md-8">
-            <h3>
-                <a href="{% url 'listen:release_detail' release.id %}">{{ release.title }}</a>
-            </h3>
+        <div class="row">
+            <div class="col-12">
+                <h3>
+                    <a href="{% url 'listen:release_detail' release.id %}">{{ release.title }}</a>
+                </h3>
 
-            <!-- Release Level Credits -->
-            <div class="fs-4">Release Credits</div>
-            <div class="mb-3">
-                {% for role, creators_altname_tuples in release_credits.items %}
-                    <div class="ms-4 mb-1">
-                        <span class="text-muted">{{ role.name }}:</span>
-                        {% for creator, name in creators_altname_tuples %}
-                            <a href="{% url 'entity:creator_detail' creator.id %}">{{ name }}</a>
-                            {% if not forloop.last %}/{% endif %}
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-            </div>
-
-            <!-- Track Level Credits -->
-            <div class="fs-4">Track Credits</div>
-            {% if track_credits|length == 0 %}
-                <p>There are no track credits added yet.</p>
-            {% else %}
-                <div>
-                    {% for track_data, roles_dict in track_credits.items %}
-                        <div class="mb-2">
-                            <strong>{{ track_data.1 }}.{{ track_data.2 }}</strong>
-                            <a href="{% url 'listen:track_detail' track_data.0.id %}">{{ track_data.0.title }}</a>
-                            <div class="mb-3">
-                                {% for role, creators_altname_tuples in roles_dict.items %}
-                                    <div class="ms-4 mb-1">
-                                        <span class="text-muted">{{ role.name }}:</span>
-                                        {% for creator, name in creators_altname_tuples %}
-                                            <a href="{% url 'entity:creator_detail' creator.id %}">{{ name }}</a>
-                                            {% if not forloop.last %}/{% endif %}
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                            </div>
+                <!-- Release Level Credits -->
+                <div class="fs-4">Release Credits</div>
+                <div class="mb-3">
+                    {% for role, creators_altname_tuples in release_credits.items %}
+                        <div class="ms-4 mb-1">
+                            <span class="text-muted">{{ role.name }}:</span>
+                            {% for creator, name in creators_altname_tuples %}
+                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ name }}</a>
+                                {% if not forloop.last %}/{% endif %}
+                            {% endfor %}
                         </div>
                     {% endfor %}
                 </div>
-            {% endif %}
+
+                <!-- Track Level Credits -->
+                <div class="fs-4">Track Credits</div>
+                {% if track_credits|length == 0 %}
+                    <p>There are no track credits added yet.</p>
+                {% else %}
+                    <div class="row">
+                        {% for track_data, roles_dict in track_credits.items %}
+                            <div class="col-md-4 mb-4"> <!-- Adjust col-md-4 to control number of columns -->
+                                <div class="card">
+                                    <div class="card-body">
+                                        <strong>{{ track_data.1 }}.{{ track_data.2 }}</strong>
+                                        <a href="{% url 'listen:track_detail' track_data.0.id %}">{{ track_data.0.title }}</a>
+                                        <div class="mb-3">
+                                            {% for role, creators_altname_tuples in roles_dict.items %}
+                                                <div class="ms-4 mb-1">
+                                                    <span class="text-muted">{{ role.name }}:</span>
+                                                    {% for creator, name in creators_altname_tuples %}
+                                                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ name }}</a>
+                                                        {% if not forloop.last %}/{% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}
