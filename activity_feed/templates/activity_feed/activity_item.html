@@ -1,7 +1,7 @@
 {% load url_filters %}
 {% load markdownify %}
-{% load latexify %}
 {% load linkify %}
+{% load mermaidify %}
 {% load parse_activity_type %}
 {% if activity.activity_type == 'say' %}
     {% if not activity.content_object.is_direct_mention or request.user in activity.content_object.visible_to.all or request.user == activity.user %}
@@ -19,7 +19,7 @@
                 </svg>{% endif %}:</span>
             </div>
             <div class="mt-2 truncatable-text e-content">
-                {% latexify activity.content_object.content as content %}
+                {% mermaidify activity.content_object.content as content %}
                 {{ content|linkify_tags|linkify_mentions|markdownify}}
             </div>
             <div class="d-flex mt-2">
@@ -116,8 +116,7 @@
             </div>
             {% if activity.content_object.content %}
                 <div class="mt-2 truncatable-text e-content">
-                {% latexify activity.content_object.content as content %}
-                {{ content|linkify_tags|linkify_mentions|markdownify}}
+                {{ activity.content_object.content|linkify_tags|linkify_mentions|markdownify}}
                 </div>
             {% endif %}
         </div>
@@ -206,8 +205,8 @@
             {% endif %}
         </div>
         <div class="mt-2 truncatable-text e-content">
-                {% latexify activity.content_object.content as content %}
-                {{ content|linkify_tags|linkify_mentions|markdownify}}
+            {% mermaidify activity.content_object.content as content %}
+            {{ content|linkify_tags|linkify_mentions|markdownify}}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -331,8 +330,8 @@
             {% endif %}
         </div>
         <div class="mt-2 truncatable-text e-content">
-                {% latexify activity.content_object.content as content %}
-                {{ content|linkify_tags|linkify_mentions|markdownify}}
+            {% mermaidify activity.content_object.content as content %}
+            {{ content|linkify_tags|linkify_mentions|markdownify}}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -504,8 +503,8 @@
 
         </div>
         <div class="mt-2 truncatable-text e-content">
-                {% latexify activity.content_object.content as content %}
-                {{ content|linkify_tags|linkify_mentions|markdownify}}
+            {% mermaidify activity.content_object.content as content %}
+            {{ content|linkify_tags|linkify_mentions|markdownify}}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -666,8 +665,8 @@
             {% endif %}
         </div>
         <div class="mt-2 truncatable-text e-content">
-                {% latexify activity.content_object.content as content %}
-                {{ content|linkify_tags|linkify_mentions|markdownify}}
+            {% mermaidify activity.content_object.content as content %}
+            {{ content|linkify_tags|linkify_mentions|markdownify}}
         </div>
         <div class="d-flex flex-row bg-light p-3 mt-2">
             <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -782,19 +781,4 @@
             {% endif %}
         </div>
     </div>
-{% endif %}
-
-{% if include_mathjax %}
-    <!--Math Jax support -->
-    <script type="text/javascript">
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                processEscapes: true
-            },
-        };
-    </script>
-    <script type="text/javascript" id="MathJax-script" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-    </script>
 {% endif %}

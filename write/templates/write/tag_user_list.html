@@ -501,6 +501,21 @@
                         {% endif %}
                     </div>
                 {% endfor %}
+
+                {% if page_obj.paginator.num_pages > 1 %}
+                    <hr>                                      
+                    <div class="pagination mb-3 mb-md-1">
+                        <span class="step-links">
+                            {% for i in page_obj.paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <span class="current">{{ i }}</span>
+                                {% else %}
+                                    <a href="?page={{ i }}">{{ i }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
             </div>
             <div class="col-sm-5 right-column">
                 <!-- All tags on the page -->

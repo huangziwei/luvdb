@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load linkify %}
+{% load mermaidify %}
 {% load markdownify %}
 {% block title %}Says{% endblock %}
 {% block content %}
@@ -39,10 +40,13 @@
                         {% endif %}
                     </div>
                 </div>
-                {% for activity in object_list %}
+                {% for activity in page_obj %}
                     <div class="activity-item mb-3 h-entry">
                         {% if activity.model_name == "Say" %}
-                            <div>{{ activity.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                            <div>
+                                {% mermaidify activity.content as content %}
+                                {{ content | linkify_tags | linkify_mentions | markdownify }}
+                            </div>
                             <span class="d-flex mt-2">
                                 <div class="me-2">
                                     <a href="{% url 'write:say_detail' activity.user.username activity.id %}" class="link-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }} | {{activity.model_name }}</a>
@@ -96,6 +100,21 @@
                 {% empty %}
                     <p>Nothing.</p>
                 {% endfor %}
+
+                {% if page_obj.paginator.num_pages > 1 %}
+                    <hr>                                      
+                    <div class="pagination mb-3 mb-md-1">
+                        <span class="step-links">
+                            {% for i in page_obj.paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <span class="current">{{ i }}</span>
+                                {% else %}
+                                    <a href="?page={{ i }}">{{ i }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
             </div>
             {% if all_tags %}
                 <div class="col-12 col-md-5 right-column">
@@ -113,4 +132,25 @@
             {% endif %}
         </div>
     </div>
+    {% if include_mathjax %}
+        <!--MathJax support -->
+        <script type="text/javascript">
+            window.MathJax = {
+                tex: {
+                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                    processEscapes: true
+                },
+            };
+        </script>
+        <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        </script>
+    {% endif %}
+    {% if include_mermaid %}
+        <!--Mermaid support -->
+        <script src="
+            https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js
+            "></script>
+        <script>mermaid.initialize({startOnLoad:true, theme:savedTheme});</script>
+    {% endif %}
 {% endblock content %}

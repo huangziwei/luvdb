@@ -1,8 +1,9 @@
 {% load markdownify %}
 {% load linkify %}
+{% load mermaidify %}
 {% load parse_activity_type %}
 <div class="col-sm-11 mt-3">
-    {% for checkin in checkins %}
+    {% for checkin in page_obj %}
         {% if checkin.user.is_public or request.user.is_authenticated %}
             <div class="d-flex justify-content-start align-items-center mb-2">
                 <span class='me-2'>
@@ -23,7 +24,10 @@
                 {% endif %}
             </div>
             {% if checkin.content %}
-                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                <div class="checkin bg-light p-3 mb-2">
+                    {% mermaidify checkin.content as content %}
+                    {{ content | linkify_tags | linkify_mentions | markdownify }} 
+                </div>
             {% endif %}
             <div class="d-flex mb-4 align-items-center">
                 <span class="me-2">
@@ -62,4 +66,19 @@
     {% empty %}
         <p>No check-ins yet.</p>
     {% endfor %}
+
+    {% if page_obj.paginator.num_pages > 1 %}
+        <hr>                                      
+        <div class="pagination mb-3 mb-md-1">
+            <span class="step-links">
+                {% for i in page_obj.paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <span class="current">{{ i }}</span>
+                    {% else %}
+                        <a href="?page={{ i }}&order={{order}}&status={{status}}">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+            </span>
+        </div>
+    {% endif %}
 </div>

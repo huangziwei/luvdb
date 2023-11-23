@@ -2,6 +2,7 @@
 {% load static %}
 {% load markdownify %}
 {% load linkify %}
+{% load mermaidify %}
 {% load latexify %}
 {% load crispy_forms_tags %}
 {% block meta %}
@@ -30,6 +31,7 @@
                     </div>
                     <div class="e-content">
                         {% latexify object.content as content %}
+                        {% mermaidify content as content %}
                         {{ content| linkify_tags:object.user | linkify_mentions | markdownify }}
                     </div>
                     <span class="d-flex mt-2">
@@ -85,5 +87,11 @@
         <script type="text/javascript" id="MathJax-script" async
             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
         </script>
+    {% endif %}
+    {% if include_mermaid %}
+        <script src="
+            https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js
+            "></script>
+        <script>mermaid.initialize({startOnLoad:true, theme:savedTheme});</script>
     {% endif %}
 {% endblock content %}

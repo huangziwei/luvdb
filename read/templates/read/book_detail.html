@@ -51,6 +51,8 @@
                         <!--book-meta-->
                         <div class="col flex-grow-1 ms-lg-3">
                             <div class="card-body">
+                                mathjax? {{include_mathjax}}
+
                                 <span class='d-flex align-items-start'>
                                     <h2>{{ object.title }}</h2>
                                 </span>
@@ -288,4 +290,23 @@
             </div>
         </div>
     </div>
+    {% if include_mathjax %}
+        <script type="text/javascript">
+            window.MathJax = {
+                tex: {
+                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                    processEscapes: true
+                },
+            };
+        </script>
+        <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        </script>
+    {% endif %}
+    {% if include_mermaid %}
+        <script src="
+            https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js
+            "></script>
+        <script>mermaid.initialize({startOnLoad:true, theme:savedTheme});</script>
+    {% endif %}
 {% endblock content %}

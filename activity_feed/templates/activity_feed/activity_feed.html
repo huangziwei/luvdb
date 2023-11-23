@@ -42,7 +42,7 @@
                 {% endif %}
                 {% include "activity_feed/activity_filter.html" %}
                 {% for activity in page_obj %}
-                    {% include "activity_feed/activity_item.html" with width='wide' %}
+                        {% include "activity_feed/activity_item.html" %}
                 {% endfor %}
                 {% if page_obj.paginator.num_pages > 1 %}
                     <hr>                                      
@@ -372,9 +372,28 @@
                 </div>
             {% endif %}
         </div>
-
-
     </div>
+    {% if include_mathjax %}
+        <!--MathJax support -->
+        <script type="text/javascript">
+            window.MathJax = {
+                tex: {
+                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                    processEscapes: true
+                },
+            };
+        </script>
+        <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        </script>
+    {% endif %}
+    {% if include_mermaid %}
+        <!--Mermaid support -->
+        <script src="
+            https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js
+            "></script>
+        <script>mermaid.initialize({startOnLoad:true, theme:savedTheme});</script>
+    {% endif %}
     <script>
         function smartTruncate(str, maxLength) {
             if (str.length <= maxLength) return str;

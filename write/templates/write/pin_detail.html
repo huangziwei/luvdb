@@ -4,6 +4,7 @@
 {% load markdownify %}
 {% load linkify %}
 {% load latexify %}
+{% load mermaidify %}
 {% load crispy_forms_tags %}
 {% block meta %}
     <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Pin">
@@ -35,6 +36,7 @@
                     {% if object.content %}
                         <div class="mt-2 e-content">
                             {% latexify object.content as content %}
+                            {% mermaidify content as content %}
                             {{ content|linkify_tags:object.user|linkify_mentions|markdownify}}
                         </div>
                     {% endif %}
@@ -89,5 +91,12 @@
         <script type="text/javascript" id="MathJax-script" async
             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
         </script>
+    {% endif %}
+
+    {% if include_mermaid %}
+        <script src="
+            https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js
+            "></script>
+        <script>mermaid.initialize({startOnLoad:true, theme:savedTheme});</script>
     {% endif %}
 {% endblock content %}

@@ -4,6 +4,8 @@
 {% load url_filters %}
 {% load markdownify %}
 {% load linkify %}
+{% load latexify %}
+{% load mermaidify %}
 {% block title %}{{ object.display_name|default:object.username }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -159,7 +161,7 @@
                        href="{% url 'accounts:feed' object.username %}">All</a>
                 </div>
                 {% for activity in recent_activities %}
-                    {% include "activity_feed/activity_item.html" with width='narrow' %}
+                    {% include "activity_feed/activity_item.html" %}
                     <hr>
                 {% endfor %}
             </div>
@@ -1345,6 +1347,25 @@
             </div>
         </div>
     </div>
+    {% if include_mathjax %}
+        <script type="text/javascript">
+            window.MathJax = {
+                tex: {
+                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                    processEscapes: true
+                },
+            };
+        </script>
+        <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        </script>
+    {% endif %}
+    {% if include_mermaid %}
+        <script src="
+            https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js
+            "></script>
+        <script>mermaid.initialize({startOnLoad:true, theme:savedTheme});</script>
+    {% endif %}
     <style>
     .rotate {
         writing-mode: vertical-rl;

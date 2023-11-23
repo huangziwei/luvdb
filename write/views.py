@@ -1,4 +1,5 @@
 import random
+import re
 from collections import Counter
 from datetime import timedelta
 from itertools import chain
@@ -28,6 +29,7 @@ from listen.models import ListenCheckIn
 from play.models import PlayCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
+from write.utils_formatting import needs_mathjax, needs_mermaid
 
 from .forms import (
     CommentForm,
@@ -83,6 +85,7 @@ class ShareDetailView(DetailView):
 class PostListView(ListView):
     model = Post
     template_name = "write/post_list.html"
+    paginate_by = 100
 
     def dispatch(self, request, *args, **kwargs):
         # Get the User object
@@ -225,6 +228,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 class SayListView(ListView):
     model = Say
     template_name = "write/say_list.html"
+    paginate_by = 25
 
     def dispatch(self, request, *args, **kwargs):
         # Get the User object
@@ -299,6 +303,25 @@ class SayListView(ListView):
         context["all_tags"] = tag_sizes
         context["no_citation_css"] = True
 
+        # Initialize flags
+        include_mathjax = False
+        include_mermaid = False
+
+        # Check each activity item for both MathJax and Mermaid requirements
+        for obj in context["page_obj"]:
+            if not include_mathjax and needs_mathjax(obj.content):
+                include_mathjax = True
+            if not include_mermaid and needs_mermaid(obj.content):
+                include_mermaid = True
+
+            # Break the loop if both flags are set
+            if include_mathjax and include_mermaid:
+                break
+
+        # Add the flags to the context
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -356,6 +379,7 @@ class SayDeleteView(LoginRequiredMixin, DeleteView):
 class PinListView(ListView):
     model = Pin
     template_name = "write/pin_list.html"
+    paginate_by = 25
 
     def dispatch(self, request, *args, **kwargs):
         # Get the User object
@@ -464,6 +488,7 @@ class PinsFromURLView(ListView):
     model = Pin
     template_name = "write/pins_from_url.html"
     context_object_name = "pins"
+    paginate_by = 25
 
     def get_queryset(self):
         root_url = self.kwargs["root_url"]
@@ -519,6 +544,7 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
 
 class TagListView(ListView):
     template_name = "write/tag_list.html"
+    paginate_by = 25
 
     def get_queryset(self):
         tag = self.kwargs["tag"]
@@ -580,6 +606,7 @@ class TagListView(ListView):
 
 class TagUserListView(ListView):
     template_name = "write/tag_user_list.html"
+    paginate_by = 25
 
     def dispatch(self, request, *args, **kwargs):
         # Get the User object
@@ -839,6 +866,7 @@ class LuvListDeleteView(LoginRequiredMixin, DeleteView):
 class LuvListUserListView(ListView):
     model = LuvList
     template_name = "write/luvlist_list.html"  # Assuming 'luvlist_user_list.html' is the template for the user-specific list view
+    paginate_by = 25
 
     def dispatch(self, request, *args, **kwargs):
         # Get the User object

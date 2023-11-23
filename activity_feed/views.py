@@ -1,3 +1,4 @@
+import re
 from calendar import Calendar
 
 import pytz
@@ -20,6 +21,7 @@ from play.models import Game, GameReleaseDate
 from read.models import Book
 from watch.models import Movie, MovieReleaseDate, Series
 from write.forms import ActivityFeedSayForm
+from write.utils_formatting import needs_mathjax, needs_mermaid
 
 from .models import Activity, Block, Follow
 
@@ -242,6 +244,25 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         today = timezone.localtime(timezone.now()).date()
         context["calendar"] = cal.monthdayscalendar(today.year, today.month)
         context["current_date"] = now.strftime("%Y-%m-%d")
+
+        # Initialize flags
+        include_mathjax = False
+        include_mermaid = False
+
+        # Check each activity item for both MathJax and Mermaid requirements
+        for activity in context["page_obj"]:
+            if not include_mathjax and needs_mathjax(activity.content_object.content):
+                include_mathjax = True
+            if not include_mermaid and needs_mermaid(activity.content_object.content):
+                include_mermaid = True
+
+            # Break the loop if both flags are set
+            if include_mathjax and include_mermaid:
+                break
+
+        # Add the flags to the context
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
 
         return context
 

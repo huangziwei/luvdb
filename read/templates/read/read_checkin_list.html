@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load markdownify %}
 {% load linkify %}
+{% load mermaidify %}
 {% load parse_activity_type %}
 {% load static %}
 {% block content %}
@@ -62,7 +63,12 @@
                                 </span>
                             {% endif %}
                         </p>
-                        {% if checkin.content %}<div>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>{% endif %}
+                        {% if checkin.content %}
+                            <div>
+                                {% mermaidify checkin.content as content %}
+                                {{ content | linkify_tags | linkify_mentions | markdownify }} 
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="d-flex mb-4 pe-3">
                         <span class="me-2">
@@ -214,4 +220,23 @@ class="text-decoration-none">Delete</a></span>
         </div>
     </div>
 </div>
+{% if include_mathjax %}
+    <script type="text/javascript">
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true
+            },
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+{% endif %}
+{% if include_mermaid %}
+    <script src="
+        https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js
+        "></script>
+    <script>mermaid.initialize({startOnLoad:true, theme:savedTheme});</script>
+{% endif %}
 {% endblock %}

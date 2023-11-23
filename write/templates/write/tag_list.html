@@ -13,7 +13,7 @@
                         <a class="btn btn-sm btn-success" href="{% url 'write:tag_list_feed' tag %}">RSS</a>
                     </div>
                 </div>
-                {% for item in object_list %}
+                {% for item in page_obj %}
                     <div class="item mb-4">
                         {% if item.model_name == "say" %}
                             <!-- Render Say -->
@@ -494,6 +494,20 @@
                         {% endif %}
                     </div>
                 {% endfor %}
+                {% if page_obj.paginator.num_pages > 1 %}
+                    <hr>                                      
+                    <div class="pagination mb-3 mb-md-1">
+                        <span class="step-links">
+                            {% for i in page_obj.paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <span class="current">{{ i }}</span>
+                                {% else %}
+                                    <a href="?page={{ i }}">{{ i }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
             </div>
             <div class="col-sm-5 right-column">
                 <!-- All tags on the page -->

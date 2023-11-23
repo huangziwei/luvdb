@@ -27,6 +27,7 @@ from entity.views import HistoryViewMixin
 from watch.models import Movie, Series
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
+from write.utils_formatting import needs_mathjax, needs_mermaid
 
 from .forms import (
     BookForm,
@@ -449,7 +450,7 @@ class BookDetailView(DetailView):
             .filter(timestamp=F("latest_checkin"))
         ).order_by("-timestamp")[:5]
 
-        context["checkins"] = checkins
+        context["checkins"] = context["page_obj"] = checkins
 
         user_checkin_counts = (
             ReadCheckIn.objects.filter(
@@ -542,6 +543,25 @@ class BookDetailView(DetailView):
         # contributors
         unique_usernames = {record.history_user for record in book.history.all()}
         context["contributors"] = unique_usernames
+
+        # Initialize flags
+        include_mathjax = False
+        include_mermaid = False
+
+        # Check each activity item for both MathJax and Mermaid requirements
+        for obj in context["checkins"]:
+            if not include_mathjax and needs_mathjax(obj.content):
+                include_mathjax = True
+            if not include_mermaid and needs_mermaid(obj.content):
+                include_mermaid = True
+
+            # Break the loop if both flags are set
+            if include_mathjax and include_mermaid:
+                break
+
+        # Add the flags to the context
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
 
         return context
 
@@ -1305,6 +1325,25 @@ class GenericCheckInListView(ListView):
 
         context["model_name"] = self.kwargs.get("model_name", "book")
 
+        # Initialize flags
+        include_mathjax = False
+        include_mermaid = False
+
+        # Check each activity item for both MathJax and Mermaid requirements
+        for obj in context["checkins"]:
+            if not include_mathjax and needs_mathjax(obj.content):
+                include_mathjax = True
+            if not include_mermaid and needs_mermaid(obj.content):
+                include_mermaid = True
+
+            # Break the loop if both flags are set
+            if include_mathjax and include_mermaid:
+                break
+
+        # Add the flags to the context
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -1316,6 +1355,7 @@ class GenericCheckInAllListView(ListView):
     model = ReadCheckIn
     template_name = "read/read_checkin_list_all.html"
     context_object_name = "checkins"
+    paginate_by = 25
 
     def get_model(self):
         if self.kwargs["model_name"] == "book":
@@ -1413,6 +1453,25 @@ class GenericCheckInAllListView(ListView):
         context["status"] = self.request.GET.get("status", "")
         context["model_name"] = self.kwargs.get("model_name", "book")
 
+        # Initialize flags
+        include_mathjax = False
+        include_mermaid = False
+
+        # Check each activity item for both MathJax and Mermaid requirements
+        for obj in context["checkins"]:
+            if not include_mathjax and needs_mathjax(obj.content):
+                include_mathjax = True
+            if not include_mermaid and needs_mermaid(obj.content):
+                include_mermaid = True
+
+            # Break the loop if both flags are set
+            if include_mathjax and include_mermaid:
+                break
+
+        # Add the flags to the context
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -1424,6 +1483,7 @@ class GenericCheckInUserListView(ListView):
     model = ReadCheckIn
     template_name = "read/read_checkin_list_user.html"
     context_object_name = "checkins"
+    paginate_by = 25
 
     def get_queryset(self):
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
@@ -1491,6 +1551,25 @@ class GenericCheckInUserListView(ListView):
         )  # Default is '-timestamp'
 
         context["status"] = self.request.GET.get("status", "")
+
+        # Initialize flags
+        include_mathjax = False
+        include_mermaid = False
+
+        # Check each activity item for both MathJax and Mermaid requirements
+        for obj in context["page_obj"]:
+            if not include_mathjax and needs_mathjax(obj.content):
+                include_mathjax = True
+            if not include_mermaid and needs_mermaid(obj.content):
+                include_mermaid = True
+
+            # Break the loop if both flags are set
+            if include_mathjax and include_mermaid:
+                break
+
+        # Add the flags to the context
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
 
         return context
 

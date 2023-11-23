@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load linkify %}
 {% load markdownify %}
+{% load mermaidify %}
 {% load parse_activity_type %}
 {% block content %}
     <div class="container">
@@ -40,7 +41,7 @@
                     </span>
                 </div>
                 {% if profile_user.is_public or request.user.is_authenticated %}
-                    {% for checkin in checkins %}
+                    {% for checkin in page_obj %}
                         {% if checkin.user.is_public or checkin.user == request.user or request.user.is_authenticated %}
                             <div class="col-sm-12 mt-4">
                                 <div class="activity-item mb-3 h-entry"
@@ -63,7 +64,10 @@
                                             </span>
                                         {% endif %}
                                     </div>
-                                    <div class="mt-2">{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                    <div class="mt-2">
+                                        {% mermaidify checkin.content as content %}
+                                        {{ content | linkify_tags | linkify_mentions | markdownify }} 
+                                    </div>
                                     <div class="d-flex flex-row bg-light p-3 mt-2">
                                         <div class="mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                                             {% if user.pure_text_mode %}
@@ -174,10 +178,44 @@
                     {% empty %}
                         <p>No check-ins available.</p>
                     {% endfor %}
+
+                    {% if page_obj.paginator.num_pages > 1 %}
+                        <hr>                                      
+                        <div class="pagination mb-3 mb-md-1">
+                            <span class="step-links">
+                                {% for i in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == i %}
+                                        <span class="current">{{ i }}</span>
+                                    {% else %}
+                                        <a href="?page={{ i }}&order={{order}}&status={{status}}">{{ i }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                    {% endif %}
                 {% else %}
                     <p>This user's check-ins are private.</p>
                 {% endif %}
             </div>
         </div>
     </div>
+    {% if include_mathjax %}
+        <script type="text/javascript">
+            window.MathJax = {
+                tex: {
+                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                    processEscapes: true
+                },
+            };
+        </script>
+        <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        </script>
+    {% endif %}
+    {% if include_mermaid %}
+        <script src="
+            https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js
+            "></script>
+        <script>mermaid.initialize({startOnLoad:true, theme:savedTheme});</script>
+    {% endif %}
 {% endblock content %}

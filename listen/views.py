@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 from datetime import datetime, timedelta
 from io import BytesIO
@@ -34,6 +35,7 @@ from entity.models import Creator, Role
 from entity.views import HistoryViewMixin
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
+from write.utils_formatting import needs_mathjax, needs_mermaid
 
 from .forms import (
     AudiobookForm,
@@ -636,7 +638,27 @@ class ReleaseDetailView(DetailView):
         }
         context["contributors"] = unique_usernames
 
+        # Initialize flags
+        include_mathjax = False
+        include_mermaid = False
+
+        # Check each activity item for both MathJax and Mermaid requirements
+        for checkin in checkins:
+            if not include_mathjax and needs_mathjax(checkin.content):
+                include_mathjax = True
+            if not include_mermaid and needs_mermaid(checkin.content):
+                include_mermaid = True
+
+            # Break the loop if both flags are set
+            if include_mathjax and include_mermaid:
+                break
+
+        # Add the flags to the context
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
+
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()

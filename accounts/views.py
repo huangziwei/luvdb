@@ -42,6 +42,7 @@ from read.models import Periodical, ReadCheckIn
 from read.models import Work as LitWork
 from watch.models import Movie, Series, WatchCheckIn
 from write.models import LuvList, Pin, Post, Repost, Say, Tag
+from write.utils_formatting import needs_mathjax, needs_mermaid
 
 from .forms import (
     AppPasswordForm,
@@ -290,6 +291,25 @@ class AccountDetailView(DetailView):
         context["to_play"] = to_play
         context["does_play_exist"] = played.exists() or playing.exists()
 
+        # Initialize flags
+        include_mathjax = False
+        include_mermaid = False
+
+        # Check each activity item for both MathJax and Mermaid requirements
+        for activity in context["recent_activities"]:
+            if not include_mathjax and needs_mathjax(activity.content_object.content):
+                include_mathjax = True
+            if not include_mermaid and needs_mermaid(activity.content_object.content):
+                include_mermaid = True
+
+            # Break the loop if both flags are set
+            if include_mathjax and include_mermaid:
+                break
+
+        # Add the flags to the context
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -392,6 +412,26 @@ class PersonalActivityFeedView(ListView):
         context["no_citation_css"] = True
         username = self.kwargs["username"]
         context["feed_user"] = User.objects.get(username=username)
+
+        # Initialize flags
+        include_mathjax = False
+        include_mermaid = False
+
+        # Check each activity item for both MathJax and Mermaid requirements
+        for activity in context["page_obj"]:
+            if not include_mathjax and needs_mathjax(activity.content_object.content):
+                include_mathjax = True
+            if not include_mermaid and needs_mermaid(activity.content_object.content):
+                include_mermaid = True
+
+            # Break the loop if both flags are set
+            if include_mathjax and include_mermaid:
+                break
+
+        # Add the flags to the context
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
     def get_queryset(self):

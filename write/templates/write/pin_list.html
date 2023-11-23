@@ -39,7 +39,7 @@
                         {% endif %}
                      </div>
                 </div>
-                {% for pin in pin_list %}
+                {% for pin in page_obj %}
                     <!--Pin-->
                     <div class="activity-item mb-3 h-entry">
                         <div class="mb-2">
@@ -83,6 +83,21 @@
                 {% empty %}
                     <p>Nothing.</p>
                 {% endfor %}
+
+                {% if page_obj.paginator.num_pages > 1 %}
+                    <hr>                                      
+                    <div class="pagination mb-3 mb-md-1">
+                        <span class="step-links">
+                            {% for i in page_obj.paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <span class="current">{{ i }}</span>
+                                {% else %}
+                                    <a href="?page={{ i }}">{{ i }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
             </div>
             {% if all_tags %}
                 <div class="col-12 col-md-5 right-column">

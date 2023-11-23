@@ -8,10 +8,10 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def latexify(context, value):
     # Pattern to detect LaTeX syntax
-    LATEX_PATTERN = r"(\$\$?.+?\$\$?|\[.+?\]|\\\(.*?\\\))"
+    MATHJAX_FLAG_PATTERN = r"<!--\s*mathjax\s*-->"
 
     # Check if content contains LaTeX syntax
-    if re.search(LATEX_PATTERN, value):
+    if re.search(MATHJAX_FLAG_PATTERN, value):
         # Set flag to include MathJax script in the template
         context["include_mathjax"] = True
 
