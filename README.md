@@ -38,6 +38,7 @@ We can curate a comprehensive bibliography, filmography, discography, and gameog
 
 -   LʌvDB offers comprehensive RSS support. If you set your profile to public, others can subscribe to your activity feed, or to specific content such as your Say, Post, or Pin, and even your updates with a specific hashtag, using RSS readers.
 -   LʌvDB is also lightly federated: it currently operates as a one-way federation, where users on Mastodon instances can follow your activity feed updates, but interactions are not aggregated back to LʌvDB.
+-   Cross-posting to Mastodon and BlueSky.
 
 #### Live Sneak Peek
 
