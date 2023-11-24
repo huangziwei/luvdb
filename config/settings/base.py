@@ -257,6 +257,8 @@ MARKDOWNIFY = {
             "time",
             "iframe",
             "link",
+            "input",
+            "label",
         ],
         "WHITELIST_ATTRS": [
             "src",
@@ -269,6 +271,11 @@ MARKDOWNIFY = {
             "height",
             "width",
             "rel",
+            "checked",
+            "name",
+            "type",
+            "data-tabs",
+            "for",
         ],
         "WHITELIST_STYLES": [
             "color",
@@ -281,6 +288,10 @@ MARKDOWNIFY = {
             "pymdownx.inlinehilite",
             "pymdownx.mark",
             "pymdownx.saneheaders",
+            "pymdownx.escapeall",
+            "pymdownx.betterem",
+            "pymdownx.tilde",
+            "pymdownx.blocks.tab",
             "nl2br",
         ],
         "MARKDOWN_EXTENSION_CONFIGS": {

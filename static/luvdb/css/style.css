@@ -396,6 +396,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     --bg-default: #f8f9f9; 
     --bg-highlight: #ececec; 
     --text-default: #000;
+    --text-contrast: #6c757d;
     --bs-body-bg: var(--bg-default); 
 }
   
@@ -403,6 +404,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     --bg-default: #2B3035;
     --bg-highlight: #2B3035;
     --text-default: #c3c1c1;
+    --text-contrast: #6e6e6e;
     --bs-body-bg: #18191A;
 }
 
@@ -485,4 +487,61 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-color: rgb(51, 51, 51) !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
+}
+
+/* Tab style starts here */
+.tabbed-set {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 1em 0;
+    border-radius: 0.1rem;
+}
+
+.tabbed-set > input {
+    display: none;
+}
+
+.tabbed-set label {
+    width: auto;
+    padding: 0.9375em 1.25em 0.78125em;
+    font-weight: 700;
+    font-size: 0.84em;
+    white-space: nowrap;
+    border-bottom: 0.15rem solid transparent;
+    border-top-left-radius: 0.1rem;
+    border-top-right-radius: 0.1rem;
+    cursor: pointer;
+    transition: background-color 250ms, color 250ms;
+    color: var(--text-contrast);
+}
+
+.tabbed-set .tabbed-content {
+    width: 100%;
+    display: none;
+    box-shadow: 0 -.05rem #ddd;
+}
+
+.tabbed-set input {
+    position: absolute;
+    opacity: 0;
+}
+
+.tabbed-set input:checked:nth-child(n+1) + label {
+    color: var(--text-default);
+    border-color: var(--text-default);
+    border-width: 0.25rem;
+}
+
+@media screen {
+    .tabbed-set input:nth-child(n+1):checked + label + .tabbed-content {
+        order: 99;
+        display: block;
+    }
+}
+
+@media print {
+    .tabbed-content {
+        display: contents;
+    }
 }

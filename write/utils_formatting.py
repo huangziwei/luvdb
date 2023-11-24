@@ -20,6 +20,8 @@ def check_required_js(objects):
     for obj in objects:
         try:
             content = obj.content
+            if obj.model_name == "Repost":
+                content += obj.original_activity.content_object.content
         except:
             try:
                 content = obj.content_object.content

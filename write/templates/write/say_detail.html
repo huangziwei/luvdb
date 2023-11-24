@@ -30,7 +30,6 @@
                         </svg>{% endif %}:
                     </div>
                     <div class="e-content">
-                        mathjax? {{include_mathjax}}
                         {{ object.content| linkify_tags:object.user | linkify_mentions | markdownify }}
                     </div>
                     <span class="d-flex mt-2">
