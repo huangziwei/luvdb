@@ -88,9 +88,7 @@ class CustomUserChangeForm(UserChangeForm):
             "timezone",
         )
         help_texts = {
-            "is_public": "Enable this option to make your profile accessible to the public, including non-logged-in users. \
-                This will also enable RSS feeds. \
-                If disabled, RSS feeds will be disabled and your profile will only be visible to logged-in users.",
+            "is_public": "When enabled, your profile becomes publicly accessible, including to non-logged-in users, and activates RSS feeds. Disabling it requires a login to access the profile and list views of Say, Post, Pin, List, and Check-ins. However, the detail views of all contents remain accessible via direct URLs even when this option is turned off.",
             "pure_text_mode": "Enable this option to disable displaying images of the site.",
             "enable_federation": "Enable this to allow other ActivityPub services (Mastodon only, for now) to follow you feed with handle @username@luvdb.com.",
             "public_key": "Your public key will be displayed on your profile page.",
