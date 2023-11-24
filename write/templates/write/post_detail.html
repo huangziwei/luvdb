@@ -3,8 +3,8 @@
 {% load crispy_forms_tags %}
 {% load markdownify %}
 {% load linkify %}
-{% load latexify %}
-{% load mermaidify %}
+
+
 {% block meta %}
     <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Post &quot;{{ object.title }}&quot;">
     {% if object.content %}
@@ -52,9 +52,7 @@
                 </span>
                 
                 <div class="e-content">
-                    {% latexify object.content as content %}
-                    {% mermaidify content as content %}
-                    {{ content|linkify_tags:object.user|linkify_mentions|markdownify}}
+                    {{ object.content|linkify_tags:object.user|linkify_mentions|markdownify}}
                 </div>
                 <br>
                 <div class="d-flex justify-content-between align-items-center">
@@ -85,23 +83,5 @@
         </div>
     </div>
     <script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
-    {% if include_mathjax %}
-        <script type="text/javascript">
-            window.MathJax = {
-                tex: {
-                    inlineMath: [['$', '$'], ['\\(', '\\)']],
-                    processEscapes: true
-                },
-            };
-        </script>
-        <script type="text/javascript" id="MathJax-script" async
-            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-        </script>
-    {% endif %}
-    {% if include_mermaid %}
-        <script src="
-            https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js
-            "></script>
-        <script>mermaid.initialize({startOnLoad:true, theme:savedTheme});</script>
-    {% endif %}
+    {% include 'mathjax+mermaid.html' %}
 {% endblock %}

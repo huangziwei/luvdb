@@ -82,7 +82,9 @@ class UserActivityFeed(Feed):
             return None
 
         if hasattr(related_object, "content"):
-            return markdown.markdown(related_object.content)
+            return markdown.markdown(
+                related_object.content, extensions=["pymdownx.saneheaders"]
+            )
         elif model_name == "follow":
             return f"{related_object.follower.username} followed {related_object.followed.username}"
         else:

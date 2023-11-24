@@ -35,7 +35,7 @@ from entity.models import Creator, Role
 from entity.views import HistoryViewMixin
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
-from write.utils_formatting import needs_mathjax, needs_mermaid
+from write.utils_formatting import check_required_js
 
 from .forms import (
     AudiobookForm,
@@ -638,27 +638,12 @@ class ReleaseDetailView(DetailView):
         }
         context["contributors"] = unique_usernames
 
-        # Initialize flags
-        include_mathjax = False
-        include_mermaid = False
-
-        # Check each activity item for both MathJax and Mermaid requirements
-        for checkin in checkins:
-            if not include_mathjax and needs_mathjax(checkin.content):
-                include_mathjax = True
-            if not include_mermaid and needs_mermaid(checkin.content):
-                include_mermaid = True
-
-            # Break the loop if both flags are set
-            if include_mathjax and include_mermaid:
-                break
-
-        # Add the flags to the context
+        # check required js
+        include_mathjax, include_mermaid = check_required_js(context["checkins"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
         return context
-
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -828,6 +813,11 @@ class ListenCheckInDetailView(DetailView):
             if self.request.user.is_authenticated
             else False
         )
+
+        # check required js
+        include_mathjax, include_mermaid = check_required_js([self.object])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
         return context
 
 
@@ -996,6 +986,7 @@ class GenericCheckInUserListView(ListView):
     model = ListenCheckIn
     template_name = "listen/listen_checkin_list_user.html"
     context_object_name = "checkins"
+    paginate_by = 25
 
     def get_queryset(self):
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
@@ -1056,6 +1047,11 @@ class GenericCheckInUserListView(ListView):
         )  # Default is '-timestamp'
 
         context["status"] = self.request.GET.get("status", "")
+
+        # check required js
+        include_mathjax, include_mermaid = check_required_js(context["page_obj"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
 
         return context
 
@@ -1530,6 +1526,11 @@ class GenericCheckInListView(ListView):
                 )
             context["roles"] = roles
 
+        # check required js
+        include_mathjax, include_mermaid = check_required_js(context["checkins"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -1537,6 +1538,7 @@ class GenericCheckInAllListView(ListView):
     model = ListenCheckIn
     template_name = "listen/listen_checkin_list_all.html"
     context_object_name = "checkins"
+    paginate_by = 25
 
     def get_model(self):
         if self.kwargs["model_name"] == "release":
@@ -1645,6 +1647,10 @@ class GenericCheckInAllListView(ListView):
                     (audiobook_role.creator, alt_name_or_creator_name)
                 )
             context["roles"] = roles
+
+        include_mathjax, include_mermaid = check_required_js(context["page_obj"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
 
         return context
 

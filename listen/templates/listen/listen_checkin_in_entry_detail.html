@@ -1,7 +1,7 @@
 {% load markdownify %}
 {% load linkify %}
-{% load latexify %}
-{% load mermaidify %}
+
+
 {% load static %}
 {% load parse_activity_type %}
 <div class="col-sm-11 mt-3">
@@ -36,8 +36,7 @@
             </div>
             {% if checkin.content %}
                 <div class="checkin bg-light p-3 mb-2">
-                    {% mermaidify checkin.content as content %}
-                    {{ content | linkify_tags | linkify_mentions | markdownify }}
+                    {{ checkin.content | linkify_tags | linkify_mentions | markdownify }}
                 </div>
             {% endif %}
             <div class="d-flex mb-4">

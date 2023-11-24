@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load linkify %}
-{% load mermaidify %}
 {% load markdownify %}
 {% block title %}Says{% endblock %}
 {% block content %}
@@ -44,8 +43,7 @@
                     <div class="activity-item mb-3 h-entry">
                         {% if activity.model_name == "Say" %}
                             <div>
-                                {% mermaidify activity.content as content %}
-                                {{ content | linkify_tags | linkify_mentions | markdownify }}
+                                {{ checkin.content | linkify_tags | linkify_mentions | markdownify }}
                             </div>
                             <span class="d-flex mt-2">
                                 <div class="me-2">
@@ -132,25 +130,5 @@
             {% endif %}
         </div>
     </div>
-    {% if include_mathjax %}
-        <!--MathJax support -->
-        <script type="text/javascript">
-            window.MathJax = {
-                tex: {
-                    inlineMath: [['$', '$'], ['\\(', '\\)']],
-                    processEscapes: true
-                },
-            };
-        </script>
-        <script type="text/javascript" id="MathJax-script" async
-            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-        </script>
-    {% endif %}
-    {% if include_mermaid %}
-        <!--Mermaid support -->
-        <script src="
-            https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js
-            "></script>
-        <script>mermaid.initialize({startOnLoad:true, theme:savedTheme});</script>
-    {% endif %}
+    {% include 'mathjax+mermaid.html' %}
 {% endblock content %}

@@ -2,7 +2,7 @@
 {% load static %}
 {% load markdownify %}
 {% load linkify %}
-{% load latexify %}
+
 {% load crispy_forms_tags %}
 {% load url_filters %}
 {% block title %}{{ object.title }}{% endblock title%}
@@ -65,8 +65,7 @@
                 </div>
                 
                 <div class="mb-2">
-                    {% latexify object.notes as content %}
-                    {{ content|linkify_tags:object.user|markdownify}}
+                    {{ object.notes|linkify_tags:object.user|markdownify}}
                 </div>
                 <div class="mb-3 me-2 text-secondary d-lg-none">
                     Updated
@@ -617,19 +616,7 @@
 
         </div>
     </div>
-    {% if include_mathjax %}
-        <script type="text/javascript">
-            window.MathJax = {
-                tex: {
-                    inlineMath: [['$', '$'], ['\\(', '\\)']],
-                    processEscapes: true
-                },
-            };
-        </script>
-        <script type="text/javascript" id="MathJax-script" async
-            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-        </script>
-    {% endif %}
+    {% include 'mathjax+mermaid.html' %}
     <style>
     .sticky-note {
         position: relative;

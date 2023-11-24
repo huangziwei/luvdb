@@ -27,6 +27,7 @@ from discover.views import user_has_upvoted
 from entity.views import HistoryViewMixin
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
+from write.utils_formatting import check_required_js
 
 from .forms import (
     CollectionForm,
@@ -275,6 +276,10 @@ class MovieDetailView(DetailView):
             if record.history_user is not None
         }
         context["contributors"] = unique_usernames
+
+        include_mathjax, include_mermaid = check_required_js(context["checkins"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
 
         return context
 
@@ -669,6 +674,10 @@ class SeriesDetailView(DetailView):
         }
         context["contributors"] = unique_usernames
 
+        include_mathjax, include_mermaid = check_required_js(context["checkins"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -1045,6 +1054,9 @@ class WatchCheckInDetailView(DetailView):
             if self.request.user.is_authenticated
             else False
         )
+        include_mathjax, include_mermaid = check_required_js([self.object])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
         return context
 
 
@@ -1160,6 +1172,10 @@ class GenericCheckInListView(ListView):
             context["roles"] = roles
             context["object"] = series
 
+        include_mathjax, include_mermaid = check_required_js(context["checkins"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -1167,6 +1183,7 @@ class GenericCheckInAllListView(ListView):
     model = WatchCheckIn
     template_name = "watch/watch_checkin_list_all.html"
     context_object_name = "checkins"
+    paginate_by = 25
 
     def get_model(self):
         if self.kwargs["model_name"] == "movie":
@@ -1268,6 +1285,10 @@ class GenericCheckInAllListView(ListView):
                 d = series_role.alt_name or series_role.creator.name
                 roles[series_role.role.name].append((series_role.creator, d))
         context["roles"] = roles
+
+        include_mathjax, include_mermaid = check_required_js(context["page_obj"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
         return context
 
 
@@ -1279,6 +1300,7 @@ class GenericCheckInUserListView(ListView):
     model = WatchCheckIn
     template_name = "watch/watch_checkin_list_user.html"
     context_object_name = "checkins"
+    paginate_by = 25
 
     def get_queryset(self):
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
@@ -1327,6 +1349,10 @@ class GenericCheckInUserListView(ListView):
         )  # Default is '-timestamp'
 
         context["status"] = self.request.GET.get("status", "")
+
+        include_mathjax, include_mermaid = check_required_js(context["page_obj"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
 
         return context
 

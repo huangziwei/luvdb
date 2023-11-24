@@ -88,8 +88,7 @@
               crossorigin="anonymous">
         <!-- Internal Stylesheets -->
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
-        <link rel="stylesheet" href="{% static 'css/pygments.css' %}" defer>
-        {% block extra_styles %}{% endblock extra_styles %}
+        <link id="pygments-css" rel="stylesheet" href="/static/luvdb/css/pygments-dark.css" defer="">        {% block extra_styles %}{% endblock extra_styles %}
         {% if not no_citation_css %}
             <link rel="stylesheet" href="{% static 'css/citation.css' %}" defer>
         {% endif %}
@@ -102,12 +101,15 @@
             }
             const savedTheme = localStorage.getItem('theme') || getSystemPreferredTheme();
             const metaThemeColor = document.querySelector("meta[name='theme-color']");
+            const pigmentsCss = document.getElementById('pygments-css');
             if (savedTheme === 'dark') {
                 document.documentElement.setAttribute('data-bs-theme', 'dark');
                 metaThemeColor.setAttribute("content", "#2B3035"); 
+                pigmentsCss.setAttribute("href", "/static/luvdb/css/pygments-dark.css");
             } else {
                 document.documentElement.setAttribute('data-bs-theme', 'light');
                 metaThemeColor.setAttribute("content", "#F6F7F9"); 
+                pigmentsCss.setAttribute("href", "/static/luvdb/css/pygments-light.css");
             }
         </script>          
     </head>

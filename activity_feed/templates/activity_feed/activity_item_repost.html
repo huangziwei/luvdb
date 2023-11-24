@@ -1,7 +1,7 @@
 {% load url_filters %}
 {% load markdownify %}
 {% load linkify %}
-{% load latexify %}
+
 {% load parse_activity_type %}
 <!--Repost-->
 <div class="activity-item mb-3 h-entry"
@@ -16,8 +16,7 @@
     </div>
     {% if activity.content_object.content %}
         <div class="mb-2 truncatable-text e-content">
-                {% latexify activity.content_object.content as content %}
-                {{ content|linkify_tags|linkify_mentions|markdownify}}
+                {{ activity.content_object.content|linkify_tags|linkify_mentions|markdownify}}
         </div>
     {% endif %}
     <div class="bg-light p-3">

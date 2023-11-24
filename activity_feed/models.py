@@ -135,8 +135,14 @@ class Activity(models.Model):
                 "attachment": [],
                 "attributedTo": settings.ROOT_URL + self.user.get_absolute_url(),
                 # "cc": [], # This is added later
-                "content": mark_safe(markdown.markdown(content)),
-                "contentMap": {"en": mark_safe(markdown.markdown(content))},
+                "content": mark_safe(
+                    markdown.markdown(content, extensions=["pymdownx.saneheaders"])
+                ),
+                "contentMap": {
+                    "en": mark_safe(
+                        markdown.markdown(content, extensions=["pymdownx.saneheaders"])
+                    )
+                },
                 "conversation": "tag:"
                 + urlparse(settings.ROOT_URL).netloc
                 + ","

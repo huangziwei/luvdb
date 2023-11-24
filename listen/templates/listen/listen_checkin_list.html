@@ -2,7 +2,7 @@
 {% load markdownify %}
 {% load linkify %}
 {% load parse_activity_type %}
-{% block content %}
+    {% block content %}
     <div class="container">
         <div class="row">
             <!--left column-->
@@ -213,4 +213,5 @@
                 </div>
             </div>
         </div>
+        {% include 'mathjax+mermaid.html' %}
     {% endblock %}

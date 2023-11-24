@@ -27,7 +27,7 @@ from entity.views import HistoryViewMixin
 from watch.models import Movie, Series
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
-from write.utils_formatting import needs_mathjax, needs_mermaid
+from write.utils_formatting import check_required_js
 
 from .forms import (
     BookForm,
@@ -544,22 +544,7 @@ class BookDetailView(DetailView):
         unique_usernames = {record.history_user for record in book.history.all()}
         context["contributors"] = unique_usernames
 
-        # Initialize flags
-        include_mathjax = False
-        include_mermaid = False
-
-        # Check each activity item for both MathJax and Mermaid requirements
-        for obj in context["checkins"]:
-            if not include_mathjax and needs_mathjax(obj.content):
-                include_mathjax = True
-            if not include_mermaid and needs_mermaid(obj.content):
-                include_mermaid = True
-
-            # Break the loop if both flags are set
-            if include_mathjax and include_mermaid:
-                break
-
-        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js(context["checkins"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
@@ -1198,6 +1183,9 @@ class ReadCheckInDetailView(DetailView):
             else False
         )
 
+        include_mathjax, include_mermaid = check_required_js([self.object])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
         return context
 
 
@@ -1325,22 +1313,7 @@ class GenericCheckInListView(ListView):
 
         context["model_name"] = self.kwargs.get("model_name", "book")
 
-        # Initialize flags
-        include_mathjax = False
-        include_mermaid = False
-
-        # Check each activity item for both MathJax and Mermaid requirements
-        for obj in context["checkins"]:
-            if not include_mathjax and needs_mathjax(obj.content):
-                include_mathjax = True
-            if not include_mermaid and needs_mermaid(obj.content):
-                include_mermaid = True
-
-            # Break the loop if both flags are set
-            if include_mathjax and include_mermaid:
-                break
-
-        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js(context["checkins"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
@@ -1453,22 +1426,7 @@ class GenericCheckInAllListView(ListView):
         context["status"] = self.request.GET.get("status", "")
         context["model_name"] = self.kwargs.get("model_name", "book")
 
-        # Initialize flags
-        include_mathjax = False
-        include_mermaid = False
-
-        # Check each activity item for both MathJax and Mermaid requirements
-        for obj in context["checkins"]:
-            if not include_mathjax and needs_mathjax(obj.content):
-                include_mathjax = True
-            if not include_mermaid and needs_mermaid(obj.content):
-                include_mermaid = True
-
-            # Break the loop if both flags are set
-            if include_mathjax and include_mermaid:
-                break
-
-        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js(context["page_obj"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
@@ -1552,22 +1510,7 @@ class GenericCheckInUserListView(ListView):
 
         context["status"] = self.request.GET.get("status", "")
 
-        # Initialize flags
-        include_mathjax = False
-        include_mermaid = False
-
-        # Check each activity item for both MathJax and Mermaid requirements
-        for obj in context["page_obj"]:
-            if not include_mathjax and needs_mathjax(obj.content):
-                include_mathjax = True
-            if not include_mermaid and needs_mermaid(obj.content):
-                include_mermaid = True
-
-            # Break the loop if both flags are set
-            if include_mathjax and include_mermaid:
-                break
-
-        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js(context["page_obj"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 

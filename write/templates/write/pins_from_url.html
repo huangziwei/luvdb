@@ -23,7 +23,7 @@
                         </div>
                         {% if pin.content %}
                             <div class='mt-2'>
-                                {{ pin.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
+                                {{ pin.content | linkify_tags | linkify_mentions | markdownify }}
                             </div>
                         {% endif %}
                         <span class="d-flex mt-2">
@@ -61,4 +61,5 @@
             </div>
         </div>
     </div>
+    {% include 'mathjax+mermaid.html' %}
 {% endblock %}

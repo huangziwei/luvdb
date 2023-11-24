@@ -43,7 +43,9 @@ class UserSayFeed(Feed):
         )[:25]
 
     def item_title(self, say):
-        return mark_safe(markdown.markdown(say.content))
+        return mark_safe(
+            markdown.markdown(say.content, extensions=["pymdownx.saneheaders"])
+        )
 
     def item_description(self, say):
         return None
@@ -81,7 +83,9 @@ class UserPostFeed(Feed):
         return mark_safe(markdown.markdown(post.title))
 
     def item_description(self, post):
-        return mark_safe(markdown.markdown(post.content))
+        return mark_safe(
+            markdown.markdown(post.content, extensions=["pymdownx.saneheaders"])
+        )
 
     def item_link(self, post):
         return reverse(
@@ -129,7 +133,9 @@ class UserPostProjectFeed(Feed):
         return mark_safe(markdown.markdown(post.title))
 
     def item_description(self, post):
-        return mark_safe(markdown.markdown(post.content))
+        return mark_safe(
+            markdown.markdown(post.content, extensions=["pymdownx.saneheaders"])
+        )
 
     def item_link(self, post):
         return reverse(
@@ -228,7 +234,9 @@ class TagListFeed(Feed):
     def item_title(self, item):
         model_name = item.__class__.__name__.lower()
         if model_name == "say":
-            return mark_safe(markdown.markdown(item.content))
+            return mark_safe(
+                markdown.markdown(item.content, extensions=["pymdownx.saneheaders"])
+            )
         elif model_name == "post":
             return f'{item.user.username} posted "{item.title}"'
         elif model_name == "pin":
@@ -245,7 +253,9 @@ class TagListFeed(Feed):
         if model_name == "say":
             return None
         if hasattr(item, "content"):
-            return mark_safe(markdown.markdown(item.content))
+            return mark_safe(
+                markdown.markdown(item.content, extensions=["pymdownx.saneheaders"])
+            )
         elif model_name == "follow":
             return f"{item.follower.username} followed {item.followed.username}"
         else:
@@ -335,7 +345,9 @@ class TagUserListFeed(Feed):
     def item_title(self, item):
         model_name = item.__class__.__name__.lower()
         if model_name == "say":
-            return mark_safe(markdown.markdown(item.content))
+            return mark_safe(
+                markdown.markdown(item.content, extensions=["pymdownx.saneheaders"])
+            )
         elif model_name == "post":
             return f'{item.user.username} posted "{item.title}"'
         elif model_name == "pin":
@@ -352,7 +364,9 @@ class TagUserListFeed(Feed):
         if model_name == "say":
             return None
         if hasattr(item, "content"):
-            return mark_safe(markdown.markdown(item.content))
+            return mark_safe(
+                markdown.markdown(item.content, extensions=["pymdownx.saneheaders"])
+            )
         elif model_name == "follow":
             return f"{item.follower.username} followed {item.followed.username}"
         else:

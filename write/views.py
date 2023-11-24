@@ -29,7 +29,7 @@ from listen.models import ListenCheckIn
 from play.models import PlayCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
-from write.utils_formatting import needs_mathjax, needs_mermaid
+from write.utils_formatting import check_required_js
 
 from .forms import (
     CommentForm,
@@ -188,6 +188,11 @@ class PostDetailView(ShareDetailView):
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
         context["projects"] = self.object.projects.all()
 
+        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js([self.object])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -303,22 +308,7 @@ class SayListView(ListView):
         context["all_tags"] = tag_sizes
         context["no_citation_css"] = True
 
-        # Initialize flags
-        include_mathjax = False
-        include_mermaid = False
-
-        # Check each activity item for both MathJax and Mermaid requirements
-        for obj in context["page_obj"]:
-            if not include_mathjax and needs_mathjax(obj.content):
-                include_mathjax = True
-            if not include_mermaid and needs_mermaid(obj.content):
-                include_mermaid = True
-
-            # Break the loop if both flags are set
-            if include_mathjax and include_mermaid:
-                break
-
-        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js(context["page_obj"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
@@ -338,6 +328,12 @@ class SayDetailView(ShareDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+
+        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js([self.object])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -428,6 +424,11 @@ class PinListView(ListView):
         context["all_tags"] = tag_sizes
         context["no_citation_css"] = True
 
+        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js(context["page_obj"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -438,6 +439,12 @@ class PinDetailView(ShareDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+
+        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js([self.object])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -505,6 +512,11 @@ class PinsFromURLView(ListView):
         context = super().get_context_data(**kwargs)
         # Add root_url to the context
         context["root_url"] = self.kwargs["root_url"]
+
+        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js(context["page_obj"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
         return context
 
 

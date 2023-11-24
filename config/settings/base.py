@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+import pymdownx.arithmatex as arithmatex
+import pymdownx.superfences as superfences
 from environs import Env
 
 from write.spoiler_extension import SpoilerExtension
@@ -113,8 +115,6 @@ TEMPLATES = [
                 "account_tags": "accounts.templatetags.account_tags",
                 "url_filters": "activity_feed.templatetags.url_filters",
                 "linkify": "write.templatetags.linkify",
-                "latexify": "write.templatetags.latexify",
-                "mermaidify": "write.templatetags.mermaidify",
                 "parse_activity_type": "activity_feed.templatetags.parse_activity_type",
                 "concat_sets": "read.templatetags.concat_sets",
                 "language_name": "read.templatetags.language_name",
@@ -189,21 +189,15 @@ MARKDOWNIFY = {
         "WHITELIST_TAGS": [
             "abbr",
             "acronym",
-            "h1",
-            "h2",
-            "h3",
             "h4",
             "h5",
             "h6",
             "blockquote",
             "cite",
             "code",
-            "dfn",
             "em",
             "i",
-            "kbd",
             "strong",
-            "samp",
             "var",
             "b",
             "i",
@@ -245,9 +239,7 @@ MARKDOWNIFY = {
             "nav",
             "output",
             "progress",
-            "meter",
             "audio",
-            "video",
             "canvas",
             "ruby",
             "rt",
@@ -283,11 +275,39 @@ MARKDOWNIFY = {
             "font-weight",
         ],
         "MARKDOWN_EXTENSIONS": [
-            "fenced_code",
-            "extra",
+            "pymdownx.superfences",
+            "pymdownx.arithmatex",
+            "pymdownx.highlight",
+            "pymdownx.inlinehilite",
+            "pymdownx.mark",
+            "pymdownx.saneheaders",
             "nl2br",
-            "codehilite",
         ],
+        "MARKDOWN_EXTENSION_CONFIGS": {
+            "pymdownx.superfences": {
+                "custom_fences": [
+                    {
+                        "name": "math",
+                        "class": "arithmatex",
+                        "format": arithmatex.arithmatex_fenced_format(which="generic"),
+                    },
+                    {
+                        "name": "mermaid",
+                        "class": "mermaid",
+                        "format": superfences.fence_div_format,
+                    },
+                ]
+            },
+            "pymdownx.inlinehilite": {
+                "custom_inline": [
+                    {
+                        "name": "math",
+                        "class": "arithmatex",
+                        "format": arithmatex.arithmatex_inline_format(which="generic"),
+                    }
+                ]
+            },
+        },
     }
 }
 

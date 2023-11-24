@@ -26,6 +26,7 @@ from discover.views import user_has_upvoted
 from entity.views import HistoryViewMixin
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
+from write.utils_formatting import check_required_js
 
 from .forms import (
     GameCastFormSet,
@@ -360,6 +361,10 @@ class GameDetailView(DetailView):
         }
         context["contributors"] = unique_usernames
 
+        include_mathjax, include_mermaid = check_required_js(context["checkins"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -624,6 +629,11 @@ class PlayCheckInDetailView(DetailView):
             else False
         )
 
+        include_mathjax, include_mermaid = check_required_js([self.object])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
+
         return context
 
 
@@ -721,6 +731,10 @@ class PlayCheckInListView(ListView):
 
         # Get the game details
         context["game"] = game
+
+        include_mathjax, include_mermaid = check_required_js(context["checkins"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
         return context
 
 
@@ -728,6 +742,7 @@ class PlayCheckInAllListView(ListView):
     model = PlayCheckIn
     template_name = "play/play_checkin_list_all.html"
     context_object_name = "checkins"
+    paginate_by = 25
 
     def get_queryset(self):
         # Fetch the latest check-in from each user.
@@ -801,6 +816,10 @@ class PlayCheckInAllListView(ListView):
             )
         context["grouped_roles"] = grouped_roles
 
+        include_mathjax, include_mermaid = check_required_js(context["page_obj"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -812,6 +831,7 @@ class PlayCheckInUserListView(ListView):
     model = PlayCheckIn
     template_name = "play/play_checkin_list_user.html"
     context_object_name = "checkins"
+    paginate_by = 25
 
     def get_queryset(self):
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
@@ -877,6 +897,10 @@ class PlayCheckInUserListView(ListView):
         )  # Default is '-timestamp'
 
         context["status"] = self.request.GET.get("status", "")
+
+        include_mathjax, include_mermaid = check_required_js(context["page_obj"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
 
         return context
 
