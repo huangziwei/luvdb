@@ -251,14 +251,21 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
 
         # Check each activity item for both MathJax and Mermaid requirements
         for activity in context["page_obj"]:
-            if not include_mathjax and needs_mathjax(activity.content_object.content):
-                include_mathjax = True
-            if not include_mermaid and needs_mermaid(activity.content_object.content):
-                include_mermaid = True
+            if not hasattr(activity.content_object, "content"):
+                continue
+            else:
+                if not include_mathjax and needs_mathjax(
+                    activity.content_object.content
+                ):
+                    include_mathjax = True
+                if not include_mermaid and needs_mermaid(
+                    activity.content_object.content
+                ):
+                    include_mermaid = True
 
-            # Break the loop if both flags are set
-            if include_mathjax and include_mermaid:
-                break
+                # Break the loop if both flags are set
+                if include_mathjax and include_mermaid:
+                    break
 
         # Add the flags to the context
         context["include_mathjax"] = include_mathjax
