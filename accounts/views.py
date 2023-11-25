@@ -18,6 +18,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, JsonRespo
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.utils.safestring import mark_safe
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -29,6 +30,7 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
 )
+from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Activity, Follow
 from entity.models import Company, Creator
@@ -96,6 +98,7 @@ class SignUpView(CreateView):
         return super().form_valid(form)
 
 
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class AccountDetailView(DetailView):
     """Detail view for user accounts."""
 
