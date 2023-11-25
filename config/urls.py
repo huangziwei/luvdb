@@ -7,10 +7,11 @@ from django.contrib import admin
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.sitemaps.views import sitemap
 from django.http import Http404, HttpResponse, HttpResponseServerError
+from django.shortcuts import redirect
 from django.template import loader
-from django.urls import include, path
+from django.urls import include, path, re_path
 
-from accounts.views import search_view, webfinger
+from accounts.views import AccountDetailView, search_view, webfinger
 from entity.sitemaps import PersonSiteMap
 from listen.sitemaps import ReleaseSiteMap
 from play.sitemaps import GameSiteMap
@@ -45,6 +46,12 @@ def custom_500_view(request, *args, **argv):
     return HttpResponseServerError(template.render({"error_message": str(value)}))
 
 
+def redirect_to_at_username(request, username, extra_path=""):
+    # Add a slash to extra_path if it's not empty
+    extra_path = "/" + extra_path if extra_path else ""
+    return redirect(f"/@{username}{extra_path}")
+
+
 def site_manifest(request):
     data = {
         "name": "LʌvDB",
@@ -72,7 +79,16 @@ urlpatterns = [
     path(".well-known/webfinger/", webfinger, name="webfinger"),
     path("admin/login/", custom_admin_login, name="custom_admin_login"),
     path("admin/", admin.site.urls),
-    path("u/", include("accounts.urls")),
+    path("@", include("accounts.urls")),
+    path(
+        "u/<str:username>/",
+        include(
+            [
+                path("", redirect_to_at_username, name="redirect_to_at_username"),
+                re_path(r"^(?P<extra_path>.+)$", redirect_to_at_username),
+            ]
+        ),
+    ),
     path("entity/", include("entity.urls")),
     path("read/", include("read.urls")),
     path("play/", include("play.urls")),
