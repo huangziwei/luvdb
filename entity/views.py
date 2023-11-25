@@ -4,9 +4,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Min, Q
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.utils.html import format_html
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
+from django_ratelimit.decorators import ratelimit
 
 from listen.models import Audiobook, Release, Track
 from listen.models import Work as ListenWork
@@ -35,7 +37,7 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy("entity:creator_detail", kwargs={"pk": self.object.pk})
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class CreatorDetailView(DetailView):
     model = Creator
     template_name = "entity/creator_detail.html"
@@ -470,7 +472,7 @@ class RoleUpdateView(LoginRequiredMixin, UpdateView):
             return next_url
         return reverse_lazy("activity_feed:activity_feed")
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class RoleDetailView(LoginRequiredMixin, DetailView):
     model = Role
     template_name = "entity/role_detail.html"
@@ -544,7 +546,7 @@ class CompanyCreateView(LoginRequiredMixin, CreateView):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class CompanyDetailView(DetailView):
     model = Company
     template_name = "entity/company_detail.html"
@@ -712,7 +714,7 @@ class HistoryViewMixin:
         history_data.reverse()
         return history_data
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class CreatorHistoryView(HistoryViewMixin, DetailView):
     model = Creator
     template_name = "entity/history.html"
@@ -723,7 +725,7 @@ class CreatorHistoryView(HistoryViewMixin, DetailView):
         context["history_data"] = self.get_history_data(creator)
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class CompanyHistoryView(HistoryViewMixin, DetailView):
     model = Company
     template_name = "entity/history.html"

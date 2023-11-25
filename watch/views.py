@@ -13,6 +13,7 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -21,6 +22,7 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
 )
+from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
@@ -118,7 +120,7 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
                 regionreleasedates.save()
         return super().form_valid(form)
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class MovieDetailView(DetailView):
     model = Movie
     template_name = "watch/movie_detail.html"
@@ -372,7 +374,7 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
                 regionreleasedates.save()
         return super().form_valid(form)
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class MovieCastDetailView(DetailView):
     model = Movie
     context_object_name = "movie"
@@ -393,7 +395,7 @@ class MovieCastDetailView(DetailView):
         context["contributors"] = unique_usernames
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class WatchListView(TemplateView):
     template_name = "watch/watch_list.html"
 
@@ -526,7 +528,7 @@ class SeriesCreateView(LoginRequiredMixin, CreateView):
                 seriesrole.save()
         return super().form_valid(form)
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class SeriesDetailView(DetailView):
     model = Series
     template_name = "watch/series_detail.html"
@@ -744,7 +746,7 @@ class SeriesUpdateView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
-
+@method_decorator(ratelimit(key="ip", rate="5/m", block=True), name="dispatch")
 class SeriesCastDetailView(DetailView):
     model = Series
     context_object_name = "series"
@@ -901,7 +903,7 @@ class EpisodeCreateView(LoginRequiredMixin, CreateView):
                 print(episodecasts.errors)  # print out formset errors
         return super().form_valid(form)
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class EpisodeDetailView(DetailView):
     model = Episode
     template_name = "watch/episode_detail.html"
@@ -993,7 +995,7 @@ class EpisodeUpdateView(LoginRequiredMixin, UpdateView):
                 episodecasts.save()
         return super().form_valid(form)
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class EpisodeCastDetailView(DetailView):
     model = Episode
     context_object_name = "episode"
@@ -1020,7 +1022,7 @@ class EpisodeCastDetailView(DetailView):
 # Checkin #
 ###########
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class WatchCheckInDetailView(DetailView):
     model = WatchCheckIn
     template_name = "watch/watch_checkin_detail.html"
@@ -1086,7 +1088,7 @@ class WatchCheckInDeleteView(LoginRequiredMixin, DeleteView):
                 "watch:series_detail", kwargs={"pk": self.object.content_object.pk}
             )
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class GenericCheckInListView(ListView):
     model = WatchCheckIn
     template_name = "watch/watch_checkin_list.html"
@@ -1178,7 +1180,7 @@ class GenericCheckInListView(ListView):
 
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class GenericCheckInAllListView(ListView):
     model = WatchCheckIn
     template_name = "watch/watch_checkin_list_all.html"
@@ -1291,7 +1293,7 @@ class GenericCheckInAllListView(ListView):
         context["include_mermaid"] = include_mermaid
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class GenericCheckInUserListView(ListView):
     """
     All latest check-ins from a given user of all movies and series.
@@ -1360,6 +1362,7 @@ class GenericCheckInUserListView(ListView):
 #########
 # Genre #
 #########
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class GenreDetailView(DetailView):
     model = Genre
     template_name = "watch/genre_detail.html"  # Update with your actual template name
@@ -1436,7 +1439,7 @@ class CollectionCreateView(LoginRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class CollectionDetailView(DetailView):
     model = Collection
     template_name = "watch/collection_detail.html"
@@ -1497,7 +1500,7 @@ class CollectionUpdateView(LoginRequiredMixin, UpdateView):
 # History Views #
 #################
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class MovieHistoryView(HistoryViewMixin, DetailView):
     model = Movie
     template_name = "entity/history.html"
@@ -1508,7 +1511,7 @@ class MovieHistoryView(HistoryViewMixin, DetailView):
         context["history_data"] = self.get_history_data(object)
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class SeriesHistoryView(HistoryViewMixin, DetailView):
     model = Series
     template_name = "entity/history.html"
@@ -1519,7 +1522,7 @@ class SeriesHistoryView(HistoryViewMixin, DetailView):
         context["history_data"] = self.get_history_data(object)
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class EpisodeHistoryView(HistoryViewMixin, DetailView):
     model = Episode
     template_name = "entity/history.html"
@@ -1530,7 +1533,7 @@ class EpisodeHistoryView(HistoryViewMixin, DetailView):
         context["history_data"] = self.get_history_data(object)
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class CollectionHistoryView(HistoryViewMixin, DetailView):
     model = Collection
     template_name = "entity/history.html"

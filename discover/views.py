@@ -11,7 +11,9 @@ from django.db.models import Case, Count, F, IntegerField, Q, Sum, Value, When
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView
+from django_ratelimit.decorators import ratelimit
 
 from listen.models import ListenCheckIn
 from play.models import PlayCheckIn
@@ -93,7 +95,7 @@ def vote(request, content_type, object_id, vote_type):
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class DiscoverListAllView(LoginRequiredMixin, ListView):
     template_name = "discover/discover_all.html"
 
@@ -274,7 +276,7 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
         context["current_page"] = "All"
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class DiscoverPostListView(LoginRequiredMixin, ListView):
     template_name = "discover/discover_posts.html"
     paginate_by = 10
@@ -346,7 +348,7 @@ class DiscoverPostListView(LoginRequiredMixin, ListView):
 
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class DiscoverPinListView(LoginRequiredMixin, ListView):
     template_name = "discover/discover_pins.html"
     paginate_by = 10
@@ -411,7 +413,7 @@ class DiscoverPinListView(LoginRequiredMixin, ListView):
 
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class DiscoverLuvListListView(LoginRequiredMixin, ListView):
     template_name = "discover/discover_luvlists.html"
     paginate_by = 10
@@ -478,7 +480,7 @@ class DiscoverLuvListListView(LoginRequiredMixin, ListView):
         context["start_index"] = start_index + 1
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
 class DiscoverLikedView(LoginRequiredMixin, ListView):
     template_name = "discover/discover_liked.html"
 
