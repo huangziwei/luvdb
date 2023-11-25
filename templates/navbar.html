@@ -27,13 +27,8 @@
                 <path d="M3.051 3.26a.5.5 0 0 1 .354-.613l1.932-.518a.5.5 0 0 1 .62.39c.655-.079 1.35-.117 2.043-.117.72 0 1.443.041 2.12.126a.5.5 0 0 1 .622-.399l1.932.518a.5.5 0 0 1 .306.729c.14.09.266.19.373.297.408.408.78 1.05 1.095 1.772.32.733.599 1.591.805 2.466.206.875.34 1.78.364 2.606.024.816-.059 1.602-.328 2.21a1.42 1.42 0 0 1-1.445.83c-.636-.067-1.115-.394-1.513-.773-.245-.232-.496-.526-.739-.808-.126-.148-.25-.292-.368-.423-.728-.804-1.597-1.527-3.224-1.527-1.627 0-2.496.723-3.224 1.527-.119.131-.242.275-.368.423-.243.282-.494.575-.739.808-.398.38-.877.706-1.513.773a1.42 1.42 0 0 1-1.445-.83c-.27-.608-.352-1.395-.329-2.21.024-.826.16-1.73.365-2.606.206-.875.486-1.733.805-2.466.315-.722.687-1.364 1.094-1.772a2.34 2.34 0 0 1 .433-.335.504.504 0 0 1-.028-.079zm2.036.412c-.877.185-1.469.443-1.733.708-.276.276-.587.783-.885 1.465a13.748 13.748 0 0 0-.748 2.295 12.351 12.351 0 0 0-.339 2.406c-.022.755.062 1.368.243 1.776a.42.42 0 0 0 .426.24c.327-.034.61-.199.929-.502.212-.202.4-.423.615-.674.133-.156.276-.323.44-.504C4.861 9.969 5.978 9.027 8 9.027s3.139.942 3.965 1.855c.164.181.307.348.44.504.214.251.403.472.615.674.318.303.601.468.929.503a.42.42 0 0 0 .426-.241c.18-.408.265-1.02.243-1.776a12.354 12.354 0 0 0-.339-2.406 13.753 13.753 0 0 0-.748-2.295c-.298-.682-.61-1.19-.885-1.465-.264-.265-.856-.523-1.733-.708-.85-.179-1.877-.27-2.913-.27-1.036 0-2.063.091-2.913.27z"/>
             </svg>
         </a>
-        <a class="nav-link btn btn-sm me-4" href="{% url 'discover:all' %}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-box2-heart" viewBox="0 0 16 16">
-                <path d="M8 7.982C9.664 6.309 13.825 9.236 8 13 2.175 9.236 6.336 6.31 8 7.982"/>
-                <path d="M3.75 0a1 1 0 0 0-.8.4L.1 4.2a.5.5 0 0 0-.1.3V15a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4.5a.5.5 0 0 0-.1-.3L13.05.4a1 1 0 0 0-.8-.4h-8.5Zm0 1H7.5v3h-6zM8.5 4V1h3.75l2.25 3zM15 5v10H1V5z"/>
-            </svg>
-        </a>
     </div>
+    
     <button class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
@@ -57,13 +52,13 @@
             <li class="nav-item d-none d-lg-block">
                 <a class="nav-link btn btn-sm" href="{% url 'play:play_list' %}">Play</a>
             </li>
-            <li class="nav-item d-none d-lg-block">
-                <a class="nav-link btn btn-sm" href="{% url 'discover:all' %}">Discover</a>
-            </li>      
-
-
+            {% if user.is_authenticated %}
+                <li class="nav-item d-none d-lg-block">
+                    <a class="nav-link btn btn-sm" href="{% url 'discover:all' %}">Discover</a>
+                </li>      
+            {% endif %}
         </ul>
-        <form class="me-2" method="GET" action="{% url 'search' %}">
+        <form class="me-2 mb-2 mb-md-0" method="GET" action="{% url 'search' %}">
             <div class="input-group">
                 <label for="model" class="visually-hidden">Select Model</label>
                 <select name="model"
@@ -74,10 +69,10 @@
                             border-radius: 0.375rem 0 0 0.375rem;
                             text-align: center;">
                     <option value="all" {% if request.GET.model == "all" %}selected{% endif %}>All</option>
-                    <option value="read" {% if request.GET.model == "read" %}selected{% endif %}>Read</option>
-                    <option value="watch" {% if request.GET.model == "watch" %}selected{% endif %}>Watch</option>
-                    <option value="listen" {% if request.GET.model == "listen" %}selected{% endif %}>Listen</option>
-                    <option value="play" {% if request.GET.model == "play" %}selected{% endif %}>Play</option>
+                    <option value="read" {% if request.GET.model == "read" or request.path == '/read/recent/' %}selected{% endif %}>Read</option>
+                    <option value="watch" {% if request.GET.model == "watch" or request.path == '/watch/recent/' %}selected{% endif %}>Watch</option>
+                    <option value="listen" {% if request.GET.model == "listen" or request.path == '/listen/recent/' %}selected{% endif %}>Listen</option>
+                    <option value="play" {% if request.GET.model == "play" or request.path == '/play/recent/' %}selected{% endif %}>Play</option>
                     <option value="write" {% if request.GET.model == "write" %}selected{% endif %}>Write</option>
                     <option value="entity" {% if request.GET.model == "entity" %}selected{% endif %}>Entity</option>
                     <option value="user" {% if request.GET.model == "user" %}selected{% endif %}>User</option>
@@ -94,55 +89,68 @@
                     </svg>
                 </button>
             </div>
-        </form>  
-
-        <div class="d-flex justify-content-end align-items-center" style="flex-direction: row;">
-            <button id="darkModeToggle" class="btn btn-sm ms-md-2" style="display: none;" aria-label="Dark Mode Toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-half" viewBox="0 0 16 16"  style="vertical-align: middle;">
-                    <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
-                </svg>
-            </button>
-            {% if user.is_authenticated %}
-                <div>
-                    <a href="{% url 'notify:notification_list' %}"
-                    class="btn btn-sm ms-md-2 me-md-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16" style="vertical-align: middle;">
-                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+        </form> 
+        
+        <div class="d-flex justify-content-between align-items-center" style="flex-direction: row;">
+            <div>
+                <!--If there are new apps in the future, should put the mobile icons here-->
+                {% if user.is_authenticated %}
+                    <a class="nav-link btn btn-sm d-lg-none" href="{% url 'discover:all' %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-box2-heart" viewBox="0 0 16 16">
+                            <path d="M8 7.982C9.664 6.309 13.825 9.236 8 13 2.175 9.236 6.336 6.31 8 7.982"/>
+                            <path d="M3.75 0a1 1 0 0 0-.8.4L.1 4.2a.5.5 0 0 0-.1.3V15a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4.5a.5.5 0 0 0-.1-.3L13.05.4a1 1 0 0 0-.8-.4h-8.5Zm0 1H7.5v3h-6zM8.5 4V1h3.75l2.25 3zM15 5v10H1V5z"/>
                         </svg>
-                        {% if new_notifications %}
-                            ({{ new_notifications }})
-                        {% endif %}
                     </a>
-                </div>
-                <div class="dropdown text-end text-center">
-                    <a href="#"
-                    class="d-block text-decoration-none dropdown-toggle btn btn-sm"
-                    id="dropdownUser1"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    {{ user.display_name | default:user.username }}
-                    </a>
-                    <ul class="dropdown-menu text-small dropdown-menu-end"
-                        aria-labelledby="dropdownUser1">
-                        <li>
-                            <a class="dropdown-item"
-                            href="{% url 'accounts:detail' user.username %}">Profile</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
-                        </li>
-                    </ul>
-                </div>
-            {% else %}
-                <div class="justify-content-center m-2">
-                    <a href="{% url 'login' %}" class="btn btn-primary me-2">Log
-                    In</a>
-                    <a href="{% url 'accounts:signup' %}" class="btn btn-secondary">Sign Up</a>
-                </div>
-            {% endif %}
+                {% endif %}
+            </div>
+            <div class="d-flex">
+                <button id="darkModeToggle" class="btn btn-sm m-md-1" style="display: none;" aria-label="Dark Mode Toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-half" viewBox="0 0 16 16"  style="vertical-align: middle;">
+                        <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+                    </svg>
+                </button>
+                {% if user.is_authenticated %}
+                    <div>
+                        <a href="{% url 'notify:notification_list' %}"
+                        class="btn btn-sm m-md-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+                            </svg>
+                            {% if new_notifications %}
+                                ({{ new_notifications }})
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="dropdown text-end text-center">
+                        <a href="#"
+                        class="d-block text-decoration-none dropdown-toggle btn btn-sm m-md-1"
+                        id="dropdownUser1"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        {{ user.display_name | default:user.username }}
+                        </a>
+                        <ul class="dropdown-menu text-small dropdown-menu-end"
+                            aria-labelledby="dropdownUser1">
+                            <li>
+                                <a class="dropdown-item"
+                                href="{% url 'accounts:detail' user.username %}">Profile</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="justify-content-center m-2 m-md-1">
+                        <a href="{% url 'login' %}" class="btn btn-sm btn-primary me-2">Log
+                        In</a>
+                        <a href="{% url 'accounts:signup' %}" class="btn btn-sm btn-secondary">Sign Up</a>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </nav>

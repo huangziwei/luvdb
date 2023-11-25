@@ -293,6 +293,7 @@ MARKDOWNIFY = {
             "pymdownx.betterem",
             "pymdownx.tilde",
             "pymdownx.blocks.tab",
+            "pymdownx.magiclink",
             "nl2br",
         ],
         "MARKDOWN_EXTENSION_CONFIGS": {
