@@ -550,11 +550,15 @@ class InvitationRequestedSuccessView(TemplateView):
 def filter_users(query, search_terms):
     results = User.objects.all()
     for term in search_terms:
-        results = results.filter(
-            Q(username__icontains=term)
-            | Q(display_name__icontains=term)
-            | Q(bio__icontains=term)
-        ).distinct()
+        results = (
+            results.filter(
+                Q(username__icontains=term)
+                | Q(display_name__icontains=term)
+                | Q(bio__icontains=term)
+            )
+            .distinct()
+            .order_by("username")
+        )
     return results
 
 
@@ -680,8 +684,14 @@ def filter_read(query, search_terms):
             .distinct()
             .order_by("publication_date")
         )
-        periodical_results = periodical_results.filter(title__icontains=term).distinct()
-        book_series = book_series.filter(Q(title__icontains=term)).distinct()
+        periodical_results = (
+            periodical_results.filter(title__icontains=term)
+            .distinct()
+            .order_by("title")
+        )
+        book_series = (
+            book_series.filter(Q(title__icontains=term)).distinct().order_by("title")
+        )
 
     return (
         litwork_results,
@@ -736,13 +746,17 @@ def filter_listen(query, search_terms):
             .order_by("release_date")
         )
         podcast_results = podcast_results.filter(Q(title__icontains=term)).distinct()
-        audiobook_results = audiobook_results.filter(
-            Q(title__icontains=term)
-            | Q(audiobookrole__creator__name__icontains=term)
-            | Q(audiobookrole__creator__other_names__icontains=term)
-            | Q(release_date__icontains=term)
-            | Q(publisher__name__icontains=term)
-        ).distinct()
+        audiobook_results = (
+            audiobook_results.filter(
+                Q(title__icontains=term)
+                | Q(audiobookrole__creator__name__icontains=term)
+                | Q(audiobookrole__creator__other_names__icontains=term)
+                | Q(release_date__icontains=term)
+                | Q(publisher__name__icontains=term)
+            )
+            .distinct()
+            .order_by("release_date")
+        )
 
     return (
         musicwork_results,
@@ -833,13 +847,21 @@ def filter_entity(query, search_terms):
     company_results = Company.objects.all()
 
     for term in search_terms:
-        creator_results = creator_results.filter(
-            Q(name__icontains=term) | Q(other_names__icontains=term)
-        ).distinct()
+        creator_results = (
+            creator_results.filter(
+                Q(name__icontains=term) | Q(other_names__icontains=term)
+            )
+            .distinct()
+            .order_by("name")
+        )
 
-        company_results = company_results.filter(
-            Q(name__icontains=term) | Q(other_names__icontains=term)
-        ).distinct()
+        company_results = (
+            company_results.filter(
+                Q(name__icontains=term) | Q(other_names__icontains=term)
+            )
+            .distinct()
+            .order_by("name")
+        )
 
     return creator_results, company_results
 
