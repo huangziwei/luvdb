@@ -90,7 +90,7 @@ urlpatterns = [
         name="movie_checkin_all_list",
     ),
     path(
-        "movie/<int:object_id>/checkins/<str:username>/",
+        "movie/<int:object_id>/checkins/@<str:username>/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "movie"},
         name="movie_checkin_list",
@@ -102,7 +102,7 @@ urlpatterns = [
         name="series_checkin_all_list",
     ),
     path(
-        "series/<int:object_id>/checkins/<str:username>/",
+        "series/<int:object_id>/checkins/@<str:username>/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "series"},
         name="series_checkin_list",

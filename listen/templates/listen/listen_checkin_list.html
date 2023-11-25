@@ -11,7 +11,7 @@
                     Check-ins by
                     <a href="{% url 'accounts:detail' profile_user.username %}">
                         {{ profile_user.display_name|default:profile_user.username }}
-                    </a> of
+                    </a> for
                     {% if model_name == "release" %}
                         <a href="{% url 'listen:release_detail' object.id %}">{{ object.title }}</a>
                     {% elif model_name == "podcast" %}

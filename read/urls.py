@@ -49,7 +49,7 @@ urlpatterns = [
         name="book_checkin_all_list",
     ),
     path(
-        "book/<int:object_id>/checkins/<str:username>/",
+        "book/<int:object_id>/checkins/@<str:username>/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "book"},
         name="book_checkin_list",
@@ -61,7 +61,7 @@ urlpatterns = [
         name="issue_checkin_all_list",
     ),
     path(
-        "periodical/<int:periodical_id>/issue/<int:object_id>/checkins/<str:username>/",
+        "periodical/<int:periodical_id>/issue/<int:object_id>/checkins/@<str:username>/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "issue"},
         name="issue_checkin_list",

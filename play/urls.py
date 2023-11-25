@@ -75,7 +75,7 @@ urlpatterns = [
         name="play_checkin_all_list",
     ),
     path(
-        "game/<int:object_id>/checkins/<str:username>/",
+        "game/<int:object_id>/checkins/@<str:username>/",
         view=PlayCheckInListView.as_view(),
         name="play_checkin_list",
     ),

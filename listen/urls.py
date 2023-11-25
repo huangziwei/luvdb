@@ -79,7 +79,7 @@ urlpatterns = [
         name="release_checkin_all_list",
     ),
     path(
-        "release/<int:object_id>/checkins/<str:username>/",
+        "release/<int:object_id>/checkins/@<str:username>/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "release"},
         name="release_checkin_list",
@@ -91,7 +91,7 @@ urlpatterns = [
         name="podcast_checkin_all_list",
     ),
     path(
-        "podcast/<int:object_id>/checkins/<str:username>/",
+        "podcast/<int:object_id>/checkins/@<str:username>/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "podcast"},
         name="podcast_checkin_list",
@@ -103,7 +103,7 @@ urlpatterns = [
         name="audiobook_checkin_all_list",
     ),
     path(
-        "audiobook/<int:object_id>/checkins/<str:username>/",
+        "audiobook/<int:object_id>/checkins/@<str:username>/",
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "audiobook"},
         name="audiobook_checkin_list",
