@@ -15,6 +15,7 @@ from pathlib import Path
 import pymdownx.arithmatex as arithmatex
 import pymdownx.superfences as superfences
 from environs import Env
+from pymdownx.slugs import slugify
 
 from write.spoiler_extension import SpoilerExtension
 
@@ -317,6 +318,10 @@ MARKDOWNIFY = {
                         "format": arithmatex.arithmatex_inline_format(which="generic"),
                     }
                 ]
+            },
+            "pymdownx.blocks.tab": {
+                "slugify": slugify(case="lower", percent_encode=True),
+                "separator": "_",  # Separator of your choice
             },
         },
     }
