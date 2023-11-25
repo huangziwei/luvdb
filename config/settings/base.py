@@ -294,10 +294,13 @@ MARKDOWNIFY = {
             "pymdownx.tilde",
             "pymdownx.blocks.tab",
             "pymdownx.magiclink",
+            "footnotes",
+            "md_in_html",
             "nl2br",
         ],
         "MARKDOWN_EXTENSION_CONFIGS": {
             "pymdownx.superfences": {
+                "preserve_tabs": True,
                 "custom_fences": [
                     {
                         "name": "math",
@@ -309,7 +312,7 @@ MARKDOWNIFY = {
                         "class": "mermaid",
                         "format": superfences.fence_div_format,
                     },
-                ]
+                ],
             },
             "pymdownx.inlinehilite": {
                 "custom_inline": [
