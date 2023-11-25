@@ -93,24 +93,20 @@
             <link rel="stylesheet" href="{% static 'css/citation.css' %}" defer>
         {% endif %}
         <script>
-            function getSystemPreferredTheme() {
-              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                return 'dark';
-              }
-              return 'light';
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-bs-theme', theme);
+                metaThemeColor.setAttribute("content", theme === 'dark' ? "#2B3035" : "#F6F7F9");
+                pigmentsCss.setAttribute("href", `/static/luvdb/css/pygments-${theme}.css`);
             }
-            const savedTheme = localStorage.getItem('theme') || getSystemPreferredTheme();
+        
+            function getSystemPreferredTheme() {
+                return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+        
             const metaThemeColor = document.querySelector("meta[name='theme-color']");
             const pigmentsCss = document.getElementById('pygments-css');
-            if (savedTheme === 'dark') {
-                document.documentElement.setAttribute('data-bs-theme', 'dark');
-                metaThemeColor.setAttribute("content", "#2B3035"); 
-                pigmentsCss.setAttribute("href", "/static/luvdb/css/pygments-dark.css");
-            } else {
-                document.documentElement.setAttribute('data-bs-theme', 'light');
-                metaThemeColor.setAttribute("content", "#F6F7F9"); 
-                pigmentsCss.setAttribute("href", "/static/luvdb/css/pygments-light.css");
-            }
+            const savedTheme = localStorage.getItem('theme') || getSystemPreferredTheme();
+            setTheme(savedTheme);
         </script>          
     </head>
     <body class="d-flex flex-column h-100">

@@ -32,6 +32,7 @@ def linkify_tags(value, user=None):
                 tag = match.group(1)
                 if user is not None:
                     url = reverse("write:tag_user_list", args=[user.username, tag])
+                    url = url.replace("@", "u/")
                 else:
                     url = reverse("write:tag_list", args=[tag])
                 return f'<a href="{url}" class="text-success">#{tag}</a>'
