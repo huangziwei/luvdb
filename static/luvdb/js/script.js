@@ -449,3 +449,17 @@ popupParents.forEach(function (parent) {
         }
     };
 });
+
+// hack to make tab blocks work
+window.onload = function () {
+    var tabbedSets = document.getElementsByClassName("tabbed-set");
+    for (var i = 0; i < tabbedSets.length; i++) {
+        var inputs = tabbedSets[i].getElementsByTagName("input");
+        for (var j = 0; j < inputs.length; j++) {
+            inputs[j].name = "__tabbed_" + (i + 1);
+            if (j === 0) {
+                inputs[j].checked = true;
+            }
+        }
+    }
+};
