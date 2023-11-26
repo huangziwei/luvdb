@@ -5,6 +5,7 @@ import string
 from urllib.parse import urlparse
 
 import pytz
+from autoslug import AutoSlugField
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -329,10 +330,14 @@ class Post(models.Model):
     projects = models.ManyToManyField(Project, blank=True)
     reposts = GenericRelation(Repost)
     votes = GenericRelation(Vote)
+    slug = AutoSlugField(
+        populate_from="title", unique=True, allow_unicode=True, null=True
+    )
 
     def get_absolute_url(self):
         return reverse(
-            "write:post_detail", kwargs={"pk": self.id, "username": self.user.username}
+            "write:post_detail_slug",
+            kwargs={"slug": self.slug, "username": self.user.username},
         )
 
     def get_activity_id(self):

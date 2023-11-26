@@ -531,7 +531,7 @@
                 {% endif %}
                         {% if activity.content_object.original_activity.activity_type == "post" %}
                             <div class="mb-2">
-                                <a href="{% url 'write:post_detail' activity.content_object.original_activity.content_object.user.username activity.content_object.original_activity.content_object.id %}"
+                                <a href="{% url 'write:post_detail_slug' activity.content_object.original_activity.content_object.user.username activity.content_object.original_activity.content_object.id %}"
                                    class="text-decoration-none">{{ activity.content_object.original_activity.content_object.title }}</a>
                             </div>
                         {% elif activity.content_object.original_activity.activity_type == "pin" %}

@@ -175,7 +175,7 @@
                             </p>
                             {% if original_activity.activity_type == "post" %}
                                 <p>
-                                    <a href="{% url 'write:post_detail' original_activity.content_object.id %}"
+                                    <a href="{% url 'write:post_detail_slug' original_activity.user.username original_activity.content_object.slug %}"
                                        class="text-decoration-none">{{ original_activity.content_object.title }}</a>
                                 </p>
                             {% elif original_activity.activity_type == "pin" %}

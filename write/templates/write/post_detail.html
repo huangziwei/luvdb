@@ -45,8 +45,8 @@
                         </a>
                     </p>
                     {% if object.user == request.user %}
-                        <a href="{% url "write:post_update" object.user.username object.pk %}" class="me-2">Edit</a>
-                        <a href="{% url "write:post_delete" object.user.username object.pk %}" class="me-2">Delete</a>
+                        <a href="{% url "write:post_update_slug" object.user.username object.slug %}" class="me-2">Edit</a>
+                        <a href="{% url "write:post_delete_slug" object.user.username object.slug %}" class="me-2">Delete</a>
                     {% endif %}
                     
                 </span>

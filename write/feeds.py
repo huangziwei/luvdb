@@ -89,7 +89,7 @@ class UserPostFeed(Feed):
 
     def item_link(self, post):
         return reverse(
-            "write:post_detail", kwargs={"pk": post.pk, "username": post.user}
+            "write:post_detail_slug", kwargs={"slug": post.slug, "username": post.user}
         )
 
     def item_pubdate(self, post):
@@ -139,7 +139,7 @@ class UserPostProjectFeed(Feed):
 
     def item_link(self, post):
         return reverse(
-            "write:post_detail", kwargs={"pk": post.pk, "username": post.user}
+            "write:post_detail_slug", kwargs={"pk": post.pk, "username": post.user}
         )
 
     def item_pubdate(self, post):
@@ -265,7 +265,7 @@ class TagListFeed(Feed):
         model_name = item.__class__.__name__.lower()
         mapping = {
             "say": "write:say_detail",
-            "post": "write:post_detail",
+            "post": "write:post_detail_slug",
             "pin": "write:pin_detail",
             "repost": "write:repost_detail",
             "playcheckin": "write:play_checkin_detail",
@@ -376,7 +376,7 @@ class TagUserListFeed(Feed):
         model_name = item.__class__.__name__.lower()
         mapping = {
             "say": "write:say_detail",
-            "post": "write:post_detail",
+            "post": "write:post_detail_slug",
             "pin": "write:pin_detail",
             "repost": "write:repost_detail",
             "playcheckin": "write:play_checkin_detail",

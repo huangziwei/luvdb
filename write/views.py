@@ -211,8 +211,8 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse(
-            "write:post_detail",
-            kwargs={"pk": self.object.id, "username": self.object.user.username},
+            "write:post_detail_slug",
+            kwargs={"slug": self.object.slug, "username": self.object.user.username},
         )
 
 
@@ -223,8 +223,8 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy(
-            "write:post_detail",
-            kwargs={"pk": self.object.id, "username": self.object.user.username},
+            "write:post_detail_slug",
+            kwargs={"slug": self.object.slug, "username": self.object.user.username},
         )
 
 

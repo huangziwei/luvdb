@@ -472,7 +472,7 @@
                             </div>
                             {% if repost.original_activity.activity_type == "post" %}
                                 <div class="mb-2">
-                                    <a href="{% url 'write:post_detail' repost.original_activity.content_object.id %}"
+                                    <a href="{% url 'write:post_detail_slug' repost.original_activity.user.username repost.original_activity.content_object.slug %}"
                                        class="text-decoration-none">{{ repost.original_activity.content_object.title }}</a>
                                 </div>
                             {% elif repost.original_activity.activity_type == "pin" %}

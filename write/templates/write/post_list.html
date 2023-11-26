@@ -56,7 +56,7 @@
                 {% for post in page_obj %}
                     <div class='d-flex flex-lg-row flex-column mb-3 justify-content-between align-items-lg-end align-items-start'>
                         <div>
-                            <a href="{% url 'write:post_detail' post.user.username post.id %}">{{ post.title }}</a>
+                            <a href="{% url 'write:post_detail_slug' post.user.username post.slug %}">{{ post.title }}</a>
                         </div>
                         <span class="d-flex flex-column">
                             <small class="text-muted font-monospace mt-lg-0" style="font-size: 0.8em">{{ post.timestamp|date:"Y.m.d H:i " }}</small>

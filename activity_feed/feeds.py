@@ -101,7 +101,7 @@ class UserActivityFeed(Feed):
         # Dynamically set the URL reverse pattern based on the model name
         mapping = {
             "say": "write:say_detail",
-            "post": "write:post_detail",
+            "post": "write:post_detail_slug",
             "pin": "write:pin_detail",
             "repost": "write:repost_detail",
             "playcheckin": "write:play_checkin_detail",

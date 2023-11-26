@@ -114,7 +114,14 @@ urlpatterns = [
     ),
     path("@<str:username>/post/create/", PostCreateView.as_view(), name="post_create"),
     path(
-        "@<str:username>/post/<int:pk>/", PostDetailView.as_view(), name="post_detail"
+        "@<str:username>/post/<int:pk>/",
+        PostDetailView.as_view(),
+        name="post_detail",
+    ),
+    path(
+        "@<str:username>/post/<slug:slug>/",
+        PostDetailView.as_view(),
+        name="post_detail_slug",
     ),
     path(
         "@<str:username>/post/<int:pk>/update/",
@@ -122,9 +129,19 @@ urlpatterns = [
         name="post_update",
     ),
     path(
+        "@<str:username>/post/<slug:slug>/update/",
+        PostUpdateView.as_view(),
+        name="post_update_slug",
+    ),
+    path(
         "@<str:username>/post/<int:pk>/delete/",
         PostDeleteView.as_view(),
         name="post_delete",
+    ),
+    path(
+        "@<str:username>/post/<slug:slug>/delete/",
+        PostDeleteView.as_view(),
+        name="post_delete_slug",
     ),
     # say
     path("@<str:username>/says/", SayListView.as_view(), name="say_list"),

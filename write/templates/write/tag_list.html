@@ -62,7 +62,7 @@
                                     {{ item.content | linkify_tags:item.user | linkify_mentions | markdownify | truncatechars:300}}
                                 </div>
                                 <div class="mb-2">
-                                    <a href="{% url 'write:post_detail' item.user.username item.id %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
+                                    <a href="{% url 'write:post_detail_slug' item.user.username item.slug %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
                                 </div>
                             </div>
                         {% elif item.model_name == "repost" %}

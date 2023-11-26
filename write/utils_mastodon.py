@@ -25,7 +25,8 @@ def create_mastodon_post(
         )
     elif content_type == "Post":
         content_url = domain + reverse(
-            "write:post_detail", kwargs={"pk": content_id, "username": content_username}
+            "write:post_detail_slug",
+            kwargs={"pk": content_id, "username": content_username},
         )
     elif content_type == "Pin":
         content_url = domain + reverse(

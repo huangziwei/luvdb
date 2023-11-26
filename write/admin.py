@@ -8,7 +8,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("user", "title", "content", "timestamp", "updated_at")
+    list_display = ("user", "title", "timestamp", "updated_at", "slug")
 
 
 class SayAdmin(admin.ModelAdmin):

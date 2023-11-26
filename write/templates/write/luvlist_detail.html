@@ -157,14 +157,14 @@
                                     </div>
                                     <div class="mt-2 p-3">
                                         <div>
-                                            <a href="{% url 'write:post_detail' content.content_object.user.username content.content_object.id %}"
+                                            <a href="{% url 'write:post_detail_slug' content.content_object.user.username content.content_object.slug %}"
                                                class="text-decoration-none">{{ content.content_object.title }}</a>
                                         </div>
                                         <div>{{ content.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
                                     </div>
                                     <span class="d-flex mt-2">
                                         <p class='me-2 text-secondary mb-2'>
-                                            <a href="{% url "write:post_detail" content.content_object.user.username content.content_object.id %}"
+                                            <a href="{% url "write:post_detail_slug" content.content_object.user.username content.content_object.slug %}"
                                                class="text-muted">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
                                         </p>
                                     </span>

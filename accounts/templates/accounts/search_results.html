@@ -306,7 +306,7 @@
                         <div class="fs-4">Posts</div>
                         {% for post in post_results %}
                             <p>
-                                <a href="{% url 'write:post_detail' post.user.username post.id %}">{{ post.title }}</a>
+                                <a href="{% url 'write:post_detail_slug' post.user.username post.slug %}">{{ post.title }}</a>
                                 ({{ post.user.display_name | default:post.user.username }}, {{ post.timestamp|date:"Y.m.d" }})
                             </p>
                         {% endfor %}

@@ -30,3 +30,4 @@ cryptography
 Mastodon.py
 pymdown-extensions
 django-ratelimit
+django-autoslug

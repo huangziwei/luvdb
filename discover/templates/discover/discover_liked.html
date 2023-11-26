@@ -60,7 +60,7 @@
                         <li>
                             <div class="d-flex align-items-start">
                                 <div>
-                                    <a href="{% url 'write:post_detail' post.user.username post.id %}">{{post.title}}</a>
+                                    <a href="{% url 'write:post_detail_slug' post.user.username post.slug %}">{{post.title}}</a>
                                     <span class="d-flex">
                                         <p class="me-2 text-muted">
                                             by <a href="{% url 'accounts:detail' post.user.username %}">{{ post.user.display_name|default:post.user.username }}</a>
