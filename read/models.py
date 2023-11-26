@@ -534,6 +534,9 @@ class ReadCheckIn(models.Model):
     def get_votes(self):
         return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
+    def model_name(self):
+        return "Read Check-In"
+    
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         was_updated = False

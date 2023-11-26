@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load url_filters %}
+{% load linkify %}
+{% load markdownify %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-7 left-column">
+            <div class="d-flex mb-3">
+                <span class="me-3">
+                    <a href="{% url 'write:say_list' object.username %}">Says</a>
+                </span>
+                <span class="me-3">
+                    <a href="{% url 'write:post_list' object.username %}">Posts</a>
+                </span>
+                <span class="me-3">
+                    <a href="{% url 'write:pin_list' object.username %}">Pins</a>
+                </span>
+                <span class="me-3">
+                    <a href="{% url 'write:luvlist_list' object.username %}">Lists</a>
+                </span>
+                {% if object == user %}
+                    <span class="me-3">
+                        <a href="{% url 'accounts:liked' object.username %}">Liked</a>
+                    </span>
+                    <span class="me-3">
+                        <a href="{% url 'write:replied' object.username %}">Replied</a>
+                    </span>
+                {% endif %}
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between mb-3">
+                <div class="fs-5">
+                    Your replies
+                </div>
+            </div>
+            {% for reply in page_obj %}
+            <div class="mb-4">
+                You replied to
+                {% if object == reply.content_object.user %}
+                    your own <a href="{{reply.content_object.get_absolute_url}}">{{reply.content_object.model_name|default:reply.content_object }}</a>
+                {% else %}
+                    <a href="{% url 'accounts:detail' reply.content_object.user.username %}">{{reply.content_object.user.display_name|default:reply.content_object.user.username}}</a>'s <a href="{{reply.content_object.get_absolute_url}}">{{reply.content_object.model_name|default:reply.content_object }}</a>
+                {% endif %}
+                
+                <div class="mt-2 mb-2 p-3 bg-light">
+                    {{reply.content|markdownify|linkify_tags|linkify_mentions}}
+                </div>
+                <a class="text-muted mt-2" href="{{reply.content_object.get_absolute_url}}#{{reply.anchor}}">
+                    {{reply.content_object.timestamp|date:"Y.m.d H:i"}}
+                </a>
+            </div>
+
+            {% empty %}
+                <p>Nothing.</p>
+            {% endfor %}
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <hr>                                      
+                <div class="pagination mb-3 mb-md-1">
+                    <span class="step-links">
+                        {% for i in page_obj.paginator.page_range %}
+                            {% if page_obj.number == i %}
+                                <span class="current">{{ i }}</span>
+                            {% else %}
+                                <a href="?page={{ i }}">{{ i }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

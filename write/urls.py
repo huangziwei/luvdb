@@ -36,6 +36,7 @@ from .feeds import (
 from .views import (
     CommentCreateView,
     CommentDeleteView,
+    CommentListView,
     CommentUpdateView,
     LuvListCreateView,
     LuvListDeleteView,
@@ -142,19 +143,24 @@ urlpatterns = [
     ),
     # comment
     path(
-        "@<str:username>/comment/<str:app_label>/<str:model_name>/<int:object_id>/",
+        "@<str:username>/reply/<str:app_label>/<str:model_name>/<int:object_id>/",
         CommentCreateView.as_view(),
         name="comment_create",
     ),
     path(
-        "@<str:username>/comment/<int:pk>/update/",
+        "@<str:username>/reply/<int:pk>/update/",
         CommentUpdateView.as_view(),
         name="comment_update",
     ),
     path(
-        "@<str:username>/comment/<int:pk>/delete/",
+        "@<str:username>/reply/<int:pk>/delete/",
         CommentDeleteView.as_view(),
         name="comment_delete",
+    ),
+    path(
+        "@<str:username>/replied/",
+        CommentListView.as_view(),
+        name="replied",
     ),
     # repost
     path(

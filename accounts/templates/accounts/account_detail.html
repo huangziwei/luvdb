@@ -13,7 +13,7 @@
             <!-- navbar -->
             <div class="col-12 d-block d-md-none mb-1">
                 <div class="row">
-                    <div class="d-flex">
+                    <div class="d-flex flex-wrap justify-content-start">
                         <span class="me-3">
                             <a href="{% url 'write:say_list' object.username %}">Says</a>
                         </span>
@@ -29,6 +29,9 @@
                         {% if object.username == user.username %}
                             <span class="me-3">
                                 <a href="{% url 'accounts:liked' object.username %}">Liked</a>
+                            </span>
+                            <span class="me-3">
+                                <a href="{% url 'write:replied' object.username %}">Replied</a>
                             </span>
                         {% endif %}
                     </div>
@@ -686,7 +689,7 @@
             <div class="col-md-8 col-sm-12 d-none d-md-block">
                 <!--navbar-->
                 <div class="row">
-                    <div class="d-flex">
+                    <div class="d-flex flex-wrap justify-content-start">
                         <span class="me-3">
                             <a href="{% url 'write:say_list' object.username %}">Says</a>
                         </span>
@@ -700,9 +703,12 @@
                             <a href="{% url 'write:luvlist_list' object.username %}">Lists</a>
                         </span>
                         {% if object.username == user.username %}
-                        <span class="me-3">
-                            <a href="{% url 'accounts:liked' object.username %}">Liked</a>
-                        </span>
+                            <span class="me-3">
+                                <a href="{% url 'accounts:liked' object.username %}">Liked</a>
+                            </span>
+                            <span class="me-3">
+                                <a href="{% url 'write:replied' object.username %}">Replied</a>
+                            </span>
                         {% endif %}
                     </div>
                 </div>

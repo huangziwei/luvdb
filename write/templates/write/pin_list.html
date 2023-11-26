@@ -23,6 +23,9 @@
                         <span class="me-3">
                             <a href="{% url 'accounts:liked' object.username %}">Liked</a>
                         </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:replied' object.username %}">Replied</a>
+                        </span>
                     {% endif %}
                 </div>
                 <hr>

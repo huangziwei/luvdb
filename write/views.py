@@ -1010,3 +1010,22 @@ class ProjectAutocomplete(autocomplete.Select2QuerySetView):
 
     def has_add_permission(self, request):
         return True  # or customize this if you require special logic
+
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+class CommentListView(ListView):
+    model = Comment
+    template_name = "write/comment_list.html"
+    paginate_by = 25
+
+    def get_queryset(self):
+        """
+        Return the list of items for this view.
+        The queryset consists of comments made by the currently logged-in user.
+        """
+        return Comment.objects.filter(user=self.request.user).order_by("-timestamp")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["object"] = self.request.user
+        return context
