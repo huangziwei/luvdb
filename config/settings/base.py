@@ -190,6 +190,8 @@ MARKDOWNIFY = {
         "WHITELIST_TAGS": [
             "abbr",
             "acronym",
+            "h2",
+            "h3",
             "h4",
             "h5",
             "h6",
@@ -297,6 +299,7 @@ MARKDOWNIFY = {
             "footnotes",
             "md_in_html",
             "nl2br",
+            "toc",
         ],
         "MARKDOWN_EXTENSION_CONFIGS": {
             "pymdownx.superfences": {

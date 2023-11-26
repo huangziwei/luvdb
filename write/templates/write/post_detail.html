@@ -80,6 +80,9 @@
                     {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts %}
                 </div>
             </div>
+            <div class="col-12 col-md-5 right-column">
+
+            </div>
         </div>
     </div>
     <noscript>
@@ -89,6 +92,27 @@
             }
         </style>
     </noscript>
+    <script>
+        window.addEventListener('load', function() {
+            if (window.innerWidth > 768) {  // Check if the window width is greater than 768 pixels
+                var toc = document.querySelector('.toc');
+                var eContent = document.querySelector('.e-content');
+                if (toc && eContent) {
+                    toc.remove();  // Remove the TOC from its current location
+                    var tocTitle = document.createElement('h2');  // Create a new h2 element for the title
+                    tocTitle.textContent = 'Table of Contents';  // Set the title text
+                    toc.prepend(tocTitle);  // Prepend the title to the TOC
+                    {% comment %} toc.style.position = 'sticky';  // Make the TOC sticky {% endcomment %}
+                    toc.style.top = '20%';  // Stick the TOC to the top of the viewport
+                    var rightColumn = document.querySelector('.right-column');
+                    if (rightColumn) {
+                        rightColumn.appendChild(toc);  // Append the TOC to the right column
+                    }
+                }
+            }
+        });
+    </script>
     <script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
     {% include 'mathjax+mermaid.html' %}
+    
 {% endblock %}
