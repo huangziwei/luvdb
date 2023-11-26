@@ -60,4 +60,4 @@ def linkify_mentions(value):
         except get_user_model().DoesNotExist:
             return f"@{username}"
 
-    return mark_safe(re.sub(r"@(\w+)", replace, value))
+    return mark_safe(re.sub(r"(?<![:/])@(\w+)", replace, value))
