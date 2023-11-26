@@ -363,7 +363,7 @@ class PlayCheckIn(models.Model):
         return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
     def model_name(self):
-        return "Listen Check-In"
+        return "Play Check-In"
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
