@@ -3,8 +3,6 @@
 {% load crispy_forms_tags %}
 {% load markdownify %}
 {% load linkify %}
-
-
 {% block meta %}
     <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Post &quot;{{ object.title }}&quot;">
     {% if object.content %}
@@ -94,16 +92,19 @@
     </noscript>
     <script>
         window.addEventListener('load', function() {
+            var toc = document.querySelector('.toc');
+            var eContent = document.querySelector('.e-content');
+            var tocTitle = document.createElement('h4');
+            tocTitle.textContent = 'Table of Contents';
+            toc.prepend(tocTitle);
+        
             if (window.innerWidth > 768) {  // Check if the window width is greater than 768 pixels
-                var toc = document.querySelector('.toc');
-                var eContent = document.querySelector('.e-content');
                 if (toc && eContent) {
                     toc.remove();  // Remove the TOC from its current location
-                    var tocTitle = document.createElement('h2');  // Create a new h2 element for the title
-                    tocTitle.textContent = 'Table of Contents';  // Set the title text
-                    toc.prepend(tocTitle);  // Prepend the title to the TOC
-                    {% comment %} toc.style.position = 'sticky';  // Make the TOC sticky {% endcomment %}
-                    toc.style.top = '20%';  // Stick the TOC to the top of the viewport
+                    toc.style.position = 'sticky';  // Make the TOC sticky
+                    toc.style.top = '15%';  // Stick the TOC to the top of the viewport
+                    toc.style.overflowY = 'auto';  // Add vertical scroll bar to the TOC
+                    toc.style.maxHeight = '85vh';  // Limit the maximum height of the TOC
                     var rightColumn = document.querySelector('.right-column');
                     if (rightColumn) {
                         rightColumn.appendChild(toc);  // Append the TOC to the right column
