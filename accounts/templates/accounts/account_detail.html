@@ -152,7 +152,7 @@
             </div>
 
             <!-- recent -->
-            <div class="col-12 d-block d-md-none mb-1">
+            <div class="col-12 d-block d-md-none mb-1 mobile-version">
                 <!--Most recent activity-->
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="fs-5">Recent</div>
@@ -1313,7 +1313,8 @@
                     {% endif %}
                 </div>
                 <hr>
-                <div>
+                <!-- recent -->
+                <div class="desktop-version">
                     <!--Most recent activity-->
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="fs-5">Recent</div>
@@ -1347,6 +1348,34 @@
         </div>
     </div>
     {% include 'mathjax+mermaid.html' %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTabSetIds('.mobile-version .tabbed-set', '-mobile');
+            updateTabSetIds('.desktop-version .tabbed-set', '-desktop');
+        });
+    
+        function updateTabSetIds(selector, suffix) {
+            var tabSets = document.querySelectorAll(selector);
+    
+            tabSets.forEach(function(tabSet, setIndex) {
+                var inputs = tabSet.querySelectorAll('input[type="radio"]');
+                var labels = tabSet.querySelectorAll('label');
+    
+                for (var i = 0; i < inputs.length; i++) {
+                    var baseId = inputs[i].id || 'tab';
+                    var newId = baseId + '-set' + setIndex + '-input' + i + suffix;
+    
+                    console.log('Updating ID from:', inputs[i].id, 'to:', newId); // Debugging log
+                    inputs[i].id = newId;
+    
+                    if (i < labels.length) {
+                        console.log('Updating label for from:', labels[i].getAttribute('for'), 'to:', newId); // Debugging log
+                        labels[i].setAttribute('for', newId);
+                    }
+                }
+            });
+        }
+    </script>     
     <style>
     .rotate {
         writing-mode: vertical-rl;
@@ -1362,7 +1391,5 @@
         width: 95%;
         height: auto;
     }
-    
-
     </style>
 {% endblock content %}
