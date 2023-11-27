@@ -1049,7 +1049,7 @@ class LanguageAutocomplete(autocomplete.Select2ListView):
 ########
 
 
-@method_decorator(ratelimit(key="ip", rate="5/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class ReadListView(ListView):
     template_name = "read/read_list.html"
     context_object_name = "objects"
@@ -1126,7 +1126,7 @@ class ReadListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="5/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class ReadListAllView(LoginRequiredMixin, ListView):
     template_name = "read/read_list_all.html"
     context_object_name = "objects"
@@ -1237,7 +1237,7 @@ class ReadCheckInDeleteView(LoginRequiredMixin, DeleteView):
             return reverse_lazy("home")
 
 
-@method_decorator(ratelimit(key="ip", rate="5/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GenericCheckInListView(ListView):
 
     """
@@ -1331,7 +1331,7 @@ class GenericCheckInListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="5/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GenericCheckInAllListView(ListView):
     """
     All latest check-ins from all users of a book or an issue.
@@ -1445,7 +1445,7 @@ class GenericCheckInAllListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="5/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GenericCheckInUserListView(ListView):
     """
     All latest check-ins from a given user of all books and issues.

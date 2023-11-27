@@ -155,7 +155,8 @@ class WorkUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy("listen:work_detail", kwargs={"pk": self.object.pk})
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class WorkDetailView(DetailView):
     model = Work
     template_name = "listen/work_detail.html"
@@ -336,7 +337,8 @@ class TrackUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy("listen:track_detail", kwargs={"pk": self.object.pk})
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class TrackDetailView(DetailView):
     model = Track
     template_name = "listen/track_detail.html"
@@ -476,7 +478,8 @@ class ReleaseCreateView(LoginRequiredMixin, CreateView):
                 releasetracks.save()
         return super().form_valid(form)
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class ReleaseDetailView(DetailView):
     model = Release
     template_name = "listen/release_detail.html"
@@ -728,7 +731,8 @@ class ReleaseUpdateView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class ReleaseCreditDetailView(DetailView):
     model = Release
     template_name = "listen/credit_detail.html"
@@ -781,7 +785,8 @@ class ReleaseCreditDetailView(DetailView):
 
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class ListenCheckInDetailView(DetailView):
     model = ListenCheckIn
     template_name = "listen/listen_checkin_detail.html"
@@ -844,7 +849,8 @@ class ListenCheckInDeleteView(LoginRequiredMixin, DeleteView):
             "listen:release_detail", kwargs={"pk": self.object.content_object.pk}
         )
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class ListenListView(ListView):
     template_name = "listen/listen_list.html"
     context_object_name = "objects"
@@ -947,7 +953,8 @@ class ListenListView(ListView):
         context["audiobooks_count"] = Audiobook.objects.count()
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class ListenListAllView(LoginRequiredMixin, ListView):
     template_name = "listen/listen_list_all.html"
     context_object_name = "objects"
@@ -979,7 +986,8 @@ class ListenListAllView(LoginRequiredMixin, ListView):
         context["audiobooks_count"] = Audiobook.objects.count()
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GenericCheckInUserListView(ListView):
     """
     All latest check-ins from a given user of all audio tracks and albums.
@@ -1061,7 +1069,7 @@ class GenericCheckInUserListView(ListView):
 #########
 # Genre #
 #########
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GenreDetailView(DetailView):
     model = Genre
     template_name = "listen/genre_detail.html"  # Update with your actual template name
@@ -1242,7 +1250,8 @@ class PodcastUpdateView(UpdateView):
             return HttpResponseForbidden("This entry is locked and cannot be edited.")
         return super().dispatch(request, *args, **kwargs)
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class PodcastDetailView(DetailView):
     model = Podcast
     template_name = "listen/podcast_detail.html"
@@ -1429,7 +1438,8 @@ class PodcastDetailView(DetailView):
 # Generic Checkins views #
 ##########################
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GenericCheckInListView(ListView):
     model = ListenCheckIn
     template_name = "listen/listen_checkin_list.html"
@@ -1536,7 +1546,8 @@ class GenericCheckInListView(ListView):
 
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GenericCheckInAllListView(ListView):
     model = ListenCheckIn
     template_name = "listen/listen_checkin_list_all.html"
@@ -1698,7 +1709,8 @@ class ReleaseGroupCreateView(LoginRequiredMixin, CreateView):
             )  # If there are formset errors, re-render the form.
         return super().form_valid(form)
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class ReleaseGroupDetailView(DetailView):
     model = ReleaseGroup
     template_name = "listen/releasegroup_detail.html"
@@ -1808,7 +1820,8 @@ class AudiobookCreateView(LoginRequiredMixin, CreateView):
                 audiobookinstances.save()
         return super().form_valid(form)
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class AudiobookDetailView(DetailView):
     model = Audiobook
     template_name = "listen/audiobook_detail.html"
@@ -2041,7 +2054,8 @@ class AudiobookUpdateView(LoginRequiredMixin, UpdateView):
 # History Views #
 #################
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class WorkHistoryView(HistoryViewMixin, DetailView):
     model = Work
     template_name = "entity/history.html"
@@ -2052,7 +2066,8 @@ class WorkHistoryView(HistoryViewMixin, DetailView):
         context["history_data"] = self.get_history_data(object)
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class TrackHistoryView(HistoryViewMixin, DetailView):
     model = Track
     template_name = "entity/history.html"
@@ -2063,7 +2078,8 @@ class TrackHistoryView(HistoryViewMixin, DetailView):
         context["history_data"] = self.get_history_data(object)
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class ReleaseHistoryView(HistoryViewMixin, DetailView):
     model = Release
     template_name = "entity/history.html"
@@ -2074,7 +2090,8 @@ class ReleaseHistoryView(HistoryViewMixin, DetailView):
         context["history_data"] = self.get_history_data(object)
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class ReleaseGroupHistoryView(HistoryViewMixin, DetailView):
     model = ReleaseGroup
     template_name = "entity/history.html"
@@ -2085,7 +2102,8 @@ class ReleaseGroupHistoryView(HistoryViewMixin, DetailView):
         context["history_data"] = self.get_history_data(object)
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class AudiobookHistoryView(HistoryViewMixin, DetailView):
     model = Audiobook
     template_name = "entity/history.html"

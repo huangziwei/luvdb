@@ -79,7 +79,8 @@ class WorkCreateView(LoginRequiredMixin, CreateView):
             data["workroles"] = WorkRoleFormSet(instance=self.object)
         return data
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class WorkDetailView(DetailView):
     model = Work
     template_name = "play/work_detail.html"
@@ -216,7 +217,8 @@ class GameCreateView(LoginRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GameDetailView(DetailView):
     model = Game
     template_name = "play/game_detail.html"
@@ -455,7 +457,8 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
                 print(regionreleasedates.errors)
         return super().form_valid(form)
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GameCastDetailView(DetailView):
     model = Game
     context_object_name = "game"
@@ -495,7 +498,8 @@ class PlatformCreateView(LoginRequiredMixin, CreateView):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class PlatformDetailView(DetailView):
     model = Platform
     template_name = "play/platform_detail.html"
@@ -596,7 +600,8 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
 
         return label
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class PlayCheckInDetailView(DetailView):
     model = PlayCheckIn
     template_name = "play/play_checkin_detail.html"
@@ -635,7 +640,6 @@ class PlayCheckInDetailView(DetailView):
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
-
         return context
 
 
@@ -660,7 +664,8 @@ class PlayCheckInDeleteView(LoginRequiredMixin, DeleteView):
             "play:game_detail", kwargs={"pk": self.object.content_object.pk}
         )
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class PlayCheckInListView(ListView):
     model = PlayCheckIn
     template_name = "play/play_checkin_list.html"
@@ -739,7 +744,8 @@ class PlayCheckInListView(ListView):
         context["include_mermaid"] = include_mermaid
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class PlayCheckInAllListView(ListView):
     model = PlayCheckIn
     template_name = "play/play_checkin_list_all.html"
@@ -824,7 +830,8 @@ class PlayCheckInAllListView(ListView):
 
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class PlayCheckInUserListView(ListView):
     """
     All latest check-ins from a given user of all games.
@@ -906,7 +913,8 @@ class PlayCheckInUserListView(ListView):
 
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class PlayListView(ListView):
     model = Game
     template_name = "play/play_list.html"
@@ -962,7 +970,8 @@ class PlayListView(ListView):
 
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class PlayListAllView(LoginRequiredMixin, ListView):
     model = Game
     template_name = "play/play_list_all.html"
@@ -1023,7 +1032,8 @@ class GameSeriesCreateView(LoginRequiredMixin, CreateView):
                 games.save()
         return super().form_valid(form)
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GameSeriesDetailView(DetailView):
     model = GameSeries
     template_name = "play/series_detail.html"  # Update this
@@ -1079,7 +1089,7 @@ class GameSeriesUpdateView(LoginRequiredMixin, UpdateView):
 #########
 # Genre #
 #########
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GenreDetailView(DetailView):
     model = Genre
     template_name = "play/genre_detail.html"  # Update with your actual template name
@@ -1118,7 +1128,8 @@ class GenreAutocomplete(autocomplete.Select2QuerySetView):
 # History Views #
 #################
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class WorkHistoryView(HistoryViewMixin, DetailView):
     model = Work
     template_name = "entity/history.html"
@@ -1129,7 +1140,8 @@ class WorkHistoryView(HistoryViewMixin, DetailView):
         context["history_data"] = self.get_history_data(object)
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GameHistoryView(HistoryViewMixin, DetailView):
     model = Game
     template_name = "entity/history.html"
@@ -1140,7 +1152,8 @@ class GameHistoryView(HistoryViewMixin, DetailView):
         context["history_data"] = self.get_history_data(object)
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GameSeriesHistoryView(HistoryViewMixin, DetailView):
     model = GameSeries
     template_name = "entity/history.html"
@@ -1151,7 +1164,8 @@ class GameSeriesHistoryView(HistoryViewMixin, DetailView):
         context["history_data"] = self.get_history_data(object)
         return context
 
-@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class PlatformHistoryView(HistoryViewMixin, DetailView):
     model = Platform
     template_name = "entity/history.html"

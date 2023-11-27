@@ -23,10 +23,17 @@
                     <span class="me-3">
                         <a href="{% url 'accounts:liked' user.username %}">Liked</a>
                     </span>
+                    <span class="me-3">
+                        <a href="{% url 'write:replied' user.username %}">Replied</a>
+                    </span>
                 {% endif %}
             </div>
             <hr>
-            <h2>You liked</h2>
+            <div class="d-flex justify-content-between mb-3">
+                <div class="fs-5">
+                    Your likes
+                </div>
+            </div>
             <div class="row mt-3">
                 <!-- Lists -->
                 <div class="col-12 col-md-6 mb-3">
