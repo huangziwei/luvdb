@@ -12,12 +12,10 @@
                         class="btn btn-sm btn-outline-secondary status-button"
                         id="status-to-watch"
                         onclick="setStatus(event, 'to_watch')">To Watch</button>
-                {% if model_name != "movie" %}
-                    <button type="button"
+                <button type="button"
                             class="btn btn-sm btn-outline-secondary status-button"
                             id="status-watching"
                             onclick="setStatus(event, 'watching')">Watching</button>
-                {% endif %}
                 <button type="button"
                         class="btn btn-sm btn-outline-secondary status-button"
                         id="status-watched"
@@ -29,14 +27,12 @@
                             data-bs-toggle="dropdown"
                             aria-expanded="false">More</button>
                     <ul class="dropdown-menu" aria-labelledby="status-more">
-                        {% if model_name != "movie" %}
-                            <li>
-                                <a class="dropdown-item status-dropdown-item"
-                                   id="status-rewatching"
-                                   href="#"
-                                   onclick="setStatus(event,'rewatching')">Rewatching</a>
-                            </li>
-                        {% endif %}
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                                id="status-rewatching"
+                                href="#"
+                                onclick="setStatus(event,'rewatching')">Rewatching</a>
+                        </li>
                         <li>
                             <a class="dropdown-item status-dropdown-item"
                                id="status-rewatched"

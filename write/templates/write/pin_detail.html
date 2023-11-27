@@ -3,8 +3,6 @@
 {% load url_filters %}
 {% load markdownify %}
 {% load linkify %}
-
-
 {% load crispy_forms_tags %}
 {% block meta %}
     <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Pin">
