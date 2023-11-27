@@ -12,8 +12,6 @@ from .views import (
     InvitationRequestedView,
     PersonalActivityFeedView,
     RequestInvitationView,
-    SignUpView,
-    ap_actor,
     ap_followers,
     ap_inbox,
     ap_outbox,
@@ -28,7 +26,6 @@ from .views import (
 
 app_name = "accounts"
 urlpatterns = [
-    path("signup/", SignUpView.as_view(), name="signup"),
     path(
         "generate_invitation_code/",
         GenerateInvitationCodeView.as_view(),

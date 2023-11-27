@@ -11,7 +11,7 @@ from django.shortcuts import redirect
 from django.template import loader
 from django.urls import include, path, re_path
 
-from accounts.views import AccountDetailView, search_view, webfinger
+from accounts.views import SignUpView, search_view, webfinger
 from entity.sitemaps import PersonSiteMap
 from listen.sitemaps import ReleaseSiteMap
 from play.sitemaps import GameSiteMap
@@ -79,6 +79,7 @@ urlpatterns = [
     path(".well-known/webfinger/", webfinger, name="webfinger"),
     path("admin/login/", custom_admin_login, name="custom_admin_login"),
     path("admin/", admin.site.urls),
+    path("signup/", SignUpView.as_view(), name="signup"),
     path("@", include("accounts.urls")),
     path(
         "u/<str:username>/",
@@ -87,7 +88,7 @@ urlpatterns = [
                 path("", redirect_to_at_username, name="redirect_to_at_username"),
                 re_path(r"^(?P<extra_path>.+)$", redirect_to_at_username),
             ]
-        ),
+        ),  # Redirect to @username
     ),
     path("entity/", include("entity.urls")),
     path("read/", include("read.urls")),
