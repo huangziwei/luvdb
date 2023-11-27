@@ -4,7 +4,11 @@ from .models import Comment, ContentInList, LuvList, Pin, Post, Project, Repost,
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = (
+        "user",
+        "name",
+        "order",
+    )
 
 
 class PostAdmin(admin.ModelAdmin):

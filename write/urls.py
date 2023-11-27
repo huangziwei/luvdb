@@ -55,6 +55,7 @@ from .views import (
     PostListView,
     PostUpdateView,
     ProjectAutocomplete,
+    ProjectUpdateView,
     RandomizerDetailView,
     RepostCreateView,
     RepostDeleteView,
@@ -101,6 +102,11 @@ urlpatterns = [
         "@<str:username>/posts/<slug:project>/",
         PostListView.as_view(),
         name="post_list_project",
+    ),
+    path(
+        "@<str:username>/posts/<slug:slug>/update",
+        ProjectUpdateView.as_view(),
+        name="project_update",
     ),
     path(
         "@<str:username>/posts/<str:project>/rss/",

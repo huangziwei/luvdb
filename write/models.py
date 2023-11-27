@@ -56,9 +56,33 @@ class Tag(models.Model):
 class Project(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, editable=False, blank=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+    )
+
+    NEWEST_FIRST = "NF"
+    OLDEST_FIRST = "OF"
+    BY_TITLE = "BT"
+    ORDER_CHOICES = [
+        (NEWEST_FIRST, "Newest first"),
+        (OLDEST_FIRST, "Oldest first"),
+        (BY_TITLE, "By title"),
+    ]
+
+    order = models.CharField(
+        max_length=2,
+        choices=ORDER_CHOICES,
+        default=NEWEST_FIRST,
+    )
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse(
+            "write:post_list_project",
+            kwargs={"username": self.user.username, "project": self.slug},
+        )
 
     def model_name(self):
         return "Project"

@@ -111,15 +111,20 @@ class PostListView(ListView):
             project = Project.objects.filter(
                 slug=self.kwargs["project"], post__user=self.user
             ).first()
-            if project is not None:
+            if project:
                 queryset = queryset.filter(projects=project)
+                if project.order == Project.NEWEST_FIRST:
+                    queryset = queryset.order_by("-timestamp")
+                elif project.order == Project.OLDEST_FIRST:
+                    queryset = queryset.order_by("timestamp")
+                elif project.order == Project.BY_TITLE:
+                    queryset = queryset.order_by("title")
             else:
-                # Handle the case when the project does not exist
                 queryset = Post.objects.none()
         else:
-            queryset = queryset.filter(projects__isnull=True)
+            queryset = queryset.filter(projects__isnull=True).order_by("-timestamp")
 
-        return queryset.order_by("-timestamp")
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -232,6 +237,12 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = "write/post_confirm_delete.html"
     success_url = reverse_lazy("activity_feed:activity_feed")
+
+
+class ProjectUpdateView(LoginRequiredMixin, UpdateView):
+    model = Project
+    template_name = "write/project_update.html"
+    fields = ["name", "order"]
 
 
 @method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")

@@ -83,6 +83,12 @@
             </div>
             {% if all_tags or all_projects %}
                 <div class="col-12 col-md-5 right-column">
+                    {% if current_project %}
+                        <div class="bg-light p-3 mb-3">
+                            <a class="text-muted" href="{% url 'write:project_update' object.username current_project.slug %}">Edit Project</a>
+                        </div>
+                    {% endif %}
+
                     {% if all_projects %}
                     <div class="bg-light p-3 mb-3">
                         <div class="fs-5">Projects</div>
