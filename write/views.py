@@ -84,7 +84,7 @@ class ShareDetailView(DetailView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class PostListView(ListView):
     model = Post
     template_name = "write/post_list.html"
@@ -187,7 +187,7 @@ class PostListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class PostDetailView(ShareDetailView):
     model = Post
     template_name = "write/post_detail.html"
@@ -245,7 +245,7 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     fields = ["name", "order"]
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class SayListView(ListView):
     model = Say
     template_name = "write/say_list.html"
@@ -331,7 +331,7 @@ class SayListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class SayDetailView(ShareDetailView):
     model = Say
     template_name = "write/say_detail.html"
@@ -389,7 +389,7 @@ class SayDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("activity_feed:activity_feed")
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class PinListView(ListView):
     model = Pin
     template_name = "write/pin_list.html"
@@ -450,7 +450,7 @@ class PinListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class PinDetailView(ShareDetailView):
     model = Pin
     template_name = "write/pin_detail.html"
@@ -510,7 +510,7 @@ class PinDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("activity_feed:activity_feed")
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class PinsFromURLView(ListView):
     model = Pin
     template_name = "write/pins_from_url.html"
@@ -574,7 +574,7 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
         return self.object.content_object.get_absolute_url()
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class TagListView(ListView):
     template_name = "write/tag_list.html"
     paginate_by = 25
@@ -637,7 +637,7 @@ class TagListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class TagUserListView(ListView):
     template_name = "write/tag_user_list.html"
     paginate_by = 25
@@ -738,7 +738,7 @@ class RepostCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class RepostDetailView(ShareDetailView):
     model = Repost
     template_name = "write/repost_detail.html"
@@ -807,7 +807,7 @@ class LuvListCreateView(CreateView):
         )
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class LuvListDetailView(DetailView):
     model = LuvList
     template_name = "write/luvlist_detail.html"  # Assuming 'luvlist_detail.html' is the template for the detail view
@@ -905,7 +905,7 @@ class LuvListDeleteView(LoginRequiredMixin, DeleteView):
         )
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class LuvListUserListView(ListView):
     model = LuvList
     template_name = "write/luvlist_list.html"  # Assuming 'luvlist_user_list.html' is the template for the user-specific list view
@@ -960,7 +960,7 @@ class LuvListUserListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class RandomizerDetailView(DetailView):
     model = LuvList
     template_name = "write/luvlist_randomizer.html"
@@ -1023,7 +1023,7 @@ class ProjectAutocomplete(autocomplete.Select2QuerySetView):
         return True  # or customize this if you require special logic
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class CommentListView(ListView):
     model = Comment
     template_name = "write/comment_list.html"

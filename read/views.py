@@ -144,7 +144,7 @@ class WorkUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy("read:work_detail", kwargs={"pk": self.object.pk})
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class WorkDetailView(DetailView):
     model = Work
     template_name = "read/work_detail.html"
@@ -309,7 +309,7 @@ class InstanceUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy("read:instance_detail", kwargs={"pk": self.object.pk})
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class InstanceDetailView(DetailView):
     model = Instance
     template_name = "read/instance_detail.html"
@@ -389,7 +389,7 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class BookDetailView(DetailView):
     model = Book
     template_name = "read/book_detail.html"
@@ -639,7 +639,7 @@ class PeriodicalCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class PeriodicalDetailView(DetailView):
     model = Periodical
     template_name = "read/periodical_detail.html"
@@ -727,7 +727,7 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class IssueDetailView(DetailView):
     model = Issue
     template_name = "read/periodical_issue_detail.html"
@@ -1049,7 +1049,7 @@ class LanguageAutocomplete(autocomplete.Select2ListView):
 ########
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class ReadListView(ListView):
     template_name = "read/read_list.html"
     context_object_name = "objects"
@@ -1126,7 +1126,7 @@ class ReadListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class ReadListAllView(LoginRequiredMixin, ListView):
     template_name = "read/read_list_all.html"
     context_object_name = "objects"
@@ -1158,7 +1158,7 @@ class ReadListAllView(LoginRequiredMixin, ListView):
 ###########
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class ReadCheckInDetailView(DetailView):
     model = ReadCheckIn
     template_name = "read/read_checkin_detail.html"
@@ -1237,7 +1237,7 @@ class ReadCheckInDeleteView(LoginRequiredMixin, DeleteView):
             return reverse_lazy("home")
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class GenericCheckInListView(ListView):
 
     """
@@ -1331,7 +1331,7 @@ class GenericCheckInListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class GenericCheckInAllListView(ListView):
     """
     All latest check-ins from all users of a book or an issue.
@@ -1445,7 +1445,7 @@ class GenericCheckInAllListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class GenericCheckInUserListView(ListView):
     """
     All latest check-ins from a given user of all books and issues.
@@ -1560,7 +1560,7 @@ class BookSeriesCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class BookSeriesDetailView(DetailView):
     model = BookSeries
     template_name = "read/series_detail.html"
@@ -1614,7 +1614,7 @@ class BookSeriesUpdateView(LoginRequiredMixin, UpdateView):
 #########
 # Genre #
 #########
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class GenreDetailView(DetailView):
     model = Genre
     template_name = "read/genre_detail.html"  # Update with your actual template name
@@ -1664,7 +1664,7 @@ class GenreAutocomplete(autocomplete.Select2QuerySetView):
 #################
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class WorkHistoryView(HistoryViewMixin, DetailView):
     model = Work
     template_name = "entity/history.html"
@@ -1676,7 +1676,7 @@ class WorkHistoryView(HistoryViewMixin, DetailView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class InstanceHistoryView(HistoryViewMixin, DetailView):
     model = Instance
     template_name = "entity/history.html"
@@ -1688,7 +1688,7 @@ class InstanceHistoryView(HistoryViewMixin, DetailView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class IssueHistoryView(HistoryViewMixin, DetailView):
     model = Issue
     template_name = "entity/history.html"
@@ -1700,7 +1700,7 @@ class IssueHistoryView(HistoryViewMixin, DetailView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class PeriodicalHistoryView(HistoryViewMixin, DetailView):
     model = Periodical
     template_name = "entity/history.html"
@@ -1712,7 +1712,7 @@ class PeriodicalHistoryView(HistoryViewMixin, DetailView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class BookHistoryView(HistoryViewMixin, DetailView):
     model = Book
     template_name = "entity/history.html"
@@ -1724,7 +1724,7 @@ class BookHistoryView(HistoryViewMixin, DetailView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class BookSeriesHistoryView(HistoryViewMixin, DetailView):
     model = BookSeries
     template_name = "entity/history.html"

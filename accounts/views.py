@@ -98,7 +98,7 @@ class SignUpView(CreateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class AccountDetailView(DetailView):
     """Detail view for user accounts."""
 
