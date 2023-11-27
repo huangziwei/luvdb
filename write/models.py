@@ -333,6 +333,7 @@ class Post(models.Model):
     slug = AutoSlugField(
         populate_from="title", unique=True, allow_unicode=True, null=True
     )
+    share_to_feed = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse(
@@ -358,41 +359,60 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
-        if is_new:
-            Activity.objects.create(
-                user=self.user,
-                activity_type="post",
-                content_object=self,
+
+        # Attempt to fetch an existing Activity object for this check-in
+        try:
+            activity = Activity.objects.get(
+                content_type__model="post", object_id=self.id
             )
+        except Activity.DoesNotExist:
+            activity = None
 
-            if hasattr(self.user, "bluesky_account"):
-                try:
-                    bluesky_account = self.user.bluesky_account
-                    create_bluesky_post(
-                        bluesky_account.bluesky_handle,
-                        bluesky_account.bluesky_pds_url,
-                        bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
-                        f'I posted "{self.title}" on LʌvDB\n\n' + self.content + "\n\n",
-                        self.id,
-                        self.user.username,
-                        "Post",
-                    )
-                except Exception as e:
-                    print(f"Error creating Bluesky post: {e}")
+        if self.share_to_feed:
+            if is_new or activity is None:
+                Activity.objects.create(
+                    user=self.user,
+                    activity_type="post",
+                    content_object=self,
+                )
 
-            if hasattr(self.user, "mastodon_account"):
-                try:
-                    mastodon_account = self.user.mastodon_account
-                    create_mastodon_post(
-                        mastodon_account.mastodon_handle,
-                        mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
-                        f'I posted "{self.title}" on LʌvDB\n\n' + self.content + "\n\n",
-                        self.id,
-                        self.user.username,
-                        "Post",
-                    )
-                except Exception as e:
-                    print(f"Error creating Mastodon post: {e}")
+                if hasattr(self.user, "bluesky_account"):
+                    try:
+                        bluesky_account = self.user.bluesky_account
+                        create_bluesky_post(
+                            bluesky_account.bluesky_handle,
+                            bluesky_account.bluesky_pds_url,
+                            bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
+                            f'I posted "{self.title}" on LʌvDB\n\n'
+                            + self.content
+                            + "\n\n",
+                            self.id,
+                            self.user.username,
+                            "Post",
+                        )
+                    except Exception as e:
+                        print(f"Error creating Bluesky post: {e}")
+
+                if hasattr(self.user, "mastodon_account"):
+                    try:
+                        mastodon_account = self.user.mastodon_account
+                        create_mastodon_post(
+                            mastodon_account.mastodon_handle,
+                            mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
+                            f'I posted "{self.title}" on LʌvDB\n\n'
+                            + self.content
+                            + "\n\n",
+                            self.id,
+                            self.user.username,
+                            "Post",
+                        )
+                    except Exception as e:
+                        print(f"Error creating Mastodon post: {e}")
+
+        elif activity is not None:
+            # Optionally, remove the Activity if share_to_feed is False
+            activity.delete()
+
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
@@ -516,6 +536,7 @@ class Pin(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     reposts = GenericRelation(Repost)
     votes = GenericRelation(Vote)
+    share_to_feed = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse(
@@ -540,45 +561,58 @@ class Pin(models.Model):
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         super().save(*args, **kwargs)
-        if is_new:
-            Activity.objects.create(
-                user=self.user,
-                activity_type="pin",
-                content_object=self,
+        # Attempt to fetch an existing Activity object for this check-in
+        try:
+            activity = Activity.objects.get(
+                content_type__model="pin", object_id=self.id
             )
+        except Activity.DoesNotExist:
+            activity = None
 
-            if hasattr(self.user, "bluesky_account"):
-                try:
-                    bluesky_account = self.user.bluesky_account
-                    create_bluesky_post(
-                        bluesky_account.bluesky_handle,
-                        bluesky_account.bluesky_pds_url,
-                        bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
-                        f'I pinned "{self.title}" ({urlparse(self.url).netloc}) on LʌvDB\n\n'
-                        + self.content
-                        + "\n\n",
-                        self.id,
-                        self.user.username,
-                        "Pin",
-                    )
-                except Exception as e:
-                    print(f"Error creating Bluesky post: {e}")
+        if self.share_to_feed:
+            if is_new or activity is None:
+                Activity.objects.create(
+                    user=self.user,
+                    activity_type="pin",
+                    content_object=self,
+                )
 
-            if hasattr(self.user, "mastodon_account"):
-                try:
-                    mastodon_account = self.user.mastodon_account
-                    create_mastodon_post(
-                        mastodon_account.mastodon_handle,
-                        mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
-                        f'I pinned "{self.title}" ({urlparse(self.url).netloc}) on LʌvDB\n\n'
-                        + self.content
-                        + "\n\n",
-                        self.id,
-                        self.user.username,
-                        "Pin",
-                    )
-                except Exception as e:
-                    print(f"Error creating Mastodon post: {e}")
+                if hasattr(self.user, "bluesky_account"):
+                    try:
+                        bluesky_account = self.user.bluesky_account
+                        create_bluesky_post(
+                            bluesky_account.bluesky_handle,
+                            bluesky_account.bluesky_pds_url,
+                            bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
+                            f'I pinned "{self.title}" ({urlparse(self.url).netloc}) on LʌvDB\n\n'
+                            + self.content
+                            + "\n\n",
+                            self.id,
+                            self.user.username,
+                            "Pin",
+                        )
+                    except Exception as e:
+                        print(f"Error creating Bluesky post: {e}")
+
+                if hasattr(self.user, "mastodon_account"):
+                    try:
+                        mastodon_account = self.user.mastodon_account
+                        create_mastodon_post(
+                            mastodon_account.mastodon_handle,
+                            mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
+                            f'I pinned "{self.title}" ({urlparse(self.url).netloc}) on LʌvDB\n\n'
+                            + self.content
+                            + "\n\n",
+                            self.id,
+                            self.user.username,
+                            "Pin",
+                        )
+                    except Exception as e:
+                        print(f"Error creating Mastodon post: {e}")
+
+        elif activity is not None:
+            # Optionally, remove the Activity if share_to_feed is False
+            activity.delete()
 
         # Handle tags
         handle_tags(self, self.content)

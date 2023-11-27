@@ -15,7 +15,7 @@ User = get_user_model()
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["title", "content", "comments_enabled", "projects"]
+        fields = ["title", "content", "comments_enabled", "projects", "share_to_feed"]
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Post title..."}),
             "content": forms.Textarea(
@@ -64,7 +64,7 @@ class SayForm(forms.ModelForm):
 class PinForm(forms.ModelForm):
     class Meta:
         model = Pin
-        fields = ["title", "url", "content", "comments_enabled"]
+        fields = ["title", "url", "content", "comments_enabled", "share_to_feed"]
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Pin title..."}),
             "url": forms.TextInput(attrs={"placeholder": "https://www.example.com"}),
