@@ -38,7 +38,7 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy("entity:creator_detail", kwargs={"pk": self.object.pk})
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class CreatorDetailView(DetailView):
     model = Creator
     template_name = "entity/creator_detail.html"
@@ -474,7 +474,7 @@ class RoleUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy("activity_feed:activity_feed")
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class RoleDetailView(LoginRequiredMixin, DetailView):
     model = Role
     template_name = "entity/role_detail.html"
@@ -549,7 +549,7 @@ class CompanyCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class CompanyDetailView(DetailView):
     model = Company
     template_name = "entity/company_detail.html"
@@ -718,7 +718,7 @@ class HistoryViewMixin:
         return history_data
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class CreatorHistoryView(HistoryViewMixin, DetailView):
     model = Creator
     template_name = "entity/history.html"
@@ -730,7 +730,7 @@ class CreatorHistoryView(HistoryViewMixin, DetailView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
 class CompanyHistoryView(HistoryViewMixin, DetailView):
     model = Company
     template_name = "entity/history.html"
