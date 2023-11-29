@@ -42,7 +42,7 @@
                             {% endif %}
                             {% if pin.user != request.user %}
                                 <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:pin_copy' pin.id %}">Copy</a>
+                                    <a href="{% url 'write:pin_copy' pin.user.username pin.id %}">Copy</a>
                                 </p>
                             {% endif %}
                             {% if pin.user == request.user %}
