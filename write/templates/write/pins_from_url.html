@@ -17,9 +17,11 @@
                         </div>
                         <div class="bg-light p-3">
                             <a href="{{ pin.url }}">{{ pin.title }}</a>
-                            (<a href="{% url 'write:pins_from_url' pin.url|root_url %}"
-   class="link-secondary">{{ pin.url|root_url }}</a>)
-                            
+                            {% if pin.url != root_url %}
+                                (<a href="{% url 'write:pins_from_url' pin.url %}" class="link-secondary">{{ pin.url }}</a>)
+                            {% else %}
+                                (<a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">{{ pin.url|root_url }}</a>)
+                            {% endif %}
                         </div>
                         {% if pin.content %}
                             <div class='mt-2'>
