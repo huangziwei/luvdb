@@ -72,7 +72,7 @@ li:last-child {
     /* light gray */
     display: inline-flex;
     /* changed from flex to inline-flex */
-    align-items: center;
+    align-items: start;
     justify-content: center;
     overflow: hidden;
     /* padding: 2px; */

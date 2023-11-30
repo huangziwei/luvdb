@@ -59,9 +59,7 @@
                         <!--movie-meta-->
                         <div class="col flex-grow-1 ms-lg-3">
                             <div class="card-body">
-                                <span class='d-flex align-items-start'>
-                                    <div class="fs-4">{{ object.title }}</div>
-                                </span>
+                                <h2>{{ object.title }}</h2>
                                 {% if object.other_titles %}<p class='text-muted'>{{ object.other_titles }}</p>{% endif %}
                                 <div class="movie-meta">
                                     {% for role_name, person_altname_tuples in roles.items %}
