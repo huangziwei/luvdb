@@ -1056,6 +1056,8 @@ class GenericCheckInUserListView(ListView):
             "order", "-timestamp"
         )  # Default is '-timestamp'
 
+        context["layout"] = self.request.GET.get("layout", "list")
+
         context["status"] = self.request.GET.get("status", "")
 
         # check required js

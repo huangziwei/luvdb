@@ -13,10 +13,13 @@
                     </div>
                     <span class='d-flex mb-3'>
                         <div class="me-3">
-                            <a href="?order=timestamp&status={{ status }}"
-                            class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
-                            <a href="?order=-timestamp&status={{ status }}"
-                            class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                            {% if order == 'timestamp' %}
+                                <a href="?order=-timestamp&status={{ status }}"
+                                    class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                            {% else %}
+                                <a href="?order=timestamp&status={{ status }}"
+                                    class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+                            {% endif %}
                         </div>
                         <div class="me-3">|</div>
                         <div class="me-3">

@@ -89,6 +89,36 @@ li:last-child {
     border: 2px solid #ddd;
 }
 
+
+.cover-border-to_read {
+    border-color: #0dcaf0 !important;
+    border-width: 0.2em !important;
+}
+
+.cover-border-afterthought,
+.cover-border-finished_reading,
+.cover-border-reread {
+    border-color: #198754 !important;
+    border-width: 0.2em !important;
+}
+
+.cover-border-reading,
+.cover-border-rereading,
+.cover-border-sampled {
+    border-color: #0d6efd !important;
+    border-width: 0.2em !important;
+}
+
+.cover-border-paused {
+    border-color: #ffc107 !important; 
+    border-width: 0.2em !important;
+}
+
+.cover-border-abandoned {
+    border-color: #dc3545 !important; 
+    border-width: 0.2em !important;
+}
+
 .listen-cover-placeholder {
     border: 2px solid #ddd;
     background-color: #eee;
