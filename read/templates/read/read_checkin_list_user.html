@@ -29,22 +29,22 @@
                                 class="btn btn-sm btn-outline-secondary mb-1 me-1">Grid</a>
                         {% endif %}
                     
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=&order={{ order }}"
-                            class="btn btn-sm btn-outline-secondary mb-1 me-1">All</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=to_read&order={{ order }}"
-                            class="btn btn-sm btn-info mb-1 me-1">To Read</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=reading_rereading&order={{ order }}"
-                            class="btn btn-sm btn-primary mb-1 me-1">(Re)Reading</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=read_reread&order={{ order }}"
-                            class="btn btn-sm btn-success mb-1 me-1">(Re)Read</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=paused&order={{ order }}"
-                            class="btn btn-sm btn-warning mb-1 me-1">Paused</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=abandoned&order={{ order }}"
-                            class="btn btn-sm btn-danger mb-1 me-1">Abandoned</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=sampled&order={{ order}}"
-                            class="btn btn-sm btn-primary mb-1 me-1">Sampled</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=afterthought&order={{ order}}"
-                            class="btn btn-sm btn-success mb-1 me-1">Afterthought</a>
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status="
+                            class="btn btn-sm btn-outline-secondary mb-1">All</a>
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=to_read"
+                            class="btn btn-sm btn-info mb-1">To Read</a>
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=reading_rereading"
+                            class="btn btn-sm btn-primary mb-1">(Re)Reading</a>
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=read_reread"
+                            class="btn btn-sm btn-success mb-1">(Re)Read</a>
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=paused"
+                            class="btn btn-sm btn-warning mb-1">Paused</a>
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=abandoned"
+                            class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=sampled"
+                            class="btn btn-sm btn-primary mb-1">Sampled</a>
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=afterthought"
+                            class="btn btn-sm btn-success mb-1">Afterthought</a>
                     </div>
                 </div>
                 {% if profile_user.is_public or request.user.is_authenticated %}

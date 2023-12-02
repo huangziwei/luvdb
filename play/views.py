@@ -831,7 +831,7 @@ class PlayCheckInAllListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class PlayCheckInUserListView(ListView):
     """
     All latest check-ins from a given user of all games.
@@ -878,7 +878,7 @@ class PlayCheckInUserListView(ListView):
         user_checkin_counts = (
             PlayCheckIn.objects.filter(user=profile_user)
             .values("content_type", "object_id")
-            .annotate(total_checkins=Count("id"))
+            .annotate(total_checkins=Count("id") - 1)
         )
 
         # Convert to a dictionary for easier lookup
@@ -901,9 +901,8 @@ class PlayCheckInUserListView(ListView):
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
         context["profile_user"] = profile_user
 
-        context["order"] = self.request.GET.get(
-            "order", "-timestamp"
-        )  # Default is '-timestamp'
+        context["order"] = self.request.GET.get("order", "-timestamp")
+        context["layout"] = self.request.GET.get("layout", "list")
 
         context["status"] = self.request.GET.get("status", "")
 

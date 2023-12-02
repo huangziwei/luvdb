@@ -89,12 +89,20 @@ li:last-child {
     border: 2px solid #ddd;
 }
 
-
+.cover-border-to_listen,
+.cover-border-to_watch,
+.cover-border-to_play,
 .cover-border-to_read {
     border-color: #0dcaf0 !important;
     border-width: 0.2em !important;
 }
 
+.cover-border-listened,
+.cover-border-relistened,
+.cover-border-watched,
+.cover-border-rewatched,
+.cover-border-played,
+.cover-border-replayed,
 .cover-border-afterthought,
 .cover-border-finished_reading,
 .cover-border-reread {
@@ -102,6 +110,13 @@ li:last-child {
     border-width: 0.2em !important;
 }
 
+.cover-border-looping,
+.cover-border-listening,
+.cover-border-relistening
+.cover-border-watching,
+.cover-border-rewatching,
+.cover-border-playing,
+.cover-border-replaying,
 .cover-border-reading,
 .cover-border-rereading,
 .cover-border-sampled {

@@ -1304,7 +1304,7 @@ class GenericCheckInAllListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class GenericCheckInUserListView(ListView):
     """
     All latest check-ins from a given user of all movies and series.
@@ -1357,10 +1357,8 @@ class GenericCheckInUserListView(ListView):
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
         context["profile_user"] = profile_user
 
-        context["order"] = self.request.GET.get(
-            "order", "-timestamp"
-        )  # Default is '-timestamp'
-
+        context["order"] = self.request.GET.get("order", "-timestamp")
+        context["layout"] = self.request.GET.get("layout", "list")
         context["status"] = self.request.GET.get("status", "")
 
         include_mathjax, include_mermaid = check_required_js(context["page_obj"])
