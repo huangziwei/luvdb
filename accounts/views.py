@@ -1184,12 +1184,12 @@ def webfinger(request):
     response = {
         "@context": "https://www.w3.org/ns/activitystreams",
         "subject": resource,
-        "aliases": [settings.ROOT_URL + f"/u/{username}/"],
+        "aliases": [settings.ROOT_URL + f"/@{username}/"],
         "links": [
             {
                 "rel": "self",
                 "type": "application/activity+json",
-                "href": settings.ROOT_URL + f"/u/{username}/",
+                "href": settings.ROOT_URL + f"/@{username}/",
             }
         ],
     }
@@ -1215,19 +1215,19 @@ def ap_actor(request, username):
             "https://www.w3.org/ns/activitystreams",
             "https://w3id.org/security/v1",
         ],
-        "id": root_url + f"/u/{user.username}/",
+        "id": root_url + f"/@{user.username}/",
         "type": "Person",
         "name": f"{user.display_name}" if user.display_name else f"{user.username}",
         "preferredUsername": f"{user.username}",
         "manuallyApprovesFollowers": False,
-        "inbox": root_url + f"/u/{user.username}/inbox/",
-        "outbox": root_url + f"/u/{user.username}/outbox/",
+        "inbox": root_url + f"/@{user.username}/inbox/",
+        "outbox": root_url + f"/@{user.username}/outbox/",
         "publicKey": {
-            "id": root_url + f"/u/{user.username}/#main-key",
-            "owner": root_url + f"/u/{user.username}",
+            "id": root_url + f"/@{user.username}/#main-key",
+            "owner": root_url + f"/@{user.username}",
             "publicKeyPem": public_key_pem,
         },
-        "url": root_url + f"/u/{user.username}/",
+        "url": root_url + f"/@{user.username}/",
     }
 
     return JsonResponse(response, content_type="application/activity+json")
@@ -1316,9 +1316,9 @@ def handle_follow_request(incoming_message, request, username):
             "https://www.w3.org/ns/activitystreams",
             "https://w3id.org/security/v1",
         ],
-        "id": f"{DOMAIN}/u/{username}/{uuid.uuid4()}",  # Unique ID for each message
+        "id": f"{DOMAIN}/@{username}/{uuid.uuid4()}",  # Unique ID for each message
         "type": "Accept",
-        "actor": f"{DOMAIN}/u/{username}/",
+        "actor": f"{DOMAIN}/@{username}/",
         "object": {
             "id": incoming_message.get("id"),
             "type": "Follow",
@@ -1400,7 +1400,7 @@ def ap_outbox(request, username):
     outbox_activities = [activity.to_activitypub() for activity in activities]
     response = {
         "@context": "https://www.w3.org/ns/activitystreams",
-        "id": settings.ROOT_URL + f"/u/{username}/outbox",
+        "id": settings.ROOT_URL + f"/@{username}/outbox",
         "type": "OrderedCollection",
         "totalItems": len(outbox_activities),
         "orderedItems": outbox_activities,
@@ -1430,11 +1430,11 @@ def ap_followers(request, username):
             "https://www.w3.org/ns/activitystreams",
             "https://w3id.org/security/v1",
         ],
-        "id": settings.ROOT_URL + f"/u/{username}/followers",
-        "partOf": settings.ROOT_URL + f"/u/{username}/followers",
+        "id": settings.ROOT_URL + f"/@{username}/followers",
+        "partOf": settings.ROOT_URL + f"/@{username}/followers",
         "type": "OrderedCollection",
         "totalItems": len(followers),
-        "first": settings.ROOT_URL + f"/u/{username}/followers?page=True",
+        "first": settings.ROOT_URL + f"/@{username}/followers?page=True",
     }
 
     return JsonResponse(response)

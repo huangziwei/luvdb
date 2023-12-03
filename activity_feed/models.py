@@ -72,16 +72,16 @@ class Activity(models.Model):
 
             target_domain = follower_url.split("/")[2]
             activitypub_message["cc"] = [
-                # settings.ROOT_URL + "/u/" + self.user.username + "/followers"
+                # settings.ROOT_URL + "/@" + self.user.username + "/followers"
                 follower_url
             ]
             activitypub_message["object"]["cc"] = [
-                # settings.ROOT_URL + "/u/" + self.user.username + "/followers"
+                # settings.ROOT_URL + "/@" + self.user.username + "/followers"
                 follower_url
             ]
             success = sign_and_send(
                 activitypub_message,
-                "/u/" + self.user.username + "/",
+                "/@" + self.user.username + "/",
                 settings.ROOT_URL,
                 target_domain,
                 private_key,
@@ -94,7 +94,7 @@ class Activity(models.Model):
                 print("Failed to send to:", follower_url)
 
     def to_activitypub(self, ap_activity_type="Create"):
-        actor = settings.ROOT_URL + f"/u/{self.user.username}/"
+        actor = settings.ROOT_URL + f"/@{self.user.username}/"
         url = settings.ROOT_URL + self.content_object.get_absolute_url()
 
         # Content handling

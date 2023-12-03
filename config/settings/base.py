@@ -295,6 +295,7 @@ MARKDOWNIFY = {
             "pymdownx.betterem",
             "pymdownx.tilde",
             "pymdownx.blocks.tab",
+            "pymdownx.blocks.details",
             "pymdownx.magiclink",
             "footnotes",
             "md_in_html",
