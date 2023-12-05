@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <!-- Invitation Codes List -->
+        <div class="col-12 col-md-5">
+            <h1>Manage Invitation Codes</h1>
+            <p>Each code works once. You can generate new invite codes periodically.</p>
+            <hr>
+            <h2>Invitation codes</h2>
+            <ul class="list-group mb-4">
+                {% for code in invitation_codes %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {% if code.is_used %}
+                        <del>{{ code.code }}</del>
+                        <a href="{% url 'accounts:detail' code.used_by.username %}">{{ code.used_by.display_name|default:code.used_by.username }}</a>
+                    {% else %}
+                        <span id="code_{{ forloop.counter }}">{{ code.code }}</span>
+                        <button onclick="copyCodeToClipboard('code_{{ forloop.counter }}')" class="btn btn-sm btn-outline-secondary">Copy</button>                    
+                    {% endif %}
+                </li>
+                {% empty %}
+                <li class="list-group-item">No invitation codes found.</li>
+                {% endfor %}
+            </ul>
+
+            <!-- Generate New Invite Codes -->
+            {% if can_generate_new_code %}
+                <form method="post" action="{% url 'accounts:manage_invitations' user.username %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-primary">Generate New Invite Codes</button>
+                </form>
+            {% else %}
+                <p>{{next_code_generation_info}}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyCodeToClipboard(elementId) {
+        var text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text).then(function() {
+            showNotification('Copied code to clipboard');
+        }, function(err) {
+            console.error('Could not copy text: ', err);
+        });
+    }
+</script>
+
+{% endblock %}

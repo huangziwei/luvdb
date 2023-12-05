@@ -301,31 +301,19 @@
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false">More</button>
                                     <ul class="dropdown-menu" aria-labelledby="actionMenu">
-                                        {% if can_generate_code %}
-                                            <li>
-                                                <form method="post" action="{% url 'accounts:generate_invitation_code' %}">
-                                                    {% csrf_token %}
-                                                    <button class="dropdown-item" type="submit">Invite</button>
-                                                </form>
-                                            </li>
-                                        {% endif %}
                                         <li>
                                             <a class="dropdown-item"
-                                            href="{% url 'accounts:export_user_data' %}"
-                                            role="button">Export User Data</a>
+                                                href="{% url 'accounts:manage_invitations' object.username %}"
+                                                role="button">Invite friends</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item"
+                                                href="{% url 'accounts:export_user_data' %}"
+                                                role="button">Export User Data</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
-                            {% if messages %}
-                                <div class="messages rounded p-3 mt-3 bg-light" style="border: 1px solid var(--bs-gray-300);">
-                                    {% for message in messages %}
-                                        <p class="mb-0 {% if message.tags %}{{ message.tags }}{% endif %}">
-                                            {{ message|safe }}
-                                        </p>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
                         {% endif %}
                         {% if feed_user != request.user %}
                             <div class='d-flex'>

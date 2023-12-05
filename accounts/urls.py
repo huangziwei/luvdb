@@ -7,9 +7,9 @@ from .views import (
     AccountDetailView,
     AccountUpdateView,
     FollowingListView,
-    GenerateInvitationCodeView,
     InvitationRequestedSuccessView,
     InvitationRequestedView,
+    ManageInvitationsView,
     PersonalActivityFeedView,
     RequestInvitationView,
     app_password_list,
@@ -23,17 +23,17 @@ from .views import (
 
 app_name = "accounts"
 urlpatterns = [
-    path(
-        "generate_invitation_code/",
-        GenerateInvitationCodeView.as_view(),
-        name="generate_invitation_code",
-    ),
     path("profile", view=redirect_to_profile, name="profile"),
     path("exportdata/", export_user_data, name="export_user_data"),
     path(
         "request-invitation/",
         RequestInvitationView.as_view(),
         name="request_invitation",
+    ),
+    path(
+        "<str:username>/manage_invitations/",
+        ManageInvitationsView.as_view(),
+        name="manage_invitations",
     ),
     path(
         "invitation-requested/<str:email>/",
