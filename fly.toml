@@ -28,10 +28,6 @@ console_command = "/code/manage.py shell"
   guest_path = "/code/static"
   url_prefix = "/static/"
 
-[[mounts]]
-source = "luvdbvol"
-destination = "/mnt"
-
 [[services]]
   [services.concurrency]
       hard_limit = 100
