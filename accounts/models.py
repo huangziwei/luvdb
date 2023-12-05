@@ -63,7 +63,6 @@ class CustomUser(AbstractUser):
     bio = models.TextField(blank=True, null=True)
     is_public = models.BooleanField(default=False)
     pure_text_mode = models.BooleanField(default=False)
-    enable_federation = models.BooleanField(default=False)
     public_key = models.TextField(blank=True, null=True, editable=False)
     timezone = models.CharField(
         max_length=50, choices=[(tz, tz) for tz in pytz.all_timezones], default="UTC"
@@ -121,19 +120,6 @@ class CustomUser(AbstractUser):
             )
         else:
             super().save(*args, **kwargs)
-
-        if self.enable_federation:
-            # Check if the user already has a public key
-            if not self.public_key:
-                private_key, public_key = self.generate_key_pair()
-                encoded_private_key = base64.b64encode(private_key).decode("utf-8")
-
-                # Store the encoded private key in the environment file
-                with open(settings.PRIVATEKEY_PATH, "a") as file:
-                    file.write(f"{self.username}={encoded_private_key}\n")
-
-                # Store public key in the database
-                self.public_key = public_key.decode("utf-8")
 
     def generate_key_pair(self):
         # Generate private key
@@ -256,15 +242,3 @@ class MastodonAccount(models.Model):
 
     def __str__(self):
         return self.mastodon_handle
-
-
-class FediverseFollower(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    follower_uri = models.URLField(unique=True)
-    follower_inbox = models.URLField(blank=True, null=True)
-    follower_shared_inbox = models.URLField(blank=True, null=True)
-    preferred_headers = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.follower_uri

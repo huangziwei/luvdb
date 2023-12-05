@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CustomUser, FediverseFollower, InvitationCode, InvitationRequest
+from .models import CustomUser, InvitationCode, InvitationRequest
 
 
 class InvitationCodeAdmin(admin.ModelAdmin):
@@ -15,14 +15,6 @@ class InvitationRequestAdmin(admin.ModelAdmin):
     list_display = ("email", "created_at", "is_invited", "about_me")
 
 
-class FediverseFollowerAdmin(admin.ModelAdmin):
-    list_display = ("user", "follower_uri", "preferred_headers", "created_at")
-    search_fields = ("user__username", "follower_uri")
-    list_filter = ("user",)
-    ordering = ("created_at", "user", "follower_uri")
-
-
-admin.site.register(FediverseFollower, FediverseFollowerAdmin)
 admin.site.register(InvitationCode, InvitationCodeAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(InvitationRequest, InvitationRequestAdmin)

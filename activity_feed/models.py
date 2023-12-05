@@ -12,8 +12,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.safestring import mark_safe
 
-from accounts.utils_activitypub import import_private_key, sign_and_send
-
 
 class Activity(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -41,24 +39,6 @@ class Activity(models.Model):
 
         # Call the real save method
         super(Activity, self).save(*args, **kwargs)
-
-        if self.user.enable_federation:
-            if is_new:
-                print("New activity created")
-                print("Updating user outbox")
-                self.update_user_outbox(ap_activity_type="Create")
-            elif was_update:
-                print("Activity updated")
-                self.update_user_outbox(ap_activity_type="Update")
-
-    def delete(self, *args, **kwargs):
-        if self.user.enable_federation:
-            # Create and send DELETE ActivityPub message
-            print("Deleting activity")
-            self.update_user_outbox(ap_activity_type="Delete")
-
-        # Call the real delete method
-        super(Activity, self).delete(*args, **kwargs)
 
     def update_user_outbox(self, ap_activity_type="Create"):
         activitypub_message = self.to_activitypub(ap_activity_type=ap_activity_type)

@@ -11,7 +11,7 @@ from django.shortcuts import redirect
 from django.template import loader
 from django.urls import include, path, re_path
 
-from accounts.views import SignUpView, search_view, webfinger
+from accounts.views import SignUpView, search_view
 from entity.sitemaps import PersonSiteMap
 from listen.sitemaps import ReleaseSiteMap
 from play.sitemaps import GameSiteMap
@@ -76,7 +76,6 @@ def site_manifest(request):
 
 
 urlpatterns = [
-    path(".well-known/webfinger/", webfinger, name="webfinger"),
     path("admin/login/", custom_admin_login, name="custom_admin_login"),
     path("admin/", admin.site.urls),
     path("signup/", SignUpView.as_view(), name="signup"),
