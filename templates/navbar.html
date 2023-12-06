@@ -76,8 +76,11 @@
                     <option value="listen" {% if request.GET.model == "listen" or request.path == '/listen/recent/' %}selected{% endif %}>Listen</option>
                     <option value="play" {% if request.GET.model == "play" or request.path == '/play/recent/' %}selected{% endif %}>Play</option>
                     <option value="write" {% if request.GET.model == "write" %}selected{% endif %}>Write</option>
-                    <option value="entity" {% if request.GET.model == "entity" %}selected{% endif %}>Entity</option>
+                    <option value="entity" {% if request.GET.model == "entity" or "entity" in request.path %}selected{% endif %}>Entity</option>
                     <option value="user" {% if request.GET.model == "user" %}selected{% endif %}>User</option>
+                    {% if user.is_authenticated %}
+                        <option value="self" {% if request.GET.model == "self" or "@" in request.path %}selected{% endif %}>Self</option>
+                    {% endif %}
                 </select>
                 <input class="form-control"
                     type="search"

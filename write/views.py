@@ -10,7 +10,7 @@ from dal import autocomplete
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -822,34 +822,40 @@ class LuvListDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        contents = self.object.contents.all()
-        # Implementing sorting based on order_preference
-        session_key = f"order_{self.object.id}"  # Unique key for each list
-        order = self.request.session.get(session_key, self.object.order_preference)
+
+        # Optimize content fetching
+        order = self.request.session.get(
+            f"order_{self.object.id}", self.object.order_preference
+        )
+        order_by_field = "order" if order == "ASC" else "-order"
+        contents = self.object.contents.order_by(order_by_field).all()
 
         context["order"] = order
-        if order == "ASC":
-            contents = contents.order_by("order")
-        else:
-            contents = contents.order_by("-order")
         context["contents"] = contents
-
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
 
         # statistics
-        context["book_count"] = contents.filter(content_type__model="book").count()
-        context["movie_count"] = contents.filter(content_type__model="movie").count()
-        context["series_count"] = contents.filter(content_type__model="series").count()
-        context["release_count"] = contents.filter(
-            content_type__model="release"
-        ).count()
-        context["audiobook_count"] = contents.filter(
-            content_type__model="audiobook"
-        ).count()
-        context["podcast_count"] = contents.filter(
-            content_type__model="podcast"
-        ).count()
-        context["game_count"] = contents.filter(content_type__model="game").count()
+        content_counts = (
+            self.object.contents.values("content_type__model")
+            .annotate(total=Count("content_type"))
+            .order_by()
+        )
+        content_count_dict = {
+            count["content_type__model"]: count["total"] for count in content_counts
+        }
+
+        # Update context with the counts
+        context.update(
+            {
+                "book_count": content_count_dict.get("book", 0),
+                "movie_count": content_count_dict.get("movie", 0),
+                "series_count": content_count_dict.get("series", 0),
+                "release_count": content_count_dict.get("release", 0),
+                "audiobook_count": content_count_dict.get("audiobook", 0),
+                "podcast_count": content_count_dict.get("podcast", 0),
+                "game_count": content_count_dict.get("game", 0),
+            }
+        )
         return context
 
     def get_success_url(self):

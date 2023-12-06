@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12 left-column">
-                <h2>Searching: "{{ terms|join:'", "' }}"</h2>
+                <h2>Searching: "{{ terms|join:'", "' }}" in "{{model}}" </h2>
                 <div class="search-timing col-8">
                     <span class="text-muted">in <span class="execution-time">{{ execution_time|floatformat:5 }}</span> seconds.</span> 
                     {% if execution_time > 0.01 %}
