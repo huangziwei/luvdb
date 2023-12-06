@@ -2,6 +2,7 @@ import base64
 import os
 import secrets
 
+import auto_prefetch
 import pytz
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
@@ -23,12 +24,12 @@ from django.utils.crypto import get_random_string
 from activity_feed.models import Activity, Follow
 
 
-class InvitationCode(models.Model):
+class InvitationCode(auto_prefetch.Model):
     """Model representing invitation codes."""
 
     code = models.CharField(max_length=100, unique=True, blank=True)
     is_used = models.BooleanField(default=False)
-    generated_by = models.ForeignKey(
+    generated_by = auto_prefetch.ForeignKey(
         "CustomUser",
         related_name="codes_generated",
         on_delete=models.CASCADE,
@@ -49,14 +50,14 @@ class InvitationCode(models.Model):
 class CustomUser(AbstractUser):
     """Custom user model."""
 
-    code_used = models.OneToOneField(
+    code_used = auto_prefetch.OneToOneField(
         InvitationCode,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         related_name="used_by",
     )
-    invited_by = models.ForeignKey(
+    invited_by = auto_prefetch.ForeignKey(
         "self", on_delete=models.SET_NULL, null=True, blank=True
     )
     display_name = models.CharField(max_length=100, blank=True, null=True)
@@ -131,7 +132,7 @@ def create_follow_activity(sender, instance, created, **kwargs):
         )
 
 
-class InvitationRequest(models.Model):
+class InvitationRequest(auto_prefetch.Model):
     email = models.EmailField(unique=True)
     about_me = models.TextField(null=True, blank=True)
     is_invited = models.BooleanField(default=False)
@@ -151,8 +152,8 @@ def get_followed_usernames(request):
     return JsonResponse({"usernames": usernames})
 
 
-class AppPassword(models.Model):
-    user = models.ForeignKey(
+class AppPassword(auto_prefetch.Model):
+    user = auto_prefetch.ForeignKey(
         "accounts.CustomUser", on_delete=models.CASCADE, related_name="app_passwords"
     )
     name = models.CharField(max_length=100)
@@ -178,10 +179,10 @@ def decrypt_password(encrypted_password):
     return cipher_suite.decrypt(encrypted_password.encode()).decode()
 
 
-class BlueSkyAccount(models.Model):
+class BlueSkyAccount(auto_prefetch.Model):
     """Model for storing user's BlueSky account details."""
 
-    user = models.OneToOneField(
+    user = auto_prefetch.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name="bluesky_account"
     )
     bluesky_handle = models.CharField(max_length=100, unique=True)
@@ -198,8 +199,8 @@ class BlueSkyAccount(models.Model):
         return self.bluesky_handle
 
 
-class MastodonAccount(models.Model):
-    user = models.OneToOneField(
+class MastodonAccount(auto_prefetch.Model):
+    user = auto_prefetch.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name="mastodon_account"
     )
     mastodon_handle = models.CharField(max_length=100, unique=True)

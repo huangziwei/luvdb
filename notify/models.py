@@ -1,10 +1,11 @@
+import auto_prefetch
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
-class Notification(models.Model):
+class Notification(auto_prefetch.Model):
     NOTIFICATION_TYPES = (
         ("comment", "Comment"),
         ("mention", "Mention"),
@@ -13,17 +14,17 @@ class Notification(models.Model):
         ("delete", "Delete"),
     )
 
-    recipient = models.ForeignKey(
+    recipient = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL, related_name="notifications", on_delete=models.CASCADE
     )
-    sender_content_type = models.ForeignKey(
+    sender_content_type = auto_prefetch.ForeignKey(
         ContentType, on_delete=models.CASCADE, null=True
     )
     sender_object_id = models.PositiveIntegerField(null=True)
     sender_object = GenericForeignKey("sender_content_type", "sender_object_id")
 
     # New fields
-    subject_content_type = models.ForeignKey(
+    subject_content_type = auto_prefetch.ForeignKey(
         ContentType,
         related_name="notification_subjects",
         on_delete=models.CASCADE,
@@ -50,11 +51,11 @@ class Notification(models.Model):
         )
 
 
-class MutedNotification(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+class MutedNotification(auto_prefetch.Model):
+    user = auto_prefetch.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content_type = auto_prefetch.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         unique_together = ("user", "content_type", "object_id")

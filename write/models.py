@@ -4,6 +4,7 @@ import re
 import string
 from urllib.parse import urlparse
 
+import auto_prefetch
 import pytz
 from autoslug import AutoSlugField
 from django.conf import settings
@@ -43,7 +44,7 @@ def find_mentioned_users(content):
     return User.objects.filter(username__in=usernames)
 
 
-class Tag(models.Model):
+class Tag(auto_prefetch.Model):
     name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
@@ -53,10 +54,10 @@ class Tag(models.Model):
         return "Tag"
 
 
-class Project(models.Model):
+class Project(auto_prefetch.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, editable=False, blank=True)
-    user = models.ForeignKey(
+    user = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
     )
 
@@ -93,14 +94,14 @@ class Project(models.Model):
         super().save(*args, **kwargs)
 
 
-class Comment(models.Model):
+class Comment(auto_prefetch.Model):
     content = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = auto_prefetch.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     # Polymorphic relationship to Post, Say, or Pin
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = auto_prefetch.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
@@ -178,14 +179,14 @@ class Comment(models.Model):
                 return anchor
 
 
-class Repost(models.Model):
-    original_activity = models.ForeignKey(
+class Repost(auto_prefetch.Model):
+    original_activity = auto_prefetch.ForeignKey(
         Activity, on_delete=models.SET_NULL, related_name="reposts", null=True
     )
-    original_repost = models.ForeignKey(
+    original_repost = auto_prefetch.ForeignKey(
         "self", on_delete=models.SET_NULL, related_name="reposts", null=True, blank=True
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = auto_prefetch.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -194,7 +195,7 @@ class Repost(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     votes = GenericRelation(Vote)
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = auto_prefetch.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
@@ -342,10 +343,10 @@ class Repost(models.Model):
         create_mentions_notifications(self.user, self.content, self)
 
 
-class Post(models.Model):
+class Post(auto_prefetch.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = auto_prefetch.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     comments = GenericRelation(Comment)
@@ -442,9 +443,9 @@ class Post(models.Model):
         create_mentions_notifications(self.user, self.content, self)
 
 
-class Say(models.Model):
+class Say(auto_prefetch.Model):
     content = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = auto_prefetch.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     comments = GenericRelation(Comment)
@@ -548,11 +549,11 @@ class Say(models.Model):
         create_mentions_notifications(self.user, self.content, self)
 
 
-class Pin(models.Model):
+class Pin(auto_prefetch.Model):
     title = models.TextField()
     url = models.URLField()
     content = models.TextField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = auto_prefetch.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     comments = GenericRelation(Comment)
@@ -753,7 +754,7 @@ def delete_say(sender, instance, **kwargs):
         instance.content_object.delete()
 
 
-class LuvList(models.Model):
+class LuvList(auto_prefetch.Model):
     title = models.CharField(max_length=100)
     notes = models.TextField(blank=True, null=True)
     source = models.URLField(blank=True, null=True)
@@ -763,7 +764,7 @@ class LuvList(models.Model):
         max_length=4, choices=ORDER_CHOICES, default="ASC"
     )
 
-    user = models.ForeignKey(
+    user = auto_prefetch.ForeignKey(
         User,
         related_name="luvlists_created",
         on_delete=models.SET_NULL,
@@ -791,32 +792,34 @@ class LuvList(models.Model):
         handle_tags(self, self.notes)
 
 
-class ContentInList(models.Model):
-    luv_list = models.ForeignKey(
+class ContentInList(auto_prefetch.Model):
+    luv_list = auto_prefetch.ForeignKey(
         LuvList, related_name="contents", on_delete=models.CASCADE
     )
     order = models.PositiveIntegerField(null=True, blank=True)
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = auto_prefetch.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
     comment = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         ordering = ["order"]
 
     def __str__(self):
         return f"{self.luv_list.title}: {self.content_object}"
 
 
-class Randomizer(models.Model):
-    luv_list = models.ForeignKey(
+class Randomizer(auto_prefetch.Model):
+    luv_list = auto_prefetch.ForeignKey(
         LuvList, related_name="randomizers", on_delete=models.CASCADE
     )
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-    last_generated_item = models.ForeignKey(
+    user = auto_prefetch.ForeignKey(
+        User, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    last_generated_item = auto_prefetch.ForeignKey(
         ContentInList,
         related_name="randomized_in",
         on_delete=models.SET_NULL,

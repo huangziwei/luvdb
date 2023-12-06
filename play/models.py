@@ -2,6 +2,7 @@ import os
 import uuid
 from io import BytesIO
 
+import auto_prefetch
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -42,7 +43,7 @@ class Platform(Entity):
         return self.name
 
 
-class Genre(models.Model):
+class Genre(auto_prefetch.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
 
@@ -55,7 +56,7 @@ class Genre(models.Model):
         return self.name
 
 
-class Work(models.Model):  # Renamed from Book
+class Work(auto_prefetch.Model):  # Renamed from Book
     """
     A Work entity
     """
@@ -105,13 +106,13 @@ class Work(models.Model):  # Renamed from Book
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="play_works_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="play_works_updated",
         on_delete=models.SET_NULL,
@@ -129,20 +130,20 @@ class Work(models.Model):  # Renamed from Book
         return "GameWork"
 
 
-class WorkRole(models.Model):  # Renamed from BookRole
+class WorkRole(auto_prefetch.Model):  # Renamed from BookRole
     """
     A Role of a Creator in a Work
     """
 
-    work = models.ForeignKey(Work, on_delete=models.CASCADE)
-    creator = models.ForeignKey(
+    work = auto_prefetch.ForeignKey(Work, on_delete=models.CASCADE)
+    creator = auto_prefetch.ForeignKey(
         Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_name="play_workrole_set",
     )
-    role = models.ForeignKey(
+    role = auto_prefetch.ForeignKey(
         Role,
         on_delete=models.CASCADE,
         null=True,
@@ -155,7 +156,7 @@ class WorkRole(models.Model):  # Renamed from BookRole
         return f"{self.work} - {self.creator} - {self.role}"
 
 
-class Game(models.Model):
+class Game(auto_prefetch.Model):
     # admin
     locked = models.BooleanField(default=False)
 
@@ -163,7 +164,7 @@ class Game(models.Model):
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
-    work = models.ForeignKey(
+    work = auto_prefetch.ForeignKey(
         Work, on_delete=models.CASCADE, null=True, blank=True, related_name="games"
     )
 
@@ -187,13 +188,13 @@ class Game(models.Model):
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="games_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="games_updated",
         on_delete=models.SET_NULL,
@@ -255,12 +256,12 @@ class Game(models.Model):
         return "Game"
 
 
-class GameReleaseDate(models.Model):
+class GameReleaseDate(auto_prefetch.Model):
     """
     A Release Date with region of a Game
     """
 
-    game = models.ForeignKey(
+    game = auto_prefetch.ForeignKey(
         Game, on_delete=models.CASCADE, related_name="region_release_dates"
     )
     region = models.CharField(max_length=100, blank=True, null=True)
@@ -271,16 +272,20 @@ class GameReleaseDate(models.Model):
         return f"{self.game} - {self.region} - {self.release_date}"
 
 
-class GameRole(models.Model):
+class GameRole(auto_prefetch.Model):
     """
     A Role of a Creator in a Game
     """
 
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="gameroles")
-    creator = models.ForeignKey(
+    game = auto_prefetch.ForeignKey(
+        Game, on_delete=models.CASCADE, related_name="gameroles"
+    )
+    creator = auto_prefetch.ForeignKey(
         Creator, on_delete=models.CASCADE, null=True, blank=True
     )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
     alt_name = models.CharField(max_length=100, blank=True, null=True)
     history = HistoricalRecords(inherit=True)
 
@@ -288,16 +293,20 @@ class GameRole(models.Model):
         return f"{self.game} - {self.creator} - {self.role}"
 
 
-class GameCast(models.Model):
+class GameCast(auto_prefetch.Model):
     """
     A Cast in a Game
     """
 
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="gamecasts")
-    creator = models.ForeignKey(
+    game = auto_prefetch.ForeignKey(
+        Game, on_delete=models.CASCADE, related_name="gamecasts"
+    )
+    creator = auto_prefetch.ForeignKey(
         Creator, on_delete=models.CASCADE, null=True, blank=True
     )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
     character_name = models.CharField(max_length=100, blank=True, null=True)
     history = HistoricalRecords(inherit=True)
 
@@ -305,12 +314,14 @@ class GameCast(models.Model):
         return f"{self.game} - {self.creator} - {self.role}"
 
 
-class PlayCheckIn(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+class PlayCheckIn(auto_prefetch.Model):
+    content_type = auto_prefetch.ForeignKey(
+        ContentType, on_delete=models.CASCADE, null=True
+    )
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey("content_type", "object_id")
-    # game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    # game = auto_prefetch.ForeignKey(Game, on_delete=models.CASCADE)
+    user = auto_prefetch.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ("to_play", "To Play"),
         ("playing", "Playing"),
@@ -441,7 +452,7 @@ class PlayCheckIn(models.Model):
         create_mentions_notifications(self.user, self.content, self)
 
 
-class GameSeries(models.Model):
+class GameSeries(auto_prefetch.Model):
     # admin
     locked = models.BooleanField(default=False)
 
@@ -453,13 +464,13 @@ class GameSeries(models.Model):
     description = models.TextField(null=True, blank=True)
 
     # meta
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="series_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="series_updated",
         on_delete=models.SET_NULL,
@@ -474,12 +485,12 @@ class GameSeries(models.Model):
         return reverse("play:series_detail", args=[str(self.id)])
 
 
-class GameInSeries(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    series = models.ForeignKey(GameSeries, on_delete=models.CASCADE)
+class GameInSeries(auto_prefetch.Model):
+    game = auto_prefetch.ForeignKey(Game, on_delete=models.CASCADE)
+    series = auto_prefetch.ForeignKey(GameSeries, on_delete=models.CASCADE)
     order = models.PositiveIntegerField()
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         ordering = ["order"]
 
     def __str__(self):

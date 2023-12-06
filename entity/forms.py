@@ -1,3 +1,4 @@
+import auto_prefetch
 from django import forms
 
 from .models import Creator
@@ -7,7 +8,7 @@ from .models import Creator
 # Creator #
 ##########
 class CreatorForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Creator
         fields = [
             "name",

@@ -1,8 +1,6 @@
 import re
 
-from crispy_forms.bootstrap import Field
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Column, Div, Fieldset, Layout, Row, Submit
+import auto_prefetch
 from dal import autocomplete
 from django import forms
 from django.conf import settings
@@ -27,7 +25,7 @@ from .models import (
 
 
 class MovieForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Movie
         exclude = ["created_by", "updated_by", "creators", "casts", "locked"]
         fields = "__all__"
@@ -60,7 +58,7 @@ class MovieForm(forms.ModelForm):
 
 
 class MovieReleaseDateForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = MovieReleaseDate
         fields = ("region", "release_date")
 
@@ -98,7 +96,7 @@ MovieReleaseDateFormSet = inlineformset_factory(
 class MovieRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="watch", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = MovieRole
         fields = ("creator", "role", "domain", "alt_name")
 
@@ -147,7 +145,7 @@ MovieRoleFormSet = inlineformset_factory(
 class MovieCastForm(forms.ModelForm):
     domain = forms.CharField(initial="watch", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = MovieCast
         fields = ("creator", "role", "domain", "character_name")
 
@@ -194,7 +192,7 @@ MovieCastFormSet = inlineformset_factory(
 
 
 class SeriesForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Series
         exclude = ["created_by", "updated_by", "creators", "locked"]
         fields = "__all__"
@@ -229,7 +227,7 @@ class SeriesForm(forms.ModelForm):
 class SeriesRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="watch", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = SeriesRole
         fields = ("creator", "role", "domain", "alt_name")
 
@@ -276,7 +274,7 @@ SeriesRoleFormSet = inlineformset_factory(
 
 
 class EpisodeForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Episode
         exclude = ["created_by", "updated_by", "creators", "casts", "locked"]
         fields = "__all__"
@@ -298,7 +296,7 @@ class EpisodeForm(forms.ModelForm):
 class EpisodeRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="watch", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = EpisodeRole
         fields = ("creator", "role", "domain", "alt_name")
 
@@ -347,7 +345,7 @@ EpisodeRoleFormSet = inlineformset_factory(
 class EpisodeCastForm(forms.ModelForm):
     domain = forms.CharField(initial="watch", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = EpisodeCast
         fields = ("creator", "role", "domain", "character_name")
 
@@ -394,7 +392,7 @@ EpisodeCastFormSet = inlineformset_factory(
 
 
 class WatchCheckInForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = WatchCheckIn
         fields = [
             "content_type",
@@ -427,7 +425,7 @@ class WatchCheckInForm(forms.ModelForm):
 
 
 class CollectionForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Collection
         fields = ["title", "notes"]
 
@@ -435,7 +433,7 @@ class CollectionForm(forms.ModelForm):
 class ContentInCollectionForm(forms.ModelForm):
     content_url = forms.URLField()
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = ContentInCollection
         fields = ["content_url", "order"]
         exclude = ["collection"]

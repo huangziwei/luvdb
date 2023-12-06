@@ -2,6 +2,7 @@ import os
 import uuid
 from io import BytesIO
 
+import auto_prefetch
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -32,14 +33,14 @@ def rename_movie_poster(instance, filename):
     return os.path.join("posters", directory_name, new_name)
 
 
-class Genre(models.Model):
+class Genre(auto_prefetch.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
 
-class Movie(models.Model):
+class Movie(auto_prefetch.Model):
     # admin
     locked = models.BooleanField(default=False)
 
@@ -55,7 +56,7 @@ class Movie(models.Model):
     casts = models.ManyToManyField(
         Creator, through="MovieCast", related_name="movies_cast"
     )
-    based_on = models.ForeignKey(
+    based_on = auto_prefetch.ForeignKey(
         LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="movies"
     )
 
@@ -75,13 +76,13 @@ class Movie(models.Model):
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="movies_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="movies_updated",
         on_delete=models.SET_NULL,
@@ -142,12 +143,12 @@ class Movie(models.Model):
         return "Movie"
 
 
-class MovieReleaseDate(models.Model):
+class MovieReleaseDate(auto_prefetch.Model):
     """
     A Release Date with region of a Movie
     """
 
-    movie = models.ForeignKey(
+    movie = auto_prefetch.ForeignKey(
         Movie, on_delete=models.CASCADE, related_name="region_release_dates"
     )
     region = models.CharField(max_length=100, blank=True, null=True)
@@ -158,18 +159,20 @@ class MovieReleaseDate(models.Model):
         return f"{self.movie} - {self.region} - {self.release_date}"
 
 
-class MovieRole(models.Model):
+class MovieRole(auto_prefetch.Model):
     """
     A Role of a Creator in a Movie
     """
 
-    movie = models.ForeignKey(
+    movie = auto_prefetch.ForeignKey(
         Movie, on_delete=models.CASCADE, related_name="movieroles"
     )
-    creator = models.ForeignKey(
+    creator = auto_prefetch.ForeignKey(
         Creator, on_delete=models.CASCADE, null=True, blank=True
     )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
     alt_name = models.CharField(max_length=100, blank=True, null=True)
     history = HistoricalRecords(inherit=True)
 
@@ -177,18 +180,20 @@ class MovieRole(models.Model):
         return f"{self.movie} - {self.creator} - {self.role}"
 
 
-class MovieCast(models.Model):
+class MovieCast(auto_prefetch.Model):
     """
     A Cast in a Game
     """
 
-    movie = models.ForeignKey(
+    movie = auto_prefetch.ForeignKey(
         Movie, on_delete=models.CASCADE, related_name="moviecasts"
     )
-    creator = models.ForeignKey(
+    creator = auto_prefetch.ForeignKey(
         Creator, on_delete=models.CASCADE, null=True, blank=True
     )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
     character_name = models.CharField(max_length=100, blank=True, null=True)
     history = HistoricalRecords(inherit=True)
 
@@ -196,7 +201,7 @@ class MovieCast(models.Model):
         return f"{self.movie} - {self.creator} - {self.role}"
 
 
-class Series(models.Model):
+class Series(auto_prefetch.Model):
     # admin
     locked = models.BooleanField(default=False)
 
@@ -219,7 +224,7 @@ class Series(models.Model):
     duration = models.CharField(max_length=10, blank=True, null=True)
     languages = LanguageField(blank=True, null=True)
     genres = models.ManyToManyField(Genre, related_name="series", blank=True)
-    based_on = models.ForeignKey(
+    based_on = auto_prefetch.ForeignKey(
         LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="series"
     )
     imdb = models.URLField(blank=True, null=True)
@@ -228,13 +233,13 @@ class Series(models.Model):
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="watch_series_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="watch_series_updated",
         on_delete=models.SET_NULL,
@@ -294,18 +299,20 @@ class Series(models.Model):
         return "Series"
 
 
-class SeriesRole(models.Model):
+class SeriesRole(auto_prefetch.Model):
     """
     A Role of a Creator in a Movie
     """
 
-    series = models.ForeignKey(
+    series = auto_prefetch.ForeignKey(
         Series, on_delete=models.CASCADE, related_name="seriesroles"
     )
-    creator = models.ForeignKey(
+    creator = auto_prefetch.ForeignKey(
         Creator, on_delete=models.CASCADE, null=True, blank=True
     )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
     alt_name = models.CharField(max_length=100, blank=True, null=True)
     history = HistoricalRecords(inherit=True)
 
@@ -313,12 +320,12 @@ class SeriesRole(models.Model):
         return f"{self.series} - {self.creator} - {self.role}"
 
 
-class Episode(models.Model):
+class Episode(auto_prefetch.Model):
     # admin
     locked = models.BooleanField(default=False)
 
     # episode meta data
-    series = models.ForeignKey(
+    series = auto_prefetch.ForeignKey(
         Series, on_delete=models.CASCADE, related_name="episodes"
     )
     title = models.CharField(max_length=255, blank=True, null=True)
@@ -345,18 +352,20 @@ class Episode(models.Model):
         return reverse("watch:episode_detail", args=[str(self.series.id), str(self.id)])
 
 
-class EpisodeRole(models.Model):
+class EpisodeRole(auto_prefetch.Model):
     """
     A Role of a Creator in a Movie
     """
 
-    episode = models.ForeignKey(
+    episode = auto_prefetch.ForeignKey(
         Episode, on_delete=models.CASCADE, related_name="episoderoles"
     )
-    creator = models.ForeignKey(
+    creator = auto_prefetch.ForeignKey(
         Creator, on_delete=models.CASCADE, null=True, blank=True
     )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
     alt_name = models.CharField(max_length=100, blank=True, null=True)
     history = HistoricalRecords(inherit=True)
 
@@ -364,18 +373,20 @@ class EpisodeRole(models.Model):
         return f"{self.episode} - {self.creator} - {self.role}"
 
 
-class EpisodeCast(models.Model):
+class EpisodeCast(auto_prefetch.Model):
     """
     A Cast in a Game
     """
 
-    episode = models.ForeignKey(
+    episode = auto_prefetch.ForeignKey(
         Episode, on_delete=models.CASCADE, related_name="episodecasts"
     )
-    creator = models.ForeignKey(
+    creator = auto_prefetch.ForeignKey(
         Creator, on_delete=models.CASCADE, null=True, blank=True
     )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
     character_name = models.CharField(max_length=100, blank=True, null=True)
     history = HistoricalRecords(inherit=True)
 
@@ -383,11 +394,13 @@ class EpisodeCast(models.Model):
         return f"{self.episode} - {self.creator} - {self.role}"
 
 
-class WatchCheckIn(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+class WatchCheckIn(auto_prefetch.Model):
+    content_type = auto_prefetch.ForeignKey(
+        ContentType, on_delete=models.CASCADE, null=True
+    )
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey("content_type", "object_id")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = auto_prefetch.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ("to_watch", "To Watch"),
         ("watching", "Watching"),
@@ -520,7 +533,7 @@ class WatchCheckIn(models.Model):
         create_mentions_notifications(self.user, self.content, self)
 
 
-class Collection(models.Model):
+class Collection(auto_prefetch.Model):
     # admin
     locked = models.BooleanField(default=False)
 
@@ -528,13 +541,13 @@ class Collection(models.Model):
     title = models.CharField(max_length=100)
     notes = models.TextField(null=True, blank=True)
 
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="collection_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="collection_updated",
         on_delete=models.SET_NULL,
@@ -549,20 +562,20 @@ class Collection(models.Model):
         return reverse("watch:collection_detail", args=[str(self.id)])
 
 
-class ContentInCollection(models.Model):
-    collection = models.ForeignKey(
+class ContentInCollection(auto_prefetch.Model):
+    collection = auto_prefetch.ForeignKey(
         Collection, related_name="contents", on_delete=models.CASCADE
     )
     order = models.PositiveIntegerField(null=True, blank=True)
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = auto_prefetch.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
     comment = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         ordering = ["order"]
 
     def __str__(self):

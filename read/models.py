@@ -3,6 +3,7 @@ import re
 import uuid
 from io import BytesIO
 
+import auto_prefetch
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -97,7 +98,7 @@ def standardize_date(date_str):
 # models
 
 
-class Genre(models.Model):
+class Genre(auto_prefetch.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
 
@@ -110,7 +111,7 @@ class Genre(models.Model):
         return self.name
 
 
-class Work(models.Model):  # Renamed from Book
+class Work(auto_prefetch.Model):  # Renamed from Book
     """
     A Work entity
     """
@@ -148,13 +149,13 @@ class Work(models.Model):  # Renamed from Book
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="works_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="works_updated",
         on_delete=models.SET_NULL,
@@ -180,20 +181,20 @@ class Work(models.Model):  # Renamed from Book
         return "Work"
 
 
-class WorkRole(models.Model):  # Renamed from BookRole
+class WorkRole(auto_prefetch.Model):  # Renamed from BookRole
     """
     A Role of a Creator in a Work
     """
 
-    work = models.ForeignKey(Work, on_delete=models.CASCADE)
-    creator = models.ForeignKey(
+    work = auto_prefetch.ForeignKey(Work, on_delete=models.CASCADE)
+    creator = auto_prefetch.ForeignKey(
         Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_name="read_workrole_set",
     )
-    role = models.ForeignKey(
+    role = auto_prefetch.ForeignKey(
         Role,
         on_delete=models.CASCADE,
         null=True,
@@ -208,7 +209,7 @@ class WorkRole(models.Model):  # Renamed from BookRole
         return f"{self.work} - {self.creator} - {self.role}"
 
 
-class Instance(models.Model):
+class Instance(auto_prefetch.Model):
     """
     An Instance is a manifestation of a Work,
     that is, a specific edition, a translation, an installment of a serialization, etc.
@@ -223,7 +224,7 @@ class Instance(models.Model):
     creators = models.ManyToManyField(
         Creator, through="InstanceRole", related_name="instances"
     )
-    work = models.ForeignKey(
+    work = auto_prefetch.ForeignKey(
         Work, on_delete=models.SET_NULL, null=True, blank=True, related_name="instances"
     )
     publication_date = models.TextField(blank=True, null=True)
@@ -237,13 +238,13 @@ class Instance(models.Model):
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="instances_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="instances_updated",
         on_delete=models.SET_NULL,
@@ -268,13 +269,15 @@ class Instance(models.Model):
         return "Instance"
 
 
-class InstanceRole(models.Model):
-    instance = models.ForeignKey(Instance, on_delete=models.CASCADE)
-    creator = models.ForeignKey(
+class InstanceRole(auto_prefetch.Model):
+    instance = auto_prefetch.ForeignKey(Instance, on_delete=models.CASCADE)
+    creator = auto_prefetch.ForeignKey(
         Creator, on_delete=models.CASCADE, null=True, blank=True
     )
     alt_name = models.CharField(max_length=255, blank=True, null=True)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
 
     history = HistoricalRecords(inherit=True)
 
@@ -282,7 +285,7 @@ class InstanceRole(models.Model):
         return f"{self.instance} - {self.creator} - {self.role}"
 
 
-class Book(models.Model):
+class Book(auto_prefetch.Model):
     """
     A Book entity of an Instance
     """
@@ -299,7 +302,7 @@ class Book(models.Model):
     instances = models.ManyToManyField(
         Instance, through="BookInstance", related_name="books"
     )
-    publisher = models.ForeignKey(
+    publisher = auto_prefetch.ForeignKey(
         Company,
         on_delete=models.SET_NULL,
         related_name="books",
@@ -348,13 +351,13 @@ class Book(models.Model):
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="books_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="books_updated",
         on_delete=models.SET_NULL,
@@ -427,16 +430,18 @@ class Book(models.Model):
         super().save(*args, **kwargs)
 
 
-class BookRole(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    creator = models.ForeignKey(
+class BookRole(auto_prefetch.Model):
+    book = auto_prefetch.ForeignKey(Book, on_delete=models.CASCADE)
+    creator = auto_prefetch.ForeignKey(
         Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_query_name="book_roles",
     )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
     alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     history = HistoricalRecords(inherit=True)
@@ -445,9 +450,9 @@ class BookRole(models.Model):
         return f"{self.book} - {self.alt_name or self.creator.name} - {self.role}"
 
 
-class BookInstance(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    instance = models.ForeignKey(
+class BookInstance(auto_prefetch.Model):
+    book = auto_prefetch.ForeignKey(Book, on_delete=models.CASCADE)
+    instance = auto_prefetch.ForeignKey(
         Instance, on_delete=models.CASCADE, null=True, blank=True
     )
     order = models.PositiveIntegerField(
@@ -456,7 +461,7 @@ class BookInstance(models.Model):
 
     # history = HistoricalRecords(inherit=True)
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         ordering = ["order"]
 
     def __str__(self):
@@ -474,11 +479,13 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         instance.cover.delete(save=False)
 
 
-class ReadCheckIn(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+class ReadCheckIn(auto_prefetch.Model):
+    content_type = auto_prefetch.ForeignKey(
+        ContentType, on_delete=models.CASCADE, null=True
+    )
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey("content_type", "object_id")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = auto_prefetch.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ("to_read", "To Read"),
         ("reading", "Reading"),
@@ -536,7 +543,7 @@ class ReadCheckIn(models.Model):
 
     def model_name(self):
         return "Read Check-In"
-    
+
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         was_updated = False
@@ -615,7 +622,7 @@ class ReadCheckIn(models.Model):
         create_mentions_notifications(self.user, self.content, self)
 
 
-class Periodical(models.Model):
+class Periodical(auto_prefetch.Model):
     # admin
     locked = models.BooleanField(default=False)
 
@@ -651,13 +658,13 @@ class Periodical(models.Model):
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="periodicals_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="periodicals_updated",
         on_delete=models.SET_NULL,
@@ -670,15 +677,15 @@ class Periodical(models.Model):
         return self.title
 
 
-class Issue(models.Model):
+class Issue(auto_prefetch.Model):
     # admin
     locked = models.BooleanField(default=False)
 
     # issue meta data
-    periodical = models.ForeignKey(
+    periodical = auto_prefetch.ForeignKey(
         Periodical, on_delete=models.CASCADE, related_name="issues"
     )
-    publisher = models.ForeignKey(
+    publisher = auto_prefetch.ForeignKey(
         Company,
         on_delete=models.SET_NULL,
         related_name="published_issues",
@@ -701,13 +708,13 @@ class Issue(models.Model):
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="issues_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="issues_updated",
         on_delete=models.SET_NULL,
@@ -781,9 +788,9 @@ class Issue(models.Model):
         super().save(*args, **kwargs)
 
 
-class IssueInstance(models.Model):
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
-    instance = models.ForeignKey(
+class IssueInstance(auto_prefetch.Model):
+    issue = auto_prefetch.ForeignKey(Issue, on_delete=models.CASCADE)
+    instance = auto_prefetch.ForeignKey(
         Instance, on_delete=models.CASCADE, null=True, blank=True
     )
     order = models.PositiveIntegerField(
@@ -792,14 +799,14 @@ class IssueInstance(models.Model):
 
     history = HistoricalRecords(inherit=True)
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         ordering = ["order"]
 
     def __str__(self):
         return f"{self.issue} - {self.instance} - {self.order}"
 
 
-class BookSeries(models.Model):
+class BookSeries(auto_prefetch.Model):
     # admin
     locked = models.BooleanField(default=False)
 
@@ -808,13 +815,13 @@ class BookSeries(models.Model):
     books = models.ManyToManyField(Book, through="BookInSeries", related_name="series")
     notes = models.TextField(null=True, blank=True)
 
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="bookseries_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="bookseries_updated",
         on_delete=models.SET_NULL,
@@ -830,13 +837,13 @@ class BookSeries(models.Model):
         return reverse("read:series_detail", args=[str(self.id)])
 
 
-class BookInSeries(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    series = models.ForeignKey(BookSeries, on_delete=models.CASCADE)
+class BookInSeries(auto_prefetch.Model):
+    book = auto_prefetch.ForeignKey(Book, on_delete=models.CASCADE)
+    series = auto_prefetch.ForeignKey(BookSeries, on_delete=models.CASCADE)
     order = models.PositiveIntegerField()
     history = HistoricalRecords(inherit=True)
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         ordering = ["order"]
 
     def __str__(self):

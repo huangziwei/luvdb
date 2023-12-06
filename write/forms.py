@@ -1,5 +1,6 @@
 from urllib.parse import urlparse
 
+import auto_prefetch
 from dal import autocomplete
 from django import forms
 from django.contrib.auth import get_user_model, settings
@@ -13,7 +14,7 @@ User = get_user_model()
 
 
 class PostForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Post
         fields = ["title", "content", "comments_enabled", "projects", "share_to_feed"]
         widgets = {
@@ -43,7 +44,7 @@ class PostForm(forms.ModelForm):
 
 
 class SayForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Say
         fields = ["content", "comments_enabled"]
         widgets = {
@@ -62,7 +63,7 @@ class SayForm(forms.ModelForm):
 
 
 class PinForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Pin
         fields = ["title", "url", "content", "comments_enabled", "share_to_feed"]
         widgets = {
@@ -87,7 +88,7 @@ class PinForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea(attrs={"id": "text-input"}))
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Comment
         fields = ["content"]
 
@@ -112,7 +113,7 @@ class ActivityFeedSayForm(SayForm):
 class RepostForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea(attrs={"id": "text-input"}))
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Repost
         fields = ["content", "comments_enabled"]
 
@@ -124,7 +125,7 @@ class RepostForm(forms.ModelForm):
 
 
 class LuvListForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = LuvList
         fields = [
             "title",
@@ -147,7 +148,7 @@ class ContentInListForm(forms.ModelForm):
         )
     )
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = ContentInList
         fields = ["content_url", "order", "comment"]
         exclude = ["luv_list"]

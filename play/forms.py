@@ -1,5 +1,6 @@
 import re
 
+import auto_prefetch
 from dal import autocomplete
 from django import forms
 from django.conf import settings
@@ -21,7 +22,7 @@ from .models import (
 
 
 class WorkForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Work
         exclude = ["created_by", "updated_by", "creators", "casts", "locked"]
         fields = "__all__"
@@ -49,7 +50,7 @@ class WorkForm(forms.ModelForm):
 class WorkRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="play", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = WorkRole
         fields = ("creator", "role", "domain", "alt_name")
 
@@ -96,7 +97,7 @@ WorkRoleFormSet = inlineformset_factory(
 
 
 class GameForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Game
         exclude = ["created_by", "updated_by", "creators", "casts", "locked"]
         fields = "__all__"
@@ -135,7 +136,7 @@ class GameForm(forms.ModelForm):
 
 
 class GameReleaseDateForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = GameReleaseDate
         fields = ("region", "release_date")
 
@@ -173,7 +174,7 @@ GameReleaseDateFormSet = inlineformset_factory(
 class GameRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="play", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = GameRole
         fields = ("creator", "role", "domain", "alt_name")
 
@@ -222,7 +223,7 @@ GameRoleFormSet = inlineformset_factory(
 class GameCastForm(forms.ModelForm):
     domain = forms.CharField(initial="play", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = GameCast
         fields = ("creator", "role", "domain", "character_name")
 
@@ -269,7 +270,7 @@ GameCastFormSet = inlineformset_factory(
 
 
 class PlayCheckInForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = PlayCheckIn
         fields = [
             "content_type",
@@ -303,7 +304,7 @@ class PlayCheckInForm(forms.ModelForm):
 
 
 class GameSeriesForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = GameSeries
         fields = ["title", "other_titles", "description", "wikipedia"]
         widgets = {
@@ -320,7 +321,7 @@ class GameSeriesForm(forms.ModelForm):
 class GameInSeriesForm(forms.ModelForm):
     game_url = forms.URLField()
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = GameInSeries
         fields = ["game_url", "order"]
         exclude = ["series"]

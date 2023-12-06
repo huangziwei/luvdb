@@ -1,5 +1,6 @@
 import re
 
+import auto_prefetch
 from dal import autocomplete
 from django import forms
 from django.conf import settings
@@ -30,7 +31,7 @@ from .models import (
 # Work #
 ########
 class WorkForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Work
         exclude = ["created_by", "updated_by", "creators", "locked"]
         fields = "__all__"
@@ -60,7 +61,7 @@ class WorkForm(forms.ModelForm):
 class WorkRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="read", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = WorkRole
         fields = ["creator", "alt_name", "role", "domain"]
 
@@ -110,7 +111,7 @@ WorkRoleFormSet = inlineformset_factory(
 # Instance #
 ###########
 class InstanceForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Instance
         exclude = ["created_by", "updated_by", "creators", "locked"]
         fields = "__all__"
@@ -137,7 +138,7 @@ class InstanceForm(forms.ModelForm):
 class InstanceRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="read", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = InstanceRole
         fields = ["creator", "alt_name", "role", "domain"]
 
@@ -187,7 +188,7 @@ InstanceRoleFormSet = inlineformset_factory(
 # Book #
 ########
 class BookForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Book
         exclude = [
             "created_by",
@@ -233,7 +234,7 @@ class BookRoleForm(forms.ModelForm):
             # If "Performer" role does not exist, the initial will be None as before
             pass
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = BookRole
         fields = ("creator", "role", "domain", "alt_name")
 
@@ -283,7 +284,7 @@ BookRoleFormSet = inlineformset_factory(
 
 
 class BookInstanceForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = BookInstance
         fields = ["instance", "order"]
 
@@ -314,7 +315,7 @@ BookInstanceFormSet = inlineformset_factory(
 
 
 class PeriodicalForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Periodical
         fields = [
             "title",
@@ -335,7 +336,7 @@ class PeriodicalForm(forms.ModelForm):
 
 
 class IssueForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Issue
         fields = [
             "periodical",
@@ -363,7 +364,7 @@ class IssueForm(forms.ModelForm):
 
 
 class IssueInstanceForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = IssueInstance
         fields = ["instance", "order"]
         widgets = {
@@ -384,7 +385,7 @@ IssueInstanceFormSet = inlineformset_factory(
 
 
 class ReadCheckInForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = ReadCheckIn
         fields = [
             "content_type",
@@ -417,7 +418,7 @@ class ReadCheckInForm(forms.ModelForm):
 
 
 class BookSeriesForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = BookSeries
         fields = ["title", "notes"]
 
@@ -425,7 +426,7 @@ class BookSeriesForm(forms.ModelForm):
 class BookInSeriesForm(forms.ModelForm):
     book_url = forms.URLField()
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = BookInSeries
         fields = ["book_url", "order"]
         exclude = ["series"]

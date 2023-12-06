@@ -8,6 +8,7 @@ django-reversion
 django-autocomplete-light
 django-cors-headers
 django-simple-history
+django-auto-prefetch
 black
 isort
 whitenoise

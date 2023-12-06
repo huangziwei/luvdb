@@ -1,3 +1,4 @@
+import auto_prefetch
 import pycountry
 from django.conf import settings
 from django.db import models
@@ -53,7 +54,7 @@ class LanguageField(models.CharField):
 
 
 # Create your models here.
-class Entity(models.Model):
+class Entity(auto_prefetch.Model):
     """
     An Entity base model
     """
@@ -70,13 +71,13 @@ class Entity(models.Model):
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="%(class)s_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="%(class)s_updated",
         on_delete=models.SET_NULL,
@@ -85,7 +86,7 @@ class Entity(models.Model):
 
     history = HistoricalRecords(inherit=True)
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         abstract = True
 
     def __str__(self):
@@ -127,7 +128,7 @@ class Creator(Entity):
         return reverse("entity:creator_detail", kwargs={"pk": self.pk})
 
 
-class Role(models.Model):
+class Role(auto_prefetch.Model):
     DOMAIN_CHOICES = (
         ("read", "Read"),
         ("listen", "Listen"),
@@ -139,7 +140,7 @@ class Role(models.Model):
     name = models.CharField(max_length=255)
     domain = models.CharField(max_length=20, choices=DOMAIN_CHOICES)
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         unique_together = ("name", "domain")
 
     def __str__(self):

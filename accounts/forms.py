@@ -1,3 +1,4 @@
+import auto_prefetch
 import pytz
 from django import forms
 from django.contrib.auth import get_user_model
@@ -22,7 +23,7 @@ class CustomUserCreationForm(UserCreationForm):
         required=True, help_text="Enter the invitation code you received"
     )
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = User
         fields = ("username", "invitation_code")
 
@@ -76,7 +77,7 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserChangeForm(UserChangeForm):
     timezone = forms.ChoiceField(choices=[(tz, tz) for tz in pytz.all_timezones])
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = User
         fields = (
             "username",
@@ -101,7 +102,7 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class EmailRequestForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = InvitationRequest
         fields = ["email"]
         widgets = {
@@ -112,7 +113,7 @@ class EmailRequestForm(forms.ModelForm):
 
 
 class InvitationRequestForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = InvitationRequest
         fields = ["email", "about_me"]
         widgets = {
@@ -126,7 +127,7 @@ class InvitationRequestForm(forms.ModelForm):
 
 
 class AppPasswordForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = AppPassword
         fields = ["name"]
         widgets = {
@@ -141,7 +142,7 @@ class BlueSkyAccountForm(forms.ModelForm):
         label="App Password",
     )
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = BlueSkyAccount
         fields = ["bluesky_handle", "bluesky_pds_url", "bluesky_app_password"]
         help_texts = {
@@ -180,7 +181,7 @@ class MastodonAccountForm(forms.ModelForm):
         help_text="You can get this from your Mastodon account settings. Specifically, go to Preferences > Development > New application.",
     )
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = MastodonAccount
         fields = ["mastodon_handle", "mastodon_access_token"]
         labels = {

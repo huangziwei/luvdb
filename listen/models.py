@@ -2,6 +2,7 @@ import os
 import uuid
 from io import BytesIO
 
+import auto_prefetch
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -40,7 +41,7 @@ def rename_release_cover(instance, filename):
     return os.path.join("covers", directory_name, new_name)
 
 
-class Genre(models.Model):
+class Genre(auto_prefetch.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
 
@@ -53,7 +54,7 @@ class Genre(models.Model):
         return self.name
 
 
-class Work(models.Model):
+class Work(auto_prefetch.Model):
     # admin
     locked = models.BooleanField(default=False)
 
@@ -79,16 +80,16 @@ class Work(models.Model):
         return reverse("listen:work_detail", kwargs={"pk": self.pk})
 
 
-class WorkRole(models.Model):
-    work = models.ForeignKey(Work, on_delete=models.CASCADE)
-    creator = models.ForeignKey(
+class WorkRole(auto_prefetch.Model):
+    work = auto_prefetch.ForeignKey(Work, on_delete=models.CASCADE)
+    creator = auto_prefetch.ForeignKey(
         Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_name="listen_workrole_set",
     )
-    role = models.ForeignKey(
+    role = auto_prefetch.ForeignKey(
         Role,
         on_delete=models.CASCADE,
         null=True,
@@ -102,7 +103,7 @@ class WorkRole(models.Model):
         return f"{self.role} of {self.work} by {self.creator}"
 
 
-class Track(models.Model):
+class Track(auto_prefetch.Model):
     """
     A Work entity
     """
@@ -117,7 +118,7 @@ class Track(models.Model):
     creators = models.ManyToManyField(
         Creator, through="TrackRole", related_name="tracks"
     )
-    work = models.ForeignKey(
+    work = auto_prefetch.ForeignKey(
         Work, on_delete=models.SET_NULL, null=True, blank=True, related_name="tracks"
     )
     release_date = models.CharField(max_length=10, blank=True, null=True)
@@ -135,13 +136,13 @@ class Track(models.Model):
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="tracks_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="tracks_updated",
         on_delete=models.SET_NULL,
@@ -156,12 +157,14 @@ class Track(models.Model):
         return reverse("listen:track_detail", kwargs={"pk": self.pk})
 
 
-class TrackRole(models.Model):
-    track = models.ForeignKey(Track, on_delete=models.CASCADE)
-    creator = models.ForeignKey(
+class TrackRole(auto_prefetch.Model):
+    track = auto_prefetch.ForeignKey(Track, on_delete=models.CASCADE)
+    creator = auto_prefetch.ForeignKey(
         Creator, on_delete=models.CASCADE, null=True, blank=True
     )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
     alt_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
@@ -169,7 +172,7 @@ class TrackRole(models.Model):
 
 
 # Release
-class Release(models.Model):
+class Release(auto_prefetch.Model):
     """
     An Release Entity
     """
@@ -237,13 +240,13 @@ class Release(models.Model):
     # Entry metadata
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="releases_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="releases_updated",
         on_delete=models.SET_NULL,
@@ -306,16 +309,18 @@ class Release(models.Model):
         return "Release"
 
 
-class ReleaseRole(models.Model):
-    release = models.ForeignKey(Release, on_delete=models.CASCADE)
-    creator = models.ForeignKey(
+class ReleaseRole(auto_prefetch.Model):
+    release = auto_prefetch.ForeignKey(Release, on_delete=models.CASCADE)
+    creator = auto_prefetch.ForeignKey(
         Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_query_name="release_roles",
     )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
     alt_name = models.CharField(max_length=255, blank=True, null=True)
     history = HistoricalRecords(inherit=True)
 
@@ -323,26 +328,30 @@ class ReleaseRole(models.Model):
         return f"{self.release} - {self.alt_name or self.creator.name} - {self.role}"
 
 
-class ReleaseTrack(models.Model):
-    release = models.ForeignKey(Release, on_delete=models.CASCADE)
-    track = models.ForeignKey(Track, on_delete=models.CASCADE, null=True, blank=True)
+class ReleaseTrack(auto_prefetch.Model):
+    release = auto_prefetch.ForeignKey(Release, on_delete=models.CASCADE)
+    track = auto_prefetch.ForeignKey(
+        Track, on_delete=models.CASCADE, null=True, blank=True
+    )
     alt_title = models.CharField(max_length=255, blank=True, null=True)
     disk = models.CharField(max_length=10, default="1")
     order = models.PositiveIntegerField(default=1, null=True, blank=True)
     history = HistoricalRecords(inherit=True)
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         ordering = ["disk", "order"]
 
     def __str__(self):
         return f"{self.release.title}, {self.track.title}"
 
 
-class ListenCheckIn(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+class ListenCheckIn(auto_prefetch.Model):
+    content_type = auto_prefetch.ForeignKey(
+        ContentType, on_delete=models.CASCADE, null=True
+    )
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey("content_type", "object_id")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = auto_prefetch.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ("to_listen", "To Listen"),
         ("looping", "Looping"),
@@ -481,7 +490,7 @@ class ListenCheckIn(models.Model):
         create_mentions_notifications(self.user, self.content, self)
 
 
-class Podcast(models.Model):
+class Podcast(auto_prefetch.Model):
     """
     A Podcast Entity
     """
@@ -568,7 +577,7 @@ class Podcast(models.Model):
         super().save(*args, **kwargs)
 
 
-class ReleaseGroup(models.Model):
+class ReleaseGroup(auto_prefetch.Model):
     # admin
     locked = models.BooleanField(default=False)
 
@@ -578,13 +587,13 @@ class ReleaseGroup(models.Model):
         Release, through="ReleaseInGroup", related_name="release_group"
     )
 
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="releasegroup_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="releasegroup_updated",
         on_delete=models.SET_NULL,
@@ -599,18 +608,18 @@ class ReleaseGroup(models.Model):
         return reverse("listen:releasegroup_detail", args=[str(self.id)])
 
 
-class ReleaseInGroup(models.Model):
-    release = models.ForeignKey(Release, on_delete=models.CASCADE)
-    group = models.ForeignKey(ReleaseGroup, on_delete=models.CASCADE)
+class ReleaseInGroup(auto_prefetch.Model):
+    release = auto_prefetch.ForeignKey(Release, on_delete=models.CASCADE)
+    group = auto_prefetch.ForeignKey(ReleaseGroup, on_delete=models.CASCADE)
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         ordering = ["release__release_date"]
 
     def __str__(self):
         return f"{self.group.title}: {self.release.title}"
 
 
-class Audiobook(models.Model):
+class Audiobook(auto_prefetch.Model):
     """
     A Audiobook entity of an Instance
     """
@@ -629,7 +638,7 @@ class Audiobook(models.Model):
     instances = models.ManyToManyField(
         Instance, through="AudiobookInstance", related_name="audiobooks"
     )
-    publisher = models.ForeignKey(
+    publisher = auto_prefetch.ForeignKey(
         Company,
         on_delete=models.SET_NULL,
         related_name="audiobooks",
@@ -655,13 +664,13 @@ class Audiobook(models.Model):
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
+    created_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="audiobooks_created",
         on_delete=models.SET_NULL,
         null=True,
     )
-    updated_by = models.ForeignKey(
+    updated_by = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="audiobooks_updated",
         on_delete=models.SET_NULL,
@@ -732,16 +741,18 @@ class Audiobook(models.Model):
         super().save(*args, **kwargs)
 
 
-class AudiobookRole(models.Model):
-    audiobook = models.ForeignKey(Audiobook, on_delete=models.CASCADE)
-    creator = models.ForeignKey(
+class AudiobookRole(auto_prefetch.Model):
+    audiobook = auto_prefetch.ForeignKey(Audiobook, on_delete=models.CASCADE)
+    creator = auto_prefetch.ForeignKey(
         Creator,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_query_name="book_roles",
     )
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
     alt_name = models.CharField(max_length=255, blank=True, null=True)
     history = HistoricalRecords(inherit=True)
 
@@ -749,16 +760,16 @@ class AudiobookRole(models.Model):
         return f"{self.audiobook} - {self.alt_name or self.creator.name} - {self.role}"
 
 
-class AudiobookInstance(models.Model):
-    audiobook = models.ForeignKey(Audiobook, on_delete=models.CASCADE)
-    instance = models.ForeignKey(
+class AudiobookInstance(auto_prefetch.Model):
+    audiobook = auto_prefetch.ForeignKey(Audiobook, on_delete=models.CASCADE)
+    instance = auto_prefetch.ForeignKey(
         Instance, on_delete=models.CASCADE, null=True, blank=True
     )
     order = models.PositiveIntegerField(
         null=True, blank=True, default=1
     )  # Ordering of the works in a book
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         ordering = ["order"]
 
     def __str__(self):

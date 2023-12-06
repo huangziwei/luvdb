@@ -115,41 +115,20 @@ class AccountDetailView(DetailView):
         # Otherwise, proceed as normal
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        # Define a tuple of acceptable header values
-        acceptable_headers = ("application/activity+json", "application/json")
-
-        # Use any() to check if any acceptable header is in the request's Accept header
-        if any(
-            header in request.headers.get("Accept", "") for header in acceptable_headers
-        ):
-            # Delegate to ap_actor if the header matches
-            return ap_actor(request, *args, **kwargs)
-        else:
-            # Otherwise, proceed as normal
-            return super().get(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.object
 
-        user_posts = self.object.post_set.all().order_by("-timestamp")
-        user_pins = self.object.pin_set.all().order_by("-timestamp")
-        user_says = self.object.say_set.all().order_by("-timestamp")
-        context["posts"] = user_posts
-        context["pins"] = user_pins
-        context["says"] = user_says
-        context["recent_activities"] = Activity.objects.filter(
-            user=self.object
-        ).order_by("-timestamp")[:3]
-        context["recent_following"] = Follow.objects.filter(
-            follower=self.object
-        ).order_by("-timestamp")[:6]
-        context["recent_followers"] = Follow.objects.filter(
-            followed=self.object
-        ).order_by("-timestamp")[:6]
-
-        context["no_citation_css"] = True
-        context["no_text_input"] = True
+        context.update(
+            {
+                "recent_activities": Activity.objects.filter(user=user).order_by(
+                    "-timestamp"
+                )[:3],
+                "recent_following": Follow.objects.filter(follower=user).order_by(
+                    "-timestamp"
+                )[:6],
+            }
+        )
 
         # First, get the latest check-in for each book
         latest_read_checkins = ReadCheckIn.objects.filter(
@@ -168,17 +147,13 @@ class AccountDetailView(DetailView):
         # Then, filter the latest check-ins for each category
         reading = latest_read_checkins.filter(
             status__in=["reading", "rereading"]
-        ).order_by("-timestamp")[:10]
+        ).order_by("-timestamp")[:6]
         read = latest_read_checkins.filter(
             status__in=["finished_reading", "reread", "afterthought"]
-        ).order_by("-timestamp")[:10]
-        to_read = latest_read_checkins.filter(status="to_read").order_by("-timestamp")[
-            :6
-        ]
+        ).order_by("-timestamp")[:6]
 
         context["reading"] = reading
         context["read"] = read
-        context["to_read"] = to_read
         context["does_read_exist"] = read.exists() or reading.exists()
 
         latest_listen_checkins = ListenCheckIn.objects.filter(
@@ -197,24 +172,20 @@ class AccountDetailView(DetailView):
         # Then, filter the latest check-ins for each category and limit the results
         looping = latest_listen_checkins.filter(status="looping").order_by(
             "-timestamp"
-        )[:10]
+        )[:6]
         listening = latest_listen_checkins.filter(status="listening").order_by(
             "-timestamp"
-        )[:10]
+        )[:6]
         listened = latest_listen_checkins.filter(status="listened").order_by(
             "-timestamp"
-        )[:10]
-        to_listen = latest_listen_checkins.filter(status="to_listen").order_by(
-            "-timestamp"
-        )[:10]
+        )[:6]
         subscribed = latest_listen_checkins.filter(status="subscribed").order_by(
             "-timestamp"
-        )[:10]
+        )[:6]
 
         context["looping"] = looping
         context["listening"] = listening
         context["listened"] = listened
-        context["to_listen"] = to_listen
         context["subscribed"] = subscribed
         context["does_listen_exist"] = listened.exists() or looping.exists()
 
@@ -235,17 +206,13 @@ class AccountDetailView(DetailView):
         # Then, filter the latest check-ins for each category and limit the results
         watching = latest_watch_checkins.filter(
             status__in=["watching", "rewatching"]
-        ).order_by("-timestamp")[:10]
+        ).order_by("-timestamp")[:6]
         watched = latest_watch_checkins.filter(
             status__in=["watched", "rewatched"]
-        ).order_by("-timestamp")[:10]
-        to_watch = latest_watch_checkins.filter(status="to_watch").order_by(
-            "-timestamp"
-        )[:10]
+        ).order_by("-timestamp")[:6]
 
         context["watching"] = watching
         context["watched"] = watched
-        context["to_watch"] = to_watch
         context["does_watch_exist"] = watched.exists() or watching.exists()
 
         # First, get the latest check-in for each game
@@ -265,17 +232,13 @@ class AccountDetailView(DetailView):
         # Then, filter the latest check-ins for each category and limit the results
         playing = latest_play_checkins.filter(
             status__in=["playing", "replaying"]
-        ).order_by("-timestamp")[:10]
+        ).order_by("-timestamp")[:6]
         played = latest_play_checkins.filter(
             status__in=["played", "replayed"]
-        ).order_by("-timestamp")[:10]
-        to_play = latest_play_checkins.filter(status="to_play").order_by("-timestamp")[
-            :15
-        ]
+        ).order_by("-timestamp")[:6]
 
         context["playing"] = playing
         context["played"] = played
-        context["to_play"] = to_play
         context["does_play_exist"] = played.exists() or playing.exists()
 
         # Check each activity item for both MathJax and Mermaid requirements
@@ -286,6 +249,7 @@ class AccountDetailView(DetailView):
         # Add the flags to the context
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
+        context["no_citation_css"] = True
 
         return context
 
@@ -321,7 +285,7 @@ def home(request, *args, **kwargs):
 class PersonalActivityFeedView(ListView):
     model = Activity
     template_name = "activity_feed/activity_feed.html"
-    paginate_by = 50
+    paginate_by = 20
 
     def dispatch(self, request, *args, **kwargs):
         # Get the User object

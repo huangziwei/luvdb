@@ -1,5 +1,6 @@
 import re
 
+import auto_prefetch
 from dal import autocomplete
 from django import forms
 from django.conf import settings
@@ -30,7 +31,7 @@ from .models import (
 # Work #
 ########
 class WorkForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Work
         exclude = ["created_by", "updated_by", "creators", "locked"]
         fields = "__all__"
@@ -61,7 +62,7 @@ class WorkForm(forms.ModelForm):
 class WorkRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="listen", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = WorkRole
         fields = ["creator", "alt_name", "role", "domain"]
 
@@ -108,7 +109,7 @@ WorkRoleFormSet = inlineformset_factory(
 
 
 class TrackForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Track
         exclude = ["created_by", "updated_by", "creators", "locked"]
         fields = "__all__"
@@ -141,7 +142,7 @@ class TrackForm(forms.ModelForm):
 class TrackRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="listen", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = TrackRole
         fields = ["creator", "alt_name", "role", "domain"]
 
@@ -191,7 +192,7 @@ TrackRoleFormSet = inlineformset_factory(
 # Release #
 ###########
 class ReleaseForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Release
         exclude = ["created_by", "updated_by", "works", "tracks", "creators", "locked"]
         fields = "__all__"
@@ -224,7 +225,7 @@ class ReleaseForm(forms.ModelForm):
 class ReleaseRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="listen", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = ReleaseRole
         fields = ("creator", "role", "domain", "alt_name")
 
@@ -284,7 +285,7 @@ ReleaseRoleFormSet = inlineformset_factory(
 
 
 class ReleaseTrackForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = ReleaseTrack
         fields = ["track", "alt_title", "order", "disk"]
 
@@ -315,7 +316,7 @@ ReleaseTrackFormSet = inlineformset_factory(
 
 
 class ListenCheckInForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = ListenCheckIn
         fields = [
             "content_type",
@@ -353,7 +354,7 @@ class ListenCheckInForm(forms.ModelForm):
 
 
 class ReleaseGroupForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = ReleaseGroup
         fields = ["title"]
 
@@ -361,7 +362,7 @@ class ReleaseGroupForm(forms.ModelForm):
 class ReleaseInGroupForm(forms.ModelForm):
     release_url = forms.URLField()
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = ReleaseInGroup
         fields = ["release_url"]
         exclude = ["release_group"]
@@ -406,7 +407,7 @@ ReleaseInGroupFormSet = forms.inlineformset_factory(
 # Audiobook #
 #############
 class AudiobookForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = Audiobook
         exclude = [
             "created_by",
@@ -442,7 +443,7 @@ class AudiobookForm(forms.ModelForm):
 class AudiobookRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="read", widget=forms.HiddenInput())
 
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = AudiobookRole
         fields = ("creator", "role", "domain", "alt_name")
 
@@ -492,7 +493,7 @@ AudiobookRoleFormSet = inlineformset_factory(
 
 
 class AudiobookInstanceForm(forms.ModelForm):
-    class Meta:
+    class Meta(auto_prefetch.Model.Meta):
         model = AudiobookInstance
         fields = ["instance", "order"]
 
