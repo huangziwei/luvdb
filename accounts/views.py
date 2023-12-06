@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
-from django.db.models import Count, Min, OuterRef, Q, Subquery
+from django.db.models import Count, Max, Min, OuterRef, Q, Subquery
 from django.http import (
     Http404,
     HttpResponse,
@@ -97,7 +97,22 @@ class SignUpView(CreateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+def get_latest_checkins(user, checkin_model):
+    return checkin_model.objects.filter(
+        user=user,
+        timestamp=Subquery(
+            checkin_model.objects.filter(
+                content_type=OuterRef("content_type"),
+                object_id=OuterRef("object_id"),
+                user=user,
+            )
+            .order_by("-timestamp")
+            .values("timestamp")[:1]
+        ),
+    )
+
+
+@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
 class AccountDetailView(DetailView):
     """Detail view for user accounts."""
 
@@ -130,21 +145,19 @@ class AccountDetailView(DetailView):
             }
         )
 
-        # First, get the latest check-in for each book
-        latest_read_checkins = ReadCheckIn.objects.filter(
-            user=self.object,
-            timestamp=Subquery(
-                ReadCheckIn.objects.filter(
-                    user=self.object,
-                    content_type=OuterRef("content_type"),
-                    object_id=OuterRef("object_id"),
-                )
-                .order_by("-timestamp")
-                .values("timestamp")[:1]
-            ),
+        latest_read_checkins = get_latest_checkins(
+            user=self.object, checkin_model=ReadCheckIn
+        )
+        latest_listen_checkins = get_latest_checkins(
+            user=self.object, checkin_model=ListenCheckIn
+        )
+        latest_watch_checkins = get_latest_checkins(
+            user=self.object, checkin_model=WatchCheckIn
+        )
+        latest_play_checkins = get_latest_checkins(
+            user=self.object, checkin_model=PlayCheckIn
         )
 
-        # Then, filter the latest check-ins for each category
         reading = latest_read_checkins.filter(
             status__in=["reading", "rereading"]
         ).order_by("-timestamp")[:6]
@@ -156,29 +169,15 @@ class AccountDetailView(DetailView):
         context["read"] = read
         context["does_read_exist"] = read.exists() or reading.exists()
 
-        latest_listen_checkins = ListenCheckIn.objects.filter(
-            user=self.object,
-            timestamp=Subquery(
-                ListenCheckIn.objects.filter(
-                    user=self.object,
-                    content_type=OuterRef("content_type"),
-                    object_id=OuterRef("object_id"),
-                )
-                .order_by("-timestamp")
-                .values("timestamp")[:1]
-            ),
-        )
-
-        # Then, filter the latest check-ins for each category and limit the results
         looping = latest_listen_checkins.filter(status="looping").order_by(
             "-timestamp"
         )[:6]
-        listening = latest_listen_checkins.filter(status="listening").order_by(
-            "-timestamp"
-        )[:6]
-        listened = latest_listen_checkins.filter(status="listened").order_by(
-            "-timestamp"
-        )[:6]
+        listening = latest_listen_checkins.filter(
+            status__in=["listening", "relistening"]
+        ).order_by("-timestamp")[:6]
+        listened = latest_listen_checkins.filter(
+            status__in=["listened", "relistened"]
+        ).order_by("-timestamp")[:6]
         subscribed = latest_listen_checkins.filter(status="subscribed").order_by(
             "-timestamp"
         )[:6]
@@ -189,21 +188,6 @@ class AccountDetailView(DetailView):
         context["subscribed"] = subscribed
         context["does_listen_exist"] = listened.exists() or looping.exists()
 
-        # First, get the latest check-in for each show
-        latest_watch_checkins = WatchCheckIn.objects.filter(
-            user=self.object,
-            timestamp=Subquery(
-                WatchCheckIn.objects.filter(
-                    user=self.object,
-                    content_type=OuterRef("content_type"),
-                    object_id=OuterRef("object_id"),
-                )
-                .order_by("-timestamp")
-                .values("timestamp")[:1]
-            ),
-        )
-
-        # Then, filter the latest check-ins for each category and limit the results
         watching = latest_watch_checkins.filter(
             status__in=["watching", "rewatching"]
         ).order_by("-timestamp")[:6]
@@ -215,21 +199,6 @@ class AccountDetailView(DetailView):
         context["watched"] = watched
         context["does_watch_exist"] = watched.exists() or watching.exists()
 
-        # First, get the latest check-in for each game
-        latest_play_checkins = PlayCheckIn.objects.filter(
-            user=self.object,
-            timestamp=Subquery(
-                PlayCheckIn.objects.filter(
-                    content_type=OuterRef("content_type"),
-                    object_id=OuterRef("object_id"),
-                    user=self.object,
-                )
-                .order_by("-timestamp")
-                .values("timestamp")[:1]
-            ),
-        )
-
-        # Then, filter the latest check-ins for each category and limit the results
         playing = latest_play_checkins.filter(
             status__in=["playing", "replaying"]
         ).order_by("-timestamp")[:6]
