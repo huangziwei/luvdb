@@ -463,3 +463,11 @@ window.onload = function () {
         }
     }
 };
+
+/////////////////
+/// load time ///
+/////////////////
+window.addEventListener("load", (event) => {
+    var loadTime = performance.now();
+    document.getElementById("loadTime").textContent = Math.round(loadTime) / 1000 + "s";
+});
