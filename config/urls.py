@@ -11,7 +11,15 @@ from django.shortcuts import redirect
 from django.template import loader
 from django.urls import include, path, re_path
 
-from accounts.views import SignUpView, search_view
+from accounts.views import (
+    InvitationRequestedSuccessView,
+    InvitationRequestedView,
+    RequestInvitationView,
+    SignUpView,
+    get_followed_usernames,
+    get_user_tags,
+    search_view,
+)
 from entity.sitemaps import PersonSiteMap
 from listen.sitemaps import ReleaseSiteMap
 from play.sitemaps import GameSiteMap
@@ -76,8 +84,10 @@ def site_manifest(request):
 
 
 urlpatterns = [
+    # admin
     path("admin/login/", custom_admin_login, name="custom_admin_login"),
     path("admin/", admin.site.urls),
+    # accounts
     path("signup/", SignUpView.as_view(), name="signup"),
     path("@", include("accounts.urls")),
     path(
@@ -89,6 +99,28 @@ urlpatterns = [
             ]
         ),  # Redirect to @username
     ),
+    # utils
+    path(
+        "get_followed_usernames/", get_followed_usernames, name="get_followed_usernames"
+    ),
+    path("get_user_tags/", get_user_tags, name="get_user_tags"),
+    # requrest invitation
+    path(
+        "request-invitation/",
+        RequestInvitationView.as_view(),
+        name="request_invitation",
+    ),
+    path(
+        "invitation-requested/<str:email>/",
+        InvitationRequestedView.as_view(),
+        name="invitation_requested",
+    ),
+    path(
+        "invitation-requested-success/",
+        InvitationRequestedSuccessView.as_view(),
+        name="invitation_requested_success",
+    ),
+    # apps
     path("entity/", include("entity.urls")),
     path("read/", include("read.urls")),
     path("play/", include("play.urls")),

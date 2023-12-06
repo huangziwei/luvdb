@@ -75,7 +75,6 @@
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false">More</button>
                                 <ul class="dropdown-menu" aria-labelledby="actionMenu">
-                                    
                                     <li>
                                         <a class="dropdown-item"
                                            href="{% url 'accounts:manage_invitations' object.username %}"
@@ -93,7 +92,7 @@
                                     </li>
                                     <li>
                                         <a class="dropdown-item"
-                                           href="{% url 'accounts:export_user_data' %}"
+                                           href="{% url 'accounts:export_user_data' object.username %}"
                                            role="button">Export Your Data</a>
                                     </li>
                                 </ul>
@@ -1241,7 +1240,7 @@
                                     </li>
                                     <li>
                                         <a class="dropdown-item"
-                                           href="{% url 'accounts:export_user_data' %}"
+                                           href="{% url 'accounts:export_user_data' object.username %}"
                                            role="button">Export Your Data</a>
                                     </li>
                                     <li>

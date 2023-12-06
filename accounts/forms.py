@@ -89,7 +89,6 @@ class CustomUserChangeForm(UserChangeForm):
         help_texts = {
             "is_public": "When enabled, your profile becomes publicly accessible, including to non-logged-in users, and activates RSS feeds. Disabling it requires a login to access the profile and list views of Say, Post, Pin, List, and Check-ins. However, the detail views of all contents remain accessible via direct URLs even when this option is turned off.",
             "pure_text_mode": "Enable this option to disable displaying images of the site.",
-            "public_key": "Your public key will be displayed on your profile page.",
             "timezone": "Set your preferred timezone. This will adjust the display of all timestamps to match your local date and time.",
         }
 

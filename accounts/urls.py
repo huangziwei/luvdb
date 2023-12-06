@@ -23,32 +23,12 @@ from .views import (
 
 app_name = "accounts"
 urlpatterns = [
-    path("profile", view=redirect_to_profile, name="profile"),
-    path("exportdata/", export_user_data, name="export_user_data"),
-    path(
-        "request-invitation/",
-        RequestInvitationView.as_view(),
-        name="request_invitation",
-    ),
+    path("<str:username>/export/", export_user_data, name="export_user_data"),
     path(
         "<str:username>/manage_invitations/",
         ManageInvitationsView.as_view(),
         name="manage_invitations",
     ),
-    path(
-        "invitation-requested/<str:email>/",
-        InvitationRequestedView.as_view(),
-        name="invitation_requested",
-    ),
-    path(
-        "invitation-requested-success/",
-        InvitationRequestedSuccessView.as_view(),
-        name="invitation_requested_success",
-    ),
-    path(
-        "get_followed_usernames/", get_followed_usernames, name="get_followed_usernames"
-    ),
-    path("get_user_tags/", get_user_tags, name="get_user_tags"),
     path("<str:username>/", view=AccountDetailView.as_view(), name="detail"),
     path(
         "<str:username>/feed/",

@@ -296,7 +296,6 @@ class AccountUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "accounts/account_update.html"
     slug_field = "username"
     slug_url_kwarg = "username"
-    success_url = reverse_lazy("accounts:profile")
 
     def get_initial(self):
         initial = super().get_initial()
@@ -305,6 +304,11 @@ class AccountUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def get_success_url(self) -> str:
+        return reverse_lazy(
+            "accounts:detail", kwargs={"username": self.object.username}
+        )
 
 
 def home(request, *args, **kwargs):
@@ -370,11 +374,11 @@ class FollowingListView(UserPassesTestMixin, ListView):
 
 
 @login_required
-def export_user_data(request):
+def export_user_data(request, username):
     from django.apps import apps
 
     User = get_user_model()
-    user = User.objects.filter(pk=request.user.pk)
+    user = User.objects.filter(username=username)
 
     # Use Django's built-in serialization
     data = serializers.serialize("json", user)
@@ -400,39 +404,6 @@ def export_user_data(request):
     return response
 
 
-@login_required
-def export_game_data(request):
-    User = get_user_model()
-
-    # filter Games created by this user
-    games = Game.objects.filter(created_by=request.user)
-
-    # Use Django's built-in serialization
-    data = serializers.serialize("json", games)
-
-    # get all related data for each game
-    for game in games:
-        developers = game.developers.all()
-        data += serializers.serialize("json", developers)
-
-        creators_as_gamerole = GameRole.objects.filter(game=game)
-        data += serializers.serialize("json", creators_as_gamerole)
-
-        creators_as_gamecast = GameCast.objects.filter(game=game)
-        data += serializers.serialize("json", creators_as_gamecast)
-
-        platforms = game.platforms.all()
-        data += serializers.serialize("json", platforms)
-
-    # Create a HttpResponse with a 'Content-Disposition' header to suggest a filename
-    response = HttpResponse(data, content_type="application/json")
-    response[
-        "Content-Disposition"
-    ] = f'attachment; filename="{request.user.username}_games_data.json"'
-
-    return response
-
-
 class RequestInvitationView(View):
     BLACKLISTED_DOMAINS = ["example.com", "data-backup-store.com"]
 
@@ -448,7 +419,7 @@ class RequestInvitationView(View):
 
             # Create or get the invitation request
             InvitationRequest.objects.get_or_create(email=email)
-            return redirect("accounts:invitation_requested", email=email)
+            return redirect("invitation_requested", email=email)
 
         return redirect("login")
 
@@ -469,7 +440,7 @@ class InvitationRequestedView(View):
         form = self.form_class(request.POST, instance=invitation_request)
         if form.is_valid():
             form.save()
-            return redirect("accounts:invitation_requested_success")
+            return redirect("invitation_requested_success")
         return render(request, self.template_name, {"form": form})
 
 
@@ -1176,11 +1147,5 @@ class ManageInvitationsView(View):
                 InvitationCode.objects.create(
                     generated_by=user, generated_at=timezone.now()
                 )
-
-            messages.success(request, "New invitation codes generated.")
-        else:
-            messages.error(
-                request, "You are not eligible to generate new codes at this time."
-            )
 
         return redirect("accounts:manage_invitations", username=username)

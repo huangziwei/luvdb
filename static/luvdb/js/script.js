@@ -77,14 +77,14 @@ document.addEventListener("DOMContentLoaded", function () {
     textInputs.forEach((textInput) => {
         if (textInput !== null) {
             // Fetch usernames
-            fetch("/u/get_followed_usernames/")
+            fetch("/get_followed_usernames/")
                 .then((response) => response.json())
                 .then((data) => {
                     usernames = data.usernames_with_display_names;
                 });
 
             // Fetch tags
-            fetch("/u/get_user_tags/")
+            fetch("/get_user_tags/")
                 .then((response) => response.json())
                 .then((data) => {
                     tags = data.tags;

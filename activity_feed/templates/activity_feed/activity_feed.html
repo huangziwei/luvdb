@@ -303,12 +303,12 @@
                                     <ul class="dropdown-menu" aria-labelledby="actionMenu">
                                         <li>
                                             <a class="dropdown-item"
-                                                href="{% url 'accounts:manage_invitations' object.username %}"
+                                                href="{% url 'accounts:manage_invitations' feed_user.username %}"
                                                 role="button">Invite friends</a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item"
-                                                href="{% url 'accounts:export_user_data' %}"
+                                                href="{% url 'accounts:export_user_data' feed_user.username %}"
                                                 role="button">Export User Data</a>
                                         </li>
                                     </ul>

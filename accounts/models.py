@@ -63,7 +63,6 @@ class CustomUser(AbstractUser):
     bio = models.TextField(blank=True, null=True)
     is_public = models.BooleanField(default=False)
     pure_text_mode = models.BooleanField(default=False)
-    public_key = models.TextField(blank=True, null=True, editable=False)
     timezone = models.CharField(
         max_length=50, choices=[(tz, tz) for tz in pytz.all_timezones], default="UTC"
     )
@@ -120,28 +119,6 @@ class CustomUser(AbstractUser):
             )
         else:
             super().save(*args, **kwargs)
-
-    def generate_key_pair(self):
-        # Generate private key
-        private_key = rsa.generate_private_key(
-            public_exponent=65537, key_size=2048, backend=default_backend()
-        )
-
-        # Serialize private key
-        private_key_bytes = private_key.private_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.PKCS8,
-            encryption_algorithm=serialization.NoEncryption(),  # Can be replaced with actual encryption
-        )
-
-        # Generate public key
-        public_key = private_key.public_key()
-        public_key_bytes = public_key.public_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PublicFormat.SubjectPublicKeyInfo,
-        )
-
-        return private_key_bytes, public_key_bytes
 
 
 @receiver(post_save, sender=Follow)
