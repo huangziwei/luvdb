@@ -67,6 +67,8 @@ class CustomUser(AbstractUser):
     timezone = models.CharField(
         max_length=50, choices=[(tz, tz) for tz in pytz.all_timezones], default="UTC"
     )
+    alt_profile = models.BooleanField(default=False)
+    custom_domain = models.CharField(max_length=100, blank=True, null=True)
 
     RESERVED_USERNAMES = [
         "admin",

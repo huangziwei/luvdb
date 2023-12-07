@@ -92,6 +92,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "config.middleware.TimezoneMiddleware",
+    "config.middleware.CustomDomainMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "notify.middlewares.MarkNotificationReadMiddleware",
     "django_hosts.middleware.HostsRequestMiddleware",

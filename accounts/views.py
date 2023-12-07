@@ -1112,3 +1112,10 @@ class AltAccountDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["object"] = self.object
         return context
+    
+def custom_domain_view(request):
+    domain = request.get_host().split(':')[0]
+    user = get_object_or_404(User, custom_domain=domain)
+
+    # Render the alternative account detail template with the user's data
+    return render(request, 'accounts/account_detail_alt.html', {'object': user})

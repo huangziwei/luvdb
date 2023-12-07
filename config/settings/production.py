@@ -35,6 +35,7 @@ SESSION_COOKIE_SECURE = True
 TEMPLATE_404 = "404.html"
 
 ROOT_URL = "https://luvdb.com"
+HTTP_HOST = "alt.luvdb.com"
 
 CORS_ALLOWED_ORIGINS = [
     "https://luvdb.com",
