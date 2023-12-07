@@ -131,10 +131,13 @@ class LuvListForm(forms.ModelForm):
         super(LuvListForm, self).__init__(*args, **kwargs)
 
         # Disable fields if the user is not the creator
-        if instance.user != user:
+        if instance is not None and instance.user != user:
             self.fields["title"].disabled = True
             self.fields["notes"].disabled = True
             self.fields["allow_collaboration"].disabled = True
+
+        self.fields["order_preference"].required = False
+        self.fields["source"].help_text = "e.g. URL to the source of the list."
 
     class Meta(auto_prefetch.Model.Meta):
         model = LuvList

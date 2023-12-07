@@ -777,18 +777,10 @@ class RepostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user == repost.user
 
 
-class LuvListCreateView(CreateView):
+class LuvListCreateView(LoginRequiredMixin, CreateView):
     model = LuvList
     form_class = LuvListForm
     template_name = "write/luvlist_create.html"  # Assuming 'luvlist_form.html' is the template for the create view
-
-    def get_context_data(self, **kwargs):
-        data = super(LuvListCreateView, self).get_context_data(**kwargs)
-        if self.request.POST:
-            data["contents"] = ContentInListFormSet(self.request.POST)
-        else:
-            data["contents"] = ContentInListFormSet()
-        return data
 
     def form_valid(self, form):
         context = self.get_context_data()
@@ -801,6 +793,14 @@ class LuvListCreateView(CreateView):
             contents.instance = self.object
             contents.save()
         return super(LuvListCreateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        data = super(LuvListCreateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data["contents"] = ContentInListFormSet(self.request.POST)
+        else:
+            data["contents"] = ContentInListFormSet()
+        return data
 
     def get_success_url(self):
         return reverse(
@@ -868,7 +868,7 @@ class LuvListDetailView(DetailView):
         )
 
 
-class LuvListUpdateView(UpdateView):
+class LuvListUpdateView(LoginRequiredMixin, UpdateView):
     model = LuvList
     form_class = LuvListForm
     template_name = "write/luvlist_update.html"  # Assuming 'luvlist_form.html' is the template for the update view

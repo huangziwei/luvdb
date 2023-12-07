@@ -565,10 +565,12 @@
                 {% endfor %}
             </div>
             <div class="d-flex flex-column col-sm-4">
-                {% if request.user == object.user or object.allow_collaboration %}
-                    <div class="bg-light p-3 mb-3 order-2 order-sm-1">
-                        <a class="text-muted" href="{% url 'write:luvlist_update' object.user.username object.id %}">Edit List</a>
-                    </div>
+                {% if request.user.is_authenticated %}
+                    {% if request.user == object.user or object.allow_collaboration %}
+                        <div class="bg-light p-3 mb-3 order-2 order-sm-1">
+                            <a class="text-muted" href="{% url 'write:luvlist_update' object.user.username object.id %}">Edit List</a>
+                        </div>
+                    {% endif %}
                 {% endif %}
                 {% if object.wikipedia or object.source %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">

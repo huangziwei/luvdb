@@ -3,13 +3,12 @@
     {% csrf_token %}
     <div class="row">
         <div class="col-md-12">{{ form.title|as_crispy_field }}</div>
-        <div class="col-md-12">{{ form.notes|as_crispy_field }}</div>
         <div class="col-md-12">{{ form.source|as_crispy_field }}</div>
         <div class="col-md-12">{{ form.wikipedia|as_crispy_field }}</div>
         <div class="col-md-12">{{ form.order_preference|as_crispy_field }}</div>
+        <div class="col-md-12">{{ form.notes|as_crispy_field }}</div>
         <div class="col-md-12">{{ form.allow_collaboration|as_crispy_field }}</div>
     </div>
-    <div class="fs-4">Items</div>
     {{ contents.management_form }}
     <div id="contentInListDiv">
         {% for form in contents %}
