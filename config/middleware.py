@@ -38,3 +38,21 @@ class CustomDomainMiddleware:
             pass  # If no custom domain match, continue as normal
 
         return self.get_response(request)
+
+
+class AppendSlashAltMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # Check if the host is the 'alt' subdomain and the path doesn't end with a slash
+        if "alt" in request.get_host() and not request.path.endswith("/"):
+            # Check if the request is not an AJAX request
+            if request.META.get("HTTP_X_REQUESTED_WITH") != "XMLHttpRequest":
+                new_path = f"{request.path}/"
+                if request.GET:
+                    new_path += f"?{request.GET.urlencode()}"
+                return HttpResponseRedirect(new_path)
+
+        # Continue processing the request if the conditions are not met
+        return self.get_response(request)

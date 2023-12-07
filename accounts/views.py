@@ -1100,6 +1100,7 @@ class ManageInvitationsView(View):
 ## Alternative Profile ##
 #########################
 
+
 class AltAccountDetailView(DetailView):
     """Alternative Detail view for user accounts."""
 
@@ -1108,14 +1109,23 @@ class AltAccountDetailView(DetailView):
     slug_url_kwarg = "username"
     template_name = "accounts/account_detail_alt.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        user = get_object_or_404(User, username=self.kwargs["username"])
+
+        if not user.alt_profile:
+            return redirect(settings.ROOT_URL + f"/@{user.username}")
+
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         context["object"] = self.object
         return context
-    
+
+
 def custom_domain_view(request):
-    domain = request.get_host().split(':')[0]
+    domain = request.get_host().split(":")[0]
     user = get_object_or_404(User, custom_domain=domain)
 
     # Render the alternative account detail template with the user's data
-    return render(request, 'accounts/account_detail_alt.html', {'object': user})
+    return render(request, "accounts/account_detail_alt.html", {"object": user})

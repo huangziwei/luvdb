@@ -85,7 +85,10 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django_hosts.middleware.HostsRequestMiddleware",
+    "config.middleware.AppendSlashAltMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django_hosts.middleware.HostsResponseMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -95,9 +98,6 @@ MIDDLEWARE = [
     "config.middleware.CustomDomainMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "notify.middlewares.MarkNotificationReadMiddleware",
-    "django_hosts.middleware.HostsRequestMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django_hosts.middleware.HostsResponseMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
