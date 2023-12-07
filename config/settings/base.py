@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "simple_history",
     "rest_framework",
+    "django_hosts",
     # local apps
     "notify",
     "activity_feed",
@@ -93,6 +94,9 @@ MIDDLEWARE = [
     "config.middleware.TimezoneMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "notify.middlewares.MarkNotificationReadMiddleware",
+    "django_hosts.middleware.HostsRequestMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django_hosts.middleware.HostsResponseMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -343,3 +347,6 @@ REST_FRAMEWORK = {
         "api.v1.authentication.AppPasswordAuthentication"
     ],
 }
+
+ROOT_HOSTCONF = "config.hosts"
+DEFAULT_HOST = "root"

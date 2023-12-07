@@ -3,6 +3,7 @@ import re
 import time
 import uuid
 from datetime import timedelta
+from typing import Any
 
 import requests
 from cryptography.hazmat.primitives import serialization
@@ -1093,3 +1094,21 @@ class ManageInvitationsView(View):
                 )
 
         return redirect("accounts:manage_invitations", username=username)
+
+
+#########################
+## Alternative Profile ##
+#########################
+
+class AltAccountDetailView(DetailView):
+    """Alternative Detail view for user accounts."""
+
+    model = User
+    slug_field = "username"
+    slug_url_kwarg = "username"
+    template_name = "accounts/account_detail_alt.html"
+
+    def get_context_data(self, **kwargs: Any):
+        context = super().get_context_data(**kwargs)
+        context["object"] = self.object
+        return context
