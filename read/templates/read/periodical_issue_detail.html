@@ -157,10 +157,16 @@
                         <div class='mb-0'>
                             {% for content_in_list in lists_containing_issue %}
                                 <div class="d-flex flex-nowrap justify-content-start">
-                                    <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.user.username content_in_list.luv_list.id %}" class="text-truncate" style="max-width: 80%;">
-                                        {{ content_in_list.luv_list.title }}
-                                    </a>
-                                    <span class="ml-2">(by <a href="{% url 'accounts:detail' content_in_list.luv_list.user.username %}">{{content_in_list.luv_list.user.display_name|default:content_in_list.luv_list.user.username}}</a>)</span>
+                                    {% if content_in_list.luv_list.allow_collaboration %}
+                                        <a href="{% url 'write:luvlist_detail_collab' content_in_list.luv_list.id %}" class="text-truncate">
+                                            {{ content_in_list.luv_list.title }}
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.user.username content_in_list.luv_list.id %}" class="text-truncate" style="max-width: 80%;">
+                                            {{ content_in_list.luv_list.title }}
+                                        </a>
+                                        <span class="d-flex flex-nowrap justify-content-between">(by <a class="ms-1" href="{% url 'accounts:detail' content_in_list.luv_list.user.username %}">{{content_in_list.luv_list.user.display_name|default:content_in_list.luv_list.user.username}}</a>)</span>
+                                    {% endif %}
                                 </div>
                                 {% if not forloop.last %}<hr class="m-1">{% endif %}
                             {% empty %}

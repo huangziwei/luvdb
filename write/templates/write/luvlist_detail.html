@@ -13,9 +13,12 @@
                 <h2>{{ object.title }}</h2>
                 <div class='d-flex justify-content-between align-items-start mb-2'>
                     <div class="d-flex align-items-start">
+                        
+                        {% if not object.allow_collaboration %}
                         <div class="me-2">
                             by <a href="{% url 'accounts:detail' object.user.username %}">{{ object.user.display_name | default:object.user.username }}</a>
                         </div>
+                        {% endif %}
 
                         <div class='me-2 text-secondary d-none d-lg-block'>
                             Updated
@@ -552,7 +555,7 @@
                 {% endfor %}
             </div>
             <div class="d-flex flex-column col-sm-4">
-                {% if request.user == object.user %}
+                {% if request.user == object.user or object.allow_collaboration %}
                     <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         <a class="text-muted" href="{% url 'write:luvlist_update' object.user.username object.id %}">Edit List</a>
                     </div>
@@ -612,6 +615,23 @@
                     </div>
                     {% endif %}
                 </div>
+                {% if object.allow_collaboration or collaborators|length > 1 %}
+                <div class="bg-light p-3 mb-3 order-1 order-sm-3">
+                    <div class="d-flex justify-content-start align-items-center flex-wrap">
+                        <div class="me-1 fs-5">Contributors</div>
+                    </div>
+                    <div>
+                        {% for collaborator in collaborators %}
+                            <span>
+                                <a href="{% url 'accounts:detail' collaborator.username %}">
+                                    {{ collaborator.display_name|default:collaborator.username }}
+                                </a>
+                            </span>
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
 
         </div>

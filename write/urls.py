@@ -246,6 +246,16 @@ urlpatterns = [
         RandomizerDetailView.as_view(),
         name="surprise",
     ),
+    path(
+        "list/<int:pk>/",
+        LuvListDetailView.as_view(),
+        name="luvlist_detail_collab",
+    ),
+    path(
+        "list/<int:pk>/update/",
+        LuvListUpdateView.as_view(),
+        name="luvlist_update_collab",
+    ),
     # move check-ins from individual apps/urls.py to write/urls.py
     ## Read
     path(

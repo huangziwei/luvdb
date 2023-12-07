@@ -4,6 +4,7 @@ from collections import Counter
 from datetime import timedelta
 from itertools import chain
 from operator import attrgetter
+from typing import Any
 
 import pytz
 from dal import autocomplete
@@ -795,6 +796,7 @@ class LuvListCreateView(CreateView):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
+        self.object.collaborators.add(self.request.user)
         if contents.is_valid():
             contents.instance = self.object
             contents.save()
@@ -807,7 +809,7 @@ class LuvListCreateView(CreateView):
         )
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class LuvListDetailView(DetailView):
     model = LuvList
     template_name = "write/luvlist_detail.html"  # Assuming 'luvlist_detail.html' is the template for the detail view
@@ -833,6 +835,7 @@ class LuvListDetailView(DetailView):
         context["order"] = order
         context["contents"] = contents
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["collaborators"] = self.object.collaborators.all().order_by("username")
 
         # statistics
         content_counts = (
@@ -880,10 +883,17 @@ class LuvListUpdateView(UpdateView):
             data["contents"] = ContentInListFormSet(instance=self.object)
         return data
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
     def form_valid(self, form):
         context = self.get_context_data()
         contents = context["contents"]
         self.object = form.save()
+        if self.object.allow_collaboration:
+            self.object.collaborators.add(self.request.user)
         if contents.is_valid():
             contents.instance = self.object
             contents.save()

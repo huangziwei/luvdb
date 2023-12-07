@@ -16,10 +16,12 @@
                                     <div>
                                         <a href="{% url 'write:luvlist_detail' list.user.username list.id %}">{{list.title}}</a>
                                         <span class="d-flex">
-                                            <p class="me-2 text-muted">
-                                                by <a href="{% url 'accounts:detail' list.user.username %}">{{ list.user.display_name|default:list.user.username }}</a>
-                                            </p>
-                                            <p class="me-2 text-muted">{{ list.timestamp|timesince }} ago</p>
+                                            {% if not list.allow_collaboration %}
+                                                <div class="me-2 mb-3 text-muted">
+                                                    by <a href="{% url 'accounts:detail' list.user.username %}">{{ list.user.display_name|default:list.user.username }}</a>
+                                                </div>
+                                            {% endif %}
+                                            <div class="me-2 mb-3 text-muted">{{ list.timestamp|timesince }} ago</div>
                                         </span>
                                     </div>
                                 </div>

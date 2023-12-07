@@ -125,6 +125,17 @@ class RepostForm(forms.ModelForm):
 
 
 class LuvListForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        instance = kwargs.get("instance", None)
+        super(LuvListForm, self).__init__(*args, **kwargs)
+
+        # Disable fields if the user is not the creator
+        if instance.user != user:
+            self.fields["title"].disabled = True
+            self.fields["notes"].disabled = True
+            self.fields["allow_collaboration"].disabled = True
+
     class Meta(auto_prefetch.Model.Meta):
         model = LuvList
         fields = [
@@ -133,6 +144,7 @@ class LuvListForm(forms.ModelForm):
             "source",
             "wikipedia",
             "order_preference",
+            "allow_collaboration",
         ]
 
 

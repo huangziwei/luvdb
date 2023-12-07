@@ -770,6 +770,10 @@ class LuvList(auto_prefetch.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    allow_collaboration = models.BooleanField(default=False)
+    collaborators = models.ManyToManyField(
+        User, related_name="collaborated_luvlists", blank=True
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     votes = GenericRelation(Vote)
