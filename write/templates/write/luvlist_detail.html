@@ -636,7 +636,11 @@
                         {% for collaborator in collaborators %}
                             <span>
                                 <a href="{% url 'accounts:detail' collaborator.username %}">
-                                    {{ collaborator.display_name|default:collaborator.username }}
+                                    {% if collaborator == object.user %}
+                                        <b>{{ collaborator.display_name|default:collaborator.username }}</b>
+                                    {% else %}
+                                        {{ collaborator.display_name|default:collaborator.username }}
+                                    {% endif %}
                                 </a>
                             </span>
                             {% if not forloop.last %} / {% endif %}
