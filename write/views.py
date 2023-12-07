@@ -925,7 +925,6 @@ class LuvListDeleteView(LoginRequiredMixin, DeleteView):
 class LuvListUserListView(ListView):
     model = LuvList
     template_name = "write/luvlist_list.html"  # Assuming 'luvlist_user_list.html' is the template for the user-specific list view
-    paginate_by = 25
 
     def dispatch(self, request, *args, **kwargs):
         # Get the User object
@@ -972,6 +971,14 @@ class LuvListUserListView(ListView):
             tag_sizes[tag] = min_size + scaling_factor * count
 
         context["all_tags"] = tag_sizes
+
+        # Add collaborated luvlists to the context
+        collaborated_luvlists = (
+            LuvList.objects.filter(collaborators=self.user)
+            .exclude(user=self.user)
+            .distinct()
+        )
+        context["collaborated_luvlists"] = collaborated_luvlists
 
         return context
 

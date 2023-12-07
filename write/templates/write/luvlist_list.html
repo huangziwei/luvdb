@@ -38,16 +38,25 @@
                            href="{% url 'write:luvlist_create' object.username %}">New</a>
                     {% endif %}
                 </div>
-                {% for luvlist in page_obj %}
+                {% for luvlist in luvlist_list %}
                     <!--LuvList-->
-                    <div class="activity-item mb-3 h-entry">
+                    <div class="mb-3 h-entry">
                         <div>
-                            <a href="{% url 'write:luvlist_detail' luvlist.user.username luvlist.id %}">{{ luvlist.title }}</a>
+                            {% if luvlist.allow_collaboration %}
+                                <a href="{% url 'write:luvlist_detail_collab' luvlist.id %}">{{ luvlist.title }}</a>
+                            {% else %}
+                                <a href="{% url 'write:luvlist_detail' luvlist.user.username luvlist.id %}">{{ luvlist.title }}</a>
+                            {% endif %}
                         </div>
                         <span class="d-flex mt-2">
                             <p style='margin-right: 0.5em'>
-                                <a href="{% url 'write:luvlist_detail' luvlist.user.username luvlist.id %}"
-                                   class="link-secondary">{{ luvlist.updated_at |default:luvlist.timestamp |date:"Y.m.d H:i" }}</a>
+                                {% if luvlist.allow_collaboration %}
+                                    <a href="{% url 'write:luvlist_detail_collab' luvlist.id %}"
+                                        class="link-secondary">{{ luvlist.updated_at |default:luvlist.timestamp |date:"Y.m.d H:i" }}</a>
+                                {% else %}
+                                    <a href="{% url 'write:luvlist_detail' luvlist.user.username luvlist.id %}"
+                                        class="link-secondary">{{ luvlist.updated_at |default:luvlist.timestamp |date:"Y.m.d H:i" }}</a>
+                                {% endif %}
                             </p>
                             {% if luvlist.user == request.user %}
                                 <p style='margin: 0 0.5em'>
@@ -62,6 +71,48 @@
                 {% empty %}
                     <p>No Lists found.</p>
                 {% endfor %}
+
+                {% if collaborated_luvlists %}
+                    <hr>
+                    <div class="section">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="fs-5" >Lists 
+                                <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a>
+                                collaborated on
+                            </div>
+                        </div>
+                        {% for luvlist in collaborated_luvlists %}
+                            <div class="mb-3 h-entry">
+                                <div>
+                                    {% if luvlist.allow_collaboration %}
+                                        <a href="{% url 'write:luvlist_detail_collab' luvlist.id %}">{{ luvlist.title }}</a>
+                                    {% else %}
+                                        <a href="{% url 'write:luvlist_detail' luvlist.user.username luvlist.id %}">{{ luvlist.title }}</a>
+                                    {% endif %}
+                                </div>
+                                <span class="d-flex mt-2">
+                                    <p style='margin-right: 0.5em'>
+                                        {% if luvlist.allow_collaboration %}
+                                            <a href="{% url 'write:luvlist_detail_collab' luvlist.id %}"
+                                                class="link-secondary">{{ luvlist.updated_at |default:luvlist.timestamp |date:"Y.m.d H:i" }}</a>
+                                        {% else %}
+                                            <a href="{% url 'write:luvlist_detail' luvlist.user.username luvlist.id %}"
+                                                class="link-secondary">{{ luvlist.updated_at |default:luvlist.timestamp |date:"Y.m.d H:i" }}</a>
+                                        {% endif %}
+                                    </p>
+                                    {% if luvlist.user == request.user %}
+                                        <p style='margin: 0 0.5em'>
+                                            <a href="{% url 'write:luvlist_update' luvlist.user.username luvlist.id %}">Edit</a>
+                                        </p>
+                                        <p style='margin: 0 0.5em'>
+                                            <a href="{% url 'write:luvlist_delete' luvlist.user.username luvlist.id %}">Delete</a>
+                                        </p>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
                 {% if page_obj.paginator.num_pages > 1 %}
                     <hr>                                      
