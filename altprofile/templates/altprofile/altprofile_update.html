@@ -1,5 +1,5 @@
 {% block content %}
-    <h2>Edit AltProfile</h2>
+    <h2></h2>
     <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
@@ -13,7 +13,6 @@
         {% csrf_token %}
         <input type="hidden" name="template_id" value="{{ template.id }}">
         <p>{{ template.name }}</p>
-        <a href="{% url 'preview_template' template.id %}" target="_blank">Preview</a>
         <button type="submit">Apply</button>
     </form>
     {% endfor %}

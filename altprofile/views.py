@@ -76,12 +76,13 @@ class AltProfileDetailView(DetailView):
         # context["css"] = self.object.altprofile.custom_css
         context["posts"] = Post.objects.filter(user=me).order_by("-timestamp")
         context["says"] = Say.objects.filter(user=me).order_by("-timestamp")
+        context["css"] = self.object.altprofile.custom_css
 
         # Render custom_html as a Django template
         custom_html_template = Template(self.object.altprofile.custom_html)
         rendered_html = custom_html_template.render(Context(context))
         context["html"] = mark_safe(rendered_html)  # Mark the rendered HTML as safe
-        print(context["html"])
+
         return context
 
 
@@ -99,29 +100,19 @@ class AltProfileUpdateView(LoginRequiredMixin, UpdateView):
         if settings.HTTP_HOST == "localhost":
             port = request.get_port()
             port_suffix = f":{port}" if port and port != "80" else ""
-            custom_login_url = f"http://{domain}{port_suffix}/login/"
+            custom_login_url = f"http://{domain}{port_suffix}/alt/login/"
         else:
             custom_login_url = f"https://{domain}/login/"
         return custom_login_url
 
     def get_success_url(self):
-        user = self.request.user
-        try:
-            custom_user = User.objects.get(username=user.username)
-            if custom_user.custom_domain:
-                # Include the port number for local development
-                if settings.HTTP_HOST == "localhost":
-                    port = self.request.get_port()
-                    if port and port != "80":
-                        return f"http://{custom_user.custom_domain}:{port}/"
-                else:
-                    return f"https://{custom_user.custom_domain}/"
-        except User.DoesNotExist:
-            pass
+        # Get the full URL of the current request
+        full_url = self.request.build_absolute_uri()
 
-        return reverse(
-            "altprofile_detail", kwargs={"username": self.request.user.username}
-        )
+        # Remove '/update' from the URL
+        success_url = full_url.rsplit("/update", 1)[0]
+
+        return success_url
 
     def get_object(self, queryset=None):
         return AltProfile.objects.get_or_create(user=self.request.user)[0]
