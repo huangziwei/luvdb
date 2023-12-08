@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     "watch",
     "discover",
     "api",
+    "altprofile",
 ]
 
 MIDDLEWARE = [

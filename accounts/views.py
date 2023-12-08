@@ -1,20 +1,14 @@
-import json
 import re
 import time
-import uuid
 from datetime import timedelta
-from typing import Any
 
-import requests
-from cryptography.hazmat.primitives import serialization
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
-from django.db.models import Count, Max, Min, OuterRef, Q, Subquery
+from django.db.models import Count, Min, OuterRef, Q, Subquery
 from django.http import (
     Http404,
     HttpResponse,
@@ -26,10 +20,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.safestring import mark_safe
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -43,7 +34,7 @@ from activity_feed.models import Activity, Follow
 from entity.models import Company, Creator
 from listen.models import Audiobook, ListenCheckIn, Podcast, Release, Track
 from listen.models import Work as MusicWork
-from play.models import Game, GameCast, GameRole, PlayCheckIn
+from play.models import Game, PlayCheckIn
 from play.models import Work as GameWork
 from read.models import Book, BookSeries
 from read.models import Instance as LitInstance
@@ -58,7 +49,6 @@ from .forms import (
     BlueSkyAccountForm,
     CustomUserChangeForm,
     CustomUserCreationForm,
-    EmailRequestForm,
     InvitationRequestForm,
     MastodonAccountForm,
 )
@@ -1094,38 +1084,3 @@ class ManageInvitationsView(View):
                 )
 
         return redirect("accounts:manage_invitations", username=username)
-
-
-#########################
-## Alternative Profile ##
-#########################
-
-
-class AltAccountDetailView(DetailView):
-    """Alternative Detail view for user accounts."""
-
-    model = User
-    slug_field = "username"
-    slug_url_kwarg = "username"
-    template_name = "accounts/account_detail_alt.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        user = get_object_or_404(User, username=self.kwargs["username"])
-
-        if not user.alt_profile:
-            return redirect(settings.ROOT_URL + f"/@{user.username}")
-
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs: Any):
-        context = super().get_context_data(**kwargs)
-        context["object"] = self.object
-        return context
-
-
-def custom_domain_view(request):
-    domain = request.get_host().split(":")[0]
-    user = get_object_or_404(User, custom_domain=domain)
-
-    # Render the alternative account detail template with the user's data
-    return render(request, "accounts/account_detail_alt.html", {"object": user})

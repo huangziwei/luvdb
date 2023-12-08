@@ -1,0 +1,20 @@
+{% block content %}
+    <h2>Edit AltProfile</h2>
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save changes</button>
+    </form>
+
+    <h3>Templates</h3>
+    {% for template in templates %}
+    <!-- Existing apply template form -->
+    <form method="post" action="{% url 'apply_template' %}">
+        {% csrf_token %}
+        <input type="hidden" name="template_id" value="{{ template.id }}">
+        <p>{{ template.name }}</p>
+        <a href="{% url 'preview_template' template.id %}" target="_blank">Preview</a>
+        <button type="submit">Apply</button>
+    </form>
+    {% endfor %}
+{% endblock %}

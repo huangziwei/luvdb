@@ -16,9 +16,11 @@ from django.db import models, transaction
 from django.db.models import Q
 from django.db.models.signals import m2m_changed, post_delete, pre_delete
 from django.dispatch import receiver
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
+
+# from django.urls import reverse
+from django_hosts.resolvers import reverse
 
 from activity_feed.models import Activity, Block
 from discover.models import Vote
@@ -79,9 +81,11 @@ class Project(auto_prefetch.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
+    def get_absolute_url(self, host_name=None):
+        host = host_name or "root"
         return reverse(
             "write:post_list_project",
+            host=host,
             kwargs={"username": self.user.username, "project": self.slug},
         )
 
@@ -360,7 +364,7 @@ class Post(auto_prefetch.Model):
     )
     share_to_feed = models.BooleanField(default=False)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self, host_name=None):
         return reverse(
             "write:post_detail_slug",
             kwargs={"slug": self.slug, "username": self.user.username},

@@ -1,0 +1,15 @@
+
+{% if me.altprofile.custom_html %}
+    {{ html|safe }}
+{% else %}
+<!DOCTYPE html>
+<html>
+    <body>
+        <p>
+            <a href="{{root_url}}/@{{me.username}}">
+                {{ me.display_name|default:me.username }}
+            </a>'s alternative profile is still under construction. Come back later.
+        </p>
+    </body>
+</html>
+{% endif %}

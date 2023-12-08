@@ -86,15 +86,15 @@ class CustomUserChangeForm(UserChangeForm):
             "timezone",
             "is_public",
             "pure_text_mode",
-            "alt_profile",
-            "custom_domain",
+            "enable_alt_profile",
+            # "custom_domain",
         )
         help_texts = {
             "is_public": "When enabled, your profile becomes publicly accessible, including to non-logged-in users, and activates RSS feeds. Disabling it requires a login to access the profile and list views of Say, Post, Pin, List, and Check-ins. However, the detail views of all contents remain accessible via direct URLs even when this option is turned off.",
             "pure_text_mode": "Enable this option to disable displaying images of the site.",
             "timezone": "Set your preferred timezone. This will adjust the display of all timestamps to match your local date and time.",
-            "alt_profile": "Enable this option to activate your alternative profile (`alt.luvdb.com/@username`).",
-            "custom_domain": "Set your custom domain for your alternative profile. Add a CNAME record to your DNS settings to point to `alt.luvdb.com`.",
+            "enable_alt_profile": "Enable this option to activate your alternative profile (`alt.luvdb.com/@username`).",
+            # "custom_domain": "Set your custom domain for your alternative profile. Add a CNAME record to your DNS settings to point to `alt.luvdb.com`.",
         }
 
     def __init__(self, *args, **kwargs):
@@ -102,20 +102,11 @@ class CustomUserChangeForm(UserChangeForm):
         self.fields["is_public"].label = "Everyone can view my profile"
         self.fields["pure_text_mode"].label = "Don't display images"
         self.fields["timezone"].required = False
-        self.fields["alt_profile"].label = "Enable alternative profile (experimental)"
+        self.fields[
+            "enable_alt_profile"
+        ].label = "Enable alternative profile (experimental)"
 
         del self.fields["password"]
-
-
-class EmailRequestForm(forms.ModelForm):
-    class Meta(auto_prefetch.Model.Meta):
-        model = InvitationRequest
-        fields = ["email"]
-        widgets = {
-            "email": forms.TextInput(
-                attrs={"placeholder": "Request an invitation: enter an Email Address"}
-            ),
-        }
 
 
 class InvitationRequestForm(forms.ModelForm):

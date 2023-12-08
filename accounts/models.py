@@ -22,6 +22,7 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 
 from activity_feed.models import Activity, Follow
+from altprofile.models import AltProfile
 
 
 class InvitationCode(auto_prefetch.Model):
@@ -67,7 +68,7 @@ class CustomUser(AbstractUser):
     timezone = models.CharField(
         max_length=50, choices=[(tz, tz) for tz in pytz.all_timezones], default="UTC"
     )
-    alt_profile = models.BooleanField(default=False)
+    enable_alt_profile = models.BooleanField(default=False)
     custom_domain = models.CharField(max_length=100, blank=True, null=True)
 
     RESERVED_USERNAMES = [
@@ -105,6 +106,10 @@ class CustomUser(AbstractUser):
     def save(self, *args, **kwargs):
         if self.username in self.RESERVED_USERNAMES:
             raise ValidationError("This username is reserved and cannot be registered.")
+
+        # Check if alt_profile should be enabled and create one if it doesn't exist
+        if self.enable_alt_profile:
+            AltProfile.objects.get_or_create(user=self)
 
         # Check if the user has used an invitation code
         if self.code_used:
