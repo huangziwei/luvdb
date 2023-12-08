@@ -900,10 +900,15 @@ class LuvListUpdateView(LoginRequiredMixin, UpdateView):
         return super(LuvListUpdateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse(
-            "write:luvlist_detail",
-            kwargs={"pk": self.object.id, "username": self.object.user.username},
-        )
+        if self.object.allow_collaboration:
+            # Redirect to the collaboration URL if collaboration is allowed
+            return reverse("write:luvlist_detail_collab", kwargs={"pk": self.object.id})
+        else:
+            # Redirect to the regular URL if collaboration is not allowed
+            return reverse(
+                "write:luvlist_detail",
+                kwargs={"pk": self.object.id, "username": self.object.user.username},
+            )
 
 
 class LuvListDeleteView(LoginRequiredMixin, DeleteView):
