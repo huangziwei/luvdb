@@ -32,4 +32,3 @@ Mastodon.py
 pymdown-extensions
 django-ratelimit
 django-autoslug
-django-hosts

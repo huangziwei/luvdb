@@ -93,8 +93,8 @@ class CustomUserChangeForm(UserChangeForm):
             "is_public": "When enabled, your profile becomes publicly accessible, including to non-logged-in users, and activates RSS feeds. Disabling it requires a login to access the profile and list views of Say, Post, Pin, List, and Check-ins. However, the detail views of all contents remain accessible via direct URLs even when this option is turned off.",
             "pure_text_mode": "Enable this option to disable displaying images of the site.",
             "timezone": "Set your preferred timezone. This will adjust the display of all timestamps to match your local date and time.",
-            "enable_alt_profile": "Enable this option to activate your alternative profile (`alt.luvdb.com/@username`).",
-            # "custom_domain": "Set your custom domain for your alternative profile. Add a CNAME record to your DNS settings to point to `alt.luvdb.com`.",
+            "enable_alt_profile": "Enable this option to activate your alternative profile (`luvdb.com/alt/@username`).",
+            # "custom_domain": "Set your custom domain for your alternative profile. Add a CNAME record to your DNS settings to point to `luvdb.com`.",
         }
 
     def __init__(self, *args, **kwargs):

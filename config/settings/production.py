@@ -35,16 +35,7 @@ SESSION_COOKIE_SECURE = True
 TEMPLATE_404 = "404.html"
 
 ROOT_URL = "https://luvdb.com"
-HTTP_HOST = "alt.luvdb.com"
-
+HTTP_HOST = "luvdb.com"
 CORS_ALLOWED_ORIGINS = [
     "https://luvdb.com",
 ]
-
-# Use a common domain for cookies, e.g., '.yourdomain.com' for 'www.yourdomain.com' and 'alt.yourdomain.com'
-SESSION_COOKIE_DOMAIN = ".luvdb.com"
-CSRF_COOKIE_DOMAIN = ".luvdb.com"
-
-# Use secure cookies if your site is served over HTTPS
-SESSION_COOKIE_SECURE = True  # Set to False if not using HTTPS
-CSRF_COOKIE_SECURE = True  # Set to False if not using HTTPS

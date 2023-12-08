@@ -120,6 +120,8 @@ urlpatterns = [
         InvitationRequestedSuccessView.as_view(),
         name="invitation_requested_success",
     ),
+    # alt profile
+    path("alt/", include("altprofile.urls")),
     # apps
     path("entity/", include("entity.urls")),
     path("read/", include("read.urls")),

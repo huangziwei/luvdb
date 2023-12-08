@@ -1,9 +1,8 @@
 import pytz
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import Resolver404, resolve
 from django.utils import timezone
-from django_hosts import reverse
 
 from accounts.models import CustomUser
 
@@ -26,33 +25,29 @@ class CustomDomainMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
-    def __call__(self, request):
+    def __call__(self, request: HttpRequest):
         domain = request.get_host().split(":")[0]
 
         try:
             user = CustomUser.objects.get(custom_domain=domain)
-            # Get the internal path for the alternative profile
-            request.META["HTTP_HOST"] = settings.HTTP_HOST
-            request.path_info = f"/@{user.username}/"  # Update the path for routing
+
+            # Special handling for the login path
+            if request.path_info == "/login/" or request.path_info == "/login":
+                request.path_info = "/alt/login/"
+            else:
+                # Base path for the alternative profile
+                base_user_path = f"/alt/@{user.username}/"
+                # Append the original path to the base path
+                new_path = base_user_path + request.path_info.lstrip("/")
+                # Directly modify the request's path_info
+                request.path_info = new_path
+
+            # Process the modified request
+            return self.get_response(request)
+
         except CustomUser.DoesNotExist:
-            pass  # If no custom domain match, continue as normal
+            # If no custom domain match, continue as normal
+            print("Failed")
+            pass
 
-        return self.get_response(request)
-
-
-class AppendSlashAltMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
-        # Check if the host is the 'alt' subdomain and the path doesn't end with a slash
-        if "alt" in request.get_host() and not request.path.endswith("/"):
-            # Check if the request is not an AJAX request
-            if request.META.get("HTTP_X_REQUESTED_WITH") != "XMLHttpRequest":
-                new_path = f"{request.path}/"
-                if request.GET:
-                    new_path += f"?{request.GET.urlencode()}"
-                return HttpResponseRedirect(new_path)
-
-        # Continue processing the request if the conditions are not met
         return self.get_response(request)

@@ -1,15 +1,15 @@
-from django.conf import settings
-from django.shortcuts import redirect
-from django.urls import include, path, re_path
+from django.urls import path
 
 from altprofile.views import (
     AltProfileDetailView,
+    AltProfileLoginView,
     AltProfileUpdateView,
     ApplyTemplateView,
     PreviewTemplateView,
 )
 
 urlpatterns = [
+    path("login/", AltProfileLoginView.as_view(), name="altprofile_login"),
     path(
         "@<str:username>/",
         AltProfileDetailView.as_view(),
