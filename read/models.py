@@ -370,6 +370,13 @@ class Book(auto_prefetch.Model):
     def get_absolute_url(self):
         return reverse("read:book_detail", args=[str(self.id)])
 
+    def get_genres(self):
+        genres = set()
+        for instance in self.instances.all():
+            if instance.work:
+                genres.update(instance.work.genres.all())
+        return genres
+
     def model_name(self):
         return "Book"
 

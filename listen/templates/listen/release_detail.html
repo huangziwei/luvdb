@@ -86,6 +86,15 @@
                                             <span class="text-muted">Catalog number:</span> {{ object.catalog_number }}
                                         </div>
                                     {% endif %}
+                                    {% if genres %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Genres:</span>
+                                            {% for genre in genres %}
+                                                <a href="{% url "listen:genre_detail" genre.slug %}">{{ genre.name }}</a>
+                                                {% if not forloop.last %} / {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                     {% if object.release_date %}
                                         <div class="mb-1">
                                             <span class="text-muted">Date:</span> {{ object.release_date }}

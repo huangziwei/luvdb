@@ -267,6 +267,15 @@
                     </a>
                 </div>
                 {% endif %}
+                {% if activity.content_object.content_object.get_genres %}
+                <div>
+                    <span class="text-muted">Genres:</span>
+                    {% for genre in activity.content_object.content_object.get_genres %}
+                        {% if not forloop.first %}/{% endif %}
+                        <a href="{% url 'read:genre_detail' genre.slug %}">{{ genre.name }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 {% if activity.content_object.content_object.publication_date %}
                 <div>
                     <span class="text-muted">Date:</span>
@@ -593,6 +602,15 @@
                 <div>
                     <span class="text-muted">Catalog Number:</span>
                     {{activity.content_object.content_object.catalog_number}}
+                </div>
+                {% endif %}
+                {% if activity.content_object.content_object.get_genres %}
+                <div>
+                    <span class="text-muted">Genres:</span>
+                    {% for genre in activity.content_object.content_object.get_genres %}
+                        {% if not forloop.first %}/{% endif %}
+                        <a href="{% url 'listen:genre_detail' genre.slug %}">{{ genre.name }}</a>
+                    {% endfor %}
                 </div>
                 {% endif %}
                 {% if activity.content_object.content_object.release_date %}

@@ -261,6 +261,12 @@ class Release(auto_prefetch.Model):
     def get_absolute_url(self):
         return reverse("listen:release_detail", kwargs={"pk": self.pk})
 
+    def get_genres(self):
+        genres = set()
+        for track in self.tracks.all():
+            genres.update(track.genres.all())
+        return genres
+
     def save(self, *args, **kwargs):
         # To hold a flag indicating if the cover is new or updated
         new_or_updated_cover = False

@@ -86,7 +86,6 @@
                                         <p>
                                             <span class="text-muted">Genres:</span>
                                             {% for genre in genres %}
-                                                {% comment %} {{genre}} {% endcomment %}
                                                 <a href="{% url "read:genre_detail" genre.slug %}">{{ genre.name }}</a>
                                                 {% if not forloop.last %} / {% endif %}
                                             {% endfor %}

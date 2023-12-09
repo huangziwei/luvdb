@@ -648,6 +648,8 @@ class ReleaseDetailView(DetailView):
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
+        context["genres"] = self.object.get_genres()
+
         return context
 
     def post(self, request, *args, **kwargs):
