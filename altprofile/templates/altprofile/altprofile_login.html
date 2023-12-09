@@ -1,9 +1,62 @@
 {% block content %}
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .login-container h2 {
+        text-align: center;
+        color: #333;
+    }
+
+    .login-container form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .login-container label {
+        margin-top: 10px;
+    }
+
+    .login-container input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 10px; /* Add space below the input */
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .login-container button {
+        background-color: #5cb85c;
+        color: white;
+        border: none;
+        padding: 10px 0;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .login-container button:hover {
+        background-color: #4cae4c;
+    }
+</style>
+
 <div class="login-container">
     <h2>Login with your LʌvDB account</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <label for="id_username">Username</label>
+        <input type="text" name="username" id="id_username" required>
+
+        <label for="id_password">Password</label>
+        <input type="password" name="password" id="id_password" required>
+        
         <button type="submit">Login</button>
     </form>
 </div>
