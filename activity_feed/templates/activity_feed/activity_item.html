@@ -426,6 +426,15 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+                {% if activity.content_object.content_object.genres %}
+                <div>
+                    <span class="text-muted">Genres:</span>
+                    {% for genre in activity.content_object.content_object.genres.all %}
+                        {% if not forloop.first %}/{% endif %}
+                        <a href="{% url 'watch:genre_detail' genre.name %}">{{ genre.name }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 {% if activity.content_object.content_object.release_date %}
                     <div>
                         <span class="text-muted">Date:</span>
@@ -756,6 +765,15 @@
                         {% endfor %}
                     {% endif %}
                 </div>
+                {% if activity.content_object.content_object.work.genres %}
+                <div>
+                    <span class="text-muted">Genres:</span>
+                    {% for genre in activity.content_object.content_object.work.genres.all %}
+                        {% if not forloop.first %}/{% endif %}
+                        <a href="{% url 'play:genre_detail' genre.slug %}">{{ genre.name }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 {% if activity.content_object.content_object.region_release_dates.all %}
                     <div>
                         <span class="text-muted">Date:</span>
