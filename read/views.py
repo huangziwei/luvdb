@@ -553,6 +553,13 @@ class BookDetailView(DetailView):
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
+        genres = set()
+        for instance in book.instances.all():
+            if instance.work:  # Check if the instance has an associated work
+                for genre in instance.work.genres.all():
+                    genres.add(genre)
+        context["genres"] = genres
+
         return context
 
     def post(self, request, *args, **kwargs):

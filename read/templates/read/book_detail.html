@@ -82,11 +82,22 @@
                                             {% endfor %}
                                         </p>
                                     {% endif %}
+                                    {% if genres %}
+                                        <p>
+                                            <span class="text-muted">Genres:</span>
+                                            {% for genre in genres %}
+                                                {% comment %} {{genre}} {% endcomment %}
+                                                <a href="{% url "read:genre_detail" genre.slug %}">{{ genre.name }}</a>
+                                                {% if not forloop.last %} / {% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
                                     {% if object.publication_date %}
                                         <p>
                                             <span class="text-muted">Date:</span> {{ object.publication_date }}
                                         </p>
                                     {% endif %}
+                                    
                                     <div class="my-3">
                                         <p role="button"
                                            class="text-muted"

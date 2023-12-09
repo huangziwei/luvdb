@@ -279,8 +279,6 @@ class InstanceRole(auto_prefetch.Model):
         Role, on_delete=models.CASCADE, null=True, blank=True
     )
 
-    history = HistoricalRecords(inherit=True)
-
     def __str__(self):
         return f"{self.instance} - {self.creator} - {self.role}"
 

@@ -23,12 +23,22 @@
                     {{ object.edition }}
                 </div>
                 {% endif %}
+                {% if object.work.genres.count != 0 %}
+                    <div>
+                        <span class="text-muted">Genres:</span>
+                        {% for genre in object.work.genres.all %}
+                            <a href="{% url "read:genre_detail" genre.slug %}">{{ genre.name }}</a>
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
                 {% if object.publication_date %}
                     <div>
                         <span class="text-muted">Publication Date:</span>
                         {{ object.publication_date }}
                     </div>
                 {% endif %}
+                
                 {% if object.notes %}
                     <div>
                         {{ object.notes | markdownify }}
