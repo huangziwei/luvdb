@@ -47,7 +47,6 @@ class CustomDomainMiddleware:
 
         except CustomUser.DoesNotExist:
             # If no custom domain match, continue as normal
-            print("Failed")
             pass
 
         return self.get_response(request)

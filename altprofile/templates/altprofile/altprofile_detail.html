@@ -1,5 +1,5 @@
 
-{% if me.altprofile.custom_html %}
+{% if my.altprofile.custom_html %}
     {{ html|safe }}
 {% else %}
 <!DOCTYPE html>
@@ -42,7 +42,7 @@
 <body>
 
 <header>
-    <div class="name">{{me.username}}</div>
+    <div class="name">{{my.display_name|default:my.username}}</div>
 </header>
 
 <main class="content">
@@ -51,7 +51,7 @@
             <p>This is your alternative profile.</p>
         </section>
         <section>
-            <p><a href="/alt/@{{me.username}}/update/">Click me</a> and write your own HTML and CSS.</p>
+            <p><a href="/alt/@{{my.username}}/update/">Click me</a> and write your own HTML and CSS.</p>
         </section>
     </article>
 </main>

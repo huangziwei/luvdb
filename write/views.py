@@ -12,6 +12,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, Q
+from django.db.models.functions import Lower
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -53,6 +54,7 @@ from .models import (
     Randomizer,
     Repost,
     Say,
+    Tag,
 )
 
 User = get_user_model()
@@ -85,7 +87,7 @@ class ShareDetailView(DetailView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PostListView(ListView):
     model = Post
     template_name = "write/post_list.html"
@@ -139,32 +141,19 @@ class PostListView(ListView):
 
         # Filter tags based on the selected project
         if current_project:
-            posts = Post.objects.filter(user=self.user, projects=current_project)
+            all_tags = (
+                Tag.objects.filter(post__user=self.user, post__projects=current_project)
+                .annotate(count=Count("post"))
+                .order_by(Lower("name"))
+            )
         else:
-            posts = Post.objects.filter(user=self.user, projects__isnull=True)
+            all_tags = (
+                Tag.objects.filter(post__user=self.user, post__projects__isnull=True)
+                .annotate(count=Count("post"))
+                .order_by(Lower("name"))
+            )
 
-        # Get all tags for this user's pins
-        all_tags = []
-        for post in posts:
-            for tag in post.tags.all():
-                all_tags.append(tag)
-
-        # Count the frequency of each tag
-        tag_counter = Counter(all_tags)
-        sorted_tags = sorted(tag_counter.items(), key=lambda x: x[1], reverse=True)
-
-        # Calculate max size limit for tags (200% in this case)
-        max_size = 125
-        min_size = 100
-        max_count = max(tag_counter.values(), default=1)
-        scaling_factor = (max_size - min_size) / max_count
-
-        # Scale the counts so that the maximum count corresponds to the maximum size
-        tag_sizes = {}
-        for tag, count in sorted_tags:
-            tag_sizes[tag] = min_size + scaling_factor * count
-
-        context["all_tags"] = tag_sizes
+        context["all_tags"] = all_tags
         # Add posts count to projects
         projects_with_counts = []
         for project in (
@@ -188,7 +177,7 @@ class PostListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PostDetailView(ShareDetailView):
     model = Post
     template_name = "write/post_detail.html"
@@ -246,7 +235,7 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     fields = ["name", "order"]
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class SayListView(ListView):
     model = Say
     template_name = "write/say_list.html"
@@ -297,32 +286,36 @@ class SayListView(ListView):
         context = super().get_context_data(**kwargs)
         context["object"] = self.user
 
-        # Get all tags for this user's pins
-        all_tags = []
-        for say in Say.objects.filter(user=self.user):
-            for tag in say.tags.all():
-                all_tags.append(tag)
+        # Aggregating tag counts from Say
+        say_tags = (
+            Tag.objects.filter(say__user=self.user)
+            .values("name")
+            .annotate(count=Count("say"))
+        )
 
-        for repost in Repost.objects.filter(user=self.user):
-            for tag in repost.tags.all():
-                all_tags.append(tag)
+        # Aggregating tag counts from Repost
+        repost_tags = (
+            Tag.objects.filter(repost__user=self.user)
+            .values("name")
+            .annotate(count=Count("repost"))
+        )
 
-        # Count the frequency of each tag
-        tag_counter = Counter(all_tags)
-        sorted_tags = sorted(tag_counter.items(), key=lambda x: x[1], reverse=True)
+        # Combining the tag counts
+        combined_tags = {tag["name"]: tag["count"] for tag in say_tags}
+        for tag in repost_tags:
+            combined_tags[tag["name"]] = (
+                combined_tags.get(tag["name"], 0) + tag["count"]
+            )
 
-        # Calculate max size limit for tags (200% in this case)
-        max_size = 125
-        min_size = 100
-        max_count = max(tag_counter.values(), default=1)
-        scaling_factor = (max_size - min_size) / max_count
+        # Converting combined tags to the desired format
+        sorted_combined_tags = [
+            {"name": name, "count": count}
+            for name, count in sorted(
+                combined_tags.items(), key=lambda item: item[0].lower()
+            )
+        ]
 
-        # Scale the counts so that the maximum count corresponds to the maximum size
-        tag_sizes = {}
-        for tag, count in sorted_tags:
-            tag_sizes[tag] = min_size + scaling_factor * count
-
-        context["all_tags"] = tag_sizes
+        context["all_tags"] = sorted_combined_tags
         context["no_citation_css"] = True
 
         include_mathjax, include_mermaid = check_required_js(context["page_obj"])
@@ -332,7 +325,7 @@ class SayListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class SayDetailView(ShareDetailView):
     model = Say
     template_name = "write/say_detail.html"
@@ -390,7 +383,7 @@ class SayDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("activity_feed:activity_feed")
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PinListView(ListView):
     model = Pin
     template_name = "write/pin_list.html"
@@ -419,28 +412,11 @@ class PinListView(ListView):
         context = super().get_context_data(**kwargs)
         context["object"] = self.user
 
-        # Get all tags for this user's pins
-        all_tags = []
-        for pin in Pin.objects.filter(user=self.user):
-            for tag in pin.tags.all():
-                all_tags.append(tag)
-
-        # Count the frequency of each tag
-        tag_counter = Counter(all_tags)
-        sorted_tags = sorted(tag_counter.items(), key=lambda x: x[1], reverse=True)
-
-        # Calculate max size limit for tags (200% in this case)
-        max_size = 125
-        min_size = 100
-        max_count = max(tag_counter.values(), default=1)
-        scaling_factor = (max_size - min_size) / max_count
-
-        # Scale the counts so that the maximum count corresponds to the maximum size
-        tag_sizes = {}
-        for tag, count in sorted_tags:
-            tag_sizes[tag] = min_size + scaling_factor * count
-
-        context["all_tags"] = tag_sizes
+        context["all_tags"] = (
+            Tag.objects.filter(pin__user=self.user)
+            .annotate(count=Count("pin"))
+            .order_by(Lower("name"))
+        )
         context["no_citation_css"] = True
 
         # Add the flags to the context
@@ -451,7 +427,7 @@ class PinListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PinDetailView(ShareDetailView):
     model = Pin
     template_name = "write/pin_detail.html"
@@ -511,7 +487,7 @@ class PinDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("activity_feed:activity_feed")
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PinsFromURLView(ListView):
     model = Pin
     template_name = "write/pins_from_url.html"
@@ -575,7 +551,7 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
         return self.object.content_object.get_absolute_url()
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class TagListView(ListView):
     template_name = "write/tag_list.html"
     paginate_by = 25
@@ -628,17 +604,41 @@ class TagListView(ListView):
             bio__icontains=tag
         )  # these are the users with this tag in their bio
 
-        # Get all tags from the sorted list
-        all_tags = set()
-        for obj in self.object_list:
-            for t in obj.tags.all():
-                all_tags.add(t)
-        context["all_tags"] = all_tags
+        # Aggregate tag counts from various models
+        models = [
+            Post,
+            Say,
+            Pin,
+            LuvList,
+            ReadCheckIn,
+            WatchCheckIn,
+            ListenCheckIn,
+            PlayCheckIn,
+            Repost,
+        ]
+        tag_counts = {}
+
+        for model in models:
+            model_name = model.__name__.lower()
+            tags = (
+                Tag.objects.filter(**{model_name + "__tags__name": tag})
+                .values("name")
+                .annotate(count=Count(model_name))
+            )
+            for t in tags:
+                tag_counts[t["name"]] = tag_counts.get(t["name"], 0) + t["count"]
+
+        # Sorting tags alphabetically
+        sorted_tags = sorted(
+            [{"name": name, "count": count} for name, count in tag_counts.items()],
+            key=lambda x: x["name"].lower(),
+        )
+        context["all_tags"] = sorted_tags
 
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class TagUserListView(ListView):
     template_name = "write/tag_user_list.html"
     paginate_by = 25
@@ -703,13 +703,39 @@ class TagUserListView(ListView):
         context["tag"] = tag
         context["user"] = user  # the user whose tags we are viewing
 
-        # Get all tags from the sorted list
-        all_tags = set()
-        for obj in self.object_list:
-            for t in obj.tags.all():
-                all_tags.add(t)
+        # Aggregate tag counts from various models for the specific user
+        models = [
+            Post,
+            Say,
+            Pin,
+            LuvList,
+            ReadCheckIn,
+            WatchCheckIn,
+            ListenCheckIn,
+            PlayCheckIn,
+            Repost,
+        ]
+        tag_counts = {}
 
-        context["all_tags"] = all_tags
+        for model in models:
+            model_name = model.__name__.lower()
+            tags = (
+                Tag.objects.filter(
+                    **{model_name + "__tags__name": tag, model_name + "__user": user}
+                )
+                .values("name")
+                .annotate(count=Count(model_name))
+            )
+            for t in tags:
+                tag_counts[t["name"]] = tag_counts.get(t["name"], 0) + t["count"]
+
+        # Sorting tags alphabetically
+        sorted_tags = sorted(
+            [{"name": name, "count": count} for name, count in tag_counts.items()],
+            key=lambda x: x["name"].lower(),
+        )
+
+        context["all_tags"] = sorted_tags
 
         return context
 
@@ -739,7 +765,7 @@ class RepostCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class RepostDetailView(ShareDetailView):
     model = Repost
     template_name = "write/repost_detail.html"
@@ -926,7 +952,7 @@ class LuvListDeleteView(LoginRequiredMixin, DeleteView):
         )
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class LuvListUserListView(ListView):
     model = LuvList
     template_name = "write/luvlist_list.html"  # Assuming 'luvlist_user_list.html' is the template for the user-specific list view
@@ -954,28 +980,14 @@ class LuvListUserListView(ListView):
         context = super().get_context_data(**kwargs)
         context["object"] = self.user
 
-        # Get all tags for this user's pins
-        all_tags = []
-        for luvlist in LuvList.objects.filter(user=self.user):
-            for tag in luvlist.tags.all():
-                all_tags.append(tag)
-
-        # Count the frequency of each tag
-        tag_counter = Counter(all_tags)
-        sorted_tags = sorted(tag_counter.items(), key=lambda x: x[1], reverse=True)
-
-        # Calculate max size limit for tags (200% in this case)
-        max_size = 125
-        min_size = 100
-        max_count = max(tag_counter.values(), default=1)
-        scaling_factor = (max_size - min_size) / max_count
-
-        # Scale the counts so that the maximum count corresponds to the maximum size
-        tag_sizes = {}
-        for tag, count in sorted_tags:
-            tag_sizes[tag] = min_size + scaling_factor * count
-
-        context["all_tags"] = tag_sizes
+        # Aggregating tag counts from LuvList
+        all_tags = (
+            Tag.objects.filter(luvlist__user=self.user)
+            .values("name")
+            .annotate(count=Count("luvlist"))
+            .order_by(Lower("name"))
+        )
+        context["all_tags"] = all_tags
 
         # Add collaborated luvlists to the context
         collaborated_luvlists = (
@@ -988,7 +1000,7 @@ class LuvListUserListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class RandomizerDetailView(DetailView):
     model = LuvList
     template_name = "write/luvlist_randomizer.html"
@@ -1051,7 +1063,7 @@ class ProjectAutocomplete(autocomplete.Select2QuerySetView):
         return True  # or customize this if you require special logic
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class CommentListView(ListView):
     model = Comment
     template_name = "write/comment_list.html"

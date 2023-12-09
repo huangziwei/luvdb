@@ -8,6 +8,10 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views.generic import DetailView, TemplateView, UpdateView, View
 
+from listen.models import ListenCheckIn
+from play.models import PlayCheckIn
+from read.models import ReadCheckIn
+from watch.models import WatchCheckIn
 from write.models import Pin, Post, Say
 
 from .forms import AltProfileForm
@@ -71,12 +75,20 @@ class AltProfileDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["root_url"] = settings.ROOT_URL
-        context["me"] = me = self.object
-        # context["html"] = self.object.altprofile.custom_html
-        # context["css"] = self.object.altprofile.custom_css
-        context["posts"] = Post.objects.filter(user=me).order_by("-timestamp")
-        context["says"] = Say.objects.filter(user=me).order_by("-timestamp")
+        context["my"] = me = self.object
+        context["username"] = self.object.username
+        context["display_name"] = self.object.display_name
         context["css"] = self.object.altprofile.custom_css
+
+        context["says"] = Say.objects.filter(user=me).order_by("-timestamp")
+        context["posts"] = Post.objects.filter(user=me).order_by("-timestamp")
+        context["pins"] = Pin.objects.filter(user=me).order_by("-timestamp")
+        context["reads"] = ReadCheckIn.objects.filter(user=me).order_by("-timestamp")
+        context["listens"] = ListenCheckIn.objects.filter(user=me).order_by(
+            "-timestamp"
+        )
+        context["plays"] = PlayCheckIn.objects.filter(user=me).order_by("-timestamp")
+        context["watches"] = WatchCheckIn.objects.filter(user=me).order_by("-timestamp")
 
         # Render custom_html as a Django template
         custom_html_template = Template(self.object.altprofile.custom_html)
@@ -119,7 +131,7 @@ class AltProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["templates"] = AltProfileTemplate.objects.all()
+        context["templates"] = AltProfileTemplate.objects.all().order_by("name")
 
         return context
 

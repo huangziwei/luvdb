@@ -522,7 +522,11 @@
                 <div class="bg-light p-3">
                     <span>
                         {% for tag in all_tags %}
-                            <a href="{% url 'write:tag_list' tag.name %}" class="text-success me-2">#{{ tag.name }}</a>
+                            <a href="{% url 'write:tag_list' tag.name %}" 
+                                class="text-success me-2"
+                                style="font-size: {{ tag.count|add:80}}%">
+                                {{ tag.name }}
+                            </a>
                         {% endfor %}
                     </span>
                 </div>

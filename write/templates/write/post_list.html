@@ -107,10 +107,10 @@
                     {% if all_tags %}
                     <div class="bg-light p-3 mb-3">
                         <span>
-                            {% for tag, size in all_tags.items %}
+                            {% for tag in all_tags %}
                                 <a href="{% url 'write:tag_user_list' object.username tag.name %}"
-                                   style="font-size: {{ size }}%"
-                                   class="text-success me-2">#{{ tag.name }}</a>
+                                   style="font-size: {{ tag.count|add:85 }}%"
+                                   class="text-success me-2">{{ tag.name }}</a>
                             {% endfor %}
                         </span>
                     </div>

@@ -80,7 +80,7 @@ class WorkCreateView(LoginRequiredMixin, CreateView):
         return data
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class WorkDetailView(DetailView):
     model = Work
     template_name = "play/work_detail.html"
@@ -218,7 +218,7 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class GameDetailView(DetailView):
     model = Game
     template_name = "play/game_detail.html"
@@ -458,7 +458,7 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class GameCastDetailView(DetailView):
     model = Game
     context_object_name = "game"
@@ -499,7 +499,7 @@ class PlatformCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PlatformDetailView(DetailView):
     model = Platform
     template_name = "play/platform_detail.html"
@@ -601,7 +601,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         return label
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PlayCheckInDetailView(DetailView):
     model = PlayCheckIn
     template_name = "play/play_checkin_detail.html"
@@ -665,7 +665,7 @@ class PlayCheckInDeleteView(LoginRequiredMixin, DeleteView):
         )
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PlayCheckInListView(ListView):
     model = PlayCheckIn
     template_name = "play/play_checkin_list.html"
@@ -745,7 +745,7 @@ class PlayCheckInListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PlayCheckInAllListView(ListView):
     model = PlayCheckIn
     template_name = "play/play_checkin_list_all.html"
@@ -913,7 +913,7 @@ class PlayCheckInUserListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PlayListView(ListView):
     model = Game
     template_name = "play/play_list.html"
@@ -970,7 +970,7 @@ class PlayListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PlayListAllView(LoginRequiredMixin, ListView):
     model = Game
     template_name = "play/play_list_all.html"
@@ -1032,7 +1032,7 @@ class GameSeriesCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class GameSeriesDetailView(DetailView):
     model = GameSeries
     template_name = "play/series_detail.html"  # Update this
@@ -1088,7 +1088,7 @@ class GameSeriesUpdateView(LoginRequiredMixin, UpdateView):
 #########
 # Genre #
 #########
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class GenreDetailView(DetailView):
     model = Genre
     template_name = "play/genre_detail.html"  # Update with your actual template name
@@ -1128,7 +1128,7 @@ class GenreAutocomplete(autocomplete.Select2QuerySetView):
 #################
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class WorkHistoryView(HistoryViewMixin, DetailView):
     model = Work
     template_name = "entity/history.html"
@@ -1140,7 +1140,7 @@ class WorkHistoryView(HistoryViewMixin, DetailView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class GameHistoryView(HistoryViewMixin, DetailView):
     model = Game
     template_name = "entity/history.html"
@@ -1152,7 +1152,7 @@ class GameHistoryView(HistoryViewMixin, DetailView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class GameSeriesHistoryView(HistoryViewMixin, DetailView):
     model = GameSeries
     template_name = "entity/history.html"
@@ -1164,7 +1164,7 @@ class GameSeriesHistoryView(HistoryViewMixin, DetailView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="6/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PlatformHistoryView(HistoryViewMixin, DetailView):
     model = Platform
     template_name = "entity/history.html"
