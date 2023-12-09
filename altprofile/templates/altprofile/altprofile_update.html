@@ -61,7 +61,7 @@
     }
 </style>
 
-<h2>Edit Profile</h2>
+<h2>Update {{my.display_name|default:my.username }}'s Alt-Profile</h2>
 <div class="templates-container">
     {% for template in templates %}
     <form method="post" action="{% url 'apply_template' %}" class="template-form">

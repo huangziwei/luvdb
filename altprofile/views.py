@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Context, Template
 from django.urls import reverse
@@ -12,7 +13,7 @@ from listen.models import ListenCheckIn
 from play.models import PlayCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
-from write.models import Pin, Post, Say
+from write.models import LuvList, Pin, Post, Say
 
 from .forms import AltProfileForm
 from .models import AltProfile, AltProfileTemplate
@@ -83,6 +84,7 @@ class AltProfileDetailView(DetailView):
         context["says"] = Say.objects.filter(user=me).order_by("-timestamp")
         context["posts"] = Post.objects.filter(user=me).order_by("-timestamp")
         context["pins"] = Pin.objects.filter(user=me).order_by("-timestamp")
+        context["lists"] = LuvList.objects.filter(user=me).order_by("-timestamp")
         context["reads"] = ReadCheckIn.objects.filter(user=me).order_by("-timestamp")
         context["listens"] = ListenCheckIn.objects.filter(user=me).order_by(
             "-timestamp"
@@ -104,6 +106,18 @@ class AltProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "altprofile/altprofile_update.html"
 
     def dispatch(self, request, *args, **kwargs):
+        # Get the username from the URL
+        requested_username = self.kwargs.get("username")
+
+        # Get the AltProfile instance for the requested username
+        requested_profile = get_object_or_404(
+            AltProfile, user__username=requested_username
+        )
+
+        # Check if the requested profile belongs to the current user
+        if request.user != requested_profile.user:
+            raise Http404("You do not have permission to edit this profile.")
+
         self.login_url = self.get_custom_login_url(request)
         return super().dispatch(request, *args, **kwargs)
 
@@ -131,6 +145,7 @@ class AltProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["my"] = self.request.user
         context["templates"] = AltProfileTemplate.objects.all().order_by("name")
 
         return context
