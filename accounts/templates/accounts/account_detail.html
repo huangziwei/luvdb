@@ -1233,15 +1233,22 @@
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false">More</button>
                                 <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                                    {% if object.is_staff %}
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{% url 'manage_invitation_requests' %}"
+                                            role="button">Manage Invite Requests</a>
+                                    </li>
+                                    {% endif %}
                                     <li>
                                         <a class="dropdown-item"
                                             href="{% url 'accounts:manage_invitations' object.username %}"
-                                            role="button">Invite friends</a>
+                                            role="button">Invite Friends</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item"
                                            href="{% url 'accounts:export_user_data' object.username %}"
-                                           role="button">Export Your Data</a>
+                                           role="button">Export Data</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item"
@@ -1251,7 +1258,7 @@
                                     <li>
                                         <a class="dropdown-item"
                                            href="{% url 'accounts:crossposters' object.username %}"
-                                           role="button">Manage Crossposters</a>
+                                           role="button">Manage Cross-posters</a>
                                     </li>
                                 </ul>
                             </div>
