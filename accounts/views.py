@@ -372,6 +372,37 @@ class InvitationRequestedSuccessView(TemplateView):
     template_name = "accounts/invitation_requested_success.html"
 
 
+class ManageInvitationRequestsView(UserPassesTestMixin, ListView):
+    model = InvitationRequest
+    template_name = "accounts/invitation_requested_management.html"
+    context_object_name = "invitation_requests"
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def post(self, request, *args, **kwargs):
+        if "delete_id" in request.POST:
+            # Handle deletion request
+            invitation_id = request.POST.get("delete_id")
+            if invitation_id:
+                try:
+                    invitation = InvitationRequest.objects.get(id=invitation_id)
+                    invitation.delete()
+                except InvitationRequest.DoesNotExist:
+                    pass  # Handle the case where the invitation does not exist
+        elif "mark_invite_id" in request.POST:
+            # Handle marking as invited
+            invitation_id = request.POST.get("mark_invite_id")
+            try:
+                invitation = InvitationRequest.objects.get(id=invitation_id)
+                invitation.is_invited = True
+                invitation.save()
+            except InvitationRequest.DoesNotExist:
+                pass  # Handle non-existent invitation
+
+        return redirect("manage_invitation_requests")
+
+
 ##########
 # Search #
 ##########

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <!-- Invitation Requests List -->
+        <div class="col-12 col-md-8">
+            <h1>Manage Invitation Requests</h1>
+            <p>Review and manage incoming invitation requests.</p>
+            <hr>
+            <h2>Invitation Requests</h2>
+            <ul class="list-group mb-4">
+                {% for request in invitation_requests %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ request.email }}
+                    <span class="badge badge-{{ request.is_invited|yesno:'success,secondary' }}">
+                        {{ request.is_invited|yesno:"Invited,Not Invited" }}
+                    </span>
+                    <div class="d-flex">
+                        <!-- Mark as Invited Form -->
+                        <form method="post" action="{% url 'manage_invitation_requests' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="mark_invite_id" value="{{ request.id }}">
+                            <button type="submit" class="btn btn-success btn-sm me-1">Mark Invite</button>
+                        </form>
+                        <!-- Delete Form -->
+                        <form method="post" action="{% url 'manage_invitation_requests' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="delete_id" value="{{ request.id }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="list-group-item">No invitation requests found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

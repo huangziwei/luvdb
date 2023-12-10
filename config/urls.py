@@ -14,6 +14,7 @@ from django.urls import include, path, re_path
 from accounts.views import (
     InvitationRequestedSuccessView,
     InvitationRequestedView,
+    ManageInvitationRequestsView,
     RequestInvitationView,
     SignUpView,
     get_followed_usernames,
@@ -119,6 +120,11 @@ urlpatterns = [
         "invitation-requested-success/",
         InvitationRequestedSuccessView.as_view(),
         name="invitation_requested_success",
+    ),
+    path(
+        "manage-invitation-requests/",
+        ManageInvitationRequestsView.as_view(),
+        name="manage_invitation_requests",
     ),
     # alt profile
     path("alt/", include("altprofile.urls")),
