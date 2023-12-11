@@ -35,7 +35,7 @@
                                 <ul>
                                     {% for work in lit_works %}
                                         <li>
-                                            <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.publication_date }})
+                                            <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{work.get_work_type_display}}, {{ work.publication_date }})
                                         </li>
                                     {% endfor %}
                                 </ul>
