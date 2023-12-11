@@ -21,9 +21,9 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-7 left-column">
+            <div class="col-12 col-md-7 left-column h-entry">
                 <div class="d-flex align-items-center">
-                    <a href="{% url 'accounts:detail' object.user.username %}" class='me-1'>
+                    <a href="{% url 'accounts:detail' object.user.username %}" class='me-1 p-author h-card'>
                         {{ object.user.display_name | default:object.user.username }}
                     </a>
                     <span class="me-2">checked in</span>
@@ -38,7 +38,7 @@
                         </span>
                     {% endif %}
                 </div>
-                <div class="mt-2">
+                <div class="mt-2 e-content">
                     {{ object.content | linkify_tags | linkify_mentions | markdownify }}
                 </div>
                 <div class="bg-light p-3 mt-2">
@@ -68,13 +68,13 @@
                             {% if object.content_type.model == 'movie' %}
                                 <a href="{% url 'watch:movie_detail' object.content_object.id %}"
                                    class="text-decoration-none ">
-                                    <div class="fs-5">{{ object.content_object.title }}</div>
+                                    <div class="fs-5  p-ame">{{ object.content_object.title }}</div>
                                 </a>
                             {% elif object.content_type.model == 'series' %}
                                 <div class="fs-4">{{ object.content_object.series.title }}</div>
                                 <a href="{% url 'watch:series_detail' object.content_object.id %}"
                                    class="text-decoration-none ">
-                                    <div class="fs-5">{{ object.content_object.title }}</div>
+                                    <div class="fs-5  p-ame">{{ object.content_object.title }}</div>
                                 </a>
                             {% endif %}
                             {% if object.content_type.model == 'movie' %}
@@ -150,7 +150,7 @@
                     <p class='me-2 text-secondary mb-2'>
                         {% if object.content_type.model == "movie" %}
                             <a href="{% url 'watch:movie_checkin_list' object.content_object.id object.user.username %}"
-                                class="text-muted">
+                                class="text-muted u-url dt-published">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
                                 {% else %}
@@ -159,7 +159,7 @@
                             </a>
                         {% else %}
                             <a href="{% url 'watch:series_checkin_list' object.content_object.id object.user.username %}"
-                                class="text-muted">
+                                class="text-muted u-url dt-published">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
                                 {% else %}

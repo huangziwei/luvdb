@@ -37,7 +37,7 @@
                         </span>
                     {% endif %}
                 </div>
-                <div class="mt-2">
+                <div class="mt-2 e-content">
                     {{ object.content | linkify_tags | linkify_mentions | markdownify }}
                 </div>
                 <div class="bg-light p-3 mt-2">
@@ -67,13 +67,13 @@
                             {% if object.content_type.model == 'book' %}
                                 <a href="{% url 'read:book_detail' object.content_object.id %}"
                                    class="text-decoration-none ">
-                                    <div class="fs-5">{{ object.content_object.title }}</div>
+                                    <div class="fs-5 p-ame">{{ object.content_object.title }}</div>
                                 </a>
                             {% elif object.content_type.model == 'issue' %}
                                 <div class="fs-4">{{ object.content_object.periodical.title }}</div>
                                 <a href="{% url 'read:issue_detail' object.content_object.periodical.id object.content_object.id %}"
                                    class="text-decoration-none ">
-                                    <div class="fs-5">{{ object.content_object.title }}</div>
+                                    <div class="fs-5  p-ame">{{ object.content_object.title }}</div>
                                 </a>
                             {% endif %}
                             {% if object.content_type.model == 'book' %}

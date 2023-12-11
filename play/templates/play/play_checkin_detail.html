@@ -20,9 +20,9 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-7 left-column">
+            <div class="col-12 col-md-7 left-column h-entry">
                 <div class="d-flex align-items-center">
-                    <a href="{% url 'accounts:detail' object.user.username %}" class='me-1'>
+                    <a href="{% url 'accounts:detail' object.user.username %}" class='me-1 p-author h-card'>
                         {{ object.user.display_name | default:object.user.username }}
                     </a>
                     <span class="me-2">checked in</span>
@@ -39,7 +39,7 @@
                         </span>
                     {% endif %}
                 </div>
-                <div class="mt-2">
+                <div class="mt-2 e-content">
                     {{ object.content | linkify_tags | linkify_mentions | markdownify }}
                 </div>
                 <div class="bg-light p-3 mt-2">
@@ -68,7 +68,7 @@
                         <div class="flex-grow-1 ms-3">
                             <a href="{% url 'play:game_detail' object.content_object.id %}"
                                class="text-decoration-none ">
-                                <div class="fs-5">{{ object.content_object.title }}</div>
+                                <div class="fs-5 p-name">{{ object.content_object.title }}</div>
                             </a>
                             {% regroup object.content_object.gameroles.all by role as roles_list %}
                             {% for role in roles_list %}
@@ -119,7 +119,7 @@
                 </div>
                 <div class="d-flex mt-2">
                     <p class='me-2 text-secondary mb-2'>
-                        <a href="{% url 'play:play_checkin_list' object.content_object.id object.user.username %}" class="text-muted">
+                        <a href="{% url 'play:play_checkin_list' object.content_object.id object.user.username %}" class="text-muted dt-published">
                             {% if checkin_count > 0 %}
                                 {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
                             {% else %}
