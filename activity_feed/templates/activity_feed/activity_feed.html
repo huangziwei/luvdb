@@ -270,17 +270,13 @@
                     <div class="bio p-3 bg-light">
                         <div>
                             {% if feed_user.display_name %}
-                                <a class="mb-0 fs-4 h-card" href="https://luvdb.com{% url 'accounts:detail' feed_user.username %}" rel="me">
-                                    {{ feed_user.display_name }}
-                                </a>
                                 <span>
-                                    @{{ feed_user.username }}
+                                    {{ object.display_name }}
                                 </span>
-                            {% else %}
-                                <a class="h-card" href="https://luvdb.com{% url 'accounts:detail' feed_user.username %}" rel="me">
-                                    @{{ feed_user.username }}
-                                </a>
                             {% endif %}
+                            <a class="h-card" href="https://luvdb.com{% url 'accounts:detail' feed_user.username %}" rel="me">
+                                @{{ feed_user.username }}
+                            </a>
                         </div>
                         <p>
                             <span class="text-muted">Since {{ feed_user.date_joined|date:"Y.m.d" }}</span>

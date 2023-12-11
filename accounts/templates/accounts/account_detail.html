@@ -47,7 +47,7 @@
                                 {{ object.display_name }}
                             </span>
                         {% endif %}
-                        <a class="h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}" rel="me">
+                        <a href="https://luvdb.com{% url 'accounts:detail' object.username %}">
                             @{{ object.username }}
                         </a>
                         {% if not object.is_public %}
@@ -1212,7 +1212,7 @@
                                 {{ object.display_name }}
                             </span>
                         {% endif %}
-                        <a class="h-card" href="https://luvdb.com{% url 'accounts:detail' object.username %}" rel="me">
+                        <a href="https://luvdb.com{% url 'accounts:detail' object.username %}" class="h-card" rel="me">
                             @{{ object.username }}
                         </a>
                         {% if not object.is_public %}
