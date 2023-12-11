@@ -2,6 +2,7 @@
 {% load linkify %}
 {% load markdownify %}
 {% load parse_activity_type %}
+{% block title %}{{ object.user.display_name | default:object.user.username }}'s Listen Check-Ins{% endblock %}
 {% block content %}
 <div class="container">
     <div class="row">
