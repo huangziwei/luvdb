@@ -88,6 +88,7 @@ class CustomUserChangeForm(UserChangeForm):
             "pure_text_mode",
             "enable_alt_profile",
             # "custom_domain",
+            "enable_webmentions",
         )
         help_texts = {
             "is_public": "When enabled, your profile becomes publicly accessible, including to non-logged-in users, and activates RSS feeds. Disabling it requires a login to access the profile and list views of Say, Post, Pin, List, and Check-ins. However, the detail views of all contents remain accessible via direct URLs even when this option is turned off.",
@@ -95,6 +96,7 @@ class CustomUserChangeForm(UserChangeForm):
             "timezone": "Set your preferred timezone. This will adjust the display of all timestamps to match your local date and time.",
             "enable_alt_profile": "Enable this option to activate your alternative profile (`luvdb.com/alt/@username`).",
             # "custom_domain": "Set your custom domain for your alternative profile. Add a CNAME record to your DNS settings to point to `luvdb.com`.",
+            "enable_webmentions": "Enable this option to allow send and receive webmentions.",
         }
 
     def __init__(self, *args, **kwargs):
@@ -105,6 +107,7 @@ class CustomUserChangeForm(UserChangeForm):
         self.fields[
             "enable_alt_profile"
         ].label = "Enable alternative profile (experimental)"
+        self.fields["enable_webmentions"].label = "Enable webmentions (experimental)"
 
         del self.fields["password"]
 
