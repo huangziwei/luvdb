@@ -130,13 +130,32 @@ class Work(auto_prefetch.Model):  # Renamed from Book
 
     # novel, novella, short story, poem, etc.
     WORK_TYPES = (
+        # literature / fictions
         ("NO", "Novel"),
         ("NV", "Novella"),
+        ("NT", "Novelette"),
         ("SS", "Short Story"),
         ("PM", "Poem"),
         ("PL", "Play"),
-        ("SC", "Screenplay"),
+        ("SC", "Script"),  # Screenplay, teleplay, etc.
+        ("MG", "Manga"),
+        ("CM", "Comic"),
+        ("CL", "Children's"),
+        ("FL", "Folktale"),
+        # nonfictions
         ("NF", "Nonfiction"),
+        ("ES", "Essay"),
+        ("TB", "Textbook"),
+        ("GU", "Guidebook"),
+        ("AR", "Article"),
+        ("SH", "Speech"),
+        ("LG", "Lecture"),
+        ("IN", "Interview"),
+        ("RE", "Review"),
+        ("LT", "Letter"),
+        ("RP", "Research Paper"),
+        ("TS", "Thesis"),
+        ("DS", "Dissertation"),
         ("OT", "Other"),
     )
     work_type = models.CharField(
