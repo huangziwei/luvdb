@@ -2,11 +2,11 @@
 {% load markdownify %}
 {% load linkify %}
 {% block meta %}
-    <meta property="og:title" content="{{ profile_user.display_name | default:profile_user.username }}'s Check-in to &quot;{{ object.title }}&quot;">
+    <meta property="og:title" content="{{ profile_user.display_name | default:profile_user.username }}'s Check-ins to &quot;{{ object.title }}&quot;">
     {% if object.notes %}
         <meta property="og:description" content="{{ object.notes|truncatewords:150 }}">
     {% else %}
-        <meta property="og:description" content="Check out {{ profile_user.display_name | default:profile_user.username }}'s Check-in to &quot;{{ object.title }}&quot; on luvdb.com">
+        <meta property="og:description" content="Check out {{ profile_user.display_name | default:profile_user.username }}'s Check-ins to &quot;{{ object.title }}&quot; on luvdb.com">
     {% endif %}
     <meta property="og:image" content="{{ object.cover.url }}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
