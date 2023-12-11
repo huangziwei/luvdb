@@ -33,14 +33,22 @@ class PostForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
         super(PostForm, self).__init__(*args, **kwargs)
         self.fields["title"].label = ""
         self.fields["content"].label = ""
         self.fields["comments_enabled"].label = "Enable replies"
+        self.fields["comments_enabled"].initial = (
+            user.enable_replies_by_default if user else True
+        )
         self.fields["projects"].label = ""
         self.fields[
             "projects"
         ].help_text = "Posts in projects appear only on their respective project pages, not in the general post list."
+        self.fields["share_to_feed"].label = "Share to feed"
+        self.fields["share_to_feed"].initial = (
+            user.enable_share_to_feed_by_default if user else False
+        )
 
 
 class SayForm(forms.ModelForm):
@@ -57,9 +65,15 @@ class SayForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+
         super(SayForm, self).__init__(*args, **kwargs)
+
         self.fields["content"].label = ""
         self.fields["comments_enabled"].label = "Enable replies"
+        self.fields["comments_enabled"].initial = (
+            user.enable_replies_by_default if user else False
+        )
 
 
 class PinForm(forms.ModelForm):
@@ -78,11 +92,19 @@ class PinForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
         super(PinForm, self).__init__(*args, **kwargs)
         self.fields["title"].label = ""
         self.fields["url"].label = ""
         self.fields["content"].label = ""
         self.fields["comments_enabled"].label = "Enable replies"
+        self.fields["comments_enabled"].initial = (
+            user.enable_replies_by_default if user else True
+        )
+        self.fields["share_to_feed"].label = "Share to feed"
+        self.fields["share_to_feed"].initial = (
+            user.enable_share_to_feed_by_default if user else False
+        )
 
 
 class CommentForm(forms.ModelForm):
@@ -105,8 +127,11 @@ class ActivityFeedSayForm(SayForm):
     )
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
         super(ActivityFeedSayForm, self).__init__(*args, **kwargs)
-        self.fields["comments_enabled"].initial = True
+        self.fields["comments_enabled"].initial = (
+            user.enable_replies_by_default if user else True
+        )
         self.fields["comments_enabled"].label = "Enable replies"
 
 
@@ -118,10 +143,14 @@ class RepostForm(forms.ModelForm):
         fields = ["content", "comments_enabled"]
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
         super(RepostForm, self).__init__(*args, **kwargs)
         self.fields["content"].label = ""
-        self.fields["comments_enabled"].label = "Enable replies"
         self.fields["content"].required = False
+        self.fields["comments_enabled"].label = "Enable replies"
+        self.fields["comments_enabled"].initial = (
+            user.enable_replies_by_default if user else True
+        )
 
 
 class LuvListForm(forms.ModelForm):

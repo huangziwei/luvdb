@@ -35,7 +35,7 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["say_form"] = ActivityFeedSayForm()
+        context["say_form"] = ActivityFeedSayForm(user=self.request.user)
         context["feed_type"] = "public"
         context["no_citation_css"] = True
 
@@ -388,7 +388,7 @@ class CalendarActivityFeedView(ActivityFeedView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["say_form"] = ActivityFeedSayForm()
+        context["say_form"] = ActivityFeedSayForm(user=self.request.user)
         context["feed_type"] = "public"
         context["no_citation_css"] = True
         # Add date to the context

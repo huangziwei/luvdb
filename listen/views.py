@@ -661,7 +661,6 @@ class ReleaseDetailView(DetailView):
                 "content_type": content_type.id,
                 "object_id": self.object.id,
                 "user": request.user.id,
-                "comments_enabled": True,
             },
         )
         if form.is_valid():
@@ -801,7 +800,7 @@ class ListenCheckInDetailView(DetailView):
             object_id=self.object.id,
         ).order_by("timestamp")
         context["comment_form"] = CommentForm()
-        context["repost_form"] = RepostForm()
+        context["repost_form"] = RepostForm(user=self.request.user)
         context["app_label"] = self.object._meta.app_label
         context["object_type"] = self.object._meta.model_name.lower()
 
@@ -1395,7 +1394,6 @@ class PodcastDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-
         if request.POST.get("action") == "recrawl":
             try:
                 # Re-parse the podcast from its feed
@@ -1421,7 +1419,6 @@ class PodcastDetailView(DetailView):
                 "content_type": content_type.id,
                 "object_id": self.object.id,
                 "user": request.user.id,
-                "comments_enabled": True,
             },
         )
         if form.is_valid():
@@ -1982,7 +1979,6 @@ class AudiobookDetailView(DetailView):
                 "content_type": content_type.id,
                 "object_id": self.object.id,
                 "user": request.user.id,
-                "comments_enabled": True,
             },
         )
         if form.is_valid():

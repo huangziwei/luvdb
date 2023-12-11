@@ -1178,7 +1178,7 @@ class ReadCheckInDetailView(DetailView):
             object_id=self.object.id,
         ).order_by("timestamp")
         context["comment_form"] = CommentForm()
-        context["repost_form"] = RepostForm()
+        context["repost_form"] = RepostForm(user=self.request.user)
         context["app_label"] = self.object._meta.app_label
         context["object_type"] = self.object._meta.model_name.lower()
 

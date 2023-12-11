@@ -72,7 +72,7 @@ class ShareDetailView(DetailView):
             .order_by("timestamp")
         )
         context["comment_form"] = CommentForm()
-        context["repost_form"] = RepostForm()
+        context["repost_form"] = RepostForm(user=self.request.user)
         context["app_label"] = self.object._meta.app_label
         context["object_type"] = self.object._meta.model_name.lower()
 
@@ -199,6 +199,11 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
     template_name = "write/post_create.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -449,6 +454,11 @@ class PinCreateView(LoginRequiredMixin, CreateView):
     model = Pin
     form_class = PinForm
     template_name = "write/pin_create.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
     def get_initial(self):
         initial = super().get_initial()

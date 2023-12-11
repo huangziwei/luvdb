@@ -72,6 +72,10 @@ class CustomUser(AbstractUser):
     custom_domain = models.CharField(max_length=100, blank=True, null=True)
     enable_webmentions = models.BooleanField(default=False)
 
+    # fine-grained settings
+    enable_replies_by_default = models.BooleanField(default=True)
+    enable_share_to_feed_by_default = models.BooleanField(default=False)
+
     RESERVED_USERNAMES = [
         "admin",
         "root",
