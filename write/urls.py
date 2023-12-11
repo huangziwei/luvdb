@@ -104,12 +104,12 @@ urlpatterns = [
         name="post_list_project",
     ),
     path(
-        "@<str:username>/posts/<slug:slug>/update",
+        "@<str:username>/posts/<slug:project>/update",
         ProjectUpdateView.as_view(),
         name="project_update",
     ),
     path(
-        "@<str:username>/posts/<str:project>/rss/",
+        "@<str:username>/posts/<slug:project>/rss/",
         UserPostProjectFeed(),
         name="user_post_project_feed",
     ),

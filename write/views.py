@@ -233,6 +233,7 @@ class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
     template_name = "write/project_update.html"
     fields = ["name", "order"]
+    slug_url_kwarg = "project"
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
