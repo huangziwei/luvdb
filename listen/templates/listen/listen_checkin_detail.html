@@ -217,6 +217,7 @@
     {% include 'mathjax+mermaid.html' %}
     <!--webmentions-->
     {% if object.user.enable_webmentions %}
+        <a href="{% url '' %}"></a>
         <a href="https://brid.gy/publish/mastodon" rel="me"></a>
     {% endif %}
 {% endblock content %}

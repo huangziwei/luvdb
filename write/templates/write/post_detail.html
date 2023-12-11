@@ -36,7 +36,7 @@
                     </p>
                     <p class='me-2 text-secondary'>
                         <a href="{% url 'write:post_list' object.user.username %}"
-                           class="text-muted u-url">
+                           class="text-muted dt-published">
                            <time class="dt-published" datetime="{{object.timestamp}}">
                                 {{ object.timestamp|date:"Y.m.d H:i" }}
                            </time>
@@ -46,7 +46,6 @@
                         <a href="{% url "write:post_update_slug" object.user.username object.slug %}" class="me-2">Edit</a>
                         <a href="{% url "write:post_delete_slug" object.user.username object.slug %}" class="me-2">Delete</a>
                     {% endif %}
-                    
                 </span>
                 
                 <div class="e-content">
@@ -117,6 +116,7 @@
     {% include 'mathjax+mermaid.html' %}
     <!--webmentions-->
     {% if object.user.enable_webmentions %}
+        <a href="{% url 'write:post_detail' object.user.username object.id%}" class="u-url"></a>
         <a href="https://brid.gy/publish/mastodon" rel="me"></a>
     {% endif %}    
 {% endblock %}

@@ -40,7 +40,7 @@
                 <span class="d-flex mb-2">
                     <div class='me-2 text-secondary'>
                         <a href="{% url 'write:pin_list' object.user.username %}"
-                           class="text-muted u-url dt-published">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
+                           class="text-muted dt-published">{{ object.timestamp|date:"Y.m.d H:i" }}</a>
                     </div>
                     {% if object.user == request.user %}
                         <a href="{% url 'write:pin_update' object.user.username object.id %}" class="me-2">Edit</a>
@@ -78,6 +78,7 @@
     {% include 'mathjax+mermaid.html' %}
     <!--webmentions-->
     {% if object.user.enable_webmentions %}
+        <a href="{% url 'write:pin_detail' object.user.username object.id %}" class="u-url"></a>
         <a href="https://brid.gy/publish/mastodon" rel="me"></a>
     {% endif %}
 {% endblock content %}
