@@ -9,7 +9,18 @@
                   method="post"
                   action="{% url 'accounts:update' user.username %}">
                 {% csrf_token %}
-                {{ form|crispy }}
+                {{ form.username|as_crispy_field }}
+                {{ form.display_name|as_crispy_field }}
+                {{ form.bio|as_crispy_field }}
+                {{ form.timezone|as_crispy_field}}
+                <div class="fs-4 mt-2 mb-2">Privacy settings</div>
+                {{ form.is_public|as_crispy_field }}
+                {{ form.enable_replies_by_default|as_crispy_field}}
+                {{ form.enable_share_to_feed_by_default|as_crispy_field}}
+                <div class="fs-4 mt-2 mb-2">Experimental features</div>
+                {{ form.pure_text_mode|as_crispy_field }}
+                {{ form.enable_alt_profile|as_crispy_field }}
+                {{ form.enable_webmentions|as_crispy_field}}
                 <div class="control-group">
                     <div class="controls">
                         <button type="submit" class="btn btn-primary">Update</button>

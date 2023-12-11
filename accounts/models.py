@@ -108,6 +108,18 @@ class CustomUser(AbstractUser):
     def get_absolute_url(self):
         return reverse("accounts:detail", kwargs={"username": self.username})
 
+    def clean(self):
+        # Call the base class clean method (important!)
+        super(CustomUser, self).clean()
+
+        # Check if username contains '@'
+        if "@" in self.username:
+            raise ValidationError("Username cannot contain '@' character.")
+
+        # Check if the username is in reserved list
+        if self.username in self.RESERVED_USERNAMES:
+            raise ValidationError("This username is reserved and cannot be registered.")
+
     def save(self, *args, **kwargs):
         if self.username in self.RESERVED_USERNAMES:
             raise ValidationError("This username is reserved and cannot be registered.")
