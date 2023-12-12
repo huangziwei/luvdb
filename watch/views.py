@@ -933,18 +933,22 @@ class EpisodeDetailView(DetailView):
         }
         context["contributors"] = unique_usernames
 
+        series_id = episode.series.id
         # Add check-ins related to the current episode
         # Modify the check-ins query for season 1 episodes
+        season_episode_format = f"S{episode.season:02d}E{episode.episode:02d}"
         if episode.season == 1:
-            season_episode_format = f"E{episode.episode:02d}"
-            season_prefix_format = f"S01E{episode.episode:02d}"
-            check_ins = WatchCheckIn.objects.filter(
-                Q(progress=season_episode_format) | Q(progress=season_prefix_format)
-            )
+            season_episode_short_format = f"E{episode.episode:02d}"
+            progress_formats = [season_episode_format, season_episode_short_format]
         else:
-            season_episode_format = f"S{episode.season:02d}E{episode.episode:02d}"
-            check_ins = WatchCheckIn.objects.filter(progress=season_episode_format)
+            progress_formats = [season_episode_format]
+
+        # Filter WatchCheckIn instances
+        check_ins = WatchCheckIn.objects.filter(
+            Q(object_id=series_id) & Q(progress__in=progress_formats)
+        )
         context["episode_checkins"] = check_ins
+        context["episodes"] = episode.series.episodes.all().order_by("season", "episode")
 
         return context
 

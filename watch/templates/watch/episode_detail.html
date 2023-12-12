@@ -104,6 +104,8 @@
                                 <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
                             {% endif %}
                         {% endif %}
+                    {% empty %}
+                        <li>No checkins for this episode yet.</li>
                     {% endfor %}
                 </div>
             </div>
@@ -116,7 +118,24 @@
                                class='fs-6 text-secondary'>Edit episode data</a>
                 </div>
                 {% endif %}
-
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                    <div class="fs-5">Episode List</div>
+                    {% for episode in episodes %}
+                        <div class="mt-3">
+                            S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}
+                            <a href="{% url 'watch:episode_detail' object.id episode.id %}"
+                               class='fs-6'>{{ episode.title }}</a>
+                            <span>({{ episode.release_date }})</span>
+                        </div>
+                    {% endfor %}
+                    <hr>
+                    {% if user.is_authenticated %}
+                        <div>
+                            <a href="{% url 'watch:episode_create' object.id %}"
+                               class='fs-6 text-secondary'>Add episode</a>
+                        </div>
+                    {% endif %}
+                </div>
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5">Contributors</div>
