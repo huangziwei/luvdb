@@ -114,6 +114,10 @@ class CustomUserChangeForm(UserChangeForm):
             "enable_alt_profile"
         ].label = "Enable alternative profile (experimental)"
         self.fields["enable_webmentions"].label = "Enable webmentions (experimental)"
+        self.fields["enable_replies_by_default"].label = "Allow replies by default"
+        self.fields[
+            "enable_share_to_feed_by_default"
+        ].label = "Share to feed by default"
 
         del self.fields["password"]
 

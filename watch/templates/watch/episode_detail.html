@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load markdownify %}
+{% load linkify %}
 {% block title %}{{ object.title }} - {{ object.series.title }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -31,8 +33,9 @@
                                     </div>
                                 {% endif %}
                             </div>
+                            <div class="fs-3">Episode Metadata</div>
                             <div class="mt-3">
-                                <div class="fs-4">Episode Crew</div>
+                                <div class="fs-4">Crew</div>
                                 <ul>
                                     {% for role, roles_list in episoderoles.items %}
                                         <li>
@@ -42,11 +45,13 @@
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
                                         </li>
+                                    {% empty %}
+                                        <li>No crew for this episode yet.</li>
                                     {% endfor %}
                                 </ul>
                             </div>
                             <div class="mt-3">
-                                <div class="fs-4">Episode Cast</div>
+                                <div class="fs-4">Cast</div>
                                 <ul>
                                     {% for episodecast in episodecasts %}
                                         <li>
@@ -62,6 +67,44 @@
                         </div>
                         <!-- End of movie-card -->
                     </div>
+                </div>
+
+                <div class="fs-3">Episode Check-ins</div>
+                <div class="col-sm-11 mb-3">
+                    {% for checkin in episode_checkins %}
+                        {% if checkin.user.is_public or request.user.is_authenticated %}
+                            <div class="d-flex justify-content-start align-items-center mb-2">
+                                <span class='me-2'>
+                                    <a href="{% url 'accounts:detail' checkin.user.username %}">
+                                        {{ checkin.user.display_name|default:checkin.user.username }}
+                                    </a>
+                                </span>
+                                <a href="{% url 'watch:series_checkin_list' checkin.content_object.id checkin.user.username %}"
+                                    class="text-decoration-none text-secondary">
+                                    {{ checkin.timestamp|date:"Y.m.d H:i"}}
+                                </a>
+                                {% if checkin.comments_enabled %}
+                                    <span class="ms-2 me-2">
+                                        <a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}"
+                                        class="text-decoration-none">Reply</a>
+                                    </span>
+                                {% endif %}
+                                {% if checkin.get_activity_id %}
+                                    <span class="ms-2 me-2"><a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}?repost=true"
+                                        class="text-decoration-none">Repost</a></span>
+                                {% endif %}
+                                {% if checkin.user == request.user %}
+                                    <span class="ms-2 me-2"><a href="{% url 'write:watch_checkin_update' checkin.user.username checkin.id %}"
+                                        class="text-decoration-none">Edit</a></span>
+                                    <span class="ms-2 me-2"><a href="{% url 'write:watch_checkin_delete' checkin.user.username checkin.id %}"
+                                        class="text-decoration-none">Delete</a></span>
+                                {% endif %}
+                            </div>
+                            {% if checkin.content %}
+                                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
             <!--right columns-->
