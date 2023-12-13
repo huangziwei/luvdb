@@ -113,10 +113,12 @@
                                         <div class="ms-4">
                                             {% for role in issueinstance.instance.instancerole_set.all %}
                                                 {% if role.role.name == "Author" %}
-                                                    <a href="{% url 'entity:creator_detail' role.creator.id %}" class="text-muted">{{ role.alt_name|default:role.creator.name }}</a>{% if not forloop.last %},{% endif %}
+                                                    <b><a href="{% url 'entity:creator_detail' role.creator.id %}" class="text-muted">{{ role.alt_name|default:role.creator.name }}</a></b>,
+                                                {% elif role.role.name == "Translator"  %}
+                                                    <a href="{% url 'entity:creator_detail' role.creator.id %}" class="text-muted">{{ role.alt_name|default:role.creator.name }}</a>,
                                                 {% endif %}
                                             {% endfor %}
-                                            ({{ issueinstance.publication_date|default:issueinstance.instance.publication_date }})
+                                            {{ issueinstance.publication_date|default:issueinstance.instance.publication_date }}
                                         </div>
                                     </div>
                                 </div>

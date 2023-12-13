@@ -214,10 +214,12 @@
                                                 <!-- Assuming you have a way to access the roles related to book_instance -->
                                                 {% for role in book_instance.instance.instancerole_set.all %}
                                                     {% if role.role.name == "Author" %}
-                                                        <a href="{% url 'entity:creator_detail' role.creator.id %}" class="text-muted">{{ role.alt_name|default:role.creator.name }}</a>{% if not forloop.last %},{% endif %}
+                                                        <b><a href="{% url 'entity:creator_detail' role.creator.id %}" class="text-muted">{{ role.alt_name|default:role.creator.name }}</a></b>,
+                                                    {% elif role.role.name == "Translator"  %}
+                                                        <a href="{% url 'entity:creator_detail' role.creator.id %}" class="text-muted">{{ role.alt_name|default:role.creator.name }}</a>,
                                                     {% endif %}
                                                 {% endfor %}
-                                                ({{ book_instance.publication_date|default:book_instance.instance.publication_date }})
+                                                {{ book_instance.publication_date|default:book_instance.instance.publication_date }}
                                             </div>
                                         </div>
                                     </div>
