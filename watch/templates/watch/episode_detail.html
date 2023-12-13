@@ -115,7 +115,7 @@
                 {% if user.is_authenticated and not object.locked %}
                 <div class="bg-light p-3 mb-3">
                     <a href="{% url 'watch:episode_update' object.series.id object.id %}"
-                               class='fs-6 text-secondary'>Edit episode data</a>
+                               class='fs-6 text-secondary'>Edit Episode</a>
                 </div>
                 {% endif %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
