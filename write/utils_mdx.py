@@ -31,7 +31,7 @@ def media_card(source, language, css_class, options, md, **kwargs):
         if "game" in source:
             return game_card(source, language, css_class, options, md, **kwargs)
     else:
-        return '<div class="bg-light p-3 error">Unsupported media type</div>'
+        return '<div class="p-3 error">Unsupported media type</div>'
 
 
 def book_card(source, language, css_class, options, md, **kwargs):
@@ -82,7 +82,7 @@ def book_card(source, language, css_class, options, md, **kwargs):
         print("Error in book_card() function")
 
     return f"""
-        <div class="d-flex flex-row bg-light p-3 mt-2">
+        <div class="media-card d-flex flex-row p-3 mt-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -153,7 +153,7 @@ def audiobook_card(source, language, css_class, options, md, **kwargs):
         print("Error in book_card() function")
 
     return f"""
-        <div class="d-flex flex-row bg-light p-3 mt-2">
+        <div class="media-card d-flex flex-row p-3 mt-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -237,7 +237,7 @@ def movie_card(source, language, css_class, options, md, **kwargs):
         release_date_html = ""
 
     return f"""
-        <div class="d-flex flex-row bg-light p-3 mt-2">
+        <div class="media-card d-flex flex-row p-3 mt-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {poster_image_tag}
             </div>
@@ -329,7 +329,7 @@ def series_card(source, language, css_class, options, md, **kwargs):
     )
 
     return f"""
-        <div class="d-flex flex-row bg-light p-3 mt-2">
+        <div class="media-card d-flex flex-row p-3 mt-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {poster_image_tag}
             </div>
@@ -407,7 +407,7 @@ def release_card(source, language, css_class, options, md, **kwargs):
     )
 
     return f"""
-        <div class="d-flex flex-row bg-light p-3 mt-2">
+        <div class="media-card d-flex flex-row p-3 mt-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -445,7 +445,7 @@ def podcast_card(source, language, css_class, options, md, **kwargs):
     )
 
     return f"""
-        <div class="d-flex flex-row bg-light p-3 mt-2">
+        <div class="media-card d-flex flex-row p-3 mt-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -522,7 +522,7 @@ def game_card(source, language, css_class, options, md, **kwargs):
         release_date_html = ""
 
     return f"""
-        <div class="d-flex flex-row bg-light p-3 mt-2">
+        <div class="media-card d-flex flex-row p-3 mt-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>

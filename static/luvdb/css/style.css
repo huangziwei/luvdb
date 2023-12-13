@@ -489,6 +489,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     top: 0;
 }
 
+.bg-white {
+    background-color: var(--bg-default) !important;
+}
 
 [data-bs-theme='dark'] .bg-white {
     background-color: var(--bs-body-bg) !important;
@@ -589,4 +592,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     .tabbed-content {
         display: contents;
     }
+}
+
+.media-card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15);
+    transition: 0.3s;
+    background-color: var(--bg-highlight);
+}
+
+.bg-light .media-card {
+    background-color: var(--bs-body-bg) !important; /* Apply white background color */
 }
