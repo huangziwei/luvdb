@@ -439,7 +439,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 :root {
     --bg-default: #f8f9f9; 
-    --bg-highlight: #ececec; 
+    --bg-highlight: #eceeee; 
     --text-default: #000;
     --text-contrast: #6c757d;
     --bs-body-bg: var(--bg-default); 
