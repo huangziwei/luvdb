@@ -17,7 +17,7 @@ import pymdownx.superfences as superfences
 from environs import Env
 from pymdownx.slugs import slugify
 
-from write.spoiler_extension import SpoilerExtension
+from write.utils_mdx import book_card, media_card, movie_card, series_card
 
 from ..s3_storage_backends import MediaStorage
 
@@ -318,6 +318,11 @@ MARKDOWNIFY = {
                         "name": "mermaid",
                         "class": "mermaid",
                         "format": superfences.fence_div_format,
+                    },
+                    {
+                        "name": "card",
+                        "class": "media-card",
+                        "format": media_card,
                     },
                 ],
             },

@@ -834,6 +834,7 @@ class IssueDetailView(DetailView):
                 "reading_count": reading_count,
                 "read_count": read_count,
                 "checkins": checkins,
+                
             }
         )
 

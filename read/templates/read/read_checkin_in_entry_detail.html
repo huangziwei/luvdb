@@ -3,7 +3,7 @@
 
 {% load parse_activity_type %}
 <div class="col-sm-11 mt-3">
-    {% for checkin in page_obj %}
+    {% for checkin in checkins %}
         {% if checkin.user.is_public or request.user.is_authenticated %}
             <div class="d-flex justify-content-start align-items-center mb-2">
                 <span class='me-2'>

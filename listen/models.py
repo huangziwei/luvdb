@@ -693,6 +693,13 @@ class Audiobook(auto_prefetch.Model):
     def model_name(self):
         return "Audiobook"
 
+    def get_genres(self):
+        genres = set()
+        for instance in self.instances.all():
+            if instance.work:
+                genres.update(instance.work.genres.all())
+        return genres
+
     @property
     def checkin_count(self):
         return (
