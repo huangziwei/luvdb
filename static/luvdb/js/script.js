@@ -452,14 +452,24 @@ popupParents.forEach(function (parent) {
 
 // hack to make tab blocks work
 window.onload = function () {
-    var tabbedSets = document.getElementsByClassName("tabbed-set");
-    for (var i = 0; i < tabbedSets.length; i++) {
-        var inputs = tabbedSets[i].getElementsByTagName("input");
-        for (var j = 0; j < inputs.length; j++) {
-            inputs[j].name = "__tabbed_" + (i + 1);
+    const tabbedSets = document.getElementsByClassName("tabbed-set");
+    for (let i = 0; i < tabbedSets.length; i++) {
+        const tabbedSet = tabbedSets[i];
+        tabbedSet.setAttribute("data-tabs", i + 1 + ":" + tabbedSet.getAttribute("data-tabs").split(":")[1]);
+
+        const inputs = tabbedSet.getElementsByTagName("input");
+        for (let j = 0, len = inputs.length; j < len; j++) {
+            const input = inputs[j];
+            input.name = "__tabbed_" + (i + 1);
+            input.id += "_" + (i + 1);
             if (j === 0) {
-                inputs[j].checked = true;
+                input.checked = true;
             }
+        }
+
+        const labels = tabbedSet.getElementsByTagName("label");
+        for (let k = 0, len = labels.length; k < len; k++) {
+            labels[k].htmlFor += "_" + (i + 1);
         }
     }
 };
