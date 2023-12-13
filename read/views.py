@@ -34,12 +34,14 @@ from write.utils_formatting import check_required_js
 from .forms import (
     BookForm,
     BookInSeriesFormSet,
+    BookInstance,
     BookInstanceFormSet,
     BookRoleFormSet,
     BookSeriesForm,
     InstanceForm,
     InstanceRoleFormSet,
     IssueForm,
+    IssueInstance,
     IssueInstanceFormSet,
     PeriodicalForm,
     ReadCheckInForm,
@@ -316,8 +318,9 @@ class InstanceDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        instance = get_object_or_404(Instance, pk=self.kwargs.get("pk"))
         grouped_roles = {}
-        for role in self.object.instancerole_set.all():
+        for role in instance.instancerole_set.all():
             if role.role.name not in grouped_roles:
                 grouped_roles[role.role.name] = []
             alt_name_or_creator_name = role.alt_name or role.creator.name
@@ -325,17 +328,43 @@ class InstanceDetailView(DetailView):
                 (role.creator, alt_name_or_creator_name)
             )
         context["grouped_roles"] = grouped_roles
-        context["books"] = self.object.books.all().order_by("publication_date")
-        context["issues"] = self.object.issues.all().order_by("publication_date")
-        context["audiobooks"] = self.object.audiobooks.all().order_by("release_date")
+        context["books"] = instance.books.all().order_by("publication_date")
+        context["issues"] = instance.issues.all().order_by("publication_date")
+        context["audiobooks"] = instance.audiobooks.all().order_by("release_date")
 
         # contributors
         unique_usernames = {
             record.history_user
-            for record in self.object.history.all()
+            for record in instance.history.all()
             if record.history_user is not None
         }
         context["contributors"] = unique_usernames
+
+        instance_checkins = []
+        # Filter ReadCheckIns for BookInstance
+        book_instances = BookInstance.objects.filter(instance=instance)
+        for book_instance in book_instances:
+            check_ins_for_book = ReadCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Book),
+                object_id=book_instance.book.id,
+                progress_type="CH",
+                progress=str(book_instance.order),
+            )
+            instance_checkins.extend(check_ins_for_book)
+
+        # Filter ReadCheckIns for IssueInstance
+        issue_instances = IssueInstance.objects.filter(instance=instance)
+        for issue_instance in issue_instances:
+            check_ins_for_issue = ReadCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Issue),
+                object_id=issue_instance.issue.id,
+                progress_type="CH",
+                progress=str(issue_instance.order),
+            )
+            instance_checkins.extend(check_ins_for_issue)
+
+        instance_checkins.sort(key=lambda x: x.timestamp, reverse=True)
+        context["instance_checkins"] = instance_checkins
         return context
 
 
@@ -834,7 +863,6 @@ class IssueDetailView(DetailView):
                 "reading_count": reading_count,
                 "read_count": read_count,
                 "checkins": checkins,
-                
             }
         )
 

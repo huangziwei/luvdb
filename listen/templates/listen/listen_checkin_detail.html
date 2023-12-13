@@ -30,11 +30,13 @@
                     {% if object.progress %}
                         {% if object.content_type.model == "release" %}
                             <span class="badge text-bg-warning me-1">
-                                Loop: {{ object.progress }}
+                                
                                 {% if object.progress_type == "LT" %}
-                                    Times
+                                    Looped {{ object.progress }} Times
                                 {% elif object.progress_type == "TT" %}
-                                    Minutes
+                                    Looped {{ object.progress }} Minutes
+                                {% elif object.progress_type == "TR" %}
+                                    Track {{ object.progress }}
                                 {% endif %}
                             </span>
                         {% elif object.content_type.model == "podcast" %}
@@ -217,7 +219,6 @@
     {% include 'mathjax+mermaid.html' %}
     <!--webmentions-->
     {% if object.user.enable_webmentions %}
-        <a href="{% url '' %}"></a>
         <a href="https://brid.gy/publish/mastodon" rel="me"></a>
     {% endif %}
 {% endblock content %}

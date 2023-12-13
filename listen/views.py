@@ -366,6 +366,20 @@ class TrackDetailView(DetailView):
         }
         context["contributors"] = unique_usernames
 
+        # Track Check-ins
+        track_check_ins = []
+        for release_track in ReleaseTrack.objects.filter(track=track):
+            disk_order_pattern = f"{release_track.disk}.{release_track.order}"
+            check_ins_for_track = ListenCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Release),
+                object_id=release_track.release.id,
+                progress=disk_order_pattern,
+                progress_type="TR",
+            )
+            track_check_ins.extend(check_ins_for_track)
+
+        track_check_ins.sort(key=lambda x: x.timestamp, reverse=True)
+        context["track_checkins"] = track_check_ins
         return context
 
 

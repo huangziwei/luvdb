@@ -105,7 +105,7 @@
             <div class="col-md-4 col-sm-12">
                 <!-- Progress and Progress Type -->
                 <div class="input-group input-group-sm mb-3">
-                    <input type="number" class="form-control" id="progressInput" name="progress">
+                    <input type="text" class="form-control" id="progressInput" name="progress">
                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
                             type="button"
                             data-bs-toggle="dropdown"
@@ -121,6 +121,11 @@
                             <a class="dropdown-item"
                                href="#"
                                onclick="setProgressType(event,'LT', '{{ content_type }}')">Loop Times</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                               href="#"
+                               onclick="setProgressType(event,'TR', '{{ content_type }}')">Track</a>
                         </li>
                     </ul>
                 </div>
@@ -223,9 +228,7 @@
     function setProgressType(event, type) {
         if (event) {
             event.preventDefault();
-        }
-        document.getElementById('progressTypeInput').value = type;
-    
+        }    
         let textContent;
         switch(type) {
             case 'TT':
@@ -236,6 +239,9 @@
                 break;
             case 'EP':
                 textContent = 'Episode';
+                break;
+            case 'TR':
+                textContent = 'Track';
                 break;
             default:
                 textContent = 'Minutes';

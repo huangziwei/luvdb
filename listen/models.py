@@ -383,10 +383,12 @@ class ListenCheckIn(auto_prefetch.Model):
     TOTAL_LISTEN_TIME = "TT"
     LOOP_TIME = "LT"
     EPISODE = "EP"
+    TRACK = "TR"
     PROGRESS_TYPE_CHOICES = [
         (TOTAL_LISTEN_TIME, "Accumulated Listen Time"),
         (LOOP_TIME, "Loop Time"),
         (EPISODE, "Episode"),
+        (TRACK, "Track"),
     ]
     progress_type = models.CharField(
         max_length=2,

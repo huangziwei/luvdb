@@ -17,8 +17,10 @@
                     <span class="badge text-bg-warning me-2">
                         {% if checkin.progress_type == "PG" %}
                             On page {{ checkin.progress }}
-                        {% else %}
-                            At {{ checkin.progress }}%
+                        {% elif checkin.progress_type == "PC" %}
+                            {{ checkin.progress }}%
+                        {% elif checkin.progress_type == "CH" %}
+                            Ch {{ checkin.progress }}
                         {% endif %}
                     </span>
                 {% endif %}

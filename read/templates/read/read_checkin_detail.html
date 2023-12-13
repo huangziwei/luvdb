@@ -31,8 +31,10 @@
                         <span class="badge text-bg-warning me-2">
                             {% if object.progress_type == "PG" %}
                                 On page {{ object.progress }}
-                            {% else %}
+                            {% elif object.progress_type == "PC" %}
                                 At {{ object.progress }}%
+                            {% elif object.progress_type == "CH" %}
+                                Ch {{ object.progress }}
                             {% endif %}
                         </span>
                     {% endif %}

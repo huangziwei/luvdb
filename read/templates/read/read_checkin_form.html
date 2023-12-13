@@ -71,7 +71,7 @@
         <div class="col-md-4 col-sm-12">
             <!-- Progress and Progress Type -->
             <div class="input-group input-group-sm mb-3">
-                <input type="number"
+                <input type="text"
                        class="form-control"
                        id="progressInput"
                        name="progress"
@@ -87,6 +87,9 @@
                     </li>
                     <li>
                         <a class="dropdown-item" href="#" onclick="setProgressType(event,'PC')">%</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="setProgressType(event,'CH')">Chapter</a>
                     </li>
                 </ul>
             </div>
@@ -143,8 +146,20 @@
     
     function setProgressType(event, type) {
         event.preventDefault();
+        let textConent;
+        switch(type) {
+            case 'PG':
+                textContent = 'Page';
+                break;
+            case 'PC':
+                textContent = '%';
+                break;
+            case 'CH':
+                textContent = 'Chapter';
+                break;
+        }
         document.getElementById('progressTypeInput').value = type;
-        document.getElementById('progressTypeBtn').textContent = type == 'PG' ? 'Pages' : '%';
+        document.getElementById('progressTypeBtn').textContent = textContent;
     }
     
     function updateStatusButton(status) {

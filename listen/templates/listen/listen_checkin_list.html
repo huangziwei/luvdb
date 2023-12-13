@@ -85,11 +85,12 @@
                                 {% if checkin.progress %}
                                     {% if checkin.content_type.model == "release" %}
                                         <span class="badge text-bg-warning me-1">
-                                            Loop: {{ checkin.progress }}
-                                            {% if checkin.progress_type == "TL" %}
-                                                Times
-                                            {% else %}
-                                                Minutes
+                                            {% if checkin.progress_type == "TT" %}
+                                                Looped {{ checkin.progress }} Minutes
+                                            {% elif checkin.progress_type == "LT" %}
+                                                Looped {{ checkin.progress }} Times
+                                            {% elif checkin.progress_type == "TR" %}
+                                                Track {{ checkin.progress }}
                                             {% endif %}
                                         </span>
                                     {% elif checkin.content_type.model == "podcast" %}

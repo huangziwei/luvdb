@@ -529,12 +529,14 @@ class ReadCheckIn(auto_prefetch.Model):
     )  # Any thoughts or comments at this check-in.
     timestamp = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    progress = models.IntegerField(null=True, blank=True)
+    progress = models.CharField(max_length=20, null=True, blank=True)
     PAGE = "PG"
     PERCENTAGE = "PC"
+    CHAPTER = "CH"
     PROGRESS_TYPE_CHOICES = [
         (PAGE, "Page"),
         (PERCENTAGE, "Percentage"),
+        (CHAPTER, "Chapter"),
     ]
     progress_type = models.CharField(
         max_length=2,
