@@ -72,17 +72,14 @@ def book_card(source, language, css_class, options, md, **kwargs):
         genre_html = ""
         genres = book.get_genres()
         if len(genres) > 0:
-            genre_html = f"""
-                <div>
+            genre_html = f"""<div>
                     <span class="text-muted">Genres:</span>
                     {" / ".join([f'<a href="/read/genre/{genre.slug}">{genre.name}</a>' for genre in genres])}
-                </div>
-            """
+                </div>"""
     except AttributeError:
         print("Error in book_card() function")
 
-    return f"""
-        <div class="media-card d-flex flex-row p-3 mt-2">
+    return f"""<div class="media-card d-flex flex-row p-3">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -101,8 +98,7 @@ def book_card(source, language, css_class, options, md, **kwargs):
                     {book.publication_date}
                 </div>
             </div>
-        </div>
-    """
+        </div>"""
 
 
 def audiobook_card(source, language, css_class, options, md, **kwargs):
@@ -152,8 +148,7 @@ def audiobook_card(source, language, css_class, options, md, **kwargs):
     except AttributeError:
         print("Error in book_card() function")
 
-    return f"""
-        <div class="media-card d-flex flex-row p-3 mt-2">
+    return f"""<div class="media-card d-flex flex-row p-3">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -236,23 +231,22 @@ def movie_card(source, language, css_class, options, md, **kwargs):
     else:
         release_date_html = ""
 
-    return f"""
-        <div class="media-card d-flex flex-row p-3 mt-2">
-            <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                {poster_image_tag}
-            </div>
-            <div class="flex-grow-1 ms-3">
-                <a href="/watch/movie/{movie.id}" class="text-decoration-none h-cite p-name">
-                    <div class="fs-5">{movie.title}</div>
-                </a>
-                {roles_html}
-                {studio_html}
-                {distributor_html}
-                {genre_html}
-                {release_date_html}
-            </div>
-        </div>
-    """
+    return f"""<div class="media-card d-flex flex-row p-3">
+                    <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                        {poster_image_tag}
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <a href="/watch/movie/{movie.id}" class="text-decoration-none h-cite p-name">
+                            <div class="fs-5">{movie.title}</div>
+                        </a>
+                        {roles_html}
+                        {studio_html}
+                        {distributor_html}
+                        {genre_html}
+                        {release_date_html}
+                    </div>
+                </div>
+            """
 
 
 def _generate_entity_html(entities, label, url_namespace):
@@ -312,8 +306,7 @@ def series_card(source, language, css_class, options, md, **kwargs):
         genre_html = ""
         genres = series.genres.all()
         if len(genres) > 0:
-            genre_html = f"""
-                <div>
+            genre_html = f"""<div>
                     <span class="text-muted">Genres:</span>
                     {" / ".join([f'<a href="/watch/genre/{genre.name}">{genre.name}</a>' for genre in genres])}
                 </div>
@@ -328,8 +321,7 @@ def series_card(source, language, css_class, options, md, **kwargs):
         else ""
     )
 
-    return f"""
-        <div class="media-card d-flex flex-row p-3 mt-2">
+    return f"""<div class="media-card d-flex flex-row p-3">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {poster_image_tag}
             </div>
@@ -406,8 +398,7 @@ def release_card(source, language, css_class, options, md, **kwargs):
         else ""
     )
 
-    return f"""
-        <div class="media-card d-flex flex-row p-3 mt-2">
+    return f"""<div class="media-card d-flex flex-row p-3">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -444,8 +435,7 @@ def podcast_card(source, language, css_class, options, md, **kwargs):
         else f'<div class="cover-placeholder">{podcast.title}</div>'
     )
 
-    return f"""
-        <div class="media-card d-flex flex-row p-3 mt-2">
+    return f"""<div class="media-card d-flex flex-row p-3">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -521,8 +511,7 @@ def game_card(source, language, css_class, options, md, **kwargs):
     else:
         release_date_html = ""
 
-    return f"""
-        <div class="media-card d-flex flex-row p-3 mt-2">
+    return f"""<div class="media-card d-flex flex-row p-3">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
