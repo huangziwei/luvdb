@@ -90,7 +90,7 @@ TEMPLATES = [
             ],
             "libraries": {
                 "account_tags": "accounts.templatetags.account_tags",
-                "url_filters": "activity_feed.templatetags.url_filters",
+                "util_filters": "activity_feed.templatetags.util_filters",
                 "linkify": "write.templatetags.linkify",
                 "past_tense": "activity_feed.templatetags.past_tense",
             },

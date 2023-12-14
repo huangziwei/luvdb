@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load url_filters %}
+{% load util_filters %}
 {% load markdownify %}
 {% load linkify %}
 {% load account_tags %}
@@ -98,7 +98,7 @@
                                                 <li class="list-group-item">
                                                     <a href="{% url 'read:book_detail' book.id %}">{{ book.title }}</a>
                                                     {# djlint:off #}
-                                                    ({{ book.publication_date|slice:":4" }}{% if book.since == 0 %}, today{% else %}, {{ book.since }} years ago{% endif %})
+                                                    ({{ book.publication_date|extract_year }}{% if book.since == 0 %}, today{% else %}, {{ book.since }} years ago{% endif %})
                                                     {# djlint:on #}
                                                 </li>
                                             {% endfor %}
@@ -125,7 +125,7 @@
                                                 <li class="list-group-item">
                                                     <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
                                                     {# djlint:off #}
-                                                    ({{ movie.earliest_release|slice:":4" }}{% if movie.since == 0 %}, today{% else %}, {{ movie.since }} years ago{% endif %})
+                                                    ({{ movie.earliest_release|extract_year }}{% if movie.since == 0 %}, today{% else %}, {{ movie.since }} years ago{% endif %})
                                                     {# djlint:on #}
                                                 </li>
                                             {% endfor %}
@@ -133,7 +133,7 @@
                                                 <li class="list-group-item">
                                                     <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a>
                                                     {# djlint:off #}
-                                                    ({{ serie.release_date|slice:":4" }}{% if serie.since == 0 %}, today{% else %}, {{ serie.since }} years ago{% endif %})
+                                                    ({{ serie.release_date|extract_year }}{% if serie.since == 0 %}, today{% else %}, {{ serie.since }} years ago{% endif %})
                                                     {# djlint:on #}
                                                 </li>
                                             {% endfor %}
@@ -158,7 +158,7 @@
                                                 <li class="list-group-item">
                                                     <a href="{% url 'listen:release_detail' music.id %}">{{ music.title }}</a>
                                                     {# djlint:off #}
-                                                    ({{ music.release_date|slice:":4" }}{% if music.since == 0 %}, today{% else %}, {{ music.since }} years ago{% endif %})
+                                                    ({{ music.release_date|extract_year }}{% if music.since == 0 %}, today{% else %}, {{ music.since }} years ago{% endif %})
                                                     {# djlint:on #}
                                                 </li>
                                             {% endfor %}
@@ -183,7 +183,7 @@
                                                 <li class="list-group-item">
                                                     <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
                                                     {# djlint:off #}
-                                                    ({{ game.earliest_release|slice:":4" }}{% if game.since == 0 %}, today{% else %}, {{ game.since }} years ago{% endif %})
+                                                    ({{ game.earliest_release|extract_year }}{% if game.since == 0 %}, today{% else %}, {{ game.since }} years ago{% endif %})
                                                     {# djlint:on #}
                                                 </li>
                                             {% endfor %}
@@ -214,7 +214,7 @@
                                                     <li class="list-group-item">
                                                         {# djlint:off #}
                                                         <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                                        ({{ creator.birth_date|slice:":4" }}{% if creator.death_date %}-{{ creator.death_date|slice:":4" }}{% else %} - {% endif %}, {{ creator.since }} years ago)
+                                                        ({{ creator.birth_date|extract_year }}{% if creator.death_date %}-{{ creator.death_date|extract_year }}{% else %} - {% endif %}, {{ creator.since }} years ago)
                                                         {# djlint:on #}
                                                     </li>
                                                 {% endfor %}
@@ -227,7 +227,7 @@
                                                     <li class="list-group-item">
                                                         {# djlint:off #}
                                                         <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                                        ({{ creator.birth_date|slice:":4" }}{% if creator.death_date %}-{{ creator.death_date|slice:":4" }}{% else %} - {% endif %}, {{ creator.since }} years ago)
+                                                        ({{ creator.birth_date|extract_year }}{% if creator.death_date %}-{{ creator.death_date|extract_year }}{% else %} - {% endif %}, {{ creator.since }} years ago)
                                                         {# djlint:on #}
                                                     </li>
                                                 {% endfor %}
@@ -240,7 +240,7 @@
                                                     <li class="list-group-item">
                                                         <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
                                                         {# djlint:off #}
-                                                        ({% if creator.birth_date %}{{ creator.birth_date|slice:":4" }}{% else %}?{% endif %}-{{ creator.death_date|slice:":4" }}, {{ creator.since }} years ago)
+                                                        ({% if creator.birth_date %}{{ creator.birth_date|extract_year }}{% else %}?{% endif %}-{{ creator.death_date|extract_year }}, {{ creator.since }} years ago)
                                                         {# djlint:on #}
                                                     </li>
                                                 {% endfor %}
@@ -253,7 +253,7 @@
                                                     <li class="list-group-item">
                                                         <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
                                                         {# djlint:off #}
-                                                        ({% if creator.birth_date %}{{ creator.birth_date|slice:":4" }}{% else %}?{% endif %}-{{ creator.death_date|slice:":4" }}, {{ creator.since }} years ago)
+                                                        ({% if creator.birth_date %}{{ creator.birth_date|extract_year }}{% else %}?{% endif %}-{{ creator.death_date|extract_year }}, {{ creator.since }} years ago)
                                                         {# djlint:on #}
                                                     </li>
                                                 {% endfor %}

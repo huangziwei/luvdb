@@ -122,10 +122,10 @@
                 {% endif %}
             </div>
             <!--Right columns-->
-            <div class="col-12 col-md-4 right-column">
+            <div class="d-flex flex-column col-12 col-md-4 right-column">
                 <!--Related Work / Edit -->
                 {% if user.is_authenticated %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         {% if not object.locked %}
                         <div>
                             <a href="{% url 'read:work_update' object.pk %}"
@@ -138,14 +138,14 @@
                     </div>
                 {% endif %}
                 {% if object.wikipedia %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <div class="fs-5">Links</div>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
                         </div>
                     </div>
                 {% endif %}
-                <div class="bg-light p-3 mb-3 order-1 order-sm-3">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5">Contributors</div>
                         <div>(<a href="{% url 'read:work_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>

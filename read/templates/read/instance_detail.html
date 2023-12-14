@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load markdownify %}
 {% load linkify %}
+{% load util_filters %}
+{% load parse_activity_type %}
 {% block title %}{{ object.title }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -107,10 +109,32 @@
                                         {{ checkin.user.display_name|default:checkin.user.username }}
                                     </a>
                                 </span>
-                                <a href="{% url 'listen:release_checkin_list' checkin.content_object.id checkin.user.username %}"
-                                    class="text-decoration-none text-secondary">
-                                    {{ checkin.timestamp|date:"Y.m.d H:i"}}
-                                </a>
+                                <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
+                                <span class='me-2 text-muted'>
+                                    {% if checkin.content_type.model == 'book' %}
+                                        <a class="text-muted" href="{% url 'read:book_detail' checkin.content_object.id%}">{{checkin.content_object.title}}</a>
+                                    {% elif checkin.content_type.model == 'issue' %}
+                                        {{checkin.content_object.periodical.title}}
+                                        <a class="text-muted" href="{% url 'read:issue_detail' checkin.content_object.periodical.id checkin.content_object.id%}">{{checkin.content_object.title}}</a>
+                                    {% endif %}
+                                    ({{checkin.content_object.publication_date|extract_year }})
+                                </span>
+                            </div>
+                            {% if checkin.content %}
+                                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
+                            {% endif %}
+                            <div class="d-flex justify-content-start align-items-center">
+                                {% if checkin.content_type.model == 'book' %}
+                                    <a href="{% url 'read:book_checkin_list' checkin.content_object.id checkin.user.username %}"
+                                        class="text-decoration-none text-secondary">
+                                        {{ checkin.timestamp|date:"Y.m.d H:i"}}
+                                    </a>
+                                {% elif checkin.content_type.model == 'issue' %}
+                                    <a href="{% url 'read:issue_checkin_list' checkin.content_object.periodical.id checkin.content_object.id checkin.user.username %}"
+                                        class="text-decoration-none text-secondary">
+                                        {{ checkin.timestamp|date:"Y.m.d H:i"}}
+                                    </a>
+                                {% endif %}
                                 {% if checkin.comments_enabled %}
                                     <span class="ms-2 me-2">
                                         <a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}"
@@ -128,9 +152,6 @@
                                         class="text-decoration-none">Delete</a></span>
                                 {% endif %}
                             </div>
-                            {% if checkin.content %}
-                                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
-                            {% endif %}
                         {% endif %}
                     {% empty %}
                         <li>No checkins for this instance yet.</li>
@@ -138,10 +159,10 @@
                 </div>
             </div>
             <!--Right columns-->
-            <div class="col-sm-4">
+            <div class="d-flex flex-column col-sm-4">
                 <!--Related Work / Edit -->
                 {% if user.is_authenticated %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         {% if not object.locked %}
                         <a href="{% url 'read:instance_update' object.pk %}"
                            class='fs-6 text-secondary'>Edit Instance</a>
@@ -151,7 +172,7 @@
                     </div>
                 {% endif %}
                 {% if object.work.id %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <div class="fs-5">Work</div>
                         <div>
                             <a href={% url "read:work_detail" object.work.id %}>{{ object.work.title }}</a>
@@ -160,7 +181,7 @@
                     </div>
                 {% endif %}
                 {% if object.wikipedia %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <div class="fs-5">Links</div>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
@@ -168,7 +189,7 @@
                     </div>
                 {% endif %}
 
-                <div class="bg-light p-3 mb-3 order-1 order-sm-3">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5">Contributors</div>
                         <div>(<a href="{% url 'read:instance_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>

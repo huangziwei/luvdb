@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 {% load markdownify %}
 {% load linkify %}
+{% load parse_activity_type %}
 {% block title %}{{ object.title }} - {{ object.series.title }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -79,6 +80,12 @@
                                         {{ checkin.user.display_name|default:checkin.user.username }}
                                     </a>
                                 </span>
+                                <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
+                            </div>
+                            {% if checkin.content %}
+                                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
+                            {% endif %}
+                            <div class="d-flex justify-content-start align-items-center">
                                 <a href="{% url 'watch:series_checkin_list' checkin.content_object.id checkin.user.username %}"
                                     class="text-decoration-none text-secondary">
                                     {{ checkin.timestamp|date:"Y.m.d H:i"}}
@@ -100,9 +107,6 @@
                                         class="text-decoration-none">Delete</a></span>
                                 {% endif %}
                             </div>
-                            {% if checkin.content %}
-                                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
-                            {% endif %}
                         {% endif %}
                     {% empty %}
                         <li>No checkins for this episode yet.</li>

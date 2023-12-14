@@ -117,7 +117,7 @@ TEMPLATES = [
             ],
             "libraries": {
                 "account_tags": "accounts.templatetags.account_tags",
-                "url_filters": "activity_feed.templatetags.url_filters",
+                "util_filters": "activity_feed.templatetags.util_filters",
                 "linkify": "write.templatetags.linkify",
                 "parse_activity_type": "activity_feed.templatetags.parse_activity_type",
                 "concat_sets": "read.templatetags.concat_sets",

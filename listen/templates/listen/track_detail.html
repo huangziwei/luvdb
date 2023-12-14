@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load markdownify %}
 {% load linkify %}
+{% load parse_activity_type %}
+{% load util_filters %}
 {% block title %}{{ object.title }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -75,6 +77,17 @@
                                         {{ checkin.user.display_name|default:checkin.user.username }}
                                     </a>
                                 </span>
+                                <span class="badge {{ checkin.status|get_status_class }} me-2">{{ checkin.get_status_display }}</span>
+                                <span class='me-2 text-muted'>
+                                    {{checkin.content_object.release_type}}: 
+                                    <a class="text-muted" href="{% url 'listen:release_detail' checkin.content_object.id%}">{{checkin.content_object.title}}</a>
+                                    ({{checkin.content_object.release_date|extract_year }})
+                                </span>
+                            </div>
+                            {% if checkin.content %}
+                                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
+                            {% endif %}
+                            <div class="d-flex justify-content-start align-items-center">
                                 <a href="{% url 'listen:release_checkin_list' checkin.content_object.id checkin.user.username %}"
                                     class="text-decoration-none text-secondary">
                                     {{ checkin.timestamp|date:"Y.m.d H:i"}}
@@ -96,9 +109,6 @@
                                         class="text-decoration-none">Delete</a></span>
                                 {% endif %}
                             </div>
-                            {% if checkin.content %}
-                                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
-                            {% endif %}
                         {% endif %}
                     {% empty %}
                         <li>No checkins for this track yet.</li>
@@ -106,10 +116,10 @@
                 </div>
             </div>
             <!--Right columns-->
-            <div class="col-sm-4">
+            <div class="d-flex flex-column col-sm-4">
                 <!--Related tracks / Edit -->
                 {% if user.is_authenticated %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         {% if not object.locked %}
                         <div>
                             <a href="{% url 'listen:track_update' object.pk %}"
@@ -122,7 +132,7 @@
                     </div>
                 {% endif %}
                 {% if object.work.id %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <div class="fs-5">Work</div>
                         <p>
                             <a href={% url "listen:work_detail" object.work.id %}>{{ object.work.title }}</a>
@@ -131,7 +141,7 @@
                     </div>
                 {% endif %}
                 {% if object.wikipedia %}
-                    <div class="bg-light p-3 mb-3">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <div class="fs-5">Links</div>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
@@ -139,7 +149,7 @@
                     </div>
                 {% endif %}
 
-                <div class="bg-light p-3 mb-3 order-1 order-sm-3">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5">Contributors</div>
                         <div>(<a href="{% url 'listen:track_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>
