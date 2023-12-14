@@ -56,30 +56,32 @@ def book_card(source, language, css_class, options, md, **kwargs):
 
     try:
         book_roles = book.bookrole_set.all()
-        roles_html = ""
+        book_roles_html = ""
         for role_name, roles in groupby(book_roles, key=attrgetter("role.name")):
             role_html_parts = [
                 f'<a href="/entity/creator/{br.creator.id}">{br.alt_name or br.creator.name}</a>'
                 for br in roles
             ]
             role_names = " / ".join(role_html_parts)
+            print(role_names, role_html_parts)
             plural_suffix = "s" if len(role_html_parts) > 1 else ""
-            roles_html += f'<div><span class="text-muted">{role_name}{plural_suffix}:</span> {role_names}</div>'
+            book_roles_html += f'<div><span class="text-muted">{role_name}{plural_suffix}:</span> {role_names}</div>'
     except AttributeError:
         print("Error in book_card() function")
 
     try:
-        genre_html = ""
-        genres = book.get_genres()
-        if len(genres) > 0:
-            genre_html = f"""<div>
+        book_genre_html = ""
+        book_genres = book.get_genres()
+        if len(book_genres) > 0:
+            book_genre_html = f"""<div>
                     <span class="text-muted">Genres:</span>
-                    {" / ".join([f'<a href="/read/genre/{genre.slug}">{genre.name}</a>' for genre in genres])}
+                    {" / ".join([f'<a href="/read/genre/{genre.slug}">{genre.name}</a>' for genre in book_genres])}
                 </div>"""
     except AttributeError:
         print("Error in book_card() function")
 
-    return f"""<div class="media-card d-flex flex-row p-3">
+    return f"""
+        <div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -87,18 +89,19 @@ def book_card(source, language, css_class, options, md, **kwargs):
                 <a href="/read/book/{book.id}" class="text-decoration-none h-cite p-name">
                     <div class="fs-5">{book.title}</div>
                 </a>
-                {roles_html}
+                {book_roles_html}
                 <div>
                     <span class="text-muted">Publisher:</span>
                     <a href="/entity/company/{book.publisher.id}">{book.publisher.name}</a>
                 </div>
-                {genre_html}
+                {book_genre_html}
                 <div>
                     <span class="text-muted">Date:</span>
                     {book.publication_date}
                 </div>
             </div>
-        </div>"""
+        </div>
+    """
 
 
 def audiobook_card(source, language, css_class, options, md, **kwargs):
@@ -148,7 +151,8 @@ def audiobook_card(source, language, css_class, options, md, **kwargs):
     except AttributeError:
         print("Error in book_card() function")
 
-    return f"""<div class="media-card d-flex flex-row p-3">
+    return f"""
+        <div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -231,7 +235,8 @@ def movie_card(source, language, css_class, options, md, **kwargs):
     else:
         release_date_html = ""
 
-    return f"""<div class="media-card d-flex flex-row p-3">
+    return f"""
+                <div class="media-card d-flex flex-row p-3 mb-2">
                     <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                         {poster_image_tag}
                     </div>
@@ -321,7 +326,8 @@ def series_card(source, language, css_class, options, md, **kwargs):
         else ""
     )
 
-    return f"""<div class="media-card d-flex flex-row p-3">
+    return f"""
+<div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {poster_image_tag}
             </div>
@@ -398,7 +404,8 @@ def release_card(source, language, css_class, options, md, **kwargs):
         else ""
     )
 
-    return f"""<div class="media-card d-flex flex-row p-3">
+    return f"""
+<div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -435,7 +442,8 @@ def podcast_card(source, language, css_class, options, md, **kwargs):
         else f'<div class="cover-placeholder">{podcast.title}</div>'
     )
 
-    return f"""<div class="media-card d-flex flex-row p-3">
+    return f"""
+<div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -511,7 +519,8 @@ def game_card(source, language, css_class, options, md, **kwargs):
     else:
         release_date_html = ""
 
-    return f"""<div class="media-card d-flex flex-row p-3">
+    return f"""
+<div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>

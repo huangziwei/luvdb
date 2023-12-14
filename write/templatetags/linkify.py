@@ -10,43 +10,31 @@ register = template.Library()
 
 @register.filter
 def linkify_tags(value, user=None):
-    # Store original <a> tags and replace them with placeholders
-    a_tags = {}
+    # Function to replace hashtags
+    def replace(match):
+        tag = match.group(1)
+        if user is not None:
+            url = reverse("write:tag_user_list", args=[user.username, tag])
+        else:
+            url = reverse("write:tag_list", args=[tag])
+        return f'<a href="{url}" class="text-success">#{tag}</a>'
 
-    def replace_a_tag(match):
-        placeholder = f"PLACEHOLDER{len(a_tags)}"
-        a_tags[placeholder] = match.group(0)
-        return placeholder
+    # Function to process text segments
+    def process_text_segment(segment):
+        return re.sub(r"#(\w+)", replace, segment)
 
-    value = re.sub(r"<a.*?>.*?</a>", replace_a_tag, value)
+    # Split the content using a regex that matches HTML tags, blockquotes, and code blocks
+    pattern = r"(</?[^>]+>|```.*?```|<blockquote>.*?</blockquote>)"
+    parts = re.split(pattern, value, flags=re.DOTALL)
 
-    # Split the content by triple backticks to distinguish code blocks
-    split_by_backticks = value.split("```")
+    # Process only the non-matching parts (which are text outside HTML, blockquote, and code blocks)
+    for i in range(len(parts)):
+        if not re.match(pattern, parts[i]):
+            parts[i] = process_text_segment(parts[i])
 
-    for i in range(len(split_by_backticks)):
-        # If the index is even, it means this is not inside a code block.
-        # Hence, replace the hashtags.
-        if i % 2 == 0:
-
-            def replace(match):
-                tag = match.group(1)
-                if user is not None:
-                    url = reverse("write:tag_user_list", args=[user.username, tag])
-                    url = url.replace("@", "u/")
-                else:
-                    url = reverse("write:tag_list", args=[tag])
-                return f'<a href="{url}" class="text-success">#{tag}</a>'
-
-            split_by_backticks[i] = re.sub(r"#(\w+)", replace, split_by_backticks[i])
-
-    # Join back the content
-    value = "```".join(split_by_backticks)
-
-    # Restore the original <a> tags
-    for placeholder, original in a_tags.items():
-        value = value.replace(placeholder, original)
-
-    return mark_safe(value)
+    # Join the parts back together
+    processed_value = "".join(parts)
+    return mark_safe(processed_value)
 
 
 @register.filter
