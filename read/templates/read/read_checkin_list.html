@@ -81,7 +81,7 @@
                             </p>
                             {% if checkin.content %}
                                 <div>
-                                    {{ checkin.content | linkify_tags | linkify_mentions | markdownify }}
+                                    {{ checkin.content | linkify_tags |  markdownify }}
                                 </div>
                             {% endif %}
                         </div>

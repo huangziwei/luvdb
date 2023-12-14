@@ -17,7 +17,7 @@ import pymdownx.superfences as superfences
 from environs import Env
 from pymdownx.slugs import slugify
 
-from write.utils_mdx import book_card, media_card, movie_card, series_card
+from write.utils_mdx import MentionExtension, media_card
 
 from ..s3_storage_backends import MediaStorage
 
@@ -304,6 +304,7 @@ MARKDOWNIFY = {
             "md_in_html",
             "nl2br",
             "toc",
+            MentionExtension(),
         ],
         "MARKDOWN_EXTENSION_CONFIGS": {
             "pymdownx.superfences": {

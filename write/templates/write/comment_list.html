@@ -45,7 +45,7 @@
                 {% endif %}
                 
                 <div class="mt-2 mb-2 p-3 bg-light">
-                    {{reply.content|markdownify|linkify_tags|linkify_mentions}}
+                    {{reply.content|markdownify|linkify_tags}}
                 </div>
                 <a class="text-muted mt-2" href="{{reply.content_object.get_absolute_url}}#{{reply.anchor}}">
                     {{reply.content_object.timestamp|date:"Y.m.d H:i"}}

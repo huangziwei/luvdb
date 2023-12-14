@@ -114,7 +114,7 @@
                                     </div>
                                     <div class="mt-2 p-3">
                                         <div>
-                                            {{ content.content_object.content| linkify_tags:content.content_object.user | linkify_mentions | markdownify }}
+                                            {{ content.content_object.content| linkify_tags:content.content_object.user |  markdownify }}
                                         </div>
                                     </div>
                                     <span class="d-flex mt-2">
@@ -144,7 +144,7 @@
    class="text-decoration-none text-secondary">{{ content.content_object.url|root_url }}</a>)
                                         </div>
                                         {% if content.content_object.content %}
-                                            <div>{{ content.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
+                                            <div>{{ content.content_object.content | linkify_tags |  truncatechars:300 | markdownify }}</div>
                                         {% endif %}
                                     </div>
                                     <span class="d-flex mt-2">
@@ -173,7 +173,7 @@
                                             <a href="{% url 'write:post_detail_slug' content.content_object.user.username content.content_object.slug %}"
                                                class="text-decoration-none">{{ content.content_object.title }}</a>
                                         </div>
-                                        <div>{{ content.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
+                                        <div>{{ content.content_object.content | linkify_tags |  truncatechars:300 | markdownify }}</div>
                                     </div>
                                     <span class="d-flex mt-2">
                                         <p class='me-2 text-secondary mb-2'>
@@ -201,7 +201,7 @@
                                             <a href="{% url 'write:repost_detail' content.content_object.user.username content.content_object.id %}"
                                                class="text-decoration-none">{{ content.content_object.title }}</a>
                                         </div>
-                                        <div>{{ content.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}</div>
+                                        <div>{{ content.content_object.content | linkify_tags |  truncatechars:300 | markdownify }}</div>
                                     </div>
                                     <span class="d-flex mt-2">
                                         <p class='me-2 text-secondary mb-2'>

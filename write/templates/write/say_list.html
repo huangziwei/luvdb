@@ -46,7 +46,7 @@
                     <div class="activity-item mb-3 h-entry">
                         {% if activity.model_name == "Say" %}
                             <div>
-                                {{ activity.content | linkify_tags | linkify_mentions | markdownify }}
+                                {{ activity.content | linkify_tags |  markdownify }}
                             </div>
                             <span class="d-flex mt-2">
                                 <div class="me-2">
@@ -72,7 +72,7 @@
                                 {% endif %}
                             </span>
                         {% elif activity.model_name == "Repost" and activity.content %}
-                            <div>{{ activity.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                            <div>{{ activity.content | linkify_tags |  markdownify }}</div>
                             <span class="d-flex mt-2">
                                 <div class="me-2">
                                     <a href="{% url 'write:repost_detail' activity.user.username activity.id %}" class="link-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }} | {{ activity.model_name }}</a>

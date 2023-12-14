@@ -51,7 +51,7 @@
     class="link-secondary">({{ pin.url|root_url }})</a>
                             </div>
                             {% if pin.content %}
-                                <div class="mb-2">{{ pin.content | linkify_tags:pin.user | linkify_mentions | markdownify }}</div>
+                                <div class="mb-2">{{ pin.content | linkify_tags:pin.user |  markdownify }}</div>
                             {% endif %}
                         </div>
                         <span class="d-flex mt-2">

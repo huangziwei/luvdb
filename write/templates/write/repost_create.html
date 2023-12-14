@@ -32,7 +32,7 @@
                                 {% endif %}
                             </div>
                             <div class="mt-2">
-                                {{ original_activity.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
+                                {{ original_activity.content_object.content | linkify_tags |  truncatechars:300 | markdownify }}
                             </div>
                             <div class="media-card d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -98,7 +98,7 @@
                                 {% endif %}
                             </div>
                             <div class="mt-2">
-                                {{ original_activity.content_object.content | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
+                                {{ original_activity.content_object.content | linkify_tags |  truncatechars:300 | markdownify }}
                             </div>
                             <div class="media-card d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -186,7 +186,7 @@
                             {% endif %}
                             <div class="bg-light">
                                 <blockquote>
-                                    {{ original_activity.content_object.content  | linkify_tags | linkify_mentions | truncatechars:300 | markdownify }}
+                                    {{ original_activity.content_object.content  | linkify_tags |  truncatechars:300 | markdownify }}
                                 </blockquote>
                                 <p>
                                     <a href="{{ original_activity.content_object.get_absolute_url }}"

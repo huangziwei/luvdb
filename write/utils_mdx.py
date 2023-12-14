@@ -1,7 +1,15 @@
+import re
+import xml.etree.ElementTree as etree
 from itertools import groupby
 from operator import attrgetter
 
+import markdown
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+from markdown.inlinepatterns import InlineProcessor
 
+
+# media card in markdown blockquote ```card```
 def media_card(source, language, css_class, options, md, **kwargs):
     # Determine the media type from the source URL
     parts = source.strip().split("/")
@@ -80,8 +88,7 @@ def book_card(source, language, css_class, options, md, **kwargs):
     except AttributeError:
         print("Error in book_card() function")
 
-    return f"""
-        <div class="media-card d-flex flex-row p-3 mb-2">
+    return f"""<div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -151,8 +158,7 @@ def audiobook_card(source, language, css_class, options, md, **kwargs):
     except AttributeError:
         print("Error in book_card() function")
 
-    return f"""
-        <div class="media-card d-flex flex-row p-3 mb-2">
+    return f"""<div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -235,8 +241,7 @@ def movie_card(source, language, css_class, options, md, **kwargs):
     else:
         release_date_html = ""
 
-    return f"""
-                <div class="media-card d-flex flex-row p-3 mb-2">
+    return f"""<div class="media-card d-flex flex-row p-3 mb-2">
                     <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                         {poster_image_tag}
                     </div>
@@ -326,8 +331,7 @@ def series_card(source, language, css_class, options, md, **kwargs):
         else ""
     )
 
-    return f"""
-<div class="media-card d-flex flex-row p-3 mb-2">
+    return f"""<div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {poster_image_tag}
             </div>
@@ -404,8 +408,7 @@ def release_card(source, language, css_class, options, md, **kwargs):
         else ""
     )
 
-    return f"""
-<div class="media-card d-flex flex-row p-3 mb-2">
+    return f"""<div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -442,8 +445,7 @@ def podcast_card(source, language, css_class, options, md, **kwargs):
         else f'<div class="cover-placeholder">{podcast.title}</div>'
     )
 
-    return f"""
-<div class="media-card d-flex flex-row p-3 mb-2">
+    return f"""<div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -519,8 +521,7 @@ def game_card(source, language, css_class, options, md, **kwargs):
     else:
         release_date_html = ""
 
-    return f"""
-<div class="media-card d-flex flex-row p-3 mb-2">
+    return f"""<div class="media-card d-flex flex-row p-3 mb-2">
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 {cover_image_tag}
             </div>
@@ -536,3 +537,26 @@ def game_card(source, language, css_class, options, md, **kwargs):
             </div>
         </div>
     """
+
+
+class MentionPattern(InlineProcessor):
+    def handleMatch(self, m, data):
+        username = m.group(1)
+        try:
+            user = get_user_model().objects.get(username=username)
+            url = reverse("accounts:detail", args=[username])
+            a = etree.Element("a")
+            a.text = f"@{username}"
+            a.set("href", url)
+            return a, m.start(0), m.end(0)
+        except get_user_model().DoesNotExist:
+            span = etree.Element("span")
+            span.text = f"@{username}"
+            return span, m.start(0), m.end(0)
+
+
+class MentionExtension(markdown.Extension):
+    def extendMarkdown(self, md):
+        MENTION_PATTERN = r"(?<![:/])@(\w+)"
+        mentionPattern = MentionPattern(MENTION_PATTERN, md)
+        md.inlinePatterns.register(mentionPattern, "mention", 175)

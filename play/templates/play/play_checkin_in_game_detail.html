@@ -27,7 +27,7 @@
             </div>
             {% if checkin.content %}
                 <div class="checkin bg-light p-3 mb-2">
-                    <div>{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                    <div>{{ checkin.content | linkify_tags |  markdownify }}</div>
                 </div>
             {% endif %}
             <div class="d-flex mb-4">

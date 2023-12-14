@@ -28,7 +28,7 @@
                         </svg>{% endif %}:
                     </div>
                     <div class="e-content">
-                        {{ object.content|markdownify|linkify_tags:object.user|linkify_mentions }}
+                        {{ object.content|markdownify|linkify_tags:object.user }}
                     </div>
                     <span class="d-flex mt-2">
                         <p class='me-2 text-secondary mb-2'>

@@ -60,7 +60,7 @@
                         <span class="text-muted">Since {{ object.date_joined|date:"Y.m.d" }}</span>
                     </p>
                     {% if object.bio %}
-                        <div>{{ object.bio | linkify_tags | linkify_mentions | markdownify }}</div>
+                        <div>{{ object.bio | linkify_tags | markdownify }}</div>
                     {% endif %}
                     {% if object == request.user %}
                         <div class='d-flex'>
@@ -1225,7 +1225,7 @@
                         <span class="text-muted">Since {{ object.date_joined|date:"Y.m.d" }}</span>
                     </p>
                     {% if object.bio %}
-                        <div>{{ object.bio | linkify_tags | linkify_mentions | markdownify }}</div>
+                        <div>{{ object.bio | linkify_tags | markdownify }}</div>
                     {% endif %}
                     {% if object == request.user %}
                         <div class='d-flex '>

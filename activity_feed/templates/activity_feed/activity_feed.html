@@ -282,7 +282,7 @@
                             <span class="text-muted">Since {{ feed_user.date_joined|date:"Y.m.d" }}</span>
                         </p>
                         {% if feed_user.bio %}
-                            <div>{{ feed_user.bio | linkify_tags | linkify_mentions | markdownify }}</div>
+                            <div>{{ feed_user.bio | linkify_tags |  markdownify }}</div>
                         {% endif %}
                         {% if feed_user == request.user %}
                             <div class='d-flex '>

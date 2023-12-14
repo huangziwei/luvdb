@@ -129,7 +129,7 @@
                                 {% endif %}
                             </div>
                             {% if checkin.content %}
-                                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags | linkify_mentions | markdownify }}</div>
+                                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
                             {% endif %}
                         {% endif %}
                     {% empty %}

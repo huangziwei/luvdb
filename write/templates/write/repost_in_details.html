@@ -19,7 +19,7 @@
                 {% endif %}
             </span>
             {% if repost.content %}
-                <div class="bg-light mt-2 p-3">{{ repost.content| linkify_tags | linkify_mentions | markdownify }}</div>
+                <div class="bg-light mt-2 p-3">{{ repost.content| linkify_tags |  markdownify }}</div>
             {% endif %}
         </div>
     {% empty %}

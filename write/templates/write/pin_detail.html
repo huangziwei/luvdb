@@ -33,7 +33,7 @@
                     </div>
                     {% if object.content %}
                         <div class="mt-2 e-content">
-                            {{ object.content|linkify_tags:object.user|linkify_mentions|markdownify}}
+                            {{ object.content|linkify_tags:object.user|markdownify}}
                         </div>
                     {% endif %}
                 </div>

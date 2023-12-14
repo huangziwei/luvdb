@@ -26,7 +26,7 @@
                     </a> reposted:
                 </div>
                 {% if repost.content %}
-                    <div class="mt-2 e-content">{{ repost.content | linkify_tags:repost.user | linkify_mentions | markdownify }}</div>
+                    <div class="mt-2 e-content">{{ repost.content | linkify_tags:repost.user |  markdownify }}</div>
                 {% endif %}
                 <div class="bg-light mt-2 p-3">
                     {% if repost.original_activity %}
@@ -53,7 +53,7 @@
                                 {% endif %}
                             </div>
                             <div class="mt-2">
-                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user | linkify_mentions | truncatechars:300 | markdownify }}
+                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user |  truncatechars:300 | markdownify }}
                             </div>
                             <div class="media-card d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -144,7 +144,7 @@
                                 {% endif %}
                             </div>
                             <div class="mt-2">
-                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user | linkify_mentions | truncatechars:300 | markdownify }}
+                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user |  truncatechars:300 | markdownify }}
                             </div>
                             <div class="media-card d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -277,7 +277,7 @@
                                 {% endif %}
                             </div>
                             <div class="mt-2">
-                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user | linkify_mentions | truncatechars:300 | markdownify }}
+                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user |  truncatechars:300 | markdownify }}
                             </div>
                             <div class="media-card d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -381,7 +381,7 @@
                                 {% endif %}
                             </div>
                             <div class="mt-2">
-                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user | linkify_mentions | truncatechars:300 | markdownify }}
+                                {{ repost.original_activity.content_object.content | linkify_tags:repost.original_activity.user |  truncatechars:300 | markdownify }}
                             </div>
                             <div class="media-card d-flex flex-row bg-white p-3 mt-2">
                                 <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
@@ -483,7 +483,7 @@
                             {% endif %}
                             <div class="bg-light">
                                 <div class="mb-2">
-                                    {{ repost.original_activity.content_object.content  | linkify_tags:repost.original_activity.user | linkify_mentions | truncatechars:300 | markdownify }}
+                                    {{ repost.original_activity.content_object.content  | linkify_tags:repost.original_activity.user |  truncatechars:300 | markdownify }}
                                 </div>
                                 <div>
                                     <a href="{{ repost.original_activity.content_object.get_absolute_url }}"
