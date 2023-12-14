@@ -219,6 +219,14 @@ def movie_card(source, language, css_class, options, md, **kwargs):
         movie.distributors.all(), "Distributor", "company"
     )
 
+    # Crew and Cast
+    crew_and_cast_html = f"""
+                <div>
+                    <span class="text-muted">Crew and Cast:</span>
+                    <a href="/watch/movie/{movie.id}/cast">View All</a>
+                </div>
+            """
+
     # Genres
     try:
         genre_html = ""
@@ -253,6 +261,7 @@ def movie_card(source, language, css_class, options, md, **kwargs):
                         {studio_html}
                         {distributor_html}
                         {genre_html}
+                        {crew_and_cast_html}
                         {release_date_html}
                     </div>
                 </div>
@@ -311,6 +320,14 @@ def series_card(source, language, css_class, options, md, **kwargs):
         series.distributors.all(), "Distributor", "company"
     )
 
+    # Crew and Cast
+    crew_and_cast_html = f"""
+                <div>
+                    <span class="text-muted">Crew and Cast:</span>
+                    <a href="/watch/series/{series.id}/cast">View All</a>
+                </div>
+            """
+
     # Genres
     try:
         genre_html = ""
@@ -343,6 +360,7 @@ def series_card(source, language, css_class, options, md, **kwargs):
                 {studio_html}
                 {distributor_html}
                 {genre_html}
+                {crew_and_cast_html}
                 {release_date_html}
             </div>
         </div>
@@ -513,6 +531,13 @@ def game_card(source, language, css_class, options, md, **kwargs):
     except AttributeError:
         print("Error in book_card() function")
 
+    # Crew and Cast
+    crew_and_cast_html = f"""
+                <div>
+                    <span class="text-muted">Crew and Cast:</span>
+                    <a href="/play/game/{game.id}/cast">View All</a>
+                </div>
+            """
     # Release Date
     region_release_dates = game.region_release_dates.all().order_by("release_date")
     if region_release_dates.exists():
@@ -533,6 +558,7 @@ def game_card(source, language, css_class, options, md, **kwargs):
                 {developer_html}
                 {publisher_html}
                 {genre_html}
+                {crew_and_cast_html}
                 {release_date_html}
             </div>
         </div>

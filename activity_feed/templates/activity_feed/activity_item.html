@@ -437,6 +437,13 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+                <div>
+                    {% if activity.content_object.content_type.model == 'movie' %}
+                        <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' activity.content_object.content_object.id %}">View All</a>
+                    {% elif activity.content_object.content_type.model == 'series' %}
+                        <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:series_cast_detail' activity.content_object.content_object.id %}">View All</a>
+                    {% endif %}
+                </div>
                 {% if activity.content_object.content_object.release_date %}
                     <div>
                         <span class="text-muted">Date:</span>
@@ -776,6 +783,9 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+                <div>
+                    <span class="text-muted">Crew and Cast:</span> <a href="{% url 'play:game_cast_detail' activity.content_object.content_object.id %}">View All</a>
+                </div>
                 {% if activity.content_object.content_object.region_release_dates.all %}
                     <div>
                         <span class="text-muted">Date:</span>

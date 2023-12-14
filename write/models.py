@@ -788,7 +788,10 @@ class LuvList(auto_prefetch.Model):
             return reverse("write:luvlist_detail_collab", args=[str(self.id)])
         else:
             # URL for regular lists
-            return reverse("write:luvlist_detail", kwargs={"pk": self.id, "username": self.user.username})
+            return reverse(
+                "write:luvlist_detail",
+                kwargs={"pk": self.id, "username": self.user.username},
+            )
 
     def get_votes(self):
         return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0

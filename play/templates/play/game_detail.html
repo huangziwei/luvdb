@@ -90,9 +90,6 @@
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <div class="mb-1">
-                                        <span class="text-muted">Crew and Cast:</span> <a href="{% url 'play:game_cast_detail' object.id %}">View All</a>
-                                    </div>
                                     {% if object.gameinseries_set.all %}
                                         <div class="mb-1">
                                             <span class="text-muted">Series:</span>
@@ -111,6 +108,9 @@
                                             {% endfor %}
                                         </div>
                                     {% endif %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">Crew and Cast:</span> <a href="{% url 'play:game_cast_detail' object.id %}">View All</a>
+                                    </div>
                                     {% if ordered_release_dates %}
                                         <span class="text-muted">Release Date:</span>
                                         {% for release_date in ordered_release_dates %}
