@@ -64,12 +64,14 @@
                                         <img src="{{ object.content_object.cover.url }}"
                                             alt="{{ object.content_object.title }} cover"
                                             class="img-fluid blur cover-border"
-                                            onclick="this.classList.toggle('blur')">
+                                            onclick="this.classList.toggle('blur')"
+                                            loading="lazy">
                                     {% else %}
                                         <img src="{{ object.content_object.cover.url }}"
                                             alt="{{ object.content_object.title }} cover"
                                             class="img-fluid cover-border"
-                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.content_object.title }}</div>';">
+                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.content_object.title }}</div>';"
+                                            loading="lazy">
                                     {% endif %}
                                 {% else %}
                                     <div class="listen-cover-placeholder bg-light">{{ object.content_object.title }}</div>

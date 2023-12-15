@@ -136,14 +136,19 @@
                                             <img src="{{ object.cover.url }}"
                                                  alt="{{ object.title }} cover"
                                                  class="img-fluid blur cover-border"
-                                                 onclick="this.classList.toggle('blur')">
+                                                 onclick="this.classList.toggle('blur')"
+                                                 loading="lazy">
                                         {% else %}
-                                            <img src="{{ object.cover.url }}" alt="{{ object.title }}" class="img-fluid cover-border" onerror="this.onerror=null; this.parentNode.innerHTML='
+                                            <img src="{{ object.cover.url }}" 
+                                                 alt="{{ object.title }}" 
+                                                 class="img-fluid cover-border" 
+                                                 onerror="this.onerror=null; this.parentNode.innerHTML='
                                                 <div class=\'cover-placeholder\'>
                                                     {{ object.title }}
                                                     {% if object.subtitle %}: {{ object.subtitle }}{% endif %}
                                                 </div>
-                                                ';">
+                                                ';"
+                                                loading="lazy">
                                             {% endif %}
                                         {% else %}
                                             <div class="cover-placeholder bg-light">

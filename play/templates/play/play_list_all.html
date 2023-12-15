@@ -16,12 +16,14 @@
                                             <img src="{{ game.cover.url }}"
                                                     alt="{{ game.title }} cover"
                                                     class="img-fluid blur cover-border"
-                                                    onclick="this.classList.toggle('blur')">
+                                                    onclick="this.classList.toggle('blur')"
+                                                    loading="lazy">
                                         {% else %}
                                             <img src="{{ game.cover.url }}"
                                                     alt="{{ game.title }}"
                                                     class="img-fluid cover-border"
-                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>';">
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>';"
+                                                    loading="lazy">
                                         {% endif %}
                                     {% else %}
                                         <div class="cover-placeholder bg-light">{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>

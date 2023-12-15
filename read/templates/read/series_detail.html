@@ -27,12 +27,14 @@
                                                 <img src="{{ book_in_series.book.cover.url }}"
                                                     alt="{{ book_in_series.book.title }} cover"
                                                     class="img-fluid blur cover-border"
-                                                    onclick="this.classList.toggle('blur')">
+                                                    onclick="this.classList.toggle('blur')"
+                                                    loading="lazy">
                                             {% else %}
                                                 <img src="{{ book_in_series.book.cover.url }}"
                                                     alt="{{ book_in_series.book.title }} cover"
                                                     class="img-fluid cover-border"
-                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ book_in_series.book.title }}</div>';">
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ book_in_series.book.title }}</div>';"
+                                                    loading="lazy">
                                             {% endif %}
                                         {% else %}
                                             <div class="cover-placeholder bg-light">{{ book_in_series.book.title }}</div>

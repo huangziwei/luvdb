@@ -21,12 +21,14 @@
                                                         <img src="{{ movie.poster.url }}"
                                                                 alt="{{ movie.title }} poster"
                                                                 class="img-fluid blur cover-border"
-                                                                onclick="this.classList.toggle('blur')">
+                                                                onclick="this.classList.toggle('blur')"
+                                                                loading="lazy">
                                                     {% else %}
                                                         <img src="{{ movie.poster.url }}"
                                                                 alt="{{ movie.title }}"
                                                                 class="img-fluid cover-border"
-                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>';">
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>';"
+                                                                loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="cover-placeholder bg-light">{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>
@@ -53,12 +55,14 @@
                                                         <img src="{{ series.poster.url }}"
                                                                 alt="{{ series.title }} poster"
                                                                 class="img-fluid blur cover-border"
-                                                                onclick="this.classList.toggle('blur')">
+                                                                onclick="this.classList.toggle('blur')"
+                                                                loading="lazy">
                                                     {% else %}
                                                         <img src="{{ series.poster.url }}"
                                                                 alt="{{ series.title }}"
                                                                 class="img-fluid cover-border"
-                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ series.title }}{% if series.subtitle %}: {{series.subtitle}}{% endif %}</div>';">
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ series.title }}{% if series.subtitle %}: {{series.subtitle}}{% endif %}</div>';"
+                                                                loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="cover-placeholder bg-light">{{ series.title }}{% if series.subtitle %}: {{series.subtitle}}{% endif %}</div>
@@ -90,12 +94,14 @@
                                                         <img src="{{ movie.poster.url }}"
                                                                 alt="{{ movie.title }} poster"
                                                                 class="img-fluid blur cover-border"
-                                                                onclick="this.classList.toggle('blur')">
+                                                                onclick="this.classList.toggle('blur')"
+                                                                loading="lazy">
                                                     {% else %}
                                                         <img src="{{ movie.poster.url }}"
                                                                 alt="{{ movie.title }}"
                                                                 class="img-fluid cover-border"
-                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>';">
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>';"
+                                                                loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="cover-placeholder bg-light">{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>
@@ -122,12 +128,14 @@
                                                         <img src="{{ serie.poster.url }}"
                                                                 alt="{{ serie.title }} poster"
                                                                 class="img-fluid blur cover-border"
-                                                                onclick="this.classList.toggle('blur')">
+                                                                onclick="this.classList.toggle('blur')"
+                                                                loading="lazy">
                                                     {% else %}
                                                         <img src="{{ serie.poster.url }}"
                                                                 alt="{{ serie.title }}"
                                                                 class="img-fluid cover-border"
-                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>';">
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>';"
+                                                                loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="cover-placeholder bg-light">{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>

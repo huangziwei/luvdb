@@ -192,12 +192,14 @@
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }} cover"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -214,12 +216,14 @@
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }} cover"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -248,12 +252,14 @@
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }} cover"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -270,12 +276,14 @@
                                                                 <img src="{{ item.cover.url }}"
                                                                         alt="{{ item.title }} cover"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.cover.url }}"
                                                                         alt="{{ item.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ issue.number }}</div>
@@ -317,12 +325,14 @@
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }} poster"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -339,12 +349,14 @@
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }} poster"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -373,12 +385,14 @@
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }} poster"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border bg-light"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -395,12 +409,14 @@
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }} poster"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -441,12 +457,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -473,12 +491,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -506,12 +526,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border bg-light"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -528,12 +550,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border bg-light"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -561,12 +585,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border bg-light"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -606,12 +632,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border bg-light"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="cover-placeholder img-fluid bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -638,12 +666,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur bg-light"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border bg-light"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="cover-placeholder img-fluid bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -735,12 +765,14 @@
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }} cover"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -757,12 +789,14 @@
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }} cover"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -791,12 +825,14 @@
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }} cover"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.cover.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -813,12 +849,14 @@
                                                                 <img src="{{ item.cover.url }}"
                                                                         alt="{{ item.title }} cover"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.cover.url }}"
                                                                         alt="{{ item.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ issue.number }}</div>
@@ -860,12 +898,14 @@
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }} poster"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -882,12 +922,14 @@
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }} poster"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -916,12 +958,14 @@
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }} poster"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border bg-light"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -938,12 +982,14 @@
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }} poster"
                                                                         class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')">
+                                                                        onclick="this.classList.toggle('blur')"
+                                                                        loading="lazy">
                                                             {% else %}
                                                                 <img src="{{ item.content_object.poster.url }}"
                                                                         alt="{{ item.content_object.title }}"
                                                                         class="img-fluid cover-border"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                        loading="lazy">
                                                             {% endif %}
                                                         {% else %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -984,12 +1030,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -1016,12 +1064,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -1049,12 +1099,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border bg-light"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -1071,12 +1123,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border bg-light"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -1104,12 +1158,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border bg-light"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -1149,12 +1205,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur cover-border"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border bg-light"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="cover-placeholder img-fluid bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -1181,12 +1239,14 @@
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }} cover"
                                                                     class="img-fluid blur bg-light"
-                                                                    onclick="this.classList.toggle('blur')">
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
                                                         {% else %}
                                                             <img src="{{ item.content_object.cover.url }}"
                                                                     alt="{{ item.content_object.title }}"
                                                                     class="img-fluid cover-border bg-light"
-                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';">
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
                                                         {% endif %}
                                                     {% else %}
                                                         <div class="cover-placeholder img-fluid bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>

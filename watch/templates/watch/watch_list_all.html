@@ -17,11 +17,13 @@
                                                     <img src="{{ movie.poster.url }}"
                                                          alt="{{ movie.title }} poster"
                                                          class="poster-image blur"
-                                                         onclick="this.classList.toggle('blur')">
+                                                         onclick="this.classList.toggle('blur')"
+                                                         loading="lazy">
                                                 {% else %}
                                                     <img src="{{ movie.poster.url }}"
                                                          alt="{{ movie.title }}"
-                                                         class="img-fluid cover-border">
+                                                         class="img-fluid cover-border"
+                                                         loading="lazy">
                                                 {% endif %}
                                             {% else %}
                                                 <div class="poster-placeholder"
@@ -49,11 +51,13 @@
                                                     <img src="{{ serie.poster.url }}"
                                                          alt="{{ serie.title }} poster"
                                                          class="poster-image blur"
-                                                         onclick="this.classList.toggle('blur')">
+                                                         onclick="this.classList.toggle('blur')"
+                                                         loading="lazy">
                                                 {% else %}
                                                     <img src="{{ serie.poster.url }}"
                                                          alt="{{ serie.title }}"
-                                                         class="img-fluid cover-border">
+                                                         class="img-fluid cover-border"
+                                                         loading="lazy">
                                                 {% endif %}
                                             {% else %}
                                                 <div class="poster-placeholder"

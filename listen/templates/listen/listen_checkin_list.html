@@ -144,11 +144,14 @@
                                             <img src="{{ object.cover.url }}"
                                                  alt="{{ object.title }} cover"
                                                  class="cover-image blur img-fluid"
-                                                 onclick="this.classList.toggle('blur')">
+                                                 onclick="this.classList.toggle('blur')"
+                                                 loading="lazy">
                                         {% else %}
-                                            <img src="{{ object.cover.url }}" alt="{{ object.title }} cover" class="img-fluid cover-border" onerror="this.onerror=null; this.parentNode.innerHTML='
-                                                <div class=\'cover-placeholder\'>{{ object.title }}</div>
-                                                ';">
+                                            <img src="{{ object.cover.url }}" 
+                                                 alt="{{ object.title }} cover" 
+                                                 class="img-fluid cover-border" 
+                                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.title }}</div>';"
+                                                 loading="lazy">
                                             {% endif %}
                                         {% else %}
                                             <div class="listen-cover-placeholder bg-light">{{ object.title }}</div>

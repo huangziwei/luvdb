@@ -21,11 +21,13 @@
                                                         <img src="{{ release.cover.url }}"
                                                              alt="{{ release.title }} cover"
                                                              class="img-fluid blur cover-border"
-                                                             onclick="this.classList.toggle('blur')">
+                                                             onclick="this.classList.toggle('blur')"
+                                                             loading="lazy">
                                                     {% else %}
                                                         <img src="{{ release.cover.url }}"
                                                              alt="{{ release.title }}"
-                                                             class="img-fluid cover-border">
+                                                             class="img-fluid cover-border"
+                                                             loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="listen-cover-placeholder bg-light">{{ release.title }}</div>
@@ -52,11 +54,13 @@
                                                         <img src="{{ podcast.cover.url }}"
                                                             alt="{{ podcast.title }} cover"
                                                             class="img-fluid blur cover-border"
-                                                            onclick="this.classList.toggle('blur')">
+                                                            onclick="this.classList.toggle('blur')"
+                                                            loading="lazy">
                                                     {% else %}
                                                         <img src="{{ podcast.cover.url }}"
                                                             alt="{{ podcast.title }}"
-                                                            class="img-fluid cover-border">
+                                                            class="img-fluid cover-border"
+                                                            loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="listen-cover-placeholder bg-light">{{ podcast.title }}</div>
@@ -83,11 +87,13 @@
                                                         <img src="{{ audiobook.cover.url }}"
                                                             alt="{{ audiobook.title }} cover"
                                                             class="img-fluid blur cover-border"
-                                                            onclick="this.classList.toggle('blur')">
+                                                            onclick="this.classList.toggle('blur')"
+                                                            loading="lazy">
                                                     {% else %}
                                                         <img src="{{ audiobook.cover.url }}"
                                                             alt="{{ audiobook.title }}"
-                                                            class="img-fluid cover-border">
+                                                            class="img-fluid cover-border"
+                                                            loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="listen-cover-placeholder bg-light">{{ audiobook.title }}</div>

@@ -58,12 +58,14 @@
                                                 <img src="{{ release_in_group.release.cover.url }}"
                                                     alt="{{ release_in_group.release.title }} cover"
                                                     class="img-fluid blur cover-border"
-                                                    onclick="this.classList.toggle('blur')">
+                                                    onclick="this.classList.toggle('blur')"
+                                                    loading="lazy">
                                             {% else %}
                                                 <img src="{{ release_in_group.release.cover.url }}"
                                                     alt="{{ release_in_group.release.title }} cover"
                                                     class="img-fluid cover-border"
-                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ release_in_group.release.title }}</div>';">
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ release_in_group.release.title }}</div>';"
+                                                    loading="lazy"
                                             {% endif %}
                                         {% else %}
                                             <div class="listen-cover-placeholder bg-light">{{ release_in_group.release.title }}</div>

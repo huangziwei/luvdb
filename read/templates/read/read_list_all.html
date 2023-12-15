@@ -20,12 +20,14 @@
                                                         <img src="{{ book.cover.url }}"
                                                                 alt="{{ book.title }} cover"
                                                                 class="img-fluid blur cover-border"
-                                                                onclick="this.classList.toggle('blur')">
+                                                                onclick="this.classList.toggle('blur')"
+                                                                loading="lazy">
                                                     {% else %}
                                                         <img src="{{ book.cover.url }}"
                                                                 alt="{{ book.title }}"
                                                                 class="img-fluid cover-border"
-                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ book.title }}</div>';">
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ book.title }}</div>';"
+                                                                loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="cover-placeholder bg-light">{{ book.title }}</div>
@@ -52,12 +54,14 @@
                                                         <img src="{{ issue.cover.url }}"
                                                                 alt="{{ issue.title }} cover"
                                                                 class="img-fluid blur cover-border"
-                                                                onclick="this.classList.toggle('blur')">
+                                                                onclick="this.classList.toggle('blur')"
+                                                                loading="lazy">
                                                     {% else %}
                                                         <img src="{{ issue.cover.url }}"
                                                                 alt="{{ issue.title }}"
                                                                 class="img-fluid cover-border"
-                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ issue.periodical.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>';">
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ issue.periodical.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>';"
+                                                                loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="cover-placeholder bg-light">{{ issue.periodical.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>

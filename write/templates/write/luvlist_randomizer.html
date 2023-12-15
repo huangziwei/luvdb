@@ -178,7 +178,7 @@
                                 </a>
                             </div>
                             {% if item.content_object.cover %}
-                                <img src="{{item.content_object.cover.url}}" alt="" class="mb-3 img-fluid">
+                                <img src="{{item.content_object.cover.url}}" alt="" class="mb-3 img-fluid" loading="lazy">
                                 <br>
                                 {% if item.content_object.spotify_url %}
                                     <a href="{{item.content_object.spotify_url}}" aria-label="Open in Spotify" class="me-2">

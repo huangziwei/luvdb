@@ -132,12 +132,14 @@
                                                     <img src="{{ item.content_object.cover.url }}"
                                                         alt="{{ item.content_object.title }} cover"
                                                         class="img-fluid blur cover-border"
-                                                        onclick="this.classList.toggle('blur')">
+                                                        onclick="this.classList.toggle('blur')"
+                                                        loading="lazy">
                                                 {% else %}
                                                     <img src="{{ item.content_object.cover.url }}"
                                                         alt="{{ item.content_object.title }} cover"
                                                         class="img-fluid cover-border"
-                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ item.content_object.title }}</div>';">
+                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ item.content_object.title }}</div>';"
+                                                        loading="lazy">
                                                 {% endif %}
                                             {% else %}
                                                 <div class="cover-placeholder">{{ item.content_object.title }}</div>
@@ -204,12 +206,14 @@
                                                         <img src="{{ item.content_object.poster.url }}"
                                                             alt="{{ item.content_object.title }} poster"
                                                             class="img-fluid blur cover-border"
-                                                            onclick="this.classList.toggle('blur')">
+                                                            onclick="this.classList.toggle('blur')"
+                                                            loading="lazy">
                                                     {% else %}
                                                         <img src="{{ item.content_object.poster.url }}"
                                                             alt="{{ item.content_object.title }} poster"
                                                             class="img-fluid cover-border"
-                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ item.content_object.title }}</div>';">
+                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ item.content_object.title }}</div>';"
+                                                            loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="cover-placeholder">{{ item.content_object.title }}</div>
@@ -301,12 +305,14 @@
                                                         <img src="{{ item.content_object.cover.url }}"
                                                             alt="{{ item.content_object.title }} cover"
                                                             class="img-fluid blur cover-border"
-                                                            onclick="this.classList.toggle('blur')">
+                                                            onclick="this.classList.toggle('blur')"
+                                                            loading="lazy">
                                                     {% else %}
                                                         <img src="{{ item.content_object.cover.url }}"
                                                             alt="{{ item.content_object.title }} cover"
                                                             class="img-fluid cover-border"
-                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}</div>';">
+                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}</div>';"
+                                                            loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="listen-cover-placeholder">{{ item.content_object.title }}</div>
@@ -408,12 +414,14 @@
                                                         <img src="{{ item.content_object.cover.url }}"
                                                             alt="{{ item.content_object.title }} cover"
                                                             class="img-fluid blur cover-border"
-                                                            onclick="this.classList.toggle('blur')">
+                                                            onclick="this.classList.toggle('blur')"
+                                                            loading="lazy">
                                                     {% else %}
                                                         <img src="{{ item.content_object.cover.url }}"
                                                             alt="{{ item.content_object.title }} cover"
                                                             class="img-fluid cover-border"
-                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ item.content_object.title }}</div>';">
+                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ item.content_object.title }}</div>';"
+                                                            loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="cover-placeholder">{{ item.content_object.title }}</div>

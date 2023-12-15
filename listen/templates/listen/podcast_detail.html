@@ -36,12 +36,14 @@
                                             <img src="{{ podcast.cover.url }}"
                                                     alt="{{ podcast.title }} cover"
                                                     class="img-fluid blur cover-border"
-                                                    onclick="this.classList.toggle('blur')">
+                                                    onclick="this.classList.toggle('blur')"
+                                                    loading="lazy">
                                         {% else %}
                                             <img src="{{ podcast.cover.url }}"
                                                     alt="{{ podcast.title }}"
                                                     class="img-fluid cover-border"
-                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ podcast.title }}</div>';">
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ podcast.title }}</div>';"
+                                                    loading="lazy">
                                         {% endif %}
                                     {% else %}
                                         <div class="listen-cover-placeholder bg-light">{{ podcast.title }}</div>

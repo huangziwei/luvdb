@@ -57,7 +57,7 @@ def book_card(source, language, css_class, options, md, **kwargs):
     # Format the Book data into HTML
     cover_image = book.cover.url if book.cover else None
     cover_image_tag = (
-        f'<img src="{cover_image}" alt="{book.title} cover" class="img-fluid cover-border">'
+        f'<img src="{cover_image}" alt="{book.title} cover" class="img-fluid cover-border" loading="lazy">'
         if cover_image
         else f'<div class="cover-placeholder">{book.title}</div>'
     )
@@ -125,7 +125,7 @@ def audiobook_card(source, language, css_class, options, md, **kwargs):
     # Format the Book data into HTML
     cover_image = audiobook.cover.url if audiobook.cover else None
     cover_image_tag = (
-        f'<img src="{cover_image}" alt="{audiobook.title} cover" class="img-fluid cover-border">'
+        f'<img src="{cover_image}" alt="{audiobook.title} cover" class="img-fluid cover-border" loading="lazy">'
         if cover_image
         else f'<div class="cover-placeholder">{audiobook.title}</div>'
     )
@@ -195,7 +195,7 @@ def movie_card(source, language, css_class, options, md, **kwargs):
     # Format the Movie data into HTML
     poster_image = movie.poster.url if movie.poster else None
     poster_image_tag = (
-        f'<img src="{poster_image}" alt="{movie.title} cover" class="img-fluid cover-border">'
+        f'<img src="{poster_image}" alt="{movie.title} cover" class="img-fluid cover-border" loading="lazy">'
         if poster_image
         else f'<div class="cover-placeholder">{movie.title}</div>'
     )
@@ -296,7 +296,7 @@ def series_card(source, language, css_class, options, md, **kwargs):
     # Format the Movie data into HTML
     poster_image = series.poster.url if series.poster else None
     poster_image_tag = (
-        f'<img src="{poster_image}" alt="{series.title} cover" class="img-fluid cover-border">'
+        f'<img src="{poster_image}" alt="{series.title} cover" class="img-fluid cover-border" loading="lazy">'
         if poster_image
         else f'<div class="cover-placeholder">{series.title}</div>'
     )
@@ -381,7 +381,7 @@ def release_card(source, language, css_class, options, md, **kwargs):
     # Format the Movie data into HTML
     cover_image = release.cover.url if release.cover else None
     cover_image_tag = (
-        f'<img src="{cover_image}" alt="{release.title} cover" class="img-fluid cover-border">'
+        f'<img src="{cover_image}" alt="{release.title} cover" class="img-fluid cover-border" loading="lazy">'
         if cover_image
         else f'<div class="cover-placeholder">{release.title}</div>'
     )
@@ -457,7 +457,7 @@ def podcast_card(source, language, css_class, options, md, **kwargs):
     # Format the Movie data into HTML
     cover_image = podcast.cover.url if podcast.cover else None
     cover_image_tag = (
-        f'<img src="{cover_image}" alt="{podcast.title} cover" class="img-fluid cover-border">'
+        f'<img src="{cover_image}" alt="{podcast.title} cover" class="img-fluid cover-border" loading="lazy">'
         if cover_image
         else f'<div class="cover-placeholder">{podcast.title}</div>'
     )
@@ -491,7 +491,7 @@ def game_card(source, language, css_class, options, md, **kwargs):
     # Format the Game data into HTML
     cover_image = game.cover.url if game.cover else None
     cover_image_tag = (
-        f'<img src="{cover_image}" alt="{game.title} cover" class="img-fluid cover-border">'
+        f'<img src="{cover_image}" alt="{game.title} cover" class="img-fluid cover-border" loading="lazy">'
         if cover_image
         else f'<div class="cover-placeholder">{game.title}</div>'
     )

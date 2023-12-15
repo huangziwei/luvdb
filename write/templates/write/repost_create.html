@@ -41,11 +41,13 @@
                                             <img src="{{ original_activity.content_object.book.cover.url }}"
                                                  alt="{{ original_activity.content_object.book.title }} cover"
                                                  class="img-fluid blur cover-border"
-                                                 onclick="this.classList.toggle('blur')">
+                                                 onclick="this.classList.toggle('blur')"
+                                                 loading="lazy">
                                         {% else %}
                                             <img src="{{ original_activity.content_object.book.cover.url }}"
                                                  alt="{{ original_activity.content_object.book.title }} cover"
-                                                 style="width: 100%">
+                                                 style="width: 100%"
+                                                 loading="lazy">
                                         {% endif %}
                                     {% else %}
                                         <div class="no-cover-text">No Cover</div>
@@ -107,11 +109,13 @@
                                             <img src="{{ original_activity.content_object.content_object.cover.url }}"
                                                  alt="{{ original_activity.content_object.content_object.title }} cover"
                                                  class="img-fluid blur cover-border"
-                                                 onclick="this.classList.toggle('blur')">
+                                                 onclick="this.classList.toggle('blur')"
+                                                 loading="lazy">
                                         {% else %}
                                             <img src="{{ original_activity.content_object.content_object.cover.url }}"
                                                  alt="{{ original_activity.content_object.content_object.title }} cover"
-                                                 style="width: 100%">
+                                                 style="width: 100%"
+                                                 loading="lazy">
                                         {% endif %}
                                     {% else %}
                                         <div class="no-cover-text">No Cover</div>

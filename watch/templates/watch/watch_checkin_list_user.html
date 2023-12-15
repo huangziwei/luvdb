@@ -60,21 +60,24 @@
                                                 <img src="{{ checkin.content_object.poster.url }}"
                                                         alt="{{ checkin.content_object.title }} poster"
                                                         class="img-fluid blur cover-border"
-                                                        onclick="this.classList.toggle('blur')">
+                                                        onclick="this.classList.toggle('blur')"
+                                                        loading="lazy">
                                             {% else %}
                                                 {% if checkin.content_type.model == "movie" %}
                                                     <a href="{% url 'watch:movie_checkin_list' checkin.content_object.id checkin.user.username %}">
                                                         <img src="{{ checkin.content_object.poster.url }}"
                                                                 alt="{{ checkin.content_object.title }}"
                                                                 class="img-fluid cover-border cover-border-{{checkin.status}}"
-                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>';">
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>';"
+                                                                loading="lazy">
                                                     </a>
                                                 {% else %}
                                                     <a href="{% url 'watch:series_checkin_list' checkin.content_object.id checkin.user.username %}">
                                                         <img src="{{ checkin.content_object.poster.url }}"
                                                             alt="{{ checkin.content_object.title }}"
                                                             class="img-fluid cover-border cover-border-{{checkin.status}}"
-                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>';">
+                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>';"
+                                                            loading="lazy">
                                                     </a>
                                                 {% endif %}
                                             {% endif %}
@@ -116,12 +119,14 @@
                                                         <img src="{{ checkin.content_object.poster.url }}"
                                                                 alt="{{ checkin.content_object.title }} cover"
                                                                 class="img-fluid blur cover-border"
-                                                                onclick="this.classList.toggle('blur')">
+                                                                onclick="this.classList.toggle('blur')"
+                                                                loading="lazy">
                                                     {% else %}
                                                         <img src="{{ checkin.content_object.poster.url }}"
                                                                 alt="{{ checkin.content_object.title }} cover"
                                                                 class="img-fluid cover-border"
-                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}</div>';">
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}</div>';"
+                                                                loading="lazy">
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}</div>

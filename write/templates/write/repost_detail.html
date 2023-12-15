@@ -65,12 +65,14 @@
                                                 <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
                                                     alt="{{ repost.original_activity.content_object.content_object.title }} cover"
                                                     class="img-fluid blur cover-border"
-                                                    onclick="this.classList.toggle('blur')">
+                                                    onclick="this.classList.toggle('blur')"
+                                                    loading="lazy">
                                             {% else %}
                                                 <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
                                                     alt="{{ repost.original_activity.content_object.content_object.title }} cover"
                                                     class="img-fluid cover-border"
-                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ repost.original_activity.content_object.content_object.title }}</div>';">
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ repost.original_activity.content_object.content_object.title }}</div>';"
+                                                    loading="lazy">
                                             {% endif %}
                                         {% else %}
                                             <div class="cover-placeholder">{{ repost.original_activity.content_object.content_object.title }}</div>
@@ -156,12 +158,14 @@
                                                 <img src="{{ repost.original_activity.content_object.content_object.poster.url }}"
                                                     alt="{{ repost.original_activity.content_object.content_object.title }} poster"
                                                     class="img-fluid blur cover-border"
-                                                    onclick="this.classList.toggle('blur')">
+                                                    onclick="this.classList.toggle('blur')"
+                                                    loading="lazy">
                                             {% else %}
                                                 <img src="{{ repost.original_activity.content_object.content_object.poster.url }}"
                                                     alt="{{ repost.original_activity.content_object.content_object.title }} poster"
                                                     class="img-fluid cover-border"
-                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ repost.original_activity.content_object.content_object.title }}</div>';">
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ repost.original_activity.content_object.content_object.title }}</div>';"
+                                                    loading="lazy">
                                             {% endif %}
                                         {% else %}
                                             <div class="cover-placeholder">{{ repost.original_activity.content_object.content_object.title }}</div>
@@ -289,12 +293,14 @@
                                                 <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
                                                     alt="{{ repost.original_activity.content_object.content_object.title }} cover"
                                                     class="img-fluid blur cover-border"
-                                                    onclick="this.classList.toggle('blur')">
+                                                    onclick="this.classList.toggle('blur')"
+                                                    loading="lazy">
                                             {% else %}
                                                 <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
                                                     alt="{{ repost.original_activity.content_object.content_object.title }} cover"
                                                     class="img-fluid cover-border"
-                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ repost.original_activity.content_object.content_object.title }}</div>';">
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ repost.original_activity.content_object.content_object.title }}</div>';"
+                                                    loading="lazy">
                                             {% endif %}
                                         {% else %}
                                             <div class="listen-cover-placeholder">{{ repost.original_activity.content_object.content_object.title }}</div>
@@ -393,12 +399,14 @@
                                                 <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
                                                     alt="{{ repost.original_activity.content_object.content_object.title }} cover"
                                                     class="img-fluid blur cover-border"
-                                                    onclick="this.classList.toggle('blur')">
+                                                    onclick="this.classList.toggle('blur')"
+                                                    loading="lazy">
                                             {% else %}
                                                 <img src="{{ repost.original_activity.content_object.content_object.cover.url }}"
                                                     alt="{{ repost.original_activity.content_object.content_object.title }} cover"
                                                     class="img-fluid cover-border"
-                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ repost.original_activity.content_object.content_object.title }}</div>';">
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ repost.original_activity.content_object.content_object.title }}</div>';"
+                                                    loading="lazy">
                                             {% endif %}
                                         {% else %}
                                             <div class="cover-placeholder">{{ repost.original_activity.content_object.content_object.title }}</div>

@@ -115,12 +115,14 @@ class="text-decoration-none">Delete</a></span>
                                         <img src="{{ game.cover.url }}"
                                             alt="{{ game.title }} cover"
                                             class="blur img-fluid"
-                                            onclick="this.classList.toggle('blur')">
+                                            onclick="this.classList.toggle('blur')"
+                                            loading="lazy">
                                     {% else %}
                                         <img src="{{ game.cover.url }}"
                                             alt="{{ game.title }} cover"
                                             class="img-fluid cover-border"
-                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ game.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';">
+                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ game.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';"
+                                            loading="lazy">
                                     {% endif %}
                                 {% else %}
                                     <div class="cover-placeholder bg-light">{{ game.title }}</div>
