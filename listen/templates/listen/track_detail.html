@@ -50,10 +50,10 @@
                 <div class="fs-4 mt-3 fw-bold">Credits</div> 
                 {% for category, roles in categorized_roles.items %}
                     <div>
-                        <div class="fs-5 fw-semibold mt-2 mb-1">{{ category }}</div>
+                        <div class="fs-6 fw-semibold mt-2 mb-1">{{ category }}</div>
                         {% for role, creators_altname_tuples in roles.items %}
                             <div>
-                                <span class="text-muted">{{ role }}:</span>
+                                <span class="text-muted ms-2">{{ role }}:</span>
                                 {% for creator, name in creators_altname_tuples %}
                                     <a href="{% url 'entity:creator_detail' creator.id %}">{{ name }}</a>
                                     {% if not forloop.last %}/{% endif %}
