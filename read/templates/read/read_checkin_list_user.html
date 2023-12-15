@@ -14,18 +14,18 @@
                     <div class='mb-3'>
                         {% if order == 'timestamp' %}
                             <a href="?page={{ i }}&layout={{layout}}&order=-timestamp&status={{ status }}"
-                                class="btn btn-sm btn-outline-secondary mb-1 me-1">Newest</a>
+                                class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
                         {% else %}
                             <a href="?page={{ i }}&layout={{layout}}&order=timestamp&status={{ status }}"
-                                class="btn btn-sm btn-outline-secondary mb-1 me-1">Oldest</a>
+                                class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
                         {% endif %}
                     
                         {% if layout == 'grid' %}
                             <a href="?page={{ i }}&layout=list&order={{ order }}&status={{ status }}"
-                                class="btn btn-sm btn-outline-secondary mb-1 me-1">List</a>
+                                class="btn btn-sm btn-outline-secondary mb-1">List</a>
                         {% else %}
                             <a href="?page={{ i }}&layout=grid&order={{ order }}&status={{ status }}"
-                                class="btn btn-sm btn-outline-secondary mb-1 me-1">Grid</a>
+                                class="btn btn-sm btn-outline-secondary mb-1">Grid</a>
                         {% endif %}
                     
                         <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status="

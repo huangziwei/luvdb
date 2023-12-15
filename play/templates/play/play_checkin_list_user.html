@@ -7,25 +7,25 @@
         <div class="row">
             <div class="col-12 col-md-8">
                 <div class="col-sm-12">
-                    <div class="fs-4">
+                    <div class="fs-4 mb-2">
                         All Play Check-Ins from
                         <a href="{% url 'accounts:detail' profile_user.username %}"> {{ profile_user.display_name|default:profile_user.username }}</a>
                     </div>
                     <div class='mb-3'>
                             {% if order == 'timestamp' %}
                                 <a href="?page={{ i }}&layout={{layout}}&order=-timestamp&status={{ status }}"
-                                    class="btn btn-sm btn-outline-secondary mb-1 me-1">Newest</a>
+                                    class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
                             {% else %}
                                 <a href="?page={{ i }}&layout={{layout}}&order=timestamp&status={{ status }}"
-                                    class="btn btn-sm btn-outline-secondary mb-1 me-1">Oldest</a>
+                                    class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
                             {% endif %}
 
                             {% if layout == 'grid' %}
                                 <a href="?page={{ i }}&layout=list&order={{ order }}&status={{ status }}"
-                                    class="btn btn-sm btn-outline-secondary mb-1 me-1">List</a>
+                                    class="btn btn-sm btn-outline-secondary mb-1">List</a>
                             {% else %}
                                 <a href="?page={{ i }}&layout=grid&order={{ order }}&status={{ status }}"
-                                    class="btn btn-sm btn-outline-secondary mb-1 me-1">Grid</a>
+                                    class="btn btn-sm btn-outline-secondary mb-1">Grid</a>
                             {% endif %}
                             <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status="
                                 class="btn btn-sm btn-outline-secondary mb-1">All</a>

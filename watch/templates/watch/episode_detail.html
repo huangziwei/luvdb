@@ -85,7 +85,7 @@
                             {% if checkin.content %}
                                 <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
                             {% endif %}
-                            <div class="d-flex justify-content-start align-items-center">
+                            <div class="d-flex justify-content-start align-items-start">
                                 <a href="{% url 'watch:series_checkin_list' checkin.content_object.id checkin.user.username %}"
                                     class="text-decoration-none text-secondary">
                                     {{ checkin.timestamp|date:"Y.m.d H:i"}}
