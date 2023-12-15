@@ -72,23 +72,31 @@ document.addEventListener("DOMContentLoaded", function () {
     let usernames = [];
     let tags = [];
     let lastDropdownTriggerPos = -1;
+    let dataFetched = false; // Flag to track if data has been fetched
 
     const textInputs = Array.from(document.querySelectorAll('[id="text-input"]'));
     textInputs.forEach((textInput) => {
         if (textInput !== null) {
-            // Fetch usernames
-            fetch("/get_followed_usernames/")
-                .then((response) => response.json())
-                .then((data) => {
-                    usernames = data.usernames_with_display_names;
-                });
+            // Event listener for click to fetch data
+            textInput.addEventListener("click", function () {
+                if (!dataFetched) {
+                    // Fetch usernames
+                    fetch("/get_followed_usernames/")
+                        .then((response) => response.json())
+                        .then((data) => {
+                            usernames = data.usernames_with_display_names;
+                        });
 
-            // Fetch tags
-            fetch("/get_user_tags/")
-                .then((response) => response.json())
-                .then((data) => {
-                    tags = data.tags;
-                });
+                    // Fetch tags
+                    fetch("/get_user_tags/")
+                        .then((response) => response.json())
+                        .then((data) => {
+                            tags = data.tags;
+                        });
+
+                    dataFetched = true; // Update the flag
+                }
+            });
 
             textInput.addEventListener("keyup", function (e) {
                 const value = textInput.value;

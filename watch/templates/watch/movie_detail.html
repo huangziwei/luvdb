@@ -139,15 +139,21 @@
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
                                             {% if ordered_release_dates %}
+                                            <div class="mb-1">
                                                 <span class="text-muted">Release Date:</span>
                                                 {% for release_date in ordered_release_dates %}
                                                     {{ release_date.release_date }} ({{ release_date.region }})
                                                     {% if not forloop.last %}/{% endif %}
                                                 {% endfor %}
+                                            </div>
                                             {% endif %}
                                             {% if object.notes %}
-                                                <span class="text-muted">Details:</span>
-                                                <div class="card card-body">{{ object.notes|markdownify }}</div>
+                                            <div class="mb-1">
+                                                <div class="card card-body">
+                                                    <span class="text-muted">Extra</span>
+                                                    {{ object.notes|markdownify }}
+                                                </div>
+                                            </div>
                                             {% endif %}
                                         </div>
                                     </div>
