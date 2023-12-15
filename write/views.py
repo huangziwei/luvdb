@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, Q
 from django.db.models.functions import Lower
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -951,6 +951,19 @@ class LuvListUpdateView(LoginRequiredMixin, UpdateView):
 class LuvListDeleteView(LoginRequiredMixin, DeleteView):
     model = LuvList
     template_name = "write/luvlist_delete.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Get the current LuvList object
+        luvlist = get_object_or_404(LuvList, pk=kwargs["pk"])
+
+        # Check if the current user is the creator of the LuvList
+        if luvlist.user != request.user:
+            # Return a forbidden response
+            return HttpResponseForbidden(
+                "You are not authorized to delete this LuvList."
+            )
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         queryset = super().get_queryset()
