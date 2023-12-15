@@ -823,7 +823,10 @@ class ReleaseCreditDetailView(DetailView):
             categorized_roles = defaultdict(dict)
             for role in roles:
                 role_name = role.role.name
-                category = next((cat for cat, roles in categories.items() if role_name in roles), "Other")
+                category = next(
+                    (cat for cat, roles in categories.items() if role_name in roles),
+                    "Other",
+                )
 
                 if role_name not in categorized_roles[category]:
                     categorized_roles[category][role_name] = []
@@ -839,7 +842,9 @@ class ReleaseCreditDetailView(DetailView):
         categorized_release_credits = categorize_roles(release_roles, CATEGORIES)
 
         # Aggregate and categorize Track level credits
-        release_tracks = ReleaseTrack.objects.filter(release=release).order_by("disk", "order")
+        release_tracks = ReleaseTrack.objects.filter(release=release).order_by(
+            "disk", "order"
+        )
         categorized_track_credits = {}
 
         for release_track in release_tracks:
@@ -847,7 +852,9 @@ class ReleaseCreditDetailView(DetailView):
             order = release_track.order
 
             track_roles = TrackRole.objects.filter(track=release_track.track)
-            categorized_track_credits[(release_track.track, disk, order)] = categorize_roles(track_roles, CATEGORIES)
+            categorized_track_credits[
+                (release_track.track, disk, order)
+            ] = categorize_roles(track_roles, CATEGORIES)
 
         context["categorized_release_credits"] = categorized_release_credits
         context["categorized_track_credits"] = categorized_track_credits
