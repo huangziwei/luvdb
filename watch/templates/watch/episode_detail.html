@@ -70,7 +70,7 @@
                     </div>
                 </div>
 
-                <div class="fs-3">Episode Check-ins</div>
+                <div class="fs-3 mb-2">Episode Check-ins</div>
                 <div class="col-sm-11 mb-3">
                     {% for checkin in episode_checkins %}
                         {% if checkin.user.is_public or request.user.is_authenticated %}

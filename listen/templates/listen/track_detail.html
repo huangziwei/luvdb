@@ -67,21 +67,20 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <div class="fs-3">Track Check-ins</div>
+                <div class="fs-3 mb-2">Track Check-ins</div>
                 <div class="col-sm-11 mb-3">
                     {% for checkin in track_checkins %}
                         {% if checkin.user.is_public or request.user.is_authenticated %}
-                            <div class="d-flex justify-content-start align-items-center mb-2">
+                            <div class="d-flex flex-wrap justify-content-start align-items-center mb-2">
                                 <span class='me-2'>
                                     <a href="{% url 'accounts:detail' checkin.user.username %}">
                                         {{ checkin.user.display_name|default:checkin.user.username }}
                                     </a>
                                 </span>
                                 <span class="badge {{ checkin.status|get_status_class }} me-2">{{ checkin.get_status_display }}</span>
-                                <span class='me-2 text-muted'>
-                                    {{checkin.content_object.release_type}}: 
+                                <span class='me-2 text-muted'> 
                                     <a class="text-muted" href="{% url 'listen:release_detail' checkin.content_object.id%}">{{checkin.content_object.title}}</a>
-                                    ({{checkin.content_object.release_date|extract_year }})
+                                    ({{checkin.content_object.release_type}}, {{checkin.content_object.release_date|extract_year }})
                                 </span>
                             </div>
                             {% if checkin.content %}
