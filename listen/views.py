@@ -71,6 +71,36 @@ from .models import (
 
 User = get_user_model()
 
+CATEGORIES = {
+    "Performing Artists": [
+        "Singer",
+        "Guitarist",
+        "Drummer",
+        "Alto Saxophonist",
+        "Choir",
+        "Clarinettist",
+        "Conductor",
+        "Double Bassist",
+        "Flautist",
+        "Harpist",
+        "Pianist",
+        "Saxophonist",
+        "Trombonist",
+        "Trumpeter",
+        "Violinist",
+        "Vocalist",
+        "Ensemble",
+        "Performer",
+    ],
+    "Composition and Lyrics": ["Composer", "Lyricist", "Arranger"],
+    "Production and Engineering": [
+        "Producer",
+        "Recording Engineer",
+        "Mixing Engineer",
+        "Mastering Engineer",
+        "Mastering Engineer",
+    ],
+}
 
 ##########
 ## Work ##
@@ -174,6 +204,25 @@ class WorkDetailView(DetailView):
                 (role.creator, alt_name_or_creator_name)
             )
         context["grouped_roles"] = grouped_roles
+
+        # Group roles by categories
+        categorized_roles = defaultdict(dict)
+        for role in work.workrole_set.all():
+            role_name = role.role.name
+            category = next(
+                (cat for cat, roles in CATEGORIES.items() if role_name in roles),
+                "Other",
+            )
+
+            if role_name not in categorized_roles[category]:
+                categorized_roles[category][role_name] = []
+
+            alt_name_or_creator_name = role.alt_name or role.creator.name
+            categorized_roles[category][role_name].append(
+                (role.creator, alt_name_or_creator_name)
+            )
+
+        context["categorized_roles"] = dict(categorized_roles)
 
         # tracks
         tracks = work.tracks.all().order_by("release_date")
@@ -346,16 +395,26 @@ class TrackDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         track = get_object_or_404(Track, pk=self.kwargs.get("pk"))
-        # roles
-        grouped_roles = {}
+
+        # Group roles by categories
+        categorized_roles = defaultdict(dict)
         for role in track.trackrole_set.all():
-            if role.role.name not in grouped_roles:
-                grouped_roles[role.role.name] = []
+            role_name = role.role.name
+            category = next(
+                (cat for cat, roles in CATEGORIES.items() if role_name in roles),
+                "Other",
+            )
+
+            if role_name not in categorized_roles[category]:
+                categorized_roles[category][role_name] = []
+
             alt_name_or_creator_name = role.alt_name or role.creator.name
-            grouped_roles[role.role.name].append(
+            categorized_roles[category][role_name].append(
                 (role.creator, alt_name_or_creator_name)
             )
-        context["grouped_roles"] = grouped_roles
+
+        context["categorized_roles"] = dict(categorized_roles)
+
         context["releases"] = track.releases.all().order_by("release_date")
 
         # contributors
@@ -760,43 +819,38 @@ class ReleaseCreditDetailView(DetailView):
         release = self.get_object()
 
         # Aggregate Release level credits
+        def categorize_roles(roles, categories):
+            categorized_roles = defaultdict(dict)
+            for role in roles:
+                role_name = role.role.name
+                category = next((cat for cat, roles in categories.items() if role_name in roles), "Other")
+
+                if role_name not in categorized_roles[category]:
+                    categorized_roles[category][role_name] = []
+
+                alt_name_or_creator_name = role.alt_name or role.creator.name
+                categorized_roles[category][role_name].append(
+                    (role.creator, alt_name_or_creator_name)
+                )
+            return dict(categorized_roles)
+
+        # Aggregate and categorize Release level credits
         release_roles = ReleaseRole.objects.filter(release=release)
-        release_credits = {role.role: [] for role in release_roles}
+        categorized_release_credits = categorize_roles(release_roles, CATEGORIES)
 
-        for release_role in release_roles:
-            alt_name_or_creator_name = (
-                release_role.alt_name or release_role.creator.name
-            )
-
-            release_credits[release_role.role].append(
-                (release_role.creator, alt_name_or_creator_name)
-            )
-
-        # Aggregate Track level credits
-        release_tracks = ReleaseTrack.objects.filter(release=release).order_by(
-            "disk", "order"
-        )
-        track_credits = {}
+        # Aggregate and categorize Track level credits
+        release_tracks = ReleaseTrack.objects.filter(release=release).order_by("disk", "order")
+        categorized_track_credits = {}
 
         for release_track in release_tracks:
-            disk = release_track.disk  # Access disk attribute
-            order = release_track.order  # Access order attribute
+            disk = release_track.disk
+            order = release_track.order
 
             track_roles = TrackRole.objects.filter(track=release_track.track)
-            track_credits[(release_track.track, disk, order)] = {
-                role.role: [] for role in track_roles
-            }
+            categorized_track_credits[(release_track.track, disk, order)] = categorize_roles(track_roles, CATEGORIES)
 
-            for track_role in track_roles:
-                alt_name_or_creator_name = (
-                    track_role.alt_name or track_role.creator.name
-                )
-                track_credits[(release_track.track, disk, order)][
-                    track_role.role
-                ].append((track_role.creator, alt_name_or_creator_name))
-
-        context["release_credits"] = release_credits
-        context["track_credits"] = track_credits
+        context["categorized_release_credits"] = categorized_release_credits
+        context["categorized_track_credits"] = categorized_track_credits
 
         return context
 

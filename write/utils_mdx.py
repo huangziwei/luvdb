@@ -71,7 +71,6 @@ def book_card(source, language, css_class, options, md, **kwargs):
                 for br in roles
             ]
             role_names = " / ".join(role_html_parts)
-            print(role_names, role_html_parts)
             plural_suffix = "s" if len(role_html_parts) > 1 else ""
             book_roles_html += f'<div><span class="text-muted">{role_name}{plural_suffix}:</span> {role_names}</div>'
     except AttributeError:
