@@ -17,7 +17,7 @@
                         <del>{{ code.code }}</del>
                         <a href="{% url 'accounts:detail' code.used_by.username %}">{{ code.used_by.display_name|default:code.used_by.username }}</a>
                     {% else %}
-                        <span id="code_{{ forloop.counter }}">{{ code.code }}</span>
+                        <span id="code_{{ forloop.counter }}" data-invite-code="{{ code.code }}">{{ code.code }}</span>
                         <button onclick="copyCodeToClipboard('code_{{ forloop.counter }}')" class="btn btn-sm btn-outline-secondary">Copy</button>                    
                     {% endif %}
                 </li>
@@ -41,13 +41,14 @@
 
 <script>
     function copyCodeToClipboard(elementId) {
-        var text = document.getElementById(elementId).innerText;
-        navigator.clipboard.writeText(text).then(function() {
-            showNotification('Copied code to clipboard');
+        var element = document.getElementById(elementId);
+        var inviteCode = element.getAttribute('data-invite-code');
+        var signupUrl = `${window.location.origin}/signup/?code=${inviteCode}`;
+        navigator.clipboard.writeText(signupUrl).then(function() {
+            showNotification('Copied URL to clipboard');
         }, function(err) {
             console.error('Could not copy text: ', err);
         });
     }
 </script>
-
 {% endblock %}

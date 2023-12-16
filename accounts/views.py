@@ -87,6 +87,18 @@ class SignUpView(CreateView):
 
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        invite_code = self.request.GET.get("code")
+        if invite_code:
+            context["form"].fields["invitation_code"].initial = invite_code
+            context["form"].fields["invitation_code"].widget.attrs["readonly"] = True
+            context["form"].fields["invitation_code"].widget.attrs[
+                "class"
+            ] = "readonly-field"
+
+        return context
+
 
 def get_latest_checkins(user, checkin_model):
     return checkin_model.objects.filter(
