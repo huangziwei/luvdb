@@ -52,11 +52,11 @@
                     <div class="bio p-3 bg-light">
                         <div class="align-items-center">
                             {% if object.display_name %}
-                                <span>
+                                <span class="me-1">
                                     {{ object.display_name }}
                                 </span>
                             {% endif %}
-                            <a href="https://luvdb.com{% url 'accounts:detail' object.username %}" class="ms-1">
+                            <a href="https://luvdb.com{% url 'accounts:detail' object.username %}">
                                 @{{ object.username }}
                             </a>
                             {% if not object.is_public %}
@@ -1277,11 +1277,11 @@
                     <div class="bio p-3 bg-light">
                         <div class="d-flex flex-wrap align-items-center">
                             {% if object.display_name %}
-                                <span>
+                                <span class="me-1">
                                     {{ object.display_name }}
                                 </span>
                             {% endif %}
-                            <a href="https://luvdb.com{% url 'accounts:detail' object.username %}" class="h-card ms-1" rel="me">
+                            <a href="https://luvdb.com{% url 'accounts:detail' object.username %}" class="h-card" rel="me">
                                 @{{ object.username }}
                             </a>
                             {% if not object.is_public %}
