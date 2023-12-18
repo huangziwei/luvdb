@@ -13,6 +13,7 @@ from .views import (
     PersonalActivityFeedView,
     RequestInvitationView,
     app_password_list,
+    deactivate_account,
     delete_app_password,
     export_user_data,
     get_followed_usernames,
@@ -53,5 +54,10 @@ urlpatterns = [
         "<str:username>/crossposters/",
         manage_crossposters,
         name="crossposters",
+    ),
+    path(
+        "<str:username>/deactivate/",
+        deactivate_account,
+        name="deactivate_account",
     ),
 ]

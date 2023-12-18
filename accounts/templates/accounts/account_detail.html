@@ -13,6 +13,10 @@
                 <div class="bg-black p-5 ps-3">
                     <p class="text-white">You are blocked by {{ object.display_name|default:object.username }} and cannot view the profile.</p>
                 </div>
+            {% elif not is_active %}
+                <div class="bg-black p-5 ps-3">
+                    <p class="text-white">This account has been deactivated at {{object.deactivated_at|date:"Y.m.d H:i"}}</p>
+                </div>
             {% else %}
                 <!--For small screen-->
                 <!-- navbar -->

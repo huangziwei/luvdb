@@ -76,6 +76,10 @@ class CustomUser(AbstractUser):
     enable_replies_by_default = models.BooleanField(default=True)
     enable_share_to_feed_by_default = models.BooleanField(default=False)
 
+    # deactivation
+    is_deactivated = models.BooleanField(default=False)
+    deactivated_at = models.DateTimeField(blank=True, null=True)
+
     RESERVED_USERNAMES = [
         "admin",
         "root",
@@ -129,7 +133,7 @@ class CustomUser(AbstractUser):
             AltProfile.objects.get_or_create(user=self)
 
         # Check if the user has used an invitation code
-        if self.code_used:
+        if self.code_used and self.is_active:
             # # Save the user instance before creating the Follow and Activity instances
             super().save(*args, **kwargs)
 

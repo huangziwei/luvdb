@@ -27,6 +27,13 @@
                     </div>
                 </div>
             </form>
+
+            <hr>
+            <div class="alert alert-danger">
+                <h2>Deactivate My Account</h2>
+                <p>Deactivating your account will remove your profile and all your posts from the site. This cannot be undone.</p>
+                <a href="{% url 'accounts:deactivate_account' user.username %}" class="btn btn-sm btn-danger">Delete My Account</a>
+            </div>
         </div>
     </div>
 {% endblock %}

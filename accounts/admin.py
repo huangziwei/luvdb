@@ -8,7 +8,7 @@ class InvitationCodeAdmin(admin.ModelAdmin):
 
 
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ("username", "display_name", "invited_by")
+    list_display = ("username", "display_name", "invited_by", "is_active")
 
 
 class InvitationRequestAdmin(admin.ModelAdmin):

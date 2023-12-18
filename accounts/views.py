@@ -3,12 +3,15 @@ import time
 from datetime import timedelta
 
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
+from django.db import transaction
 from django.db.models import Count, Min, OuterRef, Q, Subquery
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.http import (
     Http404,
     HttpResponse,
@@ -30,6 +33,7 @@ from django.views.generic import (
 )
 from django_ratelimit.decorators import ratelimit
 
+from accounts.models import CustomUser
 from activity_feed.models import Activity, Block, Follow
 from entity.models import Company, Creator
 from listen.models import Audiobook, ListenCheckIn, Podcast, Release, Track
@@ -41,7 +45,7 @@ from read.models import Instance as LitInstance
 from read.models import Periodical, ReadCheckIn
 from read.models import Work as LitWork
 from watch.models import Movie, Series, WatchCheckIn
-from write.models import LuvList, Pin, Post, Repost, Say, Tag
+from write.models import Comment, ContentInList, LuvList, Pin, Post, Repost, Say, Tag
 from write.utils_formatting import check_required_js
 
 from .forms import (
@@ -1134,3 +1138,102 @@ class ManageInvitationsView(View):
                 )
 
         return redirect("accounts:manage_invitations", username=username)
+
+
+#################
+## Deactivation #
+#################
+
+
+def deactivate_account(request, username):
+    if request.method == "POST":
+        user = request.user
+        if (
+            user.username == username
+        ):  # Check if the username matches the logged-in user
+            user.is_deactivated = True
+            user.is_active = False
+            user.deactivated_at = timezone.now()
+            user.save()
+
+            # Log the user out
+            logout(request)
+
+            # Render the success template
+            return render(
+                request,
+                "accounts/account_deactivation_success.html",
+                {"username": username},
+            )
+
+    return render(
+        request, "accounts/account_deactivation_confirm.html", {"username": username}
+    )
+
+
+@receiver(pre_save, sender=CustomUser)
+def handle_user_deactivation(sender, instance, **kwargs):
+    if not instance.is_active:
+        # Update related instances
+        Say.objects.filter(user=instance).update(content="REMOVED")
+        Post.objects.filter(user=instance).update(title="REMOVED", content="REMOVED")
+        Pin.objects.filter(user=instance).update(
+            title="REMOVED", content="REMOVED", url="http://removed.removed"
+        )
+        Repost.objects.filter(user=instance).update(content="REMOVED")
+        Comment.objects.filter(user=instance).update(content="REMOVED")
+        ReadCheckIn.objects.filter(user=instance).update(content="REMOVED")
+        WatchCheckIn.objects.filter(user=instance).update(content="REMOVED")
+        ListenCheckIn.objects.filter(user=instance).update(content="REMOVED")
+        PlayCheckIn.objects.filter(user=instance).update(content="REMOVED")
+
+        # Handle LuvList instances
+        luvlists = LuvList.objects.filter(user=instance)
+        for luvlist in luvlists:
+            if luvlist.allow_collaboration:
+                # Transfer ownership to the first collaborator
+                collaborators = luvlist.collaborators.exclude(id=instance.id)
+                if collaborators.exists():
+                    new_owner = collaborators.first()
+                    luvlist.user = new_owner
+                    luvlist.collaborators.remove(instance)
+                    luvlist.save()
+                else:
+                    # If no collaborators, treat as non-collaborative
+                    luvlist.title = "REMOVED"
+                    luvlist.save()
+                    # Optionally remove items from the LuvList
+                    ContentInList.objects.filter(
+                        luv_list=luvlist
+                    ).delete()  # Assuming you have a model for items in a LuvList
+            else:
+                # Non-collaborative LuvList
+                luvlist.title = "REMOVED"
+                luvlist.save()
+                # Optionally remove items from the LuvList
+                ContentInList.objects.filter(
+                    luv_list=luvlist
+                ).delete()  # Assuming you have a model for items in a LuvList
+
+        with transaction.atomic():
+            # Delete Follow relationships
+            Follow.objects.filter(follower=instance).delete()
+            Follow.objects.filter(followed=instance).delete()
+
+            # Set a unique random username
+            instance.username = generate_unique_username()
+
+
+def generate_unique_username(length=10):
+    import random
+    import string
+
+    while True:
+        # Generate a random string of letters and digits
+        username = "".join(
+            random.choices(string.ascii_letters + string.digits, k=length)
+        )
+
+        # Check if the username already exists
+        if not CustomUser.objects.filter(username=username).exists():
+            return username
