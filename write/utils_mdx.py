@@ -582,6 +582,7 @@ class MentionPattern(InlineProcessor):
 
 class MentionExtension(markdown.Extension):
     def extendMarkdown(self, md):
-        MENTION_PATTERN = r"(?<![:/])@([\w\.]+)"
+        # Allow dots inside the username, but not at the end
+        MENTION_PATTERN = r"(?<![:/])@([\w]+(?:\.[\w]+)*)"
         mentionPattern = MentionPattern(MENTION_PATTERN, md)
         md.inlinePatterns.register(mentionPattern, "mention", 175)
