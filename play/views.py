@@ -726,6 +726,14 @@ class PlayCheckInListView(ListView):
         include_mathjax, include_mermaid = check_required_js(context["checkins"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
+
+        context["is_blocked"] = (
+            Block.objects.filter(
+                blocker=profile_user, blocked=self.request.user
+            ).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
         return context
 
 
@@ -893,6 +901,14 @@ class PlayCheckInUserListView(ListView):
         include_mathjax, include_mermaid = check_required_js(context["page_obj"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
+
+        context["is_blocked"] = (
+            Block.objects.filter(
+                blocker=profile_user, blocked=self.request.user
+            ).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
 
         return context
 

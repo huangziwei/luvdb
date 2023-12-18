@@ -18,234 +18,237 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <!--left column-->
-            <div class="col-12 col-md-8">
-                <div class="fs-4">
-                    Check-ins by
-                    <a href="{% url 'accounts:detail' profile_user.username %}">
-                        {{ profile_user.display_name|default:profile_user.username }}
-                    </a> to
-                    {% if model_name == "book" %}
-                        <a href="{% url 'read:book_detail' object.id %}">{{ object.title }}</a>
-                    {% elif  model_name == "issue" %}
-                        {{ object.periodical.title }} <a href="{% url 'read:issue_detail' object.periodical.id object.id %}"> Vol. {{ object.volume }} Nr. {{ object.number }}</a>
-                    {% endif %}
+            {% if is_blocked %}
+                <div class="bg-black p-5 ps-3">
+                    <p class="text-white">You are blocked by {{ profile_user.display_name|default:profile_user.username }} and cannot view this page.</p>
                 </div>
-                <span class='d-flex mb-3'>
-                    <div class="me-3">
-                        {% if order == 'timestamp' %}
-                            <a href="?order=-timestamp&status={{ status }}"
-                                class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
-                        {% else %}
-                            <a href="?order=timestamp&status={{ status }}"
-                                class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+            {% else %}
+                <!--left column-->
+                <div class="col-12 col-md-8">
+                    <div class="fs-4">
+                        Check-ins by
+                        <a href="{% url 'accounts:detail' profile_user.username %}">
+                            {{ profile_user.display_name|default:profile_user.username }}
+                        </a> to
+                        {% if model_name == "book" %}
+                            <a href="{% url 'read:book_detail' object.id %}">{{ object.title }}</a>
+                        {% elif  model_name == "issue" %}
+                            {{ object.periodical.title }} <a href="{% url 'read:issue_detail' object.periodical.id object.id %}"> Vol. {{ object.volume }} Nr. {{ object.number }}</a>
                         {% endif %}
-                        <a href="?status=&order={{ order }}"
-                           class="btn btn-sm btn-outline-secondary mb-1">All</a>
-                        <a href="?status=to_read&order={{ order }}"
-                           class="btn btn-sm btn-info mb-1">To Read</a>
-                        <a href="?status=reading_rereading&order={{ order }}"
-                           class="btn btn-sm btn-primary mb-1">(Re)Reading</a>
-                        <a href="?status=read_reread&order={{ order }}"
-                           class="btn btn-sm btn-success mb-1">(Re)Read</a>
-                        <a href="?status=paused&order={{ order }}"
-                           class="btn btn-sm btn-warning mb-1">Paused</a>
-                        <a href="?status=abandoned&order={{ order }}"
-                           class="btn btn-sm btn-danger mb-1">Abandoned</a>
-                        <a href="?status=sampled&order={{ order }}"
-                           class="btn btn-sm btn-primary mb-1">Sampled</a>
-                        <a href="?status=afterthought&order={{ order }}"
-                           class="btn btn-sm btn-success mb-1">Afterthought</a>
                     </div>
-                </span>
-                {% if profile_user.is_public or request.user.is_authenticated %}
-                    {% for checkin in checkins %}
-                        <div class="checkin bg-light p-3 mb-1">
-                            <p class="d-flex align-items-center">
-                                <!--badge: checkin status-->
-                                <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
-                                {% if checkin.progress %}
-                                    <span class="badge text-bg-warning me-2">
-                                        {% if checkin.progress_type == "PG" %}
-                                            On page {{ checkin.progress }}
-                                        {% elif checkin.progress_type == "PC" %}
-                                            {{ checkin.progress }}%
-                                        {% elif checkin.progress_type == "CH" %}
-                                            Ch {{ checkin.progress }}
-                                        {% endif %}
+                    <span class='d-flex mb-3'>
+                        <div class="me-3">
+                            {% if order == 'timestamp' %}
+                                <a href="?order=-timestamp&status={{ status }}"
+                                    class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                            {% else %}
+                                <a href="?order=timestamp&status={{ status }}"
+                                    class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+                            {% endif %}
+                            <a href="?status=&order={{ order }}"
+                            class="btn btn-sm btn-outline-secondary mb-1">All</a>
+                            <a href="?status=to_read&order={{ order }}"
+                            class="btn btn-sm btn-info mb-1">To Read</a>
+                            <a href="?status=reading_rereading&order={{ order }}"
+                            class="btn btn-sm btn-primary mb-1">(Re)Reading</a>
+                            <a href="?status=read_reread&order={{ order }}"
+                            class="btn btn-sm btn-success mb-1">(Re)Read</a>
+                            <a href="?status=paused&order={{ order }}"
+                            class="btn btn-sm btn-warning mb-1">Paused</a>
+                            <a href="?status=abandoned&order={{ order }}"
+                            class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                            <a href="?status=sampled&order={{ order }}"
+                            class="btn btn-sm btn-primary mb-1">Sampled</a>
+                            <a href="?status=afterthought&order={{ order }}"
+                            class="btn btn-sm btn-success mb-1">Afterthought</a>
+                        </div>
+                    </span>
+                    {% if profile_user.is_public or request.user.is_authenticated %}
+                        {% for checkin in checkins %}
+                            <div class="checkin bg-light p-3 mb-1">
+                                <p class="d-flex align-items-center">
+                                    <!--badge: checkin status-->
+                                    <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
+                                    {% if checkin.progress %}
+                                        <span class="badge text-bg-warning me-2">
+                                            {% if checkin.progress_type == "PG" %}
+                                                On page {{ checkin.progress }}
+                                            {% elif checkin.progress_type == "PC" %}
+                                                {{ checkin.progress }}%
+                                            {% elif checkin.progress_type == "CH" %}
+                                                Ch {{ checkin.progress }}
+                                            {% endif %}
+                                        </span>
+                                    {% endif %}
+                                </p>
+                                {% if checkin.content %}
+                                    <div>
+                                        {{ checkin.content | linkify_tags |  markdownify }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex mb-4 pe-3">
+                                <span class="me-2">
+                                    <a href="{% url 'write:read_checkin_detail' checkin.user.username checkin.id %}"
+                                    class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
+                                </span>
+                                {% if checkin.comments_enabled %}
+                                    <span class="ms-2 me-2">
+                                        <a href="{% url 'write:read_checkin_detail' checkin.user.username checkin.id %}"
+                                        class="text-decoration-none">Reply</a>
                                     </span>
                                 {% endif %}
-                            </p>
-                            {% if checkin.content %}
-                                <div>
-                                    {{ checkin.content | linkify_tags |  markdownify }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="d-flex mb-4 pe-3">
-                            <span class="me-2">
-                                <a href="{% url 'write:read_checkin_detail' checkin.user.username checkin.id %}"
-                                   class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
-                            </span>
-                            {% if checkin.comments_enabled %}
-                                <span class="ms-2 me-2">
-                                    <a href="{% url 'write:read_checkin_detail' checkin.user.username checkin.id %}"
-                                       class="text-decoration-none">Reply</a>
-                                </span>
-                            {% endif %}
-                            {% if checkin.get_activity_id %}
-                                <span class="ms-2 me-2"><a href="{% url 'write:read_checkin_detail' checkin.user.username checkin.id %}?repost=true"
-   class="text-decoration-none">Repost</a></span>
-                            {% endif %}
-                            {% if checkin.user == request.user %}
-                                <span class="ms-2 me-2"><a href="{% url 'write:read_checkin_update' checkin.user.username checkin.id %}"
-   class="text-decoration-none">Edit</a></span>
-                                <span class="ms-2 me-2"><a href="{% url 'write:read_checkin_delete' checkin.user.username checkin.id %}"
-   class="text-decoration-none">Delete</a></span>
-                            {% endif %}
-                        </div>
-                    {% empty %}
-                        <div class="mb-1">No check-ins yet.</div>
-                    {% endfor %}
-                {% else %}
-                    <div class="mb-1">This user's check-ins are private.</div>
-                {% endif %}
-            </div>
-            <!--right column-->
-            <div class="col-12 col-md-4">
-                <!-- release-card -->
-                <div class="release-card justify-content-start">
-                    <div class="d-flex flex-column mt-2">
-                        <!--cover-box-->
-                        <div class="col-12 mb-3">
-                            <div style='width:50%'>
-                                {% if user.pure_text_mode %}
-                                    {% if object.title %}
-                                        <div class="cover-placeholder bg-light">
-                                            {{ object.title }}
-                                            {% if object.subtitle %}: {{ object.subtitle }}{% endif %}
-                                        </div>
-                                    {% else %}
-                                        <div class="cover-placeholder bg-light">
-                                            {{ object.periodical.title }} Vol. {{ object.volume }} Nr. {{ object.number }}
-                                        </div>
-                                    {% endif %}
-                                {% else %}
-                                    {% if object.cover %}
-                                        {% if object.cover_sens %}
-                                            <img src="{{ object.cover.url }}"
-                                                 alt="{{ object.title }} cover"
-                                                 class="img-fluid blur cover-border"
-                                                 onclick="this.classList.toggle('blur')"
-                                                 loading="lazy">
-                                        {% else %}
-                                            <img src="{{ object.cover.url }}" 
-                                                 alt="{{ object.title }}" 
-                                                 class="img-fluid cover-border" 
-                                                 onerror="this.onerror=null; this.parentNode.innerHTML='
-                                                <div class=\'cover-placeholder\'>
-                                                    {{ object.title }}
-                                                    {% if object.subtitle %}: {{ object.subtitle }}{% endif %}
-                                                </div>
-                                                ';"
-                                                loading="lazy">
-                                            {% endif %}
-                                        {% else %}
+                                {% if checkin.get_activity_id %}
+                                    <span class="ms-2 me-2"><a href="{% url 'write:read_checkin_detail' checkin.user.username checkin.id %}?repost=true" class="text-decoration-none">Repost</a></span>
+                                {% endif %}
+                                {% if checkin.user == request.user %}
+                                    <span class="ms-2 me-2"><a href="{% url 'write:read_checkin_update' checkin.user.username checkin.id %}" class="text-decoration-none">Edit</a></span>
+                                    <span class="ms-2 me-2"><a href="{% url 'write:read_checkin_delete' checkin.user.username checkin.id %}" class="text-decoration-none">Delete</a></span>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            <div class="mb-1">No check-ins yet.</div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="mb-1">This user's check-ins are private.</div>
+                    {% endif %}
+                </div>
+                <!--right column-->
+                <div class="col-12 col-md-4">
+                    <!-- release-card -->
+                    <div class="release-card justify-content-start">
+                        <div class="d-flex flex-column mt-2">
+                            <!--cover-box-->
+                            <div class="col-12 mb-3">
+                                <div style='width:50%'>
+                                    {% if user.pure_text_mode %}
+                                        {% if object.title %}
                                             <div class="cover-placeholder bg-light">
                                                 {{ object.title }}
                                                 {% if object.subtitle %}: {{ object.subtitle }}{% endif %}
                                             </div>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <!--release-meta-->
-                            <div class="col flex-grow-1">
-                                <div class="card-body">
-                                    <span>
-                                        {% if object.title %}
-                                            <h2>{{ object.title }}</h2>
                                         {% else %}
-                                            <h2>Vol. {{ object.volume }} Nr. {{ object.number }}</h2>
-                                            <div class="fs-5">of {{ object.periodical.title }}</div>
-                                        {% endif %}
-                                    </span>
-                                    <div class="book-meta">
-                                        {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
-                                        {% for role_name, person_altname_tuples in roles.items %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">{{ role_name }}:</span>
-                                                {% for creator, alt_name in person_altname_tuples %}
-                                                    <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
-                                                    {% if not forloop.last %}/{% endif %}
-                                                {% endfor %}
-                                            </div>
-                                        {% endfor %}
-                                        {% if object.publisher %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Publisher:</span>
-                                                <a href="{% url 'entity:company_detail' object.publisher.id %}">
-                                                    {% if object.publisher.location %}{{ object.publisher.location }}:{% endif %}
-                                                    {{ object.publisher.name }}
-                                                </a>
+                                            <div class="cover-placeholder bg-light">
+                                                {{ object.periodical.title }} Vol. {{ object.volume }} Nr. {{ object.number }}
                                             </div>
                                         {% endif %}
-                                        {% if object.format %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Format:</span> {{ object.format }}
-                                            </div>
+                                    {% else %}
+                                        {% if object.cover %}
+                                            {% if object.cover_sens %}
+                                                <img src="{{ object.cover.url }}"
+                                                    alt="{{ object.title }} cover"
+                                                    class="img-fluid blur cover-border"
+                                                    onclick="this.classList.toggle('blur')"
+                                                    loading="lazy">
+                                            {% else %}
+                                                <img src="{{ object.cover.url }}" 
+                                                    alt="{{ object.title }}" 
+                                                    class="img-fluid cover-border" 
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='
+                                                    <div class=\'cover-placeholder\'>
+                                                        {{ object.title }}
+                                                        {% if object.subtitle %}: {{ object.subtitle }}{% endif %}
+                                                    </div>
+                                                    ';"
+                                                    loading="lazy">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder bg-light">
+                                                    {{ object.title }}
+                                                    {% if object.subtitle %}: {{ object.subtitle }}{% endif %}
+                                                </div>
+                                            {% endif %}
                                         {% endif %}
-                                        {% if object.publication_date %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Date:</span> {{ object.publication_date }}
-                                            </div>
-                                        {% endif %}
-                                        <!--add series here-->
-                                        {% if object.bookinseries_set.all %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Series:</span>
-                                                {% for bookinseries in object.bookinseries_set.all %}
-                                                    <a href="{% url 'read:series_detail' bookinseries.series.id %}">{{ bookinseries.series.title }}</a>
-                                                    {% if not forloop.last %}/{% endif %}
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.pages %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Pages:</span> {{ object.pages }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.isbn_10 %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">ISBN-10:</span> {{ object.isbn_10 }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.isbn_13 %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">ISBN-13:</span> {{ object.isbn_13 }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.eisbn_13 %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">EISBN-13:</span> {{ object.eisbn_13 }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.asin %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">ASIN:</span> {{ object.asin }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.notes %}
-                                            <span class="text-muted">Details:</span>
-                                            <div class="card card-body">{{ object.notes|markdownify }}</div>
-                                        {% endif %}
+                                    </div>
+                                </div>
+                                <!--release-meta-->
+                                <div class="col flex-grow-1">
+                                    <div class="card-body">
+                                        <span>
+                                            {% if object.title %}
+                                                <h2>{{ object.title }}</h2>
+                                            {% else %}
+                                                <h2>Vol. {{ object.volume }} Nr. {{ object.number }}</h2>
+                                                <div class="fs-5">of {{ object.periodical.title }}</div>
+                                            {% endif %}
+                                        </span>
+                                        <div class="book-meta">
+                                            {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
+                                            {% for role_name, person_altname_tuples in roles.items %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">{{ role_name }}:</span>
+                                                    {% for creator, alt_name in person_altname_tuples %}
+                                                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
+                                                        {% if not forloop.last %}/{% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                            {% if object.publisher %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Publisher:</span>
+                                                    <a href="{% url 'entity:company_detail' object.publisher.id %}">
+                                                        {% if object.publisher.location %}{{ object.publisher.location }}:{% endif %}
+                                                        {{ object.publisher.name }}
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                            {% if object.format %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Format:</span> {{ object.format }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.publication_date %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Date:</span> {{ object.publication_date }}
+                                                </div>
+                                            {% endif %}
+                                            <!--add series here-->
+                                            {% if object.bookinseries_set.all %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Series:</span>
+                                                    {% for bookinseries in object.bookinseries_set.all %}
+                                                        <a href="{% url 'read:series_detail' bookinseries.series.id %}">{{ bookinseries.series.title }}</a>
+                                                        {% if not forloop.last %}/{% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.pages %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Pages:</span> {{ object.pages }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.isbn_10 %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">ISBN-10:</span> {{ object.isbn_10 }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.isbn_13 %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">ISBN-13:</span> {{ object.isbn_13 }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.eisbn_13 %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">EISBN-13:</span> {{ object.eisbn_13 }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.asin %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">ASIN:</span> {{ object.asin }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.notes %}
+                                                <span class="text-muted">Details:</span>
+                                                <div class="card card-body">{{ object.notes|markdownify }}</div>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
         {% include 'mathjax+mermaid.html' %}
     {% endblock %}

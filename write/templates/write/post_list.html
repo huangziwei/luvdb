@@ -3,119 +3,125 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-7 left-column">
-                <div class="d-flex mb-3">
-                    <span class="me-3">
-                        <a href="{% url 'write:say_list' object.username %}">Says</a>
-                    </span>
-                    <span class="me-3">
-                        <a href="{% url 'write:post_list' object.username %}">Posts</a>
-                    </span>
-                    <span class="me-3">
-                        <a href="{% url 'write:pin_list' object.username %}">Pins</a>
-                    </span>
-                    <span class="me-3">
-                        <a href="{% url 'write:luvlist_list' object.username %}">Lists</a>
-                    </span>
-                    {% if object == user %}
+            {% if is_blocked %}
+                <div class="bg-black p-5 ps-3">
+                    <p class="text-white">You are blocked by {{ user.display_name|default:user.username }} and cannot view this page.</p>
+                </div>
+            {% else %}
+                <div class="col-12 col-md-7 left-column">
+                    <div class="d-flex mb-3">
                         <span class="me-3">
-                            <a href="{% url 'accounts:liked' object.username %}">Liked</a>
+                            <a href="{% url 'write:say_list' user.username %}">Says</a>
                         </span>
                         <span class="me-3">
-                            <a href="{% url 'write:replied' object.username %}">Replied</a>
+                            <a href="{% url 'write:post_list' user.username %}">Posts</a>
                         </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:pin_list' user.username %}">Pins</a>
+                        </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:luvlist_list' user.username %}">Lists</a>
+                        </span>
+                        {% if user == request.user %}
+                            <span class="me-3">
+                                <a href="{% url 'accounts:liked' user.username %}">Liked</a>
+                            </span>
+                            <span class="me-3">
+                                <a href="{% url 'write:replied' user.username %}">Replied</a>
+                            </span>
+                        {% endif %}
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <div class="fs-5">
+                                <a href="{% url 'accounts:detail' user.username %}">{{ user.display_name | default:user.username }}</a> posted
+                            </div>
+                            {% if current_project %}
+                                <div>
+                                    (in project "<a class="text-muted" href="{% url 'write:post_list_project' user.username current_project.slug %}">{{current_project.name}}</a>")
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            {% if user.username == request.user.username %}
+                                <a class="btn btn-sm btn-primary" href="{% url 'write:post_create' user.username %}">New</a>
+                            {% endif %}
+                            {% if user.is_public %}
+                                {% if current_project %}
+                                <a class="btn btn-sm btn-success" href="{% url 'write:user_post_project_feed' user.username current_project.slug %}">RSS</a>
+                                {% else %}
+                                <a class="btn btn-sm btn-success" href="{% url 'write:user_post_feed' user.username %}">RSS</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% for post in page_obj %}
+                        <div class='d-flex flex-lg-row flex-column mb-3 justify-content-between align-items-lg-end align-items-start'>
+                            <div>
+                                <a href="{% url 'write:post_detail_slug' post.user.username post.slug %}">{{ post.title }}</a>
+                            </div>
+                            <span class="d-flex flex-column">
+                                <small class="text-muted font-monospace mt-lg-0" style="font-size: 0.8em">{{ post.timestamp|date:"Y.m.d H:i " }}</small>
+                            </span>
+                        </div>
+                    {% empty %}
+                        <p>Nothing.</p>
+                    {% endfor %}
+
+                    {% if page_obj.paginator.num_pages > 1 %}
+                        <hr>                                      
+                        <div class="pagination mb-3 mb-md-1">
+                            <span class="step-links">
+                                {% for i in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == i %}
+                                        <span class="current">{{ i }}</span>
+                                    {% else %}
+                                        <a href="?page={{ i }}">{{ i }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
                     {% endif %}
                 </div>
-                <hr>
-                <div class="d-flex justify-content-between mb-3">
-                    <div>
-                        <div class="fs-5">
-                            <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a> posted
-                        </div>
-                        {% if current_project %}
-                            <div>
-                                (in project "<a class="text-muted" href="{% url 'write:post_list_project' object.username current_project.slug %}">{{current_project.name}}</a>")
+                {% if all_tags or all_projects %}
+                    <div class="col-12 col-md-5 right-column">
+
+                        {% if current_project and user == request.user %}
+                            <div class="bg-light p-3 mb-3">
+                                <a class="text-muted" href="{% url 'write:project_update' user.username current_project.slug %}">Edit Project</a>
                             </div>
                         {% endif %}
-                    </div>
-                    
-                    <div>
-                        {% if object.username == request.user.username %}
-                            <a class="btn btn-sm btn-primary" href="{% url 'write:post_create' object.username %}">New</a>
-                        {% endif %}
-                        {% if object.is_public %}
-                            {% if current_project %}
-                            <a class="btn btn-sm btn-success" href="{% url 'write:user_post_project_feed' object.username current_project.slug %}">RSS</a>
-                            {% else %}
-                            <a class="btn btn-sm btn-success" href="{% url 'write:user_post_feed' object.username %}">RSS</a>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                </div>
 
-                {% for post in page_obj %}
-                    <div class='d-flex flex-lg-row flex-column mb-3 justify-content-between align-items-lg-end align-items-start'>
-                        <div>
-                            <a href="{% url 'write:post_detail_slug' post.user.username post.slug %}">{{ post.title }}</a>
-                        </div>
-                        <span class="d-flex flex-column">
-                            <small class="text-muted font-monospace mt-lg-0" style="font-size: 0.8em">{{ post.timestamp|date:"Y.m.d H:i " }}</small>
-                        </span>
-                    </div>
-                {% empty %}
-                    <p>Nothing.</p>
-                {% endfor %}
-
-                {% if page_obj.paginator.num_pages > 1 %}
-                    <hr>                                      
-                    <div class="pagination mb-3 mb-md-1">
-                        <span class="step-links">
-                            {% for i in page_obj.paginator.page_range %}
-                                {% if page_obj.number == i %}
-                                    <span class="current">{{ i }}</span>
-                                {% else %}
-                                    <a href="?page={{ i }}">{{ i }}</a>
-                                {% endif %}
+                        {% if all_projects %}
+                        <div class="bg-light p-3 mb-3">
+                            <div class="fs-5">Projects</div>
+                            <div>
+                            {% for project_info in all_projects %}
+                                <a href="{% url 'write:post_list_project' user.username project_info.project.slug %}"
+                                    class="me-0">{{ project_info.project.name }}</a>
+                                ({{project_info.post_count}})
+                                {% if not forloop.last %}/{% endif %}
                             {% endfor %}
-                        </span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <!--All tags on the page-->
+                        {% if all_tags %}
+                        <div class="bg-light p-3 mb-3">
+                            <span>
+                                {% for tag in all_tags %}
+                                    <a href="{% url 'write:tag_user_list' user.username tag.name %}"
+                                    style="font-size: {{ tag.count|add:85 }}%"
+                                    class="text-success me-2">{{ tag.name }}</a>
+                                {% endfor %}
+                            </span>
+                        </div>
+                        {% endif %}
                     </div>
                 {% endif %}
-            </div>
-            {% if all_tags or all_projects %}
-                <div class="col-12 col-md-5 right-column">
-
-                    {% if current_project and object == request.user %}
-                        <div class="bg-light p-3 mb-3">
-                            <a class="text-muted" href="{% url 'write:project_update' object.username current_project.slug %}">Edit Project</a>
-                        </div>
-                    {% endif %}
-
-                    {% if all_projects %}
-                    <div class="bg-light p-3 mb-3">
-                        <div class="fs-5">Projects</div>
-                        <div>
-                        {% for project_info in all_projects %}
-                            <a href="{% url 'write:post_list_project' object.username project_info.project.slug %}"
-                                   class="me-0">{{ project_info.project.name }}</a>
-                            ({{project_info.post_count}})
-                            {% if not forloop.last %}/{% endif %}
-                        {% endfor %}
-                        </div>
-                    </div>
-                    {% endif %}
-                    <!--All tags on the page-->
-                    {% if all_tags %}
-                    <div class="bg-light p-3 mb-3">
-                        <span>
-                            {% for tag in all_tags %}
-                                <a href="{% url 'write:tag_user_list' object.username tag.name %}"
-                                   style="font-size: {{ tag.count|add:85 }}%"
-                                   class="text-success me-2">{{ tag.name }}</a>
-                            {% endfor %}
-                        </span>
-                    </div>
-                    {% endif %}
-                </div>
             {% endif %}
         </div>
     </div>

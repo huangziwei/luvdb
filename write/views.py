@@ -131,7 +131,7 @@ class PostListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["object"] = self.user
+        context["user"] = self.user
 
         # Determine current project, if any
         current_project_slug = self.kwargs.get("project", None)
@@ -173,6 +173,12 @@ class PostListView(ListView):
             }
         else:
             context["current_project"] = None
+
+        context["is_blocked"] = (
+            Block.objects.filter(blocker=self.user, blocked=self.request.user).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
 
         return context
 
@@ -290,7 +296,7 @@ class SayListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["object"] = self.user
+        context["user"] = user = self.user
 
         # Aggregating tag counts from Say
         say_tags = (
@@ -327,6 +333,12 @@ class SayListView(ListView):
         include_mathjax, include_mermaid = check_required_js(context["page_obj"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
+
+        context["is_blocked"] = (
+            Block.objects.filter(blocker=user, blocked=self.request.user).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
 
         return context
 
@@ -416,7 +428,7 @@ class PinListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["object"] = self.user
+        context["user"] = self.user
 
         context["all_tags"] = (
             Tag.objects.filter(pin__user=self.user)
@@ -429,6 +441,12 @@ class PinListView(ListView):
         include_mathjax, include_mermaid = check_required_js(context["page_obj"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
+
+        context["is_blocked"] = (
+            Block.objects.filter(blocker=self.user, blocked=self.request.user).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
 
         return context
 
@@ -748,6 +766,14 @@ class TagUserListView(ListView):
 
         context["all_tags"] = sorted_tags
 
+        context["is_blocked"] = (
+            Block.objects.filter(
+                blocker=self.object.user, blocked=self.request.user
+            ).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
+
         return context
 
 
@@ -896,6 +922,14 @@ class LuvListDetailView(DetailView):
                 "game_count": content_count_dict.get("game", 0),
             }
         )
+
+        context["is_blocked"] = (
+            Block.objects.filter(
+                blocker=self.object.user, blocked=self.request.user
+            ).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
         return context
 
     def get_success_url(self):
@@ -1002,7 +1036,7 @@ class LuvListUserListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["object"] = self.user
+        context["user"] = self.user
 
         # Aggregating tag counts from LuvList
         all_tags = (
@@ -1020,6 +1054,12 @@ class LuvListUserListView(ListView):
             .distinct()
         )
         context["collaborated_luvlists"] = collaborated_luvlists
+
+        context["is_blocked"] = (
+            Block.objects.filter(blocker=self.user, blocked=self.request.user).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
 
         return context
 

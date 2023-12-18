@@ -30,7 +30,7 @@ from django.views.generic import (
 )
 from django_ratelimit.decorators import ratelimit
 
-from activity_feed.models import Activity, Follow
+from activity_feed.models import Activity, Block, Follow
 from entity.models import Company, Creator
 from listen.models import Audiobook, ListenCheckIn, Podcast, Release, Track
 from listen.models import Work as MusicWork
@@ -222,6 +222,13 @@ class AccountDetailView(DetailView):
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
         context["no_citation_css"] = True
+
+        # Check if the user is blocked
+        context["is_blocked"] = (
+            Block.objects.filter(blocker=user, blocked=self.request.user).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
 
         return context
 

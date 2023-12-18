@@ -17,217 +17,220 @@
     {% block content %}
     <div class="container">
         <div class="row">
-            <!--left column-->
-            <div class="col-12 col-md-8">
-                <div class="fs-4 mb-2">
-                    Check-ins by
-                    <a href="{% url 'accounts:detail' profile_user.username %}">
-                        {{ profile_user.display_name|default:profile_user.username }}
-                    </a> to
-                    {% if model_name == "release" %}
-                        <a href="{% url 'listen:release_detail' object.id %}">{{ object.title }}</a>
-                    {% elif model_name == "podcast" %}
-                        <a href="{% url 'listen:podcast_detail' object.id %}">{{ object.title }}</a>
-                    {% elif model_name == "audiobook" %}
-                        <a href="{% url 'listen:audiobook_detail' object.id %}">{{ object.title }}</a>
-                    {% endif %}
+            {% if is_blocked %}
+                <div class="bg-black p-5 ps-3">
+                    <p class="text-white">You are blocked by {{ profile_user.display_name|default:profile_user.username }} and cannot view this page.</p>
                 </div>
-                <span class="d-flex mb-3">
-                    <div class="me-3">
-                        {% if order == 'timestamp' %}
-                            <a href="?order=-timestamp&status={{ status }}"
-                                class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
-                        {% else %}
-                            <a href="?order=timestamp&status={{ status }}"
-                                class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
-                        {% endif %}
-                        <a href="?status=&order={{ order }}"
-                           class="btn btn-sm btn-outline-secondary mb-1">All</a>
-                        <a href="?status=to_listen&order={{ order }}"
-                           class="btn btn-sm btn-info mb-1">To Listen</a>
+            {% else %}
+                <!--left column-->
+                <div class="col-12 col-md-8">
+                    <div class="fs-4 mb-2">
+                        Check-ins by
+                        <a href="{% url 'accounts:detail' profile_user.username %}">
+                            {{ profile_user.display_name|default:profile_user.username }}
+                        </a> to
                         {% if model_name == "release" %}
-                            <a href="?status=looping&order={{ order }}"
-                               class="btn btn-sm btn-primary mb-1">Looping</a>
-                            <a href="?status=listened_relistened&order={{ order }}"
-                               class="btn btn-sm btn-success mb-1">(Re)Listened</a>
-                            <a href="?status=abandoned&order={{ order }}"
-                               class="btn btn-sm btn-danger mb-1">Abandoned</a>
-                        {% endif %}
-                        {% if model_name == "audiobook" %}
-                            <a href="?status=listening_relistening&order={{ order }}"
-                               class="btn btn-sm btn-primary mb-1">(Re)Listening</a>
-                            <a href="?status=listened_relistened&order={{ order }}"
-                               class="btn btn-sm btn-success mb-1">(Re)Listened</a>
-                            <a href="?status=paused&order={{ order }}"
-                               class="btn btn-sm btn-warning mb-1">Paused</a>
-                            <a href="?status=abandoned&order={{ order }}"
-                               class="btn btn-sm btn-danger mb-1">Abandoned</a>
-                        {% endif %}
-                        {% if model_name == "podcast" %}
-                            <a href="?status=subscribed&order={{ order }}"
-                               class="btn btn-sm btn-primary mb-1">Subscribed</a>
-                            <a href="?status=sampled&order={{ order }}"
-                               class="btn btn-sm btn-success mb-1">Sampled</a>
-                            <a href="?status=unsubscribed&order={{ order }}"
-                               class="btn btn-sm btn-danger mb-1">Unsubscribed</a>
+                            <a href="{% url 'listen:release_detail' object.id %}">{{ object.title }}</a>
+                        {% elif model_name == "podcast" %}
+                            <a href="{% url 'listen:podcast_detail' object.id %}">{{ object.title }}</a>
+                        {% elif model_name == "audiobook" %}
+                            <a href="{% url 'listen:audiobook_detail' object.id %}">{{ object.title }}</a>
                         {% endif %}
                     </div>
-                </span>
-                {% if profile_user.is_public  or request.user.is_authenticated %}
-                    {% for checkin in checkins %}
-                        <div class="checkin bg-light p-3 mb-1">
-                            <p class="d-flex align-items-center">
-                                <!--badge: checkin status-->
-                                <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
-                                {% if checkin.progress %}
-                                    {% if checkin.content_type.model == "release" %}
-                                        <span class="badge text-bg-warning me-1">
-                                            {% if checkin.progress_type == "TT" %}
-                                                Looped {{ checkin.progress }} Minutes
-                                            {% elif checkin.progress_type == "LT" %}
-                                                Looped {{ checkin.progress }} Times
-                                            {% elif checkin.progress_type == "TR" %}
-                                                Track {{ checkin.progress }}
-                                            {% endif %}
-                                        </span>
-                                    {% elif checkin.content_type.model == "podcast" %}
-                                        <span class="badge text-bg-warning me-1">EP: {{ checkin.progress }}</span>
-                                    {% elif checkin.content_type.model == "audiobook" %}
-                                        <span class="badge text-bg-warning me-1">{{ checkin.progress }}</span>
-                                    {% endif %}
-                                {% endif %}
-                            </p>
-                            {% if checkin.content %}<div>{{ checkin.content | linkify_tags |  markdownify }}</div>{% endif %}
-                        </div>
-                        <div class="d-flex mb-4 pe-3">
-                            <span class="me-2">
-                                <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}"
-                                   class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
-                            </span>
-                            {% if checkin.comments_enabled %}
-                                <span class="ms-2 me-2">
-                                    <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}"
-                                       class="text-decoration-none">Reply</a>
-                                </span>
+                    <span class="d-flex mb-3">
+                        <div class="me-3">
+                            {% if order == 'timestamp' %}
+                                <a href="?order=-timestamp&status={{ status }}"
+                                    class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                            {% else %}
+                                <a href="?order=timestamp&status={{ status }}"
+                                    class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
                             {% endif %}
-                            {% if checkin.get_activity_id %}
-                                <span class="ms-2 me-2"><a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}?repost=true"
-   class="text-decoration-none">Repost</a></span>
+                            <a href="?status=&order={{ order }}"
+                            class="btn btn-sm btn-outline-secondary mb-1">All</a>
+                            <a href="?status=to_listen&order={{ order }}"
+                            class="btn btn-sm btn-info mb-1">To Listen</a>
+                            {% if model_name == "release" %}
+                                <a href="?status=looping&order={{ order }}"
+                                class="btn btn-sm btn-primary mb-1">Looping</a>
+                                <a href="?status=listened_relistened&order={{ order }}"
+                                class="btn btn-sm btn-success mb-1">(Re)Listened</a>
+                                <a href="?status=abandoned&order={{ order }}"
+                                class="btn btn-sm btn-danger mb-1">Abandoned</a>
                             {% endif %}
-                            {% if checkin.user == request.user %}
-                                <span class="ms-2 me-2"><a href="{% url 'write:listen_checkin_update' checkin.user.username checkin.id %}"
-   class="text-decoration-none">Edit</a></span>
-                                <span class="ms-2 me-2"><a href="{% url 'write:listen_checkin_delete' checkin.user.username checkin.id %}"
-   class="text-decoration-none">Delete</a></span>
+                            {% if model_name == "audiobook" %}
+                                <a href="?status=listening_relistening&order={{ order }}"
+                                class="btn btn-sm btn-primary mb-1">(Re)Listening</a>
+                                <a href="?status=listened_relistened&order={{ order }}"
+                                class="btn btn-sm btn-success mb-1">(Re)Listened</a>
+                                <a href="?status=paused&order={{ order }}"
+                                class="btn btn-sm btn-warning mb-1">Paused</a>
+                                <a href="?status=abandoned&order={{ order }}"
+                                class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                            {% endif %}
+                            {% if model_name == "podcast" %}
+                                <a href="?status=subscribed&order={{ order }}"
+                                class="btn btn-sm btn-primary mb-1">Subscribed</a>
+                                <a href="?status=sampled&order={{ order }}"
+                                class="btn btn-sm btn-success mb-1">Sampled</a>
+                                <a href="?status=unsubscribed&order={{ order }}"
+                                class="btn btn-sm btn-danger mb-1">Unsubscribed</a>
                             {% endif %}
                         </div>
-                    {% empty %}
-                        <p>No check-ins yet.</p>
-                    {% endfor %}
-                {% else %}
-                    <p>This user's check-ins are private.</p>
-                {% endif %}
-            </div>
-            <!--right column-->
-            <div class="col-12 col-md-3">
-                <!-- release-card -->
-                <div class="release-card justify-content-start">
-                    <div class="d-flex flex-column mt-2">
-                        <!--cover-box-->
-                        <div class="col-12 mb-3">
-                            <div class="listen-cover-box">
-                                {% if user.pure_text_mode %}
-                                    <div class="listen-cover-placeholder bg-light">{{ object.title }}</div>
-                                {% else %}
-                                    {% if object.cover %}
-                                        {% if object.cover_sens %}
-                                            <img src="{{ object.cover.url }}"
-                                                 alt="{{ object.title }} cover"
-                                                 class="cover-image blur img-fluid"
-                                                 onclick="this.classList.toggle('blur')"
-                                                 loading="lazy">
-                                        {% else %}
-                                            <img src="{{ object.cover.url }}" 
-                                                 alt="{{ object.title }} cover" 
-                                                 class="img-fluid cover-border" 
-                                                 onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.title }}</div>';"
-                                                 loading="lazy">
-                                            {% endif %}
-                                        {% else %}
-                                            <div class="listen-cover-placeholder bg-light">{{ object.title }}</div>
+                    </span>
+                    {% if profile_user.is_public  or request.user.is_authenticated %}
+                        {% for checkin in checkins %}
+                            <div class="checkin bg-light p-3 mb-1">
+                                <p class="d-flex align-items-center">
+                                    <!--badge: checkin status-->
+                                    <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
+                                    {% if checkin.progress %}
+                                        {% if checkin.content_type.model == "release" %}
+                                            <span class="badge text-bg-warning me-1">
+                                                {% if checkin.progress_type == "TT" %}
+                                                    Looped {{ checkin.progress }} Minutes
+                                                {% elif checkin.progress_type == "LT" %}
+                                                    Looped {{ checkin.progress }} Times
+                                                {% elif checkin.progress_type == "TR" %}
+                                                    Track {{ checkin.progress }}
+                                                {% endif %}
+                                            </span>
+                                        {% elif checkin.content_type.model == "podcast" %}
+                                            <span class="badge text-bg-warning me-1">EP: {{ checkin.progress }}</span>
+                                        {% elif checkin.content_type.model == "audiobook" %}
+                                            <span class="badge text-bg-warning me-1">{{ checkin.progress }}</span>
                                         {% endif %}
                                     {% endif %}
-                                </div>
+                                </p>
+                                {% if checkin.content %}<div>{{ checkin.content | linkify_tags |  markdownify }}</div>{% endif %}
                             </div>
-                            <!--release-meta-->
-                            <div class="col flex-grow-1">
-                                <div class="card-body">
-                                    <span class='d-flex align-items-start'>
-                                        <h2>{{ object.title }}</h2>
+                            <div class="d-flex mb-4 pe-3">
+                                <span class="me-2">
+                                    <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}"
+                                    class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
+                                </span>
+                                {% if checkin.comments_enabled %}
+                                    <span class="ms-2 me-2">
+                                        <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}"
+                                        class="text-decoration-none">Reply</a>
                                     </span>
-                                    <div class="release-meta">
-                                        {% if object.subtitle %}
-                                            <p class='text-secondary'>
-                                                {{ object.subtitle }}
-                                            </div>
+                                {% endif %}
+                                {% if checkin.get_activity_id %}
+                                    <span class="ms-2 me-2"><a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}?repost=true" class="text-decoration-none">Repost</a></span>
+                                {% endif %}
+                                {% if checkin.user == request.user %}
+                                    <span class="ms-2 me-2"><a href="{% url 'write:listen_checkin_update' checkin.user.username checkin.id %}" class="text-decoration-none">Edit</a></span>
+                                    <span class="ms-2 me-2"><a href="{% url 'write:listen_checkin_delete' checkin.user.username checkin.id %}" class="text-decoration-none">Delete</a></span>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            <p>No check-ins yet.</p>
+                        {% endfor %}
+                    {% else %}
+                        <p>This user's check-ins are private.</p>
+                    {% endif %}
+                </div>
+                <!--right column-->
+                <div class="col-12 col-md-3">
+                    <!-- release-card -->
+                    <div class="release-card justify-content-start">
+                        <div class="d-flex flex-column mt-2">
+                            <!--cover-box-->
+                            <div class="col-12 mb-3">
+                                <div class="listen-cover-box">
+                                    {% if user.pure_text_mode %}
+                                        <div class="listen-cover-placeholder bg-light">{{ object.title }}</div>
+                                    {% else %}
+                                        {% if object.cover %}
+                                            {% if object.cover_sens %}
+                                                <img src="{{ object.cover.url }}"
+                                                    alt="{{ object.title }} cover"
+                                                    class="cover-image blur img-fluid"
+                                                    onclick="this.classList.toggle('blur')"
+                                                    loading="lazy">
+                                            {% else %}
+                                                <img src="{{ object.cover.url }}" 
+                                                    alt="{{ object.title }} cover" 
+                                                    class="img-fluid cover-border" 
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.title }}</div>';"
+                                                    loading="lazy">
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="listen-cover-placeholder bg-light">{{ object.title }}</div>
+                                            {% endif %}
                                         {% endif %}
-                                        {% for role_name, creator_altname_tuples in roles.items %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">{{ role_name }}:</span>
-                                                {% for creator, alt_name in creator_altname_tuples %}
-                                                    <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
-                                                    {% if not forloop.last %}/{% endif %}
-                                                {% endfor %}
-                                            </div>
-                                        {% endfor %}
-                                        {% if object.label %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Label:</span>
-                                                {% for label in object.label.all %}
-                                                    <a href="{% url 'entity:company_detail' label.id %}">
-                                                        {{ label.name }}
+                                    </div>
+                                </div>
+                                <!--release-meta-->
+                                <div class="col flex-grow-1">
+                                    <div class="card-body">
+                                        <span class='d-flex align-items-start'>
+                                            <h2>{{ object.title }}</h2>
+                                        </span>
+                                        <div class="release-meta">
+                                            {% if object.subtitle %}
+                                                <p class='text-secondary'>
+                                                    {{ object.subtitle }}
+                                                </div>
+                                            {% endif %}
+                                            {% for role_name, creator_altname_tuples in roles.items %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">{{ role_name }}:</span>
+                                                    {% for creator, alt_name in creator_altname_tuples %}
+                                                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
                                                         {% if not forloop.last %}/{% endif %}
-                                                    </a>
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.release_date %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Date:</span> {{ object.release_date }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.release_type %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Type:</span> {{ object.release_type }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.release_format %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Format:</span> {{ object.release_format }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.release_region %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Region:</span> {{ object.release_region }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.release_length %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Length:</span> {{ object.release_length }}
-                                            </div>
-                                        {% endif %}
-                                        {% if object.length %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Length:</span> {{ object.length }}
-                                            </div>
-                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                            {% if object.label %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Label:</span>
+                                                    {% for label in object.label.all %}
+                                                        <a href="{% url 'entity:company_detail' label.id %}">
+                                                            {{ label.name }}
+                                                            {% if not forloop.last %}/{% endif %}
+                                                        </a>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.release_date %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Date:</span> {{ object.release_date }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.release_type %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Type:</span> {{ object.release_type }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.release_format %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Format:</span> {{ object.release_format }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.release_region %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Region:</span> {{ object.release_region }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.release_length %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Length:</span> {{ object.release_length }}
+                                                </div>
+                                            {% endif %}
+                                            {% if object.length %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Length:</span> {{ object.length }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
         {% include 'mathjax+mermaid.html' %}
     {% endblock %}

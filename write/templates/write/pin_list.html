@@ -5,116 +5,121 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-7 left-column">
-                <div class="d-flex mb-3">
-                    <span class="me-3">
-                        <a href="{% url 'write:say_list' object.username %}">Says</a>
-                    </span>
-                    <span class="me-3">
-                        <a href="{% url 'write:post_list' object.username %}">Posts</a>
-                    </span>
-                    <span class="me-3">
-                        <a href="{% url 'write:pin_list' object.username %}">Pins</a>
-                    </span>
-                    <span class="me-3">
-                        <a href="{% url 'write:luvlist_list' object.username %}">Lists</a>
-                    </span>
-                    {% if object == user %}
-                        <span class="me-3">
-                            <a href="{% url 'accounts:liked' object.username %}">Liked</a>
-                        </span>
-                        <span class="me-3">
-                            <a href="{% url 'write:replied' object.username %}">Replied</a>
-                        </span>
-                    {% endif %}
+            {% if is_blocked %}
+                <div class="bg-black p-5 ps-3">
+                    <p class="text-white">You are blocked by {{ user.display_name|default:user.username }} and cannot view this page.</p>
                 </div>
-                <hr>
-                <div class="d-flex justify-content-between mb-3">
-                    <div class="fs-5">
-                        <a href="{% url 'accounts:detail' object.username %}">{{ object.display_name | default:object.username }}</a> pinned
+            {% else %}
+                <div class="col-12 col-md-7 left-column">
+                    <div class="d-flex mb-3">
+                        <span class="me-3">
+                            <a href="{% url 'write:say_list' user.username %}">Says</a>
+                        </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:post_list' user.username %}">Posts</a>
+                        </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:pin_list' user.username %}">Pins</a>
+                        </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:luvlist_list' user.username %}">Lists</a>
+                        </span>
+                        {% if user == request.user %}
+                            <span class="me-3">
+                                <a href="{% url 'accounts:liked' user.username %}">Liked</a>
+                            </span>
+                            <span class="me-3">
+                                <a href="{% url 'write:replied' user.username %}">Replied</a>
+                            </span>
+                        {% endif %}
                     </div>
-                    <div>
-                        {% if object.username == request.user.username %}
-                            <a class="btn btn-sm btn-primary" href="{% url 'write:pin_create' object.username %}">New</a>
-                        {% endif %}
-                        {% if object.is_public %}
-                            <a class="btn btn-sm btn-success" href="{% url 'write:user_pin_feed' object.username %}">RSS</a>
-                        {% endif %}
-                     </div>
-                </div>
-                {% for pin in page_obj %}
-                    <!--Pin-->
-                    <div class="activity-item mb-3 h-entry">
-                        <div class="mb-2">
-                            <div class="bg-light p-3 mb-2">
-                                <a href="{{ pin.url }}">{{ pin.title }}</a> <a href="{% url 'write:pins_from_url' pin.url|root_url %}"
-    class="link-secondary">({{ pin.url|root_url }})</a>
-                            </div>
-                            {% if pin.content %}
-                                <div class="mb-2">{{ pin.content | linkify_tags:pin.user |  markdownify }}</div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="fs-5">
+                            <a href="{% url 'accounts:detail' user.username %}">{{ user.display_name | default:user.username }}</a> pinned
+                        </div>
+                        <div>
+                            {% if user.username == request.user.username %}
+                                <a class="btn btn-sm btn-primary" href="{% url 'write:pin_create' user.username %}">New</a>
+                            {% endif %}
+                            {% if user.is_public %}
+                                <a class="btn btn-sm btn-success" href="{% url 'write:user_pin_feed' user.username %}">RSS</a>
                             {% endif %}
                         </div>
-                        <span class="d-flex mt-2">
-                            <p style='margin-right: 0.5em'>
-                                <a href="{% url 'write:pin_detail' pin.user.username pin.id %}" class="link-secondary">{{ pin.timestamp |date:"Y.m.d H:i" }}</a>
-                            </p>
-                            {% if pin.comments_enabled %}
-                                <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:pin_detail' pin.user.username pin.id %}">Reply</a>
-                                </p>
-                            {% endif %}
-                            {% if pin.get_activity_id is not None %}
-                                <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:pin_detail' pin.user.username pin.id %}?repost=true">Repost</a>
-                                </p>
-                            {% endif %}
-                            {% if pin.user != request.user %}
-                                <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:pin_copy' pin.user.username pin.id %}">Copy</a>
-                                </p>
-                            {% endif %}
-                            {% if pin.user == request.user %}
-                                <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:pin_update' pin.user.username pin.id %}">Edit</a>
-                                </p>
-                                <p style='margin: 0 0.5em'>
-                                    <a href="{% url 'write:pin_delete' pin.user.username pin.id %}">Delete</a>
-                                </p>
-                            {% endif %}
-                        </span>
                     </div>
-                {% empty %}
-                    <p>Nothing.</p>
-                {% endfor %}
-
-                {% if page_obj.paginator.num_pages > 1 %}
-                    <hr>                                      
-                    <div class="pagination mb-3 mb-md-1">
-                        <span class="step-links">
-                            {% for i in page_obj.paginator.page_range %}
-                                {% if page_obj.number == i %}
-                                    <span class="current">{{ i }}</span>
-                                {% else %}
-                                    <a href="?page={{ i }}">{{ i }}</a>
+                    {% for pin in page_obj %}
+                        <!--Pin-->
+                        <div class="activity-item mb-3 h-entry">
+                            <div class="mb-2">
+                                <div class="bg-light p-3 mb-2">
+                                    <a href="{{ pin.url }}">{{ pin.title }}</a> <a href="{% url 'write:pins_from_url' pin.url|root_url %}" class="link-secondary">({{ pin.url|root_url }})</a>
+                                </div>
+                                {% if pin.content %}
+                                    <div class="mb-2">{{ pin.content | linkify_tags:pin.user |  markdownify }}</div>
                                 {% endif %}
-                            {% endfor %}
-                        </span>
+                            </div>
+                            <span class="d-flex mt-2">
+                                <p style='margin-right: 0.5em'>
+                                    <a href="{% url 'write:pin_detail' pin.user.username pin.id %}" class="link-secondary">{{ pin.timestamp |date:"Y.m.d H:i" }}</a>
+                                </p>
+                                {% if pin.comments_enabled %}
+                                    <p style='margin: 0 0.5em'>
+                                        <a href="{% url 'write:pin_detail' pin.user.username pin.id %}">Reply</a>
+                                    </p>
+                                {% endif %}
+                                {% if pin.get_activity_id is not None %}
+                                    <p style='margin: 0 0.5em'>
+                                        <a href="{% url 'write:pin_detail' pin.user.username pin.id %}?repost=true">Repost</a>
+                                    </p>
+                                {% endif %}
+                                {% if pin.user != request.user %}
+                                    <p style='margin: 0 0.5em'>
+                                        <a href="{% url 'write:pin_copy' pin.user.username pin.id %}">Copy</a>
+                                    </p>
+                                {% endif %}
+                                {% if pin.user == request.user %}
+                                    <p style='margin: 0 0.5em'>
+                                        <a href="{% url 'write:pin_update' pin.user.username pin.id %}">Edit</a>
+                                    </p>
+                                    <p style='margin: 0 0.5em'>
+                                        <a href="{% url 'write:pin_delete' pin.user.username pin.id %}">Delete</a>
+                                    </p>
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% empty %}
+                        <p>Nothing.</p>
+                    {% endfor %}
+
+                    {% if page_obj.paginator.num_pages > 1 %}
+                        <hr>                                      
+                        <div class="pagination mb-3 mb-md-1">
+                            <span class="step-links">
+                                {% for i in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == i %}
+                                        <span class="current">{{ i }}</span>
+                                    {% else %}
+                                        <a href="?page={{ i }}">{{ i }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if all_tags %}
+                    <div class="col-12 col-md-5 right-column">
+                        <!--All tags on the page-->
+                        <div class="bg-light p-3">
+                            <span>
+                                {% for tag in all_tags %}
+                                    <a href="{% url 'write:tag_user_list' user.username tag.name %}"
+                                    style="font-size: {{ tag.count|add:85 }}%"
+                                    class="text-success me-2">{{ tag.name }}</a>
+                                {% endfor %}
+                            </span>
+                        </div>
                     </div>
                 {% endif %}
-            </div>
-            {% if all_tags %}
-                <div class="col-12 col-md-5 right-column">
-                    <!--All tags on the page-->
-                    <div class="bg-light p-3">
-                        <span>
-                            {% for tag in all_tags %}
-                                <a href="{% url 'write:tag_user_list' object.username tag.name %}"
-                                   style="font-size: {{ tag.count|add:85 }}%"
-                                   class="text-success me-2">{{ tag.name }}</a>
-                            {% endfor %}
-                        </span>
-                    </div>
-                </div>
             {% endif %}
         </div>
     </div>

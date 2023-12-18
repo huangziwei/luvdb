@@ -5,247 +5,253 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-8">
-                <div class="col-sm-12">
-                    <div class="fs-4 mb-2">
-                        All Play Check-Ins from
-                        <a href="{% url 'accounts:detail' profile_user.username %}"> {{ profile_user.display_name|default:profile_user.username }}</a>
-                    </div>
-                    <div class='mb-3'>
-                            {% if order == 'timestamp' %}
-                                <a href="?page={{ i }}&layout={{layout}}&order=-timestamp&status={{ status }}"
-                                    class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
-                            {% else %}
-                                <a href="?page={{ i }}&layout={{layout}}&order=timestamp&status={{ status }}"
-                                    class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
-                            {% endif %}
-
-                            {% if layout == 'grid' %}
-                                <a href="?page={{ i }}&layout=list&order={{ order }}&status={{ status }}"
-                                    class="btn btn-sm btn-outline-secondary mb-1">List</a>
-                            {% else %}
-                                <a href="?page={{ i }}&layout=grid&order={{ order }}&status={{ status }}"
-                                    class="btn btn-sm btn-outline-secondary mb-1">Grid</a>
-                            {% endif %}
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status="
-                                class="btn btn-sm btn-outline-secondary mb-1">All</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=to_play"
-                                class="btn btn-sm btn-info mb-1">To Play</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=playing_replaying"
-                                class="btn btn-sm btn-primary mb-1">(Re)Playing</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=played_replayed"
-                                class="btn btn-sm btn-success mb-1">(Re)Played</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=paused"
-                                class="btn btn-sm btn-warning mb-1">Paused</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=abandoned"
-                                class="btn btn-sm btn-danger mb-1">Abandoned</a>
-                    </div>
+            {% if is_blocked %}
+                <div class="bg-black p-5 ps-3">
+                    <p class="text-white">You are blocked by {{ profile_user.display_name|default:profile_user.username }} and cannot view this page.</p>
                 </div>
-                {% if profile_user.is_public or request.user.is_authenticated %}
-                    {% if layout == "grid" %}
-                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
-                            {% for checkin in page_obj %}
-                                <div class="mb-1 mb-md-0 flex-shrink-0 checkin-cover">
-                                    {% if user.pure_text_mode %}
-                                        {% if checkin.content_object.title %}
-                                            <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>
-                                        {% else %}
-                                            <div class="cover-placeholder bg-light">{{ checkin.content_object.periodical.title }} Vol. {{checkin.content_object.volume}} Nr. {{checkin.content_object.number}}</div>
-                                        {% endif %}
-                                    {% else %}
-                                        {% if checkin.content_object.cover %}
-                                            {% if checkin.content_object.cover_sens %}
-                                                <img src="{{ checkin.content_object.cover.url }}"
-                                                        alt="{{ checkin.content_object.title }} cover"
-                                                        class="img-fluid blur cover-border"
-                                                        onclick="this.classList.toggle('blur')"
-                                                        loading="lazy">
+            {% else %}
+                <div class="col-12 col-md-8">
+                    <div class="col-sm-12">
+                        <div class="fs-4 mb-2">
+                            All Play Check-Ins from
+                            <a href="{% url 'accounts:detail' profile_user.username %}"> {{ profile_user.display_name|default:profile_user.username }}</a>
+                        </div>
+                        <div class='mb-3'>
+                                {% if order == 'timestamp' %}
+                                    <a href="?page={{ i }}&layout={{layout}}&order=-timestamp&status={{ status }}"
+                                        class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                                {% else %}
+                                    <a href="?page={{ i }}&layout={{layout}}&order=timestamp&status={{ status }}"
+                                        class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+                                {% endif %}
+
+                                {% if layout == 'grid' %}
+                                    <a href="?page={{ i }}&layout=list&order={{ order }}&status={{ status }}"
+                                        class="btn btn-sm btn-outline-secondary mb-1">List</a>
+                                {% else %}
+                                    <a href="?page={{ i }}&layout=grid&order={{ order }}&status={{ status }}"
+                                        class="btn btn-sm btn-outline-secondary mb-1">Grid</a>
+                                {% endif %}
+                                <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status="
+                                    class="btn btn-sm btn-outline-secondary mb-1">All</a>
+                                <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=to_play"
+                                    class="btn btn-sm btn-info mb-1">To Play</a>
+                                <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=playing_replaying"
+                                    class="btn btn-sm btn-primary mb-1">(Re)Playing</a>
+                                <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=played_replayed"
+                                    class="btn btn-sm btn-success mb-1">(Re)Played</a>
+                                <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=paused"
+                                    class="btn btn-sm btn-warning mb-1">Paused</a>
+                                <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=abandoned"
+                                    class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                        </div>
+                    </div>
+                    {% if profile_user.is_public or request.user.is_authenticated %}
+                        {% if layout == "grid" %}
+                                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                                {% for checkin in page_obj %}
+                                    <div class="mb-1 mb-md-0 flex-shrink-0 checkin-cover">
+                                        {% if user.pure_text_mode %}
+                                            {% if checkin.content_object.title %}
+                                                <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>
                                             {% else %}
-                                                <a href="{% url 'read:book_checkin_list' checkin.content_object.id checkin.user.username %}">
-                                                    <img src="{{ checkin.content_object.cover.url }}"
-                                                            alt="{{ checkin.content_object.title }}"
-                                                            class="img-fluid cover-border cover-border-{{checkin.status}}"
-                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>';"
-                                                            loading="lazy">
-                                                </a>
+                                                <div class="cover-placeholder bg-light">{{ checkin.content_object.periodical.title }} Vol. {{checkin.content_object.volume}} Nr. {{checkin.content_object.number}}</div>
                                             {% endif %}
                                         {% else %}
-                                            <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                            </div>
-                    {% else %}
-                        {% for checkin in page_obj %}
-                            <div class="col-sm-12 mt-4">
-                                <div class="activity-item mb-3 h-entry"
-                                    data-activity-type="{{ checkin.activity_type }}">
-                                    <div class="d-flex flex-wrap align-items-center">
-                                        <a href="{% url 'accounts:detail' checkin.user.username %}"
-                                        class="text-decoration-none  me-1">
-                                            {{ checkin.user.display_name | default:checkin.user.username }}
-                                            </a>
-                                        <span class="me-1 text-muted">checked in</span>
-                                        <!--badge: checkin status-->
-                                        <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
-                                        {% if checkin.progress %}
-                                            <span class="badge text-bg-warning me-2">
-                                                Played Time: {{ checkin.progress }}
-                                                {% if checkin.progress_type == "TT" %}
-                                                    {# djlint:off #}
-                                                    Hour{% if checkin.progress != 1 %}s{% endif %}
-                                                    {# djlint:on #}
-                                                {% else %}
-                                                    %
-                                                {% endif %}
-                                            </span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="mt-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
-                                    <div class="media-card d-flex flex-row bg-light p-3 mt-2">
-                                        <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                            {% if user.pure_text_mode %}
-                                                <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
-                                            {% else %}
-                                                {% if checkin.content_object.cover %}
-                                                    {% if checkin.content_object.cover_sens %}
-                                                        <img src="{{ checkin.content_object.cover.url }}"
+                                            {% if checkin.content_object.cover %}
+                                                {% if checkin.content_object.cover_sens %}
+                                                    <img src="{{ checkin.content_object.cover.url }}"
                                                             alt="{{ checkin.content_object.title }} cover"
                                                             class="img-fluid blur cover-border"
                                                             onclick="this.classList.toggle('blur')"
                                                             loading="lazy">
-                                                    {% else %}
-                                                        <img src="{{ checkin.content_object.cover.url }}"
-                                                            alt="{{ checkin.content_object.title }} cover"
-                                                            class="img-fluid cover-border"
-                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';"
-                                                            loading="lazy">
-                                                    {% endif %}
                                                 {% else %}
-                                                    <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
+                                                    <a href="{% url 'read:book_checkin_list' checkin.content_object.id checkin.user.username %}">
+                                                        <img src="{{ checkin.content_object.cover.url }}"
+                                                                alt="{{ checkin.content_object.title }}"
+                                                                class="img-fluid cover-border cover-border-{{checkin.status}}"
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>';"
+                                                                loading="lazy">
+                                                    </a>
                                                 {% endif %}
+                                            {% else %}
+                                                <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>
                                             {% endif %}
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <a href="{% url 'play:game_detail' checkin.content_object.id %}"
-                                            class="text-decoration-none ">
-                                                <div class="fs-5">{{ checkin.content_object.title }}</div>
-                                            </a>
-                                            {% regroup checkin.content_object.gameroles.all by role as roles_list %}
-                                            {% for role in roles_list %}
-                                                <div>
-                                                    {# djlint:off #}
-                                                    <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}</span>:
-                                                    {# djlint:on #}
-                                                    {% for game_role in role.list %}
-                                                        {% if not forloop.first %}/{% endif %}
-                                                        <a href="{% url 'entity:creator_detail' game_role.creator.id %}">
-                                                            {{ game_role.alt_name | default:game_role.creator.name }}
-                                                        </a>
-                                                    {% endfor %}
-                                                </div>
-                                            {% endfor %}
-                                            
-                                            <div>
-                                                {% if checkin.content_object.developers.exists %}
-                                                    {# djlint:off #}
-                                                    <span class="text-muted">Developer{% if checkin.content_object.developers.count > 1 %}s{% endif %}:</span>
-                                                    {# djlint:on #}
-                                                    {% for developer in checkin.content_object.developers.all %}
-                                                        {% if not forloop.first %}/{% endif %}
-                                                        <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </div>
-                                            <div>
-                                                {% if checkin.content_object.publishers.exists %}
-                                                    {# djlint:off #}
-                                                    <span class="text-muted">Publisher
-                                                        {% if checkin.content_object.publishers.count > 1 %}s{% endif %}:</span>
-                                                    {# djlint:on #}
-                                                    {% for publisher in checkin.content_object.publishers.all %}
-                                                        {% if not forloop.first %}/{% endif %}
-                                                        <a href="{% url 'entity:company_detail' publisher.id %}">{{ publisher.name }}</a>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </div>
-                                            <div>
-                                                {% if checkin.content_object.platforms.exists %}
-                                                    {# djlint:off #}
-                                                    <span class="text-muted">Platform{% if checkin.content_object.platforms.list|length > 1 %}s{% endif %}:</span>
-                                                    {# djlint:on #}
-                                                    {% for platform in checkin.content_object.platforms.all %}
-                                                        {% if not forloop.first %},{% endif %}
-                                                        <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </div>
-
-
-                                            {% if checkin.content_object.region_release_dates.all %}
-                                            <div>
-                                                <span class="text-muted">Release Date</span>:
-                                                {% with earliest_region_release_date=checkin.content_object.region_release_dates.all|first %}
-                                                    {{ earliest_region_release_date.release_date }} ({{ earliest_region_release_date.region }})
-                                                {% endwith %}
-                                            </div>
-                                            {% endif %}
-                                        </div>
+                                        {% endif %}
                                     </div>
-                                    <div class="d-flex mt-2">
-                                        <p class="me-2">
-                                            <a href="{% url 'play:play_checkin_list' checkin.content_object.id checkin.user.username %}"
-                                            class="text-decoration-none text-secondary">
-                                                <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
-                                                <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>
-                                            </a>
-                                        </p>
-                                        {% if checkin.comments_enabled %}
-                                            <p class="ms-2 me-2">
-                                                <a href="{% url 'write:play_checkin_detail' checkin.user.username checkin.id %}"
-                                                class="text-decoration-none">Reply</a>
+                                {% endfor %}
+                                </div>
+                        {% else %}
+                            {% for checkin in page_obj %}
+                                <div class="col-sm-12 mt-4">
+                                    <div class="activity-item mb-3 h-entry"
+                                        data-activity-type="{{ checkin.activity_type }}">
+                                        <div class="d-flex flex-wrap align-items-center">
+                                            <a href="{% url 'accounts:detail' checkin.user.username %}"
+                                            class="text-decoration-none  me-1">
+                                                {{ checkin.user.display_name | default:checkin.user.username }}
+                                                </a>
+                                            <span class="me-1 text-muted">checked in</span>
+                                            <!--badge: checkin status-->
+                                            <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
+                                            {% if checkin.progress %}
+                                                <span class="badge text-bg-warning me-2">
+                                                    Played Time: {{ checkin.progress }}
+                                                    {% if checkin.progress_type == "TT" %}
+                                                        {# djlint:off #}
+                                                        Hour{% if checkin.progress != 1 %}s{% endif %}
+                                                        {# djlint:on #}
+                                                    {% else %}
+                                                        %
+                                                    {% endif %}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="mt-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
+                                        <div class="media-card d-flex flex-row bg-light p-3 mt-2">
+                                            <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                                {% if user.pure_text_mode %}
+                                                    <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
+                                                {% else %}
+                                                    {% if checkin.content_object.cover %}
+                                                        {% if checkin.content_object.cover_sens %}
+                                                            <img src="{{ checkin.content_object.cover.url }}"
+                                                                alt="{{ checkin.content_object.title }} cover"
+                                                                class="img-fluid blur cover-border"
+                                                                onclick="this.classList.toggle('blur')"
+                                                                loading="lazy">
+                                                        {% else %}
+                                                            <img src="{{ checkin.content_object.cover.url }}"
+                                                                alt="{{ checkin.content_object.title }} cover"
+                                                                class="img-fluid cover-border"
+                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';"
+                                                                loading="lazy">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <a href="{% url 'play:game_detail' checkin.content_object.id %}"
+                                                class="text-decoration-none ">
+                                                    <div class="fs-5">{{ checkin.content_object.title }}</div>
+                                                </a>
+                                                {% regroup checkin.content_object.gameroles.all by role as roles_list %}
+                                                {% for role in roles_list %}
+                                                    <div>
+                                                        {# djlint:off #}
+                                                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}</span>:
+                                                        {# djlint:on #}
+                                                        {% for game_role in role.list %}
+                                                            {% if not forloop.first %}/{% endif %}
+                                                            <a href="{% url 'entity:creator_detail' game_role.creator.id %}">
+                                                                {{ game_role.alt_name | default:game_role.creator.name }}
+                                                            </a>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endfor %}
+                                                
+                                                <div>
+                                                    {% if checkin.content_object.developers.exists %}
+                                                        {# djlint:off #}
+                                                        <span class="text-muted">Developer{% if checkin.content_object.developers.count > 1 %}s{% endif %}:</span>
+                                                        {# djlint:on #}
+                                                        {% for developer in checkin.content_object.developers.all %}
+                                                            {% if not forloop.first %}/{% endif %}
+                                                            <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    {% if checkin.content_object.publishers.exists %}
+                                                        {# djlint:off #}
+                                                        <span class="text-muted">Publisher
+                                                            {% if checkin.content_object.publishers.count > 1 %}s{% endif %}:</span>
+                                                        {# djlint:on #}
+                                                        {% for publisher in checkin.content_object.publishers.all %}
+                                                            {% if not forloop.first %}/{% endif %}
+                                                            <a href="{% url 'entity:company_detail' publisher.id %}">{{ publisher.name }}</a>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    {% if checkin.content_object.platforms.exists %}
+                                                        {# djlint:off #}
+                                                        <span class="text-muted">Platform{% if checkin.content_object.platforms.list|length > 1 %}s{% endif %}:</span>
+                                                        {# djlint:on #}
+                                                        {% for platform in checkin.content_object.platforms.all %}
+                                                            {% if not forloop.first %},{% endif %}
+                                                            <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
+
+
+                                                {% if checkin.content_object.region_release_dates.all %}
+                                                <div>
+                                                    <span class="text-muted">Release Date</span>:
+                                                    {% with earliest_region_release_date=checkin.content_object.region_release_dates.all|first %}
+                                                        {{ earliest_region_release_date.release_date }} ({{ earliest_region_release_date.region }})
+                                                    {% endwith %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="d-flex mt-2">
+                                            <p class="me-2">
+                                                <a href="{% url 'play:play_checkin_list' checkin.content_object.id checkin.user.username %}"
+                                                class="text-decoration-none text-secondary">
+                                                    <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
+                                                    <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>
+                                                </a>
                                             </p>
-                                        {% endif %}
-                                        <p class="ms-2 me-2">
-                                            <a href="{% url 'write:play_checkin_detail' checkin.user.username checkin.id %}?repost=true"
-                                            class="text-decoration-none">Repost</a>
-                                        </p>
-                                        {% if checkin.user == request.user %}
+                                            {% if checkin.comments_enabled %}
+                                                <p class="ms-2 me-2">
+                                                    <a href="{% url 'write:play_checkin_detail' checkin.user.username checkin.id %}"
+                                                    class="text-decoration-none">Reply</a>
+                                                </p>
+                                            {% endif %}
                                             <p class="ms-2 me-2">
-                                                <a href="{% url 'write:play_checkin_update' checkin.user.username checkin.id %}"
-                                                class="text-decoration-none">Edit</a>
+                                                <a href="{% url 'write:play_checkin_detail' checkin.user.username checkin.id %}?repost=true"
+                                                class="text-decoration-none">Repost</a>
                                             </p>
-                                            <p class="ms-2 me-2">
-                                                <a href="{% url 'write:play_checkin_delete' checkin.user.username checkin.id %}"
-                                                class="text-decoration-none">Delete</a>
-                                            </p>
-                                        {% endif %}
+                                            {% if checkin.user == request.user %}
+                                                <p class="ms-2 me-2">
+                                                    <a href="{% url 'write:play_checkin_update' checkin.user.username checkin.id %}"
+                                                    class="text-decoration-none">Edit</a>
+                                                </p>
+                                                <p class="ms-2 me-2">
+                                                    <a href="{% url 'write:play_checkin_delete' checkin.user.username checkin.id %}"
+                                                    class="text-decoration-none">Delete</a>
+                                                </p>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
+                            {% empty %}
+                                <p>No check-ins available.</p>
+                            {% endfor %}
+                        {% endif %}
+                        {% if page_obj.paginator.num_pages > 1 %}
+                            <hr>                                      
+                            <div class="pagination mb-3 mb-md-1">
+                                <span class="step-links">
+                                    {% for i in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == i %}
+                                            <span class="current">{{ i }}</span>
+                                        {% else %}
+                                            <a href="?page={{ i }}&layout={{layout}}&order={{order}}&status={{status}}">{{ i }}</a>
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
                             </div>
-                        {% empty %}
-                            <p>No check-ins available.</p>
-                        {% endfor %}
+                        {% endif %}
+                    {% else %}
+                        <p>This user's check-ins are private.</p>
                     {% endif %}
-                    {% if page_obj.paginator.num_pages > 1 %}
-                        <hr>                                      
-                        <div class="pagination mb-3 mb-md-1">
-                            <span class="step-links">
-                                {% for i in page_obj.paginator.page_range %}
-                                    {% if page_obj.number == i %}
-                                        <span class="current">{{ i }}</span>
-                                    {% else %}
-                                        <a href="?page={{ i }}&layout={{layout}}&order={{order}}&status={{status}}">{{ i }}</a>
-                                    {% endif %}
-                                {% endfor %}
-                            </span>
-                        </div>
-                    {% endif %}
-                {% else %}
-                    <p>This user's check-ins are private.</p>
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
         </div>
     </div>
     {% include 'mathjax+mermaid.html' %}
