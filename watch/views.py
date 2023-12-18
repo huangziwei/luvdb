@@ -26,7 +26,7 @@ from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
-from entity.views import HistoryViewMixin
+from entity.views import HistoryViewMixin, get_contributors
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
 from write.utils_formatting import check_required_js
@@ -273,12 +273,7 @@ class MovieDetailView(DetailView):
         )
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
 
         include_mathjax, include_mermaid = check_required_js(context["checkins"])
         context["include_mathjax"] = include_mathjax
@@ -389,12 +384,8 @@ class MovieCastDetailView(DetailView):
         ] = self.object.moviecasts.all()  # Update with your correct related name
         context["moviecrew"] = self.object.movieroles.all()
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
+
         return context
 
 
@@ -673,12 +664,7 @@ class SeriesDetailView(DetailView):
             context["latest_user_status"] = "to_watch"
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
 
         include_mathjax, include_mermaid = check_required_js(context["checkins"])
         context["include_mathjax"] = include_mathjax
@@ -834,12 +820,7 @@ class SeriesCastDetailView(DetailView):
         context["episodes_cast"] = dict(episodes_cast)
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
 
         return context
 
@@ -926,12 +907,7 @@ class EpisodeDetailView(DetailView):
         context["episoderoles"] = dict(episoderoles_grouped)
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
 
         series_id = episode.series.id
         # Add check-ins related to the current episode
@@ -948,7 +924,9 @@ class EpisodeDetailView(DetailView):
             Q(object_id=series_id) & Q(progress__in=progress_formats)
         )
         context["episode_checkins"] = check_ins
-        context["episodes"] = episode.series.episodes.all().order_by("season", "episode")
+        context["episodes"] = episode.series.episodes.all().order_by(
+            "season", "episode"
+        )
 
         return context
 
@@ -1034,12 +1012,8 @@ class EpisodeCastDetailView(DetailView):
         context["episoderoles"] = self.object.episoderoles.all()
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
+
         return context
 
 
@@ -1475,12 +1449,8 @@ class CollectionDetailView(DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
+
         return context
 
 

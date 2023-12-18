@@ -34,7 +34,7 @@ from PIL import Image
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.models import Creator, Role
-from entity.views import HistoryViewMixin
+from entity.views import HistoryViewMixin, get_contributors
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
 from write.utils_formatting import check_required_js
@@ -238,12 +238,7 @@ class WorkDetailView(DetailView):
             )
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
 
         return context
 
@@ -418,12 +413,7 @@ class TrackDetailView(DetailView):
         context["releases"] = track.releases.all().order_by("release_date")
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
 
         # Track Check-ins
         track_check_ins = []
@@ -709,12 +699,7 @@ class ReleaseDetailView(DetailView):
             context["latest_user_status"] = "to_listen"
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
 
         # check required js
         include_mathjax, include_mermaid = check_required_js(context["checkins"])
@@ -1790,12 +1775,7 @@ class ReleaseGroupDetailView(DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
         return context
 
 
@@ -2036,12 +2016,7 @@ class AudiobookDetailView(DetailView):
             context["latest_user_status"] = "to_listen"
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
 
         return context
 

@@ -414,9 +414,7 @@ class CreatorDetailView(DetailView):
             .count()
         )
 
-        # contributors
-        unique_usernames = {record.history_user for record in creator.history.all()}
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(creator)
 
         return context
 
@@ -609,8 +607,7 @@ class CompanyDetailView(DetailView):
         )
 
         # contributors
-        unique_usernames = {record.history_user for record in company.history.all()}
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(company)
 
         return context
 
@@ -740,3 +737,19 @@ class CompanyHistoryView(HistoryViewMixin, DetailView):
         company = self.get_object()
         context["history_data"] = self.get_history_data(company)
         return context
+
+
+def get_contributors(instance):
+    """
+    Retrieves a list of unique contributors for a given model instance,
+    ordered by the time of their first contribution.
+    """
+    history_records = instance.history.all().order_by("history_date")
+    contributors = list(
+        {
+            record.history_user: record.history_user
+            for record in history_records
+            if record.history_user
+        }.values()
+    )
+    return contributors

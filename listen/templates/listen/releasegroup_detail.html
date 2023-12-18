@@ -138,7 +138,13 @@
                         {% for contributor in contributors %}
                             <span>
                                 <a href="{% url 'accounts:detail' contributor.username %}">
-                                    {{ contributor.display_name|default:contributor.username }}
+                                    {% if contributor == contributors.0 %}
+                                        <b>         
+                                            {{ contributor.display_name|default:contributor.username }}
+                                        </b>
+                                    {% else %}
+                                        {{ contributor.display_name|default:contributor.username }}
+                                    {% endif %}
                                 </a>
                             </span>
                             {% if not forloop.last %} / {% endif %}

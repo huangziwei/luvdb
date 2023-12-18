@@ -25,7 +25,7 @@ from django_ratelimit.decorators import ratelimit
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.models import LanguageField
-from entity.views import HistoryViewMixin
+from entity.views import HistoryViewMixin, get_contributors
 from watch.models import Movie, Series
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
@@ -217,12 +217,8 @@ class WorkDetailView(DetailView):
         context["grouped_roles"] = grouped_roles
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
+
 
         return context
 
@@ -333,12 +329,7 @@ class InstanceDetailView(DetailView):
         context["audiobooks"] = instance.audiobooks.all().order_by("release_date")
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in instance.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
 
         instance_checkins = []
         # Filter ReadCheckIns for BookInstance
@@ -575,8 +566,7 @@ class BookDetailView(DetailView):
             context["latest_user_status"] = "to_read"
 
         # contributors
-        unique_usernames = {record.history_user for record in book.history.all()}
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
 
         include_mathjax, include_mermaid = check_required_js(context["checkins"])
         context["include_mathjax"] = include_mathjax
@@ -683,12 +673,7 @@ class PeriodicalDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
         return context
 
 
@@ -877,12 +862,7 @@ class IssueDetailView(DetailView):
         context["lists_containing_issue"] = lists_containing_issue
 
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
 
         return context
 
@@ -1602,12 +1582,8 @@ class BookSeriesDetailView(DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         # contributors
-        unique_usernames = {
-            record.history_user
-            for record in self.object.history.all()
-            if record.history_user is not None
-        }
-        context["contributors"] = unique_usernames
+        context["contributors"] = get_contributors(self.object)
+
         return context
 
 
