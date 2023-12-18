@@ -582,6 +582,6 @@ class MentionPattern(InlineProcessor):
 
 class MentionExtension(markdown.Extension):
     def extendMarkdown(self, md):
-        MENTION_PATTERN = r"(?<![:/])@(\w+)"
+        MENTION_PATTERN = r"(?<![:/])@([\w\.]+)"
         mentionPattern = MentionPattern(MENTION_PATTERN, md)
         md.inlinePatterns.register(mentionPattern, "mention", 175)

@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block title %}
-    Deactivation Successful
+    Deletion Successful
 {% endblock title %}
 {% block content %}
     <div class="container">
         <div class="row">
             <div class="alert alert-danger">
-                <h2>Confirm Account Deactivation</h2>
-                <p>Are you sure you want to deactivate your account? This action cannot be undone.</p>
+                <h2>Confirm Account Deletion</h2>
+                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
                 <form action="{% url 'accounts:deactivate_account' user.username %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Confirm Deactivation</button>
+                    <button type="submit" class="btn btn-danger">Confirm Deletion</button>
                     <a href="{% url 'accounts:deactivate_account' user.username %}" class="btn btn-secondary">Cancel</a>
                 </form>
             </div>

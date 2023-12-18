@@ -28,11 +28,12 @@
                 </div>
             </form>
 
-            <hr>
-            <div class="alert alert-danger">
-                <h2>Deactivate My Account</h2>
-                <p>Deactivating your account will remove your profile and all your posts from the site. This cannot be undone.</p>
-                <a href="{% url 'accounts:deactivate_account' user.username %}" class="btn btn-sm btn-danger">Delete My Account</a>
+            <hr class="mt-5">
+
+            <div class="alert alert-danger mt-5">
+                <h2>Delete My Account</h2>
+                <p>Your profile will become inaccessible, and all your data from the site will be replaced by text "REMOVED". Your username will be registerable. This action cannot be undone.</p>
+                <a href="{% url 'accounts:deactivate_account' user.username %}" class="btn btn-sm btn-danger">Delete</a>
             </div>
         </div>
     </div>
