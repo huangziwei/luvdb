@@ -238,6 +238,9 @@
                        class="text-decoration-none h-cite p-name">
                         <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                     </a>
+                    {% if activity.content_object.content_object.subtitle %}
+                        <div class="text-muted mb-2 fs-6">{{ activity.content_object.content_object.subtitle }}</div>
+                    {% endif %}
                 {% elif activity.content_object.content_type.model == 'issue' %}
                     <div class="fs-5">{{ activity.content_object.content_object.periodical.title }}</div>
                     <a href=" {% url 'read:issue_detail' activity.content_object.content_object.periodical.id activity.content_object.content_object.id %} "
