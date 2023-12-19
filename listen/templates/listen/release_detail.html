@@ -78,8 +78,8 @@
                                             {% for label in object.label.all %}
                                                 <a href="{% url 'entity:company_detail' label.id %}">
                                                     {{ label.name }}
-                                                    {% if not forloop.last %}/{% endif %}
                                                 </a>
+                                                {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
                                         </div>
                                     {% endif %}

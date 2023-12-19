@@ -32,7 +32,8 @@
 
             <div class="alert alert-danger mt-5">
                 <h2>Delete My Account</h2>
-                <p>Your profile will become inaccessible, and all your data from the site will be replaced by text "REMOVED". Your username will be registerable. This action cannot be undone.</p>
+                <p>Your profile will become inaccessible, and all your data from the site will be replaced by text "REMOVED". Your username will be registerable. This action cannot be undone, you should <a
+                    href="{% url 'accounts:export_user_data' user.username %}">Export Your Data</a> before deleting your account.</p>
                 <a href="{% url 'accounts:deactivate_account' user.username %}" class="btn btn-sm btn-danger">Delete</a>
             </div>
         </div>

@@ -612,7 +612,7 @@
                     <span class="text-muted">Label{% if activity.content_object.content_object.label.list|length > 1 %}s{% endif %}:</span>
                     {# djlint:on #}
                     {% for label in activity.content_object.content_object.label.all %}
-                        {% if not forloop.first %},{% endif %}
+                        {% if not forloop.first %}/{% endif %}
                         <a href="{% url 'entity:company_detail' label.id %}">{{ label.name }}</a>
                     {% endfor %}
                 </div>
