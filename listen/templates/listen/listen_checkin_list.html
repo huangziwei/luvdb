@@ -195,22 +195,21 @@
                                             {% endif %}
                                             {% if object.release_date %}
                                                 <div class="mb-1">
-                                                    <span class="text-muted">Date:</span> {{ object.release_date }}
+                                                    <span class="text-muted">Date:</span> 
+                                                    {{ object.release_date }}
+                                                    {% if object.release_region  %}({{object.release_region}}){% endif %}
                                                 </div>
                                             {% endif %}
-                                            {% if object.release_type %}
+                                            {% if object.release_type or object.recording_type %}
                                                 <div class="mb-1">
-                                                    <span class="text-muted">Type:</span> {{ object.release_type }}
+                                                    <span class="text-muted">Type:</span>
+                                                    {% if object.recording_type %}{{ object.recording_type }}{% endif %}
+                                                    {{ object.release_type }}
                                                 </div>
                                             {% endif %}
                                             {% if object.release_format %}
                                                 <div class="mb-1">
                                                     <span class="text-muted">Format:</span> {{ object.release_format }}
-                                                </div>
-                                            {% endif %}
-                                            {% if object.release_region %}
-                                                <div class="mb-1">
-                                                    <span class="text-muted">Region:</span> {{ object.release_region }}
                                                 </div>
                                             {% endif %}
                                             {% if object.release_length %}

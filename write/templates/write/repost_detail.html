@@ -4,7 +4,8 @@
 {% load linkify %}
 {% load crispy_forms_tags %}
 {% load parse_activity_type %}
-{% load util_filters %}{% block meta %}
+{% load util_filters %}
+{% block meta %}
 <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Repost">
 {% if object.content %}
     <meta property="og:description" content="{{ object.notes|truncatewords:150 }}">

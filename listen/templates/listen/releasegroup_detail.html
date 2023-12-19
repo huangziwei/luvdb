@@ -65,7 +65,7 @@
                                                     alt="{{ release_in_group.release.title }} cover"
                                                     class="img-fluid cover-border"
                                                     onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ release_in_group.release.title }}</div>';"
-                                                    loading="lazy"
+                                                    loading="lazy">
                                             {% endif %}
                                         {% else %}
                                             <div class="listen-cover-placeholder bg-light">{{ release_in_group.release.title }}</div>
@@ -102,7 +102,10 @@
                                         </div>
                                     {% endif %}
                                     {% if release_in_group.release.release_date %}
-                                        <div><span class="text-muted">Date</span>: {{ release_in_group.release.release_date }}</div>
+                                        <div>
+                                            <span class="text-muted">Date</span>: {{ release_in_group.release.release_date }}
+                                            {% if release_in_group.release.release_region  %}({{release_in_group.release.release_region}}){% endif %}
+                                        </div>
                                     {% endif %}
                                     {% if release_in_group.release.catalog_number %}
                                         <div><span class="text-muted">Catalog Number</span>: {{ release_in_group.release.catalog_number }}</div>
