@@ -56,8 +56,17 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
         soup = BeautifulSoup(response.text, "html.parser")
         infobox = soup.find("table", {"class": re.compile("infobox vcard")})
 
-        # Common extraction
-        name = infobox.find("div", {"class": "fn"}).get_text(strip=True)
+        if not infobox:
+            return None
+
+        # Find the name element considering different possible structures
+        name_element = infobox.find(
+            lambda tag: tag.name == "div"
+            and "fn" in tag.get("class", [])
+            or (tag.name == "th" and tag.get("class") == ["infobox-above"])
+        )
+        name = name_element.get_text(strip=True) if name_element else None
+
         website_link = infobox.find("a", {"class": "external text"})
         website = website_link.get("href") if website_link else None
 
@@ -69,7 +78,6 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
             None,
         )
 
-        # Check for person or group
         if infobox.find("th", text=re.compile("Born")):
             creator_type = "person"
             # Extract person-specific information
@@ -126,6 +134,9 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
                     death_date = (
                         years_matches.group(2) if years_matches.group(2) else None
                     )
+
+        else:
+            creator_type = None
 
         return {
             "name": name,
