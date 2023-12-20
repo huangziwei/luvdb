@@ -26,7 +26,7 @@
                     {{ object.edition }}
                 </div>
                 {% endif %}
-                {% if object.work.genres.count != 0 %}
+                {% if object.work.genres.all.exists %}
                     <div>
                         <span class="text-muted">Genres:</span>
                         {% for genre in object.work.genres.all %}
