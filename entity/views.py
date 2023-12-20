@@ -1,8 +1,13 @@
+import re
+
+import requests
+from bs4 import BeautifulSoup
 from dal import autocomplete
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Min, Q
 from django.http import HttpResponseForbidden
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.html import format_html
@@ -36,6 +41,102 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy("entity:creator_detail", kwargs={"pk": self.object.pk})
+
+    def post(self, request, *args, **kwargs):
+        if "wiki_url" in request.POST:
+            wiki_url = request.POST.get("wiki_url")
+            data = self.scrape_wikipedia(wiki_url)
+            form = self.form_class(initial=data)
+            return render(request, self.template_name, {"form": form})
+        else:
+            return super().post(request, *args, **kwargs)
+
+    def scrape_wikipedia(self, url):
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, "html.parser")
+        infobox = soup.find("table", {"class": re.compile("infobox vcard")})
+
+        # Common extraction
+        name = infobox.find("div", {"class": "fn"}).get_text(strip=True)
+        website_link = infobox.find("a", {"class": "external text"})
+        website = website_link.get("href") if website_link else None
+
+        birth_date, birth_place, death_date, death_place, creator_type = (
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
+
+        # Check for person or group
+        if infobox.find("th", text=re.compile("Born")):
+            creator_type = "person"
+            # Extract person-specific information
+            birth_info = infobox.find("th", text=re.compile("Born")).find_next_sibling(
+                "td"
+            )
+            if birth_info:
+                birth_date_text = birth_info.get_text()
+                birth_date_matches = re.search(
+                    r"(\d{4}(?:-\d{2}(?:-\d{2})?)?)", birth_date_text
+                )
+                birth_date = birth_date_matches.group(1) if birth_date_matches else None
+
+                birth_place_link = birth_info.find("a")
+                birth_place = (
+                    birth_place_link.get_text(strip=True) if birth_place_link else None
+                )
+
+            death_info = infobox.find("th", text=re.compile("Died")).find_next_sibling(
+                "td"
+            )
+            if death_info:
+                death_date_text = death_info.get_text()
+                death_date_matches = re.search(
+                    r"(\d{4}(?:-\d{2}(?:-\d{2})?)?)", death_date_text
+                )
+                death_date = death_date_matches.group(1) if death_date_matches else None
+
+                death_place_link = death_info.find("a")
+                death_place = (
+                    death_place_link.get_text(strip=True) if death_place_link else None
+                )
+
+        elif infobox.find("th", text=re.compile("Members")) or infobox.find(
+            "th", text=re.compile("Years active")
+        ):
+            creator_type = "group"
+            # Extract group-specific information
+            origin_info = infobox.find(
+                "th", text=re.compile("Origin")
+            ).find_next_sibling("td")
+            birth_place = origin_info.get_text(strip=True) if origin_info else None
+
+            active_years_info = infobox.find(
+                "th", text=re.compile("Years active")
+            ).find_next_sibling("td")
+            if active_years_info:
+                active_years_text = active_years_info.get_text()
+                years_matches = re.search(
+                    r"(\d{4})\u2013(?:present|(\d{4}))?", active_years_text
+                )
+                if years_matches:
+                    birth_date = years_matches.group(1)
+                    death_date = (
+                        years_matches.group(2) if years_matches.group(2) else None
+                    )
+
+        return {
+            "name": name,
+            "creator_type": creator_type,
+            "birth_date": birth_date,
+            "birth_place": birth_place,
+            "death_date": death_date,
+            "death_place": death_place,
+            "website": website,
+            "wikipedia": url,
+        }
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")

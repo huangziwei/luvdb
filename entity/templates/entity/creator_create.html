@@ -3,6 +3,7 @@
 {% block content %}
     <div class="container">
         <div class="row">
+            <!--left column-->
             <div class="col-12 col-md-7 left-column">
                 <h2>Create a new Creator</h2>
                 <form method="post" en>
@@ -10,6 +11,21 @@
                     {{ form|crispy }}
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
+            </div>
+            <!--right column-->
+            <div class="col-12 col-md-5 right-column">
+                <div class="bg-light p-3">
+                    <div class="fs-4 mb-2">Import</div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="wikiUrl" class="form-label">Wikipedia URL</label>
+                            <input type="text" class="form-control" id="wikiUrl" name="wiki_url" placeholder="Enter Wikipedia URL">
+                            <p class="text-muted mt-1">Only pages with infobox can be imported.</p>
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Import</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
