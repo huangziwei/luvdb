@@ -54,16 +54,15 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
     def scrape_wikipedia(self, url):
         response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
-        infobox = soup.find("table", {"class": re.compile("infobox vcard")})
+        infobox = soup.find("table", {"class": re.compile("infobox")})
 
         if not infobox:
             return None
 
         # Find the name element considering different possible structures
         name_element = infobox.find(
-            lambda tag: tag.name == "div"
-            and "fn" in tag.get("class", [])
-            or (tag.name == "th" and tag.get("class") == ["infobox-above"])
+            lambda tag: (tag.name == "div" and "fn" in tag.get("class", []))
+            or (tag.name == "th" and "infobox-above" in tag.get("class", []))
         )
         name = name_element.get_text(strip=True) if name_element else None
 
@@ -78,65 +77,64 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
             None,
         )
 
+        # Extract person-specific information
         if infobox.find("th", text=re.compile("Born")):
             creator_type = "person"
-            # Extract person-specific information
-            birth_info = infobox.find("th", text=re.compile("Born")).find_next_sibling(
-                "td"
-            )
+            birth_info = infobox.find("th", text=re.compile("Born"))
             if birth_info:
-                birth_date_text = birth_info.get_text()
-                birth_date_matches = re.search(
-                    r"(\d{4}(?:-\d{2}(?:-\d{2})?)?)", birth_date_text
-                )
-                birth_date = birth_date_matches.group(1) if birth_date_matches else None
+                birth_info = birth_info.find_next_sibling("td")
+                if birth_info:
+                    birth_date_text = birth_info.get_text()
+                    birth_date_matches = re.search(
+                        r"(\d{4}(?:-\d{2}(?:-\d{2})?)?)", birth_date_text
+                    )
+                    birth_date = (
+                        birth_date_matches.group(1) if birth_date_matches else None
+                    )
+                    birth_place_link = birth_info.find("a")
+                    birth_place = (
+                        birth_place_link.get_text(strip=True)
+                        if birth_place_link
+                        else None
+                    )
 
-                birth_place_link = birth_info.find("a")
-                birth_place = (
-                    birth_place_link.get_text(strip=True) if birth_place_link else None
-                )
-
-            death_info = infobox.find("th", text=re.compile("Died")).find_next_sibling(
-                "td"
-            )
+        death_info = infobox.find("th", text=re.compile("Died"))
+        if death_info:
+            death_info = death_info.find_next_sibling("td")
             if death_info:
                 death_date_text = death_info.get_text()
                 death_date_matches = re.search(
                     r"(\d{4}(?:-\d{2}(?:-\d{2})?)?)", death_date_text
                 )
                 death_date = death_date_matches.group(1) if death_date_matches else None
-
                 death_place_link = death_info.find("a")
                 death_place = (
                     death_place_link.get_text(strip=True) if death_place_link else None
                 )
 
-        elif infobox.find("th", text=re.compile("Members")) or infobox.find(
+        # Extract group-specific information
+        if infobox.find("th", text=re.compile("Members")) or infobox.find(
             "th", text=re.compile("Years active")
         ):
             creator_type = "group"
-            # Extract group-specific information
-            origin_info = infobox.find(
-                "th", text=re.compile("Origin")
-            ).find_next_sibling("td")
-            birth_place = origin_info.get_text(strip=True) if origin_info else None
+            origin_info = infobox.find("th", text=re.compile("Origin"))
+            if origin_info:
+                origin_info = origin_info.find_next_sibling("td")
+                birth_place = origin_info.get_text(strip=True) if origin_info else None
 
-            active_years_info = infobox.find(
-                "th", text=re.compile("Years active")
-            ).find_next_sibling("td")
+            active_years_info = infobox.find("th", text=re.compile("Years active"))
             if active_years_info:
-                active_years_text = active_years_info.get_text()
-                years_matches = re.search(
-                    r"(\d{4})\u2013(?:present|(\d{4}))?", active_years_text
-                )
-                if years_matches:
-                    birth_date = years_matches.group(1)
-                    death_date = (
-                        years_matches.group(2) if years_matches.group(2) else None
+                active_years_info = active_years_info.find_next_sibling("td")
+                if active_years_info:
+                    active_years_text = active_years_info.get_text()
+                    years_matches = re.search(
+                        r"(\d{4})\u2013(?:present|(\d{4}))?", active_years_text
                     )
-
-        else:
-            creator_type = None
+                    if years_matches:
+                        birth_date = years_matches.group(1)
+                        death_date = (
+                            years_matches.group(2) if years_matches.group(2) else None
+                        )
 
         return {
             "name": name,
