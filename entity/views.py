@@ -658,6 +658,87 @@ class CompanyCreateView(LoginRequiredMixin, CreateView):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
+    def post(self, request, *args, **kwargs):
+        if "wiki_url" in request.POST:
+            wiki_url = request.POST.get("wiki_url")
+            data = self.scrape_wikipedia(wiki_url)
+
+            if data is not None:
+                # Assuming self.get_form_class() returns the correct form class
+                form_class = self.get_form_class()
+                form = form_class(initial=data)
+                form.fields["other_names"].widget = forms.TextInput()
+                return render(request, self.template_name, {"form": form})
+            else:
+                # Handle the case where scraping fails
+                return render(request, self.template_name, {"form": self.get_form()})
+
+        else:
+            return super().post(request, *args, **kwargs)
+
+    def scrape_wikipedia(self, url):
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, "html.parser")
+        infobox = soup.find("table", {"class": "infobox vcard"})
+
+        if not infobox:
+            return None
+
+        # Extract company name
+        name_element = infobox.find("th", {"class": "infobox-above"}) or infobox.find(
+            "caption", {"class": "infobox-title"}
+        )
+        name = name_element.get_text(strip=True) if name_element else None
+
+        # Extract founded and defunct dates
+        founded_info = (
+            infobox.find("th", text=re.compile("Founded")).find_next_sibling("td")
+            if infobox.find("th", text=re.compile("Founded"))
+            else None
+        )
+        defunct_info = (
+            infobox.find("th", text=re.compile("Defunct")).find_next_sibling("td")
+            if infobox.find("th", text=re.compile("Defunct"))
+            else None
+        )
+
+        founded_date = (
+            founded_info.get_text(strip=True).split(";")[0] if founded_info else None
+        )
+        defunct_date = (
+            defunct_info.get_text(strip=True).split(";")[0] if defunct_info else None
+        )
+
+        # Extract location
+        location_info = infobox.find(
+            "th", text=re.compile("Country of origin")
+        ).find_next_sibling("td") or infobox.find(
+            "th", text=re.compile("Headquarters location")
+        ).find_next_sibling(
+            "td"
+        )
+        location = location_info.get_text(strip=True) if location_info else None
+
+        # Extract website
+        website_info = (
+            infobox.find("th", text=re.compile("Official website")).find_next_sibling(
+                "td"
+            )
+            if infobox.find("th", text=re.compile("Official website"))
+            else None
+        )
+        website_link = website_info.find("a") if website_info else None
+        website = website_link.get("href") if website_link else None
+
+        return {
+            "name": name,
+            "founded_date": founded_date,
+            "defunct_date": defunct_date,
+            "location": location,
+            "website": website,
+            "wikipedia": url,
+        }
+
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class CompanyDetailView(DetailView):
