@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
@@ -26,6 +27,22 @@ from watch.models import Episode, Movie, Series
 
 from .forms import CreatorForm
 from .models import Company, Creator, Role
+
+
+def format_date(date_str):
+    # Define possible date formats
+    date_formats = ["%Y-%m-%d", "%Y-%m", "%Y"]
+
+    for fmt in date_formats:
+        try:
+            # Try to parse the date
+            return datetime.strptime(date_str, fmt).strftime("%Y.%m.%d")
+        except ValueError:
+            # If parsing fails, try the next format
+            continue
+
+    # If all parsing attempts fail, return None or original string
+    return date_str
 
 
 # Create your views here.
@@ -91,6 +108,7 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
                     birth_date = (
                         birth_date_matches.group(1) if birth_date_matches else None
                     )
+                    birth_date = format_date(birth_date)
                     birth_place_link = birth_info.find("a")
                     birth_place = (
                         birth_place_link.get_text(strip=True)
@@ -107,6 +125,7 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
                     r"(\d{4}(?:-\d{2}(?:-\d{2})?)?)", death_date_text
                 )
                 death_date = death_date_matches.group(1) if death_date_matches else None
+                death_date = format_date(death_date)
                 death_place_link = death_info.find("a")
                 death_place = (
                     death_place_link.get_text(strip=True) if death_place_link else None
@@ -703,9 +722,11 @@ class CompanyCreateView(LoginRequiredMixin, CreateView):
         founded_date = (
             founded_info.get_text(strip=True).split(";")[0] if founded_info else None
         )
+        founded_date = format_date(founded_date)
         defunct_date = (
             defunct_info.get_text(strip=True).split(";")[0] if defunct_info else None
         )
+        defunct_date = format_date(defunct_date)
 
         # Extract location
         location_info = infobox.find(
