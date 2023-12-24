@@ -128,7 +128,7 @@
                     {% for episode in episodes %}
                         <div class="mt-3">
                             S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}
-                            <a href="{% url 'watch:episode_detail' object.id episode.id %}"
+                            <a href="{% url 'watch:episode_detail' object.series.id episode.id %}"
                                class='fs-6'>{{ episode.title }}</a>
                             <span>({{ episode.release_date }})</span>
                         </div>
