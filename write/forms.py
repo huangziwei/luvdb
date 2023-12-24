@@ -145,12 +145,16 @@ class RepostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
         super(RepostForm, self).__init__(*args, **kwargs)
+
         self.fields["content"].label = ""
         self.fields["content"].required = False
         self.fields["comments_enabled"].label = "Enable replies"
-        self.fields["comments_enabled"].initial = (
-            user.enable_replies_by_default if user else True
-        )
+
+        # Check if the user is not None and has the attribute 'enable_replies_by_default'
+        if user and hasattr(user, "enable_replies_by_default"):
+            self.fields["comments_enabled"].initial = user.enable_replies_by_default
+        else:
+            self.fields["comments_enabled"].initial = True
 
 
 class LuvListForm(forms.ModelForm):

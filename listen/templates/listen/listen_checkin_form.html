@@ -197,8 +197,7 @@
                        type="checkbox"
                        id="commentsEnabledInput"
                        name="comments_enabled"
-                       {% if request.user.enable_replies_by_default %}checked{% endif %}
-                       > 
+                       {% if user.is_authenticated and user.enable_replies_by_default %}checked{% endif %}                       > 
                 <label class="form-check-label small" for="commentsEnabledInput">Enable replies</label>
             </div>
         </div>
