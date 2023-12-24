@@ -2,6 +2,8 @@ import re
 import time
 from datetime import timedelta
 
+import requests
+from bs4 import BeautifulSoup
 from django.contrib import messages
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.decorators import login_required
@@ -24,6 +26,8 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -62,6 +66,7 @@ from .models import (
     InvitationCode,
     InvitationRequest,
     MastodonAccount,
+    WebMention,
 )
 
 TIME_RESTRICTION = 7  # time restriction for generating invitation codes
@@ -1237,3 +1242,44 @@ def generate_unique_username(length=10):
         # Check if the username already exists
         if not CustomUser.objects.filter(username=username).exists():
             return username
+
+
+#################
+## Webmentions ##
+#################
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def webmention(request):
+    source = request.POST.get("source")
+    target = request.POST.get("target")
+
+    if not source or not target:
+        return HttpResponseBadRequest("Source and target must be provided.")
+
+    verified = verify_webmention(source, target)
+
+    # Create and save the WebMention instance
+    webmention_instance = WebMention(source=source, target=target, verified=verified)
+    webmention_instance.save()
+
+    return JsonResponse({"status": "success", "message": "WebMention received."})
+
+
+def verify_webmention(source, target):
+    """
+    Verify the WebMention by ensuring the source page links to the target.
+    """
+    try:
+        response = requests.get(source)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        # Check if the source page contains a link to the target URL
+        for link in soup.find_all("a", href=True):
+            if re.match(target, link["href"]):
+                return True
+        return False
+    except requests.RequestException:
+        return False

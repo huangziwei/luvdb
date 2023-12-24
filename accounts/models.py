@@ -248,3 +248,18 @@ class MastodonAccount(auto_prefetch.Model):
 
     def __str__(self):
         return self.mastodon_handle
+
+
+######################
+## Webmention stuff ##
+######################
+
+
+class WebMention(models.Model):
+    source = models.URLField(max_length=2048)
+    target = models.URLField(max_length=2048)
+    verified = models.BooleanField(default=False)
+    received_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"WebMention from {self.source} to {self.target}"
