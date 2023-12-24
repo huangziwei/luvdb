@@ -1258,6 +1258,16 @@ def webmention(request):
     if not source or not target:
         return HttpResponseBadRequest("Source and target must be provided.")
 
+    # Check if a WebMention with the same source and target already exists
+    existing_webmention = WebMention.objects.filter(
+        source=source, target=target
+    ).first()
+    if existing_webmention:
+        # Optionally, update the existing record if needed
+        return JsonResponse(
+            {"status": "info", "message": "Duplicate WebMention ignored."}
+        )
+
     verified = verify_webmention(source, target)
 
     # Create and save the WebMention instance
