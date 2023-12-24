@@ -6,6 +6,7 @@ from typing import Any
 
 import feedparser
 import requests
+from bs4 import BeautifulSoup
 from dal import autocomplete
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -540,6 +541,75 @@ class ReleaseCreateView(LoginRequiredMixin, CreateView):
                 releasetracks.instance = self.object
                 releasetracks.save()
         return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        if "wiki_url" in request.POST:
+            wiki_url = request.POST.get("wiki_url")
+            scraped_data = self.scrape_wikipedia(wiki_url)
+            if scraped_data:
+                # Initialize the form with imported data
+                form = self.form_class(initial=scraped_data)
+                # Initialize formsets without relying on self.object
+                releaseroles = ReleaseRoleFormSet()
+                releasetracks = ReleaseTrackFormSet()
+
+                # Render response with initialized form and formsets
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": form,
+                        "releaseroles": releaseroles,
+                        "releasetracks": releasetracks,
+                    },
+                )
+            else:
+                # Handle case where import fails
+                return self.form_invalid(form)
+        else:
+            return super().post(request, *args, **kwargs)
+
+    def scrape_wikipedia(self, url):
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, "html.parser")
+        infobox = soup.find("table", {"class": re.compile("infobox")})
+
+        if not infobox:
+            return None
+
+        # Extract album title
+        title_element = infobox.find("th", {"class": "infobox-above"})
+        title = title_element.get_text(strip=True) if title_element else None
+
+        # Extract release date
+        release_date_element = infobox.find(
+            "th", text=re.compile("Released")
+        ).find_next_sibling("td")
+        release_date = (
+            release_date_element.get_text(strip=True).split("(")[0].strip()
+            if release_date_element
+            else None
+        )
+        release_date = self.format_date(release_date)
+
+        # Extract length
+        length_element = infobox.find(
+            "th", text=re.compile("Length")
+        ).find_next_sibling("td")
+        length = length_element.get_text(strip=True) if length_element else None
+
+        return {
+            "title": title,
+            "release_date": release_date,
+            "release_length": length,
+            "wikipedia": url,
+        }
+
+    def format_date(self, date_str):
+        try:
+            return datetime.strptime(date_str, "%B %d, %Y").strftime("%Y.%m.%d")
+        except ValueError:
+            return date_str  # Return the original string if parsing fails
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
