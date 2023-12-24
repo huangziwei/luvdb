@@ -20,6 +20,7 @@ from accounts.views import (
     get_followed_usernames,
     get_user_tags,
     search_view,
+    webmention,
 )
 from entity.sitemaps import PersonSiteMap
 from listen.sitemaps import ReleaseSiteMap
@@ -100,6 +101,7 @@ urlpatterns = [
             ]
         ),  # Redirect to @username
     ),
+    path("webmention/", webmention, name="webmention"),
     # utils
     path(
         "get_followed_usernames/", get_followed_usernames, name="get_followed_usernames"
