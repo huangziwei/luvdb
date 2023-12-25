@@ -1274,11 +1274,26 @@ def webmention(request):
 
     verified = verify_webmention(source, target)
 
-    # Create and save the WebMention instance
-    webmention_instance = WebMention(source=source, target=target, verified=verified)
-    webmention_instance.save()
+    if verified:
+        author_name, author_url, content, mention_type = fetch_bridgy_data(source)
 
-    return JsonResponse({"status": "success", "message": "WebMention received."})
+        # Create and save the WebMention instance
+        webmention_instance = WebMention(
+            source=source,
+            target=target,
+            verified=verified,
+            author_name=author_name,
+            author_url=author_url,
+            content=content,
+            mention_type=mention_type,
+        )
+        webmention_instance.save()
+
+        return JsonResponse({"status": "success", "message": "WebMention received."})
+    else:
+        return JsonResponse(
+            {"status": "failure", "message": "WebMention not verified."}
+        )
 
 
 def verify_webmention(source, target):
@@ -1297,3 +1312,39 @@ def verify_webmention(source, target):
         return False
     except requests.RequestException:
         return False
+
+
+def fetch_bridgy_data(source_url):
+    try:
+        response = requests.get(source_url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        # Determine the type of WebMention
+        mention_type = "other"
+        if "/repost/" in source_url:
+            mention_type = "repost"
+        elif "/comment/" in source_url or soup.select_one(".e-content"):
+            mention_type = "comment"
+
+        # Extract data
+        author_name = (
+            soup.select_one(".p-author .p-name").get_text(strip=True)
+            if soup.select_one(".p-author .p-name")
+            else None
+        )
+        author_url = (
+            soup.select_one(".p-author .u-url")["href"]
+            if soup.select_one(".p-author .u-url")
+            else None
+        )
+        content = (
+            soup.select_one(".e-content").get_text()
+            if soup.select_one(".e-content")
+            else None
+        )
+
+        return author_name, author_url, content, mention_type
+    except requests.RequestException:
+        # Handle exceptions
+        return None, None, None, "other"

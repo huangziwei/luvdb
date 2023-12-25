@@ -4,14 +4,31 @@
 {% if webmentions %}
     {% for webmention in webmentions %}
         <div class="mb-4">
-            <span class='d-flex mt-2 justify-content-between'>
+            <span class='d-flex justify-content-between mb-1'>
                 <div class='d-flex align-items-center'>
-                    <a href="{{ webmention.source }}" class="me-2 text-break">
-                        {{webmention.source}}
-                    </a>
+                    <a href="{{webmention.author_url}}" class="me-1">
+                        {{webmention.author_name}} 
+                    </a> 
+                    <span class="text-secondary me-1">
+                        ({{webmention.author_url}})
+                    </span>
+                    {% if webmention.mention_type == "comment" %}
+                        replied 
+                    {% elif webmention.mention_type == "repost" %}
+                        reposted
+                    {% endif %}
                 </div>
             </span>
-            <div class='me-2 text-secondary'>{{ webmention.received_at | date:"Y.m.d H:i" }}</div>
+            {% if webmention.content %}
+            <div class="bg-light p-3 mb-1">
+                {{ webmention.content | markdownify | safe }}
+            </div>
+            {% endif %}
+            <div>
+                <a href="{{ webmention.source }}" class="me-2 text-break text-secondary">
+                    {{ webmention.received_at | date:"Y.m.d H:i" }}
+                </a>
+            </div>
         </div>
     {% empty %}
         <p>No webmentions yet.</p>
