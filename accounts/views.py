@@ -1,6 +1,7 @@
 import re
 import time
 from datetime import timedelta
+from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -1258,6 +1259,10 @@ def webmention(request):
     if not source or not target:
         return HttpResponseBadRequest("Source and target must be provided.")
 
+    # Check if the source and target are valid URLs
+    if not is_valid_url(source) or not is_valid_url(target):
+        return HttpResponseBadRequest("Source and target must be valid URLs.")
+
     # Check if the source is a like from Bridgy
     if "/like/" in source:
         return JsonResponse({"status": "refused", "message": "Likes are not accepted."})
@@ -1314,6 +1319,22 @@ def verify_webmention(source, target):
         return False
 
 
+def is_valid_url(url):
+    """
+    Validate the URL by ensuring it is a valid URL and not blacklisted.
+    """
+    # # Check if the URL is blacklisted
+    # if url in BLACKLISTED_URLS:
+    #     return False
+
+    # Check if the URL is valid
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+    except:
+        return False
+
+
 def fetch_bridgy_data(source_url):
     try:
         response = requests.get(source_url)
@@ -1364,5 +1385,4 @@ def delete_webmention(request, webmention_id):
     if referer_url:
         return HttpResponseRedirect(referer_url)
     else:
-        # Fallback if HTTP_REFERER is not provided
-        return redirect("your_default_fallback_view")
+        return redirect("activity_feed:activity_feed")

@@ -5,8 +5,8 @@
     {% for webmention in webmentions %}
         <div class="mb-4">
             {% if webmention.author_name %}
-            <span class='d-flex justify-content-between mb-1'>
-                <div class='d-flex align-items-center'>
+            <span class='d-flex flex-column flex-sm-row justify-content-between mb-1'>
+                <div class='d-flex align-items-center flex-wrap'>
                     <a href="{{webmention.author_url}}" class="me-1">
                         {{webmention.author_name}} 
                     </a> 

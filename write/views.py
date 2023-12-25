@@ -209,6 +209,14 @@ class PostDetailView(ShareDetailView):
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
+        obj = self.get_object()
+        partial_target_url = f"@{obj.user.username}/post/{obj.slug}/"
+
+        # Filter WebMentions based on the constructed URL
+        context["webmentions"] = WebMention.objects.filter(
+            target__endswith=partial_target_url
+        ).order_by("received_at")
+
         return context
 
 
