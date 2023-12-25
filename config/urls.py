@@ -17,6 +17,7 @@ from accounts.views import (
     ManageInvitationRequestsView,
     RequestInvitationView,
     SignUpView,
+    delete_webmention,
     get_followed_usernames,
     get_user_tags,
     search_view,
@@ -101,7 +102,13 @@ urlpatterns = [
             ]
         ),  # Redirect to @username
     ),
+    # webmention
     path("webmention/", webmention, name="webmention"),
+    path(
+        "webmention/delete/<int:webmention_id>/",
+        delete_webmention,
+        name="delete_webmention",
+    ),
     # utils
     path(
         "get_followed_usernames/", get_followed_usernames, name="get_followed_usernames"

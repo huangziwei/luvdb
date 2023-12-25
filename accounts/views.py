@@ -15,10 +15,10 @@ from django.db.models import Count, Min, OuterRef, Q, Subquery
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.http import (
-    Http404,
     HttpResponse,
     HttpResponseBadRequest,
     HttpResponseForbidden,
+    HttpResponseRedirect,
     JsonResponse,
 )
 from django.shortcuts import get_object_or_404, redirect, render
@@ -1348,3 +1348,21 @@ def fetch_bridgy_data(source_url):
     except requests.RequestException:
         # Handle exceptions
         return None, None, None, "other"
+
+
+@login_required
+def delete_webmention(request, webmention_id):
+    webmention = get_object_or_404(WebMention, id=webmention_id)
+
+    # Optional: Check if the request.user has permission to delete the WebMention
+    if not request.user.has_perm("delete_webmention", webmention):
+        return HttpResponseForbidden()
+
+    webmention.delete()
+    # Redirect back to the referring page
+    referer_url = request.META.get("HTTP_REFERER")
+    if referer_url:
+        return HttpResponseRedirect(referer_url)
+    else:
+        # Fallback if HTTP_REFERER is not provided
+        return redirect("your_default_fallback_view")
