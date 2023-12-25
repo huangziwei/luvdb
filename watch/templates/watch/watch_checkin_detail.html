@@ -2,8 +2,6 @@
 {% load static %}
 {% load markdownify %}
 {% load linkify %}
-
-
 {% load crispy_forms_tags %}
 {% load parse_activity_type %}
 {% block meta %}
@@ -152,7 +150,7 @@
                     <p class='me-2 text-secondary mb-2'>
                         {% if object.content_type.model == "movie" %}
                             <a href="{% url 'watch:movie_checkin_list' object.content_object.id object.user.username %}"
-                                class="text-muted u-url dt-published">
+                                class="text-muted dt-published">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
                                 {% else %}
@@ -161,7 +159,7 @@
                             </a>
                         {% else %}
                             <a href="{% url 'watch:series_checkin_list' object.content_object.id object.user.username %}"
-                                class="text-muted u-url dt-published">
+                                class="text-muted dt-published">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
                                 {% else %}
@@ -169,6 +167,8 @@
                                 {% endif %}
                             </a>
                         {% endif %}
+                        <a href="{% url 'write:watch_checkin_detail' object.user.username object.content_object.id %}" 
+                            class="u-url"></a>
                     </p>
                     {% if object.user == request.user %}
                         <a href="{% url "write:watch_checkin_update" object.user.username object.id %}" class="me-2">Edit</a>

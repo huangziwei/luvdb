@@ -1258,6 +1258,10 @@ def webmention(request):
     if not source or not target:
         return HttpResponseBadRequest("Source and target must be provided.")
 
+    # Check if the source is a like from Bridgy
+    if "/like/" in source:
+        return JsonResponse({"status": "refused", "message": "Likes are not accepted."})
+
     # Check if a WebMention with the same source and target already exists
     existing_webmention = WebMention.objects.filter(
         source=source, target=target

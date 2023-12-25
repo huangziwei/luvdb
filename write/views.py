@@ -27,6 +27,7 @@ from django.views.generic import (
 )
 from django_ratelimit.decorators import ratelimit
 
+from accounts.models import WebMention
 from activity_feed.models import Activity, Block
 from discover.views import user_has_upvoted
 from listen.models import ListenCheckIn
@@ -83,6 +84,16 @@ class ShareDetailView(DetailView):
             if self.request.user.is_authenticated
             else False
         )
+
+        obj = self.get_object()
+        partial_target_url = (
+            f"@{obj.user.username}/{obj._meta.model_name.lower()}/{obj.id}/"
+        )
+
+        # Filter WebMentions based on the constructed URL
+        context["webmentions"] = WebMention.objects.filter(
+            target__endswith=partial_target_url
+        ).order_by("received_at")
 
         return context
 

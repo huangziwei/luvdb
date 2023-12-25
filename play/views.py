@@ -23,6 +23,7 @@ from django.views.generic import (
 )
 from django_ratelimit.decorators import ratelimit
 
+from accounts.models import WebMention
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.views import HistoryViewMixin, get_contributors
@@ -624,6 +625,14 @@ class PlayCheckInDetailView(DetailView):
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
+        obj = self.get_object()
+        partial_target_url = f"@{obj.user.username}/play/checkin/{obj.id}/"
+
+        # Filter WebMentions based on the constructed URL
+        context["webmentions"] = WebMention.objects.filter(
+            target__endswith=partial_target_url
+        ).order_by("received_at")
+
         return context
 
 
@@ -734,6 +743,7 @@ class PlayCheckInListView(ListView):
             if self.request.user.is_authenticated
             else False
         )
+
         return context
 
 

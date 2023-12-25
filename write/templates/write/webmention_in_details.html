@@ -1,0 +1,20 @@
+{% load markdownify %}
+{% load linkify %}
+{% load crispy_forms_tags %}
+{% if webmentions %}
+    {% for webmention in webmentions %}
+        <div class="mb-4">
+            <span class='d-flex mt-2 justify-content-between'>
+                <div class='d-flex align-items-center'>
+                    <a href="{{ webmention.source }}" class="me-2 text-break">
+                        {{webmention.source}}
+                    </a>
+                </div>
+            </span>
+            <div class='me-2 text-secondary'>{{ webmention.received_at | date:"Y.m.d H:i" }}</div>
+        </div>
+    {% empty %}
+        <p>No webmentions yet.</p>
+    {% endfor %}
+    <hr>
+{% endif %}

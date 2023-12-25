@@ -182,6 +182,8 @@
                                 {% endif %}                                
                             </a>
                         {% endif %}
+                        <a href="{% url 'write:listen_checkin_detail' object.user.username object.content_object.id %}" 
+                            class="u-url"></a>
                     </p>
                     {% if object.user == request.user %}
                         <a href="{% url "write:listen_checkin_update" object.user.username object.id %}"

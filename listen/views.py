@@ -32,6 +32,7 @@ from django.views.generic import (
 from django_ratelimit.decorators import ratelimit
 from PIL import Image
 
+from accounts.models import WebMention
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.models import Creator, Role
@@ -956,6 +957,14 @@ class ListenCheckInDetailView(DetailView):
         include_mathjax, include_mermaid = check_required_js([self.object])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
+
+        obj = self.get_object()
+        partial_target_url = f"@{obj.user.username}/listen/checkin/{obj.id}/"
+
+        # Filter WebMentions based on the constructed URL
+        context["webmentions"] = WebMention.objects.filter(
+            target__endswith=partial_target_url
+        ).order_by("received_at")
         return context
 
 
