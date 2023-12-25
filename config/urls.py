@@ -12,6 +12,7 @@ from django.template import loader
 from django.urls import include, path, re_path
 
 from accounts.views import (
+    CustomLoginView,
     InvitationRequestedSuccessView,
     InvitationRequestedView,
     ManageInvitationRequestsView,
@@ -92,6 +93,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # accounts
     path("signup/", SignUpView.as_view(), name="signup"),
+    path("login/", CustomLoginView.as_view(), name="login"),
     path("@", include("accounts.urls")),
     path(
         "u/<str:username>/",

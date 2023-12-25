@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.views import LoginView
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.db import transaction
@@ -106,6 +107,21 @@ class SignUpView(CreateView):
             context["form"].fields["invitation_code"].widget.attrs[
                 "class"
             ] = "readonly-field"
+
+        return context
+
+
+class CustomLoginView(LoginView):
+    template_name = "registration/login.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["recent_books"] = Book.objects.order_by("-created_at")[:6]
+        context["recent_movies"] = Movie.objects.order_by("-created_at")[:6]
+        context["recent_series"] = Series.objects.order_by("-created_at")[:6]
+        context["recent_music"] = Release.objects.order_by("-created_at")[:6]
+        context["recent_games"] = Game.objects.order_by("-created_at")[:6]
 
         return context
 

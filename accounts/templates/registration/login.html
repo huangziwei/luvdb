@@ -1,41 +1,168 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <!-- Left column -->
-            <div class="col-12 col-md-7 left-column mb-3">
-                <h1>Welcome</h1>
+    <div class="container container-fluid">
+        <div class="row mb-3 mt-3">
+            <div class="col text-center">
+                <h1>LʌvDB</h1>
                 <p>
-                    <ruby>LʌvDB<rp>(</rp><rt>luvdb.com</rt><rp>)</rp></ruby> is the database of the things you <ruby>LOVE<rp>(</rp><rt>/lʌv/</rt><rp>)</rp></ruby>.
+                    The inner space of all the things you <ruby>LOVE<rp>(</rp><rt>/lʌv/</rt><rp>)</rp></ruby>.
                 </p>
-                {% if not user.is_authenticated %}
-                <div class="col-10">
-                    <div class="mb-2 fs-6 fw-bold">Request an Invite</div>
-                    <form method="post" action="{% url 'request_invitation' %}" class="d-flex">
-                        {% csrf_token %}
-                        <div class="form-group mb-2 col-10">
-                            <input type="email" class="form-control" name="email" placeholder="Provide an email to request an invite." required>
-                        </div>
-                        <button class="btn btn-primary ms-2 mb-2" type="submit">Submit</button>
-                    </form>
-                    <small class="text-muted">
-                        <div>Registration is not yet open. You can either request an invitation and wait or, alternatively, <a href="https://github.com/huangziwei/luvdb">host your own instance</a>.</div>
-                    </small>                      
-                </div>
-                {% endif %}
             </div>
-            <!-- Right column -->
-            {% if not user.is_authenticated %}
-                <div class="col-sm-4">
-                    <h2>Log In</h2>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <button class="btn btn-success ml-2" type="submit">Log In</button>
-                    </form>
-                </div>
-            {% endif %}
         </div>
+        {% if not user.is_authenticated %}
+            <div class="row mb-3">
+                <!-- Left column -->
+                <div class="col-12 col-md-6 mt-3 mb-3 order-2 order-sm-1">
+                    <div class="bg-light p-3 media-card">
+                        <h2>Request an Invite</h2>
+                        <form method="post" action="{% url 'request_invitation' %}">
+                            {% csrf_token %}
+                            <div class="form-group mb-2 col-12">
+                                <input type="email" class="form-control" name="email" placeholder="Provide an email to request an invite." required>
+                            </div>
+                            <small class="text-muted">
+                                <div>Registration is not yet open. You can either request an invitation and wait or, alternatively, <a href="https://github.com/huangziwei/luvdb">host your own instance</a>.</div>
+                            </small>   
+                            <button class="btn btn-primary mt-2 mb-2" type="submit">Submit</button>
+                        </form>
+                          
+                    </div>                 
+                </div>
+                <!-- Right column -->
+                <div class="col-12 col-md-6 mt-3 mb-3 order-1 order-sm-2">
+                    <div class="bg-light p-3 media-card">
+                        <h2>Log In</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button class="btn btn-success ml-2" type="submit">Log In</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <!--covers of recent added entries-->
+        <div class="row">
+            {% for book in recent_books %}
+                <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
+                    <a href="{% url 'read:book_detail' book.id %}">
+                        {% if book.cover %}
+                            {% if book.cover_sens %}
+                                <img src="{{ book.cover.url }}"
+                                    alt="{{ book.title }} cover"
+                                    class="img-fluid blur cover-border"
+                                    onclick="this.classList.toggle('blur')"
+                                    loading="lazy">
+                            {% else %}
+                                <img src="{{ book.cover.url }}"
+                                    alt="{{ book.title }}"
+                                    class="img-fluid cover-border"
+                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ book.title }}{% if book.subtitle %}: {{book.subtitle}}{% endif %}</div>';"
+                                    loading="lazy">
+                            {% endif %}      
+                        {% else %}
+                            <div class="cover-placeholder">{{ book.title }}{% if book.subtitle %}: {{book.subtitle}}{% endif %}</div>
+                        {% endif %}              
+                    </a>
+                </div>
+            {% endfor %}
+
+            {% for movie in recent_movies %}
+                <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
+                    <a href="{% url 'watch:movie_detail' movie.id %}">
+                        {% if movie.poster %}
+                            {% if movie.poster_sens %}
+                                <img src="{{ movie.poster.url }}"
+                                    alt="{{ movie.title }} poster"
+                                    class="img-fluid blur cover-border"
+                                    onclick="this.classList.toggle('blur')"
+                                    loading="lazy">
+                            {% else %}
+                                <img src="{{ movie.poster.url }}"
+                                    alt="{{ movie.title }}"
+                                    class="img-fluid cover-border"
+                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'poster-placeholder\'>{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>';"
+                                    loading="lazy">
+                            {% endif %}      
+                        {% else %}
+                            <div class="cover-placeholder">{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>
+                        {% endif %}              
+                    </a>
+                </div>
+            {% endfor %}
+
+            {% for series in recent_series %}
+                <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
+                    <a href="{% url 'watch:series_detail' series.id %}">
+                        {% if series.poster %}
+                            {% if series.poster_sens %}
+                                <img src="{{ series.poster.url }}"
+                                    alt="{{ series.title }} poster"
+                                    class="img-fluid blur cover-border"
+                                    onclick="this.classList.toggle('blur')"
+                                    loading="lazy">
+                            {% else %}
+                                <img src="{{ series.poster.url }}"
+                                    alt="{{ series.title }}"
+                                    class="img-fluid cover-border"
+                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'poster-placeholder\'>{{ series.title }}{% if series.subtitle %}: {{series.subtitle}}{% endif %}</div>';"
+                                    loading="lazy">
+                            {% endif %}      
+                        {% else %}
+                            <div class="cover-placeholder">{{ series.title }}{% if series.subtitle %}: {{series.subtitle}}{% endif %}</div>
+                        {% endif %}              
+                    </a>
+                </div>
+            {% endfor %}
+
+            {% for music in recent_music %}
+                <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
+                    <a href="{% url 'listen:release_detail' music.id %}">
+                        {% if music.cover %}
+                            {% if music.cover_sens %}
+                                <img src="{{ music.cover.url }}"
+                                    alt="{{ music.title }} cover"
+                                    class="img-fluid blur cover-border"
+                                    onclick="this.classList.toggle('blur')"
+                                    loading="lazy">
+                            {% else %}
+                                <img src="{{ music.cover.url }}"
+                                    alt="{{ music.title }}"
+                                    class="img-fluid cover-border"
+                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ music.title }}{% if music.subtitle %}: {{music.subtitle}}{% endif %}</div>';"
+                                    loading="lazy">
+                            {% endif %}      
+                        {% else %}
+                            <div class="cover-placeholder">{{ music.title }}{% if music.subtitle %}: {{music.subtitle}}{% endif %}</div>
+                        {% endif %}              
+                    </a>
+                </div>
+            {% endfor %}
+
+            {% for game in recent_games %}
+            <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
+                <a href="{% url 'play:game_detail' game.id %}">
+                    {% if game.cover %}
+                        {% if game.cover_sens %}
+                            <img src="{{ game.cover.url }}"
+                                alt="{{ game.title }} cover"
+                                class="img-fluid blur cover-border"
+                                onclick="this.classList.toggle('blur')"
+                                loading="lazy">
+                        {% else %}
+                            <img src="{{ game.cover.url }}"
+                                alt="{{ game.title }}"
+                                class="img-fluid cover-border"
+                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>';"
+                                loading="lazy">
+                        {% endif %}      
+                    {% else %}
+                        <div class="cover-placeholder">{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>
+                    {% endif %}              
+                </a>
+            </div>
+        {% endfor %}
+        </div>        
     </div>
 {% endblock content %}
