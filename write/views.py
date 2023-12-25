@@ -786,9 +786,7 @@ class TagUserListView(ListView):
         context["all_tags"] = sorted_tags
 
         context["is_blocked"] = (
-            Block.objects.filter(
-                blocker=self.object.user, blocked=self.request.user
-            ).exists()
+            Block.objects.filter(blocker=user, blocked=self.request.user).exists()
             if self.request.user.is_authenticated
             else False
         )
