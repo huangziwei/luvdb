@@ -93,7 +93,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # accounts
     path("signup/", SignUpView.as_view(), name="signup"),
-    path("login/", CustomLoginView.as_view(), name="login"),
     path("@", include("accounts.urls")),
     path(
         "u/<str:username>/",
@@ -158,7 +157,10 @@ urlpatterns = [
         name="django.contrib.sitemaps.views.sitemap",
     ),
     path("site.webmanifest", site_manifest, name="site-manifest"),
-    path("auth/", include("django.contrib.auth.urls")),  # Moved to the end
+    path("auth/", include("django.contrib.auth.urls")),
+    path(
+        "login/", CustomLoginView.as_view(), name="login"
+    ),  # Moved to the end to overwrite the /auth/login
 ]
 
 if settings.DEBUG:

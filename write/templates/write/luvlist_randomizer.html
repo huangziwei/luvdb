@@ -227,7 +227,10 @@
                                 </noscript>
                             </p>
                             <span class="d-flex justify-content-center">
-                                <a href="{% url 'logout' %}?next={{ request.path }}" class="btn btn-sm btn-danger me-2">Logout</a>
+                                <form action="{% url 'logout' %}?next={{ request.path }}" method="post" class="btn btn-sm btn-danger me-2">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item" style="border: none; background: none;">Log Out</button>
+                                </form>
                                 <button id="refreshButton" class="btn btn-sm btn-outline-secondary" style="display:none;">Refresh</button>
                             </span>
                         {% else %}
