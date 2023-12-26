@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block title %}Update DLC{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7 left-column">
+                <h3>Update this DLC entry</h3>
+                {% include "watch/dlc_form.html" %}
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript"
+            src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'js/generalFormsetHandler.js' %}"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    
+        // Call the function for dlc-role-formset
+        window.handleFormset('#dlc-role-formset', 'add-dlc-role');
+        window.handleFormset('#dlc-cast-formset', 'add-dlc-cast');
+    });
+    
+    $(document).ready(function() {
+        $('select:not([name="model"], [id="id_game"])').removeClass('form-select');
+    });
+    </script>
+    {{ dlcroles.media }}
+    {{ dlccasts.media }}
+{% endblock content %}

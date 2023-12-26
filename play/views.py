@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import timedelta
 from typing import Any
 
@@ -10,7 +11,7 @@ from django.db import transaction
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.html import format_html
@@ -32,6 +33,9 @@ from write.models import Comment, ContentInList
 from write.utils_formatting import check_required_js
 
 from .forms import (
+    DLCCastFormSet,
+    DLCForm,
+    DLCRoleFormSet,
     GameCastFormSet,
     GameForm,
     GameInSeriesFormSet,
@@ -42,7 +46,7 @@ from .forms import (
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import Game, GameSeries, Genre, Platform, PlayCheckIn, Work
+from .models import DLC, Game, GameSeries, Genre, Platform, PlayCheckIn, Work
 
 User = get_user_model()
 
@@ -358,6 +362,8 @@ class GameDetailView(DetailView):
         include_mathjax, include_mermaid = check_required_js(context["checkins"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
+
+        context["dlcs"] = game.dlc.all().order_by("release_date")
 
         return context
 
@@ -1020,7 +1026,7 @@ class PlayListAllView(LoginRequiredMixin, ListView):
 class GameSeriesCreateView(LoginRequiredMixin, CreateView):
     model = GameSeries
     form_class = GameSeriesForm
-    template_name = "play/series_create.html"
+    template_name = "play/game_create.html"
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -1045,7 +1051,7 @@ class GameSeriesCreateView(LoginRequiredMixin, CreateView):
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class GameSeriesDetailView(DetailView):
     model = GameSeries
-    template_name = "play/series_detail.html"  # Update this
+    template_name = "play/game_detail.html"  # Update this
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -1057,7 +1063,7 @@ class GameSeriesDetailView(DetailView):
 class GameSeriesUpdateView(LoginRequiredMixin, UpdateView):
     model = GameSeries
     form_class = GameSeriesForm
-    template_name = "play/series_update.html"
+    template_name = "play/game_update.html"
 
     def dispatch(self, request, *args, **kwargs):
         # Check if the object is locked for editing.
@@ -1087,7 +1093,7 @@ class GameSeriesUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy("play:series_detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("play:game_detail", kwargs={"pk": self.object.pk})
 
 
 #########
@@ -1106,7 +1112,7 @@ class GenreDetailView(DetailView):
         # Get the genre object
         genre = self.object
 
-        # Get all movies and series associated with this genre
+        # Get all movies and game associated with this genre
         # and order them by release date
         context["works"] = Work.objects.filter(genres=genre).order_by(
             "-first_release_date"
@@ -1172,6 +1178,164 @@ class GameSeriesHistoryView(HistoryViewMixin, DetailView):
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PlatformHistoryView(HistoryViewMixin, DetailView):
     model = Platform
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+class DLCCreateView(LoginRequiredMixin, CreateView):
+    model = DLC
+    form_class = DLCForm
+    template_name = "play/dlc_create.html"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        game_id = self.kwargs.get("game_id")
+        initial["game"] = get_object_or_404(Game, pk=game_id)
+        return initial
+
+    def get_form(self, form_class=None):
+        form = super(DLCCreateView, self).get_form(form_class)
+        form.fields["game"].disabled = True
+        return form
+
+    def get_success_url(self):
+        game_id = self.kwargs.get("game_id")
+        return reverse("play:game_detail", kwargs={"pk": game_id})
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["dlcroles"] = DLCRoleFormSet(self.request.POST, instance=self.object)
+            data["dlccasts"] = DLCCastFormSet(self.request.POST, instance=self.object)
+        else:
+            data["dlcroles"] = DLCRoleFormSet(instance=self.object)
+            data["dlccasts"] = DLCCastFormSet(instance=self.object)
+
+        return data
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        context = self.get_context_data()
+        dlcroles = context["dlcroles"]
+        dlccasts = context["dlccasts"]
+
+        # Manually check validity of each form in the formset.
+        if not all(dlcrole_form.is_valid() for dlcrole_form in dlcroles):
+            return self.form_invalid(form)
+
+        if not all(dlccast_form.is_valid() for dlccast_form in dlccasts):
+            return self.form_invalid(form)
+
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if dlcroles.is_valid():
+                dlcroles.instance = self.object
+                dlcroles.save()
+            else:
+                print(dlcroles.errors)  # print out formset errors
+            if dlccasts.is_valid():
+                dlccasts.instance = self.object
+                dlccasts.save()
+            else:
+                print(dlccasts.errors)  # print out formset errors
+        return super().form_valid(form)
+
+
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
+class DLCDetailView(DetailView):
+    model = DLC
+    template_name = "play/dlc_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        dlc = get_object_or_404(DLC, pk=self.kwargs["pk"])
+        context["dlccasts"] = dlc.dlccasts.all()
+        # Group dlcroles by their roles
+        dlcroles_grouped = defaultdict(list)
+        for dlcrole in dlc.dlcroles.all():
+            dlcroles_grouped[dlcrole.role].append(dlcrole)
+
+        context["dlcroles"] = dict(dlcroles_grouped)
+
+        # contributors
+        context["contributors"] = get_contributors(self.object)
+        context["dlcs"] = dlc.game.dlc.all().order_by("release_date")
+
+        return context
+
+
+class DLCUpdateView(LoginRequiredMixin, UpdateView):
+    model = DLC
+    form_class = DLCForm
+    template_name = "play/dlc_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        game_id = self.kwargs.get("game_id")
+        initial["game"] = get_object_or_404(Series, pk=game_id)
+        return initial
+
+    def get_form(self, form_class=None):
+        form = super(DLCUpdateView, self).get_form(form_class)
+        form.fields["game"].disabled = True
+        return form
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "play:dlc_detail",
+            kwargs={"pk": self.object.pk, "game_id": self.object.game.pk},
+        )
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["dlcroles"] = DLCRoleFormSet(self.request.POST, instance=self.object)
+            data["dlccasts"] = DLCCastFormSet(self.request.POST, instance=self.object)
+        else:
+            data["dlcroles"] = DLCRoleFormSet(instance=self.object)
+            data["dlccasts"] = DLCCastFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        dlcroles = context["dlcroles"]
+        dlccasts = context["dlccasts"]
+
+        # Manually check validity of each form in the formset.
+        if not all(dlcrole_form.is_valid() for dlcrole_form in dlcroles):
+            return self.form_invalid(form)
+
+        if not all(dlccast_form.is_valid() for dlccast_form in dlccasts):
+            return self.form_invalid(form)
+
+        with transaction.atomic():
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if dlcroles.is_valid():
+                dlcroles.instance = self.object
+                dlcroles.save()
+            if dlccasts.is_valid():
+                dlccasts.instance = self.object
+                dlccasts.save()
+        return super().form_valid(form)
+
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
+class DLCHistoryView(HistoryViewMixin, DetailView):
+    model = DLC
     template_name = "entity/history.html"
 
     def get_context_data(self, **kwargs):

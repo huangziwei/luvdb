@@ -1,6 +1,10 @@
 from django.urls import path
 
 from .views import (
+    DLCCreateView,
+    DLCDetailView,
+    DLCHistoryView,
+    DLCUpdateView,
     GameCastDetailView,
     GameCreateView,
     GameDetailView,
@@ -47,6 +51,21 @@ urlpatterns = [
     path("game/<int:pk>/", GameDetailView.as_view(), name="game_detail"),
     path("game/<int:pk>/update/", GameUpdateView.as_view(), name="game_update"),
     path("game/<int:pk>/history/", GameHistoryView.as_view(), name="game_history"),
+    # dlc
+    path("game/<int:game_id>/dlc/create/", DLCCreateView.as_view(), name="dlc_create"),
+    path(
+        "game/<int:game_id>/dlc/<int:pk>/", DLCDetailView.as_view(), name="dlc_detail"
+    ),
+    path(
+        "game/<int:game_id>/dlc/<int:pk>/update/",
+        DLCUpdateView.as_view(),
+        name="dlc_update",
+    ),
+    path(
+        "game/<int:game_id>/dlc/<int:pk>/history/",
+        DLCHistoryView.as_view(),
+        name="dlc_history",
+    ),
     # platform
     path("platform/create/", PlatformCreateView.as_view(), name="platform_create"),
     path("platform/<int:pk>/", PlatformDetailView.as_view(), name="platform_detail"),

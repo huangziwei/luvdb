@@ -5,14 +5,12 @@ from .views import (
     CollectionDetailView,
     CollectionHistoryView,
     CollectionUpdateView,
-    EpisodeCastDetailView,
     EpisodeCreateView,
     EpisodeDetailView,
     EpisodeHistoryView,
     EpisodeUpdateView,
     GenericCheckInAllListView,
     GenericCheckInListView,
-    GenericCheckInUserListView,
     GenreAutocomplete,
     GenreDetailView,
     MovieCastDetailView,
@@ -110,12 +108,6 @@ urlpatterns = [
     # cast
     path(
         "movie/<int:pk>/cast/", MovieCastDetailView.as_view(), name="movie_cast_detail"
-    ),
-    # episode cast
-    path(
-        "series/<int:series_id>/episode/<int:pk>/cast/",
-        EpisodeCastDetailView.as_view(),
-        name="episode_cast_detail",
     ),
     # series cast
     path(

@@ -186,6 +186,25 @@
                            class='fs-6 text-secondary'>Edit Game</a>
                     </div>
                 {% endif %}
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                    {% if dlcs %}
+                        <div class="fs-5">DLCs</div>
+                        {% for dlc in dlcs %}
+                            <div>
+                                <a href="{% url 'play:dlc_detail' object.id dlc.id %}"
+                                class='fs-6'>{{ dlc.title }}</a>
+                                <span>({{ dlc.release_date }})</span>
+                            </div>
+                        {% endfor %}
+                        <hr>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                        <div>
+                            <a href="{% url 'play:dlc_create' object.id %}"
+                               class='fs-6 text-secondary'>Add DLC</a>
+                        </div>
+                    {% endif %}
+                </div>
                 {% if object.work.id %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Work</div>

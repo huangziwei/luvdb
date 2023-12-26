@@ -9,6 +9,9 @@ from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
 from .models import (
+    DLC,
+    DLCCast,
+    DLCRole,
     Game,
     GameCast,
     GameInSeries,
@@ -360,4 +363,121 @@ class GameInSeriesForm(forms.ModelForm):
 
 GameInSeriesFormSet = forms.inlineformset_factory(
     GameSeries, GameInSeries, form=GameInSeriesForm, extra=2, can_delete=True
+)
+
+
+class DLCForm(forms.ModelForm):
+    class Meta(auto_prefetch.Model.Meta):
+        model = DLC
+        exclude = ["created_by", "updated_by", "creators", "casts", "locked"]
+        fields = "__all__"
+
+        widgets = {
+            "other_titles": forms.TextInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(DLCForm, self).__init__(*args, **kwargs)
+        self.fields[
+            "other_titles"
+        ].help_text = (
+            "e.g. translated titles in different languages, separated by slashes (`/`)."
+        )
+
+
+class DLCRoleForm(forms.ModelForm):
+    domain = forms.CharField(initial="play", widget=forms.HiddenInput())
+
+    class Meta(auto_prefetch.Model.Meta):
+        model = DLCRole
+        fields = ("creator", "role", "domain", "alt_name")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        creator = cleaned_data.get("creator")
+        role = cleaned_data.get("role")
+
+        # if the creator field is filled but the role field is not
+        if creator and not role:
+            raise ValidationError("Role is required when Creator is filled.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.creator is None:  # if the creator field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
+
+
+DLCRoleFormSet = inlineformset_factory(
+    DLC,
+    DLCRole,
+    form=DLCRoleForm,
+    extra=15,
+    can_delete=True,
+    widgets={
+        "creator": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:creator-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
+        ),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:role-autocomplete"),
+            forward=["domain"],
+            attrs={"data-create-url": reverse_lazy("entity:role_create")},
+        ),
+    },
+)
+
+
+class DLCCastForm(forms.ModelForm):
+    domain = forms.CharField(initial="play", widget=forms.HiddenInput())
+
+    class Meta(auto_prefetch.Model.Meta):
+        model = DLCCast
+        fields = ("creator", "role", "domain", "character_name")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        creator = cleaned_data.get("creator")
+        role = cleaned_data.get("role")
+
+        # if the creator field is filled but the role field is not
+        if creator and not role:
+            raise ValidationError("Role is required when Creator is filled.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.creator is None:  # if the creator field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
+
+
+DLCCastFormSet = inlineformset_factory(
+    DLC,
+    DLCCast,
+    form=DLCCastForm,
+    extra=15,
+    can_delete=True,
+    widgets={
+        "creator": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:creator-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
+        ),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:role-autocomplete"),
+            forward=["domain"],
+            attrs={"data-create-url": reverse_lazy("entity:role_create")},
+        ),
+    },
 )

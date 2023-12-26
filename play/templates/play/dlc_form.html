@@ -1,0 +1,71 @@
+{% load crispy_forms_tags %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.game|as_crispy_field }}
+    {{ form.title|as_crispy_field }}
+    {{ form.other_titles|as_crispy_field }}
+    {{ form.release_date|as_crispy_field }}
+    {{ dlcroles.management_form|crispy }}
+    <div id="dlc-role-formset" class="bg-light p-3 mb-3">
+        <strong>Entities related to this DLC</strong>
+        <p class='text-muted'>E.g. Directors, Writers, Designers, etc.</p>
+        {% for form in dlcroles %}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4 mb-3">
+                        {{ form.creator | as_crispy_field }}
+                        <a href="{% url 'entity:creator_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new creator?</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.role | as_crispy_field }}
+                        {{ form.domain | as_crispy_field }}
+                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new role?</a>
+                    </div>
+                    <div class="col-md-3 mb-3">{{ form.alt_name | as_crispy_field }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {{ dlccasts.management_form|crispy }}
+    <div id="dlc-cast-formset" class="bg-light p-3 mb-3">
+        <strong>Casts related to this DLC</strong>
+        <p class='text-muted'>E.g. Actors, Actresses, Charactor Voices, etc.</p>
+        {% for form in dlccasts %}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    <div class="col-md-4 mb-3">
+                        {{ form.creator | as_crispy_field }}
+                        <a href="{% url 'entity:creator_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new creator?</a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.role | as_crispy_field }}
+                        {{ form.domain | as_crispy_field }}
+                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
+                           class="text-secondary"
+                           target="_blank">Add a new role?</a>
+                    </div>
+                    <div class="col-md-3 mb-3">{{ form.character_name | as_crispy_field }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+</form>
+{% if form.errors %}
+    <div class="alert alert-danger mt-5">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}<li>{{ field }}: {{ error }}</li>{% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

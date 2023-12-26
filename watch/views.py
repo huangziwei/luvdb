@@ -999,25 +999,6 @@ class EpisodeUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class EpisodeCastDetailView(DetailView):
-    model = Episode
-    context_object_name = "episode"
-    template_name = "watch/episode_cast_detail.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context[
-            "episodecasts"
-        ] = self.object.episodecasts.all()  # Update with your correct related name
-        context["episoderoles"] = self.object.episoderoles.all()
-
-        # contributors
-        context["contributors"] = get_contributors(self.object)
-
-        return context
-
-
 ###########
 # Checkin #
 ###########

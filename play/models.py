@@ -495,3 +495,66 @@ class GameInSeries(auto_prefetch.Model):
 
     def __str__(self):
         return f"{self.series.title}: {self.game.title}"
+
+
+class DLC(auto_prefetch.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # dlc meta data
+    game = auto_prefetch.ForeignKey(Game, on_delete=models.CASCADE, related_name="dlc")
+    title = models.CharField(max_length=255, blank=True, null=True)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
+    other_titles = models.TextField(blank=True, null=True)
+    release_date = models.CharField(max_length=10, blank=True, null=True)
+    creators = models.ManyToManyField(
+        Creator, through="DLCRole", related_name="dlc_role"
+    )
+    casts = models.ManyToManyField(Creator, through="DLCCast", related_name="dlc_cast")
+    history = HistoricalRecords(inherit=True)
+
+    def __str__(self):
+        return f"{self.title}"
+
+    def get_absolute_url(self):
+        return reverse("play:dlc_detail", args=[str(self.game.id), str(self.id)])
+
+
+class DLCRole(auto_prefetch.Model):
+    """
+    A Role of a Creator in a DLC
+    """
+
+    dlc = auto_prefetch.ForeignKey(
+        DLC, on_delete=models.CASCADE, related_name="dlcroles"
+    )
+    creator = auto_prefetch.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
+    alt_name = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.dlc} - {self.creator} - {self.role}"
+
+
+class DLCCast(auto_prefetch.Model):
+    """
+    A Cast in a LDC
+    """
+
+    dlc = auto_prefetch.ForeignKey(
+        DLC, on_delete=models.CASCADE, related_name="dlccasts"
+    )
+    creator = auto_prefetch.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
+    character_name = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.dlc} - {self.creator} - {self.role}"
