@@ -90,7 +90,7 @@ class ShareDetailView(DetailView):
         # Filter WebMentions based on the constructed URL
         context["webmentions"] = WebMention.objects.filter(
             target__endswith=partial_target_url
-        ).order_by("-received_at")
+        ).order_by("received_at")
 
         return context
 
