@@ -120,7 +120,7 @@
                 </div>
                 <div class="d-flex mt-2">
                     <p class='me-2 text-secondary mb-2'>
-                        <a href="{% url 'play:play_checkin_list' object.content_object.id object.user.username %}" class="text-muted dt-published">
+                        <a href="{% url 'write:play_checkin_list' object.user.username object.content_object.id %}" class="text-muted dt-published">
                             {% if checkin_count > 0 %}
                                 {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
                             {% else %}

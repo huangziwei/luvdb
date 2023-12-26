@@ -32,13 +32,13 @@
             <div class="d-flex mb-4 align-items-center">
                 <span class="me-2">
                     {% if checkin.content_type.model == 'book' %}
-                        <a href="{% url 'read:book_checkin_list' checkin.content_object.id checkin.user.username %}"
+                        <a href="{% url 'write:book_checkin_list' checkin.user.username checkin.content_object.id %}"
                            class="text-decoration-none text-secondary">
                            <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                            <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 0 %}({{ checkin.total_checkins }} more){% endif %}</span>
                         </a>
                     {% elif checkin.content_type.model == 'issue' %}
-                        <a href="{% url 'read:issue_checkin_list' checkin.content_object.periodical.id checkin.content_object.id checkin.user.username %}"
+                        <a href="{% url 'write:issue_checkin_list' checkin.user.username checkin.content_object.periodical.id checkin.content_object.id %}"
                            class="text-decoration-none text-secondary">
                            <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                            <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 0 %}({{ checkin.total_checkins }} more){% endif %}</span>

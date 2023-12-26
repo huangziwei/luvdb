@@ -73,7 +73,7 @@
                                                         loading="lazy">
                                             {% else %}
                                                 {% if checkin.content_type.model == "book" %}
-                                                    <a href="{% url 'read:book_checkin_list' checkin.content_object.id checkin.user.username %}">
+                                                    <a href="{% url 'write:book_checkin_list' checkin.user.username checkin.content_object.id %}">
                                                         <img src="{{ checkin.content_object.cover.url }}"
                                                                 alt="{{ checkin.content_object.title }}"
                                                                 class="img-fluid cover-border cover-border-{{checkin.status}}"
@@ -81,7 +81,7 @@
                                                                 loading="lazy">
                                                     </a>
                                                 {% else %}
-                                                    <a href="{% url 'read:issue_checkin_list' checkin.content_object.periodical.id checkin.content_object.id checkin.user.username %}">
+                                                    <a href="{% url 'write:issue_checkin_list' checkin.user.username checkin.content_object.periodical.id checkin.content_object.id %}">
                                                         <img src="{{ checkin.content_object.cover.url }}"
                                                             alt="{{ checkin.content_object.title }}"
                                                             class="img-fluid cover-border cover-border-{{checkin.status}}"
@@ -198,13 +198,13 @@
                                             <div class="d-flex mt-2">
                                                 <p class="me-2">
                                                     {% if checkin.content_type.model == 'book' %}
-                                                        <a href="{% url 'read:book_checkin_list' checkin.content_object.id checkin.user.username %}"
+                                                        <a href="{% url 'write:book_checkin_list' checkin.user.username checkin.content_object.id %}"
                                                         class="text-decoration-none text-secondary">
                                                             <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                                                             <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>
                                                         </a>
                                                     {% elif checkin.content_type.model == 'issue' %}
-                                                        <a href="{% url 'read:issue_checkin_list' checkin.content_object.periodical.id checkin.content_object.id checkin.user.username %}"
+                                                        <a href="{% url 'write:issue_checkin_list' checkin.user.username checkin.content_object.periodical.id checkin.content_object.id %}"
                                                         class="text-decoration-none text-secondary">
                                                             <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                                                             <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>

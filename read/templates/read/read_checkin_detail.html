@@ -116,7 +116,7 @@
                 <div class="d-flex mt-2">
                     <p class='me-2 text-secondary mb-2'>
                         {% if object.content_type.model == 'book' %}
-                            <a href="{% url 'read:book_checkin_list' object.content_object.id object.user.username %}"
+                            <a href="{% url 'write:book_checkin_list' object.user.username object.content_object.id %}"
                                 class="text-muted dt-published">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
@@ -125,7 +125,7 @@
                                 {% endif %}
                             </a>
                         {% elif object.content_type.model == 'issue' %}
-                            <a href="{% url 'read:issue_checkin_list' object.content_object.periodical.id object.content_object.id object.user.username %}"
+                            <a href="{% url 'write:issue_checkin_list' object.user.username object.content_object.periodical.id object.content_object.id%}"
                                 class="text-muted dt-published">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)

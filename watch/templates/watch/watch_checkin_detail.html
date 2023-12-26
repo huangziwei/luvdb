@@ -149,7 +149,7 @@
                 <div class="d-flex mt-2">
                     <p class='me-2 text-secondary mb-2'>
                         {% if object.content_type.model == "movie" %}
-                            <a href="{% url 'watch:movie_checkin_list' object.content_object.id object.user.username %}"
+                            <a href="{% url 'write:movie_checkin_list' object.user.username object.content_object.id %}"
                                 class="text-muted dt-published">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
@@ -158,7 +158,7 @@
                                 {% endif %}
                             </a>
                         {% else %}
-                            <a href="{% url 'watch:series_checkin_list' object.content_object.id object.user.username %}"
+                            <a href="{% url 'write:series_checkin_list' object.user.username object.content_object.id %}"
                                 class="text-muted dt-published">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)

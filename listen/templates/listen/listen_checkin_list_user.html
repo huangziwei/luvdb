@@ -71,7 +71,7 @@
                                                     loading="lazy">
                                         {% else %}
                                             {% if checkin.content_type.model == "release" %}
-                                                <a href="{% url 'listen:release_checkin_list' checkin.content_object.id checkin.user.username %}">
+                                                <a href="{% url 'write:release_checkin_list' checkin.user.username checkin.content_object.id %}">
                                                     <img src="{{ checkin.content_object.cover.url }}"
                                                             alt="{{ checkin.content_object.title }}"
                                                             class="img-fluid cover-border cover-border-{{checkin.status}}"
@@ -79,7 +79,7 @@
                                                             loading="lazy">
                                                 </a>
                                             {% elif checkin.content_type.model == "release" %}
-                                                <a href="{% url 'listen:podcast_checkin_list' checkin.content_object.id checkin.user.username %}">
+                                                <a href="{% url 'write:podcast_checkin_list' checkin.user.username checkin.content_object.id %}">
                                                     <img src="{{ checkin.content_object.cover.url }}"
                                                             alt="{{ checkin.content_object.title }}"
                                                             class="img-fluid cover-border cover-border-{{checkin.status}}"
@@ -87,7 +87,7 @@
                                                             loading="lazy">
                                                 </a>
                                             {% else %}
-                                                <a href="{% url 'listen:audiobook_checkin_list' checkin.content_object.id checkin.user.username %}">
+                                                <a href="{% url 'write:audiobook_checkin_list' checkin.user.username checkin.content_object.id %}">
                                                     <img src="{{ checkin.content_object.cover.url }}"
                                                         alt="{{ checkin.content_object.title }}"
                                                         class="img-fluid cover-border cover-border-{{checkin.status}}"
@@ -252,19 +252,19 @@
                                     <div class="d-flex mt-2">
                                         <div class="me-2">
                                             {% if checkin.content_type.model == 'release' %}
-                                                <a href="{% url 'listen:release_checkin_list' checkin.content_object.id checkin.user.username %}"
+                                                <a href="{% url 'write:release_checkin_list' checkin.user.username checkin.content_object.id %}"
                                                     class="text-decoration-none text-secondary">
                                                     <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                                                     <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>                 
                                                 </a>
                                             {% elif checkin.content_type.model == 'podcast' %}
-                                                <a href="{% url 'listen:podcast_checkin_list' checkin.content_object.id checkin.user.username %}"
+                                                <a href="{% url 'write:podcast_checkin_list' checkin.user.username checkin.content_object.id %}"
                                                     class="text-decoration-none text-secondary">
                                                     <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                                                     <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>                 
                                                 </a>
                                             {% elif checkin.content_type.model == 'audiobook' %}
-                                                <a href="{% url 'listen:audiobook_checkin_list' checkin.content_object.id checkin.user.username %}"
+                                                <a href="{% url 'write:audiobook_checkin_list' checkin.user.username checkin.content_object.id %}"
                                                     class="text-decoration-none text-secondary">
                                                     <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                                                     <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>                 

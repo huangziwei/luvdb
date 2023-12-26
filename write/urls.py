@@ -1,6 +1,7 @@
 from django.urls import path, re_path
 
-from listen.views import GenericCheckInUserListView as GenericListenCheckInUserListView
+from listen.views import GenericCheckInListView as ListenCheckInListView
+from listen.views import GenericCheckInUserListView as ListenCheckInUserListView
 from listen.views import (
     ListenCheckInDeleteView,
     ListenCheckInDetailView,
@@ -9,16 +10,19 @@ from listen.views import (
 from play.views import (
     PlayCheckInDeleteView,
     PlayCheckInDetailView,
+    PlayCheckInListView,
     PlayCheckInUpdateView,
     PlayCheckInUserListView,
 )
-from read.views import GenericCheckInUserListView as GenericReadCheckInUserListView
+from read.views import GenericCheckInListView as ReadCheckInListView
+from read.views import GenericCheckInUserListView as ReadCheckInUserListView
 from read.views import (
     ReadCheckInDeleteView,
     ReadCheckInDetailView,
     ReadCheckInUpdateView,
 )
-from watch.views import GenericCheckInUserListView as GenericWatchCheckInUserListView
+from watch.views import GenericCheckInListView as WatchCheckInListView
+from watch.views import GenericCheckInUserListView as WatchCheckInUserListView
 from watch.views import (
     WatchCheckInDeleteView,
     WatchCheckInDetailView,
@@ -280,8 +284,20 @@ urlpatterns = [
     ),
     path(
         "@<str:username>/read/checkins/",
-        view=GenericReadCheckInUserListView.as_view(),
+        view=ReadCheckInUserListView.as_view(),
         name="read_checkin_user_list",
+    ),
+    path(
+        "@<str:username>/read/book/<int:object_id>/checkins",
+        ReadCheckInListView.as_view(),
+        kwargs={"model_name": "book"},
+        name="book_checkin_list",
+    ),
+    path(
+        "@<str:username>/read/periodical/<int:periodical_id>/issue/<int:object_id>/checkins",
+        view=ReadCheckInListView.as_view(),
+        kwargs={"model_name": "issue"},
+        name="issue_checkin_list",
     ),
     ## Listen
     path(
@@ -301,8 +317,26 @@ urlpatterns = [
     ),
     path(
         "@<str:username>/listen/checkins/",
-        GenericListenCheckInUserListView.as_view(),
+        ListenCheckInUserListView.as_view(),
         name="listen_checkin_user_list",
+    ),
+    path(
+        "@<str:username>/listen/release/<int:object_id>/checkins",
+        ListenCheckInListView.as_view(),
+        kwargs={"model_name": "release"},
+        name="release_checkin_list",
+    ),
+    path(
+        "@<str:username>/listen/podcast/<int:object_id>/checkins",
+        view=ListenCheckInListView.as_view(),
+        kwargs={"model_name": "podcast"},
+        name="podcast_checkin_list",
+    ),
+    path(
+        "@<str:username>/listen/audiobook/<int:object_id>/checkins",
+        view=ListenCheckInListView.as_view(),
+        kwargs={"model_name": "podcast"},
+        name="audiobook_checkin_list",
     ),
     # Watch
     path(
@@ -322,8 +356,20 @@ urlpatterns = [
     ),
     path(
         "@<str:username>/watch/checkins/",
-        GenericWatchCheckInUserListView.as_view(),
+        WatchCheckInUserListView.as_view(),
         name="watch_checkin_user_list",
+    ),
+    path(
+        "@<str:username>/watch/movie/<int:object_id>/checkins",
+        WatchCheckInListView.as_view(),
+        kwargs={"model_name": "movie"},
+        name="movie_checkin_list",
+    ),
+    path(
+        "@<str:username>/watch/series/<int:object_id>/checkins",
+        view=WatchCheckInListView.as_view(),
+        kwargs={"model_name": "series"},
+        name="series_checkin_list",
     ),
     # Play
     path(
@@ -345,5 +391,10 @@ urlpatterns = [
         "@<str:username>/play/checkins/",
         PlayCheckInUserListView.as_view(),
         name="play_checkin_user_list",
+    ),
+    path(
+        "@<str:username>/play/game/<int:object_id>/checkins",
+        PlayCheckInListView.as_view(),
+        name="play_checkin_list",
     ),
 ]

@@ -66,7 +66,7 @@
                                                             onclick="this.classList.toggle('blur')"
                                                             loading="lazy">
                                                 {% else %}
-                                                    <a href="{% url 'read:book_checkin_list' checkin.content_object.id checkin.user.username %}">
+                                                    <a href="{% url 'write:play_checkin_list' checkin.user.username checkin.content_object.id %}">
                                                         <img src="{{ checkin.content_object.cover.url }}"
                                                                 alt="{{ checkin.content_object.title }}"
                                                                 class="img-fluid cover-border cover-border-{{checkin.status}}"
@@ -200,7 +200,7 @@
                                         </div>
                                         <div class="d-flex mt-2">
                                             <p class="me-2">
-                                                <a href="{% url 'play:play_checkin_list' checkin.content_object.id checkin.user.username %}"
+                                                <a href="{% url 'write:play_checkin_list' checkin.user.username checkin.content_object.id %}"
                                                 class="text-decoration-none text-secondary">
                                                     <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                                                     <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.checkin_count > 0 %}({{ checkin.checkin_count }} more){% endif %}</span>

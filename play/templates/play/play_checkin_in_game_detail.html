@@ -32,7 +32,7 @@
             {% endif %}
             <div class="d-flex mb-4">
                 <span class="me-2 d-inline-block">
-                    <a href="{% url 'play:play_checkin_list' checkin.content_object.id checkin.user.username %}" class="text-decoration-none text-secondary d-inline-block">
+                    <a href="{% url 'write:play_checkin_list' checkin.user.username checkin.content_object.id %}" class="text-decoration-none text-secondary d-inline-block">
                         <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                         <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 0 %}({{ checkin.total_checkins }} more){% endif %}</span>
                     </a>
