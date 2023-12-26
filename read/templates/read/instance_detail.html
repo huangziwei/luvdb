@@ -71,9 +71,9 @@
                                 <li>
                                     <a href="{% url 'read:issue_detail' issue.periodical.pk issue.pk %}">
                                         {% if issue.title %}{{ issue.title }},{% endif %}
-                                        {% if issue.volume %}Vol. {{ issue.volume }}{% endif %}
-                                        {% if issue.volume %}Nr. {{ issue.number }}{% endif %}
-                                    </a>,
+                                        {% comment %} {% if issue.volume %}Vol. {{ issue.volume }}{% endif %}
+                                        {% if issue.volume %}Nr. {{ issue.number }}{% endif %} {% endcomment %}
+                                    </a>
                                     <a href="{% url 'read:periodical_detail' issue.periodical.pk %}">{{ issue.periodical.title }}</a>
                                     ({{ issue.publication_date }})
                                 </li>
