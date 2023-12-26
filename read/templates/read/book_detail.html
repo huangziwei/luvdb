@@ -157,8 +157,10 @@
                                                 </p>
                                             {% endif %}
                                             {% if object.notes %}
-                                                <span class="text-muted">Details:</span>
-                                                <div class="card card-body">{{ object.notes|markdownify }}</div>
+                                                <p class="fs-6 text-muted">Details:</p>
+                                                <div class="card card-body col-12 col-md-11">
+                                                    {{ object.notes|markdownify }}
+                                                </div>
                                             {% endif %}
                                         </div>
                                     </div>
