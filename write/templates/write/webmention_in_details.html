@@ -11,7 +11,7 @@
                         {{webmention.author_name}} 
                     </a> 
                     <span class="text-secondary me-1">
-                        ({{webmention.author_url}})
+                        ({{webmention.author_handle|default:webmention.author_url}})
                     </span>
                     {% if webmention.mention_type == "post" %}
                         mentioned

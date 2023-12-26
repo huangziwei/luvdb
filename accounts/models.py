@@ -259,6 +259,7 @@ class WebMention(models.Model):
     # CONTENT
     author_name = models.CharField(max_length=255, null=True, blank=True)
     author_url = models.URLField(max_length=2048, null=True, blank=True)
+    author_handle = models.CharField(max_length=255, null=True, blank=True)
     content_title = models.CharField(max_length=255, null=True, blank=True)
     content_url = models.URLField(max_length=2048, null=True, blank=True)
     content = models.TextField(null=True, blank=True)

@@ -1275,53 +1275,62 @@ def webmention(request):
     if not source or not target:
         return HttpResponseBadRequest("Source and target must be provided.")
 
-    # Check if the source and target are valid URLs
     if not is_valid_url(source) or not is_valid_url(target):
         return HttpResponseBadRequest("Source and target must be valid URLs.")
 
-    # Check if the source is a like from Bridgy
     if "/like/" in source:
         return JsonResponse({"status": "refused", "message": "Likes are not accepted."})
 
-    # Check if a WebMention with the same source and target already exists
     existing_webmention = WebMention.objects.filter(
         source=source, target=target
     ).first()
-    if existing_webmention:
-        return JsonResponse(
-            {"status": "info", "message": "Duplicate WebMention ignored."}
-        )
 
     verified = verify_webmention(source, target)
+    webmention_data = fetch_webmention_data(source)
 
-    if verified:
-        webmention_data = fetch_webmention_data(source)
-
-        # Check if webmention_data is not empty
-        if webmention_data:
-            # Create and save the WebMention instance
-            webmention_instance = WebMention(
-                source=source,
-                target=target,
-                verified=True,
-                author_name=webmention_data.get("author_name"),
-                author_url=webmention_data.get("author_url"),
-                content_title=webmention_data.get("content_title"),
-                content_url=webmention_data.get("content_url"),
-                content=webmention_data.get("content"),
-                mention_type=webmention_data.get("mention_type"),
-            )
-            webmention_instance.save()
-            return JsonResponse(
-                {"status": "success", "message": "WebMention received."}
-            )
-        else:
-            return JsonResponse(
-                {"status": "failure", "message": "Failed to fetch WebMention data."}
-            )
-    else:
+    if not verified:
         return JsonResponse(
             {"status": "failure", "message": "WebMention not verified."}
+        )
+
+    if existing_webmention:
+        # Check if the source no longer links to the target (treat as deletion)
+        if not verified:
+            existing_webmention.delete()
+            return JsonResponse({"status": "success", "message": "WebMention deleted."})
+
+        # Check for content changes (treat as edit)
+        if webmention_data and webmention_data != existing_webmention.to_dict():
+            # Update existing WebMention instance
+            for key, value in webmention_data.items():
+                setattr(existing_webmention, key, value)
+            existing_webmention.save()
+            return JsonResponse({"status": "success", "message": "WebMention updated."})
+        else:
+            return JsonResponse(
+                {"status": "info", "message": "No changes detected in WebMention."}
+            )
+
+    # Handle new WebMention creation
+    if webmention_data:
+        # Create and save the WebMention instance
+        webmention_instance = WebMention(
+            source=source,
+            target=target,
+            verified=True,
+            author_name=webmention_data.get("author_name"),
+            author_url=webmention_data.get("author_url"),
+            author_handle=webmention_data.get("author_handle"),
+            content_title=webmention_data.get("content_title"),
+            content_url=webmention_data.get("content_url"),
+            content=webmention_data.get("content"),
+            mention_type=webmention_data.get("mention_type"),
+        )
+        webmention_instance.save()
+        return JsonResponse({"status": "success", "message": "WebMention received."})
+    else:
+        return JsonResponse(
+            {"status": "failure", "message": "Failed to fetch WebMention data."}
         )
 
 
@@ -1387,10 +1396,11 @@ def fetch_webmention_data(source_url):
             if soup.select_one(".p-author .u-url")
             else None
         )
+        author_handle = None
         if author_url:
             match = re.search(r"https://(.+)/@(.+)", author_url)
             if match:
-                author_url = f"@{match.group(2)}@{match.group(1)}"
+                author_handle = f"@{match.group(2)}@{match.group(1)}"
 
         content = (
             soup.select_one(".e-content").get_text()
@@ -1409,6 +1419,7 @@ def fetch_webmention_data(source_url):
         data = {
             "author_name": author_name,
             "author_url": author_url,
+            "author_handle": author_handle,
             "content": content,
             "content_title": content_title,
             "content_url": content_url,
