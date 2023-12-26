@@ -114,13 +114,20 @@
                                         <span class="text-muted">Crew and Cast:</span> <a href="{% url 'play:game_cast_detail' object.id %}">View All</a>
                                     </div>
                                     {% if ordered_release_dates %}
+                                    <div class="mb-1">
                                         <span class="text-muted">Release Date:</span>
                                         {% for release_date in ordered_release_dates %}
                                             {{ release_date.release_date }} ({{ release_date.region }})
                                             {% if not forloop.last %}/{% endif %}
                                         {% endfor %}
+                                    </div>
                                     {% endif %}
-                                    
+                                    {% if object.work.id %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Other releases:</span>
+                                            <a href={% url "play:work_detail" object.work.id %}>View All</a>
+                                        </div>
+                                    {% endif %}
                                     <div class="mt-3">
                                         <div class="text-muted"
                                            role="button"
@@ -205,15 +212,7 @@
                         </div>
                     {% endif %}
                 </div>
-                {% if object.work.id %}
-                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <div class="fs-5">Work</div>
-                    <p>
-                        <a href={% url "play:work_detail" object.work.id %}>{{ object.work.title }}</a>
-                        {% if object.work.first_release_date %}({{ object.work.first_release_date }}){% endif %}
-                    </p>
-                </div>
-                {% endif %}
+                
                 {% if object.wikipedia %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <div class="fs-5">Links</div>

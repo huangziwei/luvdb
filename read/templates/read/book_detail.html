@@ -98,6 +98,14 @@
                                             <span class="text-muted">Date:</span> {{ object.publication_date }}
                                         </p>
                                     {% endif %}
+                                    {% if object.bookinstance_set.count == 1 %}
+                                        <p>
+                                            <span class="text-muted">Other Editions:</span>
+                                            <a href="{% url 'read:work_detail' object.bookinstance_set.first.instance.work.id %}">
+                                                View All
+                                            </a>
+                                        </p>
+                                    {% endif %}
                                     
                                     <div class="my-3">
                                         <p role="button"
@@ -206,18 +214,9 @@
                            class='fs-6 text-secondary'>Edit Book</a>
                     </div>
                 {% endif %}
-                {% if object.bookinstance_set.count != 0 %}
+                {% if object.bookinstance_set.count > 1 %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    {% if object.bookinstance_set.count == 1 %}
-                            {% if object.bookinstance_set.first.instance.id %}
-                                <div class="fs-5">Work</div>
-                                <p>
-                                    <a class="text-muted" href="{% url 'read:work_detail' object.bookinstance_set.first.instance.work.id %}">
-                                        Other Editions
-                                    </a>
-                                </p>
-                            {% endif %}
-                        {% else %}
+                        {% if object.bookinstance_set.count != 1 %}
                         <div class="row">
                             <div class="d-flex align-items-center">
                                 <div class="mb-0 fs-5">Table of Content</div>
