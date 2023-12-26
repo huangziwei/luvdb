@@ -204,19 +204,6 @@
                         {% endif %}
                     </div>
                 </div>
-                <!--Release Stats-->
-                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <div class="fs-5">Statistics</div>
-                    <div>
-                        <strong>To Listen:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a>
-                    </div>
-                    <div>
-                        <strong>Looping:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a>
-                    </div>
-                    <div>
-                        <strong>Listened:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a>
-                    </div>
-                </div>
                 <!--Listen on-->
                 {% if object.apple_music_url or object.spotify_url %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
@@ -248,6 +235,19 @@
                         {% endif %}
                     </div>
                 {% endif %}
+                <!--Release Stats-->
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                    <div class="fs-5">Statistics</div>
+                    <div>
+                        <strong>To Listen:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a>
+                    </div>
+                    <div>
+                        <strong>Looping:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a>
+                    </div>
+                    <div>
+                        <strong>Listened:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a>
+                    </div>
+                </div>
                 {% if lists_containing_release.count != 0 %}
                     <!--LuvLists that included this release-->
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
@@ -273,7 +273,6 @@
                         </div>
                     </div>
                 {% endif %}
-
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5">Contributors</div>

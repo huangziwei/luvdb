@@ -195,6 +195,14 @@
                     </p>
                 </div>
                 {% endif %}
+                {% if object.wikipedia %}
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                        <div class="fs-5">Links</div>
+                        <div>
+                            <a href="{{ object.wikipedia }}">Wikipedia</a>
+                        </div>
+                    </div>
+                {% endif %}
                 <!--stats-->
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Statistics</div>
@@ -208,14 +216,6 @@
                         <strong class="text-muted">Played:</strong> <a href="{% url 'play:play_checkin_all_list' object.id %}?status=played_replayed">{{ played_count }}</a>
                     </div>
                 </div>
-                {% if object.wikipedia %}
-                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <div class="fs-5">Links</div>
-                        <div>
-                            <a href="{{ object.wikipedia }}">Wikipedia</a>
-                        </div>
-                    </div>
-                {% endif %}
                 {% if lists_containing_game.count != 0 %}
                     <!--LuvLists that included this game-->
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">

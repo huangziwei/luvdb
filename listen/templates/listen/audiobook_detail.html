@@ -176,6 +176,14 @@
                         {% endif %}
                     </div>
                 {% endif %}
+                {% if object.wikipedia %}
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                        <div class="fs-5">Links</div>
+                        <div>
+                            <a href="{{ object.wikipedia }}">Wikipedia</a>
+                        </div>
+                    </div>
+                {% endif %}
                 <!--Book Stats-->
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Statistics</div>
@@ -189,14 +197,6 @@
                         <strong>Listened:</strong> <a href="{% url 'listen:audiobook_checkin_all_list' object.id %}?status=listened">{{ listened_count }}</a>
                     </div>
                 </div>
-                {% if object.wikipedia %}
-                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <div class="fs-5">Links</div>
-                        <div>
-                            <a href="{{ object.wikipedia }}">Wikipedia</a>
-                        </div>
-                    </div>
-                {% endif %}
                 {% if lists_containing_audiobook.count != 0 %}
                     <!--LuvLists that included this book-->
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">

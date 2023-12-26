@@ -234,19 +234,6 @@
                         {% endif %}
                     </div>
                 {% endif %}
-                <!--Book Stats-->
-                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <div class="fs-5">Statistics</div>
-                    <div>
-                        <strong class="text-muted">To Read:</strong> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=to_read">{{ to_read_count }}</a>
-                    </div>
-                    <div>
-                        <strong class="text-muted">Reading:</strong> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=reading_rereading">{{ reading_count }}</a>
-                    </div>
-                    <div>
-                        <strong class="text-muted">Read:</strong> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=read_reread">{{ read_count }}</a>
-                    </div>
-                </div>
                 {% if object.internet_archive_url %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <div class="fs-5">Read on</div>
@@ -263,6 +250,19 @@
                         </div>
                     </div>
                 {% endif %}
+                <!--Book Stats-->
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                    <div class="fs-5">Statistics</div>
+                    <div>
+                        <strong class="text-muted">To Read:</strong> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=to_read">{{ to_read_count }}</a>
+                    </div>
+                    <div>
+                        <strong class="text-muted">Reading:</strong> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=reading_rereading">{{ reading_count }}</a>
+                    </div>
+                    <div>
+                        <strong class="text-muted">Read:</strong> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=read_reread">{{ read_count }}</a>
+                    </div>
+                </div>
                 {% if lists_containing_book.count != 0 %}
                     <!--LuvLists that included this book-->
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
