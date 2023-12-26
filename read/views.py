@@ -579,6 +579,13 @@ class BookDetailView(DetailView):
                     genres.add(genre)
         context["genres"] = genres
 
+        partial_target_url = f"/read/book/{book.id}/"
+
+        # Filter WebMentions based on the constructed URL
+        context["webmentions"] = WebMention.objects.filter(
+            target__endswith=partial_target_url
+        ).order_by("-received_at")[:5]
+
         return context
 
     def post(self, request, *args, **kwargs):
