@@ -259,10 +259,13 @@ class WebMention(models.Model):
     # CONTENT
     author_name = models.CharField(max_length=255, null=True, blank=True)
     author_url = models.URLField(max_length=2048, null=True, blank=True)
+    content_title = models.CharField(max_length=255, null=True, blank=True)
+    content_url = models.URLField(max_length=2048, null=True, blank=True)
     content = models.TextField(null=True, blank=True)
 
-    # New field for WebMention type
+    # WebMention TYPE
     MENTION_TYPES = (
+        ("post", "Post"),
         ("comment", "Comment"),
         ("repost", "Repost"),
         ("other", "Other"),

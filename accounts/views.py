@@ -1288,7 +1288,6 @@ def webmention(request):
         source=source, target=target
     ).first()
     if existing_webmention:
-        # Optionally, update the existing record if needed
         return JsonResponse(
             {"status": "info", "message": "Duplicate WebMention ignored."}
         )
@@ -1296,21 +1295,30 @@ def webmention(request):
     verified = verify_webmention(source, target)
 
     if verified:
-        author_name, author_url, content, mention_type = fetch_bridgy_data(source)
+        webmention_data = fetch_webmention_data(source)
 
-        # Create and save the WebMention instance
-        webmention_instance = WebMention(
-            source=source,
-            target=target,
-            verified=verified,
-            author_name=author_name,
-            author_url=author_url,
-            content=content,
-            mention_type=mention_type,
-        )
-        webmention_instance.save()
-
-        return JsonResponse({"status": "success", "message": "WebMention received."})
+        # Check if webmention_data is not empty
+        if webmention_data:
+            # Create and save the WebMention instance
+            webmention_instance = WebMention(
+                source=source,
+                target=target,
+                verified=True,
+                author_name=webmention_data.get("author_name"),
+                author_url=webmention_data.get("author_url"),
+                content_title=webmention_data.get("content_title"),
+                content_url=webmention_data.get("content_url"),
+                content=webmention_data.get("content"),
+                mention_type=webmention_data.get("mention_type"),
+            )
+            webmention_instance.save()
+            return JsonResponse(
+                {"status": "success", "message": "WebMention received."}
+            )
+        else:
+            return JsonResponse(
+                {"status": "failure", "message": "Failed to fetch WebMention data."}
+            )
     else:
         return JsonResponse(
             {"status": "failure", "message": "WebMention not verified."}
@@ -1339,9 +1347,10 @@ def is_valid_url(url):
     """
     Validate the URL by ensuring it is a valid URL and not blacklisted.
     """
+    BLACKLISTED_URLS = []
     # # Check if the URL is blacklisted
-    # if url in BLACKLISTED_URLS:
-    #     return False
+    if url in BLACKLISTED_URLS:
+        return False
 
     # Check if the URL is valid
     try:
@@ -1351,7 +1360,7 @@ def is_valid_url(url):
         return False
 
 
-def fetch_bridgy_data(source_url):
+def fetch_webmention_data(source_url):
     try:
         response = requests.get(source_url)
         response.raise_for_status()
@@ -1359,7 +1368,9 @@ def fetch_bridgy_data(source_url):
 
         # Determine the type of WebMention
         mention_type = "other"
-        if "/repost/" in source_url:
+        if "/post/" in source_url:
+            mention_type = "post"
+        elif "/repost/" in source_url:
             mention_type = "repost"
         elif "/comment/" in source_url or soup.select_one(".e-content"):
             mention_type = "comment"
@@ -1370,21 +1381,44 @@ def fetch_bridgy_data(source_url):
             if soup.select_one(".p-author .p-name")
             else None
         )
+        # Format the author URL if it matches the pattern
         author_url = (
             soup.select_one(".p-author .u-url")["href"]
             if soup.select_one(".p-author .u-url")
             else None
         )
+        if author_url:
+            match = re.search(r"https://(.+)/@(.+)", author_url)
+            if match:
+                author_url = f"@{match.group(2)}@{match.group(1)}"
+
         content = (
             soup.select_one(".e-content").get_text()
             if soup.select_one(".e-content")
             else None
         )
+        content_title = (
+            soup.select_one(".p-name").get_text()
+            if soup.select_one(".p-name")
+            else None
+        )
+        content_url = (
+            soup.select_one(".u-url")["href"] if soup.select_one(".u-url") else None
+        )
 
-        return author_name, author_url, content, mention_type
+        data = {
+            "author_name": author_name,
+            "author_url": author_url,
+            "content": content,
+            "content_title": content_title,
+            "content_url": content_url,
+            "mention_type": mention_type,
+        }
+
+        return data
     except requests.RequestException:
         # Handle exceptions
-        return None, None, None, "other"
+        return {}
 
 
 @login_required

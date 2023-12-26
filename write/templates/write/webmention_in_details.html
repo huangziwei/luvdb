@@ -13,8 +13,10 @@
                     <span class="text-secondary me-1">
                         ({{webmention.author_url}})
                     </span>
-                    {% if webmention.mention_type == "comment" %}
-                        replied 
+                    {% if webmention.mention_type == "post" %}
+                        mentioned
+                    {% elif webmention.mention_type == "comment" %}
+                        replied
                     {% elif webmention.mention_type == "repost" %}
                         reposted
                     {% endif %}
