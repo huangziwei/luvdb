@@ -23,10 +23,17 @@
                 </div>
             </span>
             {% endif %}
-            {% if webmention.content %}
-            <div class="bg-light p-3 mb-1">
-                {{ webmention.content | markdownify | safe }}
-            </div>
+            {% if webmention.content_title %}
+                <div class="bg-light p-3 mb-1">
+                    <a href="{{ webmention.content_url }}" class="text-decoration-none">
+                        <div>{{ webmention.content_title }}</div>
+                    </a>
+                </div>
+            {% endif %}
+            {% if not webmention.content_title and webmention.content %}
+                <div class="bg-light p-3 mb-1">
+                    {{ webmention.content | markdownify | safe }}
+                </div>
             {% endif %}
             <div class="d-flex justify-content-between">
                 <a href="{{ webmention.source }}" class="me-2 text-break text-secondary">
