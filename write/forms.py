@@ -3,10 +3,10 @@ from urllib.parse import urlparse
 import auto_prefetch
 from dal import autocomplete
 from django import forms
-from django.contrib.auth import get_user_model, settings
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 
 from .models import Comment, ContentInList, LuvList, Pin, Post, Project, Repost, Say
 
@@ -27,7 +27,9 @@ class PostForm(forms.ModelForm):
                 }
             ),
             "projects": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("write:project-autocomplete"),
+                url=reverse_lazy(
+                    "write:project-autocomplete", kwargs={"form_type": "post"}
+                ),
                 attrs={"data-placeholder": "Type to select projects"},
             ),
         }
@@ -79,7 +81,14 @@ class SayForm(forms.ModelForm):
 class PinForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = Pin
-        fields = ["title", "url", "content", "comments_enabled", "share_to_feed"]
+        fields = [
+            "title",
+            "url",
+            "content",
+            "projects",
+            "comments_enabled",
+            "share_to_feed",
+        ]
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Pin title..."}),
             "url": forms.TextInput(attrs={"placeholder": "https://www.example.com"}),
@@ -89,6 +98,12 @@ class PinForm(forms.ModelForm):
                     "id": "text-input",
                 }
             ),
+            "projects": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy(
+                    "write:project-autocomplete", kwargs={"form_type": "pin"}
+                ),
+                attrs={"data-placeholder": "Type to select projects"},
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -97,6 +112,10 @@ class PinForm(forms.ModelForm):
         self.fields["title"].label = ""
         self.fields["url"].label = ""
         self.fields["content"].label = ""
+        self.fields["projects"].label = ""
+        self.fields[
+            "projects"
+        ].help_text = "Posts in projects appear only on their respective project pages, not in the general post list."
         self.fields["comments_enabled"].label = "Enable replies"
         self.fields["comments_enabled"].initial = (
             user.enable_replies_by_default if user else True

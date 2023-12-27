@@ -23,7 +23,13 @@
                 <div class='mb-2 h-card'>
                     <a href="{% url 'accounts:detail' object.user.username %}" class="p-author">
                         {{ object.user.display_name | default:object.user.username }}
-                    </a> pinned:
+                    </a> pinned
+                    {% if projects %}
+                        this link to project
+                        {% for project in projects %}
+                            "<a class="text-muted" href="{% url 'write:pin_list_project' object.user.username project.slug %}">{{project.name}}</a>"{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
                 <div class="mb-2">
                     <div class="bg-light p-3">

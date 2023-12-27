@@ -34,7 +34,7 @@
                         {% endif %}
                     </div>
                     <hr>
-                    <div class="d-flex justify-content-between mb-3">
+                    <div class="d-flex justify-content-between mb-2">
                         <div class="fs-5">
                             <a href="{% url 'accounts:detail' user.username %}">{{ user.display_name | default:user.username }}</a> pinned
                         </div>
@@ -47,6 +47,11 @@
                             {% endif %}
                         </div>
                     </div>
+                    {% if current_project %}
+                        <div class="mb-3">
+                            (in project "<a class="text-muted" href="{% url 'write:pin_list_project' user.username current_project.slug %}">{{current_project.name}}</a>")
+                        </div>
+                    {% endif %}
                     {% for pin in page_obj %}
                         <!--Pin-->
                         <div class="activity-item mb-3 h-entry">
@@ -106,8 +111,29 @@
                         </div>
                     {% endif %}
                 </div>
-                {% if all_tags %}
+                {% if all_tags or all_projects %}
                     <div class="col-12 col-md-5 right-column">
+
+                        {% if current_project and user == request.user %}
+                            <div class="bg-light p-3 mb-3">
+                                <a class="text-muted" href="{% url 'write:project_update' user.username current_project.slug %}">Edit Project</a>
+                            </div>
+                        {% endif %}
+
+                        {% if all_projects %}
+                        <div class="bg-light p-3 mb-3">
+                            <div class="fs-5">Projects</div>
+                            <div>
+                            {% for project_info in all_projects %}
+                                <a href="{% url 'write:pin_list_project' user.username project_info.project.slug %}"
+                                    class="me-0">{{ project_info.project.name }}</a>
+                                ({{project_info.post_count}})
+                                {% if not forloop.last %}/{% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if all_tags %}
                         <!--All tags on the page-->
                         <div class="bg-light p-3">
                             <span>
@@ -118,6 +144,7 @@
                                 {% endfor %}
                             </span>
                         </div>
+                        {% endif %}
                     </div>
                 {% endif %}
             {% endif %}

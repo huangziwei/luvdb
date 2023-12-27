@@ -24,7 +24,7 @@
                 <div class="h-card">
                     <a href="{% url 'accounts:detail' repost.user.username %}" class="p-author">
                         {{ repost.user.display_name | default:repost.user.username }}
-                    </a> reposted:
+                    </a> reposted
                 </div>
                 {% if repost.content %}
                     <div class="mt-2 e-content">{{ repost.content | linkify_tags:repost.user |  markdownify }}</div>
@@ -477,7 +477,7 @@
                                    class="text-decoration-none ">
                                     {{ repost.original_activity.user.display_name | default:repost.original_activity.user.username }}
                                 </a>
-                                {{ repost.original_activity.activity_type | parse_activity_type }}:
+                                {{ repost.original_activity.activity_type | parse_activity_type }}
                             </div>
                             {% if repost.original_activity.activity_type == "post" %}
                                 <div class="mb-2">

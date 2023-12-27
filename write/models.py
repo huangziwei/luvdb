@@ -562,6 +562,7 @@ class Pin(auto_prefetch.Model):
     reposts = GenericRelation(Repost)
     votes = GenericRelation(Vote)
     share_to_feed = models.BooleanField(default=False)
+    projects = models.ManyToManyField(Project, blank=True)
 
     def get_absolute_url(self):
         return reverse(

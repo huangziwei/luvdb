@@ -12,7 +12,7 @@
             {{ activity.user.display_name | default:activity.user.username }}
             
         </a>
-        <span class="text-muted">{{ activity.activity_type | parse_activity_type }}:</span>
+        <span class="text-muted">{{ activity.activity_type | parse_activity_type }}</span>
     </div>
     {% if activity.content_object.content %}
         <div class="mb-2 truncatable-text e-content">
@@ -533,7 +533,7 @@
                        class="text-decoration-none ">
                         {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
                     </a>
-                    {{ activity.content_object.original_activity.activity_type | parse_activity_type }}:
+                    {{ activity.content_object.original_activity.activity_type | parse_activity_type }}
                 </div>
                 {% if activity.content_object.original_activity.activity_type == "post" %}
                     <div class="bg-white mt-2 p-3">

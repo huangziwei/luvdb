@@ -175,7 +175,7 @@
                                    class="text-decoration-none ">
                                     {{ original_activity.user.display_name | default:original_activity.user.username }}
                                 </a>
-                                {{ original_activity.activity_type | parse_activity_type }}:
+                                {{ original_activity.activity_type | parse_activity_type }}
                             </p>
                             {% if original_activity.activity_type == "post" %}
                                 <p>

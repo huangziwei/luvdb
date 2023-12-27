@@ -143,9 +143,7 @@ class PostListView(ListView):
 
         # Determine current project, if any
         current_project_slug = self.kwargs.get("project", None)
-        current_project = Project.objects.filter(
-            slug=current_project_slug, post__user=self.user
-        ).first()
+        current_project = Project.objects.filter(slug=current_project_slug).first()
 
         # Filter tags based on the selected project
         if current_project:
@@ -171,13 +169,11 @@ class PostListView(ListView):
             projects_with_counts.append({"project": project, "post_count": post_count})
 
         context["all_projects"] = projects_with_counts
-        current_project_slug = self.kwargs.get("project", None)
-        current_project_obj = Project.objects.filter(slug=current_project_slug).first()
 
-        if current_project_obj:
+        if current_project:
             context["current_project"] = {
-                "name": current_project_obj.name,
-                "slug": current_project_obj.slug,
+                "name": current_project.name,
+                "slug": current_project.slug,
             }
         else:
             context["current_project"] = None
@@ -440,17 +436,49 @@ class PinListView(ListView):
         self.user = get_object_or_404(
             get_user_model(), username=self.kwargs["username"]
         )
-        return Pin.objects.filter(user=self.user).order_by("-timestamp")
+        queryset = Pin.objects.filter(user=self.user)
+        if "project" in self.kwargs:
+            project = Project.objects.filter(
+                slug=self.kwargs["project"], pin__user=self.user
+            ).first()
+            if project:
+                queryset = queryset.filter(projects=project)
+                if project.order == Project.NEWEST_FIRST:
+                    queryset = queryset.order_by("-timestamp")
+                elif project.order == Project.OLDEST_FIRST:
+                    queryset = queryset.order_by("timestamp")
+                elif project.order == Project.BY_TITLE:
+                    queryset = queryset.order_by("title")
+            else:
+                queryset = Post.objects.none()
+        else:
+            queryset = queryset.filter(projects__isnull=True).order_by("-timestamp")
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["user"] = self.user
 
-        context["all_tags"] = (
-            Tag.objects.filter(pin__user=self.user)
-            .annotate(count=Count("pin"))
-            .order_by(Lower("name"))
-        )
+        # Determine current project, if any
+        current_project_slug = self.kwargs.get("project", None)
+        current_project = Project.objects.filter(slug=current_project_slug).first()
+
+        # Filter tags based on the selected project
+        if current_project:
+            all_tags = (
+                Tag.objects.filter(pin__user=self.user, pin__projects=current_project)
+                .annotate(count=Count("pin"))
+                .order_by(Lower("name"))
+            )
+        else:
+            all_tags = (
+                Tag.objects.filter(pin__user=self.user, pin__projects__isnull=True)
+                .annotate(count=Count("pin"))
+                .order_by(Lower("name"))
+            )
+
+        context["all_tags"] = all_tags
         context["no_citation_css"] = True
 
         # Add the flags to the context
@@ -464,6 +492,26 @@ class PinListView(ListView):
             else False
         )
 
+        current_project_slug = self.kwargs.get("project", None)
+        current_project_obj = Project.objects.filter(slug=current_project_slug).first()
+
+        if current_project:
+            context["current_project"] = {
+                "name": current_project.name,
+                "slug": current_project.slug,
+            }
+        else:
+            context["current_project"] = None
+
+        projects_with_counts = []
+        for project in (
+            Project.objects.filter(pin__user=self.user).distinct().order_by("name")
+        ):
+            post_count = Pin.objects.filter(user=self.user, projects=project).count()
+            projects_with_counts.append({"project": project, "post_count": post_count})
+
+        context["all_projects"] = projects_with_counts
+
         return context
 
 
@@ -475,6 +523,7 @@ class PinDetailView(ShareDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["projects"] = self.object.projects.all()
 
         # Add the flags to the context
         include_mathjax, include_mermaid = check_required_js([self.object])
@@ -1127,7 +1176,12 @@ class ProjectAutocomplete(autocomplete.Select2QuerySetView):
     create_field = "name"  # This is the field used to create the new Project object
 
     def get_queryset(self):
-        qs = Project.objects.filter(post__user=self.request.user).distinct()
+        form_type = self.kwargs.get("form_type")
+        print(form_type)
+        if form_type == "post":
+            qs = Project.objects.filter(post__user=self.request.user).distinct()
+        elif form_type == "pin":
+            qs = Project.objects.filter(pin__user=self.request.user).distinct()
 
         if self.q:
             qs = qs.filter(name__istartswith=self.q)

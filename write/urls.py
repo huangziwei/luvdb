@@ -99,6 +99,11 @@ urlpatterns = [
     path(
         "@<str:username>/pin/copy/<int:pk>/", PinCreateView.as_view(), name="pin_copy"
     ),
+    path(
+        "@<str:username>/pin/<slug:project>/",
+        PinListView.as_view(),
+        name="pin_list_project",
+    ),
     # post
     path("@<str:username>/posts/", PostListView.as_view(), name="post_list"),
     path("@<str:username>/posts/rss/", UserPostFeed(), name="user_post_feed"),
@@ -118,7 +123,7 @@ urlpatterns = [
         name="user_post_project_feed",
     ),
     path(
-        "project-autocomplete/",
+        "project-autocomplete/<str:form_type>/",
         ProjectAutocomplete.as_view(),
         name="project-autocomplete",
     ),
