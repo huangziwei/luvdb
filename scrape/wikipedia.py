@@ -50,6 +50,47 @@ def scrape_company(url):
     return data
 
 
+def scrape_release(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "html.parser")
+    infobox = soup.find("table", {"class": re.compile("infobox")})
+
+    if not infobox:
+        return None
+
+    title_element = infobox.find("th", {"class": "infobox-above"})
+    title = title_element.get_text(strip=True) if title_element else None
+
+    release_type_element = infobox.find("th", {"class": "infobox-header"})
+    release_type, recording_type = extract_release_and_recording_type(
+        release_type_element
+    )
+
+    release_date_element = infobox.find(
+        "th", text=re.compile("Released")
+    ).find_next_sibling("td")
+    release_date = (
+        release_date_element.get_text(strip=True).split("(")[0].strip()
+        if release_date_element
+        else None
+    )
+    release_date = format_date(release_date)
+
+    length_element = infobox.find("th", text=re.compile("Length")).find_next_sibling(
+        "td"
+    )
+    length = length_element.get_text(strip=True) if length_element else None
+
+    return {
+        "title": title,
+        "release_date": release_date,
+        "release_length": length,
+        "release_type": release_type,
+        "recording_type": recording_type,
+        "wikipedia": url,
+    }
+
+
 def extract_language_from_url(url):
     match = re.search(r"https?://([a-z]{2,3})\.wikipedia\.org", url)
     return match.group(1) if match else "en"
@@ -148,8 +189,8 @@ def extract_website(infobox):
 
 def format_date(date_str):
     # Define possible date formats and their corresponding expected output formats
-    date_formats = ["%Y-%m-%d", "%Y-%m", "%Y", "%d %B %Y"]
-    expected_date_format = ["%Y.%m.%d", "%Y.%m", "%Y", "%Y.%m.%d"]
+    date_formats = ["%Y-%m-%d", "%Y-%m", "%Y", "%d %B %Y", "%B %d, %Y"]
+    expected_date_format = ["%Y.%m.%d", "%Y.%m", "%Y", "%Y.%m.%d", "%Y.%m.%d"]
 
     for i, fmt in enumerate(date_formats):
         try:
@@ -161,3 +202,30 @@ def format_date(date_str):
 
     # If all parsing attempts fail, return the original string
     return date_str
+
+
+def extract_release_and_recording_type(element):
+    if element:
+        release_info = element.get_text(strip=True).lower()
+        if "album" in release_info:
+            release_type = "LP"
+        elif "ep" in release_info:
+            release_type = "EP"
+        elif "single" in release_info:
+            release_type = "Single"
+        else:
+            release_type = "Unknown"
+
+        if "studio" in release_info:
+            recording_type = "Studio"
+        elif "live" in release_info:
+            recording_type = "Live"
+        elif "compilation" in release_info:
+            recording_type = "Compilation"
+        else:
+            recording_type = "Studio"
+    else:
+        release_type = "Studio"
+        recording_type = "LP"
+
+    return release_type, recording_type

@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 import auto_prefetch
 from dal import autocomplete
 from django import forms
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
