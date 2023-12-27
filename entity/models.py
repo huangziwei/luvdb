@@ -153,10 +153,10 @@ class Role(auto_prefetch.Model):
 
 class Company(Entity):
     location = models.CharField(max_length=100, blank=True, null=True)
-    website = models.URLField(blank=True, null=True)
-    wikipedia = models.URLField(blank=True, null=True)
     founded_date = models.CharField(max_length=10, blank=True, null=True)
     defunct_date = models.CharField(max_length=10, blank=True, null=True)
+    website = models.URLField(blank=True, null=True)
+    wikipedia = models.URLField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
