@@ -60,7 +60,7 @@ pip install -r requirements.txt
 
 # Initializing environment
 touch .env
-python -c 'from django.core.management.utils import get_random_secret_key; print("SECRET_KEY="+get_random_secret_key())' > .env
+python -c 'from django.core.management.utils import get_random_secret_key; print(f"SECRET_KEY={get_random_secret_key()}\nFERNET_KEY={get_random_secret_key()}")' > .env
 echo "DEBUG=True" >> .env
 
 # Running Django migrations
