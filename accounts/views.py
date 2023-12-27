@@ -1375,47 +1375,45 @@ def fetch_webmention_data(source_url):
         response.raise_for_status()
         soup = BeautifulSoup(response.content, "html.parser")
 
+        # Distinguish between h-card and h-entry
+        h_card = soup.select_one(".h-card")
+        h_entry = soup.select_one(".h-entry")
+
+        # Extract h-card data (author information)
+        author_name, author_url, author_handle = None, None, None
+        if h_card:
+            author_name_el = h_card.select_one(".p-name")
+            author_name = author_name_el.get_text(strip=True) if author_name_el else None
+
+            author_url_el = h_card.select_one(".u-url")
+            author_url = author_url_el["href"] if author_url_el else None
+
+            if author_url:
+                match = re.search(r"https://(.+)/@(.+)", author_url)
+                author_handle = f"@{match.group(2)}@{match.group(1)}" if match else None
+
+        # Extract h-entry data (content information)
+        content, content_title, content_url = None, None, None
+        if h_entry:
+            content_el = h_entry.select_one(".e-content")
+            content = content_el.get_text() if content_el else None
+
+            content_title_el = h_entry.select_one(".p-name")
+            content_title = content_title_el.get_text() if content_title_el else None
+
+            content_url_el = h_entry.select_one(".u-url")
+            content_url = content_url_el["href"] if content_url_el else None
+
         # Determine the type of WebMention
         mention_type = "other"
         if "/post/" in source_url:
             mention_type = "post"
         elif "/repost/" in source_url:
             mention_type = "repost"
-        elif "/comment/" in source_url or soup.select_one(".e-content"):
+        elif "/comment/" in source_url or (h_entry and h_entry.select_one(".e-content")):
             mention_type = "comment"
 
-        # Extract data
-        author_name = (
-            soup.select_one(".p-author .p-name").get_text(strip=True)
-            if soup.select_one(".p-author .p-name")
-            else None
-        )
-        # Format the author URL if it matches the pattern
-        author_url = (
-            soup.select_one(".p-author .u-url")["href"]
-            if soup.select_one(".p-author .u-url")
-            else None
-        )
-        author_handle = None
-        if author_url:
-            match = re.search(r"https://(.+)/@(.+)", author_url)
-            if match:
-                author_handle = f"@{match.group(2)}@{match.group(1)}"
-
-        content = (
-            soup.select_one(".e-content").get_text()
-            if soup.select_one(".e-content")
-            else None
-        )
-        content_title = (
-            soup.select_one(".p-name").get_text()
-            if soup.select_one(".p-name")
-            else None
-        )
-        content_url = (
-            soup.select_one(".u-url")["href"] if soup.select_one(".u-url") else None
-        )
-
+        # Organize data
         data = {
             "author_name": author_name,
             "author_url": author_url,
@@ -1430,7 +1428,6 @@ def fetch_webmention_data(source_url):
     except requests.RequestException:
         # Handle exceptions
         return {}
-
 
 @login_required
 def delete_webmention(request, webmention_id):

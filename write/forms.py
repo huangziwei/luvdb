@@ -115,7 +115,7 @@ class PinForm(forms.ModelForm):
         self.fields["projects"].label = ""
         self.fields[
             "projects"
-        ].help_text = "Posts in projects appear only on their respective project pages, not in the general post list."
+        ].help_text = "Pins in projects appear only on their respective project pages, not in the general pin list."
         self.fields["comments_enabled"].label = "Enable replies"
         self.fields["comments_enabled"].initial = (
             user.enable_replies_by_default if user else True
