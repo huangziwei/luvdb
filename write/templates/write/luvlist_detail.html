@@ -426,12 +426,12 @@
                                                 </div>
                                             {% endfor %}
                                             <div>
-                                                {% if content.content_object.labels %}
+                                                {% if content.content_object.label %}
                                                     {# djlint:off #}
-                                                    Label{% if content.content_object.labels.list|length > 1 %}s{% endif %}:
+                                                    Label{% if content.content_object.label.all|length > 1 %}s{% endif %}:
                                                     {# djlint:on #}
-                                                    {% for label in content.content_object.labels.all %}
-                                                        {% if not forloop.first %},{% endif %}
+                                                    {% for label in content.content_object.label.all %}
+                                                        {% if not forloop.first %}/{% endif %}
                                                         <a href="{% url 'entity:company_detail' label.id %}">{{ label.name }}</a>
                                                     {% endfor %}
                                                 {% endif %}
