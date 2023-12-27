@@ -304,6 +304,7 @@ MARKDOWNIFY = {
             "md_in_html",
             "nl2br",
             "toc",
+            "tables",
             MentionExtension(),
         ],
         "MARKDOWN_EXTENSION_CONFIGS": {
