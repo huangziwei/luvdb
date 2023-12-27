@@ -23,14 +23,14 @@
                 </div>
             </span>
             {% endif %}
-            {% if webmention.content_title %}
+            {% if webmention.mention_type == "post" and webmention.content_title %}
                 <div class="bg-light p-3 mb-1">
                     <a href="{{ webmention.content_url }}" class="text-decoration-none">
                         <div>{{ webmention.content_title }}</div>
                     </a>
                 </div>
             {% endif %}
-            {% if not webmention.content_title and webmention.content %}
+            {% if webmention.mention_type == "comment" and webmention.content %}
                 <div class="bg-light p-3 mb-1">
                     {{ webmention.content | markdownify | safe }}
                 </div>
