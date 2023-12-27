@@ -611,3 +611,46 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .bg-light .media-card {
     background-color: var(--bs-body-bg) !important; /* Apply white background color */
 }
+
+table {
+    max-width: 80%; /* Set max-width of table */
+    margin: 0 auto; /* Center the table */
+    border-collapse: collapse;
+    font-size: .95em;
+    background-color: var(--bg-default);
+    color: var(--text-default);
+}
+
+table, th, td {
+    border: 1px solid var(--text-contrast);
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+thead {
+    background-color: var(--bg-highlight);
+}
+
+tbody tr:nth-child(odd) {
+    background-color: var(--bg-highlight);
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--bg-default);
+}
+
+tbody tr:hover {
+    background-color: var(--text-contrast);
+}
+
+strong {
+    color: var(--text-default);
+}
+
+em {
+    font-style: italic;
+    color: var(--text-contrast);
+}
