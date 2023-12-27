@@ -98505,15 +98505,6 @@
         }
     },
     {
-        "model": "altprofile.altprofile",
-        "pk": 1,
-        "fields": {
-            "user": 1,
-            "custom_html": "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>{{ my.display_name|default:my.username }}</title>\r\n    <style>{{ css}}</style>\r\n</head>\r\n<body>\r\n    <main>\r\n        <h1>{{ my.display_name|default:my.username }} is</h1>\r\n\r\n        <table class=\"table table-striped table-bordered\">\r\n            <tbody>\r\n                <tr>\r\n                    <td class=\"left-col\">\r\n                        <a href=\"https://hzwei.dev\">hzwei.dev</a>\r\n                    </td >\r\n                    <td class=\"right-col\"><strong>a SciDev</strong></td>\r\n                </tr>\r\n                <tr>\r\n                    <td class=\"left-col\">\r\n                        <a href=\"https://luvdb.com/@{{ my.username }}/\">luvdb.com/@{{my.username}}</a>\r\n                    </td>\r\n                    <td class=\"right-col\"><strong>a WebDev</strong></td>\r\n                </tr>\r\n                <tr>\r\n                    <td class=\"left-col\">\r\n                        <a href=\"https://mastodon.social/@jyutgeisi\" rel=\"me\">@jyutgeisi@mastodon.social</a>\r\n                    </td>\r\n                    <td class=\"right-col\">on Fediverse</td>\r\n                </tr>\r\n            </tbody>\r\n        </table>\r\n    </main>\r\n\r\n    <footer>\r\n        <p>Made with <a href=\"https://luvdb.com\">L\u028cvDB</a></p>\r\n    </footer>\r\n</body>\r\n</html>",
-            "custom_css": "body {\r\n    font-family: Arial, sans-serif; \r\n    text-align: center;\r\n}\r\n\r\na {\r\n    text-decoration: underline;\r\n    color: black;\r\n}\r\n\r\ntable {\r\n    margin: auto;\r\n    border-spacing: 10px 10px;\r\n}\r\n\r\ntd.left-col {\r\n    text-align: right;\r\n}\r\n\r\ntd.left-col a {\r\n    font-family: 'Courier New', Courier, monospace;\r\n}\r\n\r\ntd.right-col {\r\n    text-align: left;\r\n}\r\n\r\nfooter {\r\n    text-align: center;\r\n}"
-        }
-    },
-    {
         "model": "altprofile.altprofiletemplate",
         "pk": 1,
         "fields": {
@@ -98544,7 +98535,7 @@
         "model": "accounts.customuser",
         "pk": 1,
         "fields": {
-            "password": "pbkdf2_sha256$720000$0BOxMvApgIeS7rwVvDzY6H$FOxxlsZRs0pHuFS9v/X1V+28vHGEHzQsHUuElfGZVM0=",
+            "password": "pbkdf2_sha256$720000$F3t35sfTTgI6mMN1AcXlOh$wt7fTmkKe/LEN6aiJKVOP9rhcX91pWOYxcJSRhjKPOQ=",
             "username": "anonymous",
             "is_superuser": true,
             "is_staff": true,
