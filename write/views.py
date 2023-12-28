@@ -218,9 +218,9 @@ class PostDetailView(ShareDetailView):
 
             # Order the posts based on the project's order setting
             if project.order == Project.NEWEST_FIRST:
-                ordered_posts = posts.order_by("-created_at")
+                ordered_posts = posts.order_by("-timestamp")
             elif project.order == Project.OLDEST_FIRST:
-                ordered_posts = posts.order_by("created_at")
+                ordered_posts = posts.order_by("timestamp")
             elif project.order == Project.BY_TITLE:
                 ordered_posts = posts.order_by("title")
             else:
