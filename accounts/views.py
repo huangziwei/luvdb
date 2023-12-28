@@ -1,3 +1,4 @@
+import os
 import re
 import time
 from datetime import timedelta
@@ -6,6 +7,7 @@ from urllib.parse import urlparse
 import qrcode
 import requests
 from bs4 import BeautifulSoup
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.decorators import login_required
@@ -1478,11 +1480,14 @@ def generate_qr_code(request, invite_code):
     I1 = ImageDraw.Draw(new_img)
 
     # Load fonts - make sure Arial font is available on your server
-    try:
-        font = ImageFont.truetype("Arial", 102)
-    except IOError:
-        # Default font if Arial is not available
-        font = ImageFont.load_default()
+    # try:
+    #     font = ImageFont.truetype("Arial", 102)
+    # except IOError:
+    # Default font if Arial is not available
+    font_path = os.path.join(
+        settings.BASE_DIR, "static", "luvdb", "fonts", "NotoSans.ttf"
+    )
+    font = ImageFont.truetype(font_path, 105)
 
     # Add logo text at the bottom
     text = "LʌvDB"
