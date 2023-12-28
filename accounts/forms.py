@@ -20,7 +20,7 @@ class CustomUserCreationForm(UserCreationForm):
     """Form for user creation with invitation code."""
 
     invitation_code = forms.CharField(
-        required=True, help_text="Enter the invitation code you received"
+        required=True, help_text="Enter the invitation code you received."
     )
 
     class Meta(auto_prefetch.Model.Meta):
@@ -30,9 +30,9 @@ class CustomUserCreationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["username"].help_text = (
-            "You can change it later. For anonymity purpose, we don't even record your email address. "
+            "Username can be changed later. For anonymity purpose, we don't record your email address. "
             "But if you forget your username and password, you won't be able to recover it. "
-            "Please mark down your username and password somewhere safe."
+            "Please use password managers to keep your username and password safe."
         )
 
     def clean_username(self):

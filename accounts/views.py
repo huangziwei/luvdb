@@ -119,7 +119,9 @@ class SignUpView(CreateView):
             context["form"].fields["invitation_code"].widget.attrs[
                 "class"
             ] = "readonly-field"
-
+            context["inviter"] = InvitationCode.objects.get(
+                code=invite_code
+            ).generated_by
         return context
 
 
