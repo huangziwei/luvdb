@@ -28,7 +28,11 @@ urlpatterns = [
         ManageInvitationsView.as_view(),
         name="manage_invitations",
     ),
-    path("geneate_qr_code/<str:invite_code>", generate_qr_code, name="qr_code"),
+    path(
+        "<str:username>/invite_code/<str:invite_code>/",
+        generate_qr_code,
+        name="qr_code",
+    ),
     path("<str:username>/", view=AccountDetailView.as_view(), name="detail"),
     path(
         "<str:username>/feed/",

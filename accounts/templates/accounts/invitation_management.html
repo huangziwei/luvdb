@@ -20,7 +20,7 @@
                         <span id="code_{{ forloop.counter }}" data-invite-code="{{ code.code }}">{{ code.code }}</span>
                         <div>
                             <button onclick="copyCodeToClipboard('code_{{ forloop.counter }}')" class="btn btn-sm btn-outline-secondary">Copy</button>  
-                            <button onclick="window.location.href='{% url 'accounts:qr_code' code.code %}'" class="btn btn-sm btn-outline-secondary">QR Code</button>                  
+                            <button onclick="window.location.href='{% url 'accounts:qr_code' user.username code.code %}'" class="btn btn-sm btn-outline-secondary">QR Code</button>                  
                         </div>
                     {% endif %}
                 </li>

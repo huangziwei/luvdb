@@ -1455,7 +1455,7 @@ def delete_webmention(request, webmention_id):
         return redirect("activity_feed:activity_feed")
 
 
-def generate_qr_code(request, invite_code):
+def generate_qr_code(request, username, invite_code):
     # Create QR code with the invitation link
     qr = qrcode.QRCode(
         version=1,
@@ -1494,7 +1494,7 @@ def generate_qr_code(request, invite_code):
     text_width = I1.textlength(text, font=font)
     x = (new_width - text_width) // 2
     y = (
-        img.size[1] + (additional_bottom_space - 175) // 2
+        img.size[1] + (additional_bottom_space - 200) // 2
     )  # Adjust this value as needed
     I1.text((x, y), text, fill="#eee", font=font)
 
