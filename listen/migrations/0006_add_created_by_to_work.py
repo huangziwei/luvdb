@@ -7,7 +7,7 @@ def update_work_model(apps, schema_editor):
     Work = apps.get_model("listen", "Work")
 
     CustomUser = apps.get_model("accounts", "CustomUser")
-    user = CustomUser.objects.get(pk=1)
+    user = CustomUser.objects.filter(is_superuser=True).first()
 
     for work in Work.objects.all():
         work.created_at = timezone.now()
