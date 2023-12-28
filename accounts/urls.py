@@ -7,11 +7,9 @@ from .views import (
     AccountDetailView,
     AccountUpdateView,
     FollowingListView,
-    InvitationRequestedSuccessView,
-    InvitationRequestedView,
     ManageInvitationsView,
     PersonalActivityFeedView,
-    RequestInvitationView,
+    YearInReviewView,
     app_password_list,
     deactivate_account,
     delete_app_password,
@@ -62,5 +60,15 @@ urlpatterns = [
         "<str:username>/deactivate/",
         deactivate_account,
         name="deactivate_account",
+    ),
+    path(
+        "<str:username>/year-in-review/",
+        YearInReviewView.as_view(),
+        name="year_in_review",
+    ),
+    path(
+        "<str:username>/year-in-review/<int:year>/",
+        YearInReviewView.as_view(),
+        name="year_in_review_by_year",
     ),
 ]

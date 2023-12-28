@@ -71,6 +71,20 @@ class Work(auto_prefetch.Model):
     wikipedia = models.URLField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = auto_prefetch.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="musicwork_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = auto_prefetch.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="musicwork_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
     history = HistoricalRecords(inherit=True)
 
     def __str__(self):

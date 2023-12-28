@@ -1,3 +1,4 @@
+import datetime
 import os
 import re
 import time
@@ -20,6 +21,7 @@ from django.db.models import Count, Min, OuterRef, Q, Subquery
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.http import (
+    Http404,
     HttpResponse,
     HttpResponseBadRequest,
     HttpResponseForbidden,
@@ -1497,11 +1499,7 @@ def generate_qr_code(request, username, invite_code):
 
     I1 = ImageDraw.Draw(new_img)
 
-    # Load fonts - make sure Arial font is available on your server
-    # try:
-    #     font = ImageFont.truetype("Arial", 102)
-    # except IOError:
-    # Default font if Arial is not available
+    # Load fonts
     font_path = os.path.join(
         settings.BASE_DIR, "static", "luvdb", "fonts", "NotoSans.ttf"
     )
@@ -1511,12 +1509,180 @@ def generate_qr_code(request, username, invite_code):
     text = "LʌvDB"
     text_width = I1.textlength(text, font=font)
     x = (new_width - text_width) // 2
-    y = (
-        img.size[1] + (additional_bottom_space - 200) // 2
-    )  # Adjust this value as needed
+    y = img.size[1] + (additional_bottom_space - 200) // 2
     I1.text((x, y), text, fill="#eee", font=font)
 
     # Create HTTP response
     response = HttpResponse(content_type="image/png")
     new_img.save(response, "PNG")
     return response
+
+
+class YearInReviewView(DetailView):
+    model = User
+    slug_field = "username"
+    slug_url_kwarg = "username"
+    template_name = "accounts/year_in_review.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.object
+        current_year = timezone.now().year
+        requested_year = self.kwargs.get("year", current_year)
+
+        # Check if the current year's stats are available
+        is_current_year_available = not (
+            requested_year == current_year
+            and timezone.now().date() < datetime.date(current_year, 12, 25)
+        )
+
+        if is_current_year_available:
+            context["current_year_available"] = True
+            yearly_stats = self.get_yearly_stats(user, requested_year)
+            context.update(yearly_stats)
+        else:
+            context["current_year_available"] = False
+
+        context["requested_year"] = requested_year
+        # Add previous and next year for navigation, considering access control
+        context["all_years"] = range(2023, current_year + 1)
+        context["user"] = user
+
+        return context
+
+    def get_yearly_stats(self, user, year):
+        start_date = datetime.date(year, 1, 1)
+        end_date = datetime.date(year, 12, 31)
+
+        yearly_activities = Activity.objects.filter(
+            user=user, timestamp__range=(start_date, end_date)
+        ).count()
+
+        # writing
+        ## posts
+        posts = Post.objects.filter(
+            user=user, timestamp__range=(start_date, end_date)
+        ).count()
+        ## says / reposts
+        says = Say.objects.filter(
+            user=user, timestamp__range=(start_date, end_date)
+        ).count()
+        reposts = Repost.objects.filter(
+            user=user, timestamp__range=(start_date, end_date)
+        ).count()
+        ## pins
+        pins = Pin.objects.filter(
+            user=user, timestamp__range=(start_date, end_date)
+        ).count()
+        ## comments
+        comments = Comment.objects.filter(
+            user=user, timestamp__range=(start_date, end_date)
+        ).count()
+        ## luvlists
+        luvlists_created = LuvList.objects.filter(
+            user=user, timestamp__range=(start_date, end_date)
+        ).count()
+        luvlists_contributed = LuvList.objects.filter(
+            collaborators=user, updated_at__range=(start_date, end_date)
+        ).count()
+
+        total_writing = posts + says + reposts + pins + comments
+
+        # checkins
+        ## read
+        read_checkins = ReadCheckIn.objects.filter(
+            user=user, timestamp__range=(start_date, end_date)
+        ).count()
+        ## watch
+        watch_checkins = WatchCheckIn.objects.filter(
+            user=user, timestamp__range=(start_date, end_date)
+        ).count()
+        ## listen
+        listen_checkins = ListenCheckIn.objects.filter(
+            user=user, timestamp__range=(start_date, end_date)
+        ).count()
+        ## play
+        play_checkins = PlayCheckIn.objects.filter(
+            user=user, timestamp__range=(start_date, end_date)
+        ).count()
+
+        # contributions
+        ## Read
+        contributed_litworks = LitWork.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        contributed_litinstances = LitInstance.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        contributed_books = Book.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        ## watch
+        contributed_movies = Movie.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        contributed_series = Series.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        ## listen
+        contributed_musicworks = MusicWork.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        contributed_tracks = Track.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        contributed_release = Release.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        ## play
+        contributed_gameworks = GameWork.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        contributed_games = Game.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+
+        total_contribution = (
+            contributed_litworks
+            + contributed_litinstances
+            + contributed_books
+            + contributed_movies
+            + contributed_series
+            + contributed_musicworks
+            + contributed_tracks
+            + contributed_release
+            + contributed_gameworks
+            + contributed_games
+        )
+        # Similarly for other models like ReadCheckIn, ListenCheckIn, etc.
+
+        return {
+            "yearly_activities": yearly_activities,
+            # writing
+            "total_writing": total_writing,
+            "posts": posts,
+            "says": says,
+            "reposts": reposts,
+            "pins": pins,
+            "comments": comments,
+            "luvlists_created": luvlists_created,
+            "luvlists_contributed": luvlists_contributed,
+            # checkins
+            "read_checkins": read_checkins,
+            "watch_checkins": watch_checkins,
+            "listen_checkins": listen_checkins,
+            "play_checkins": play_checkins,
+            # contributions
+            "total_contribution": total_contribution,
+            "contributed_litworks": contributed_litworks,
+            "contributed_litinstances": contributed_litinstances,
+            "contributed_books": contributed_books,
+            "contributed_movies": contributed_movies,
+            "contributed_series": contributed_series,
+            "contributed_musicworks": contributed_musicworks,
+            "contributed_tracks": contributed_tracks,
+            "contributed_release": contributed_release,
+            "contributed_gameworks": contributed_gameworks,
+            "contributed_games": contributed_games,
+            # other stats
+        }
