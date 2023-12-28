@@ -1,5 +1,6 @@
 import re
 from calendar import Calendar
+from datetime import datetime
 
 import pytz
 from django.contrib import messages
@@ -45,6 +46,12 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         )  # Use user's timezone
         current_month_day = now.strftime(".%m.%d")
         current_month_day_dash = now.strftime("-%m-%d")
+
+        is_year_in_review_time = (
+            "-12-25" <= current_month_day_dash <= "-12-31"
+            or "-01-01" <= current_month_day_dash <= "-01-02"
+        )
+        context["is_year_in_review_time"] = is_year_in_review_time
 
         # Query for people born or died on this day
         born_today = Creator.objects.filter(

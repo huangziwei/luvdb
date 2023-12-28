@@ -9,11 +9,11 @@ def update_work_model(apps, schema_editor):
     CustomUser = apps.get_model("accounts", "CustomUser")
     user = CustomUser.objects.filter(is_superuser=True).first()
 
-    for work in Work.objects.all():
-        work.created_at = timezone.now()
-        work.updated_at = timezone.now()
-        work.created_by = user
-        work.updated_by = user
+    for work in Work.objects.filter(created_by__isnull=True, updated_by__isnull=True):
+        work.created_at = work.created_at or timezone.now()
+        work.updated_at = work.updated_at or timezone.now()
+        work.created_by = work.created_by or user
+        work.updated_by = work.updated_by or user
         work.save()
 
 

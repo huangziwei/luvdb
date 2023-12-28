@@ -17,7 +17,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.db import transaction
-from django.db.models import Count, Min, OuterRef, Q, Subquery
+from django.db.models import Count, Max, Min, OuterRef, Q, Subquery
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.http import (
@@ -1524,6 +1524,19 @@ class YearInReviewView(DetailView):
     slug_url_kwarg = "username"
     template_name = "accounts/year_in_review.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        # Get the User object
+        profile_user = get_object_or_404(
+            get_user_model(), username=self.kwargs["username"]
+        )
+
+        # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
+        if not profile_user.is_public and not request.user.is_authenticated:
+            return redirect("{}?next={}".format(reverse("login"), request.path))
+
+        # Otherwise, proceed as normal
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.object
@@ -1531,17 +1544,17 @@ class YearInReviewView(DetailView):
         requested_year = self.kwargs.get("year", current_year)
 
         # Check if the current year's stats are available
-        is_current_year_available = not (
-            requested_year == current_year
-            and timezone.now().date() < datetime.date(current_year, 12, 25)
+        is_data_available = (
+            requested_year <= current_year
+            and timezone.now().date() > datetime.date(current_year, 12, 25)
         )
 
-        if is_current_year_available:
-            context["current_year_available"] = True
+        if is_data_available:
+            context["if_data_available"] = True
             yearly_stats = self.get_yearly_stats(user, requested_year)
             context.update(yearly_stats)
         else:
-            context["current_year_available"] = False
+            context["if_data_available"] = False
 
         context["requested_year"] = requested_year
         # Add previous and next year for navigation, considering access control
@@ -1593,18 +1606,240 @@ class YearInReviewView(DetailView):
         read_checkins = ReadCheckIn.objects.filter(
             user=user, timestamp__range=(start_date, end_date)
         ).count()
+        books_checked_in = (
+            ReadCheckIn.objects.filter(
+                user=user,
+                content_type=ContentType.objects.get(app_label="read", model="book"),
+                timestamp__range=(start_date, end_date),
+            )
+            .values("object_id")
+            .distinct()
+            .count()
+        )
+        books_to_read = count_media_with_latest_status(
+            ReadCheckIn, "read", "book", user, year, "to_read"
+        )
+        books_reading = count_media_with_latest_status(
+            ReadCheckIn, "read", "book", user, year, "reading"
+        )
+        books_rereading = count_media_with_latest_status(
+            ReadCheckIn, "read", "book", user, year, "rereading"
+        )
+        books_read = count_media_with_latest_status(
+            ReadCheckIn, "read", "book", user, year, "finished_reading"
+        )
+        books_reread = count_media_with_latest_status(
+            ReadCheckIn, "read", "book", user, year, "reread"
+        )
+        books_sampled = count_media_with_latest_status(
+            ReadCheckIn, "read", "book", user, year, "sampled"
+        )
+        books_paused = count_media_with_latest_status(
+            ReadCheckIn, "read", "book", user, year, "paused"
+        )
+        books_abandoned = count_media_with_latest_status(
+            ReadCheckIn, "read", "book", user, year, "abandoned"
+        )
+
         ## watch
         watch_checkins = WatchCheckIn.objects.filter(
             user=user, timestamp__range=(start_date, end_date)
         ).count()
+        # Get the ContentType for the Book model (or any other model you're interested in)
+        movies_checked_in = (
+            WatchCheckIn.objects.filter(
+                user=user,
+                content_type=ContentType.objects.get(app_label="watch", model="movie"),
+                timestamp__range=(start_date, end_date),
+            )
+            .values("object_id")
+            .distinct()
+            .count()
+        )
+        movies_to_watch = count_media_with_latest_status(
+            WatchCheckIn, "watch", "movie", user, year, "to_watch"
+        )
+        movies_watching = count_media_with_latest_status(
+            WatchCheckIn, "watch", "movie", user, year, "watching"
+        )
+        movies_rewatching = count_media_with_latest_status(
+            WatchCheckIn, "watch", "movie", user, year, "rewatching"
+        )
+        movies_watched = count_media_with_latest_status(
+            WatchCheckIn, "watch", "movie", user, year, "watched"
+        )
+        movies_rewatched = count_media_with_latest_status(
+            WatchCheckIn, "watch", "movie", user, year, "rewatched"
+        )
+        movies_paused = count_media_with_latest_status(
+            WatchCheckIn, "watch", "movie", user, year, "paused"
+        )
+        movies_abandoned = count_media_with_latest_status(
+            WatchCheckIn, "watch", "movie", user, year, "abandoned"
+        )
+        series_checked_in = (
+            WatchCheckIn.objects.filter(
+                user=user,
+                content_type=ContentType.objects.get(app_label="watch", model="series"),
+                timestamp__range=(start_date, end_date),
+            )
+            .values("object_id")
+            .distinct()
+            .count()
+        )
+        series_to_watch = count_media_with_latest_status(
+            WatchCheckIn, "watch", "series", user, year, "to_watch"
+        )
+        series_watching = count_media_with_latest_status(
+            WatchCheckIn, "watch", "series", user, year, "watching"
+        )
+        series_rewatching = count_media_with_latest_status(
+            WatchCheckIn, "watch", "series", user, year, "rewatching"
+        )
+        series_watched = count_media_with_latest_status(
+            WatchCheckIn, "watch", "series", user, year, "watched"
+        )
+        series_rewatched = count_media_with_latest_status(
+            WatchCheckIn, "watch", "series", user, year, "rewatched"
+        )
+        series_paused = count_media_with_latest_status(
+            WatchCheckIn, "watch", "series", user, year, "paused"
+        )
+        series_abandoned = count_media_with_latest_status(
+            WatchCheckIn, "watch", "series", user, year, "abandoned"
+        )
+
         ## listen
         listen_checkins = ListenCheckIn.objects.filter(
             user=user, timestamp__range=(start_date, end_date)
         ).count()
+        ### Release
+        releases_checked_in = (
+            ListenCheckIn.objects.filter(
+                user=user,
+                content_type=ContentType.objects.get(
+                    app_label="listen", model="release"
+                ),
+                timestamp__range=(start_date, end_date),
+            )
+            .values("object_id")
+            .distinct()
+            .count()
+        )
+        releases_to_listen = count_media_with_latest_status(
+            ListenCheckIn, "listen", "release", user, year, "to_listen"
+        )
+        releases_looping = count_media_with_latest_status(
+            ListenCheckIn, "listen", "release", user, year, "looping"
+        )
+        releases_listened = count_media_with_latest_status(
+            ListenCheckIn, "listen", "release", user, year, "listened"
+        )
+        releases_relistened = count_media_with_latest_status(
+            ListenCheckIn, "listen", "release", user, year, "relistened"
+        )
+        releases_abandoned = count_media_with_latest_status(
+            ListenCheckIn, "listen", "release", user, year, "abandoned"
+        )
+        ### Podcast
+        podcasts_checked_in = (
+            ListenCheckIn.objects.filter(
+                user=user,
+                content_type=ContentType.objects.get(
+                    app_label="listen", model="podcast"
+                ),
+                timestamp__range=(start_date, end_date),
+            )
+            .values("object_id")
+            .distinct()
+            .count()
+        )
+        podcasts_to_listen = count_media_with_latest_status(
+            ListenCheckIn, "listen", "podcast", user, year, "to_listen"
+        )
+        podcasts_subscribed = count_media_with_latest_status(
+            ListenCheckIn, "listen", "podcast", user, year, "subscribed"
+        )
+        podcasts_unsubscribed = count_media_with_latest_status(
+            ListenCheckIn, "listen", "podcast", user, year, "unsubscribed"
+        )
+        podcasts_sampled = count_media_with_latest_status(
+            ListenCheckIn, "listen", "podcast", user, year, "sampled"
+        )
+        ### Audiobook
+        audiobooks_checked_in = (
+            ListenCheckIn.objects.filter(
+                user=user,
+                content_type=ContentType.objects.get(
+                    app_label="listen", model="audiobook"
+                ),
+                timestamp__range=(start_date, end_date),
+            )
+            .values("object_id")
+            .distinct()
+            .count()
+        )
+        audiobooks_to_listen = count_media_with_latest_status(
+            ListenCheckIn, "listen", "audiobook", user, year, "to_listen"
+        )
+        audiobooks_listening = count_media_with_latest_status(
+            ListenCheckIn, "listen", "audiobook", user, year, "listening"
+        )
+        audiobooks_relistening = count_media_with_latest_status(
+            ListenCheckIn, "listen", "audiobook", user, year, "relistening"
+        )
+        audiobooks_listened = count_media_with_latest_status(
+            ListenCheckIn, "listen", "audiobook", user, year, "listened"
+        )
+        audiobooks_relistened = count_media_with_latest_status(
+            ListenCheckIn, "listen", "audiobook", user, year, "relistened"
+        )
+        audiobooks_paused = count_media_with_latest_status(
+            ListenCheckIn, "listen", "audiobook", user, year, "paused"
+        )
+        audiobooks_abandoned = count_media_with_latest_status(
+            ListenCheckIn, "listen", "audiobook", user, year, "abandoned"
+        )
         ## play
         play_checkins = PlayCheckIn.objects.filter(
             user=user, timestamp__range=(start_date, end_date)
         ).count()
+        games_checked_in = (
+            PlayCheckIn.objects.filter(
+                user=user,
+                content_type=ContentType.objects.get(app_label="play", model="game"),
+                timestamp__range=(start_date, end_date),
+            )
+            .values("object_id")
+            .distinct()
+            .count()
+        )
+        games_to_play = count_media_with_latest_status(
+            PlayCheckIn, "play", "game", user, year, "to_play"
+        )
+        games_playing = count_media_with_latest_status(
+            PlayCheckIn, "play", "game", user, year, "playing"
+        )
+        games_replaying = count_media_with_latest_status(
+            PlayCheckIn, "play", "game", user, year, "replaying"
+        )
+        games_played = count_media_with_latest_status(
+            PlayCheckIn, "play", "game", user, year, "played"
+        )
+        games_replayed = count_media_with_latest_status(
+            PlayCheckIn, "play", "game", user, year, "replayed"
+        )
+        games_paused = count_media_with_latest_status(
+            PlayCheckIn, "play", "game", user, year, "paused"
+        )
+        games_abandoned = count_media_with_latest_status(
+            PlayCheckIn, "play", "game", user, year, "abandoned"
+        )
+
+        ## total checkins
+        total_checkins = (
+            read_checkins + watch_checkins + listen_checkins + play_checkins
+        )
 
         # contributions
         ## Read
@@ -1631,7 +1866,10 @@ class YearInReviewView(DetailView):
         contributed_tracks = Track.objects.filter(
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
-        contributed_release = Release.objects.filter(
+        contributed_releases = Release.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        contributed_audiobooks = Audiobook.objects.filter(
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
         ## play
@@ -1650,7 +1888,7 @@ class YearInReviewView(DetailView):
             + contributed_series
             + contributed_musicworks
             + contributed_tracks
-            + contributed_release
+            + contributed_releases
             + contributed_gameworks
             + contributed_games
         )
@@ -1668,10 +1906,71 @@ class YearInReviewView(DetailView):
             "luvlists_created": luvlists_created,
             "luvlists_contributed": luvlists_contributed,
             # checkins
+            "total_checkins": total_checkins,
             "read_checkins": read_checkins,
             "watch_checkins": watch_checkins,
             "listen_checkins": listen_checkins,
             "play_checkins": play_checkins,
+            ## read checkins breakdown
+            "books_checked_in": books_checked_in,
+            "books_to_read": books_to_read,
+            "books_reading": books_reading,
+            "books_rereading": books_rereading,
+            "books_read": books_read,
+            "books_reread": books_reread,
+            "books_paused": books_paused,
+            "books_abandoned": books_abandoned,
+            ## Watch checkins breakdown
+            ### Movie
+            "movies_checked_in": movies_checked_in,
+            "movies_to_watch": movies_to_watch,
+            "movies_watching": movies_watching,
+            "movies_rewatching": movies_rewatching,
+            "movies_watched": movies_watched,
+            "movies_rewatched": movies_rewatched,
+            "movies_paused": movies_paused,
+            "movies_abandoned": movies_abandoned,
+            ### Series
+            "series_checked_in": series_checked_in,
+            "series_to_watch": series_to_watch,
+            "series_watching": series_watching,
+            "series_rewatching": series_rewatching,
+            "series_watched": series_watched,
+            "series_rewatched": series_rewatched,
+            "series_paused": series_paused,
+            "series_abandoned": series_abandoned,
+            ## listen checkins breakdown
+            ### releases
+            "releases_checked_in": releases_checked_in,
+            "releases_to_listen": releases_to_listen,
+            "releases_looping": releases_looping,
+            "releases_listened": releases_listened,
+            "releases_relistened": releases_relistened,
+            "releases_abandoned": releases_abandoned,
+            ### podcasts
+            "podcasts_checked_in": podcasts_checked_in,
+            "podcasts_to_listen": podcasts_to_listen,
+            "podcasts_subscribed": podcasts_subscribed,
+            "podcasts_unsubscribed": podcasts_unsubscribed,
+            "podcasts_sampled": podcasts_sampled,
+            ### audiobooks
+            "audiobooks_checked_in": audiobooks_checked_in,
+            "audiobooks_to_listen": audiobooks_to_listen,
+            "audiobooks_listening": audiobooks_listening,
+            "audiobooks_relistening": audiobooks_relistening,
+            "audiobooks_listened": audiobooks_listened,
+            "audiobooks_relistened": audiobooks_relistened,
+            "audiobooks_paused": audiobooks_paused,
+            "audiobooks_abandoned": audiobooks_abandoned,
+            ## play checkins breakdown
+            "games_checked_in": games_checked_in,
+            "games_to_play": games_to_play,
+            "games_playing": games_playing,
+            "games_replaying": games_replaying,
+            "games_played": games_played,
+            "games_replayed": games_replayed,
+            "games_paused": games_paused,
+            "games_abandoned": games_abandoned,
             # contributions
             "total_contribution": total_contribution,
             "contributed_litworks": contributed_litworks,
@@ -1681,8 +1980,44 @@ class YearInReviewView(DetailView):
             "contributed_series": contributed_series,
             "contributed_musicworks": contributed_musicworks,
             "contributed_tracks": contributed_tracks,
-            "contributed_release": contributed_release,
+            "contributed_releases": contributed_releases,
+            "contributed_audiobooks": contributed_audiobooks,
             "contributed_gameworks": contributed_gameworks,
             "contributed_games": contributed_games,
             # other stats
         }
+
+
+def count_media_with_latest_status(checkin_model, app_label, model, user, year, status):
+    start_date = datetime.date(year, 1, 1)
+    end_date = datetime.date(year, 12, 31)
+    content_type = ContentType.objects.get(app_label=app_label, model=model)
+
+    # Step 1: Get the latest check-in for each book
+    latest_checkins = (
+        checkin_model.objects.filter(
+            user=user,
+            content_type=content_type,
+            timestamp__range=(start_date, end_date),
+        )
+        .values("object_id")
+        .annotate(latest_checkin=Max("timestamp"))
+    )
+
+    # Step 2: Count the books with the specified status in their latest check-in
+    count = (
+        checkin_model.objects.filter(
+            user=user,
+            content_type=content_type,
+            status=status,
+            timestamp__range=(start_date, end_date),
+        )
+        .filter(
+            # Match the latest check-in timestamp for each book
+            Q(object_id__in=latest_checkins.values("object_id"))
+            & Q(timestamp__in=latest_checkins.values("latest_checkin"))
+        )
+        .count()
+    )
+
+    return count
