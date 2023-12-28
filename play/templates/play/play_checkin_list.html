@@ -31,7 +31,7 @@
                     </a> to
                     <a href="{% url 'play:game_detail' game.id %}">{{ game.title }}</a>
                 </div>
-                <span class='d-flex mb-3'>
+                <span class='d-flex mb-2'>
                     <div class="me-3">
                         {% if order == 'timestamp' %}
                             <a href="?order=-timestamp&status={{ status }}"

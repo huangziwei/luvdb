@@ -25,7 +25,7 @@
             {% else %}
                 <!--left column-->
                 <div class="col-12 col-md-8">
-                    <div class="fs-4">
+                    <div class="fs-4 mb-2">
                         Check-ins by
                         <a href="{% url 'accounts:detail' profile_user.username %}">
                             {{ profile_user.display_name|default:profile_user.username }}
@@ -36,7 +36,7 @@
                             {{ object.periodical.title }} <a href="{% url 'read:issue_detail' object.periodical.id object.id %}"> Vol. {{ object.volume }} Nr. {{ object.number }}</a>
                         {% endif %}
                     </div>
-                    <span class='d-flex mb-3'>
+                    <span class='d-flex mb-2'>
                         <div class="me-3">
                             {% if order == 'timestamp' %}
                                 <a href="?order=-timestamp&status={{ status }}"

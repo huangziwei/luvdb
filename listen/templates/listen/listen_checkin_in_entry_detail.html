@@ -4,7 +4,7 @@
 
 {% load static %}
 {% load parse_activity_type %}
-<div class="col-sm-11 mt-3">
+<div class="col-sm-11">
     {% for checkin in checkins %}
         {% if checkin.user.is_public or request.user.is_authenticated %}
             <div class="d-flex justify-content-start align-items-center mb-2">

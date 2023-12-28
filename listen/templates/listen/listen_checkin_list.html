@@ -37,7 +37,7 @@
                             <a href="{% url 'listen:audiobook_detail' object.id %}">{{ object.title }}</a>
                         {% endif %}
                     </div>
-                    <span class="d-flex mb-3">
+                    <span class="d-flex mb-2">
                         <div class="me-3">
                             {% if order == 'timestamp' %}
                                 <a href="?order=-timestamp&status={{ status }}"
