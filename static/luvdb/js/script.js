@@ -489,3 +489,27 @@ window.addEventListener("load", (event) => {
     var loadTime = performance.now();
     document.getElementById("loadTime").textContent = Math.round(loadTime) / 1000 + "s";
 });
+
+/////////////////////
+/// image preview ///
+/////////////////////
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Find the anchor tag
+    var currentLink = document.querySelector(".input-group .form-control a");
+    if (currentLink) {
+        // Get the href attribute from the anchor tag
+        var imageURL = currentLink.href;
+
+        // Create a new image element
+        var imgTag = document.createElement("img");
+        imgTag.src = imageURL;
+        imgTag.alt = "Cover Image";
+        imgTag.style.maxWidth = "150px";
+        imgTag.style.maxHeight = "150px";
+
+        // Replace the anchor tag with the new image element
+        var parentDiv = currentLink.parentElement;
+        parentDiv.replaceChild(imgTag, currentLink);
+    }
+});

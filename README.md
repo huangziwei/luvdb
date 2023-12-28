@@ -79,4 +79,4 @@ DJANGO_SETTINGS_MODULE=config.settings.development python manage.py loaddata dat
 DJANGO_SETTINGS_MODULE=config.settings.development python manage.py runserver
 ```
 
-The anoymized data dump will only be updated infrequently (note that cover and poster images are not included). You can log in using the username "anonymous" and the password "anonymous". If you prefer to use your own data, you can create a superuser and begin adding data manually.
+The anonymized data dump will only be updated infrequently (note that cover and poster images are not included). You can log in using the username "anonymous" and the password "anonymous". If you prefer to use your own data, you can create a superuser and begin adding data manually.
