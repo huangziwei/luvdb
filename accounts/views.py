@@ -92,6 +92,14 @@ class SignUpView(CreateView):
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        # Redirect to activity feed if user is already logged in
+        if self.request.user.is_authenticated:
+            return redirect(
+                "activity_feed:activity_feed"
+            )  # Replace 'activity_feed' with the correct URL name for your activity feed
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
         self.object = form.save()
@@ -117,6 +125,14 @@ class SignUpView(CreateView):
 
 class CustomLoginView(LoginView):
     template_name = "registration/login.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Redirect to activity feed if user is already logged in
+        if self.request.user.is_authenticated:
+            return redirect(
+                "activity_feed:activity_feed"
+            )  # Replace 'activity_feed' with the correct URL name for your activity feed
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
