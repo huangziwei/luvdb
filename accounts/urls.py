@@ -16,10 +16,8 @@ from .views import (
     deactivate_account,
     delete_app_password,
     export_user_data,
-    get_followed_usernames,
-    get_user_tags,
+    generate_qr_code,
     manage_crossposters,
-    redirect_to_profile,
 )
 
 app_name = "accounts"
@@ -30,6 +28,7 @@ urlpatterns = [
         ManageInvitationsView.as_view(),
         name="manage_invitations",
     ),
+    path("geneate_qr_code/<str:invite_code>", generate_qr_code, name="qr_code"),
     path("<str:username>/", view=AccountDetailView.as_view(), name="detail"),
     path(
         "<str:username>/feed/",

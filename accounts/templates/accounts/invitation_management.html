@@ -18,7 +18,10 @@
                         <a href="{% url 'accounts:detail' code.used_by.username %}">{{ code.used_by.display_name|default:code.used_by.username }}</a>
                     {% else %}
                         <span id="code_{{ forloop.counter }}" data-invite-code="{{ code.code }}">{{ code.code }}</span>
-                        <button onclick="copyCodeToClipboard('code_{{ forloop.counter }}')" class="btn btn-sm btn-outline-secondary">Copy</button>                    
+                        <div>
+                            <button onclick="copyCodeToClipboard('code_{{ forloop.counter }}')" class="btn btn-sm btn-outline-secondary">Copy</button>  
+                            <button onclick="window.location.href='{% url 'accounts:qr_code' code.code %}'" class="btn btn-sm btn-outline-secondary">QR Code</button>                  
+                        </div>
                     {% endif %}
                 </li>
                 {% empty %}

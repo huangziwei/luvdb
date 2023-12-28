@@ -3,6 +3,7 @@ import time
 from datetime import timedelta
 from urllib.parse import urlparse
 
+import qrcode
 import requests
 from bs4 import BeautifulSoup
 from django.contrib import messages
@@ -38,6 +39,7 @@ from django.views.generic import (
     UpdateView,
 )
 from django_ratelimit.decorators import ratelimit
+from PIL import Image, ImageDraw, ImageFont
 
 from accounts.models import CustomUser
 from activity_feed.models import Activity, Block, Follow
@@ -1383,7 +1385,9 @@ def fetch_webmention_data(source_url):
         author_name, author_url, author_handle = None, None, None
         if h_card:
             author_name_el = h_card.select_one(".p-name")
-            author_name = author_name_el.get_text(strip=True) if author_name_el else None
+            author_name = (
+                author_name_el.get_text(strip=True) if author_name_el else None
+            )
 
             author_url_el = h_card.select_one(".u-url")
             author_url = author_url_el["href"] if author_url_el else None
@@ -1410,7 +1414,9 @@ def fetch_webmention_data(source_url):
             mention_type = "post"
         elif "/repost/" in source_url:
             mention_type = "repost"
-        elif "/comment/" in source_url or (h_entry and h_entry.select_one(".e-content")):
+        elif "/comment/" in source_url or (
+            h_entry and h_entry.select_one(".e-content")
+        ):
             mention_type = "comment"
 
         # Organize data
@@ -1429,6 +1435,7 @@ def fetch_webmention_data(source_url):
         # Handle exceptions
         return {}
 
+
 @login_required
 def delete_webmention(request, webmention_id):
     webmention = get_object_or_404(WebMention, id=webmention_id)
@@ -1444,3 +1451,49 @@ def delete_webmention(request, webmention_id):
         return HttpResponseRedirect(referer_url)
     else:
         return redirect("activity_feed:activity_feed")
+
+
+def generate_qr_code(request, invite_code):
+    # Create QR code with the invitation link
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=5,
+    )
+    qr.add_data(f'{request.build_absolute_uri("/signup/")}?code={invite_code}')
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="#eee", back_color="#4696fd")
+
+    # Define additional space at the bottom
+    additional_bottom_space = 80
+
+    # Create a new image with additional space at the bottom
+    new_width = img.size[0]
+    new_height = img.size[1] + additional_bottom_space
+    new_img = Image.new("RGB", (new_width, new_height), "#4696fd")
+    new_img.paste(img, (0, 0))  # Paste the QR code at the top of the new image
+
+    I1 = ImageDraw.Draw(new_img)
+
+    # Load fonts - make sure Arial font is available on your server
+    try:
+        font = ImageFont.truetype("Arial", 102)
+    except IOError:
+        # Default font if Arial is not available
+        font = ImageFont.load_default()
+
+    # Add logo text at the bottom
+    text = "LʌvDB"
+    text_width = I1.textlength(text, font=font)
+    x = (new_width - text_width) // 2
+    y = (
+        img.size[1] + (additional_bottom_space - 175) // 2
+    )  # Adjust this value as needed
+    I1.text((x, y), text, fill="#eee", font=font)
+
+    # Create HTTP response
+    response = HttpResponse(content_type="image/png")
+    new_img.save(response, "PNG")
+    return response
