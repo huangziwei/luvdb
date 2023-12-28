@@ -21,15 +21,15 @@
                     wrote
                     <ul class="mt-2">
                         {% if says %}<li>{{says}} say{% if says > 1 %}s{% endif %}</li>{% endif %}  
-                        {% if reposts %}<li>{{reposts}} repost{% if reposts > 1 %}s{% endif %}</li>{% endif %}  
                         {% if posts %}<li>{{posts}} post{% if posts > 1 %}s{% endif %}</li>{% endif %} 
                         {% if pins %}<li>{{pins}} pin{% if pins > 1 %}s{% endif %}</li>{% endif %}  
-                        {% if comments %}<li>{{comments}} comment{% if comments > 1 %}s{% endif %}</li>{% endif %}  
+                        {% if comments %}<li>{{comments}} comment{% if comments > 1 %}s{% endif %}</li>{% endif %} 
+                        {% if reposts %}<li>{{reposts}} repost{% if reposts > 1 %}s{% endif %}</li>{% endif %}   
                     </ul>
 
-                    {% if luvlists_created %}
+                    {% if luvlists or luvlists_public or luvlists_private %}
                     <div>
-                        and curated {{luvlists_created}} Lists.
+                        and curated {{ luvlists }} lists ({{luvlists_collab}} collaborative / {{luvlists_personal}} personal)
                     </div>
                     {% endif %}
                 </div>
@@ -44,93 +44,86 @@
                         checked in {{total_checkins}} times to:
                     </div>
                     <div class="mt-2">
-                        <ul class="row">
+                        <div class="row">
                             {% if books_checked_in %}
                             <div class="col-12 col-md-4">
-                                <li class="mb-3">{{books_checked_in}} book{% if books_checked_in > 1 %}s{% endif %}
-                                    <ul>
-                                        <li>{{books_to_read}} to-read</li>
-                                        <li>{{books_reading}} reading / {{books_rereading}} rereading</li>
-                                        <li>{{books_read}} read / {{books_reread}} reread</li>
-                                        <li>{{books_paused}} paused / {{books_abandoned}} abandoned</li>
-                                    </ul>
-                                </li>
+                                <div class="fs-5 fw-semibold mt-2">{{books_checked_in}} book{% if books_checked_in > 1 %}s{% endif %}</div>
+                                <ul>
+                                    <li>{{books_to_read}} to-read</li>
+                                    <li>{{books_reading}} reading / {{books_rereading}} rereading</li>
+                                    <li>{{books_read}} read / {{books_reread}} reread</li>
+                                    <li>{{books_paused}} paused / {{books_abandoned}} abandoned</li>
+                                </ul>
                             </div>
                             {% endif %}
                             {% if audiobooks_checked_in %}
                             <div class="col-12 col-md-4">
-                                <li class="mb-3">{{audiobooks_checked_in}} audiobook{% if audiobooks_checked_in > 1 %}s{% endif %}
-                                    <ul>
-                                        <li>{{audiobooks_to_listen}} to-listen</li>
-                                        <li>{{audiobooks_listening}} listening / {{audiobooks_relistening}}</li>
-                                        <li>{{audiobooks_listened}} listened / {{audiobooks_relistened}} relistened</li>
-                                        <li>{{audiobooks_paused}} paused / {{audiobooks_abandoned}} abandoned</li>
-                                    </ul>
-                                </li>
+                                <div class="fs-5 fw-semibold mt-2">{{audiobooks_checked_in}} audiobook{% if audiobooks_checked_in > 1 %}s{% endif %}</div>
+                                <ul>
+                                    <li>{{audiobooks_to_listen}} to-listen</li>
+                                    <li>{{audiobooks_listening}} listening / {{audiobooks_relistening}} relistening</li>
+                                    <li>{{audiobooks_listened}} listened / {{audiobooks_relistened}} relistened</li>
+                                    <li>{{audiobooks_paused}} paused / {{audiobooks_abandoned}} abandoned</li>
+                                </ul>
                             </div>
                             {% endif %}
                             {% if movies_checked_in %}
                             <div class="col-12 col-md-4">
-                                <li class="mb-3">{{movies_checked_in}} movie{% if movies_checked_in > 1 %}s{% endif %} 
-                                    <ul>
-                                        <li>{{movies_to_watch}} to-watch</li>
-                                        <li>{{movies_watching}} watching / {{movies_rewatching}} rewatching</li>
-                                        <li>{{movies_watched}} watched / {{movies_rewatched}} rewatched</li>
-                                        <li>{{movies_paused}} paused / {{movies_abandoned}} abandoned</li>
-                                    </ul>
-                                </li>
+                                <div class="fs-5 fw-semibold mt-2">{{movies_checked_in}} movie{% if movies_checked_in > 1 %}s{% endif %}</div>
+                                <ul>
+                                    <li>{{movies_to_watch}} to-watch</li>
+                                    <li>{{movies_watching}} watching / {{movies_rewatching}} rewatching</li>
+                                    <li>{{movies_watched}} watched / {{movies_rewatched}} rewatched</li>
+                                    <li>{{movies_paused}} paused / {{movies_abandoned}} abandoned</li>
+                                </ul>
                             </div>
                             {% endif %}
                             {% if series_checked_in %}
                             <div class="col-12 col-md-4">
-                                <li class="mb-3">{{series_checked_in}} series
+                                <div class="fs-5 fw-semibold mt-2">{{series_checked_in}} series</div>
                                     <ul>
                                         <li>{{series_to_watch}} to-watch </li>
                                         <li>{{series_watching}} watching / {{series_rewatching}} rewatching </li>
                                         <li>{{series_watched}} watched / {{series_rewatched}} rewatched </li>
                                         <li>{{series_paused}} paused / {{series_abandoned}} abandoned </li>  
                                     </ul>                               
-                                </li>
                             </div>
                             {% endif %}
                             {% if releases_checked_in %}
                             <div class="col-12 col-md-4">
-                                <li class="mb-3">{{releases_checked_in}} album{% if releases_checked_in > 1 %}s{% endif %} or single{% if releases_checked_in > 1 %}s{% endif %}
-                                    <ul>
-                                        <li>{{releases_to_listen}} to-listen</li>
-                                        <li>{{releases_looping}} looping</li>
-                                        <li>{{releases_listened}} listened / {{releases_relistened}} relistened</li>
-                                        <li>{{releases_abandoned}} abandoned</li>
-                                    </ul>
-                                </li>
+                                <div class="fs-5 fw-semibold mt-2">{{releases_checked_in}} album{% if releases_checked_in > 1 %}s{% endif %} or single{% if releases_checked_in > 1 %}s{% endif %}</div>
+                                <ul>
+                                    <li>{{releases_to_listen}} to-listen</li>
+                                    <li>{{releases_looping}} looping</li>
+                                    <li>{{releases_listened}} listened / {{releases_relistened}} relistened</li>
+                                    <li>{{releases_abandoned}} abandoned</li>
+                                </ul>
                             </div>
                             {% endif %}
                             {% if podcasts_checked_in %}
                             <div class="col-12 col-md-4">
-                                <li class="mb-4">{{podcasts_checked_in}} podcast{% if podcasts_checked_in > 1 %}s{% endif %}
-                                    <ul>
-                                        <li>{{podcasts_to_listen}} to-listen</li>
-                                        <li>{{podcasts_sampled}} sampled</li>
-                                        <li>{{podcasts_subscribed}} subscribed</li>
-                                        <li>{{podcasts_unsubscribed}} unsubscribed</li>
-                                    </ul>
-                                </li>
+                                <div class="fs-5 fw-semibold mt-2">{{podcasts_checked_in}} podcast{% if podcasts_checked_in > 1 %}s{% endif %}</div>
+                                <ul>
+                                    <li>{{podcasts_to_listen}} to-listen</li>
+                                    <li>{{podcasts_sampled}} sampled</li>
+                                    <li>{{podcasts_subscribed}} subscribed</li>
+                                    <li>{{podcasts_unsubscribed}} unsubscribed</li>
+                                </ul>
                             </div>
                             {% endif %}
                             
                             {% if games_checked_in %}
                             <div class="col-12 col-md-4">
-                                <li class="mb-2">{{games_checked_in}} game{% if games_checked_in > 1 %}s{% endif %}
-                                    <ul>
-                                        <li>{{games_to_play}} to-play </li>
-                                        <li>{{games_playing}} playing / {{games_replaying}} replaying </li>
-                                        <li>{{games_played}} played / {{games_replayed}} replayed </li>
-                                        <li>{{games_paused}} paused / {{games_abandoned}} abandoned </li>
-                                    </ul>
-                                </li>
+                                <div class="fs-5 fw-semibold mt-2">{{games_checked_in}} game{% if games_checked_in > 1 %}s{% endif %}</div>
+                                <ul>
+                                    <li>{{games_to_play}} to-play </li>
+                                    <li>{{games_playing}} playing / {{games_replaying}} replaying </li>
+                                    <li>{{games_played}} played / {{games_replayed}} replayed </li>
+                                    <li>{{games_paused}} paused / {{games_abandoned}} abandoned </li>
+                                </ul>
                             </div>
                             {% endif %}
-                        </ul>
+                        </div>
                     </div>
                 
                 {% endif %}

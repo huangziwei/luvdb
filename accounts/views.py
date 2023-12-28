@@ -1592,11 +1592,18 @@ class YearInReviewView(DetailView):
             user=user, timestamp__range=(start_date, end_date)
         ).count()
         ## luvlists
-        luvlists_created = LuvList.objects.filter(
+        luvlists = LuvList.objects.filter(
             user=user, timestamp__range=(start_date, end_date)
         ).count()
-        luvlists_contributed = LuvList.objects.filter(
-            collaborators=user, updated_at__range=(start_date, end_date)
+        luvlists_personal = LuvList.objects.filter(
+            user=user,
+            timestamp__range=(start_date, end_date),
+            allow_collaboration=False,
+        ).count()
+        luvlists_collab = LuvList.objects.filter(
+            collaborators=user,
+            updated_at__range=(start_date, end_date),
+            allow_collaboration=True,
         ).count()
 
         total_writing = posts + says + reposts + pins + comments
@@ -1903,8 +1910,9 @@ class YearInReviewView(DetailView):
             "reposts": reposts,
             "pins": pins,
             "comments": comments,
-            "luvlists_created": luvlists_created,
-            "luvlists_contributed": luvlists_contributed,
+            "luvlists": luvlists,
+            "luvlists_personal": luvlists_personal,
+            "luvlists_collab": luvlists_collab,
             # checkins
             "total_checkins": total_checkins,
             "read_checkins": read_checkins,
