@@ -81,7 +81,7 @@
                         </div>
                         {% if current_date|slice:"5:10" == "06-10" %}
                             {% now "Y" as current_year %}
-                            <div class="alert alert-success" role="alert">LʌvDB is {{ current_year|add:"-2023" }} years old today!</div>
+                            <div class="alert alert-success mt-2" role="alert">LʌvDB is {{ current_year|add:"-2023" }} years old today!</div>
                         {% endif %}
                         {% if not books_published_today and not movies_released_today and not series_released_today and not music_released_today and not games_released_today and not born_today and not died_today and not formed_today and not dissolved_today%}
                             <p>Looks like it's a quiet day in our database.</p>
