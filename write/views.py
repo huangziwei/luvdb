@@ -210,6 +210,29 @@ class PostDetailView(ShareDetailView):
             target__endswith=partial_target_url
         ).order_by("received_at")
 
+        # New code to order posts within projects
+        projects_with_ordered_posts = []
+        for project in self.object.projects.all():
+            # Fetch the posts for the project
+            posts = project.post_set.all()
+
+            # Order the posts based on the project's order setting
+            if project.order == Project.NEWEST_FIRST:
+                ordered_posts = posts.order_by("-created_at")
+            elif project.order == Project.OLDEST_FIRST:
+                ordered_posts = posts.order_by("created_at")
+            elif project.order == Project.BY_TITLE:
+                ordered_posts = posts.order_by("title")
+            else:
+                # Default ordering if needed
+                ordered_posts = posts
+
+            # Add the project along with its ordered posts to the list
+            projects_with_ordered_posts.append((project, ordered_posts))
+
+        # Add the list to the context
+        context["projects_with_ordered_posts"] = projects_with_ordered_posts
+
         return context
 
 
