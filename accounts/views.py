@@ -1647,6 +1647,47 @@ class YearInReviewView(DetailView):
         books_abandoned = count_media_with_latest_status(
             ReadCheckIn, "read", "book", user, year, "abandoned"
         )
+        books_afterthought = count_media_with_latest_status(
+            ReadCheckIn, "read", "book", user, year, "afterthought"
+        )
+
+        issues_checked_in = (
+            ReadCheckIn.objects.filter(
+                user=user,
+                content_type=ContentType.objects.get(app_label="read", model="issue"),
+                timestamp__range=(start_date, end_date),
+            )
+            .values("object_id")
+            .distinct()
+            .count()
+        )
+        issues_to_read = count_media_with_latest_status(
+            ReadCheckIn, "read", "issue", user, year, "to_read"
+        )
+        issues_reading = count_media_with_latest_status(
+            ReadCheckIn, "read", "issue", user, year, "reading"
+        )
+        issues_rereading = count_media_with_latest_status(
+            ReadCheckIn, "read", "issue", user, year, "rereading"
+        )
+        issues_read = count_media_with_latest_status(
+            ReadCheckIn, "read", "issue", user, year, "finished_reading"
+        )
+        issues_reread = count_media_with_latest_status(
+            ReadCheckIn, "read", "issue", user, year, "reread"
+        )
+        issues_sampled = count_media_with_latest_status(
+            ReadCheckIn, "read", "issue", user, year, "sampled"
+        )
+        issues_paused = count_media_with_latest_status(
+            ReadCheckIn, "read", "issue", user, year, "paused"
+        )
+        issues_abandoned = count_media_with_latest_status(
+            ReadCheckIn, "read", "issue", user, year, "abandoned"
+        )
+        issues_afterthought = count_media_with_latest_status(
+            ReadCheckIn, "read", "issue", user, year, "afterthought"
+        )
 
         ## watch
         watch_checkins = WatchCheckIn.objects.filter(
@@ -1912,6 +1953,7 @@ class YearInReviewView(DetailView):
             + contributed_issues
             + contributed_movies
             + contributed_series
+            + contributed_episodes
             + contributed_musicworks
             + contributed_tracks
             + contributed_releases
@@ -1948,9 +1990,21 @@ class YearInReviewView(DetailView):
             "books_rereading": books_rereading,
             "books_read": books_read,
             "books_reread": books_reread,
+            "books_sampled": books_sampled,
             "books_paused": books_paused,
             "books_abandoned": books_abandoned,
+            "books_afterthought": books_afterthought,
             ### Issue
+            "issues_checked_in": issues_checked_in,
+            "issues_to_read": issues_to_read,
+            "issues_reading": issues_reading,
+            "issues_rereading": issues_rereading,
+            "issues_read": issues_read,
+            "issues_reread": issues_reread,
+            "issues_sampled": issues_sampled,
+            "issues_paused": issues_paused,
+            "issues_abandoned": issues_abandoned,
+            "issues_afterthought": issues_afterthought,
             ## Watch checkins breakdown
             ### Movie
             "movies_checked_in": movies_checked_in,
