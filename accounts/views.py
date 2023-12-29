@@ -1887,6 +1887,13 @@ class YearInReviewView(DetailView):
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
 
+        contributed_creators = Creator.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        contributed_companies = Company.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+
         total_contribution = (
             contributed_litworks
             + contributed_litinstances
@@ -1898,6 +1905,8 @@ class YearInReviewView(DetailView):
             + contributed_releases
             + contributed_gameworks
             + contributed_games
+            + contributed_creators
+            + contributed_companies
         )
         # Similarly for other models like ReadCheckIn, ListenCheckIn, etc.
 
@@ -1992,6 +2001,8 @@ class YearInReviewView(DetailView):
             "contributed_audiobooks": contributed_audiobooks,
             "contributed_gameworks": contributed_gameworks,
             "contributed_games": contributed_games,
+            "contributed_creators": contributed_creators,
+            "contributed_companies": contributed_companies,
             # other stats
         }
 
