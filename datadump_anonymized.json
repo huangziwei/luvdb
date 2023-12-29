@@ -13335,6 +13335,69 @@
         }
     },
     {
+        "model": "entity.creator",
+        "pk": 636,
+        "fields": {
+            "locked": false,
+            "name": "Can",
+            "other_names": "",
+            "notes": "",
+            "created_at": "2023-12-27T15:13:32.051Z",
+            "updated_at": "2023-12-27T15:13:32.051Z",
+            "created_by": 1,
+            "updated_by": 1,
+            "creator_type": "group",
+            "birth_date": "1968",
+            "death_date": "1979",
+            "birth_place": "Cologne, West Germany",
+            "death_place": null,
+            "wikipedia": "https://en.wikipedia.org/wiki/Can_(band)",
+            "website": "http://spoonrecords.com"
+        }
+    },
+    {
+        "model": "entity.creator",
+        "pk": 637,
+        "fields": {
+            "locked": false,
+            "name": "Nine Inch Nails",
+            "other_names": "",
+            "notes": "",
+            "created_at": "2023-12-28T10:57:07.229Z",
+            "updated_at": "2023-12-28T10:57:07.229Z",
+            "created_by": 1,
+            "updated_by": 1,
+            "creator_type": "group",
+            "birth_date": "1988",
+            "death_date": null,
+            "birth_place": "Cleveland, Ohio",
+            "death_place": null,
+            "wikipedia": "https://en.wikipedia.org/wiki/Nine_Inch_Nails",
+            "website": "https://nin.com"
+        }
+    },
+    {
+        "model": "entity.creator",
+        "pk": 638,
+        "fields": {
+            "locked": false,
+            "name": "The Supremes",
+            "other_names": "The Primettes / Diana Ross & the Supremes",
+            "notes": "",
+            "created_at": "2023-12-29T10:57:32.411Z",
+            "updated_at": "2023-12-29T10:57:32.411Z",
+            "created_by": 1,
+            "updated_by": 1,
+            "creator_type": "group",
+            "birth_date": "1959",
+            "death_date": "1977",
+            "birth_place": "Detroit, Michigan",
+            "death_place": null,
+            "wikipedia": "https://en.wikipedia.org/wiki/The_Supremes",
+            "website": null
+        }
+    },
+    {
         "model": "entity.role",
         "pk": 1,
         "fields": {
@@ -14887,10 +14950,10 @@
         "pk": 61,
         "fields": {
             "locked": false,
-            "name": "United Artists",
-            "other_names": null,
+            "name": "United Artists Records",
+            "other_names": "",
             "created_at": "2023-09-16T11:06:28.991Z",
-            "updated_at": "2023-09-16T11:06:28.991Z",
+            "updated_at": "2023-12-27T15:20:21.579Z",
             "created_by": 1,
             "updated_by": 1,
             "location": "New York",
@@ -19211,6 +19274,25 @@
             "defunct_date": null,
             "website": "https://www.bandainamcoent.co.jp/",
             "wikipedia": "https://ja.wikipedia.org/wiki/\u30d0\u30f3\u30c0\u30a4\u30ca\u30e0\u30b3\u30a8\u30f3\u30bf\u30fc\u30c6\u30a4\u30f3\u30e1\u30f3\u30c8",
+            "notes": ""
+        }
+    },
+    {
+        "model": "entity.company",
+        "pk": 289,
+        "fields": {
+            "locked": false,
+            "name": "TVT Records",
+            "other_names": "Tee-Vee Tunes",
+            "created_at": "2023-12-28T10:56:32.807Z",
+            "updated_at": "2023-12-28T10:56:32.807Z",
+            "created_by": 1,
+            "updated_by": 1,
+            "location": "New York City",
+            "founded_date": "1984",
+            "defunct_date": "2008",
+            "website": null,
+            "wikipedia": "https://en.wikipedia.org/wiki/TVT_Records",
             "notes": ""
         }
     },
@@ -56747,6 +56829,10 @@
             "recorded_date": null,
             "wikipedia": "https://zh.wikipedia.org/zh-hant/\u4e0b\u4e00\u4f4d\u524d\u5ea6",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.490Z",
+            "updated_at": "2023-12-28T18:19:27.490Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -56764,6 +56850,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.453Z",
+            "updated_at": "2023-12-28T18:19:27.453Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 19
             ]
@@ -56781,6 +56871,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.241Z",
+            "updated_at": "2023-12-28T18:19:27.241Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -56798,6 +56892,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.488Z",
+            "updated_at": "2023-12-28T18:19:27.488Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -56815,6 +56913,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.216Z",
+            "updated_at": "2023-12-28T18:19:27.217Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": []
         }
     },
@@ -56830,6 +56932,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.492Z",
+            "updated_at": "2023-12-28T18:19:27.492Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": []
         }
     },
@@ -56845,6 +56951,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.218Z",
+            "updated_at": "2023-12-28T18:19:27.218Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -56862,6 +56972,10 @@
             "recorded_date": null,
             "wikipedia": "https://en.wikipedia.org/wiki/Goldberg_Variations",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.507Z",
+            "updated_at": "2023-12-28T18:19:27.507Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 2
             ]
@@ -56879,6 +56993,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.459Z",
+            "updated_at": "2023-12-28T18:19:27.460Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -56896,6 +57014,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.462Z",
+            "updated_at": "2023-12-28T18:19:27.462Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -56913,6 +57035,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.464Z",
+            "updated_at": "2023-12-28T18:19:27.464Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -56930,6 +57056,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.466Z",
+            "updated_at": "2023-12-28T18:19:27.466Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -56947,6 +57077,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.468Z",
+            "updated_at": "2023-12-28T18:19:27.468Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -56964,6 +57098,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.472Z",
+            "updated_at": "2023-12-28T18:19:27.473Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -56981,6 +57119,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.474Z",
+            "updated_at": "2023-12-28T18:19:27.475Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -56998,6 +57140,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.476Z",
+            "updated_at": "2023-12-28T18:19:27.477Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57015,6 +57161,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.479Z",
+            "updated_at": "2023-12-28T18:19:27.479Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57032,6 +57182,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.480Z",
+            "updated_at": "2023-12-28T18:19:27.481Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57049,6 +57203,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.482Z",
+            "updated_at": "2023-12-28T18:19:27.483Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57066,6 +57224,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.484Z",
+            "updated_at": "2023-12-28T18:19:27.484Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57083,6 +57245,10 @@
             "recorded_date": null,
             "wikipedia": "https://en.wikipedia.org/wiki/Just_in_Time_(song)",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.494Z",
+            "updated_at": "2023-12-28T18:19:27.494Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 9
             ]
@@ -57100,6 +57266,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.495Z",
+            "updated_at": "2023-12-28T18:19:27.495Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57117,6 +57287,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.497Z",
+            "updated_at": "2023-12-28T18:19:27.497Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 17
             ]
@@ -57134,6 +57308,10 @@
             "recorded_date": null,
             "wikipedia": "https://ja.wikipedia.org/wiki/\u6625\u306f\u6eb6\u3051\u3066",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.500Z",
+            "updated_at": "2023-12-28T18:19:27.500Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 17
             ]
@@ -57151,6 +57329,10 @@
             "recorded_date": null,
             "wikipedia": "https://en.wikipedia.org/wiki/American_Pie_(song)",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.212Z",
+            "updated_at": "2023-12-28T18:19:27.213Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 20
             ]
@@ -57168,6 +57350,10 @@
             "recorded_date": null,
             "wikipedia": "https://en.wikipedia.org/wiki/Vincent_(Don_McLean_song)",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.236Z",
+            "updated_at": "2023-12-28T18:19:27.236Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 20
             ]
@@ -57185,6 +57371,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.215Z",
+            "updated_at": "2023-12-28T18:19:27.215Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57202,6 +57392,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "YouTube release was a day ahead of the official release on streaming platforms.",
+            "created_at": "2023-12-28T18:19:27.225Z",
+            "updated_at": "2023-12-28T18:19:27.225Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57219,6 +57413,10 @@
             "recorded_date": null,
             "wikipedia": "https://zh.wikipedia.org/zh-hk/\u96e2\u4e0d\u958b",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.227Z",
+            "updated_at": "2023-12-28T18:19:27.228Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57236,6 +57434,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.470Z",
+            "updated_at": "2023-12-28T18:19:27.470Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57253,6 +57455,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.502Z",
+            "updated_at": "2023-12-28T18:19:27.502Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57270,6 +57476,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.503Z",
+            "updated_at": "2023-12-28T18:19:27.503Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57287,6 +57497,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.509Z",
+            "updated_at": "2023-12-28T18:19:27.509Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 17
             ]
@@ -57304,6 +57518,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.511Z",
+            "updated_at": "2023-12-28T18:19:27.511Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57321,6 +57539,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.513Z",
+            "updated_at": "2023-12-28T18:19:27.513Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": []
         }
     },
@@ -57336,6 +57558,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.514Z",
+            "updated_at": "2023-12-28T18:19:27.515Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57353,6 +57579,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.516Z",
+            "updated_at": "2023-12-28T18:19:27.516Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57370,6 +57600,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.518Z",
+            "updated_at": "2023-12-28T18:19:27.518Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57387,6 +57621,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.521Z",
+            "updated_at": "2023-12-28T18:19:27.521Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57404,6 +57642,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.524Z",
+            "updated_at": "2023-12-28T18:19:27.524Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57421,6 +57663,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.528Z",
+            "updated_at": "2023-12-28T18:19:27.528Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57438,6 +57684,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.531Z",
+            "updated_at": "2023-12-28T18:19:27.531Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57455,6 +57705,10 @@
             "recorded_date": null,
             "wikipedia": "https://zh.wikipedia.org/zh-hk/\u5e78\u798f\u9580",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.207Z",
+            "updated_at": "2023-12-28T18:19:27.207Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57472,6 +57726,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.534Z",
+            "updated_at": "2023-12-28T18:19:27.535Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 2
             ]
@@ -57489,6 +57747,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.538Z",
+            "updated_at": "2023-12-28T18:19:27.538Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 2
             ]
@@ -57506,6 +57768,10 @@
             "recorded_date": null,
             "wikipedia": "https://en.wikipedia.org/wiki/Serenade_for_Strings_(Dvo\u0159\u00e1k)",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.755Z",
+            "updated_at": "2023-12-28T18:19:27.755Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 2
             ]
@@ -57523,6 +57789,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.210Z",
+            "updated_at": "2023-12-28T18:19:27.211Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": []
         }
     },
@@ -57538,6 +57808,10 @@
             "recorded_date": null,
             "wikipedia": "https://en.wikipedia.org/wiki/Mood_Indigo",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.220Z",
+            "updated_at": "2023-12-28T18:19:27.220Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 9
             ]
@@ -57555,6 +57829,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.222Z",
+            "updated_at": "2023-12-28T18:19:27.223Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57572,6 +57850,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "[First performed live](https://www.youtube.com/watch?v=okVZBn57zcg) at the first night of AGA ONEDERFUL LIVE 2023 (2023.08.26)",
+            "created_at": "2023-12-28T18:19:27.456Z",
+            "updated_at": "2023-12-28T18:19:27.456Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57589,6 +57871,10 @@
             "recorded_date": null,
             "wikipedia": "https://en.wikipedia.org/wiki/Piano_Quartet_No._2_(Dvo\u0159\u00e1k)",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.486Z",
+            "updated_at": "2023-12-28T18:19:27.486Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 2
             ]
@@ -57606,6 +57892,10 @@
             "recorded_date": null,
             "wikipedia": "https://en.wikipedia.org/wiki/Jitterbug_Waltz",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.505Z",
+            "updated_at": "2023-12-28T18:19:27.505Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 9
             ]
@@ -57623,6 +57913,10 @@
             "recorded_date": null,
             "wikipedia": "https://en.wikipedia.org/wiki/Symphony_No._9_(Dvo\u0159\u00e1k)",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.541Z",
+            "updated_at": "2023-12-28T18:19:27.541Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 2
             ]
@@ -57640,6 +57934,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.757Z",
+            "updated_at": "2023-12-28T18:19:27.757Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57657,6 +57955,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.759Z",
+            "updated_at": "2023-12-28T18:19:27.759Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57674,6 +57976,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.231Z",
+            "updated_at": "2023-12-28T18:19:27.231Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57691,6 +57997,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.753Z",
+            "updated_at": "2023-12-28T18:19:27.753Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57708,6 +58018,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.761Z",
+            "updated_at": "2023-12-28T18:19:27.761Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57725,6 +58039,10 @@
             "recorded_date": null,
             "wikipedia": "https://zh.wikipedia.org/wiki/\u662f\u4f46\u6c42\u5176\u7231",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.762Z",
+            "updated_at": "2023-12-28T18:19:27.763Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57742,6 +58060,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.764Z",
+            "updated_at": "2023-12-28T18:19:27.764Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57759,6 +58081,10 @@
             "recorded_date": "1961.04.04",
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.770Z",
+            "updated_at": "2023-12-28T18:19:27.770Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 9
             ]
@@ -57776,6 +58102,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.772Z",
+            "updated_at": "2023-12-28T18:19:27.772Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57793,6 +58123,10 @@
             "recorded_date": null,
             "wikipedia": "https://zh.wikipedia.org/zh-hk/\u4e00\u624b\u9020\u6210",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.774Z",
+            "updated_at": "2023-12-28T18:19:27.774Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57810,6 +58144,10 @@
             "recorded_date": "6:11",
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.768Z",
+            "updated_at": "2023-12-28T18:19:27.768Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 21
             ]
@@ -57827,6 +58165,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.776Z",
+            "updated_at": "2023-12-28T18:19:27.776Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 16
             ]
@@ -57844,6 +58186,10 @@
             "recorded_date": null,
             "wikipedia": null,
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.778Z",
+            "updated_at": "2023-12-28T18:19:27.778Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": []
         }
     },
@@ -57859,8 +58205,33 @@
             "recorded_date": null,
             "wikipedia": "https://en.wikipedia.org/wiki/All_I_Want_for_Christmas_Is_New_Year%27s_Day",
             "notes": "",
+            "created_at": "2023-12-28T18:19:27.780Z",
+            "updated_at": "2023-12-28T18:19:27.780Z",
+            "created_by": 1,
+            "updated_by": 1,
             "genres": [
                 10
+            ]
+        }
+    },
+    {
+        "model": "listen.work",
+        "pk": 69,
+        "fields": {
+            "locked": false,
+            "title": "\u7f85\u66fc\u8482\u514b\u8870\u4ea1\u53f2",
+            "subtitle": null,
+            "other_titles": "",
+            "release_date": "2022.09.30",
+            "recorded_date": null,
+            "wikipedia": null,
+            "notes": "",
+            "created_at": "2023-12-28T18:19:27.766Z",
+            "updated_at": "2023-12-28T18:19:27.766Z",
+            "created_by": 1,
+            "updated_by": 1,
+            "genres": [
+                16
             ]
         }
     },
@@ -60335,6 +60706,36 @@
         }
     },
     {
+        "model": "listen.workrole",
+        "pk": 261,
+        "fields": {
+            "work": 69,
+            "creator": 119,
+            "role": 2,
+            "alt_name": null
+        }
+    },
+    {
+        "model": "listen.workrole",
+        "pk": 262,
+        "fields": {
+            "work": 69,
+            "creator": 207,
+            "role": 4,
+            "alt_name": "Larry Wong"
+        }
+    },
+    {
+        "model": "listen.workrole",
+        "pk": 263,
+        "fields": {
+            "work": 69,
+            "creator": 11,
+            "role": 3,
+            "alt_name": null
+        }
+    },
+    {
         "model": "listen.track",
         "pk": 1,
         "fields": {
@@ -62377,6 +62778,30 @@
             "updated_by": 1,
             "genres": [
                 10
+            ]
+        }
+    },
+    {
+        "model": "listen.track",
+        "pk": 87,
+        "fields": {
+            "locked": false,
+            "title": "\u7f85\u66fc\u8482\u514b\u8870\u4ea1\u53f2",
+            "subtitle": null,
+            "other_titles": "",
+            "work": 69,
+            "release_date": "2022.09.30",
+            "recorded_date": null,
+            "length": "3:45",
+            "isrc": null,
+            "wikipedia": null,
+            "notes": "",
+            "created_at": "2023-12-28T14:44:37.246Z",
+            "updated_at": "2023-12-28T14:44:37.276Z",
+            "created_by": 1,
+            "updated_by": 1,
+            "genres": [
+                16
             ]
         }
     },
@@ -67176,6 +67601,46 @@
         "fields": {
             "track": 86,
             "creator": 614,
+            "role": 5,
+            "alt_name": null
+        }
+    },
+    {
+        "model": "listen.trackrole",
+        "pk": 484,
+        "fields": {
+            "track": 87,
+            "creator": 119,
+            "role": 2,
+            "alt_name": null
+        }
+    },
+    {
+        "model": "listen.trackrole",
+        "pk": 485,
+        "fields": {
+            "track": 87,
+            "creator": 207,
+            "role": 4,
+            "alt_name": "Larry Wong"
+        }
+    },
+    {
+        "model": "listen.trackrole",
+        "pk": 486,
+        "fields": {
+            "track": 87,
+            "creator": 11,
+            "role": 3,
+            "alt_name": null
+        }
+    },
+    {
+        "model": "listen.trackrole",
+        "pk": 487,
+        "fields": {
+            "track": 87,
+            "creator": 91,
             "role": 5,
             "alt_name": null
         }
@@ -75193,6 +75658,134 @@
         }
     },
     {
+        "model": "listen.release",
+        "pk": 251,
+        "fields": {
+            "locked": false,
+            "cover": null,
+            "cover_sens": false,
+            "title": "Ege Bamyas\u0131",
+            "subtitle": null,
+            "other_titles": "",
+            "discogs": "https://www.discogs.com/release/32139-Can-Ege-Bamyasi",
+            "wikipedia": "https://en.wikipedia.org/wiki/Ege_Bamyas\u0131",
+            "catalog_number": "UAS-29414",
+            "release_date": "1972.11.29",
+            "release_type": "LP",
+            "recording_type": "Studio",
+            "release_format": "Vinyl",
+            "release_region": "UK",
+            "release_length": "40:06",
+            "spotify_url": "https://open.spotify.com/album/6tlIi07rPCKprV1ZITWDyP",
+            "apple_music_url": "https://geo.music.apple.com/de/album/ege-bamyasi-remastered/1675998345",
+            "notes": "",
+            "created_at": "2023-12-27T15:13:53.591Z",
+            "updated_at": "2023-12-27T15:13:53.904Z",
+            "created_by": 1,
+            "updated_by": 1,
+            "label": [
+                61
+            ],
+            "genres": []
+        }
+    },
+    {
+        "model": "listen.release",
+        "pk": 252,
+        "fields": {
+            "locked": false,
+            "cover": null,
+            "cover_sens": false,
+            "title": "Pretty Hate Machine",
+            "subtitle": null,
+            "other_titles": "",
+            "discogs": "https://www.discogs.com/release/145796-Nine-Inch-Nails-Pretty-Hate-Machine",
+            "wikipedia": "https://en.wikipedia.org/wiki/Pretty_Hate_Machine",
+            "catalog_number": "TVT-2610",
+            "release_date": "1989.10.20",
+            "release_type": "LP",
+            "recording_type": "Studio",
+            "release_format": "CD",
+            "release_region": "US",
+            "release_length": "48:42",
+            "spotify_url": "https://open.spotify.com/album/3umFHeEpc4yLXtrRcv9gLN",
+            "apple_music_url": "https://geo.music.apple.com/de/album/pretty-hate-machine/1440934840",
+            "notes": "",
+            "created_at": "2023-12-28T10:57:34.628Z",
+            "updated_at": "2023-12-28T10:57:48.770Z",
+            "created_by": 1,
+            "updated_by": 1,
+            "label": [
+                289
+            ],
+            "genres": []
+        }
+    },
+    {
+        "model": "listen.release",
+        "pk": 253,
+        "fields": {
+            "locked": false,
+            "cover": null,
+            "cover_sens": false,
+            "title": "\u7f85\u66fc\u8482\u514b\u8870\u4ea1\u53f2",
+            "subtitle": null,
+            "other_titles": "",
+            "discogs": null,
+            "wikipedia": null,
+            "catalog_number": null,
+            "release_date": "2022.09.30",
+            "release_type": "Single",
+            "recording_type": "Studio",
+            "release_format": "Digital",
+            "release_region": null,
+            "release_length": "3:45",
+            "spotify_url": "https://open.spotify.com/album/78VHemff2kQ7bcm4WgXs9j",
+            "apple_music_url": "https://geo.music.apple.com/tw/album/\u7f85\u66fc\u8482\u514b\u8870\u4ea1\u53f2/1647332572?i=1647332573",
+            "notes": "",
+            "created_at": "2023-12-28T14:41:46.534Z",
+            "updated_at": "2023-12-28T14:44:46.490Z",
+            "created_by": 1,
+            "updated_by": 1,
+            "label": [
+                63
+            ],
+            "genres": []
+        }
+    },
+    {
+        "model": "listen.release",
+        "pk": 254,
+        "fields": {
+            "locked": false,
+            "cover": null,
+            "cover_sens": false,
+            "title": "Anthology",
+            "subtitle": null,
+            "other_titles": "",
+            "discogs": "https://www.discogs.com/release/1869354-Diana-Ross-And-The-Supremes-Anthology",
+            "wikipedia": "https://en.wikipedia.org/wiki/Anthology_(The_Supremes_album)",
+            "catalog_number": "M9-794A3",
+            "release_date": "1974.05",
+            "release_type": "LP",
+            "recording_type": "Compilation",
+            "release_format": "Vinyl",
+            "release_region": "US",
+            "release_length": null,
+            "spotify_url": "https://open.spotify.com/album/5gX0Oedkr1IgRO8OXhUR5k",
+            "apple_music_url": "https://geo.music.apple.com/de/album/anthology/1434895644",
+            "notes": "",
+            "created_at": "2023-12-29T10:58:11.584Z",
+            "updated_at": "2023-12-29T10:58:11.907Z",
+            "created_by": 1,
+            "updated_by": 1,
+            "label": [
+                233
+            ],
+            "genres": []
+        }
+    },
+    {
         "model": "listen.releaserole",
         "pk": 1,
         "fields": {
@@ -78993,6 +79586,46 @@
         }
     },
     {
+        "model": "listen.releaserole",
+        "pk": 401,
+        "fields": {
+            "release": 251,
+            "creator": 636,
+            "role": 31,
+            "alt_name": null
+        }
+    },
+    {
+        "model": "listen.releaserole",
+        "pk": 402,
+        "fields": {
+            "release": 252,
+            "creator": 637,
+            "role": 31,
+            "alt_name": null
+        }
+    },
+    {
+        "model": "listen.releaserole",
+        "pk": 403,
+        "fields": {
+            "release": 253,
+            "creator": 119,
+            "role": 31,
+            "alt_name": null
+        }
+    },
+    {
+        "model": "listen.releaserole",
+        "pk": 404,
+        "fields": {
+            "release": 254,
+            "creator": 638,
+            "role": 31,
+            "alt_name": "Diana Ross And The Supremes"
+        }
+    },
+    {
         "model": "listen.releasetrack",
         "pk": 1,
         "fields": {
@@ -79903,6 +80536,17 @@
             "alt_title": null,
             "disk": "1",
             "order": 19
+        }
+    },
+    {
+        "model": "listen.releasetrack",
+        "pk": 84,
+        "fields": {
+            "release": 253,
+            "track": 87,
+            "alt_title": null,
+            "disk": "1",
+            "order": 1
         }
     },
     {
@@ -91905,10 +92549,10 @@
             "box_office": null,
             "duration": null,
             "languages": null,
-            "imdb": null,
+            "imdb": "https://www.imdb.com/title/tt11219254/",
             "wikipedia": "https://ja.wikipedia.org/wiki/\u82b1\u675f\u307f\u305f\u3044\u306a\u604b\u3092\u3057\u305f",
             "created_at": "2023-07-14T09:27:16.908Z",
-            "updated_at": "2023-09-30T18:40:25.817Z",
+            "updated_at": "2023-12-27T20:04:02.101Z",
             "created_by": 1,
             "updated_by": 1,
             "studios": [
@@ -96072,6 +96716,21 @@
         }
     },
     {
+        "model": "watch.episode",
+        "pk": 107,
+        "fields": {
+            "locked": false,
+            "series": 8,
+            "title": "\u308f\u305f\u3057\u306e\u5927\u5207\u306a\u3082\u306e",
+            "subtitle": null,
+            "other_titles": "",
+            "season": 1,
+            "episode": 13,
+            "release_date": "2023.12.28",
+            "length": null
+        }
+    },
+    {
         "model": "watch.episoderole",
         "pk": 1,
         "fields": {
@@ -97147,6 +97806,16 @@
         "fields": {
             "episode": 89,
             "creator": 622,
+            "role": 9,
+            "alt_name": null
+        }
+    },
+    {
+        "model": "watch.episoderole",
+        "pk": 110,
+        "fields": {
+            "episode": 107,
+            "creator": 222,
             "role": 9,
             "alt_name": null
         }
@@ -98535,7 +99204,7 @@
         "model": "accounts.customuser",
         "pk": 1,
         "fields": {
-            "password": "pbkdf2_sha256$720000$F3t35sfTTgI6mMN1AcXlOh$wt7fTmkKe/LEN6aiJKVOP9rhcX91pWOYxcJSRhjKPOQ=",
+            "password": "pbkdf2_sha256$720000$UgPv8R2CNdlfbolWITel6M$1juL+mzHohjq1aSuYNH+sJ+S5o4CU3oKSn96iGA87G4=",
             "username": "anonymous",
             "is_superuser": true,
             "is_staff": true,
