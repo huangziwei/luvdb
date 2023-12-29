@@ -136,22 +136,25 @@
                         contributed a total of {{total_contribution}} entries to LʌvDB.
                     </div>
                     <div class="row">
-                        {% if contributed_litworks > 0 or contributed_litinstances > 0 or contributed_books > 0 %}
+                        {% if contributed_litworks > 0 or contributed_litinstances > 0 or contributed_books > 0 or contributed_periodicals > 0 or contributed_issues > 0 %}
                         <div class="col-12 col-md-4">
                             <div class="fs-5 fw-semibold mt-2">Read</div>
                             <ul>
                                 {% if contributed_litworks > 0 %}<li>{{contributed_litworks}} Work{% if contributed_litworks > 1 %}s{% endif %}</li>{% endif %}
                                 {% if contributed_litinstances > 0 %}<li>{{contributed_litinstances}} Instance{% if contributed_litinstances > 1 %}s{% endif %}</li>{% endif %}
                                 {% if contributed_books > 0 %}<li>{{contributed_books}} Book{% if contributed_books > 1 %}s{% endif %}</li>{% endif %}
+                                {% if contributed_periodicals > 0 %}<li>{{contributed_periodicals}} Periodical{% if contributed_periodicals > 1 %}s{% endif %}</li>{% endif %}
+                                {% if contributed_issues > 0 %}<li>{{contributed_issues}} Issues{% if contributed_issues > 1 %}s{% endif %}</li>{% endif %}
                             </ul>
                         </div>
                         {% endif %}
-                        {% if contributed_movies > 0 or contributed_series > 0 %}
+                        {% if contributed_movies > 0 or contributed_series > 0 or contributed_episodes > 0 %}
                         <div class="col-12 col-md-4">
                             <div class="fs-5 fw-semibold mt-2">Watch</div>
                             <ul>
                                 {% if contributed_movies > 0 %}<li>{{contributed_movies}} Movie{% if contributed_movies > 1 %}s{% endif %}</li>{% endif %}
                                 {% if contributed_series > 0 %}<li>{{contributed_series}} Series</li>{% endif %}
+                                {% if contributed_episodes > 0 %}<li>{{contributed_episodes}} Episode{% if contributed_episodes > 1 %}s{% endif %}</li>{% endif %}              
                             </ul>
                         </div>
                         {% endif %}

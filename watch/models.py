@@ -345,6 +345,22 @@ class Episode(auto_prefetch.Model):
     )
     history = HistoricalRecords(inherit=True)
 
+    # entry meta data
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = auto_prefetch.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="episodes_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = auto_prefetch.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="episodes_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
     def __str__(self):
         return f"{self.series.title} - Season {self.season} - Episode {self.episode}"
 

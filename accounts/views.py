@@ -54,9 +54,9 @@ from play.models import Game, PlayCheckIn
 from play.models import Work as GameWork
 from read.models import Book, BookSeries
 from read.models import Instance as LitInstance
-from read.models import Periodical, ReadCheckIn
+from read.models import Issue, Periodical, ReadCheckIn
 from read.models import Work as LitWork
-from watch.models import Movie, Series, WatchCheckIn
+from watch.models import Episode, Movie, Series, WatchCheckIn
 from write.models import Comment, ContentInList, LuvList, Pin, Post, Repost, Say, Tag
 from write.utils_formatting import check_required_js
 
@@ -1859,11 +1859,21 @@ class YearInReviewView(DetailView):
         contributed_books = Book.objects.filter(
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
+        contributed_periodicals = Periodical.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        contributed_issues = Issue.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+
         ## watch
         contributed_movies = Movie.objects.filter(
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
         contributed_series = Series.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+        contributed_episodes = Episode.objects.filter(
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
         ## listen
@@ -1898,6 +1908,8 @@ class YearInReviewView(DetailView):
             contributed_litworks
             + contributed_litinstances
             + contributed_books
+            + contributed_periodicals
+            + contributed_issues
             + contributed_movies
             + contributed_series
             + contributed_musicworks
@@ -1929,6 +1941,7 @@ class YearInReviewView(DetailView):
             "listen_checkins": listen_checkins,
             "play_checkins": play_checkins,
             ## read checkins breakdown
+            ### Book
             "books_checked_in": books_checked_in,
             "books_to_read": books_to_read,
             "books_reading": books_reading,
@@ -1937,6 +1950,7 @@ class YearInReviewView(DetailView):
             "books_reread": books_reread,
             "books_paused": books_paused,
             "books_abandoned": books_abandoned,
+            ### Issue
             ## Watch checkins breakdown
             ### Movie
             "movies_checked_in": movies_checked_in,
@@ -1993,8 +2007,11 @@ class YearInReviewView(DetailView):
             "contributed_litworks": contributed_litworks,
             "contributed_litinstances": contributed_litinstances,
             "contributed_books": contributed_books,
+            "contributed_periodicals": contributed_periodicals,
+            "contributed_issues": contributed_issues,
             "contributed_movies": contributed_movies,
             "contributed_series": contributed_series,
+            "contributed_episodes": contributed_episodes,
             "contributed_musicworks": contributed_musicworks,
             "contributed_tracks": contributed_tracks,
             "contributed_releases": contributed_releases,
