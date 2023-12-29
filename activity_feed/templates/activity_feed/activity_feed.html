@@ -62,12 +62,6 @@
             
             {% if feed_type == "public" %}
                 <div class="col-12 col-md-5 right-column">
-                    {% if is_year_in_review_time %}
-                    <div class="bg-light p-3 mb-3">
-                        <a class="text-default fs-4 fw-semibold"
-                            href="{% url 'accounts:year_in_review' user.username %}">Year in Review ({{current_date|slice:4}})</a>
-                    </div>
-                    {% endif %}
                     <div class='bg-light p-3 mb-3'>
                         <div class="fs-5">
                             On This Day (<input 
@@ -269,6 +263,12 @@
                             {% endif %}
                         {% endif %}
                     </div>
+                    {% if is_year_in_review_time %}
+                    <div class="alert alert-success p-3 mb-3 text-center">
+                        <a class="fs-4 fw-semibold text-muted"
+                            href="{% url 'redirect_to_year_in_review' %}">Year in Review ({{current_date|slice:4}})</a>
+                    </div>
+                    {% endif %}
                 </div>
             {% elif feed_type == "personal" %}
                 <div class="col-12 col-md-4 right-column">
