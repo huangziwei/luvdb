@@ -21,11 +21,9 @@ from accounts.views import (
     ManageInvitationRequestsView,
     RequestInvitationView,
     SignUpView,
-    delete_webmention,
     get_followed_usernames,
     get_user_tags,
     search_view,
-    webmention,
 )
 from entity.sitemaps import PersonSiteMap
 from listen.sitemaps import ReleaseSiteMap
@@ -131,13 +129,6 @@ urlpatterns = [
         "update/",
         RedirectToAccountUpdate.as_view(),
         name="redirect_to_account_update",
-    ),
-    # webmention
-    path("webmention/", webmention, name="webmention"),
-    path(
-        "webmention/delete/<int:webmention_id>/",
-        delete_webmention,
-        name="delete_webmention",
     ),
     # utils
     path(

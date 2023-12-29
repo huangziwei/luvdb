@@ -24,12 +24,11 @@ from django.views.generic import (
 )
 from django_ratelimit.decorators import ratelimit
 
-from accounts.models import WebMention
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.views import HistoryViewMixin, get_contributors
 from write.forms import CommentForm, RepostForm
-from write.models import Comment, ContentInList
+from write.models import Comment, ContentInList, WebMention
 from write.utils_formatting import check_required_js
 
 from .forms import (
@@ -1332,6 +1331,7 @@ class DLCUpdateView(LoginRequiredMixin, UpdateView):
                 dlccasts.instance = self.object
                 dlccasts.save()
         return super().form_valid(form)
+
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class DLCHistoryView(HistoryViewMixin, DetailView):

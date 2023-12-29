@@ -72,6 +72,8 @@ from .views import (
     SayUpdateView,
     TagListView,
     TagUserListView,
+    delete_webmention,
+    webmention,
 )
 
 app_name = "write"
@@ -401,5 +403,12 @@ urlpatterns = [
         "@<str:username>/play/game/<int:object_id>/checkins/",
         PlayCheckInListView.as_view(),
         name="play_checkin_list",
+    ),
+    # webmention
+    path("webmention/", webmention, name="webmention"),
+    path(
+        "webmention/delete/<int:webmention_id>/",
+        delete_webmention,
+        name="delete_webmention",
     ),
 ]

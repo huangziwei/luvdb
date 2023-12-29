@@ -1,20 +1,32 @@
+import re
 from datetime import timedelta
 from itertools import chain
 from operator import attrgetter
-from typing import Any
+from urllib.parse import urlparse
 
 import pytz
+import requests
+from bs4 import BeautifulSoup
 from dal import autocomplete
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, Q
 from django.db.models.functions import Lower
-from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
+from django.http import (
+    Http404,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    HttpResponseRedirect,
+    JsonResponse,
+)
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -24,13 +36,13 @@ from django.views.generic import (
 )
 from django_ratelimit.decorators import ratelimit
 
-from accounts.models import WebMention
 from activity_feed.models import Activity, Block
 from discover.views import user_has_upvoted
 from listen.models import ListenCheckIn
 from play.models import PlayCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
+from write.models import WebMention
 from write.utils_formatting import check_required_js
 
 from .forms import (
@@ -1235,3 +1247,193 @@ class CommentListView(ListView):
         context = super().get_context_data(**kwargs)
         context["object"] = self.request.user
         return context
+
+
+#################
+## Webmentions ##
+#################
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def webmention(request):
+    source = request.POST.get("source")
+    target = request.POST.get("target")
+
+    if not source or not target:
+        return HttpResponseBadRequest("Source and target must be provided.")
+
+    if not is_valid_url(source) or not is_valid_url(target):
+        return HttpResponseBadRequest("Source and target must be valid URLs.")
+
+    if "/like/" in source:
+        return JsonResponse({"status": "refused", "message": "Likes are not accepted."})
+
+    existing_webmention = WebMention.objects.filter(
+        source=source, target=target
+    ).first()
+
+    verified = verify_webmention(source, target)
+    webmention_data = fetch_webmention_data(source)
+
+    if not verified:
+        return JsonResponse(
+            {"status": "failure", "message": "WebMention not verified."}
+        )
+
+    if existing_webmention:
+        # Check if the source no longer links to the target (treat as deletion)
+        if not verified:
+            existing_webmention.delete()
+            return JsonResponse({"status": "success", "message": "WebMention deleted."})
+
+        # Check for content changes (treat as edit)
+        if webmention_data and webmention_data != existing_webmention.to_dict():
+            # Update existing WebMention instance
+            for key, value in webmention_data.items():
+                setattr(existing_webmention, key, value)
+            existing_webmention.save()
+            return JsonResponse({"status": "success", "message": "WebMention updated."})
+        else:
+            return JsonResponse(
+                {"status": "info", "message": "No changes detected in WebMention."}
+            )
+
+    # Handle new WebMention creation
+    if webmention_data:
+        # Create and save the WebMention instance
+        webmention_instance = WebMention(
+            source=source,
+            target=target,
+            verified=True,
+            author_name=webmention_data.get("author_name"),
+            author_url=webmention_data.get("author_url"),
+            author_handle=webmention_data.get("author_handle"),
+            content_title=webmention_data.get("content_title"),
+            content_url=webmention_data.get("content_url"),
+            content=webmention_data.get("content"),
+            mention_type=webmention_data.get("mention_type"),
+        )
+        webmention_instance.save()
+        return JsonResponse({"status": "success", "message": "WebMention received."})
+    else:
+        return JsonResponse(
+            {"status": "failure", "message": "Failed to fetch WebMention data."}
+        )
+
+
+def verify_webmention(source, target):
+    """
+    Verify the WebMention by ensuring the source page links to the target.
+    """
+    try:
+        response = requests.get(source)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        # Check if the source page contains a link to the target URL
+        for link in soup.find_all("a", href=True):
+            if re.match(target, link["href"]):
+                return True
+        return False
+    except requests.RequestException:
+        return False
+
+
+def is_valid_url(url):
+    """
+    Validate the URL by ensuring it is a valid URL and not blacklisted.
+    """
+    BLACKLISTED_URLS = []
+    # # Check if the URL is blacklisted
+    if url in BLACKLISTED_URLS:
+        return False
+
+    # Check if the URL is valid
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+    except:
+        return False
+
+
+def fetch_webmention_data(source_url):
+    try:
+        response = requests.get(source_url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        # Distinguish between h-card and h-entry
+        h_card = soup.select_one(".h-card")
+        h_entry = soup.select_one(".h-entry")
+
+        # Extract h-card data (author information)
+        author_name, author_url, author_handle = None, None, None
+        if h_card:
+            author_name_el = h_card.select_one(".p-name")
+            author_name = (
+                author_name_el.get_text(strip=True) if author_name_el else None
+            )
+
+            author_url_el = h_card.select_one(".u-url")
+            author_url = author_url_el["href"] if author_url_el else None
+
+            if author_url:
+                match = re.search(r"https://(.+)/@(.+)", author_url)
+                author_handle = f"@{match.group(2)}@{match.group(1)}" if match else None
+
+        # Extract h-entry data (content information)
+        content, content_title, content_url = None, None, None
+        if h_entry:
+            content_el = h_entry.select_one(".e-content")
+            content = content_el.get_text() if content_el else None
+
+            content_title_el = h_entry.select_one(".p-name")
+            content_title = content_title_el.get_text() if content_title_el else None
+
+            content_url_el = h_entry.select_one(".u-url")
+            content_url = content_url_el["href"] if content_url_el else None
+
+        # Determine the type of WebMention
+        mention_type = "other"
+        if "/post/" in source_url:
+            mention_type = "post"
+        elif "/repost/" in source_url:
+            mention_type = "repost"
+        elif "/comment/" in source_url or (
+            h_entry and h_entry.select_one(".e-content")
+        ):
+            mention_type = "comment"
+
+        # Organize data
+        data = {
+            "author_name": author_name,
+            "author_url": author_url,
+            "author_handle": author_handle,
+            "content": content,
+            "content_title": content_title,
+            "content_url": content_url,
+            "mention_type": mention_type,
+        }
+
+        return data
+    except requests.RequestException:
+        # Handle exceptions
+        return {}
+
+
+@login_required
+def delete_webmention(request, webmention_id):
+    webmention = get_object_or_404(WebMention, id=webmention_id)
+
+    # Optional: Check if the request.user has permission to delete the WebMention
+    if not request.user.has_perm("delete_webmention", webmention):
+        return HttpResponseForbidden()
+
+    webmention.delete()
+    # Redirect back to the referring page
+    referer_url = request.META.get("HTTP_REFERER")
+    if referer_url:
+        return HttpResponseRedirect(referer_url)
+    else:
+        return redirect("activity_feed:activity_feed")

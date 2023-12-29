@@ -30,14 +30,13 @@ from django.views.generic import (
 from django_ratelimit.decorators import ratelimit
 from PIL import Image
 
-from accounts.models import WebMention
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.models import Creator, Role
 from entity.views import HistoryViewMixin, get_contributors
 from scrape.wikipedia import scrape_release
 from write.forms import CommentForm, RepostForm
-from write.models import Comment, ContentInList
+from write.models import Comment, ContentInList, WebMention
 from write.utils_formatting import check_required_js
 
 from .forms import (
