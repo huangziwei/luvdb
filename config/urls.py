@@ -4,12 +4,15 @@ import sys
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.sitemaps.views import sitemap
 from django.http import Http404, HttpResponse, HttpResponseServerError
 from django.shortcuts import redirect
 from django.template import loader
-from django.urls import include, path, re_path
+from django.urls import include, path, re_path, reverse
+from django.utils.decorators import method_decorator
+from django.views import View
 
 from accounts.views import (
     CustomLoginView,
@@ -64,6 +67,22 @@ def redirect_to_at_username(request, username, extra_path=""):
     return redirect(f"/@{username}{extra_path}")
 
 
+class RedirectToYearInReview(View):
+    @method_decorator(login_required)
+    def get(self, request, *args, **kwargs):
+        username = request.user.username
+        return redirect(
+            reverse("accounts:year_in_review", kwargs={"username": username})
+        )
+
+
+class RedirectToAccountUpdate(View):
+    @method_decorator(login_required)
+    def get(self, request, *args, **kwargs):
+        username = request.user.username
+        return redirect(reverse("accounts:update", kwargs={"username": username}))
+
+
 def site_manifest(request):
     data = {
         "name": "LʌvDB",
@@ -102,6 +121,16 @@ urlpatterns = [
                 re_path(r"^(?P<extra_path>.+)$", redirect_to_at_username),
             ]
         ),  # Redirect to @username
+    ),
+    path(
+        "year-in-review/",
+        RedirectToYearInReview.as_view(),
+        name="redirect_to_year_in_review",
+    ),
+    path(
+        "update/",
+        RedirectToAccountUpdate.as_view(),
+        name="redirect_to_account_update",
     ),
     # webmention
     path("webmention/", webmention, name="webmention"),
