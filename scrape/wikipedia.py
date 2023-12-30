@@ -19,9 +19,7 @@ def scrape_creator(url):
         "other_names": extract_other_names(infobox, language),
         "creator_type": extract_creator_type(infobox, get_date_label(language, "born")),
         "birth_date": extract_date(infobox, get_date_label(language, "born")),
-        "birth_place": extract_place(infobox, get_date_label(language, "born")),
         "death_date": extract_date(infobox, get_date_label(language, "died")),
-        "death_place": extract_place(infobox, get_date_label(language, "died")),
         "website": extract_website(infobox),
         "wikipedia": url,
     }

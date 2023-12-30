@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load markdownify %}
+{% block title %}{{ object.name }}{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 left-column">
+                <div> <!--geo meta-->
+                    <div class="d-flex align-items-center">
+                        <h2 class="fs-2 me-2">{{ object.name }}</h2>
+                        {% if object.other_names %}<div class="text-muted me-2">{{ object.other_names }}</div>{% endif %}
+                        {% if object.historical %}<div class="badge text-bg-secondary me-1">historical</div>{% endif %}
+                    </div>
+                    <div class="d-flex">
+                        <span class="text-muted me-1">{{object.level|capfirst}} {% if object.level != "continent" %}in{% endif %}</span>
+                        <span>
+                            {% for parent in parent_locations %}
+                                <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a>
+                                {% if not forloop.last %} > {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <span class="text-secondary">
+                        {% if object.founded_date %}
+                            {{ object.founded_date }}
+                            -
+                        {% endif %}
+                        {% if object.defunct_date %}{{ object.defunct_date }}{% endif %}
+                    </span>
+                    {% if object.notes %}
+                        <div class="text-muted">
+                            {{ object.notes | markdownify }}
+                        </div>
+                    {% endif %}
+
+                    <!--sublevels-->
+                    {% for level, children in children_grouped_by_level.items %}
+                        <div>
+                            <h4 class="mt-4">{{ level|title }}</h4>
+                            <ul class="list-unstyled">
+                                {% for child in children %}
+                                    <li>
+                                        <a href="{% url 'visit:location_detail' child.id %}">{{ child.name }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if creators_born_here or creators_died_here%}
+                <div> <!--people-->
+                    <h4 class="mt-4">People</h4>
+                    <h5 class="mt-5">Born</h5>
+                    <div>
+                    {% for creator in creators_born_here %}
+                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}
+                    </div>
+                    <h5 class="mt-5">Died</h5>
+                    <div>
+                    {% for creator in creators_died_here %}
+                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if companies_here %}
+                <div> <!--people-->
+                    <h4 class="mt-4">Company</h4>
+                    <div>
+                    {% for company in companies_here %}
+                        <a href="{% url 'entity:company_detail' company.id %}">{{ company.name }}</a>
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <div class="d-flex flex-column col-sm-4 right-column">
+                {% if user.is_authenticated and not object.locked%}
+                <div class="bg-light p-3 mb-3 order-2 order-sm-1">
+                    <a href="{% url 'visit:location_update' object.pk %}"
+                           class='fs-6 text-secondary'>Edit Location</a>
+                </div>
+                {% endif %}
+
+                {% if object.wikipedia or object.website %}
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                    <div class="fs-5">Link</div>
+                    {% if object.wikipedia %}
+                        <div>
+                            <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>
+                        </div>
+                    {% endif %}
+                    {% if object.website %}
+                        <div>
+                            <a href="{{ object.website }}" target="_blank">Official Website</a>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                    <div class="d-flex justify-content-start align-items-center flex-wrap">
+                        <div class="me-1 fs-5">Contributors</div>
+                        <div>(<a href="{% url 'visit:location_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>
+                    </div>
+                    <div>
+                        {% for contributor in contributors %}
+                            <span>
+                                <a href="{% url 'accounts:detail' contributor.username %}">
+                                    {% if contributor == contributors.0 %}
+                                        <b>         
+                                            {{ contributor.display_name|default:contributor.username }}
+                                        </b>
+                                    {% else %}
+                                        {{ contributor.display_name|default:contributor.username }}
+                                    {% endif %}
+                                </a>
+                            </span>
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

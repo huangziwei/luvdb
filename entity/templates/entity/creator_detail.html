@@ -14,11 +14,11 @@
                 <span class="text-secondary">
                     {% if object.birth_date %}
                         {{ object.birth_date }}
-                        {% if object.birth_place %}({{ object.birth_place }}){% endif %}
+                        {% if object.birth_location %}(<a href="{% url 'visit:location_detail' object.birth_location.id %}">{{ object.birth_location.name }}</a>){% endif %}
                         -
                     {% endif %}
                     {% if object.death_date %}{{ object.death_date }}{% endif %}
-                    {% if object.death_place %}({{ object.death_place }}){% endif %}
+                    {% if object.death_location %}(<a href="{% url 'visit:location_detail' object.death_location.id %}">{{ object.death_location.name }}</a>){% endif %}
                 </span>
                 {% if object.notes %}
                 <div class="text-muted">

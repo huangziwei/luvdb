@@ -12,6 +12,7 @@
                 <span class="text-secondary">
                     {% if object.founded_date %}
                         {{ object.founded_date }}
+                        {% if object.location_new %}(<a href="{% url 'visit:location_detail' object.location_new.id %}">{{ object.location_new.name }}</a>){% endif %}
                         -
                     {% endif %}
                     {% if object.defunct_date %}{{ object.defunct_date }}{% endif %}

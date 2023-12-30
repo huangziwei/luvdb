@@ -21,7 +21,7 @@ from read.models import Work as LitWork
 from scrape.wikipedia import scrape_company, scrape_creator
 from watch.models import Episode, Movie, Series
 
-from .forms import CreatorForm
+from .forms import CompanyForm, CreatorForm
 from .models import Company, Creator, Role
 
 
@@ -532,16 +532,7 @@ class RoleAutocomplete(autocomplete.Select2QuerySetView):
 
 class CompanyCreateView(LoginRequiredMixin, CreateView):
     model = Company
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "founded_date",
-        "defunct_date",
-        "website",
-        "wikipedia",
-        "notes",
-    ]
+    form_class = CompanyForm
     template_name = "entity/company_create.html"
 
     def get_form(self, form_class=None):
@@ -643,16 +634,7 @@ class CompanyDetailView(DetailView):
 
 class CompanyUpdateView(LoginRequiredMixin, UpdateView):
     model = Company
-    fields = [
-        "name",
-        "other_names",
-        "location",
-        "website",
-        "wikipedia",
-        "founded_date",
-        "defunct_date",
-        "notes",
-    ]
+    form_class = CompanyForm
     template_name = "entity/company_update.html"
 
     def dispatch(self, request, *args, **kwargs):

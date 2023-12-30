@@ -4,17 +4,25 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-8">
-                <h1>Update Company</h1>
+            <!--left column-->
+            <div class="col-12 col-md-7">
+                <h1>Update Location</h1>
                 <form action="" method="post">
                     {% csrf_token %}
-                    {{ form|crispy }}
+                    {{ form.name|as_crispy_field }}
+                    {{form.other_names|as_crispy_field}}
+                    {{form.level|as_crispy_field}}
+                    {{form.parent|as_crispy_field }}
+                    {{form.wikipedia|as_crispy_field}}
+                    {{form.website|as_crispy_field}}
+                    {{form.historical|as_crispy_field}}
+                    {{form.historical_period|as_crispy_field}}
+                    {{form.notes|as_crispy_field}}
                     <input type="submit" value="Update" class="btn btn-primary">
                 </form>
             </div>
         </div>
     </div>
-
     <script type="text/javascript"
         src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
     {{ form.media }}
@@ -22,7 +30,7 @@
         src="{% static 'js/generalFormsetHandler.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('select:not([name="model"], [name="creator_type"])').removeClass('form-select');
+            $('select:not([name="model"], [name="level"])').removeClass('form-select');
         });
     </script>
 {% endblock %}

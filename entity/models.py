@@ -6,6 +6,8 @@ from django.urls import reverse
 from langcodes import Language
 from simple_history.models import HistoricalRecords
 
+from visit.models import Location
+
 
 class LanguageField(models.CharField):
     def __init__(self, *args, **kwargs):
@@ -118,6 +120,20 @@ class Creator(Entity):
     )  # YYYY or YYYY-MM or YYYY-MM-DD
     birth_place = models.CharField(max_length=255, blank=True, null=True)
     death_place = models.CharField(max_length=255, blank=True, null=True)
+    birth_location = auto_prefetch.ForeignKey(
+        Location,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="birth_location",
+    )
+    death_location = auto_prefetch.ForeignKey(
+        Location,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="death_location",
+    )
     wikipedia = models.URLField(blank=True, null=True)
     website = models.URLField(blank=True, null=True)
 
@@ -153,6 +169,13 @@ class Role(auto_prefetch.Model):
 
 class Company(Entity):
     location = models.CharField(max_length=100, blank=True, null=True)
+    location_new = auto_prefetch.ForeignKey(
+        Location,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="location",
+    )
     founded_date = models.CharField(max_length=10, blank=True, null=True)
     defunct_date = models.CharField(max_length=10, blank=True, null=True)
     website = models.URLField(blank=True, null=True)

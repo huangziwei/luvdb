@@ -11,8 +11,6 @@ class PersonAdmin(admin.ModelAdmin):
         "creator_type",
         "birth_date",
         "death_date",
-        "birth_place",
-        "death_place",
         "wikipedia",
         "website",
     ]
@@ -22,8 +20,6 @@ class PersonAdmin(admin.ModelAdmin):
         "creator_type",
         "birth_date",
         "death_date",
-        "birth_place",
-        "death_place",
         "wikipedia",
         "website",
     ]
@@ -39,6 +35,5 @@ class RoleAdmin(admin.ModelAdmin):
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ["name", "location", "website", "wikipedia"]
-    search_fields = ["name", "location", "website"]
-    list_filter = ["location"]
+    list_display = ["name", "website", "wikipedia"]
+    search_fields = ["name", "website"]
