@@ -9,6 +9,18 @@ from simple_history.models import HistoricalRecords
 from visit.models import Location
 
 
+def get_location_hierarchy_ids(location):
+    hierarchy_ids = []
+    if location.historical:
+        current = None
+    else:
+        current = location
+    while current:
+        hierarchy_ids.append(str(current.id))
+        current = current.parent
+    return ",".join(hierarchy_ids)
+
+
 class LanguageField(models.CharField):
     def __init__(self, *args, **kwargs):
         kwargs["max_length"] = 8
@@ -134,6 +146,9 @@ class Creator(Entity):
         blank=True,
         related_name="death_location",
     )
+    birth_location_hierarchy = models.TextField(blank=True, null=True)
+    death_location_hierarchy = models.TextField(blank=True, null=True)
+
     wikipedia = models.URLField(blank=True, null=True)
     website = models.URLField(blank=True, null=True)
 
@@ -142,6 +157,17 @@ class Creator(Entity):
 
     def get_absolute_url(self):
         return reverse("entity:creator_detail", kwargs={"pk": self.pk})
+
+    def save(self, *args, **kwargs):
+        if self.birth_location:
+            self.birth_location_hierarchy = get_location_hierarchy_ids(
+                self.birth_location
+            )
+        if self.death_location:
+            self.death_location_hierarchy = get_location_hierarchy_ids(
+                self.death_location
+            )
+        super().save(*args, **kwargs)
 
 
 class Role(auto_prefetch.Model):
@@ -176,6 +202,7 @@ class Company(Entity):
         blank=True,
         related_name="location",
     )
+    location_hierarchy = models.TextField(blank=True, null=True)
     founded_date = models.CharField(max_length=10, blank=True, null=True)
     defunct_date = models.CharField(max_length=10, blank=True, null=True)
     website = models.URLField(blank=True, null=True)
@@ -186,3 +213,8 @@ class Company(Entity):
         if self.location:
             return f"{self.location}: {self.name}"
         return self.name
+
+    def save(self, *args, **kwargs):
+        if self.location_new:
+            self.location_hierarchy = get_location_hierarchy_ids(self.location_new)
+        super().save(*args, **kwargs)

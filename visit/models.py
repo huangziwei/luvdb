@@ -11,10 +11,10 @@ class Location(models.Model):
     CONTINENT = "continent"
     POLITY = "polity"  # countries /  sovereign entities
     REGION = "region"  # State / Province
-    CITY = "city"
+    CITY = "city"  # city / town / village can be or not be at the same level
     TOWN = "town"
     VILLAGE = "village"
-    NEIGHBORHOOD = "neighborhood"  # Neighborhood / District
+    DISTRICT = "district"  # Neighborhood / District
     POI = "poi"  # Point of Interest
 
     LOCATION_LEVELS = [
@@ -24,7 +24,7 @@ class Location(models.Model):
         (CITY, "City"),
         (TOWN, "Town"),
         (VILLAGE, "Village"),
-        (NEIGHBORHOOD, "Neighborhood"),
+        (DISTRICT, "District"),
         (POI, "Point of Interest"),
     ]
 
@@ -70,7 +70,16 @@ class Location(models.Model):
         elif self.level == "region":
             return f"{self.parent.parent.name} / {self.parent.name} / {self.name}"
         elif self.level == "city":
-            return f"{self.parent.parent.parent.name} / {self.parent.parent.name} / {self.parent.name} / {self.name}"
+            if self.parent.level == "region":
+                return f"{self.parent.parent.parent.name} / {self.parent.parent.name} / {self.parent.name} / {self.name}"
+            elif self.parent.level == "polity":
+                return f"{self.parent.parent.name} / {self.parent.name} / {self.name}"
+            else:
+                return f"{self.parent.name} / {self.name}"
+        elif self.level == "district":
+            return f"{self.parent.parent.parent.parent.name} / {self.parent.parent.parent.name} / {self.parent.parent.name} / {self.parent.name} / {self.name}"
+        elif self.level == "poi":
+            return f"{self.parent.parent.parent.parent.parent.name} / {self.parent.parent.parent.parent.name} / {self.parent.parent.parent.name} / {self.parent.parent.name} / {self.parent.name} / {self.name}"
         else:
             return self.name
 

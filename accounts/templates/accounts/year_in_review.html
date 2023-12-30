@@ -195,6 +195,16 @@
                             </ul>
                         </div>
                         {% endif %}
+
+                        {% if contributed_locations > 0 %}
+                        <div class="col-12 col-md-4">
+                            <div class="fs-5 fw-semibold mt-2">Visit</div>
+                            <ul>
+                                {% if contributed_locations > 0 %}<li>{{contributed_locations}} Location{% if contributed_locations > 1 %}s{% endif %}</li>{% endif %}
+                            </ul>
+                        </div>                        
+                        
+                        {% endif %}
                     </div>
                     <div>
                         Thank you very much for your contributions!

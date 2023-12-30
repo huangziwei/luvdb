@@ -23,7 +23,6 @@ class PersonAdmin(admin.ModelAdmin):
         "wikipedia",
         "website",
     ]
-    list_filter = ["birth_date", "death_date"]
 
 
 @admin.register(Role)

@@ -56,10 +56,10 @@ class LocationDetailView(DetailView):
 
         context["children_grouped_by_level"] = dict(children_grouped_by_level)
         context["creators_born_here"] = Creator.objects.filter(
-            birth_location=self.object
+            birth_location_hierarchy__contains=self.object.id
         ).order_by("birth_date")
         context["creators_died_here"] = Creator.objects.filter(
-            death_location=self.object
+            death_location_hierarchy__contains=self.object.id
         ).order_by("death_date")
         context["companies_here"] = Company.objects.filter(
             location_new=self.object

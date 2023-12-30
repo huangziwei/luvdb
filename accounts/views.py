@@ -51,6 +51,7 @@ from read.models import Book, BookSeries
 from read.models import Instance as LitInstance
 from read.models import Issue, Periodical, ReadCheckIn
 from read.models import Work as LitWork
+from visit.models import Location
 from watch.models import Episode, Movie, Series, WatchCheckIn
 from write.models import Comment, ContentInList, LuvList, Pin, Post, Repost, Say, Tag
 from write.utils_formatting import check_required_js
@@ -1752,10 +1753,16 @@ class YearInReviewView(DetailView):
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
 
+        # entity
         contributed_creators = Creator.objects.filter(
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
         contributed_companies = Company.objects.filter(
+            created_by=user, created_at__range=(start_date, end_date)
+        ).count()
+
+        # location
+        contributed_locations = Location.objects.filter(
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
 
@@ -1775,6 +1782,7 @@ class YearInReviewView(DetailView):
             + contributed_games
             + contributed_creators
             + contributed_companies
+            + contributed_locations
         )
         # Similarly for other models like ReadCheckIn, ListenCheckIn, etc.
 
@@ -1888,6 +1896,7 @@ class YearInReviewView(DetailView):
             "contributed_games": contributed_games,
             "contributed_creators": contributed_creators,
             "contributed_companies": contributed_companies,
+            "contributed_locations": contributed_locations,
             # other stats
         }
 
