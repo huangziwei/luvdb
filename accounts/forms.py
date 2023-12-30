@@ -20,7 +20,8 @@ class CustomUserCreationForm(UserCreationForm):
     """Form for user creation with invitation code."""
 
     invitation_code = forms.CharField(
-        required=True, help_text="Enter the invitation code you received."
+        required=True,
+        help_text="Enter the invitation code you received. Or, <a href='/login'>request one</a>.",
     )
 
     class Meta(auto_prefetch.Model.Meta):

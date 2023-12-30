@@ -1,12 +1,8 @@
-import re
 from datetime import timedelta
 from itertools import chain
 from operator import attrgetter
-from urllib.parse import urlparse
 
 import pytz
-import requests
-from bs4 import BeautifulSoup
 from dal import autocomplete
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -44,6 +40,11 @@ from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
 from write.models import WebMention
 from write.utils_formatting import check_required_js
+from write.utils_webmention import (
+    fetch_webmention_data,
+    is_valid_url,
+    verify_webmention,
+)
 
 from .forms import (
     CommentForm,
@@ -1320,106 +1321,6 @@ def webmention(request):
         return JsonResponse(
             {"status": "failure", "message": "Failed to fetch WebMention data."}
         )
-
-
-def verify_webmention(source, target):
-    """
-    Verify the WebMention by ensuring the source page links to the target.
-    """
-    try:
-        response = requests.get(source)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.content, "html.parser")
-
-        # Check if the source page contains a link to the target URL
-        for link in soup.find_all("a", href=True):
-            if re.match(target, link["href"]):
-                return True
-        return False
-    except requests.RequestException:
-        return False
-
-
-def is_valid_url(url):
-    """
-    Validate the URL by ensuring it is a valid URL and not blacklisted.
-    """
-    BLACKLISTED_URLS = []
-    # # Check if the URL is blacklisted
-    if url in BLACKLISTED_URLS:
-        return False
-
-    # Check if the URL is valid
-    try:
-        result = urlparse(url)
-        return all([result.scheme, result.netloc])
-    except:
-        return False
-
-
-def fetch_webmention_data(source_url):
-    try:
-        response = requests.get(source_url)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.content, "html.parser")
-
-        # Distinguish between h-card and h-entry
-        h_card = soup.select_one(".h-card")
-        h_entry = soup.select_one(".h-entry")
-
-        # Extract h-card data (author information)
-        author_name, author_url, author_handle = None, None, None
-        if h_card:
-            author_name_el = h_card.select_one(".p-name")
-            author_name = (
-                author_name_el.get_text(strip=True) if author_name_el else None
-            )
-
-            author_url_el = h_card.select_one(".u-url")
-            author_url = author_url_el["href"] if author_url_el else None
-
-            if author_url:
-                match = re.search(r"https://(.+)/@(.+)", author_url)
-                author_handle = f"@{match.group(2)}@{match.group(1)}" if match else None
-
-        # Extract h-entry data (content information)
-        content, content_title, content_url = None, None, None
-        if h_entry:
-            content_el = h_entry.select_one(".e-content")
-            content = content_el.get_text() if content_el else None
-
-            content_title_el = h_entry.select_one(".p-name")
-            content_title = content_title_el.get_text() if content_title_el else None
-
-            content_url_el = h_entry.select_one(".u-url")
-            content_url = content_url_el["href"] if content_url_el else None
-
-        # Determine the type of WebMention
-        mention_type = "other"
-        if "/post/" in source_url:
-            mention_type = "post"
-        elif "/repost/" in source_url:
-            mention_type = "repost"
-        elif "/comment/" in source_url or (
-            h_entry and h_entry.select_one(".e-content")
-        ):
-            mention_type = "comment"
-
-        # Organize data
-        data = {
-            "author_name": author_name,
-            "author_url": author_url,
-            "author_handle": author_handle,
-            "content": content,
-            "content_title": content_title,
-            "content_url": content_url,
-            "mention_type": mention_type,
-        }
-
-        return data
-    except requests.RequestException:
-        # Handle exceptions
-        return {}
 
 
 @login_required
