@@ -23,7 +23,7 @@ urlpatterns = [
         LocationHistoryView.as_view(),
         name="location_history",
     ),
-    path("location/", LocationListView.as_view(), name="location_list"),
+    path("locations/", LocationListView.as_view(), name="location_list"),
     path(
         "location-autocomplete/",
         LocationAutoComplete.as_view(),

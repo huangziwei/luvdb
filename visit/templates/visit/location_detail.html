@@ -4,30 +4,33 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-sm-8 left-column">
+            <div class="col-sm-8 left-column mb-2">
                 <div> <!--geo meta-->
                     <div class="d-flex flex-wrap align-items-center">
                         <h2 class="fs-2 me-2">{{ object.name }}</h2>
                         {% if object.other_names %}<div class="text-muted me-2">{{ object.other_names }}</div>{% endif %}
-                        {% if object.historical %}<div class="badge text-bg-secondary me-1">historical ({{object.historical_period}})</div>{% endif %}
+                        {% if object.historical %}<div class="badge text-bg-secondary me-1">historical {% if object.historical_period %}({{object.historical_period}}){% endif %}</div>{% endif %}
                     </div>
-                    <div class="d-flex">
-                        <span class="text-muted me-1">{{object.level|capfirst}} {% if object.level != "continent" %}in{% endif %}</span>
-                        <span class="me-1">
-                            {% for parent in parent_locations %}
-                                <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a>
-                                {% if not forloop.last %} > {% endif %}
-                            {% endfor %}
-                        </span>
-                        <span>
+                    <div>
+                        <div class="flex-wrap">
+                            <span class="text-muted me-1">{{object.level|capfirst}} {% if object.level != "continent" %}in{% endif %}</span>
+                            <span class="me-1">
+                                {% for parent in parent_locations %}
+                                    <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a>
+                                    {% if not forloop.last %} > {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        <div>
                             {% if current_identity_parents %}
-                                <span class="text-muted">| Currently </span>
+                                <span class="text-muted">Currently </span>
                                 {% for parent in current_identity_parents %}
                                     <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a>
                                     {% if not forloop.last %} > {% endif %}
                                 {% endfor %}
+                                > <a href="{% url 'visit:location_detail' object.current_identity.id %}"> {{ object.current_identity.name }}</a>
                             {% endif %}
-                        </span>
+                        </div>
                     </div>
                     <span class="text-secondary">
                         {% if object.founded_date %}
@@ -106,17 +109,39 @@
                 {% endif %}
 
                 <!--sublevels-->
-                {% for level, children in children_grouped_by_level.items %}
+                {% if children_grouped_by_level_current or children_grouped_by_level_historical %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <div class="fs-5">{{ level|title }}</div>
+                    {% if children_grouped_by_level_current %}
                         <div>
-                            {% for child in children %}
-                                    <a href="{% url 'visit:location_detail' child.id %}">{{ child.name }}</a>
-                                    {% if not forloop.last %} / {% endif %}
+                            <div class="fs-5">Current</div>
+                            {% for level, children in children_grouped_by_level_current.items %}
+                                    <div class="fs-6 mt-2">{{ level }}</div>
+                                    <div>
+                                        {% for child in children %}
+                                                <a href="{% url 'visit:location_detail' child.id %}">{{ child.name }}</a>
+                                                {% if not forloop.last %} / {% endif %}
+                                        {% endfor %}
+                                    </div>
                             {% endfor %}
                         </div>
+                    {% endif %}
+                    
+                    {% if children_grouped_by_level_historical %}
+                        <div>
+                            <div class="fs-5 mt-2">Historical</div>
+                            {% for level, children in children_grouped_by_level_historical.items %}
+                                    <div class="fs-6">{{ level }}</div>
+                                    <div>
+                                        {% for child in children %}
+                                                <a href="{% url 'visit:location_detail' child.id %}">{{ child.name }}</a>
+                                                {% if not forloop.last %} / {% endif %}
+                                        {% endfor %}
+                                    </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                     </div>
-                {% endfor %}
+                {% endif %}
 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">

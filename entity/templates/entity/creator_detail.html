@@ -20,6 +20,8 @@
                     {% if object.death_date %}{{ object.death_date }}{% endif %}
                     {% if object.death_location %}(<a href="{% url 'visit:location_detail' object.death_location.id %}">{{ object.death_location.name }}, {{ object.death_location.parent.name }}</a>){% endif %}
                 </span>
+                {% if object.creator_type == "group" %}<div class="text-muted">Group</div> {% endif %}
+
                 {% if object.notes %}
                 <div class="text-muted">
                     {{ object.notes | markdownify }}

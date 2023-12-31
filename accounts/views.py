@@ -1380,7 +1380,7 @@ class YearInReviewView(DetailView):
 
     def get_yearly_stats(self, user, year):
         start_date = datetime.date(year, 1, 1)
-        end_date = datetime.date(year, 12, 31)
+        end_date = datetime.date(year + 1, 1, 1)
 
         yearly_activities = Activity.objects.filter(
             user=user, timestamp__range=(start_date, end_date)

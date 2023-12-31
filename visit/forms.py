@@ -49,3 +49,20 @@ class LocationForm(forms.ModelForm):
             "historical": "Is this a historical location?",
             "historical_period": "Historical Period",
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        custom_level_labels = {
+            Location.CONTINENT: "Continent",
+            Location.POLITY: "Polity",
+            Location.REGION: "Region / State / Province / Canton / Prefecture",
+            Location.CITY: "City / Municipality / County",
+            Location.TOWN: "Town / Township",
+            Location.VILLAGE: "Village / Hamlet",
+            Location.DISTRICT: "District / Borough / Ward / Neighborhood",
+            Location.POI: "Point of Interest",
+            "": "Select Level",
+        }
+        self.fields["level"].choices = [
+            (key, custom_level_labels[key]) for key, _ in self.fields["level"].choices
+        ]

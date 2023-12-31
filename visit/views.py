@@ -55,11 +55,22 @@ class LocationDetailView(DetailView):
                 self.object.current_identity
             )
         # Group children by their levels
-        children_grouped_by_level = defaultdict(list)
+        children_grouped_by_level_current = defaultdict(list)
+        children_grouped_by_level_historical = defaultdict(list)
         for child in self.object.children.all().order_by("name"):
-            children_grouped_by_level[child.level].append(child)
+            level = self.get_level_label(child.level)
+            if child.historical:
+                children_grouped_by_level_historical[level].append(child)
+            else:
+                children_grouped_by_level_current[level].append(child)
 
-        context["children_grouped_by_level"] = dict(children_grouped_by_level)
+        context["children_grouped_by_level_current"] = dict(
+            children_grouped_by_level_current
+        )
+        context["children_grouped_by_level_historical"] = dict(
+            children_grouped_by_level_historical
+        )
+
         regex_pattern = r"(?:^|,)" + re.escape(str(self.object.id)) + r"(?:,|$)"
         context["creators_born_here"] = Creator.objects.filter(
             birth_location_hierarchy__regex=regex_pattern
@@ -82,6 +93,24 @@ class LocationDetailView(DetailView):
             parents.insert(0, current)
             current = current.parent
         return parents
+
+    def get_level_label(self, level):
+        if level == Location.CONTINENT:
+            return "Continent"
+        elif level == Location.POLITY:
+            return "Polities / Sovereign Entities"
+        elif level == Location.REGION:
+            return "Regions / States / Provinces / Cantons / Prefectures"
+        elif level == Location.CITY:
+            return "Cities / Municipalities / Counties"
+        elif level == Location.TOWN:
+            return "Towns / Townships"
+        elif level == Location.VILLAGE:
+            return "Villages / Hamlets"
+        elif level == Location.DISTRICT:
+            return "Districts / Boroughs / Wards / Neighborhoods"
+        elif level == Location.POI:
+            return "Points of Interest"
 
 
 class LocationUpdateView(UpdateView):
@@ -112,18 +141,31 @@ class LocationUpdateView(UpdateView):
 
 class LocationListView(ListView):
     model = Location
-    template_name = "visit/location_list.html"
+    template_name = "location_list.html"
+    context_object_name = "locations"
+
+    def get_queryset(self):
+        # Retrieve only top-level locations (continents)
+        return Location.objects.filter(level=Location.CONTINENT)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Group locations by level and then by parent
-        locations_grouped = defaultdict(lambda: defaultdict(list))
-        for location in Location.objects.all():
-            locations_grouped[location.level][location.parent_id].append(location)
-
-        context["locations_grouped"] = dict(locations_grouped)
-
+        context["nested_locations"] = self._get_child_locations(
+            None
+        )  # Start with no parent
         return context
+
+    def _get_child_locations(self, parent_location, depth=0):
+        locations = Location.objects.filter(parent=parent_location).order_by("name")
+        location_dict = {
+            location: {
+                "children": self._get_child_locations(location, depth + 1),
+                "depth": depth,
+                "historical": location.historical,
+            }
+            for location in locations
+        }
+        return location_dict
 
 
 class LocationAutoComplete(autocomplete.Select2QuerySetView):

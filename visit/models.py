@@ -5,13 +5,32 @@ from django.utils.text import slugify
 from simple_history.models import HistoricalRecords
 
 
+def get_location_full_name(location):
+    """
+    Generate the full name of a location by traversing its parent hierarchy.
+    """
+    names = []
+    current = location
+    while current:
+        current_name = current.name
+        if current.historical:
+            if current.historical_period:
+                current_name += f" ({current.historical_period})"
+            else:
+                current_name += " (historical)"
+        names.insert(0, current_name)
+        current = current.parent
+    name = " / ".join(names)
+    return name
+
+
 class Location(models.Model):
     locked = models.BooleanField(default=False)
 
     CONTINENT = "continent"
     POLITY = "polity"  # countries /  sovereign entities
     REGION = "region"  # State / Province
-    CITY = "city"  # city / town / village can be or not be at the same level
+    CITY = "city"  # City / Municipality / Prefecture / County
     TOWN = "town"
     VILLAGE = "village"
     DISTRICT = "district"  # Neighborhood / District
@@ -20,16 +39,16 @@ class Location(models.Model):
     LOCATION_LEVELS = [
         (CONTINENT, "Continent"),
         (POLITY, "Polity"),
-        (REGION, "Region"),
-        (CITY, "City"),
-        (TOWN, "Town"),
+        (REGION, "Region / State / Province / Canton / Prefecture"),
+        (CITY, "City / Municipality / County"),
+        (TOWN, "Town / Township"),
         (VILLAGE, "Village"),
-        (DISTRICT, "District"),
+        (DISTRICT, "District / Borough / Ward / Neighborhood"),
         (POI, "Point of Interest"),
     ]
 
     name = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=255)
     other_names = models.TextField(null=True, blank=True)
     level = models.CharField(max_length=20, choices=LOCATION_LEVELS)
     parent = models.ForeignKey(
@@ -66,25 +85,7 @@ class Location(models.Model):
     history = HistoricalRecords(inherit=True)
 
     def __str__(self):
-        if self.level == "continent":
-            return f"{self.name}"
-        elif self.level == "polity":
-            return f"{self.parent.name} / {self.name}"
-        elif self.level == "region":
-            return f"{self.parent.parent.name} / {self.parent.name} / {self.name}"
-        elif self.level == "city":
-            if self.parent.level == "region":
-                return f"{self.parent.parent.parent.name} / {self.parent.parent.name} / {self.parent.name} / {self.name}"
-            elif self.parent.level == "polity":
-                return f"{self.parent.parent.name} / {self.parent.name} / {self.name}"
-            else:
-                return f"{self.parent.name} / {self.name}"
-        elif self.level == "district":
-            return f"{self.parent.parent.parent.parent.name} / {self.parent.parent.parent.name} / {self.parent.parent.name} / {self.parent.name} / {self.name}"
-        elif self.level == "poi":
-            return f"{self.parent.parent.parent.parent.parent.name} / {self.parent.parent.parent.parent.name} / {self.parent.parent.parent.name} / {self.parent.parent.name} / {self.parent.name} / {self.name}"
-        else:
-            return self.name
+        return get_location_full_name(self)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)

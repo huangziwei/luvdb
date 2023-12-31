@@ -593,6 +593,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     .tabbed-set input:nth-child(n+1):checked + label + .tabbed-content {
         order: 99;
         display: block;
+        padding-top: 1rem;
     }
 }
 
