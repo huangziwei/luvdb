@@ -38,6 +38,9 @@ class Location(models.Model):
 
     historical = models.BooleanField(default=False)
     historical_period = models.CharField(max_length=255, null=True, blank=True)
+    current_identity = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="current"
+    )
 
     address = models.TextField(null=True, blank=True)  # for POI
 

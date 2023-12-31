@@ -13,11 +13,20 @@
                     </div>
                     <div class="d-flex">
                         <span class="text-muted me-1">{{object.level|capfirst}} {% if object.level != "continent" %}in{% endif %}</span>
-                        <span>
+                        <span class="me-1">
                             {% for parent in parent_locations %}
                                 <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a>
                                 {% if not forloop.last %} > {% endif %}
                             {% endfor %}
+                        </span>
+                        <span>
+                            {% if current_identity_parents %}
+                                <span class="text-muted">| Currently </span>
+                                {% for parent in current_identity_parents %}
+                                    <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a>
+                                    {% if not forloop.last %} > {% endif %}
+                                {% endfor %}
+                            {% endif %}
                         </span>
                     </div>
                     <span class="text-secondary">
@@ -32,20 +41,6 @@
                             {{ object.notes | markdownify }}
                         </div>
                     {% endif %}
-
-                    <!--sublevels-->
-                    {% for level, children in children_grouped_by_level.items %}
-                        <div>
-                            <h4 class="mt-4">{{ level|title }}</h4>
-                            <ul class="list-unstyled">
-                                {% for child in children %}
-                                    <li>
-                                        <a href="{% url 'visit:location_detail' child.id %}">{{ child.name }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endfor %}
                 </div>
                 {% if creators_born_here or creators_died_here%}
                 <div> <!--people-->
@@ -53,10 +48,10 @@
                     {% if creators_born_here %}
                         <h5 class="mt-2">Born</h5>
                         <div>
-                        {% for creator in creators_born_here %}
-                            <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                            {% if not forloop.last %} / {% endif %}
-                        {% endfor %}
+                            {% for creator in creators_born_here %}
+                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                {% if not forloop.last %} / {% endif %}
+                            {% endfor %}
                         </div>
                     {% endif %}
 
@@ -109,6 +104,19 @@
                     {% endif %}
                 </div>
                 {% endif %}
+
+                <!--sublevels-->
+                {% for level, children in children_grouped_by_level.items %}
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                        <div class="fs-5">{{ level|title }}</div>
+                        <div>
+                            {% for child in children %}
+                                    <a href="{% url 'visit:location_detail' child.id %}">{{ child.name }}</a>
+                                    {% if not forloop.last %} / {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">

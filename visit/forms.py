@@ -16,6 +16,7 @@ class LocationForm(forms.ModelForm):
             "parent",
             "historical",
             "historical_period",
+            "current_identity",
             "address",
             "wikipedia",
             "website",
@@ -28,6 +29,7 @@ class LocationForm(forms.ModelForm):
             "parent": "Select the parent location of the location. <a href='/visit/location/create/'>Add a new location</a>.",
             "historical": "Check if the location is historical.",
             "historical_period": "Enter the historical period of the location.",
+            "current_identity": "Select the current identity of the location. <a href='/visit/location/create/'>Add a new location</a>. Only required if the location is historical.",
             "address": "Enter the address of the location if it's a point of interest.",
             "wikipedia": "Enter the location's Wikipedia URL.",
             "website": "Enter the location's official website URL.",
@@ -37,6 +39,9 @@ class LocationForm(forms.ModelForm):
             "other_names": forms.TextInput(),
             "address": forms.TextInput(),
             "parent": autocomplete.ModelSelect2(
+                url=reverse_lazy("visit:location-autocomplete"),
+            ),
+            "current_identity": autocomplete.ModelSelect2(
                 url=reverse_lazy("visit:location-autocomplete"),
             ),
         }

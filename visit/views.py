@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 
 from dal import autocomplete
@@ -49,17 +50,22 @@ class LocationDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["parent_locations"] = self.get_parent_locations(self.object)
+        if self.object.current_identity:
+            context["current_identity_parents"] = self.get_parent_locations(
+                self.object.current_identity
+            )
         # Group children by their levels
         children_grouped_by_level = defaultdict(list)
         for child in self.object.children.all().order_by("name"):
             children_grouped_by_level[child.level].append(child)
 
         context["children_grouped_by_level"] = dict(children_grouped_by_level)
+        regex_pattern = r"(?:^|,)" + re.escape(str(self.object.id)) + r"(?:,|$)"
         context["creators_born_here"] = Creator.objects.filter(
-            birth_location_hierarchy__contains=self.object.id
+            birth_location_hierarchy__regex=regex_pattern
         ).order_by("birth_date")
         context["creators_died_here"] = Creator.objects.filter(
-            death_location_hierarchy__contains=self.object.id
+            death_location_hierarchy__regex=regex_pattern
         ).order_by("death_date")
         context["companies_here"] = Company.objects.filter(
             location_new=self.object

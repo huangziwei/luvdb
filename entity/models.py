@@ -11,8 +11,9 @@ from visit.models import Location
 
 def get_location_hierarchy_ids(location):
     hierarchy_ids = []
-    if location.historical:
-        current = None
+    if location.historical and location.current_identity:
+        hierarchy_ids.append(str(location.id))
+        current = location.current_identity
     else:
         current = location
     while current:
