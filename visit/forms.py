@@ -26,7 +26,7 @@ class LocationForm(forms.ModelForm):
         help_texts = {
             "name": "Enter the name of the location in English.",
             "other_names": "Enter any other names the location is known by, separated by slashes (`/`). E.g. name in original language.",
-            "level": "Select the geographical / administrative level of the location.",
+            "level": "Select the geographical / administrative level of the location. The labels are for suggetions only, please adapt to the actual situation. ",
             "level_name": "Enter a custom label for the level. If left blank, the default label will be used.",
             "parent": "Select the parent location of the location. <a href='/visit/location/create/'>Add a new location</a>.",
             "historical": "Check if the location is historical.",

@@ -72,9 +72,19 @@ class LocationDetailView(DetailView):
         )
 
         regex_pattern = r"(?:^|,)" + re.escape(str(self.object.id)) + r"(?:,|$)"
-        context["creators_born_here"] = Creator.objects.filter(
-            birth_location_hierarchy__regex=regex_pattern
+        creators_born_here_persons = Creator.objects.filter(
+            birth_location_hierarchy__regex=regex_pattern,
+            creator_type="person",  # Adjust the filter based on your model
         ).order_by("birth_date")
+
+        creators_born_here_groups = Creator.objects.filter(
+            birth_location_hierarchy__regex=regex_pattern,
+            creator_type="group",  # Adjust the filter based on your model
+        ).order_by("birth_date")
+
+        context["creators_born_here_persons"] = creators_born_here_persons
+        context["creators_born_here_groups"] = creators_born_here_groups
+
         context["creators_died_here"] = Creator.objects.filter(
             death_location_hierarchy__regex=regex_pattern
         ).order_by("death_date")

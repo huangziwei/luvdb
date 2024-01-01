@@ -19,6 +19,7 @@ from read.models import Book
 from read.models import Instance as LitInstance
 from read.models import Work as LitWork
 from scrape.wikipedia import scrape_company, scrape_creator
+from visit.models import Location
 from watch.models import Episode, Movie, Series
 
 from .forms import CompanyForm, CreatorForm
@@ -426,6 +427,22 @@ class CreatorDetailView(DetailView):
         )
 
         context["contributors"] = get_contributors(creator)
+
+        def get_location_labels(location):
+            if not location:
+                return ""
+
+            if location.level == Location.LEVEL0 or location.level == Location.LEVEL1:
+                return f"{location.name}"
+            elif location.level == Location.LEVEL4:
+                return f"{location.name}, {location.parent.parent.name}"
+            elif location.level == Location.LEVEL5:
+                return f"{location.name}, {location.parent.parent.parent.name}"
+            else:
+                return f"{location.name}, {location.parent.name}"
+
+        context["birth_location_label"] = get_location_labels(creator.birth_location)
+        context["death_location_label"] = get_location_labels(creator.death_location)
 
         return context
 

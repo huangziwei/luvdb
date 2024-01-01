@@ -27,14 +27,6 @@ def get_location_full_name(location):
 class Location(models.Model):
     locked = models.BooleanField(default=False)
 
-    # CONTINENT = "continent"
-    # POLITY = "polity"  # countries /  sovereign entities
-    # REGION = "region"  # State / Province
-    # CITY = "city"  # City / Municipality / Prefecture / County
-    # TOWN = "town"
-    # VILLAGE = "village"
-    # DISTRICT = "district"  # Neighborhood / District
-    # POI = "poi"  # Point of Interest
     LEVEL0 = "level0"
     LEVEL1 = "level1"
     LEVEL2 = "level2"
@@ -66,17 +58,6 @@ class Location(models.Model):
         LEVEL7: "Others",
     }
 
-    # LOCATION_LEVELS = [
-    #     (CONTINENT, "Continent"),
-    #     (POLITY, "Polity"),
-    #     (REGION, "Region / State / Province / Canton / Prefecture"),
-    #     (CITY, "City / Municipality / County"),
-    #     (TOWN, "Town / Township"),
-    #     (VILLAGE, "Village"),
-    #     (DISTRICT, "District / Borough / Ward / Neighborhood"),
-    #     (POI, "Point of Interest"),
-    # ]
-
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)
     other_names = models.TextField(null=True, blank=True)
@@ -91,7 +72,11 @@ class Location(models.Model):
     historical = models.BooleanField(default=False)
     historical_period = models.CharField(max_length=255, null=True, blank=True)
     current_identity = models.ForeignKey(
-        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="current"
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="historical_identity",
     )
 
     address = models.TextField(null=True, blank=True)  # for POI
