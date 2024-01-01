@@ -58,7 +58,7 @@ class LocationDetailView(DetailView):
         children_grouped_by_level_current = defaultdict(list)
         children_grouped_by_level_historical = defaultdict(list)
         for child in self.object.children.all().order_by("name"):
-            level = self.get_level_label(child.level)
+            level = child.level_name
             if child.historical:
                 children_grouped_by_level_historical[level].append(child)
             else:
@@ -95,21 +95,21 @@ class LocationDetailView(DetailView):
         return parents
 
     def get_level_label(self, level):
-        if level == Location.CONTINENT:
+        if level == Location.LEVEL0:
             return "Continent"
-        elif level == Location.POLITY:
+        elif level == Location.LEVEL1:
             return "Polities / Sovereign Entities"
-        elif level == Location.REGION:
+        elif level == Location.LEVEL2:
             return "Regions / States / Provinces / Cantons / Prefectures"
-        elif level == Location.CITY:
+        elif level == Location.LEVEL3:
             return "Cities / Municipalities / Counties"
-        elif level == Location.TOWN:
+        elif level == Location.LEVEL4:
             return "Towns / Townships"
-        elif level == Location.VILLAGE:
+        elif level == Location.LEVEL5:
             return "Villages / Hamlets"
-        elif level == Location.DISTRICT:
+        elif level == Location.LEVEL6:
             return "Districts / Boroughs / Wards / Neighborhoods"
-        elif level == Location.POI:
+        elif level == Location.LEVEL7:
             return "Points of Interest"
 
 
@@ -146,7 +146,7 @@ class LocationListView(ListView):
 
     def get_queryset(self):
         # Retrieve only top-level locations (continents)
-        return Location.objects.filter(level=Location.CONTINENT)
+        return Location.objects.filter(level=Location.LEVEL0)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

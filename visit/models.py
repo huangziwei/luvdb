@@ -27,30 +27,63 @@ def get_location_full_name(location):
 class Location(models.Model):
     locked = models.BooleanField(default=False)
 
-    CONTINENT = "continent"
-    POLITY = "polity"  # countries /  sovereign entities
-    REGION = "region"  # State / Province
-    CITY = "city"  # City / Municipality / Prefecture / County
-    TOWN = "town"
-    VILLAGE = "village"
-    DISTRICT = "district"  # Neighborhood / District
-    POI = "poi"  # Point of Interest
+    # CONTINENT = "continent"
+    # POLITY = "polity"  # countries /  sovereign entities
+    # REGION = "region"  # State / Province
+    # CITY = "city"  # City / Municipality / Prefecture / County
+    # TOWN = "town"
+    # VILLAGE = "village"
+    # DISTRICT = "district"  # Neighborhood / District
+    # POI = "poi"  # Point of Interest
+    LEVEL0 = "level0"
+    LEVEL1 = "level1"
+    LEVEL2 = "level2"
+    LEVEL3 = "level3"
+    LEVEL4 = "level4"
+    LEVEL5 = "level5"
+    LEVEL6 = "level6"
+    LEVEL7 = "level7"
 
     LOCATION_LEVELS = [
-        (CONTINENT, "Continent"),
-        (POLITY, "Polity"),
-        (REGION, "Region / State / Province / Canton / Prefecture"),
-        (CITY, "City / Municipality / County"),
-        (TOWN, "Town / Township"),
-        (VILLAGE, "Village"),
-        (DISTRICT, "District / Borough / Ward / Neighborhood"),
-        (POI, "Point of Interest"),
+        (LEVEL0, "Level 0"),
+        (LEVEL1, "Level 1"),
+        (LEVEL2, "Level 2"),
+        (LEVEL3, "Level 3"),
+        (LEVEL4, "Level 4"),
+        (LEVEL5, "Level 5"),
+        (LEVEL6, "Level 6"),
+        (LEVEL7, "Level 7"),
     ]
+
+    DEFAULT_LEVEL_NAMES = {
+        LEVEL0: "Continent",
+        LEVEL1: "Polity",
+        LEVEL2: "State / Province / Region / Prefecture / Canton",
+        LEVEL3: "County / Prefecture-level City",
+        LEVEL4: "Town / Township / Village / County-level City",
+        LEVEL5: "District / Borough / Ward / Neighborhood",
+        LEVEL6: "Point of Interest",
+        LEVEL7: "Others",
+    }
+
+    # LOCATION_LEVELS = [
+    #     (CONTINENT, "Continent"),
+    #     (POLITY, "Polity"),
+    #     (REGION, "Region / State / Province / Canton / Prefecture"),
+    #     (CITY, "City / Municipality / County"),
+    #     (TOWN, "Town / Township"),
+    #     (VILLAGE, "Village"),
+    #     (DISTRICT, "District / Borough / Ward / Neighborhood"),
+    #     (POI, "Point of Interest"),
+    # ]
 
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)
     other_names = models.TextField(null=True, blank=True)
     level = models.CharField(max_length=20, choices=LOCATION_LEVELS)
+    level_name = models.CharField(
+        max_length=255, null=True, blank=True
+    )  # User-defined or default label for the level
     parent = models.ForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
     )
@@ -88,5 +121,7 @@ class Location(models.Model):
         return get_location_full_name(self)
 
     def save(self, *args, **kwargs):
+        if not self.level_name:
+            self.level_name = self.DEFAULT_LEVEL_NAMES.get(self.level)
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)

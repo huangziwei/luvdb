@@ -13,6 +13,7 @@ class LocationForm(forms.ModelForm):
             "name",
             "other_names",
             "level",
+            "level_name",
             "parent",
             "historical",
             "historical_period",
@@ -26,6 +27,7 @@ class LocationForm(forms.ModelForm):
             "name": "Enter the name of the location in English.",
             "other_names": "Enter any other names the location is known by, separated by slashes (`/`). E.g. name in original language.",
             "level": "Select the geographical / administrative level of the location.",
+            "level_name": "Enter a custom label for the level. If left blank, the default label will be used.",
             "parent": "Select the parent location of the location. <a href='/visit/location/create/'>Add a new location</a>.",
             "historical": "Check if the location is historical.",
             "historical_period": "Enter the historical period of the location.",
@@ -53,14 +55,14 @@ class LocationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         custom_level_labels = {
-            Location.CONTINENT: "Continent",
-            Location.POLITY: "Polity",
-            Location.REGION: "Region / State / Province / Canton / Prefecture",
-            Location.CITY: "City / Municipality / County",
-            Location.TOWN: "Town / Township",
-            Location.VILLAGE: "Village / Hamlet",
-            Location.DISTRICT: "District / Borough / Ward / Neighborhood",
-            Location.POI: "Point of Interest",
+            Location.LEVEL0: "Level 0: Continent",
+            Location.LEVEL1: "Level 1: Polity, Sovereign State, etc.",
+            Location.LEVEL2: "Level 2: State, Province, Canton, Prefecture, Region, etc.",
+            Location.LEVEL3: "Level 3: County, Municipality, Prefecture-level City, etc.",
+            Location.LEVEL4: "Level 4: City, Town, Township, Village, Hamlet, etc.",
+            Location.LEVEL5: "Level 5: District, Ward, Borough, Neighborhood etc.",
+            Location.LEVEL6: "Level 6: Point of Interest",
+            Location.LEVEL7: "Level 7: Others",
             "": "Select Level",
         }
         self.fields["level"].choices = [
