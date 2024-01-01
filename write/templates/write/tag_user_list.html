@@ -68,7 +68,7 @@
                                     <div class="mb-2">
                                         <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
                                     </div>
-                                    {{ item.content | linkify_tags |  truncatechars:300 | markdownify}}
+                                    {{ item.content|linkify_tags|truncatechars:300|markdownify }}
                                 </div>
                                 <div class="mb-2">
                                     <a href="{% url 'write:post_detail_slug' item.user.username item.slug %}" class='text-muted'>{{ item.timestamp|timesince }} ago</a>
