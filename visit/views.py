@@ -94,6 +94,9 @@ class LocationDetailView(DetailView):
 
         context["contributors"] = get_contributors(self.object)
 
+        context["movies_filmed_here"] = self.object.movies_filmed_here.order_by("title")
+        context["movies_set_here"] = self.object.movies_set_here.order_by("title")
+
         return context
 
     def get_parent_locations(self, location):

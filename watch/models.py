@@ -17,6 +17,7 @@ from simple_history.models import HistoricalRecords
 from activity_feed.models import Activity
 from entity.models import Company, Creator, LanguageField, Role
 from read.models import Work as LitWork
+from visit.models import Location
 from write.models import create_mentions_notifications, handle_tags
 from write.utils_bluesky import create_bluesky_post
 from write.utils_mastodon import create_mastodon_post
@@ -70,6 +71,13 @@ class Movie(auto_prefetch.Model):
     genres = models.ManyToManyField(Genre, related_name="movies", blank=True)
     imdb = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
+
+    filming_locations = models.ManyToManyField(
+        Location, related_name="movies_filmed_here", blank=True
+    )
+    setting_locations = models.ManyToManyField(
+        Location, related_name="movies_set_here", blank=True
+    )
 
     watchcheckin = GenericRelation("WatchCheckIn")
 

@@ -83,13 +83,35 @@
                 {% endif %}
 
                 {% if companies_here %}
-                <div> <!--people-->
+                <div>
                     <h4 class="mt-4">Company</h4>
                     <div>
                     {% for company in companies_here %}
                         <a href="{% url 'entity:company_detail' company.id %}">{{ company.name }}</a>
                         {% if not forloop.last %} / {% endif %}
                     {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if movies_filmed_here or movies_set_here %}
+                <div>
+                    <h4 class="mt-4">Movies</h4>
+                    <div>
+                        <h5>Filmed</h5>
+                        {% for movie in movies_filmed_here %}
+
+                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <h5>Set</h5>
+                        {% for movie in movies_set_here %}
+
+                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
                 {% endif %}

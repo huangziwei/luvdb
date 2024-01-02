@@ -5,27 +5,13 @@
     {{ form.other_titles|as_crispy_field }}
     {{ form.poster|as_crispy_field }}
     {{ form.poster_sens|as_crispy_field}}
-    <div class="mb-3">
-        {{ form.studios|as_crispy_field }}
-        <a href="{% url 'entity:company_create' %}?next={{ request.path }}"
-           class="text-secondary"
-           target="_blank">Add a new company?</a>
-    </div>
-    <div class="mb-3">
-        {{ form.distributors|as_crispy_field }}
-        <a href="{% url 'entity:company_create' %}?next={{ request.path }}"
-           class="text-secondary"
-           target="_blank">Add a new company?</a>
-    </div>
+    {{ form.studios|as_crispy_field }}
+    {{ form.distributors|as_crispy_field }}
     {{ form.notes|as_crispy_field }}
-    {% comment %} {{ form.release_date|as_crispy_field }} {% endcomment %}
     {{ form.genres|as_crispy_field }}
-    <div class="mb-3">
-        {{ form.based_on|as_crispy_field }}
-        <a href="{% url 'read:work_create' %}?next={{ request.path }}"
-           class="text-secondary"
-           target="_blank">Add a new work?</a>
-    </div>
+    {{ form.based_on|as_crispy_field }}
+    {{ form.filming_locations|as_crispy_field}}
+    {{ form.setting_locations|as_crispy_field}}
     {{ form.imdb|as_crispy_field }}
     {{ form.wikipedia|as_crispy_field }}
     {{ regionreleasedates.management_form|crispy }}

@@ -43,6 +43,20 @@ class MovieForm(forms.ModelForm):
                 url=reverse_lazy("watch:genre-autocomplete")
             ),
             "other_titles": forms.TextInput(),
+            "filming_locations": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("visit:location-autocomplete")
+            ),
+            "setting_locations": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("visit:location-autocomplete")
+            ),
+        }
+        help_texts = {
+            "other_titles": "e.g. translated titles in different languages, separated by slashes (`/`).",
+            "filming_locations": "Locations of where the movie was filmed. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
+            "setting_locations": "Locations of where the movie was set. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
+            "studios": "Production companies. <a href='/entity/company/create/?next=/entity/movie/create/'>Add a new company</a>.",
+            "distributors": "Distribution companies. <a href='/entity/company/create/?next=/entity/movie/create/'>Add a new company</a>.",
+            "based_on": "The original work that the movie is based on. <a href='/read/work/create/?next=/entity/movie/create/'>Add a new work</a>.",
         }
 
     def __init__(self, *args, **kwargs):
@@ -50,11 +64,8 @@ class MovieForm(forms.ModelForm):
         self.fields["studios"].required = False
         self.fields["distributors"].required = False
         self.fields["genres"].required = False
-        self.fields[
-            "other_titles"
-        ].help_text = (
-            "e.g. translated titles in different languages, separated by slashes (`/`)."
-        )
+        self.fields["filming_locations"].required = False
+        self.fields["setting_locations"].required = False
 
 
 class MovieReleaseDateForm(forms.ModelForm):

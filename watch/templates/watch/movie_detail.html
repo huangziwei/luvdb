@@ -140,6 +140,28 @@
                                             <span class="text-muted">More Details</span>
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
+                                            {% if object.filming_locations.count != 0 %}
+                                                <div class="mb-1">
+                                                    {# djlint:off #}
+                                                    <span class="text-muted">Filming Location{% if object.filming_locations.count > 1 %}s{% endif %}:</span>
+                                                    {# djlint:on #}
+                                                    {% for location in object.filming_locations.all %}
+                                                        <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a>
+                                                        {% if not forloop.last %}/{% endif %}
+                                                    {% endfor %}
+                                                </div>                                       
+                                            {% endif %}
+                                            {% if object.setting_locations.count != 0 %}
+                                                <div class="mb-1">
+                                                    {# djlint:off #}
+                                                    <span class="text-muted">Setting Location{% if object.setting_locations.count > 1 %}s{% endif %}:</span>
+                                                    {# djlint:on #}
+                                                    {% for location in object.setting_locations.all %}
+                                                        <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a>
+                                                        {% if not forloop.last %}/{% endif %}
+                                                    {% endfor %}
+                                                </div>                                       
+                                            {% endif %}
                                             {% if ordered_release_dates %}
                                             <div class="mb-1">
                                                 <span class="text-muted">Release Date:</span>
