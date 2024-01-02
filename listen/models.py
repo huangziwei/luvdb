@@ -504,9 +504,10 @@ class ListenCheckIn(auto_prefetch.Model):
                     except Exception as e:
                         print(f"Error creating Mastodon post: {e}")
 
-            elif activity is not None:
-                # Optionally, remove the Activity if share_to_feed is False
-                activity.delete()
+        elif activity is not None:
+            # Optionally, remove the Activity if share_to_feed is False
+            activity.delete()
+
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)
