@@ -17,4 +17,4 @@ def get_location_hierarchy_ids(location):
     while current:
         hierarchy_ids.append(str(current.id))
         current = current.parent
-    return ",".join(hierarchy_ids)
+    return hierarchy_ids

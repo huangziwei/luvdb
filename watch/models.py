@@ -110,16 +110,16 @@ class Movie(auto_prefetch.Model):
             filming_locations_hierarchy = []
             for location in self.filming_locations.all():
                 filming_locations_hierarchy += get_location_hierarchy_ids(location)
-            self.filming_locations_hierarchy = ",".join(set(
-                filming_locations_hierarchy
-            ))
+            self.filming_locations_hierarchy = ",".join(
+                set(filming_locations_hierarchy)
+            )
         if self.setting_locations.exists():
             setting_locations_hierarchy = []
             for location in self.setting_locations.all():
                 setting_locations_hierarchy += get_location_hierarchy_ids(location)
-            self.setting_locations_hierarchy = ",".join(set(
-                setting_locations_hierarchy
-            ))
+            self.setting_locations_hierarchy = ",".join(
+                set(setting_locations_hierarchy)
+            )
 
         new_or_updated_cover = False
         # If the instance already exists in the database
