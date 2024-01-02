@@ -1,9 +1,11 @@
 {% for location, details in locations.items %}
-    <a href="{% url 'visit:location_detail' location.id %}" class="me-3 level-{{ details.depth }} {% if details.historical %}historical{% endif %}">
-        {{ location.name }}
-    </a>
-    {% if details.children %}
-        {% include "visit/location_snippet.html" with locations=details.children %}
+    {% if not location.historical %}
+        <a href="{% url 'visit:location_detail' location.id %}" class="me-3 level-{{ details.depth }} {% if details.historical %}historical{% endif %}">
+            {{ location.name }}
+        </a>
+        {% if details.children %}
+            {% include "visit/location_snippet.html" with locations=details.children %}
+        {% endif %}
     {% endif %}
 {% endfor %}
 
