@@ -280,13 +280,13 @@
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Statistics</div>
                     <div>
-                        <strong class="text-muted">To Read:</strong> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=to_read">{{ to_read_count }}</a>
+                        <span class="fw-semibold text-muted">To Read:</span> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=to_read">{{ to_read_count }}</a>
                     </div>
                     <div>
-                        <strong class="text-muted">Reading:</strong> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=reading_rereading">{{ reading_count }}</a>
+                        <span class="fw-semibold text-muted">Reading:</span> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=reading_rereading">{{ reading_count }}</a>
                     </div>
                     <div>
-                        <strong class="text-muted">Read:</strong> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=read_reread">{{ read_count }}</a>
+                        <span class="fw-semibold text-muted">Read:</span> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=read_reread">{{ read_count }}</a>
                     </div>
                 </div>
                 {% if lists_containing_book.count != 0 %}

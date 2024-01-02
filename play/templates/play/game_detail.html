@@ -225,13 +225,13 @@
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Statistics</div>
                     <div>
-                        <strong class="text-muted">To Play:</strong> <a href="{% url 'play:play_checkin_all_list' object.id %}?status=to_play">{{ to_play_count }}</a>
+                        <span class="fw-semibold text-muted">To Play:</span> <a href="{% url 'play:play_checkin_all_list' object.id %}?status=to_play">{{ to_play_count }}</a>
                     </div>
                     <div>
-                        <strong class="text-muted">Playing:</strong> <a href="{% url 'play:play_checkin_all_list' object.id %}?status=playing_replaying">{{ playing_count }}</a>
+                        <span class="fw-semibold text-muted">Playing:</span> <a href="{% url 'play:play_checkin_all_list' object.id %}?status=playing_replaying">{{ playing_count }}</a>
                     </div>
                     <div>
-                        <strong class="text-muted">Played:</strong> <a href="{% url 'play:play_checkin_all_list' object.id %}?status=played_replayed">{{ played_count }}</a>
+                        <span class="fw-semibold text-muted">Played:</span> <a href="{% url 'play:play_checkin_all_list' object.id %}?status=played_replayed">{{ played_count }}</a>
                     </div>
                 </div>
                 {% if lists_containing_game.count != 0 %}

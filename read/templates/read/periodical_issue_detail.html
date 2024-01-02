@@ -137,13 +137,13 @@
                 <div class="bg-light p-3 mt-3">
                     <div class="fs-5">Statistics</div>
                     <div>
-                        <strong class="text-muted">To Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=to_read">{{ to_read_count }}</a>
+                        <span class="fw-semibold text-muted">To Read:</span> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=to_read">{{ to_read_count }}</a>
                     </div>
                     <div>
-                        <strong class="text-muted">Reading:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=reading_rereading">{{ reading_count }}</a>
+                        <span class="fw-semibold text-muted">Reading:</span> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=reading_rereading">{{ reading_count }}</a>
                     </div>
                     <div>
-                        <strong class="text-muted">Read:</strong> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=read_reread">{{ read_count }}</a>
+                        <span class="fw-semibold text-muted">Read:</span> <a href="{% url 'read:issue_checkin_all_list' object.periodical.id object.id %}?status=read_reread">{{ read_count }}</a>
                     </div>
                 </div>
                 {% if issue.internet_archive_url %}

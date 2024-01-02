@@ -209,10 +209,10 @@
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Statistics</div>
                     <div>
-                        <strong>To Listen:</strong> <a href="{% url 'listen:podcast_checkin_all_list' podcast.id %}?status=to_listen">{{ to_listen_count }}</a>
+                        <span class="fw-semibold text-muted">To Listen:</span> <a href="{% url 'listen:podcast_checkin_all_list' podcast.id %}?status=to_listen">{{ to_listen_count }}</a>
                     </div>
                     <div>
-                        <strong>Subscribed:</strong> <a href="{% url 'listen:podcast_checkin_all_list' podcast.id %}?status=looping">{{ listening_count }}</a>
+                        <span class="fw-semibold text-muted">Subscribed:</span> <a href="{% url 'listen:podcast_checkin_all_list' podcast.id %}?status=looping">{{ listening_count }}</a>
                     </div>
                 </div>
                 {% if lists_containing_podcast.count != 0 %}

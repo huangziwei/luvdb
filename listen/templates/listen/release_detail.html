@@ -240,13 +240,13 @@
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Statistics</div>
                     <div>
-                        <strong>To Listen:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a>
+                        <span class="fw-semibold text-muted">To Listen:</span> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a>
                     </div>
                     <div>
-                        <strong>Looping:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a>
+                        <span class="fw-semibold text-muted">Looping:</span> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a>
                     </div>
                     <div>
-                        <strong>Listened:</strong> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a>
+                        <span class="fw-semibold text-muted">Listened:</span> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a>
                     </div>
                 </div>
                 {% if lists_containing_release.count != 0 %}

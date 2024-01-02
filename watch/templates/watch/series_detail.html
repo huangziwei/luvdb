@@ -195,13 +195,13 @@
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Statistics</div>
                     <div>
-                        <strong class="text-muted">To Watch:</strong> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=to_watch">{{ to_watch_count }}</a>
+                        <span class="fw-semibold text-muted">To Watch:</span> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=to_watch">{{ to_watch_count }}</a>
                     </div>
                     <div>
-                        <strong class="text-muted">Watching:</strong> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watching_rewatching">{{ watching_count }}</a>
+                        <span class="fw-semibold text-muted">Watching:</span> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watching_rewatching">{{ watching_count }}</a>
                     </div>
                     <div>
-                        <strong class="text-muted">Watched:</strong> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a>
+                        <span class="fw-semibold text-muted">Watched:</span> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a>
                     </div>
                 </div>
                 {% if lists_containing_series.count != 0 %}
