@@ -140,7 +140,7 @@
                                             <span class="text-muted">More Details</span>
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
-                                            {% if object.filming_locations.count != 0 %}
+                                            {% comment %} {% if object.filming_locations.count != 0 %}
                                                 <div class="mb-1">
                                                     {# djlint:off #}
                                                     <span class="text-muted">Filming Location{% if object.filming_locations.count > 1 %}s{% endif %}:</span>
@@ -150,25 +150,54 @@
                                                         {% if not forloop.last %}/{% endif %}
                                                     {% endfor %}
                                                 </div>                                       
-                                            {% endif %}
-                                            {% if object.setting_locations.count != 0 %}
-                                                <div class="mb-1">
-                                                    {# djlint:off #}
-                                                    <span class="text-muted">Setting Location{% if object.setting_locations.count > 1 %}s{% endif %}:</span>
-                                                    {# djlint:on #}
-                                                    {% for location in object.setting_locations.all %}
-                                                        <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a>
-                                                        {% if not forloop.last %}/{% endif %}
+                                            {% endif %} {% endcomment %}
+                                            {% if filming_locations_with_parents %}
+                                            <div class="mb-1">
+                                                {# djlint:off #}
+                                                <span class="text-muted">Filming Location{% if object.filming_locations.count > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                <ul>
+                                                    {% for location, parents in filming_locations_with_parents %}
+                                                        <li>
+                                                            {% if parents %}
+                                                                {% for parent in parents %}
+                                                                    <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                            <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
+                                                        </li>
                                                     {% endfor %}
-                                                </div>                                       
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                            {% if setting_locations_with_parents %}
+                                            <div class="mb-1">
+                                                {# djlint:off #}
+                                                <span class="text-muted">Filming Location{% if object.setting_locations.count > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                <ul>
+                                                    {% for location, parents in setting_locations_with_parents %}
+                                                        <li>
+                                                            {% if parents %}
+                                                                {% for parent in parents %}
+                                                                    <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                            <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
                                             {% endif %}
                                             {% if ordered_release_dates %}
                                             <div class="mb-1">
                                                 <span class="text-muted">Release Date:</span>
+                                                <div>
                                                 {% for release_date in ordered_release_dates %}
                                                     {{ release_date.release_date }} ({{ release_date.region }})
                                                     {% if not forloop.last %}/{% endif %}
                                                 {% endfor %}
+                                                </div>
                                             </div>
                                             {% endif %}
                                             {% if object.notes %}

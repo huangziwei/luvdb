@@ -27,6 +27,7 @@ from django_ratelimit.decorators import ratelimit
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.views import HistoryViewMixin, get_contributors
+from visit.views import get_parent_locations
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList, WebMention
 from write.utils_formatting import check_required_js
@@ -84,6 +85,7 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
             data["movieroles"] = MovieRoleFormSet(instance=self.object)
             data["moviecasts"] = MovieCastFormSet(instance=self.object)
             data["regionreleasedates"] = MovieReleaseDateFormSet(instance=self.object)
+
         return data
 
     def form_valid(self, form):
@@ -279,6 +281,10 @@ class MovieDetailView(DetailView):
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
+        # related locations
+        context['filming_locations_with_parents'] = self.get_locations_with_parents(self.object.filming_locations)
+        context['setting_locations_with_parents'] = self.get_locations_with_parents(self.object.setting_locations)
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -301,6 +307,13 @@ class MovieDetailView(DetailView):
             print(form.errors)
 
         return redirect(self.object.get_absolute_url())
+
+    def get_locations_with_parents(self, locations):
+        locations_with_parents = []
+        for location in locations.all():
+            parents = get_parent_locations(location)
+            locations_with_parents.append((location, parents))
+        return locations_with_parents
 
 
 class MovieUpdateView(LoginRequiredMixin, UpdateView):

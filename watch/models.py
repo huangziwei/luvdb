@@ -18,6 +18,7 @@ from activity_feed.models import Activity
 from entity.models import Company, Creator, LanguageField, Role
 from read.models import Work as LitWork
 from visit.models import Location
+from visit.utils import get_location_hierarchy_ids
 from write.models import create_mentions_notifications, handle_tags
 from write.utils_bluesky import create_bluesky_post
 from write.utils_mastodon import create_mastodon_post
@@ -75,9 +76,11 @@ class Movie(auto_prefetch.Model):
     filming_locations = models.ManyToManyField(
         Location, related_name="movies_filmed_here", blank=True
     )
+    filming_locations_hierarchy = models.TextField(blank=True, null=True)
     setting_locations = models.ManyToManyField(
         Location, related_name="movies_set_here", blank=True
     )
+    setting_locations_hierarchy = models.TextField(blank=True, null=True)
 
     watchcheckin = GenericRelation("WatchCheckIn")
 
@@ -103,6 +106,21 @@ class Movie(auto_prefetch.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        if self.filming_locations.exists():
+            filming_locations_hierarchy = []
+            for location in self.filming_locations.all():
+                filming_locations_hierarchy += get_location_hierarchy_ids(location)
+            self.filming_locations_hierarchy = ",".join(set(
+                filming_locations_hierarchy
+            ))
+        if self.setting_locations.exists():
+            setting_locations_hierarchy = []
+            for location in self.setting_locations.all():
+                setting_locations_hierarchy += get_location_hierarchy_ids(location)
+            self.setting_locations_hierarchy = ",".join(set(
+                setting_locations_hierarchy
+            ))
+
         new_or_updated_cover = False
         # If the instance already exists in the database
         if self.pk:

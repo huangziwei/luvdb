@@ -15,9 +15,11 @@ from django_ratelimit.decorators import ratelimit
 
 from entity.models import Company, Creator
 from entity.views import HistoryViewMixin, get_contributors
+from watch.models import Movie
 
 from .forms import LocationForm
 from .models import Location
+from .utils import get_location_hierarchy_ids, get_parent_locations
 
 # Create your views here.
 
@@ -49,9 +51,9 @@ class LocationDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["parent_locations"] = self.get_parent_locations(self.object)
+        context["parent_locations"] = get_parent_locations(self.object)
         if self.object.current_identity:
-            context["current_identity_parents"] = self.get_parent_locations(
+            context["current_identity_parents"] = get_parent_locations(
                 self.object.current_identity
             )
         # Group children by their levels
@@ -94,18 +96,14 @@ class LocationDetailView(DetailView):
 
         context["contributors"] = get_contributors(self.object)
 
-        context["movies_filmed_here"] = self.object.movies_filmed_here.order_by("title")
-        context["movies_set_here"] = self.object.movies_set_here.order_by("title")
+        context["movies_filmed_here"] = Movie.objects.filter(
+            filming_locations_hierarchy__regex=regex_pattern
+        ).order_by("title")
+        context["movies_set_here"] = Movie.objects.filter(
+            setting_locations_hierarchy__regex=regex_pattern
+        ).order_by("title")
 
         return context
-
-    def get_parent_locations(self, location):
-        parents = []
-        current = location.parent
-        while current is not None:
-            parents.insert(0, current)
-            current = current.parent
-        return parents
 
     def get_level_label(self, level):
         if level == Location.LEVEL0:

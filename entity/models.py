@@ -7,19 +7,7 @@ from langcodes import Language
 from simple_history.models import HistoricalRecords
 
 from visit.models import Location
-
-
-def get_location_hierarchy_ids(location):
-    hierarchy_ids = []
-    if location.historical and location.current_identity:
-        hierarchy_ids.append(str(location.id))
-        current = location.current_identity
-    else:
-        current = location
-    while current:
-        hierarchy_ids.append(str(current.id))
-        current = current.parent
-    return ",".join(hierarchy_ids)
+from visit.utils import get_location_hierarchy_ids
 
 
 class LanguageField(models.CharField):
@@ -161,12 +149,12 @@ class Creator(Entity):
 
     def save(self, *args, **kwargs):
         if self.birth_location:
-            self.birth_location_hierarchy = get_location_hierarchy_ids(
-                self.birth_location
+            self.birth_location_hierarchy = ",".join(
+                get_location_hierarchy_ids(self.birth_location)
             )
         if self.death_location:
-            self.death_location_hierarchy = get_location_hierarchy_ids(
-                self.death_location
+            self.death_location_hierarchy = ",".join(
+                get_location_hierarchy_ids(self.death_location)
             )
         super().save(*args, **kwargs)
 
