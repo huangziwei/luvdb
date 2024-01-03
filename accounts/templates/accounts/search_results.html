@@ -179,9 +179,6 @@
                 </div>
                 {% endif %}
                     
-                
-
-
                 <!--Listen-->
                 {% if musicwork_results or track_results or release_results or podcast_results or audiobook_results or listen_checkin_results%}
                 <div class="row mb-4">
@@ -357,6 +354,19 @@
                         {% endfor %}
                     </div>
                     {% endif %}
+                    <hr>
+                </div>
+                {% endif %}
+
+                <!--Visit-->
+                {% if location_results %}
+                <div class="row">
+                    <div class="fs-4">Locations</div>
+                    {% for location in location_results %}
+                        <p>
+                            <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a>
+                        </p>
+                    {% endfor %}
                     <hr>
                 </div>
                 {% endif %}

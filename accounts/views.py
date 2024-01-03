@@ -787,6 +787,21 @@ def filter_entity(query, search_terms):
     return creator_results, company_results
 
 
+def filter_location(query, search_terms):
+    location_results = Location.objects.all()
+
+    for term in search_terms:
+        location_results = (
+            location_results.filter(
+                Q(name__icontains=term) | Q(other_names__icontains=term)
+            )
+            .distinct()
+            .order_by("name")
+        )
+
+    return location_results
+
+
 def parse_query(query):
     pattern = r"\"[^\"]+\"|\'[^\']+\'|“[^”]+”|‘[^’]+’|\S+"
     return [term.strip("\"'“”‘’") for term in re.findall(pattern, query)]
@@ -840,6 +855,8 @@ def search_view(request):
     # watch
     movie_results = []
     series_results = []
+    # visit
+    location_results = []
 
     search_terms = parse_query(query)
 
@@ -886,6 +903,9 @@ def search_view(request):
 
         if model in ["all", "entity"]:
             creator_results, company_results = filter_entity(query, search_terms)
+
+        if model in ["all", "location"]:
+            location_results = filter_location(query, search_terms)
 
         if model == "self":
             (
@@ -940,6 +960,8 @@ def search_view(request):
             # watch
             "movie_results": movie_results,
             "series_results": series_results,
+            # location
+            "location_results": location_results,
             # other
             "execution_time": execution_time,
             "terms": search_terms,
