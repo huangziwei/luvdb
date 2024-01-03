@@ -5,12 +5,7 @@
     {{ form.subtitle|as_crispy_field }}
     {{ form.cover|as_crispy_field }}
     {{ form.cover_sens|as_crispy_field }}
-    <div class="mb-3">
-        {{ form.publisher|as_crispy_field }}
-        <a href="{% url 'entity:company_create' %}?next={{ request.path }}"
-           class="text-secondary"
-           target="_blank">Add a new company?</a>
-    </div>
+    {{ form.publisher|as_crispy_field }}
     {{ form.language|as_crispy_field }}
     {{ form.notes|as_crispy_field }}
     {{ form.publication_date|as_crispy_field }}

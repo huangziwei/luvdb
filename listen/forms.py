@@ -66,6 +66,16 @@ class WorkRoleForm(forms.ModelForm):
         model = WorkRole
         fields = ["creator", "alt_name", "role", "domain"]
 
+    def __init__(self, *args, **kwargs):
+        super(WorkRoleForm, self).__init__(*args, **kwargs)
+        # Set default role to "Performer"
+        try:
+            default_role = Role.objects.get(name="Singer")
+            self.fields["role"].initial = default_role
+        except ObjectDoesNotExist:
+            # If "Performer" role does not exist, the initial will be None as before
+            pass
+
     def clean(self):
         cleaned_data = super().clean()
         creator = cleaned_data.get("creator")
@@ -145,6 +155,16 @@ class TrackRoleForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = TrackRole
         fields = ["creator", "alt_name", "role", "domain"]
+
+    def __init__(self, *args, **kwargs):
+        super(TrackRoleForm, self).__init__(*args, **kwargs)
+        # Set default role to "Performer"
+        try:
+            default_role = Role.objects.get(name="Singer")
+            self.fields["role"].initial = default_role
+        except ObjectDoesNotExist:
+            # If "Performer" role does not exist, the initial will be None as before
+            pass
 
     def clean(self):
         cleaned_data = super().clean()

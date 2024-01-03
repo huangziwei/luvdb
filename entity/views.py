@@ -26,6 +26,21 @@ from .forms import CompanyForm, CreatorForm
 from .models import Company, Creator, Role
 
 
+# helpers
+def get_location_labels(location):
+    if not location:
+        return ""
+
+    if location.level == Location.LEVEL0 or location.level == Location.LEVEL1:
+        return f"{location.name}"
+    elif location.level == Location.LEVEL4:
+        return f"{location.name}, {location.parent.parent.name}"
+    elif location.level == Location.LEVEL5:
+        return f"{location.name}, {location.parent.parent.parent.name}"
+    else:
+        return f"{location.name}, {location.parent.name}"
+
+
 # Create your views here.
 class CreatorCreateView(LoginRequiredMixin, CreateView):
     model = Creator
@@ -428,19 +443,6 @@ class CreatorDetailView(DetailView):
 
         context["contributors"] = get_contributors(creator)
 
-        def get_location_labels(location):
-            if not location:
-                return ""
-
-            if location.level == Location.LEVEL0 or location.level == Location.LEVEL1:
-                return f"{location.name}"
-            elif location.level == Location.LEVEL4:
-                return f"{location.name}, {location.parent.parent.name}"
-            elif location.level == Location.LEVEL5:
-                return f"{location.name}, {location.parent.parent.parent.name}"
-            else:
-                return f"{location.name}, {location.parent.name}"
-
         context["birth_location_label"] = get_location_labels(creator.birth_location)
         context["death_location_label"] = get_location_labels(creator.death_location)
 
@@ -645,6 +647,8 @@ class CompanyDetailView(DetailView):
 
         # contributors
         context["contributors"] = get_contributors(company)
+
+        context["location_label"] = get_location_labels(company.location_new)
 
         return context
 

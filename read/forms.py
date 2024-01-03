@@ -65,6 +65,16 @@ class WorkRoleForm(forms.ModelForm):
         model = WorkRole
         fields = ["creator", "alt_name", "role", "domain"]
 
+    def __init__(self, *args, **kwargs):
+        super(WorkRoleForm, self).__init__(*args, **kwargs)
+        # Set default role to "Performer"
+        try:
+            default_role = Role.objects.get(name="Author")
+            self.fields["role"].initial = default_role
+        except ObjectDoesNotExist:
+            # If "Performer" role does not exist, the initial will be None as before
+            pass
+
     def clean(self):
         cleaned_data = super().clean()
         creator = cleaned_data.get("creator")
@@ -142,6 +152,16 @@ class InstanceRoleForm(forms.ModelForm):
         model = InstanceRole
         fields = ["creator", "alt_name", "role", "domain"]
 
+    def __init__(self, *args, **kwargs):
+        super(InstanceRoleForm, self).__init__(*args, **kwargs)
+        # Set default role to "Performer"
+        try:
+            default_role = Role.objects.get(name="Author")
+            self.fields["role"].initial = default_role
+        except ObjectDoesNotExist:
+            # If "Performer" role does not exist, the initial will be None as before
+            pass
+
     def clean(self):
         cleaned_data = super().clean()
         creator = cleaned_data.get("creator")
@@ -213,6 +233,7 @@ class BookForm(forms.ModelForm):
             "format": "e.g. paperback, hardcover, ebook, etc.",
             "length": "e.g. 300 pages, 10:20:33, etc.",
             "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For books published before common era, use negative numbers, e.g. `-100`.",
+            "publisher": "<a href='/entity/company/create/?next=/read/book/create/'>Add a new publisher</a>.",
         }
 
     def __init__(self, *args, **kwargs):

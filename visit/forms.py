@@ -26,10 +26,10 @@ class LocationForm(forms.ModelForm):
         help_texts = {
             "name": "Enter the name of the location in English.",
             "other_names": "Enter any other names the location is known by, separated by slashes (`/`). E.g. name in original language.",
-            "level": "Select the geographical / administrative level of the location. The labels are for suggetions only, please adapt to the actual situation. ",
+            "level": "Select the geographical/administrative level of the location. The labels are for suggestions only; please adapt to the actual situation.",
             "level_name": "Enter a custom label for the level. If left blank, the default label will be used.",
             "parent": "Select the parent location of the location. <a href='/visit/location/create/'>Add a new location</a>.",
-            "historical": "Check if the location is historical.",
+            "historical": "Check if the location no longer exists or exists under another name.",
             "historical_period": "Enter the historical period of the location.",
             "current_identity": "Select the current identity of the location. <a href='/visit/location/create/'>Add a new location</a>. Only required if the location is historical.",
             "address": "Enter the address of the location if it's a point of interest.",
@@ -49,7 +49,7 @@ class LocationForm(forms.ModelForm):
         }
         labels = {
             "historical": "Is this a historical location?",
-            "historical_period": "Historical Period",
+            "historical_period": "Historical period",
         }
 
     def __init__(self, *args, **kwargs):

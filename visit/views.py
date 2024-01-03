@@ -157,7 +157,7 @@ class LocationListView(ListView):
 
     def get_queryset(self):
         # Retrieve only top-level locations (continents)
-        return Location.objects.filter(level=Location.LEVEL0)
+        return Location.objects.filter(level=Location.LEVEL0, historical=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -167,7 +167,9 @@ class LocationListView(ListView):
         return context
 
     def _get_child_locations(self, parent_location, depth=0):
-        locations = Location.objects.filter(parent=parent_location).order_by("name")
+        locations = Location.objects.filter(
+            parent=parent_location, historical=False
+        ).order_by("name")
         location_dict = {
             location: {
                 "children": self._get_child_locations(location, depth + 1),
