@@ -36,7 +36,7 @@ class LocationForm(forms.ModelForm):
             "address": "Enter the address of the location if it's a point of interest.",
             "wikipedia": "Enter the location's Wikipedia URL.",
             "website": "Enter the location's official website URL.",
-            "osm_id": "Enter the location's OpenStreetMap ID.",
+            "osm_id": "Enter the location's <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> ID.",
             "notes": "Enter any additional information about the location.",
         }
         widgets = {

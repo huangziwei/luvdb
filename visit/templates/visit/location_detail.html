@@ -145,7 +145,7 @@
                 </div>
                 {% endif %}
 
-                {% if object.osm_id %}
+                {% if not object.historical and object.osm_id %}
                     <!--openstreetmap-->
                     <div class="mb-3 order-1 order-sm-2">
                         <div id="mapid" style="height: 400px;"></div>
@@ -213,7 +213,7 @@
         </div>
     </div>
 
-    {% if object.osm_id %}
+    {% if not object.historical and object.osm_id %}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
         <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
         <!-- Include osmtogeojson if you're going to convert OSM data to GeoJSON -->
