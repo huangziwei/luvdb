@@ -21,6 +21,7 @@ class LocationForm(forms.ModelForm):
             "address",
             "wikipedia",
             "website",
+            "osm_id",
             "notes",
         ]
         help_texts = {
@@ -35,6 +36,7 @@ class LocationForm(forms.ModelForm):
             "address": "Enter the address of the location if it's a point of interest.",
             "wikipedia": "Enter the location's Wikipedia URL.",
             "website": "Enter the location's official website URL.",
+            "osm_id": "Enter the location's OpenStreetMap ID.",
             "notes": "Enter any additional information about the location.",
         }
         widgets = {
@@ -50,6 +52,7 @@ class LocationForm(forms.ModelForm):
         labels = {
             "historical": "Is this a historical location?",
             "historical_period": "Historical period",
+            "osm_id": "OpenStreetMap ID",
         }
 
     def __init__(self, *args, **kwargs):

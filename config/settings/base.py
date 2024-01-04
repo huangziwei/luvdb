@@ -61,7 +61,6 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "markdownify",
     "mathfilters",
-    "reversion",
     "storages",
     "corsheaders",
     "simple_history",

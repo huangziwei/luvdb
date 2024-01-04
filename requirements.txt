@@ -4,7 +4,6 @@ django-crispy-forms
 django-markdownify
 django-mathfilters
 crispy-bootstrap5
-django-reversion
 django-autocomplete-light
 django-cors-headers
 django-simple-history
