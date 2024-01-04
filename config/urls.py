@@ -167,7 +167,6 @@ urlpatterns = [
     path("discover/", include("discover.urls")),
     path("", include("activity_feed.urls")),
     path("", include("write.urls")),
-    path("", include("pages.urls")),
     path("search/", search_view, name="search"),
     path("notify/", include("notify.urls")),
     path("api/", include("api.urls")),
@@ -180,9 +179,8 @@ urlpatterns = [
     ),
     path("site.webmanifest", site_manifest, name="site-manifest"),
     path("auth/", include("django.contrib.auth.urls")),
-    path(
-        "login/", CustomLoginView.as_view(), name="login"
-    ),  # Moved to the end to overwrite the /auth/login
+    path("login/", CustomLoginView.as_view(), name="login"),
+    path("", include("pages.urls")),
 ]
 
 if settings.DEBUG:
