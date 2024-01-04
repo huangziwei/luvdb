@@ -167,6 +167,7 @@ urlpatterns = [
     path("discover/", include("discover.urls")),
     path("", include("activity_feed.urls")),
     path("", include("write.urls")),
+    path("", include("pages.urls")),
     path("search/", search_view, name="search"),
     path("notify/", include("notify.urls")),
     path("api/", include("api.urls")),

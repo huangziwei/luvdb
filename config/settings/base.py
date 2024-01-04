@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     "api",
     "altprofile",
     "visit",
+    "pages",
 ]
 
 MIDDLEWARE = [
