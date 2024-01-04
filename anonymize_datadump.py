@@ -70,6 +70,7 @@ def main(file_path):
         "activity_feed.block",
         "discover.vote",
         "altprofile.altprofile",
+        "pages.page",
     ]
 
     # Get all models from the 'write' app

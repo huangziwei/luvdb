@@ -117819,34 +117819,10 @@
         }
     },
     {
-        "model": "pages.page",
-        "pk": 1,
-        "fields": {
-            "title": "Impressum",
-            "content": "Ziwei Huang\r\nCharlottenstra\u00dfe 21\r\n72070 T\u00fcbingen\r\nDeutschland\r\ncontact[at]luvdb[dot]com",
-            "slug": "impressum",
-            "created_at": "2024-01-04T19:09:43.058Z",
-            "updated_at": "2024-01-04T19:09:43.058Z",
-            "published": true
-        }
-    },
-    {
-        "model": "pages.page",
-        "pk": 2,
-        "fields": {
-            "title": "L\u028cvDB",
-            "content": "[Open-sourced](https://github.com/huangziwei/luvdb), [no tracking](https://themarkup.org/blacklight?url=luvdb.com&device=mobile&location=us). \r\n\r\nYour minimal inner space.",
-            "slug": "about",
-            "created_at": "2024-01-04T19:48:45.449Z",
-            "updated_at": "2024-01-04T19:53:58.729Z",
-            "published": true
-        }
-    },
-    {
         "model": "accounts.customuser",
         "pk": 1,
         "fields": {
-            "password": "pbkdf2_sha256$720000$Himwq1Xf1ef5CWAKcBSOXp$hSOiN5/owFldrrgCCl4vqy2psTBVxXUexE/yuJo4ZtY=",
+            "password": "pbkdf2_sha256$720000$N0vcLtTE7L2GTAL4SCCKe7$WITMeKjr4kDaglYYatAarKsq6U7KAqVoR4QQeU7FLdg=",
             "username": "anonymous",
             "is_superuser": true,
             "is_staff": true,
