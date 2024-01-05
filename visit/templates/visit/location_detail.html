@@ -216,7 +216,6 @@
     {% if not object.historical and object.osm_id %}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
         <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
-        <!-- Include osmtogeojson if you're going to convert OSM data to GeoJSON -->
         <script src="https://cdn.jsdelivr.net/npm/osmtogeojson@3.0.0-beta.5/osmtogeojson.min.js"></script>
         <script>
             var map = L.map('mapid'); // Initial map position
@@ -228,23 +227,41 @@
         
             var osmId = "{{ object.osm_id }}"; // OSM ID from your model
         
-            // Construct Overpass API URL
-            var overpassApiUrl = "https://overpass-api.de/api/interpreter?data=[out:json];(relation(" + osmId + "););out body;>;out skel qt;";
+            // Modified Overpass API URL to fetch both nodes and relations
+            var overpassApiUrl = "https://overpass-api.de/api/interpreter?data=[out:json];(node(" + osmId + ");relation(" + osmId + "););out body;>;out skel qt;";
         
             // Fetch the data
             fetch(overpassApiUrl)
                 .then(response => response.json())
                 .then(data => {
                     var geojsonData = osmtogeojson(data);
+                    var hasRelation = false;
+
                     var geoJsonLayer = L.geoJSON(geojsonData, {
-                        // Filter out point features (markers)
                         filter: function(feature, layer) {
-                            return feature.geometry.type !== 'Point';
+                            if (feature.geometry.type !== 'Point') {
+                                hasRelation = true;
+                                return true; // Include non-point features
+                            }
+                            return false; // Exclude point features within relations
                         }
                     }).addTo(map);
-                    map.fitBounds(geoJsonLayer.getBounds()); // Fit map to GeoJSON bounds
+
+                    if (hasRelation) {
+                        map.fitBounds(geoJsonLayer.getBounds()); // Fit map to GeoJSON bounds of the relation
+                    } else {
+                        // If there are no relations, check for standalone nodes
+                        data.elements.forEach(function(element) {
+                            if (element.type === 'node') {
+                                // Place a marker for the node
+                                L.marker([element.lat, element.lon]).addTo(map);
+                                map.setView([element.lat, element.lon], 13); // Adjust the zoom level as needed
+                            }
+                        });
+                    }
                 })
                 .catch(error => console.error('Error fetching OSM data:', error));
         </script>
     {% endif %}
+
 {% endblock %}
