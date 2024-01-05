@@ -4,7 +4,7 @@ from collections import defaultdict
 from dal import autocomplete
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -156,28 +156,29 @@ class LocationListView(ListView):
     context_object_name = "locations"
 
     def get_queryset(self):
-        # Retrieve only top-level locations (continents)
-        return Location.objects.filter(level=Location.LEVEL0, historical=False)
+        # Use prefetch_related or select_related as needed
+        return (
+            Location.objects.filter(level=Location.LEVEL0, historical=False)
+            .prefetch_related("children")
+            .order_by("name")
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["nested_locations"] = self._get_child_locations(
-            None
-        )  # Start with no parent
+        top_level_locations = self.get_queryset()
+        context["nested_locations"] = self._get_child_locations_dict(
+            top_level_locations
+        )
         return context
 
-    def _get_child_locations(self, parent_location, depth=0):
-        locations = Location.objects.filter(
-            parent=parent_location, historical=False
-        ).order_by("name")
-        location_dict = {
-            location: {
-                "children": self._get_child_locations(location, depth + 1),
-                "depth": depth,
-                "historical": location.historical,
+    def _get_child_locations_dict(self, locations):
+        location_dict = {}
+        for location in locations:
+            children = location.children.filter(historical=False).order_by("name")
+            location_dict[location] = {
+                "children": self._get_child_locations_dict(children),
+                "depth": int(location.level[5:]),  # Assuming 'level' indicates depth
             }
-            for location in locations
-        }
         return location_dict
 
 
