@@ -904,7 +904,7 @@ def search_view(request):
         if model in ["all", "entity"]:
             creator_results, company_results = filter_entity(query, search_terms)
 
-        if model in ["all", "location"]:
+        if model in ["all", "visit"]:
             location_results = filter_location(query, search_terms)
 
         if model == "self":
