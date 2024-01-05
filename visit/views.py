@@ -4,10 +4,12 @@ from collections import defaultdict
 from dal import autocomplete
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.db.models import Prefetch, Q
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.html import format_html
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
@@ -156,30 +158,56 @@ class LocationListView(ListView):
     context_object_name = "locations"
 
     def get_queryset(self):
-        # Use prefetch_related or select_related as needed
-        return (
-            Location.objects.filter(level=Location.LEVEL0, historical=False)
-            .prefetch_related("children")
-            .order_by("name")
-        )
+        cache_key = "location_list"
+        cache_time = 86400  # time in seconds for cache to be valid (24 hours)
+        last_update_key = "location_list_last_update"
+
+        # Check if data is in cache and when it was last updated
+        data = cache.get(cache_key)
+        last_update = cache.get(last_update_key)
+
+        # Refresh cache if data is not present or cache is older than 24 hours
+        if not data or (
+            last_update
+            and timezone.now() - last_update > timezone.timedelta(seconds=cache_time)
+        ):
+            print("no cache, creating one")
+            data = (
+                Location.objects.filter(level=Location.LEVEL0, historical=False)
+                .prefetch_related("children")
+                .order_by("name")
+            )
+            cache.set(cache_key, data, cache_time)
+            cache.set(last_update_key, timezone.now(), cache_time)
+
+        return data
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        top_level_locations = self.get_queryset()
-        context["nested_locations"] = self._get_child_locations_dict(
-            top_level_locations
-        )
+        context["nested_locations"] = self._get_child_locations_dict()
         return context
 
-    def _get_child_locations_dict(self, locations):
-        location_dict = {}
-        for location in locations:
-            children = location.children.filter(historical=False).order_by("name")
-            location_dict[location] = {
-                "children": self._get_child_locations_dict(children),
-                "depth": int(location.level[5:]),  # Assuming 'level' indicates depth
+    def _get_child_locations_dict(self):
+        locations = (
+            Location.objects.filter(historical=False)
+            .order_by("level", "name")
+            .select_related("parent")
+        )
+        location_tree = defaultdict(dict)
+
+        for loc in locations:
+            location_tree[loc.parent_id][loc] = {
+                "depth": int(loc.level[5:]),  # Adjust as needed
             }
-        return location_dict
+
+        return self._build_location_hierarchy(location_tree)
+
+    def _build_location_hierarchy(self, location_tree, parent_id=None):
+        result = {}
+        for loc, details in location_tree[parent_id].items():
+            children = self._build_location_hierarchy(location_tree, parent_id=loc.id)
+            result[loc] = {**details, "children": children}
+        return result
 
 
 class LocationAutoComplete(autocomplete.Select2QuerySetView):

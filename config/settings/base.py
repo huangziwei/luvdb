@@ -356,3 +356,11 @@ REST_FRAMEWORK = {
 
 ROOT_HOSTCONF = "config.hosts"
 DEFAULT_HOST = "root"
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": os.path.join(BASE_DIR, "cache"),  # Specify your cache directory
+    }
+}

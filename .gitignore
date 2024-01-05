@@ -14,3 +14,4 @@ config/settings/development_psql.py
 *.sql
 *.pem
 follow_activity.json
+cache/*
