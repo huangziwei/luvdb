@@ -183,8 +183,7 @@ class Role(auto_prefetch.Model):
 
 
 class Company(Entity):
-    location = models.CharField(max_length=100, blank=True, null=True)
-    location_new = auto_prefetch.ForeignKey(
+    location = auto_prefetch.ForeignKey(
         Location,
         on_delete=models.SET_NULL,
         null=True,
@@ -204,6 +203,8 @@ class Company(Entity):
         return self.name
 
     def save(self, *args, **kwargs):
-        if self.location_new:
-            self.location_hierarchy = get_location_hierarchy_ids(self.location_new)
+        if self.location:
+            self.location_hierarchy = ",".join(
+                get_location_hierarchy_ids(self.location)
+            )
         super().save(*args, **kwargs)

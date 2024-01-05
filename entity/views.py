@@ -648,7 +648,7 @@ class CompanyDetailView(DetailView):
         # contributors
         context["contributors"] = get_contributors(company)
 
-        context["location_label"] = get_location_labels(company.location_new)
+        context["location_label"] = get_location_labels(company.location)
 
         return context
 

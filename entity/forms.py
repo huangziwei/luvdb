@@ -57,7 +57,7 @@ class CompanyForm(forms.ModelForm):
         fields = [
             "name",
             "other_names",
-            "location_new",
+            "location",
             "founded_date",
             "defunct_date",
             "wikipedia",
@@ -67,7 +67,7 @@ class CompanyForm(forms.ModelForm):
         help_texts = {
             "name": "Enter name of the company",
             "other_names": "Enter any other names of the company is known by, separated by slashes (`/`).",
-            "location_new": "Enter the location of the company. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
+            "location": "Enter the location of the company. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
             "founded_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
             "defunct_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
             "wikipedia": "Enter the company's Wikipedia URL.",
@@ -76,10 +76,10 @@ class CompanyForm(forms.ModelForm):
         }
         widgets = {
             "other_names": forms.TextInput(),  # Use TextInput to make it a single line input
-            "location_new": autocomplete.ModelSelect2(
+            "location": autocomplete.ModelSelect2(
                 url=reverse_lazy("visit:location-autocomplete"),
             ),
         }
         labels = {
-            "location_new": "Location",
+            "location": "Location",
         }

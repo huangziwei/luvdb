@@ -91,7 +91,7 @@ class LocationDetailView(DetailView):
             death_location_hierarchy__regex=regex_pattern
         ).order_by("death_date")
         context["companies_here"] = Company.objects.filter(
-            location_new=self.object
+            location_hierarchy__regex=regex_pattern
         ).order_by("name")
 
         context["contributors"] = get_contributors(self.object)
