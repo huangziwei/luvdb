@@ -8,3 +8,4 @@ db.sqlite3*
 .privatekeys
 datadump_anonymized.json
 anonymize_datadump.py
+cache/*

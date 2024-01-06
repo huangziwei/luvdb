@@ -13,7 +13,7 @@
                     </div>
                     <div>
                         <div class="flex-wrap">
-                            <span class="text-muted">{{object.level_name|capfirst}} {% if object.level != "level0" %}of{% endif %}</span>
+                            <span class="text-muted">{{object.level_name|capfirst}} {% if object.parent %}of{% endif %}</span>
                             <span>
                                 {% for parent in parent_locations %}
                                     <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a>
