@@ -370,10 +370,10 @@ class GameDetailView(DetailView):
 
         context["dlcs"] = game.dlc.all().order_by("release_date")
 
-        context["setting_locations_with_parents"] = get_locations_with_parents(
-            self.object.work.setting_locations
-        )
-
+        if self.object.work:
+            context["setting_locations_with_parents"] = get_locations_with_parents(
+                self.object.work.setting_locations
+            )
 
         return context
 

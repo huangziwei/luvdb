@@ -361,9 +361,10 @@ class InstanceDetailView(DetailView):
         instance_checkins.sort(key=lambda x: x.timestamp, reverse=True)
         context["instance_checkins"] = instance_checkins
 
-        context["related_locations_with_parents"] = get_locations_with_parents(
-            instance.work.related_locations
-        )
+        if instance.work:
+            context["related_locations_with_parents"] = get_locations_with_parents(
+                instance.work.related_locations
+            )
         return context
 
 

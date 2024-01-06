@@ -16,7 +16,7 @@ from entity.models import Company, Creator
 from entity.views import HistoryViewMixin, get_contributors
 from play.models import Work as GameWork
 from read.models import Work as Publicaiton
-from watch.models import Movie
+from watch.models import Episode, Movie, Series
 
 from .forms import LocationForm
 from .models import Location
@@ -104,6 +104,20 @@ class LocationDetailView(DetailView):
             Movie.objects.filter(setting_locations_hierarchy__regex=regex_pattern),
             key=attrgetter("earliest_release_date"),
         )
+
+        episodes_filmed_here = Episode.objects.filter(filming_locations=self.object)
+        episodes_set_here = Episode.objects.filter(setting_locations=self.object)
+
+        series_ids_filmed = episodes_filmed_here.values_list(
+            "series", flat=True
+        ).distinct()
+        series_ids_set = episodes_set_here.values_list("series", flat=True).distinct()
+        context["series_filmed_here"] = Series.objects.filter(
+            id__in=series_ids_filmed
+        ).order_by("title")
+        context["series_set_here"] = Series.objects.filter(
+            id__in=series_ids_set
+        ).order_by("title")
 
         context["publications_set_here"] = Publicaiton.objects.filter(
             related_locations_hierarchy__regex=regex_pattern

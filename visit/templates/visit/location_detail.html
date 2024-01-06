@@ -85,7 +85,7 @@
 
                 {% if companies_here %}
                 <div>
-                    <h4 class="mt-4">Company</h4>
+                    <h4 class="mt-4">Companies</h4>
                     <div class="mt-2">
                     {% for company in companies_here %}
                         <a href="{% url 'entity:company_detail' company.id %}">{{ company.name }}</a>
@@ -93,6 +93,18 @@
                     {% endfor %}
                     </div>
                 </div>
+                {% endif %}
+                {% if publications_set_here %}
+                <div>
+                    <h4 class="mt-4">Publication</h4>
+                    <div class="mt-2">
+                        {% for pub in publications_set_here %}
+
+                            <a href="{% url 'read:work_detail' pub.id %}">{{ pub.title }}</a> ({{ pub.publication_date|extract_year }})
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>                
                 {% endif %}
 
                 {% if movies_filmed_here or movies_set_here %}
@@ -120,17 +132,29 @@
                 </div>
                 {% endif %}
 
-                {% if publications_set_here %}
+                {% if series_filmed_here or series_set_here %}
                 <div>
-                    <h4 class="mt-4">Publication</h4>
+                    <h4 class="mt-4">Series</h4>
+                    {% if series_filmed_here %}
                     <div class="mt-2">
-                        {% for pub in publications_set_here %}
+                        <h5>Filmed</h5>
+                        {% for series in series_filmed_here %}
 
-                            <a href="{% url 'read:work_detail' pub.id %}">{{ pub.title }}</a> ({{ pub.publication_date|extract_year }})
+                            <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
                             {% if not forloop.last %} / {% endif %}
                         {% endfor %}
                     </div>
-                </div>                
+                    {% endif %}
+                    {% if series_set_here %}
+                    <div class="mt-2">
+                        <h5>Set</h5>
+                        {% for series in series_set_here %}
+                            <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
                 {% endif %}
 
                 {% if games_set_here %}
