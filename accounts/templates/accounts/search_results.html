@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load util_filters %}
 {% block content %}
     <div class="container">
         <div class="row">
@@ -63,7 +64,7 @@
                             {% for work in litwork_results %}
                                 <p>
                                     <a href="{% url 'read:work_detail' work.id %}">{{ work.title|truncatechars:50 }}</a>
-                                    ({{ work.publication_date }})
+                                    ({{ work.publication_date|extract_year }})
                                 </p>
                             {% endfor %}
                         </div>
@@ -75,7 +76,7 @@
                             {% for instance in litinstance_results %}
                                 <p>
                                     <a href="{% url 'read:instance_detail' instance.id %}">{{ instance.title|truncatechars:50 }}</a>
-                                    ({{ instance.publication_date }})
+                                    ({{ instance.publication_date|extract_year }})
                                 </p>
                             {% endfor %}
                         </div>
@@ -88,7 +89,7 @@
                                 <p>
                                     <a href="{% url 'read:book_detail' book.id %}">{{ book.title|truncatechars:50 }}</a>
                                     {# djlint:off #}
-                                    ({% if book.format %}{{ book.format }}, {% endif %}{{ book.publication_date }})
+                                    ({% if book.format %}{{ book.format }}, {% endif %}{{ book.publication_date|extract_year }})
                                     {# djlint:on #}
                                 </p>
                             {% endfor %}

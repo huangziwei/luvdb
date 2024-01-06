@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load markdownify %}
+{% load util_filters %}
 {% load concat_sets %}
 {% block meta %}
     <meta property="og:title" content="{{ object.title }}">
@@ -266,7 +267,7 @@
                                                         <a href="{% url 'entity:creator_detail' role.creator.id %}" class="text-muted">{{ role.alt_name|default:role.creator.name }}</a>,
                                                     {% endif %}
                                                 {% endfor %}
-                                                {{ book_instance.publication_date|default:book_instance.instance.publication_date }}
+                                                {{ book_instance.publication_date|default:book_instance.instance.publication_date|extract_year }}
                                             </div>
                                         </div>
                                     </div>

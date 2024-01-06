@@ -155,7 +155,7 @@
                                                     </a>
                                                 {% endif %}
                                                 {% if checkin.content_object.publication_date %}
-                                                    ({{checkin.content_object.publication_date}})
+                                                    ({{checkin.content_object.publication_date|extract_year}})
                                                 {% endif %}
                                             </div>
                                         </span>

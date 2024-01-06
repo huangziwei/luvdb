@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load markdownify %}
+{% load util_filters %}
 {% block meta %}
     <meta property="og:title" content="{{ object.title }}">
     {% if object.notes %}
@@ -84,7 +85,7 @@
                                     {% endif %}
                                     {% if object.based_on %}
                                         <p>
-                                            <span class="text-muted">Based on:</span> <a href="{% url "read:work_detail" object.based_on.id %}">{{ object.based_on.title }}</a> ({{ object.based_on.publication_date }})
+                                            <span class="text-muted">Based on:</span> <a href="{% url "read:work_detail" object.based_on.id %}">{{ object.based_on.title }}</a> ({{ object.based_on.publication_date|extract_year }})
                                         </p>
                                     {% endif %}
                                     {% if object.genres %}
