@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.files.base import ContentFile
 from django.db import models
+from django.db.models import Min
 from django.urls import reverse
 from django.utils.text import slugify
 from PIL import Image
@@ -167,6 +168,12 @@ class Movie(auto_prefetch.Model):
 
     def model_name(self):
         return "Movie"
+
+    @property
+    def earliest_release_date(self):
+        return self.region_release_dates.aggregate(Min("release_date"))[
+            "release_date__min"
+        ]
 
 
 class MovieReleaseDate(auto_prefetch.Model):

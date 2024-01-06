@@ -27,6 +27,7 @@ from django_ratelimit.decorators import ratelimit
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.views import HistoryViewMixin, get_contributors
+from visit.utils import get_locations_with_parents
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList, WebMention
 from write.utils_formatting import check_required_js
@@ -113,6 +114,11 @@ class WorkDetailView(DetailView):
 
         # contributors
         context["contributors"] = get_contributors(self.object)
+
+        context["setting_locations_with_parents"] = get_locations_with_parents(
+            self.object.setting_locations
+        )
+
         return context
 
 
@@ -363,6 +369,11 @@ class GameDetailView(DetailView):
         context["include_mermaid"] = include_mermaid
 
         context["dlcs"] = game.dlc.all().order_by("release_date")
+
+        context["setting_locations_with_parents"] = get_locations_with_parents(
+            self.object.work.setting_locations
+        )
+
 
         return context
 

@@ -1,5 +1,6 @@
 import re
 from collections import defaultdict
+from operator import attrgetter
 
 from dal import autocomplete
 from django import forms
@@ -13,6 +14,8 @@ from django_ratelimit.decorators import ratelimit
 
 from entity.models import Company, Creator
 from entity.views import HistoryViewMixin, get_contributors
+from play.models import Work as GameWork
+from read.models import Work as Publicaiton
 from watch.models import Movie
 
 from .forms import LocationForm
@@ -97,9 +100,18 @@ class LocationDetailView(DetailView):
         context["movies_filmed_here"] = Movie.objects.filter(
             filming_locations_hierarchy__regex=regex_pattern
         ).order_by("title")
-        context["movies_set_here"] = Movie.objects.filter(
+        context["movies_set_here"] = sorted(
+            Movie.objects.filter(setting_locations_hierarchy__regex=regex_pattern),
+            key=attrgetter("earliest_release_date"),
+        )
+
+        context["publications_set_here"] = Publicaiton.objects.filter(
+            related_locations_hierarchy__regex=regex_pattern
+        ).order_by("publication_date")
+
+        context["games_set_here"] = GameWork.objects.filter(
             setting_locations_hierarchy__regex=regex_pattern
-        ).order_by("title")
+        ).order_by("first_release_date")
 
         return context
 

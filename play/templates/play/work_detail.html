@@ -43,13 +43,32 @@
                     {% endfor %}
                 </div>
             {% endif %}
+
+            {% if setting_locations_with_parents %}
+            <div class="mb-1">
+                {# djlint:off #}
+                <span class="text-muted">Setting Location{% if setting_locations_with_parents.count > 1 %}s{% endif %}:</span>
+                {# djlint:on #}
+                <ul class="mb-0">
+                    {% for location, parents in setting_locations_with_parents %}
+                        <li class="mb-0">
+                            {% if parents %}
+                                {% for parent in parents %}
+                                    <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
+                                {% endfor %}
+                            {% endif %}
+                            <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
             {% if object.first_release_date %}
                 <div>
-                    <span class="text-muted">Premiere date: </span>
+                    <span class="text-muted">First release date: </span>
                     {{ object.first_release_date }}
                 </div>
             {% endif %}
-
             <h3 class='mt-3'>Releases</h3>
             <ul>
             {% for game in games %}

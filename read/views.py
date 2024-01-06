@@ -26,6 +26,8 @@ from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.models import LanguageField
 from entity.views import HistoryViewMixin, get_contributors
+from visit.models import Location
+from visit.utils import get_locations_with_parents
 from watch.models import Movie, Series
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList, WebMention
@@ -219,6 +221,9 @@ class WorkDetailView(DetailView):
         # contributors
         context["contributors"] = get_contributors(self.object)
 
+        context["related_locations_with_parents"] = get_locations_with_parents(
+            self.object.related_locations
+        )
         return context
 
 
@@ -355,6 +360,10 @@ class InstanceDetailView(DetailView):
 
         instance_checkins.sort(key=lambda x: x.timestamp, reverse=True)
         context["instance_checkins"] = instance_checkins
+
+        context["related_locations_with_parents"] = get_locations_with_parents(
+            instance.work.related_locations
+        )
         return context
 
 
@@ -585,6 +594,30 @@ class BookDetailView(DetailView):
             target__endswith=partial_target_url
         ).order_by("-received_at")[:5]
 
+        unique_locations_with_parents_set = set()
+
+        for instance in book.instances.all():
+            locations_with_parents = get_locations_with_parents(
+                instance.work.related_locations
+            )
+
+            # Process each location with its parents
+            for location, parents in locations_with_parents:
+                # Convert location and its parents to their unique identifiers
+                location_id = location.pk  # Assuming pk is the primary key
+                parent_ids = tuple(parent.pk for parent in parents)
+
+                # Add the tuple of identifiers to the set
+                unique_locations_with_parents_set.add((location_id, parent_ids))
+
+        # Convert back to the original Location objects
+        context["related_locations_with_parents"] = [
+            (
+                Location.objects.get(pk=location_id),
+                [Location.objects.get(pk=parent_id) for parent_id in parent_ids],
+            )
+            for location_id, parent_ids in unique_locations_with_parents_set
+        ]
         return context
 
     def post(self, request, *args, **kwargs):

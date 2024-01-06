@@ -38,6 +38,7 @@ class WorkForm(forms.ModelForm):
         help_texts = {
             "title": "Enter the work's title in its original language. ",
             "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For works published before common era, use negative numbers, e.g. `-100`.",
+            "related_locations": "Locations that are important to the work, e.g. the setting of the story, etc. <a href='/visit/location/create/'>Add a new location</a>.",
         }
         widgets = {
             "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
@@ -46,6 +47,9 @@ class WorkForm(forms.ModelForm):
             ),
             "publication_date": forms.TextInput(),
             "notes": forms.Textarea(attrs={"rows": 3}),
+            "related_locations": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("visit:location-autocomplete")
+            ),
         }
 
     def __init__(self, *args, **kwargs):

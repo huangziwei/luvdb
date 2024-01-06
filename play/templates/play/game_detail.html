@@ -135,7 +135,7 @@
                                            data-bs-target="#detailsCollapse"
                                            aria-expanded="false"
                                            aria-controls="detailsCollapse">
-                                            <span class="text-muted">More Metadata</span>
+                                            <span class="text-muted fw-bold">More Metadata</span>
                                         </div>
                                         <div class="collapse" id="detailsCollapse">
 
@@ -158,6 +158,26 @@
                                                 <div>
                                                     <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
                                                 </div>
+                                            {% endif %}
+
+                                            {% if setting_locations_with_parents %}
+                                            <div class="mb-1">
+                                                {# djlint:off #}
+                                                <span class="text-muted">Setting Location{% if object.setting_locations.count > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                <ul>
+                                                    {% for location, parents in setting_locations_with_parents %}
+                                                        <li>
+                                                            {% if parents %}
+                                                                {% for parent in parents %}
+                                                                    <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                            <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
                                             {% endif %}
                                             {% if object.notes %}
                                                 <span class="text-muted">Notes:</span>

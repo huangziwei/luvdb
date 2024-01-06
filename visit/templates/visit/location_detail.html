@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% load markdownify %}
+{% load util_filters %}
 {% block title %}{{ object.name }}{% endblock %}
 {% block content %}
     <div class="container">
         <div class="row">
             <div class="col-sm-8 left-column mb-2">
                 <div> <!--geo meta-->
-                    <div class="d-flex flex-wrap align-items-center">
+                    <div class="d-flex flex-wrap align-items-baseline">
                         <h2 class="fs-2 me-2">{{ object.name }}</h2>
-                        {% if object.other_names %}<div class="text-muted me-2">{{ object.other_names }}</div>{% endif %}
+                        {% if object.other_names %}<div class="text-muted me-2 mt-1">{{ object.other_names }}</div>{% endif %}
                         {% if object.historical %}<div class="badge text-bg-secondary me-1">historical {% if object.historical_period %}({{object.historical_period}}){% endif %}</div>{% endif %}
                     </div>
                     <div>
@@ -102,7 +103,7 @@
                         <h5>Filmed</h5>
                         {% for movie in movies_filmed_here %}
 
-                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
+                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.region_release_dates.first.release_date|extract_year }})
                             {% if not forloop.last %} / {% endif %}
                         {% endfor %}
                     </div>
@@ -111,12 +112,38 @@
                     <div class="mt-2">
                         <h5>Set</h5>
                         {% for movie in movies_set_here %}
-                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a>
+                            <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.region_release_dates.first.release_date|extract_year }})
                             {% if not forloop.last %} / {% endif %}
                         {% endfor %}
                     </div>
                     {% endif %}
                 </div>
+                {% endif %}
+
+                {% if publications_set_here %}
+                <div>
+                    <h4 class="mt-4">Publication</h4>
+                    <div class="mt-2">
+                        {% for pub in publications_set_here %}
+
+                            <a href="{% url 'read:work_detail' pub.id %}">{{ pub.title }}</a> ({{ pub.publication_date|extract_year }})
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>                
+                {% endif %}
+
+                {% if games_set_here %}
+                <div>
+                    <h4 class="mt-4">Games</h4>
+                    <div class="mt-2">
+                        {% for game in games_set_here %}
+
+                            <a href="{% url 'play:work_detail' game.id %}">{{ game.title }}</a> ({{ game.first_release_date|extract_year }})
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>                
                 {% endif %}
 
             </div>

@@ -19,6 +19,8 @@ from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
 from entity.models import Company, Creator, LanguageField, Role
+from visit.models import Location
+from visit.utils import get_location_hierarchy_ids
 from write.models import create_mentions_notifications, handle_tags
 from write.utils_bluesky import create_bluesky_post
 from write.utils_mastodon import create_mastodon_post
@@ -128,6 +130,11 @@ class Work(auto_prefetch.Model):  # Renamed from Book
     publication_date = models.TextField(blank=True, null=True)
     language = LanguageField(max_length=8, blank=True, null=True)
 
+    related_locations = models.ManyToManyField(
+        Location, related_name="works_set_here", blank=True
+    )
+    related_locations_hierarchy = models.TextField(blank=True, null=True)
+
     # novel, novella, short story, poem, etc.
     WORK_TYPES = (
         # literature / fictions
@@ -191,6 +198,13 @@ class Work(auto_prefetch.Model):  # Renamed from Book
         return reverse("read:work_detail", kwargs={"pk": self.pk})
 
     def save(self, *args, **kwargs):
+        if self.related_locations.exists():
+            related_locations_hierarchy = []
+            for location in self.related_locations.all():
+                related_locations_hierarchy += get_location_hierarchy_ids(location)
+            self.related_locations_hierarchy = ",".join(
+                set(related_locations_hierarchy)
+            )
         # Convert the publication_date to a standard format if it's not None or empty
         if self.publication_date:
             self.publication_date = standardize_date(self.publication_date)

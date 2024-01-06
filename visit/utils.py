@@ -18,3 +18,11 @@ def get_location_hierarchy_ids(location):
         hierarchy_ids.append(str(current.id))
         current = current.parent
     return hierarchy_ids
+
+
+def get_locations_with_parents(locations):
+    locations_with_parents = []
+    for location in locations.all():
+        parents = get_parent_locations(location)
+        locations_with_parents.append((location, parents))
+    return locations_with_parents

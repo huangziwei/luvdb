@@ -7,7 +7,10 @@
         <div class="row">
             <!--Left columns-->
             <div class="col-12 col-md-8 left-column">
-                <h2>{{ object.title }}</h2>
+                <div class="d-flex flex-wrap align-items-baseline">
+                    <h2 class="fs-2 me-2">{{ object.title }}</h2>
+                    {% if object.work_type %}<div class="text-muted me-2 mb-0">{{ object.get_work_type_display }}</div>{% endif %}
+                </div>
                 {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
                 {% for role, creators_altname_tuples in grouped_roles.items %}
                     <div>
@@ -27,17 +30,30 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-                {% if object.work_type %}
-                    <div>
-                        <span class="text-muted">Type:</span>
-                        {{ object.get_work_type_display }}
-                    </div>
-                {% endif %}
                 {% if object.publication_date %}
                     <div>
                         <span class="text-muted">First publication date:</span>
                         {{ object.publication_date }}
                     </div>
+                {% endif %}
+                {% if related_locations_with_parents %}
+                <div class="mb-1">
+                    {# djlint:off #}
+                    <span class="text-muted">Related Location{% if object.related_locations.count > 1 %}s{% endif %}:</span>
+                    {# djlint:on #}
+                    <ul>
+                        {% for location, parents in related_locations_with_parents %}
+                            <li>
+                                {% if parents %}
+                                    {% for parent in parents %}
+                                        <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
+                                    {% endfor %}
+                                {% endif %}
+                                <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
                 {% endif %}
                 {% if object.notes %}
                     <div>

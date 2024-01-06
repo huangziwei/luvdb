@@ -41,6 +41,25 @@
                         {{ object.publication_date }}
                     </div>
                 {% endif %}
+                {% if related_locations_with_parents %}
+                <div class="mb-1">
+                    {# djlint:off #}
+                    <span class="text-muted">Related Location{% if related_locations_with_parents.count > 1 %}s{% endif %}:</span>
+                    {# djlint:on #}
+                    <ul class="mb-0">
+                        {% for location, parents in related_locations_with_parents %}
+                            <li class="mb-0">
+                                {% if parents %}
+                                    {% for parent in parents %}
+                                        <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
+                                    {% endfor %}
+                                {% endif %}
+                                <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
                 
                 {% if object.notes %}
                     <div>

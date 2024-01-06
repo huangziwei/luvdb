@@ -7,30 +7,10 @@
     {{ form.cover|as_crispy_field }}
     {{ form.rating|as_crispy_field }}
     {{ form.wikipedia|as_crispy_field }}
-    <div class="mb-3">
-        {{ form.work|as_crispy_field }}
-        <a href="{% url 'play:work_create' %}?next={{ request.path }}"
-           class="text-secondary"
-           target="_blank">Add a new work?</a>
-    </div>
-    <div class="mb-3">
-        {{ form.developers|as_crispy_field }}
-        <a href="{% url 'entity:company_create' %}?next={{ request.path }}"
-           class="text-secondary"
-           target="_blank">Add a new company?</a>
-    </div>
-    <div class="mb-3">
-        {{ form.publishers|as_crispy_field }}
-        <a href="{% url 'entity:company_create' %}?next={{ request.path }}"
-           class="text-secondary"
-           target="_blank">Add a new company?</a>
-    </div>
-    <div class="mb-3">
-        {{ form.platforms|as_crispy_field }}
-        <a href="{% url 'play:platform_create' %}?next={{ request.path }}"
-           class="text-secondary"
-           target="_blank">Add a new platform?</a>
-    </div>
+    {{ form.work|as_crispy_field }}
+    {{ form.developers|as_crispy_field }}
+    {{ form.publishers|as_crispy_field }}
+    {{ form.platforms|as_crispy_field }}
     {{ form.notes|as_crispy_field }}
     {{ regionreleasedates.management_form|crispy }}
     <div id="region-release-date-formset" class="bg-light p-3 mb-3">

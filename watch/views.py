@@ -27,7 +27,7 @@ from django_ratelimit.decorators import ratelimit
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.views import HistoryViewMixin, get_contributors
-from visit.views import get_parent_locations
+from visit.utils import get_locations_with_parents, get_parent_locations
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList, WebMention
 from write.utils_formatting import check_required_js
@@ -282,8 +282,8 @@ class MovieDetailView(DetailView):
         context["include_mermaid"] = include_mermaid
 
         # related locations
-        context['filming_locations_with_parents'] = self.get_locations_with_parents(self.object.filming_locations)
-        context['setting_locations_with_parents'] = self.get_locations_with_parents(self.object.setting_locations)
+        context['filming_locations_with_parents'] = get_locations_with_parents(self.object.filming_locations)
+        context['setting_locations_with_parents'] = get_locations_with_parents(self.object.setting_locations)
 
         return context
 

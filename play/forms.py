@@ -36,7 +36,14 @@ class WorkForm(forms.ModelForm):
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("play:genre-autocomplete")
             ),
+            "setting_locations": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("visit:location-autocomplete")
+            ),
             "other_titles": forms.TextInput(),
+        }
+        help_texts = {
+            "developers": "Developers of the movie. <a href='/entity/company/create/'>Add a new company</a>.",
+            "setting_locations": "Locations of where the movie was set. <a href='/visit/location/create/'>Add a new location</a>.",
         }
 
     def __init__(self, *args, **kwargs):
@@ -119,6 +126,12 @@ class GameForm(forms.ModelForm):
             ),
             "other_titles": forms.TextInput(),
             "rating": forms.TextInput(),
+        }
+        help_texts = {
+            "work": "The meta entry of the game for grouping different releases across various platforms. <a href='/play/work/create/'>Add a new work</a>.",
+            "developers": "Developers of the game. <a href='/entity/company/create/'>Add a new company</a>.",
+            "publishers": "Publishers of the game. <a href='/entity/company/create/'>Add a new company</a>.",
+            "platforms": "Platforms the game was released on. <a href='/play/platform/create/'>Add a new platform</a>.",
         }
 
     def __init__(self, *args, **kwargs):

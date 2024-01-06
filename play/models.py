@@ -16,6 +16,8 @@ from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
 from entity.models import Company, Creator, Entity, Role
+from visit.models import Location
+from visit.utils import get_location_hierarchy_ids
 from write.models import create_mentions_notifications, handle_tags
 from write.utils_bluesky import create_bluesky_post
 from write.utils_mastodon import create_mastodon_post
@@ -99,6 +101,11 @@ class Work(auto_prefetch.Model):  # Renamed from Book
     work_type = models.CharField(
         max_length=255, choices=WORK_TYPES, blank=True, null=True
     )
+    setting_locations = models.ManyToManyField(
+        Location, related_name="games_set_here", blank=True
+    )
+    setting_locations_hierarchy = models.TextField(blank=True, null=True)
+
     genres = models.ManyToManyField(Genre, related_name="play_works", blank=True)
     wikipedia = models.URLField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
@@ -128,6 +135,16 @@ class Work(auto_prefetch.Model):  # Renamed from Book
 
     def model_name(self):
         return "GameWork"
+
+    def save(self, *args, **kwargs):
+        if self.setting_locations.exists():
+            setting_locations_hierarchy = []
+            for location in self.setting_locations.all():
+                setting_locations_hierarchy += get_location_hierarchy_ids(location)
+            self.setting_locations_hierarchy = ",".join(
+                set(setting_locations_hierarchy)
+            )
+        super().save(*args, **kwargs)
 
 
 class WorkRole(auto_prefetch.Model):  # Renamed from BookRole
