@@ -376,6 +376,16 @@ class Episode(auto_prefetch.Model):
     casts = models.ManyToManyField(
         Creator, through="EpisodeCast", related_name="episodes_cast"
     )
+
+    filming_locations = models.ManyToManyField(
+        Location, related_name="episodes_filmed_here", blank=True
+    )
+    filming_locations_hierarchy = models.TextField(blank=True, null=True)
+    setting_locations = models.ManyToManyField(
+        Location, related_name="episodes_set_here", blank=True
+    )
+    setting_locations_hierarchy = models.TextField(blank=True, null=True)
+
     history = HistoricalRecords(inherit=True)
 
     # entry meta data
@@ -399,6 +409,24 @@ class Episode(auto_prefetch.Model):
 
     def get_absolute_url(self):
         return reverse("watch:episode_detail", args=[str(self.series.id), str(self.id)])
+
+    def save(self, *args, **kwargs):
+        if self.filming_locations.exists():
+            filming_locations_hierarchy = []
+            for location in self.filming_locations.all():
+                filming_locations_hierarchy += get_location_hierarchy_ids(location)
+            self.filming_locations_hierarchy = ",".join(
+                set(filming_locations_hierarchy)
+            )
+        if self.setting_locations.exists():
+            setting_locations_hierarchy = []
+            for location in self.setting_locations.all():
+                setting_locations_hierarchy += get_location_hierarchy_ids(location)
+            self.setting_locations_hierarchy = ",".join(
+                set(setting_locations_hierarchy)
+            )
+
+        super().save(*args, **kwargs)
 
 
 class EpisodeRole(auto_prefetch.Model):

@@ -116,7 +116,7 @@
                                             <span class="text-muted">Premiere on:</span> {{ object.release_date }}
                                         </p>
                                     {% endif %}
-                                    {% if object.notes %}
+                                    {% if object.notes or ordered_release_dates or filming_locations_with_parents or setting_locations_with_parents%}
                                     <div class="my-3">
                                         <p class="text-muted"
                                            type="button"
@@ -127,8 +127,52 @@
                                             <span class="text-muted fw-bold">More Metadata</span>
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
-                                            <div class="card card-body">{{ object.notes|markdownify }}</div>
-                                        </div>
+                                            {% if filming_locations_with_parents %}
+                                            <div class="mb-1">
+                                                {# djlint:off #}
+                                                <span class="text-muted">Filming Location{% if object.filming_locations.count > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                <ul>
+                                                    {% for location, parents in filming_locations_with_parents %}
+                                                        <li>
+                                                            {% if parents %}
+                                                                {% for parent in parents %}
+                                                                    <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                            <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                            {% if setting_locations_with_parents %}
+                                            <div class="mb-1">
+                                                {# djlint:off #}
+                                                <span class="text-muted">Setting Location{% if object.setting_locations.count > 1 %}s{% endif %}:</span>
+                                                {# djlint:on #}
+                                                <ul>
+                                                    {% for location, parents in setting_locations_with_parents %}
+                                                        <li>
+                                                            {% if parents %}
+                                                                {% for parent in parents %}
+                                                                    <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                            <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                            {% if object.notes %}
+                                            <div class="mb-1">
+                                                <div class="card card-body">
+                                                    <span class="text-muted">Extra</span>
+                                                    {{ object.notes|markdownify }}
+                                                </div>
+                                            </div>
+                                            {% endif %}                                        </div>
                                     </div>
                                     {% endif %}
                                 </div>

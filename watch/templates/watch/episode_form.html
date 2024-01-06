@@ -8,6 +8,8 @@
     {{ form.episode|as_crispy_field }}
     {{ form.release_date|as_crispy_field }}
     {{ form.length|as_crispy_field }}
+    {{ form.filming_locations|as_crispy_field }}
+    {{ form.setting_locations|as_crispy_field }}
     {{ episoderoles.management_form|crispy }}
     <div id="episode-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this Episode</strong>

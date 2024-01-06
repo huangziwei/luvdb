@@ -52,11 +52,11 @@ class MovieForm(forms.ModelForm):
         }
         help_texts = {
             "other_titles": "e.g. translated titles in different languages, separated by slashes (`/`).",
-            "filming_locations": "Locations of where the movie was filmed. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
-            "setting_locations": "Locations of where the movie was set. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
-            "studios": "Production companies. <a href='/entity/company/create/?next=/entity/movie/create/'>Add a new company</a>.",
-            "distributors": "Distribution companies. <a href='/entity/company/create/?next=/entity/movie/create/'>Add a new company</a>.",
-            "based_on": "The original work that the movie is based on. <a href='/read/work/create/?next=/entity/movie/create/'>Add a new work</a>.",
+            "filming_locations": "Locations of where the movie was filmed. <a href='/visit/location/create/'>Add a new location</a>.",
+            "setting_locations": "Locations of where the movie was set. <a href='/visit/location/create/'>Add a new location</a>.",
+            "studios": "Production companies. <a href='/entity/company/create/'>Add a new company</a>.",
+            "distributors": "Distribution companies. <a href='/entity/company/create/'>Add a new company</a>.",
+            "based_on": "The original work that the movie is based on. <a href='/read/work/create/'>Add a new work</a>.",
         }
 
     def __init__(self, *args, **kwargs):
@@ -292,6 +292,16 @@ class EpisodeForm(forms.ModelForm):
 
         widgets = {
             "other_titles": forms.TextInput(),
+            "filming_locations": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("visit:location-autocomplete")
+            ),
+            "setting_locations": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("visit:location-autocomplete")
+            ),
+        }
+        help_texts = {
+            "filming_locations": "Locations of where the episode was filmed. <a href='/visit/location/create/'>Add a new location</a>.",
+            "setting_locations": "Locations of where the episode was set. <a href='/visit/location/create/'>Add a new location</a>.",
         }
 
     def __init__(self, *args, **kwargs):
@@ -301,6 +311,8 @@ class EpisodeForm(forms.ModelForm):
         ].help_text = (
             "e.g. translated titles in different languages, separated by slashes (`/`)."
         )
+        self.fields["filming_locations"].required = False
+        self.fields["setting_locations"].required = False
         self.fields["length"].help_text = "e.g. 45 mins, or 1:30:00"
 
 

@@ -27,6 +27,7 @@ from django_ratelimit.decorators import ratelimit
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.views import HistoryViewMixin, get_contributors
+from visit.models import Location
 from visit.utils import get_locations_with_parents, get_parent_locations
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList, WebMention
@@ -282,8 +283,12 @@ class MovieDetailView(DetailView):
         context["include_mermaid"] = include_mermaid
 
         # related locations
-        context['filming_locations_with_parents'] = get_locations_with_parents(self.object.filming_locations)
-        context['setting_locations_with_parents'] = get_locations_with_parents(self.object.setting_locations)
+        context["filming_locations_with_parents"] = get_locations_with_parents(
+            self.object.filming_locations
+        )
+        context["setting_locations_with_parents"] = get_locations_with_parents(
+            self.object.setting_locations
+        )
 
         return context
 
@@ -307,13 +312,6 @@ class MovieDetailView(DetailView):
             print(form.errors)
 
         return redirect(self.object.get_absolute_url())
-
-    def get_locations_with_parents(self, locations):
-        locations_with_parents = []
-        for location in locations.all():
-            parents = get_parent_locations(location)
-            locations_with_parents.append((location, parents))
-        return locations_with_parents
 
 
 class MovieUpdateView(LoginRequiredMixin, UpdateView):
@@ -683,6 +681,49 @@ class SeriesDetailView(DetailView):
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
+        unique_filming_locations_with_parents_set = set()
+        unique_setting_locations_with_parents_set = set()
+        for episode in series.episodes.all().order_by("season", "episode"):
+            filming_locations_with_parents = get_locations_with_parents(
+                episode.filming_locations
+            )
+            setting_locations_with_parents = get_locations_with_parents(
+                episode.setting_locations
+            )
+
+            # Process each location with its parents
+            for location, parents in filming_locations_with_parents:
+                # Convert location and its parents to their unique identifiers
+                location_id = location.pk  # Assuming pk is the primary key
+                parent_ids = tuple(parent.pk for parent in parents)
+
+                # Add the tuple of identifiers to the set
+                unique_filming_locations_with_parents_set.add((location_id, parent_ids))
+
+            for location, parents in setting_locations_with_parents:
+                # Convert location and its parents to their unique identifiers
+                location_id = location.pk  # Assuming pk is the primary key
+                parent_ids = tuple(parent.pk for parent in parents)
+
+                # Add the tuple of identifiers to the set
+                unique_setting_locations_with_parents_set.add((location_id, parent_ids))
+
+        # Convert back to the original Location objects
+        context["filming_locations_with_parents"] = [
+            (
+                Location.objects.get(pk=location_id),
+                [Location.objects.get(pk=parent_id) for parent_id in parent_ids],
+            )
+            for location_id, parent_ids in unique_filming_locations_with_parents_set
+        ]
+        context["setting_locations_with_parents"] = [
+            (
+                Location.objects.get(pk=location_id),
+                [Location.objects.get(pk=parent_id) for parent_id in parent_ids],
+            )
+            for location_id, parent_ids in unique_setting_locations_with_parents_set
+        ]
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -941,6 +982,12 @@ class EpisodeDetailView(DetailView):
             "season", "episode"
         )
 
+        context["filming_locations_with_parents"] = get_locations_with_parents(
+            episode.filming_locations
+        )
+        context["setting_locations_with_parents"] = get_locations_with_parents(
+            episode.setting_locations
+        )
         return context
 
 

@@ -130,7 +130,7 @@
                                         <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View All</a>
                                     </div>
                                     
-                                    {% if object.notes or ordered_release_dates%}
+                                    {% if object.notes or ordered_release_dates or filming_locations_with_parents or setting_locations_with_parents%}
                                     <div class="my-3">
                                         <p class="text-muted"
                                            type="button"
