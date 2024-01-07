@@ -38,6 +38,9 @@
                         {% for creator in creator_results %}
                             <p>
                                 <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name|truncatechars:50 }}</a>
+                                {% if creator.birth_date %}
+                                    ({{creator.birth_date|extract_year}}-{% if creator.death_date %}{{creator.death_date|extract_year}}{% endif %})
+                                {% endif %}
                             </p>
                         {% endfor %}
                     {% endif %}
@@ -46,6 +49,9 @@
                         {% for company in company_results %}
                             <p>
                                 <a href="{% url 'entity:company_detail' company.id %}">{{ company.name|truncatechars:50 }}</a>
+                                {% if company.founded_date %}
+                                    ({{company.founded_date|extract_year}}-{% if company.defunct_date %}{{company.defunct_date|extract_year}}{% endif %})
+                                {% endif %}
                             </p>
                         {% endfor %}
                     {% endif %}
@@ -146,7 +152,7 @@
                         {% for movie in movie_results %}
                             <p>
                                 <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title|truncatechars:50 }}</a>
-                                ({{ movie.earliest_release_date }})
+                                ({{ movie.earliest_release_date|extract_year }})
                             </p>
                         {% endfor %}
                     </div>
@@ -158,7 +164,7 @@
                         {% for serie in series_results %}
                             <p>
                                 <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title|truncatechars:50 }}</a>
-                                ({{ serie.release_date }})
+                                ({{ serie.release_date|extract_year }})
                             </p>
                         {% endfor %}
                     </div>
@@ -190,7 +196,7 @@
                         {% for work in musicwork_results %}
                             <p>
                                 <a href="{% url 'listen:work_detail' work.id %}">{{ work.title|truncatechars:50 }}</a>
-                                ({{ work.release_date }})
+                                ({{ work.release_date|extract_year }})
                             </p>
                         {% endfor %}
                     </div>
@@ -201,7 +207,7 @@
                         {% for track in track_results %}
                             <p>
                                 <a href="{% url 'listen:track_detail' track.id %}">{{ track.title|truncatechars:50 }}</a>
-                                ({{ track.release_date }})
+                                ({{ track.release_date|extract_year }})
                             </p>
                         {% endfor %}
                     </div>
@@ -212,7 +218,7 @@
                         {% for release in release_results %}
                             <p>
                                 <a href="{% url 'listen:release_detail' release.id %}">{{ release.title|truncatechars:50 }}</a>
-                                ({{ release.release_date }})
+                                ({{ release.release_date|extract_year }})
                             </p>
                         {% endfor %}
                     </div>
@@ -233,7 +239,7 @@
                         {% for audiobook in audiobook_results %}
                             <p>
                                 <a href="{% url 'listen:audiobook_detail' audiobook.id %}">{{ audiobook.title|truncatechars:50 }}</a>
-                                ({{ audiobook.release_date }})
+                                ({{ audiobook.release_date|extract_year }})
                             </p>
                         {% endfor %}
                     </div>
@@ -264,7 +270,7 @@
                         {% for gamework in gamework_results %}
                             <p>
                                 <a href="{% url 'play:work_detail' gamework.id %}">{{ gamework.title|truncatechars:50 }}</a>
-                                ({{ gamework.first_release_date }})
+                                ({{ gamework.first_release_date|extract_year }})
                             </p>
                         {% endfor %}
                     </div>
@@ -275,7 +281,7 @@
                         {% for game in game_results %}
                             <p>
                                 <a href="{% url 'play:game_detail' game.id %}">{{ game.title|truncatechars:50 }}</a>
-                                ({{ game.earliest_release_date }})
+                                ({{ game.earliest_release_date|extract_year }})
                             </p>
                         {% endfor %}
                     </div>
@@ -366,6 +372,9 @@
                     {% for location in location_results %}
                         <p>
                             <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a>
+                            {% if location.historical %}
+                                {% if location.historical_period %}({{location.historical_period}}){% endif %}
+                            {% endif %}
                         </p>
                     {% endfor %}
                     <hr>

@@ -719,8 +719,8 @@ def filter_play(query, search_terms):
                 | Q(gamecasts__character_name__icontains=term)
             )
             .distinct()
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(annotated_earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("annotated_earliest_release_date")
         )
     return gamework_results, game_results
 
@@ -742,8 +742,8 @@ def filter_watch(query, search_terms):
                 | Q(moviecasts__character_name__icontains=term)
             )
             .distinct()
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(annotated_release_date=Min("region_release_dates__release_date"))
+            .order_by("annotated_release_date")
         )
         series_results = (
             series_results.filter(

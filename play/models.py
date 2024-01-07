@@ -272,6 +272,13 @@ class Game(auto_prefetch.Model):
     def model_name(self):
         return "Game"
 
+    @property
+    def earliest_release_date(self):
+        try:
+            return self.region_release_dates.order_by("release_date")[0].release_date
+        except IndexError:
+            return None
+
 
 class GameReleaseDate(auto_prefetch.Model):
     """
