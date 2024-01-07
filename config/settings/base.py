@@ -115,6 +115,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "notify.context_processors.notifications",
                 "config.context_processors.version_context",
+                "config.context_processors.footer_links",
             ],
             "libraries": {
                 "account_tags": "accounts.templatetags.account_tags",

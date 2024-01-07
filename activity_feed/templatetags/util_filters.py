@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
 from django import template
+from django.utils import timezone
 
 register = template.Library()
 
@@ -14,3 +15,9 @@ def root_url(url):
 def extract_year(value):
     """Extracts the year from a string formatted as 'YYYY.MM.DD' or 'YYYY.MM'."""
     return value.split(".")[0] if value and "." in value else value
+
+
+@register.filter(name="daysince")
+def daysince(timestamp):
+    """Returns the number of days since the given timestamp."""
+    return (timezone.now() - timestamp).days

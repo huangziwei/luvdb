@@ -133,7 +133,7 @@
                                 {% for checkin in read_checkin_results %}
                                     <p>
                                         <a href="{% url 'write:read_checkin_detail' checkin.user.username checkin.id %}">{{ checkin.content|truncatechars:30 }}</a>
-                                        ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|date:"Y.m.d" }})
+                                        ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|daysince }} days ago)
                                     </p>
                                 {% endfor %}
                             </div>
@@ -176,7 +176,7 @@
                             {% for checkin in watch_checkin_results %}
                                 <p>
                                     <a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}">{{ checkin.content|truncatechars:30 }}</a>
-                                    ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|date:"Y.m.d" }})
+                                    ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|daysince }} days ago)
                                 </p>
                             {% endfor %}
                         </div>
@@ -250,7 +250,7 @@
                         {% for checkin in listen_checkin_results %}
                             <p>
                                 <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}">{{ checkin.content|truncatechars:30 }}</a>
-                                ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|date:"Y.m.d" }})
+                                ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|daysince }} days ago)
                             </p>
                         {% endfor %}
                     </div>
@@ -292,7 +292,7 @@
                         {% for checkin in play_checkin_results %}
                             <p>
                                 <a href="{% url 'write:play_checkin_detail' checkin.user.username checkin.id %}">{{ checkin.content|truncatechars:30 }}</a>
-                                ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|date:"Y.m.d" }})
+                                ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|daysince }} days ago)
                             </p>
                         {% endfor %}
                     </div>
@@ -311,7 +311,7 @@
                         {% for post in post_results %}
                             <p>
                                 <a href="{% url 'write:post_detail_slug' post.user.username post.slug %}">{{ post.title }}</a>
-                                ({{ post.user.display_name | default:post.user.username }}, {{ post.timestamp|date:"Y.m.d" }})
+                                ({{ post.user.display_name | default:post.user.username }}, {{ post.timestamp|daysince }} days ago)
                             </p>
                         {% endfor %}
                     </div>
@@ -323,7 +323,7 @@
                         {% for pin in pin_results %}
                             <p>
                                 <a href="{% url 'write:pin_detail' pin.user.username pin.id %}">{{ pin.title|truncatechars:50 }}</a>
-                                ({{ pin.user.display_name | default:pin.user.username }}, {{ pin.timestamp|date:"Y.m.d" }})
+                                ({{ pin.user.display_name | default:pin.user.username }}, {{ pin.timestamp|daysince }} days ago)
                             </p>
                         {% endfor %}
                     </div>
@@ -334,7 +334,7 @@
                         {% for luvlist in luvlist_results %}
                             <p>
                                 <a href="{% url 'write:luvlist_detail' luvlist.user.username luvlist.id %}">{{ luvlist.title }}</a>
-                                ({{ luvlist.user.display_name | default:luvlist.user.username }}, {{ luvlist.timestamp|date:"Y.m.d" }})
+                                ({{ luvlist.user.display_name | default:luvlist.user.username }}, {{ luvlist.timestamp|daysince }} days ago)
                             </p>
                         {% endfor %}
                     </div>
@@ -345,7 +345,7 @@
                         {% for say in say_results %}
                             <p>
                                 <a href="{% url 'write:say_detail' say.user.username say.id %}">{{ say.content|truncatechars:30 }}</a>
-                                ({{ say.user.display_name | default:say.user.username }}, {{ say.timestamp|date:"Y.m.d" }})
+                                ({{ say.user.display_name | default:say.user.username }}, {{ say.timestamp|daysince }} days ago)
                             </p>
                         {% endfor %}
                     </div>
@@ -356,7 +356,7 @@
                         {% for repost in repost_results %}
                             <p>
                                 <a href="{% url 'write:repost_detail' repost.user.username repost.id %}">{{ repost.content|truncatechars:30 }}</a>
-                                ({{ repost.user.display_name | default:repost.user.username }}, {{ repost.timestamp|date:"Y.m.d" }})
+                                ({{ repost.user.display_name | default:repost.user.username }}, {{ repost.timestamp|daysince }} days ago)
                             </p>
                         {% endfor %}
                     </div>

@@ -241,7 +241,7 @@
                 </div>
                 {% endif %}
 
-                {% if object.parent or object.children.exist or object.successor or object.predecessor.exist %}
+                {% if object.parent or object.children.count != 0 or object.successor or object.predecessor.count != 0 %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Relationship</div>
                     {% if object.parent %}

@@ -6,7 +6,8 @@
                 <sub style="position: absolute;top: 1em;" class="version">{{ version }} </sub>
             </span>
         </span>
-        <a href="/about" class="text-muted ms-3">About</a>
-        <a href="/impressum/" class="text-muted ms-2">Impressum</a>
+        {% for title, url in page_links %}
+            <a href="{{ url }}" class="text-muted ms-3">{{ title }}</a>
+        {% endfor %}
     </div>
 </footer>
