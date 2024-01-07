@@ -33,7 +33,13 @@ from .models import (
 class WorkForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = Work
-        exclude = ["created_by", "updated_by", "creators", "locked"]
+        exclude = [
+            "created_by",
+            "updated_by",
+            "creators",
+            "locked",
+            "related_locations_hierarchy",
+        ]
         fields = "__all__"
         help_texts = {
             "title": "Enter the work's title in its original language. ",

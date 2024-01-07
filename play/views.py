@@ -106,8 +106,8 @@ class WorkDetailView(DetailView):
 
         games = (
             work.games.all()
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(annotated_earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("annotated_earliest_release_date")
         )
 
         context["games"] = games
@@ -515,8 +515,8 @@ class PlatformDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["sorted_games"] = (
             self.object.games.all()
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(annotated_earliest_release_date=Min("region_release_dates__release_date"))
+            .order_by("annotated_earliest_release_date")
         )
 
         # contributors

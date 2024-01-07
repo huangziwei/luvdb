@@ -105,8 +105,12 @@ class LocationDetailView(DetailView):
             key=attrgetter("earliest_release_date"),
         )
 
-        episodes_filmed_here = Episode.objects.filter(filming_locations=self.object)
-        episodes_set_here = Episode.objects.filter(setting_locations=self.object)
+        episodes_filmed_here = Episode.objects.filter(
+            filming_locations_hierarchy__regex=regex_pattern
+        )
+        episodes_set_here = Episode.objects.filter(
+            setting_locations_hierarchy__regex=regex_pattern
+        )
 
         series_ids_filmed = episodes_filmed_here.values_list(
             "series", flat=True
