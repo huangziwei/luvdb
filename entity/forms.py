@@ -60,6 +60,8 @@ class CompanyForm(forms.ModelForm):
             "location",
             "founded_date",
             "defunct_date",
+            "parent",
+            "successor",
             "wikipedia",
             "website",
             "notes",
@@ -70,6 +72,8 @@ class CompanyForm(forms.ModelForm):
             "location": "Enter the location of the company. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
             "founded_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
             "defunct_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
+            "parent": "Enter the parent company. <a href='/entity/company/create/'>Add a new company</a>.",
+            "successor": "Enter the successor company. <a href='/entity/company/create/'>Add a new company</a>. ",
             "wikipedia": "Enter the company's Wikipedia URL.",
             "website": "Enter the company's website URL.",
             "notes": "Enter any additional information about the person or the group.",
@@ -79,7 +83,15 @@ class CompanyForm(forms.ModelForm):
             "location": autocomplete.ModelSelect2(
                 url=reverse_lazy("visit:location-autocomplete"),
             ),
+            "parent": autocomplete.ModelSelect2(
+                url=reverse_lazy("entity:company-autocomplete"),
+            ),
+            "successor": autocomplete.ModelSelect2(
+                url=reverse_lazy("entity:company-autocomplete"),
+            ),
         }
         labels = {
             "location": "Location",
+            "parent": "Parent Company",
+            "successor": "Successor Company",
         }

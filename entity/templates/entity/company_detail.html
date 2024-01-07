@@ -241,6 +241,46 @@
                 </div>
                 {% endif %}
 
+                {% if object.parent or object.children or object.successor %}
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                    <div class="fs-5">Relationship</div>
+                    {% if object.parent %}
+                    <div>
+                        <span class="text-muted">Parent:</span>
+                        <a href="{% url 'entity:company_detail' object.parent.id %}">{{ object.parent.name }}</a>
+                    </div>
+                    {% endif %}
+                    {% if object.children.count != 0 %}
+                    <div>
+                        {% if object.children.count == 1 %}
+                            <span class="text-muted">Child:</span>
+                        {% else %}
+                            <span class="text-muted">Children:</span>
+                        {% endif %}
+                        {% for child in object.children.all %}
+                            <a href="{% url 'entity:company_detail' child.id %}">{{ child.name }}</a>
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}                    
+                    {% if object.successor %}
+                    <div>
+                        <span class="text-muted">Successor:</span>
+                        <a href="{% url 'entity:company_detail' object.successor.id %}">{{ object.successor.name }}</a>
+                    </div>      
+                    {% endif %}  
+                    {% if object.predecessor.count != 0 %}
+                    <div>
+                        <span class="text-muted">Predecessors:</span>
+                        {% for predecessor in object.predecessor.all %}
+                            <a href="{% url 'entity:company_detail' predecessor.id %}">{{ predecessor.name }}</a>
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}             
+                </div>
+                {% endif %}
+
                 {% if object.wikipedia or object.website %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Link</div>

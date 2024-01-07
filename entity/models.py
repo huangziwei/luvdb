@@ -197,6 +197,17 @@ class Company(Entity):
     wikipedia = models.URLField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
+    parent = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
+    )
+    successor = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="predecessor",
+    )
+
     def __str__(self):
         if self.location:
             return f"{self.location}: {self.name}"
