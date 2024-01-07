@@ -48,7 +48,7 @@
                 </div>
                 {% if creators_born_here_persons or creators_born_here_groups or creators_died_here %}
                 <div class="bg-light p-3 mb-3"> <!--people-->
-                    <h5 data-bs-toggle="collapse" data-bs-target="#creatorsContent" class="mb-0">Creators</h5>
+                    <h5 data-bs-toggle="collapse" data-bs-target="#creatorsContent" class="mb-0 fw-bold">Creators</h5>
                     <div id="creatorsContent" class="collapse">
                     {% if creators_born_here_persons or creators_died_here %}
                         <h5 class="mt-2">Persons</h5>
@@ -87,7 +87,7 @@
 
                 {% if companies_here %}
                 <div class="bg-light p-3 mb-3">
-                    <h5 class="mb-0" data-bs-toggle="collapse" data-bs-target="#companiesContent">Companies</h5>
+                    <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#companiesContent">Companies</h5>
                     <div id="companiesContent" class="collapse mt-2">
                     {% for company in companies_here %}
                         <a href="{% url 'entity:company_detail' company.id %}">{{ company.name }}</a>
@@ -98,7 +98,7 @@
                 {% endif %}
                 {% if publications_set_here %}
                 <div class="bg-light p-3 mb-3">
-                    <h5 class="mb-0" data-bs-toggle="collapse" data-bs-target="#publicationContent">Publications</h5>
+                    <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#publicationContent">Publications</h5>
                     <div id="publicationContent" class="collapse mt-2">
                         {% for pub in publications_set_here %}
                             <a href="{% url 'read:work_detail' pub.id %}">{{ pub.title }}</a> ({{ pub.publication_date|extract_year }})
@@ -110,11 +110,11 @@
 
                 {% if movies_filmed_here or movies_set_here %}
                 <div class="bg-light p-3 mb-3">
-                    <h5 class="mb-0" data-bs-toggle="collapse" data-bs-target="#moviesContent">Movies</h5>
+                    <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#moviesContent">Movies</h5>
                     <div id="moviesContent" class="collapse">
                         {% if movies_filmed_here %}
                         <div class="mt-2">
-                            <h5>Filmed</h5>
+                            <h6>Filmed</h6>
                             {% for movie in movies_filmed_here %}
 
                                 <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.region_release_dates.first.release_date|extract_year }})
@@ -124,7 +124,7 @@
                         {% endif %}
                         {% if movies_set_here %}
                         <div class="mt-2">
-                            <h5>Set</h5>
+                            <h6>Set</h6>
                             {% for movie in movies_set_here %}
                                 <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.region_release_dates.first.release_date|extract_year }})
                                 {% if not forloop.last %} / {% endif %}
@@ -137,13 +137,12 @@
 
                 {% if series_filmed_here or series_set_here %}
                 <div class="bg-light p-3 mb-3">
-                    <h5 class="mb-0" data-bs-toggle="collapse" data-bs-target="#seriesContent">Series</h5>
+                    <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#seriesContent">Series</h5>
                     <div id="seriesContent" class="collapse">
                         {% if series_filmed_here %}
                         <div class="mt-2">
-                            <h5>Filmed</h5>
+                            <h6>Filmed</h6>
                             {% for series in series_filmed_here %}
-
                                 <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
                                 {% if not forloop.last %} / {% endif %}
                             {% endfor %}
@@ -151,7 +150,7 @@
                         {% endif %}
                         {% if series_set_here %}
                         <div class="mt-2">
-                            <h5>Set</h5>
+                            <h6>Set</h6>
                             {% for series in series_set_here %}
                                 <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
                                 {% if not forloop.last %} / {% endif %}
@@ -164,17 +163,15 @@
 
                 {% if games_set_here %}
                 <div class="bg-light p-3">
-                    <h5 class="mb-0" data-bs-toggle="collapse" data-bs-target="#gamesContent">Games</h5>
+                    <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#gamesContent">Games</h5>
                     <div id="gamesContent" class="collapse mt-2">
                         {% for game in games_set_here %}
-
                             <a href="{% url 'play:work_detail' game.id %}">{{ game.title }}</a> ({{ game.first_release_date|extract_year }})
                             {% if not forloop.last %} / {% endif %}
                         {% endfor %}
                     </div>
                 </div>                
                 {% endif %}
-
             </div>
 
             <div class="d-flex flex-column col-sm-4 right-column">
