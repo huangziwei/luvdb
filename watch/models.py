@@ -107,6 +107,20 @@ class Movie(auto_prefetch.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        new_or_updated_cover = False
+        # If the instance already exists in the database
+        if self.pk:
+            # Get the existing instance from the database
+            old_instance = Movie.objects.get(pk=self.pk)
+            # If the poster has been updated
+            if old_instance.poster != self.poster:
+                # Delete the old poster
+                old_instance.poster.delete(save=False)
+                new_or_updated_cover = True
+        else:
+            new_or_updated_cover = True
+            super().save(*args, **kwargs)
+
         if self.filming_locations.exists():
             filming_locations_hierarchy = []
             for location in self.filming_locations.all():
@@ -121,21 +135,6 @@ class Movie(auto_prefetch.Model):
             self.setting_locations_hierarchy = ",".join(
                 set(setting_locations_hierarchy)
             )
-
-        new_or_updated_cover = False
-        # If the instance already exists in the database
-        if self.pk:
-            # Get the existing instance from the database
-            old_instance = Movie.objects.get(pk=self.pk)
-            # If the poster has been updated
-            if old_instance.poster != self.poster:
-                # Delete the old poster
-                old_instance.poster.delete(save=False)
-                new_or_updated_cover = True
-        else:
-            new_or_updated_cover = True
-
-        super().save(*args, **kwargs)
 
         if new_or_updated_cover and self.poster:
             img = Image.open(self.poster.open(mode="rb"))
@@ -411,6 +410,10 @@ class Episode(auto_prefetch.Model):
         return reverse("watch:episode_detail", args=[str(self.series.id), str(self.id)])
 
     def save(self, *args, **kwargs):
+        is_new_instance = not self.pk
+        if is_new_instance:
+            super().save(*args, **kwargs)
+
         if self.filming_locations.exists():
             filming_locations_hierarchy = []
             for location in self.filming_locations.all():

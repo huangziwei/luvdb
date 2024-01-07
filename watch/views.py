@@ -1445,8 +1445,12 @@ class GenreDetailView(DetailView):
         # and order them by release date
         context["movies"] = (
             Movie.objects.filter(genres=genre)
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
+            .order_by("annotated_earliest_release_date")
         )
         context["series"] = Series.objects.filter(genres=genre).order_by(
             "-release_date"

@@ -198,6 +198,14 @@ class Work(auto_prefetch.Model):  # Renamed from Book
         return reverse("read:work_detail", kwargs={"pk": self.pk})
 
     def save(self, *args, **kwargs):
+        # Convert the publication_date to a standard format if it's not None or empty
+        if self.publication_date:
+            self.publication_date = standardize_date(self.publication_date)
+
+        is_new_instance = not self.pk
+        if is_new_instance:
+            super().save(*args, **kwargs)
+
         if self.related_locations.exists():
             related_locations_hierarchy = []
             for location in self.related_locations.all():
@@ -205,10 +213,8 @@ class Work(auto_prefetch.Model):  # Renamed from Book
             self.related_locations_hierarchy = ",".join(
                 set(related_locations_hierarchy)
             )
-        # Convert the publication_date to a standard format if it's not None or empty
-        if self.publication_date:
-            self.publication_date = standardize_date(self.publication_date)
-        super(Work, self).save(*args, **kwargs)
+
+        super().save(*args, **kwargs)
 
     def model_name(self):
         return "Work"

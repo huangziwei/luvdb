@@ -246,8 +246,12 @@ class CreatorDetailView(DetailView):
         context["movies"] = (
             Movie.objects.filter(moviecasts__creator=creator)
             .distinct()
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
+            .order_by("annotated_earliest_release_date")
         )
         context["series"] = (
             Series.objects.filter(episodes__episodecasts__creator=creator)
@@ -261,8 +265,12 @@ class CreatorDetailView(DetailView):
                 movieroles__creator=creator, movieroles__role__name="Director"
             )
             .distinct()
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
+            .order_by("annotated_earliest_release_date")
         )
 
         directed_series = Series.objects.filter(
@@ -309,8 +317,12 @@ class CreatorDetailView(DetailView):
                 movieroles__creator=creator, movieroles__role__name="Screenwriter"
             )
             .distinct()
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
+            .order_by("annotated_earliest_release_date")
         )
 
         written_series = Series.objects.filter(
@@ -426,8 +438,12 @@ class CreatorDetailView(DetailView):
         context["games_as_cast"] = (
             Game.objects.filter(gamecasts__creator=creator)
             .distinct()
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
+            .order_by("annotated_earliest_release_date")
         )
 
         context["gameworks_count"] = (
@@ -617,13 +633,21 @@ class CompanyDetailView(DetailView):
         # watch
         context["movies_as_production_company"] = (
             Movie.objects.filter(studios=company)
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
+            .order_by("annotated_earliest_release_date")
         )
         context["movies_as_distributor"] = (
             Movie.objects.filter(distributors=company)
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
+            .order_by("annotated_earliest_release_date")
         )
 
         context["series_as_production_company"] = Series.objects.filter(
@@ -636,13 +660,21 @@ class CompanyDetailView(DetailView):
         # play
         context["games_as_developer"] = (
             Game.objects.filter(developers=company)
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
+            .order_by("annotated_earliest_release_date")
         )
         context["games_as_publisher"] = (
             Game.objects.filter(publishers=company)
-            .annotate(earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("earliest_release_date")
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
+            .order_by("annotated_earliest_release_date")
         )
 
         # contributors

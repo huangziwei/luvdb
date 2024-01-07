@@ -137,6 +137,9 @@ class Work(auto_prefetch.Model):  # Renamed from Book
         return "GameWork"
 
     def save(self, *args, **kwargs):
+        is_new_instance = not self.pk
+        if is_new_instance:
+            super().save(*args, **kwargs)
         if self.setting_locations.exists():
             setting_locations_hierarchy = []
             for location in self.setting_locations.all():
@@ -144,6 +147,7 @@ class Work(auto_prefetch.Model):  # Renamed from Book
             self.setting_locations_hierarchy = ",".join(
                 set(setting_locations_hierarchy)
             )
+
         super().save(*args, **kwargs)
 
 
