@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!--left column-->
+        <div class="col-12 col-md-8">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="fs-4 mb-2">
+                        All Check-Ins of
+                        <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a>
+                    </div>
+                    <span class='d-flex mb-2'>
+                        <div class="me-3">
+                            {% if order == 'timestamp' %}
+                                <a href="?order=-timestamp&status={{ status }}"
+                                    class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                            {% else %}
+                                <a href="?order=timestamp&status={{ status }}"
+                                    class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+                            {% endif %}
+                            <a href="?status=&order={{ order }}"
+                               class="btn btn-sm btn-outline-secondary mb-1">All</a>
+                            <a href="?status=to_visit&order={{ order }}"
+                               class="btn btn-sm btn-info mb-1">To Play</a>
+                            <a href="?status=visiting_revisiting&order={{ order }}"
+                               class="btn btn-sm btn-primary mb-1">(Re)Playing</a>
+                            <a href="?status=visited_revisited&order={{ order }}"
+                               class="btn btn-sm btn-success mb-1">(Re)Played</a>
+                            <a href="?status=paused&order={{ order }}"
+                               class="btn btn-sm btn-warning mb-1">Paused</a>
+                            <a href="?status=abandoned&order={{ order }}"
+                               class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                        </div>
+                    </span>
+                </div>
+                {% include "visit/visit_checkin_in_location_detail.html" %}
+            </div>
+        </div>
+        <!--right column-->
+        <div class="col-12 col-md-4">
+            <!-- release-card -->
+            <div class="release-card justify-content-start">
+                <div class="d-flex flex-column mt-2">
+                    <!--cover-box-->
+                    <div class="col-12 mb-3">
+                        <div style='width:50%'>
+                            {% if user.pure_text_mode %}
+                                <div class="cover-placeholder bg-light">{{ location.title }}</div>
+                            {% else %}
+                                {% if game.cover %}
+                                    {% if game.cover_sens %}
+                                        <img src="{{ game.cover.url }}"
+                                            alt="{{ game.title }} cover"
+                                            class="blur img-fluid"
+                                            onclick="this.classList.toggle('blur')"
+                                            loading="lazy">
+                                    {% else %}
+                                        <img src="{{ game.cover.url }}"
+                                            alt="{{ game.title }} cover"
+                                            class="img-fluid cover-border"
+                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ game.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';"
+                                            loading="lazy">
+                                    {% endif %}
+                                {% else %}
+                                    <div class="cover-placeholder bg-light">{{ game.title }}</div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!--release-meta-->
+                    <div class="col flex-grow-1">
+                        <div class="card-body">
+                            <span class='d-flex align-items-start'>
+                                <div class="fs-4">{{ location.name }}</div>
+                            </span>
+                            {% if location.other_names %}<p class='text-muted'>{{ location.other_names }}</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'mathjax+mermaid.html' %}
+{% endblock content %}

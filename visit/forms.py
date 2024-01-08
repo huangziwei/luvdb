@@ -3,7 +3,7 @@ from dal import autocomplete
 from django import forms
 from django.urls import reverse_lazy
 
-from .models import Location
+from .models import Location, VisitCheckIn
 
 
 class LocationForm(forms.ModelForm):
@@ -71,3 +71,37 @@ class LocationForm(forms.ModelForm):
         self.fields["level"].choices = [
             (key, custom_level_labels[key]) for key, _ in self.fields["level"].choices
         ]
+
+
+class VisitCheckInForm(forms.ModelForm):
+    class Meta(auto_prefetch.Model.Meta):
+        model = VisitCheckIn
+        fields = [
+            "content_type",
+            "object_id",
+            "user",
+            "status",
+            "progress",
+            "progress_type",
+            "content",
+            "comments_enabled",
+            "share_to_feed",
+        ]
+        widgets = {
+            "content_type": forms.HiddenInput(),
+            "object_id": forms.HiddenInput(),
+            "user": forms.HiddenInput(),
+            "content": forms.Textarea(
+                attrs={
+                    "rows": 3,
+                    "placeholder": "Check in...",
+                    "id": "text-input",
+                }
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(VisitCheckInForm, self).__init__(*args, **kwargs)
+        self.fields["content"].label = ""
+        self.fields["content"].required = False
+        self.fields["comments_enabled"].label = "Enable replies"

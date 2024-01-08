@@ -1,8 +1,17 @@
 import auto_prefetch
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 from simple_history.models import HistoricalRecords
+
+from activity_feed.models import Activity
+from write.models import create_mentions_notifications, handle_tags
+from write.utils_bluesky import create_bluesky_post
+from write.utils_mastodon import create_mastodon_post
 
 
 def get_location_full_name(location):
@@ -111,3 +120,144 @@ class Location(models.Model):
             self.level_name = self.DEFAULT_LEVEL_NAMES.get(self.level)
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("visit:location_detail", kwargs={"pk": self.pk})
+
+
+class VisitCheckIn(auto_prefetch.Model):
+    content_type = auto_prefetch.ForeignKey(
+        ContentType, on_delete=models.CASCADE, null=True
+    )
+    object_id = models.PositiveIntegerField(null=True)
+    content_object = GenericForeignKey("content_type", "object_id")
+    # game = auto_prefetch.ForeignKey(Game, on_delete=models.CASCADE)
+    user = auto_prefetch.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    STATUS_CHOICES = [
+        ("to_visit", "To visit"),
+        ("visiting", "visiting"),
+        ("visited", "visited"),
+        ("revisiting", "Revisiting"),
+        ("revisited", "Revisited"),
+        ("living here", "Living here"),
+        ("lived there", "Lived there"),
+        ("afterthoughts", "Afterthoughts"),
+    ]
+    status = models.CharField(max_length=255, choices=STATUS_CHOICES)
+    share_to_feed = models.BooleanField(default=False)
+    content = models.TextField(
+        null=True, blank=True
+    )  # Any thoughts or comments at this check-in.
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    progress = models.IntegerField(null=True, blank=True)
+    STAYED_TIME = "ST"
+    PROGRESS_TYPE_CHOICES = [
+        (STAYED_TIME, "Stayed Time"),
+    ]
+    progress_type = models.CharField(
+        max_length=2,
+        choices=PROGRESS_TYPE_CHOICES,
+        default=STAYED_TIME,
+    )
+    comments = GenericRelation("write.Comment")
+    comments_enabled = models.BooleanField(default=True)
+    tags = models.ManyToManyField("write.Tag", blank=True)
+    reposts = GenericRelation("write.Repost")
+    votes = GenericRelation("discover.Vote")
+
+    def get_absolute_url(self):
+        return reverse(
+            "write:visit_checkin_detail",
+            kwargs={"pk": self.pk, "username": self.user.username},
+        )
+
+    def get_activity_id(self):
+        try:
+            activity = Activity.objects.get(
+                content_type__model="visitcheckin", object_id=self.id
+            )
+            return activity.id
+        except ObjectDoesNotExist:
+            return None
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
+
+    def model_name(self):
+        return "Visit Check-In"
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        was_updated = False
+        super().save(*args, **kwargs)
+        # Attempt to fetch an existing Activity object for this check-in
+        try:
+            activity = Activity.objects.get(
+                content_type__model="visitcheckin", object_id=self.id
+            )
+        except Activity.DoesNotExist:
+            activity = None
+
+        # Conditionally create an Activity object
+        if self.share_to_feed:
+            if not is_new:
+                # Check if updated
+                was_updated = self.updated_at > self.timestamp
+
+            if was_updated:
+                # Fetch and update the related Activity object
+                try:
+                    activity = Activity.objects.get(
+                        content_type__model="visitcheckin", object_id=self.id
+                    )
+                    activity.save()  # This will trigger the update logic in Activity model
+                except Activity.DoesNotExist:
+                    pass  # Handle the case where the Activity object does not exist
+
+            if is_new or activity is None:
+                Activity.objects.create(
+                    user=self.user,
+                    activity_type="visit-check-in",
+                    content_object=self,
+                )
+
+                if hasattr(self.user, "bluesky_account"):
+                    try:
+                        bluesky_account = self.user.bluesky_account
+                        create_bluesky_post(
+                            bluesky_account.bluesky_handle,
+                            bluesky_account.bluesky_pds_url,
+                            bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
+                            f'I checked in to "{self.content_object.name}" on LʌvDB\n\n'
+                            + self.content
+                            + "\n\n",
+                            self.id,
+                            self.user.username,
+                            "VisitCheckIn",
+                        )
+                    except Exception as e:
+                        print(f"Error creating Bluesky post: {e}")
+
+                if hasattr(self.user, "mastodon_account"):
+                    try:
+                        mastodon_account = self.user.mastodon_account
+                        create_mastodon_post(
+                            mastodon_account.mastodon_handle,
+                            mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
+                            f'I checked in to "{self.content_object.name}" on LʌvDB\n\n'
+                            + self.content
+                            + "\n\n",
+                            self.id,
+                            self.user.username,
+                            "VisitCheckIn",
+                        )
+                    except Exception as e:
+                        print(f"Error creating Mastodon post: {e}")
+
+        elif activity is not None:
+            # Optionally, remove the Activity if share_to_feed is False
+            activity.delete()
+        # Handle tags
+        handle_tags(self, self.content)
+        create_mentions_notifications(self.user, self.content, self)

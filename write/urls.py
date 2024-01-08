@@ -21,6 +21,13 @@ from read.views import (
     ReadCheckInDetailView,
     ReadCheckInUpdateView,
 )
+from visit.views import (
+    VisitCheckInDeleteView,
+    VisitCheckInDetailView,
+    VisitCheckInListView,
+    VisitCheckInUpdateView,
+    VisitCheckInUserListView,
+)
 from watch.views import GenericCheckInListView as WatchCheckInListView
 from watch.views import GenericCheckInUserListView as WatchCheckInUserListView
 from watch.views import (
@@ -403,6 +410,33 @@ urlpatterns = [
         "@<str:username>/play/game/<int:object_id>/checkins/",
         PlayCheckInListView.as_view(),
         name="play_checkin_list",
+    ),
+    # visit
+    path(
+        "@<str:username>/visit/checkin/<int:pk>/",
+        VisitCheckInDetailView.as_view(),
+        name="visit_checkin_detail",
+    ),
+    path(
+        "@<str:username>/visit/checkin/<int:pk>/update/",
+        VisitCheckInUpdateView.as_view(),
+        name="visit_checkin_update",
+    ),
+    path(
+        "@<str:username>/visit/checkin/<int:pk>/delete/",
+        VisitCheckInDeleteView.as_view(),
+        name="visit_checkin_delete",
+    ),
+    path(
+        "@<str:username>/visit/checkins/",
+        VisitCheckInUserListView.as_view(),
+        name="visit_checkin_user_list",
+    ),
+    path(
+        "@<str:username>/visit/location/<int:object_id>/checkins/",
+        VisitCheckInListView.as_view(),
+        kwargs={"model_name": "location"},
+        name="visit_checkin_list",
     ),
     # webmention
     path("webmention/", webmention, name="webmention"),

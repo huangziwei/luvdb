@@ -50,6 +50,12 @@ STATUS_CLASSES = {
     "played": "text-bg-success",
     "replaying": "text-bg-primary",
     "replayed": "text-bg-success",
+    # Visiting Status
+    "to_visit": "text-bg-info",
+    "visiting": "text-bg-primary",
+    "visited": "text-bg-success",
+    "revisiting": "text-bg-primary",
+    "revisited": "text-bg-success",
     # Shared Statuses
     "paused": "text-bg-warning",
     "abandoned": "text-bg-danger",

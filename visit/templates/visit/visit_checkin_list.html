@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% load markdownify %}
+{% load linkify %}
+{% load parse_activity_type %}
+{% block meta %}
+    <meta property="og:title" content="{{ profile_user.display_name | default:profile_user.username }}'s Check-ins to &quot;{{ object.name }}&quot;">
+    {% if object.notes %}
+        <meta property="og:description" content="{{ object.notes|truncatewords:150 }}">
+    {% else %}
+        <meta property="og:description" content="Check out {{ profile_user.display_name | default:profile_user.username }}'s Check-ins to &quot;{{ object.name }}&quot; on luvdb.com">
+    {% endif %}
+    <meta property="og:image" content="{{ object.cover.url }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="article">
+{% endblock meta %}
+{% block title %}{{ profile_user.display_name | default:profile_user.username }}'s Check-Ins for "{{ object.name }}"{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% if is_blocked %}
+            <div class="bg-black p-5 ps-3">
+                <p class="text-white">You are blocked by {{ profile_user.display_name|default:profile_user.username }} and cannot view this page.</p>
+            </div>        
+        {% else %}
+            <!--left column-->
+            <div class="col-12 col-md-8">
+                <div class="fs-4 mb-2">
+                    Check-ins by
+                    <a href="{% url 'accounts:detail' profile_user.username %}">
+                        {{ profile_user.display_name|default:profile_user.username }}
+                    </a> to
+                    <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a>
+                </div>
+                <span class='d-flex mb-2'>
+                    <div class="me-3">
+                        {% if order == 'timestamp' %}
+                            <a href="?order=-timestamp&status={{ status }}"
+                                class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
+                        {% else %}
+                            <a href="?order=timestamp&status={{ status }}"
+                                class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
+                        {% endif %}
+                        <a href="?status=&order={{ order }}"
+                        class="btn btn-sm btn-outline-secondary mb-1">All</a>
+                        <a href="?status=to_visit&order={{ order }}"
+                        class="btn btn-sm btn-info mb-1">To Visit</a>
+                        <a href="?status=visiting_revisiting&order={{ order }}"
+                        class="btn btn-sm btn-primary mb-1">(Re)Visiting</a>
+                        <a href="?status=visited_revisited&order={{ order }}"
+                        class="btn btn-sm btn-success mb-1">(Re)Visited</a>
+                    </div>
+                </span>
+                {% if profile_user.is_public or request.user.is_authenticated %}
+                    {% for checkin in checkins %}
+                        <div class="checkin mb-1 p-3 bg-light">
+                            <p class="d-flex align-items-center">
+                                <!--badge: checkin status-->
+                                <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
+                                {% if checkin.progress %}
+                                    <span class="badge text-bg-warning me-2">
+                                        Stayed Time: {{ checkin.progress }}
+                                        {% if checkin.progress_type == "ST" %}
+                                            {# djlint:off #}
+                                            Day{% if checkin.progress != 1 %}s{% endif %}
+                                            {# djlint:on #}
+                                        {% else %}
+                                            %
+                                        {% endif %}
+                                    </span>
+                                {% endif %}
+                            </p>
+                            {% if checkin.content %}<div>{{ checkin.content | linkify_tags |  markdownify }}</div>{% endif %}
+                        </div>
+                        <div class="d-flex mb-4 pe-3">
+                            <span class="me-2">
+                                <a href="{% url 'write:visit_checkin_detail' checkin.user.username checkin.id %}"
+                                class="text-decoration-none text-secondary">{{ checkin.timestamp|date:"Y.m.d H:i" }}</a>
+                            </span>
+                            {% if checkin.comments_enabled %}
+                                <span class="ms-2 me-2">
+                                    <a href="{% url 'write:visit_checkin_detail' checkin.user.username checkin.id %}"
+                                    class="text-decoration-none">Reply</a>
+                                </span>
+                            {% endif %}
+                            {% if checkin.get_activity_id %}
+                                <span class="ms-2 me-2"><a href="{% url 'write:visit_checkin_detail' checkin.user.username checkin.id %}?repost=true" class="text-decoration-none">Repost</a></span>
+                            {% endif %}
+                            {% if checkin.user == request.user %}
+                                <span class="ms-2 me-2"><a href="{% url 'write:visit_checkin_update' checkin.user.username checkin.id %}" class="text-decoration-none">Edit</a></span>
+                                <span class="ms-2 me-2"><a href="{% url 'write:visit_checkin_delete' checkin.user.username checkin.id %}" class="text-decoration-none">Delete</a></span>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <p>No check-ins yet.</p>
+                    {% endfor %}
+                {% else %}
+                    <p>This user's check-ins are private.</p>
+                {% endif %}
+            </div>
+            <!--right column-->
+            <div class="col-12 col-md-4">
+                <!-- release-card -->
+                <div class="release-card justify-content-start">
+                    <div class="d-flex flex-column mt-2">
+                        <!--cover-box-->
+                        <div class="col-12 mb-3">
+                            <div style='width:50%'>
+                                {% if user.pure_text_mode %}
+                                    <div class="cover-placeholder bg-light">{{ location.name }}</div>
+                                {% else %}
+                                    {% if location.cover %}
+                                        {% if location.cover_sens %}
+                                            <img src="{{ location.cover.url }}"
+                                                alt="{{ location.title }} cover"
+                                                class="blur img-fluid"
+                                                onclick="this.classList.toggle('blur')"
+                                                loading="lazy">
+                                        {% else %}
+                                            <img src="{{ location.cover.url }}"
+                                                alt="{{ location.title }} cover"
+                                                class="img-fluid cover-border"
+                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ location.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';"
+                                                loading="lazy">
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="cover-placeholder bg-light">{{ location.title }}</div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!--release-meta-->
+                        <div class="col flex-grow-1">
+                            <div class="card-body">
+                                <span class='d-flex align-items-start'>
+                                    <div class="fs-4">{{ game.title }}</div>
+                                </span>
+                                {% if game.other_titles %}<p class='text-muted'>{{ game.other_titles }}</p>{% endif %}
+                                <div class="game-meta">
+                                    {% for role, creators_altname_tuples in grouped_roles.items %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">{{ role }}:</span>
+                                            {% for creator, name in creators_altname_tuples %}
+                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                    {% if game.developers %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Developers:</span>
+                                            {% for developer in game.developers.all %}
+                                                <a href="{% url 'entity:company_detail' developer.id %}">{{ developer.name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if game.publishers %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Publishers:</span>
+                                            {% for publisher in game.publishers.all %}
+                                                <a href="{% url 'entity:company_detail' publisher.id %}">{{ publisher.name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if game.platforms %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Platforms:</span>
+                                            {% for platform in game.platforms.all %}
+                                                <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if game.region_release_dates.all %}
+                                    <div>
+                                        <span class="text-muted">Release Date:</span>
+                                        {% for release_date in game.region_release_dates.all %}                                           
+                                            {{ release_date.release_date }} ({{ release_date.region }})
+                                            {% if not forloop.last %}/{% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    {% if game.website %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Website:</span> <a href="{{ game.website }}">{{ game.website }}</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% include 'mathjax+mermaid.html' %}
+{% endblock %}

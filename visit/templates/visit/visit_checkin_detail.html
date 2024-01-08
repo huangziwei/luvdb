@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+{% load markdownify %}
+{% load linkify %}
+{% load crispy_forms_tags %}
+{% load parse_activity_type %}
+{% block meta %}
+    <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Check-in to &quot;{{ object.content_object.title }}&quot;">
+    {% if object.notes %}
+        <meta property="og:description" content="{{ object.notes|truncatewords:150 }}">
+    {% else %}
+        <meta property="og:description" content="Check out {{ object.user.display_name | default:object.user.username }}'s Check-in to &quot;{{ object.content_object.title }}&quot; on luvdb.com">
+    {% endif %}
+    <meta property="og:image" content="{{ object.content_object.cover.url }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="book">
+{% endblock meta %}
+{% block title %}{{ object.user.display_name | default:object.user.username }}'s Check In{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7 left-column h-entry">
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'accounts:detail' object.user.username %}" class='me-1 p-author h-card'>
+                        {{ object.user.display_name | default:object.user.username }}
+                    </a>
+                    <span class="me-2">checked in</span>
+                    <!--badge: checkin status-->
+                    <span class="badge {{ object.status|get_status_class }} me-1">{{ object.get_status_display }}</span>
+                    {% if object.progress %}
+                        <span class="badge text-bg-warning me-2">
+                            Progress: {{ object.progress }}
+                            {% if object.progress_type == "TT" %}
+                                Total Time
+                            {% else %}
+                                %
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="mt-2 e-content">
+                    {{ object.content | linkify_tags |  markdownify }}
+                </div>
+                <div class="bg-light p-3 mt-2">
+                    <div class="d-flex flex-row bg-light mt-2">
+                        <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                            {% if user.pure_text_mode %}
+                                <div class="cover-placeholder bg-light">{{ object.content_object.name }}</div>
+                            {% else %}
+                                {% if object.content_object.cover %}
+                                    {% if object.content_object.cover_sens %}
+                                        <img src="{{ object.content_object.cover.url }}"
+                                            alt="{{ object.content_object.name }} cover"
+                                            class="img-fluid blur cover-border"
+                                            onclick="this.classList.toggle('blur')"
+                                            loading="lazy">
+                                    {% else %}
+                                        <img src="{{ object.content_object.cover.url }}"
+                                            alt="{{ object.content_object.name }} cover"
+                                            class="img-fluid cover-border"
+                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.content_object.title }}</div>';"
+                                            loading="lazy">
+                                    {% endif %}
+                                {% else %}
+                                    <div class="cover-placeholder bg-light">{{ object.content_object.title }}</div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <a href="{% url 'visit:location_detail' object.content_object.id %}"
+                               class="text-decoration-none ">
+                                <div class="fs-5 p-name">{{ object.content_object.title }}</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex mt-2">
+                    <p class='me-2 text-secondary mb-2'>
+                        <a href="{% url 'write:visit_checkin_list' object.user.username object.content_object.id %}" class="text-muted dt-published">
+                            {% if checkin_count > 0 %}
+                                {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
+                            {% else %}
+                                {{ object.timestamp|date:"Y.m.d H:i" }}
+                            {% endif %}
+                        </a>
+                        <a href="{% url 'write:visit_checkin_detail' object.user.username object.content_object.id %}" 
+                            class="u-url"></a>
+                    </p>
+                    {% if object.user == request.user %}
+                        <a href="{% url "write:visit_checkin_update" object.user.username object.pk %}" class="me-2">Edit</a>
+                        <a href="{% url "write:visit_checkin_delete" object.user.username object.pk %}" class="me-2">Delete</a>
+                    {% endif %}
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <button id="show-comments"
+                                class="btn btn-primary btn-sm mx-auto toggle-button">Replies</button>
+                        <button id="show-reposts"
+                                class="btn btn-secondary btn-sm mx-auto toggle-button">Reposts</button>
+                    </div>
+                    <div>
+                        <a href="{% url 'discover:vote' 'visitcheckin' checkin.id 'up' %}" 
+                            class="me-2 btn btn-sm {% if has_voted %}btn-outline-danger active{% else %}btn-outline-danger{% endif %}" 
+                            title="Like this check-in">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+                <div id="comments-section">
+                    {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='visitcheckin' %}
+                </div>
+                <div id="reposts-section" style="disvisit: none;">
+                    {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="{% static 'js/toggle-button.js' %}"></script>
+    {% include 'mathjax+mermaid.html' %}
+    <!--webmentions-->
+    {% if object.user.enable_webmentions %}
+        <a href="https://brid.gy/publish/mastodon" rel="me"></a>
+    {% endif %}
+{% endblock content %}

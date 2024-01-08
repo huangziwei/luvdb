@@ -1,0 +1,151 @@
+{% load crispy_forms_tags %}
+<form method="post" id="checkinForm">
+    {% csrf_token %}
+    {{ checkin_form.content_type }}
+    {{ checkin_form.object_id }}
+    {{ checkin_form.user }}
+    <div class="row">
+        <div class="col-md-7 col-sm-12 mb-2">
+            <!--Status-->
+            <div class="btn-group" role="group" aria-label="Status">
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary status-button"
+                        id="status-to-visit"
+                        onclick="setStatus(event, 'to_visit')">To Visit</button>
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary status-button"
+                        id="status-visiting"
+                        onclick="setStatus(event, 'visiting')">Visiting</button>
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary status-button"
+                        id="status-visited"
+                        onclick="setStatus(event, 'visited')">Visited</button>
+                <div class="btn-group" role="group">
+                    <button id="status-more"
+                            type="button"
+                            class="btn btn-sm btn-outline-secondary dropdown-toggle status-button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">More</button>
+                    <ul class="dropdown-menu" aria-labelledby="status-more">
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-revisiting"
+                               href="#"
+                               onclick="setStatus(event,'revisiting')">Revisiting</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-revisited"
+                               href="#"
+                               onclick="setStatus(event,'revisited')">Revisited</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <!-- Progress and Progress Type -->
+            <div class="input-group input-group-sm mb-3">
+                <input type="number"
+                       class="form-control"
+                       id="progressInput"
+                       name="progress"
+                       placeholder="Total Stayed Time">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        id="progressTypeBtn">Stayed Time</button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="setProgressType(event,'ST')">Stayed Time</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Hidden input fields to hold status and progress_type values -->
+    <input type="hidden" id="statusInput" name="status">
+    <input type="hidden" id="progressTypeInput" name="progress_type">
+    <div class="col-md-11 col-sm-12">{{ checkin_form.content | as_crispy_field }}</div>
+    <div class="d-flex justify-content-between align-items-start col-11">
+        <button type="submit"
+                class="btn btn-sm btn-primary me-2 mb-2 mb-md-0"
+                id="submitButton">Add Check-In</button>
+        <div class="d-flex justify-content-start flex-wrap">
+            <div class="form-check me-5 me-md-0 mb-2 mb-md-0">
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="shareToFeedInput"
+                       name="share_to_feed"
+                       {% if request.user.enable_share_to_feed_by_default %}checked{% endif %}
+                       >
+                <label class="form-check-label small" for="shareToFeedInput">Share to feed</label>
+            </div>
+            <div class="form-check ms-md-3">
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="commentsEnabledInput"
+                       name="comments_enabled"
+                       {% if user.is_authenticated and user.enable_replies_by_default %}checked{% endif %}                       >
+                <label class="form-check-label small" for="commentsEnabledInput">Enable replies</label>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    var status_mapping = {
+        "to_visit": "status-to-visit",
+        "visiting": "status-visiting",
+        "visited": "status-visited",
+        "revisiting": "status-revisiting",
+        "revisited": "status-revisited",
+    };
+    
+    function setStatus(event, status) {
+        event.preventDefault();
+        document.getElementById('statusInput').value = status;
+        updateStatusButton(status);
+    }
+    
+    function setProgressType(event, type) {
+        event.preventDefault();
+        document.getElementById('progressTypeInput').value = type;
+        document.getElementById('progressTypeBtn').textContent = type == 'ST' ? 'Days' : 'ST';
+    }
+    
+    function updateStatusButton(status) {
+        // Get all status buttons and dropdown items
+        const statusButtons = document.querySelectorAll('.status-button');
+        const statusDropdownItems = document.querySelectorAll('.status-dropdown-item');
+    
+        // Remove 'selected-button' class from all status buttons and dropdown items
+        statusButtons.forEach(button => button.classList.remove('selected-button'));
+        statusDropdownItems.forEach(item => item.classList.remove('selected-button'));
+    
+        // If the status exists in the mapping, update the corresponding button
+        if (status_mapping[status]) {
+            const buttonId = status_mapping[status];
+            const button = document.getElementById(buttonId);
+    
+            if (button) {
+                // Add 'selected-button' class to the button
+                button.classList.add('selected-button');
+    
+                // If the button is a dropdown item, also update the main dropdown button
+                if (button.classList.contains('dropdown-item')) {
+                    const moreButton = document.getElementById('status-more');
+                    moreButton.classList.add('selected-button');
+                }
+            }
+        }
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        // Set default status and progress type values
+        var default_status = '{{ latest_user_status }}' || 'to_visit';
+        setStatus(event, default_status);
+        setProgressType(event, 'ST');
+    });
+    
+</script>

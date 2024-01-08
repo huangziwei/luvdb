@@ -47,7 +47,7 @@
                     {% endif %}
                 </div>
                 {% if creators_born_here_persons or creators_born_here_groups or creators_died_here %}
-                <div class="bg-light p-3 mb-3"> <!--people-->
+                <div class="bg-light p-3 mb-3 col-12 col-md-11"> <!--people-->
                     <h5 data-bs-toggle="collapse" data-bs-target="#creatorsContent" class="mb-0 fw-bold">Creators</h5>
                     <div id="creatorsContent" class="collapse">
                     {% if creators_born_here_persons or creators_died_here %}
@@ -86,7 +86,7 @@
                 {% endif %}
 
                 {% if companies_here %}
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-light p-3 mb-3 col-12 col-md-11">
                     <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#companiesContent">Companies</h5>
                     <div id="companiesContent" class="collapse mt-2">
                     {% for company in companies_here %}
@@ -97,7 +97,7 @@
                 </div>
                 {% endif %}
                 {% if publications_set_here %}
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-light p-3 mb-3 col-12 col-md-11">
                     <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#publicationContent">Publications</h5>
                     <div id="publicationContent" class="collapse mt-2">
                         {% for pub in publications_set_here %}
@@ -109,7 +109,7 @@
                 {% endif %}
 
                 {% if movies_filmed_here or movies_set_here %}
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-light p-3 mb-3 col-12 col-md-11">
                     <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#moviesContent">Movies</h5>
                     <div id="moviesContent" class="collapse">
                         {% if movies_filmed_here %}
@@ -136,7 +136,7 @@
                 {% endif %}
 
                 {% if series_filmed_here or series_set_here %}
-                <div class="bg-light p-3 mb-3">
+                <div class="bg-light p-3 mb-3 col-12 col-md-11">
                     <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#seriesContent">Series</h5>
                     <div id="seriesContent" class="collapse">
                         {% if series_filmed_here %}
@@ -162,7 +162,7 @@
                 {% endif %}
 
                 {% if games_set_here %}
-                <div class="bg-light p-3">
+                <div class="bg-light p-3 col-12 col-md-11">
                     <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#gamesContent">Games</h5>
                     <div id="gamesContent" class="collapse mt-2">
                         {% for game in games_set_here %}
@@ -172,6 +172,19 @@
                     </div>
                 </div>                
                 {% endif %}
+
+                <!--Game Check-In-->
+                <div class="mt-4">
+                    {% include "visit/visit_checkin_form.html" %}
+                    <div class="d-flex justify-content-between mt-4 mb-1 col-12 col-md-11">
+                        <div class="fs-4">Latest Check-Ins</div>
+                        <a class="btn btn-outline-secondary btn-sm"
+                            href="{% url 'visit:visit_checkin_all_list' location.id %}"
+                            style="height:30px">All</a>
+                    </div>
+                    {% include "visit/visit_checkin_in_location_detail.html" %}
+                </div>
+                <hr>
             </div>
 
             <div class="d-flex flex-column col-sm-4 right-column">
