@@ -143,11 +143,11 @@ class VisitCheckIn(auto_prefetch.Model):
     user = auto_prefetch.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ("to_visit", "To visit"),
-        ("visiting", "visiting"),
-        ("visited", "visited"),
+        ("visiting", "Visiting"),
+        ("visited", "Visited"),
         ("revisiting", "Revisiting"),
         ("revisited", "Revisited"),
-        ("living-here", "Living here"),
+        ("living-here", "Live here"),
         ("lived-there", "Lived there"),
         ("afterthoughts", "Afterthoughts"),
     ]
