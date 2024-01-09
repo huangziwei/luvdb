@@ -889,7 +889,7 @@
             <script>
                 setTimeout(function() {
                     initializeMap('mapid-{{ activity.id }}', "{{ activity.content_object.content_object.osm_id }}");
-                }, {{ forloop.counter0 }} * 1000); // 1000 milliseconds delay per iteration
+                }, {{ forloop.counter0 }} * 2000); // 1000 milliseconds delay per iteration
             </script>
         </div>
         {% endif %}

@@ -581,7 +581,7 @@
                         <script>
                             setTimeout(function() {
                                 initializeMap('mapid-{{ activity.id }}', "{{ activity.content_object.original_activity.content_object.content_object.osm_id }}");
-                            }, 1000);
+                            }, {{ forloop.counter0 }} * 2000);
                         </script>
                     </div>
                     {% endif %}
