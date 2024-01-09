@@ -29,8 +29,8 @@ def get_location_full_name(location):
                 current_name += " (historical)"
         names.insert(0, current_name)
         current = current.parent
-    name = " / ".join(names)
-    return name
+    # name = " / ".join(names)
+    return names
 
 
 class Location(models.Model):
@@ -113,7 +113,7 @@ class Location(models.Model):
     history = HistoricalRecords(inherit=True)
 
     def __str__(self):
-        return get_location_full_name(self)
+        return " / ".join(get_location_full_name(self))
 
     def save(self, *args, **kwargs):
         if not self.level_name:
@@ -123,6 +123,14 @@ class Location(models.Model):
 
     def get_absolute_url(self):
         return reverse("visit:location_detail", kwargs={"pk": self.pk})
+
+    # @property
+    # def full_name_on_feed(self):
+    #     names = get_location_full_name(self)[:-1][::-1]
+    #     if len(names) > 0:
+    #         return " < ".join(names)
+    #     else:
+    #         return ""
 
 
 class VisitCheckIn(auto_prefetch.Model):

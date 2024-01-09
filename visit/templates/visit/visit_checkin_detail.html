@@ -41,38 +41,27 @@
                 <div class="mt-2 e-content">
                     {{ object.content | linkify_tags |  markdownify }}
                 </div>
-                <div class="bg-light p-3 mt-2">
-                    <div class="d-flex flex-row bg-light mt-2">
-                        <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                            {% if user.pure_text_mode %}
-                                <div class="cover-placeholder bg-light">{{ object.content_object.name }}</div>
-                            {% else %}
-                                {% if object.content_object.cover %}
-                                    {% if object.content_object.cover_sens %}
-                                        <img src="{{ object.content_object.cover.url }}"
-                                            alt="{{ object.content_object.name }} cover"
-                                            class="img-fluid blur cover-border"
-                                            onclick="this.classList.toggle('blur')"
-                                            loading="lazy">
-                                    {% else %}
-                                        <img src="{{ object.content_object.cover.url }}"
-                                            alt="{{ object.content_object.name }} cover"
-                                            class="img-fluid cover-border"
-                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ object.content_object.title }}</div>';"
-                                            loading="lazy">
-                                    {% endif %}
-                                {% else %}
-                                    <div class="cover-placeholder bg-light">{{ object.content_object.title }}</div>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                        <div class="flex-grow-1 ms-3">
+                <div class="media-card bg-light p-3 mt-2">
+                    <div class="d-flex flex-row align-items-baseline">
+                        <div class="me-2">
                             <a href="{% url 'visit:location_detail' object.content_object.id %}"
-                               class="text-decoration-none ">
-                                <div class="fs-5 p-name">{{ object.content_object.title }}</div>
+                            class="text-decoration-none h-cite p-name">
+                                <div class="fs-5">{{ object.content_object.name }}</div>
                             </a>
                         </div>
+                        <div>{{ object.content_object.other_names }}</div>
                     </div>
+                    <div>
+                        {{object.content_object.level_name}} 
+                        {% if object.content_object.parent %}
+                            of {{object.content_object.parent.name}}
+                        {% endif %}
+                    </div>
+                    {% if object.content_object.osm_id %}
+                    <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 ">
+                        <div id="mapid-{{ object.content_object.id }}" style="height: 200px;"></div>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="d-flex mt-2">
                     <p class='me-2 text-secondary mb-2'>
@@ -123,5 +112,15 @@
     <!--webmentions-->
     {% if object.user.enable_webmentions %}
         <a href="https://brid.gy/publish/mastodon" rel="me"></a>
+    {% endif %}
+    {% if object.content_object.osm_id %}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/osmtogeojson@3.0.0-beta.5/osmtogeojson.min.js"></script>
+        <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js"></script>
+        <script src="{% static 'js/osm.js' %}"></script>
+        <script>
+            initializeMap('mapid-{{ object.content_object.id }}', "{{ object.content_object.osm_id }}");
+        </script>
     {% endif %}
 {% endblock content %}

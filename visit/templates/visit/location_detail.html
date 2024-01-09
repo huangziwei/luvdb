@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load markdownify %}
 {% load util_filters %}
 {% block title %}{{ object.name }}{% endblock %}
@@ -174,6 +175,7 @@
                 {% endif %}
 
                 <!--Game Check-In-->
+                {% if not object.historical %}
                 <div class="mt-4">
                     {% include "visit/visit_checkin_form.html" %}
                     <div class="d-flex justify-content-between mt-4 mb-1 col-12 col-md-11">
@@ -185,6 +187,7 @@
                     {% include "visit/visit_checkin_in_location_detail.html" %}
                 </div>
                 <hr>
+                {% endif %}
             </div>
 
             <div class="d-flex flex-column col-sm-4 right-column">
@@ -284,58 +287,9 @@
         <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/osmtogeojson@3.0.0-beta.5/osmtogeojson.min.js"></script>
         <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js"></script>
+        <script src="{% static 'js/osm.js' %}"></script>
         <script>
-            var map = L.map('mapid', {
-                dragging: false,
-                touchZoom: false,
-                scrollWheelZoom: false,
-                doubleClickZoom: false,
-                boxZoom: false,
-                keyboard: false, // Optional: disable keyboard navigation
-                zoomControl: false,
-            }); // Initial map position
-        
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-        
-            var osmId = "{{ object.osm_id }}"; // OSM ID from your model
-        
-            // Modified Overpass API URL to fetch both nodes and relations
-            var overpassApiUrl = "https://overpass-api.de/api/interpreter?data=[out:json];(node(" + osmId + ");relation(" + osmId + "););out body;>;out skel qt;";
-        
-            // Fetch the data
-            fetch(overpassApiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    var geojsonData = osmtogeojson(data);
-                    var hasRelation = false;
-
-                    var geoJsonLayer = L.geoJSON(geojsonData, {
-                        filter: function(feature, layer) {
-                            if (feature.geometry.type !== 'Point') {
-                                hasRelation = true;
-                                return true; // Include non-point features
-                            }
-                            return false; // Exclude point features within relations
-                        }
-                    }).addTo(map);
-
-                    if (hasRelation) {
-                        map.fitBounds(geoJsonLayer.getBounds()); // Fit map to GeoJSON bounds of the relation
-                    } else {
-                        // If there are no relations, check for standalone nodes
-                        data.elements.forEach(function(element) {
-                            if (element.type === 'node') {
-                                // Place a marker for the node
-                                L.marker([element.lat, element.lon]).addTo(map);
-                                map.setView([element.lat, element.lon], 13); // Adjust the zoom level as needed
-                            }
-                        });
-                    }
-                })
-                .catch(error => console.error('Error fetching OSM data:', error));
+            initializeMap('mapid', "{{ object.osm_id }}");
         </script>
     {% endif %}
 

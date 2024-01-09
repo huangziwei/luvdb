@@ -32,15 +32,9 @@ urlpatterns = [
         name="location-autocomplete",
     ),
     path(
-        "visit/<int:object_id>/checkins/",
+        "location/<int:object_id>/checkins/",
         view=VisitCheckInAllListView.as_view(),
         kwargs={"model_name": "location"},
         name="visit_checkin_all_list",
-    ),
-    path(
-        "visit/<int:object_id>/checkins/@<str:username>/",
-        view=VisitCheckInListView.as_view(),
-        kwargs={"model_name": "location"},
-        name="visit_checkin_list",
     ),
 ]

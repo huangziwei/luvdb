@@ -1,7 +1,7 @@
 {% load util_filters %}
 {% load markdownify %}
 {% load linkify %}
-
+{% load static %}
 {% load parse_activity_type %}
 <!--Repost-->
 <div class="activity-item mb-3 h-entry"
@@ -527,6 +527,72 @@
                            class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a>
                     </p>
                 </div>
+            {% elif activity.content_object.original_activity.activity_type == "visit-check-in" %}
+                <div class="d-flex flex-wrap align-items-center">
+                    <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}"
+                    class="text-decoration-none  me-1">
+                        {{ activity.content_object.original_activity.user.display_name | default:activity.content_object.original_activity.user.username }}
+                    </a>
+                    <span class="me-1 text-muted">checked in</span>
+                    <!--badge: checkin status-->
+                    <div class="d-flex align-items-center me-1">
+                        <span class="badge {{ activity.content_object.original_activity.content_object.status|get_status_class }} me-1">
+                            {{ activity.content_object.original_activity.content_object.get_status_display }}
+                        </span>
+                    </div>
+                    {% if activity.content_object.original_activity.content_object.progress %}
+                        {% if object.content_type.model == "location" %}
+                            <span class="badge text-bg-warning me-1">
+                                Stayed {{ activity.content_object.original_activity.content_object.progress }}
+                                {% if activity.content_object.original_activity.content_object.progress_type == "ST" %}
+                                    Day{% if activity.content_object.original_activity.content_object.progress > 1 %}s{% endif %}
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="mt-2">
+                    {{ activity.content_object.original_activity.content_object.content | linkify_tags | truncatechars:300 | markdownify }}
+                </div>
+                <div class="media-card bg-light p-3 mt-2">
+                    <div class="d-flex flex-row align-items-baseline">
+                        <div class="me-2">
+                            <a href="{% url 'visit:location_detail' activity.content_object.original_activity.content_object.content_object.id %}"
+                            class="text-decoration-none h-cite p-name">
+                                <div class="fs-5">{{ activity.content_object.original_activity.content_object.content_object.name }}</div>
+                            </a>
+                        </div>
+                        <div>{{ activity.content_object.original_activity.content_object.content_object.other_names }}</div>
+                    </div>
+                    <div>
+                        {{activity.content_object.original_activity.content_object.content_object.level_name}} 
+                        {% if activity.content_object.original_activity.content_object.content_object.parent %}
+                            of {{activity.content_object.original_activity.content_object.content_object.parent.name}}
+                        {% endif %}
+                    </div>
+                    {% if activity.content_object.original_activity.content_object.content_object.osm_id %}
+                    <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 ">
+                        <div id="mapid-{{ activity.id }}" style="height: 200px;"></div>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
+                        <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/osmtogeojson@3.0.0-beta.5/osmtogeojson.min.js"></script>
+                        <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js"></script>
+                        <script src="{% static 'js/osm.js' %}"></script>
+                        <script>
+                            setTimeout(function() {
+                                initializeMap('mapid-{{ activity.id }}', "{{ activity.content_object.original_activity.content_object.content_object.osm_id }}");
+                            }, 1000);
+                        </script>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="mt-2">
+                    <p>
+                        <a href="{{ activity.content_object.original_activity.content_object.get_absolute_url }}"
+                        class="text-decoration-none text-secondary">{{ activity.content_object.original_activity.content_object.timestamp |date:"Y.m.d H:i" }}</a>
+                    </p>
+                </div>
+
             {% else %}
                 <div>
                     <a href="{% url 'accounts:detail' activity.content_object.original_activity.user.username %}"
