@@ -39,6 +39,17 @@
                                href="#"
                                onclick="setStatus(event,'revisited')">Revisited</a>
                         </li>
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-living"
+                               href="#"
+                               onclick="setStatus(event,'living')">Living Here</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item status-dropdown-item"
+                               id="status-lived"
+                               href="#"
+                               onclick="setStatus(event,'lived')">Lived There</a>
                     </ul>
                 </div>
             </div>
@@ -100,6 +111,8 @@
         "visited": "status-visited",
         "revisiting": "status-revisiting",
         "revisited": "status-revisited",
+        "living": "status-living",
+        "lived": "status-lived",
     };
     
     function setStatus(event, status) {

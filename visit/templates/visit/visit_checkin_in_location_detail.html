@@ -14,7 +14,7 @@
                 <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
                 {% if checkin.progress %}
                     <span class="badge text-bg-warning me-2">
-                        Stayed Time: {{ checkin.progress }}
+                        Stayed {{ checkin.progress }}
                         {% if checkin.progress_type == "ST" %}
                             {# djlint:off #}
                             Day{% if checkin.progress != 1 %}s{% endif %}

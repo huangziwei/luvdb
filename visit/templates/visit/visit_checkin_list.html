@@ -49,6 +49,10 @@
                         class="btn btn-sm btn-primary mb-1">(Re)Visiting</a>
                         <a href="?status=visited_revisited&order={{ order }}"
                         class="btn btn-sm btn-success mb-1">(Re)Visited</a>
+                        <a href="?status=living&order={{ order }}"
+                            class="btn btn-sm btn-success mb-1">Living</a>
+                        <a href="?status=lived&order={{ order }}"
+                            class="btn btn-sm btn-success mb-1">Lived</a>      
                     </div>
                 </span>
                 {% if profile_user.is_public or request.user.is_authenticated %}
@@ -59,7 +63,7 @@
                                 <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
                                 {% if checkin.progress %}
                                     <span class="badge text-bg-warning me-2">
-                                        Stayed Time: {{ checkin.progress }}
+                                        Stayed {{ checkin.progress }}
                                         {% if checkin.progress_type == "ST" %}
                                             {# djlint:off #}
                                             Day{% if checkin.progress != 1 %}s{% endif %}

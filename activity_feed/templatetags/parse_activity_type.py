@@ -56,6 +56,8 @@ STATUS_CLASSES = {
     "visited": "text-bg-success",
     "revisiting": "text-bg-primary",
     "revisited": "text-bg-success",
+    "living-here": "text-bg-primary",
+    "lived-there": "text-bg-success",
     # Shared Statuses
     "paused": "text-bg-warning",
     "abandoned": "text-bg-danger",

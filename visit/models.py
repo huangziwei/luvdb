@@ -147,8 +147,8 @@ class VisitCheckIn(auto_prefetch.Model):
         ("visited", "visited"),
         ("revisiting", "Revisiting"),
         ("revisited", "Revisited"),
-        ("living here", "Living here"),
-        ("lived there", "Lived there"),
+        ("living-here", "Living here"),
+        ("lived-there", "Lived there"),
         ("afterthoughts", "Afterthoughts"),
     ]
     status = models.CharField(max_length=255, choices=STATUS_CHOICES)
