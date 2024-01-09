@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <div class="container">
     <div class="row">
@@ -22,15 +23,11 @@
                             <a href="?status=&order={{ order }}"
                                class="btn btn-sm btn-outline-secondary mb-1">All</a>
                             <a href="?status=to_visit&order={{ order }}"
-                               class="btn btn-sm btn-info mb-1">To Play</a>
+                               class="btn btn-sm btn-info mb-1">To Visit</a>
                             <a href="?status=visiting_revisiting&order={{ order }}"
-                               class="btn btn-sm btn-primary mb-1">(Re)Playing</a>
+                               class="btn btn-sm btn-primary mb-1">(Re)Visiting</a>
                             <a href="?status=visited_revisited&order={{ order }}"
-                               class="btn btn-sm btn-success mb-1">(Re)Played</a>
-                            <a href="?status=paused&order={{ order }}"
-                               class="btn btn-sm btn-warning mb-1">Paused</a>
-                            <a href="?status=abandoned&order={{ order }}"
-                               class="btn btn-sm btn-danger mb-1">Abandoned</a>
+                               class="btn btn-sm btn-success mb-1">(Re)Visited</a>
                         </div>
                     </span>
                 </div>
@@ -39,43 +36,32 @@
         </div>
         <!--right column-->
         <div class="col-12 col-md-4">
-            <!-- release-card -->
-            <div class="release-card justify-content-start">
+            <!-- location-card -->
+            <div class="location-card justify-content-start">
                 <div class="d-flex flex-column mt-2">
-                    <!--cover-box-->
-                    <div class="col-12 mb-3">
-                        <div style='width:50%'>
-                            {% if user.pure_text_mode %}
-                                <div class="cover-placeholder bg-light">{{ location.title }}</div>
-                            {% else %}
-                                {% if game.cover %}
-                                    {% if game.cover_sens %}
-                                        <img src="{{ game.cover.url }}"
-                                            alt="{{ game.title }} cover"
-                                            class="blur img-fluid"
-                                            onclick="this.classList.toggle('blur')"
-                                            loading="lazy">
-                                    {% else %}
-                                        <img src="{{ game.cover.url }}"
-                                            alt="{{ game.title }} cover"
-                                            class="img-fluid cover-border"
-                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ game.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';"
-                                            loading="lazy">
-                                    {% endif %}
-                                {% else %}
-                                    <div class="cover-placeholder bg-light">{{ game.title }}</div>
+                    <!--location-meta-->
+                    <div class="col-12 flex-grow-1 mb-3">
+                        <div class="card-body">
+                            <span class='d-flex flex-wrap align-items-baseline'>
+                                <div class="fs-4 me-2">{{ location.name }}</div>
+                                {% if location.other_names %}<p class='text-muted'>{{ location.other_names }}</p>{% endif %}
+                            </span>
+                            <div>
+                                {{location.level_name}} 
+                                {% if location.parent %}
+                                    of {{location.parent.name}}
                                 {% endif %}
-                            {% endif %}
+                            </div>
                         </div>
                     </div>
-                    <!--release-meta-->
-                    <div class="col flex-grow-1">
-                        <div class="card-body">
-                            <span class='d-flex align-items-start'>
-                                <div class="fs-4">{{ location.name }}</div>
-                            </span>
-                            {% if location.other_names %}<p class='text-muted'>{{ location.other_names }}</p>{% endif %}
-                        </div>
+                    <!--map-box-->
+                    <div class="col-12 mb-3">
+                        {% if not location.historical and location.osm_id %}
+                            <!--openstreetmap-->
+                            <div class="mb-3 order-1 order-sm-2">
+                                <div id="mapid" style="height: 400px;"></div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -83,4 +69,14 @@
     </div>
 </div>
 {% include 'mathjax+mermaid.html' %}
+{% if not location.historical and location.osm_id %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/osmtogeojson@3.0.0-beta.5/osmtogeojson.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js"></script>
+    <script src="{% static 'js/osm.js' %}"></script>
+    <script>
+        initializeMap('mapid', "{{ location.osm_id }}");
+    </script>
+{% endif %}
 {% endblock content %}

@@ -101,7 +101,7 @@
                 <div id="comments-section">
                     {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='visitcheckin' %}
                 </div>
-                <div id="reposts-section" style="disvisit: none;">
+                <div id="reposts-section" style="display: none;">
                     {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts %}
                 </div>
             </div>
