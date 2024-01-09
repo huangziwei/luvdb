@@ -49,10 +49,10 @@
                         class="btn btn-sm btn-primary mb-1">(Re)Visiting</a>
                         <a href="?status=visited_revisited&order={{ order }}"
                         class="btn btn-sm btn-success mb-1">(Re)Visited</a>
-                        <a href="?status=living&order={{ order }}"
-                            class="btn btn-sm btn-success mb-1">Living</a>
-                        <a href="?status=lived&order={{ order }}"
-                            class="btn btn-sm btn-success mb-1">Lived</a>      
+                        <a href="?status=living-here&order={{ order }}"
+                            class="btn btn-sm btn-primary mb-1">Living Here</a>
+                        <a href="?status=lived-there&order={{ order }}"
+                            class="btn btn-sm btn-success mb-1">Lived There</a>      
                     </div>
                 </span>
                 {% if profile_user.is_public or request.user.is_authenticated %}
@@ -145,7 +145,9 @@
     <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js"></script>
     <script src="{% static 'js/osm.js' %}"></script>
     <script>
-        initializeMap('mapid', "{{ location.osm_id }}");
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap('mapid', "{{ location.osm_id }}", "{{ location.level }}");
+        });
     </script>
 {% endif %}
 {% endblock %}

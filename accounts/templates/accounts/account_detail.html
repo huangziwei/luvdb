@@ -60,14 +60,20 @@
                                 @{{ object.username }}
                             </a>
                             {% if not object.is_public %}
-                                <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" title="This profile is not public" aria-label="This profile is not public">
+                                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" title="This profile is not public" aria-label="This profile is not public">
                                     <path d="M 12 1 C 8.6761905 1 6 3.6761905 6 7 L 6 8 C 4.9 8 4 8.9 4 10 L 4 20 C 4 21.1 4.9 22 6 22 L 18 22 C 19.1 22 20 21.1 20 20 L 20 10 C 20 8.9 19.1 8 18 8 L 18 7 C 18 3.6761905 15.32381 1 12 1 z M 12 3 C 14.27619 3 16 4.7238095 16 7 L 16 8 L 8 8 L 8 7 C 8 4.7238095 9.7238095 3 12 3 z M 12 13 C 13.1 13 14 13.9 14 15 C 14 16.1 13.1 17 12 17 C 10.9 17 10 16.1 10 15 C 10 13.9 10.9 13 12 13 z"></path>
                                 </svg>
                             {% endif %}
                         </div>
-                        <p>
-                            <span class="text-muted">Since {{ object.date_joined|date:"Y.m.d" }}</span>
-                        </p>
+                        <div class="mb-3">
+                            {% if living_in %}
+                                <span class="text-muted">Based in</span>
+                                <a href="{% url 'visit:location_detail' living_in.0.content_object.id %}">
+                                    {{ living_in.0.content_object.name }}
+                                </a>
+                            {% endif %}
+                            <div class="text-muted">Joined {{ object.date_joined|daysince }} days ago</div>
+                        </div>
                         {% if object.bio %}
                             <div>{{ object.bio | linkify_tags | markdownify }}</div>
                         {% endif %}
@@ -698,6 +704,74 @@
                             </div>
                         </div>
                     {% endif %}
+
+                    {% if does_visit_exist %}
+                        <div class="row">
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <div class="mt-4 fs-4">Visit</div>
+                                <div>
+                                    <a class="btn btn-outline-secondary btn-sm"
+                                    href="{% url 'write:visit_checkin_user_list' object.username %}">All</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                {% if visiting %}
+                                    <div class="mt-3 me-3 d-flex overflow-auto">
+                                        <div class="rotate text-muted">Visiting</div>
+                                        {% for item in visiting %}
+                                            <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                                <a href="{% url 'write:play_checkin_list' item.user.username item.content_object.id %}">
+                                                    {% if item.content_object.osm_id %}
+                                                        <div class="mb-1 mb-md-0 flex-shrink-0">
+                                                            <a href="{% url 'visit:location_detail' item.content_object.id %}" title="{{item.content_object.name}}">
+                                                                <div id="mapid-{{ item.id }} + 400" style="height: 200px;"></div>
+                                                            </a>
+                                                            <script>
+                                                                document.addEventListener('DOMContentLoaded', function() {
+                                                                    setTimeout(function() {
+                                                                        initializeMap('mapid-{{ item.id }} + 400', "{{ item.content_object.osm_id }}", "{{item.content_object.level}}");
+                                                                    }, {{ forloop.counter0 }} * 1500); 
+                                                                });
+                                                            </script>
+                                                        </div>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        {% empty %}
+                                            <p>No items.</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if played %}
+                                    <div class="mt-3 me-3 d-flex overflow-auto">
+                                        <div class="rotate text-muted">Visited</div>
+                                        {% for item in visited %}
+                                            <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                                <a href="{% url 'write:play_checkin_list' item.user.username item.content_object.id %}">
+                                                    {% if item.content_object.osm_id %}
+                                                        <div class="mb-1 mb-md-0 flex-shrink-0">
+                                                            <a href="{% url 'visit:location_detail' item.content_object.id %}" title="{{item.content_object.name}}">
+                                                                <div id="mapid-{{ item.id }} + 300" style="height: 200px;"></div>
+                                                            </a>
+                                                            <script>
+                                                                document.addEventListener('DOMContentLoaded', function() {
+                                                                    setTimeout(function() {
+                                                                        initializeMap('mapid-{{ item.id }} + 300', "{{ item.content_object.osm_id }}", "{{item.content_object.level}}");
+                                                                    }, {{ forloop.counter0 }} * 1500); 
+                                                                });
+                                                            </script>
+                                                        </div>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        {% empty %}
+                                            <p>No items.</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>                    
+                    {% endif %}
                 </div>
 
                 {% if object == request.user %}
@@ -1271,6 +1345,79 @@
                             </div>
                         </div>
                     {% endif %}
+
+                    {% if does_visit_exist %}
+                        <div class="row">
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <div class="mt-4 fs-4">Visit</div>
+                                <div>
+                                    <a class="btn btn-outline-secondary btn-sm"
+                                    href="{% url 'write:visit_checkin_user_list' object.username %}">All</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                {% if visiting %}
+                                    <div class="mt-3 me-3 d-flex overflow-auto">
+                                        <div class="rotate text-muted">Visiting</div>
+                                        {% for item in visiting %}
+                                            <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2 ">
+                                                <a href="{% url 'write:play_checkin_list' item.user.username item.content_object.id%}">
+                                                    {% if item.content_object.osm_id %}
+                                                        <div class="mb-1 mb-md-0 flex-shrink-0">
+                                                            <a href="{% url 'visit:location_detail' item.content_object.id %}" title="{{item.content_object.name}}">
+                                                                <div id="mapid-{{ item.id }} + 200" style="height: 200px;"></div>
+                                                            </a>
+                                                            <script>
+                                                                document.addEventListener('DOMContentLoaded', function() {
+                                                                    setTimeout(function() {
+                                                                        initializeMap('mapid-{{ item.id }} + 200', "{{ item.content_object.osm_id }}", "{{item.content_object.level}}");
+                                                                    }, {{ forloop.counter0 }} * 1500); 
+                                                                });
+                                                            </script>
+                                                        </div>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        {% empty %}
+                                            <p>No items.</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if visited %}
+                                    <div class="mt-3 me-3 d-flex overflow-auto">
+                                        <div class="rotate text-muted">Visited</div>
+                                        {% for item in visited %}
+                                            <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
+                                                <a href="{% url 'write:visit_checkin_list' item.user.username item.content_object.id %}">
+                                                    {% if item.content_object.osm_id %}
+                                                        <div class="mb-1 mb-md-0 flex-shrink-0">
+                                                            <a href="{% url 'visit:location_detail' item.content_object.id %}" title="{{item.content_object.name}}">
+                                                                <div id="mapid-{{ item.id }} + 100" style="height: 200px;"></div>
+                                                            </a>
+                                                            <script>
+                                                                document.addEventListener('DOMContentLoaded', function() {
+                                                                    setTimeout(function() {
+                                                                        initializeMap('mapid-{{ item.id }} + 100', "{{ item.content_object.osm_id }}", "{{item.content_object.level}}");
+                                                                    }, {{ forloop.counter0 }} * 1500); 
+                                                                });
+                                                            </script>
+                                                        </div>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        {% empty %}
+                                            <p>No items.</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
+                            <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+                            <script src="https://cdn.jsdelivr.net/npm/osmtogeojson@3.0.0-beta.5/osmtogeojson.min.js"></script>
+                            <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js"></script>
+                            <script src="{% static 'js/osm.js' %}"></script>
+                        </div>                    
+                    {% endif %}
                 </div>
                 <!-- Right column -->
                 <div class="col-md-4 col-sm-12 d-none d-md-block">
@@ -1285,14 +1432,20 @@
                                 @{{ object.username }}
                             </a>
                             {% if not object.is_public %}
-                                <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" title="This profile is not public" aria-label="This profile is not public">
+                                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" title="This profile is not public" aria-label="This profile is not public">
                                     <path d="M 12 1 C 8.6761905 1 6 3.6761905 6 7 L 6 8 C 4.9 8 4 8.9 4 10 L 4 20 C 4 21.1 4.9 22 6 22 L 18 22 C 19.1 22 20 21.1 20 20 L 20 10 C 20 8.9 19.1 8 18 8 L 18 7 C 18 3.6761905 15.32381 1 12 1 z M 12 3 C 14.27619 3 16 4.7238095 16 7 L 16 8 L 8 8 L 8 7 C 8 4.7238095 9.7238095 3 12 3 z M 12 13 C 13.1 13 14 13.9 14 15 C 14 16.1 13.1 17 12 17 C 10.9 17 10 16.1 10 15 C 10 13.9 10.9 13 12 13 z"></path>
                                 </svg>
                             {% endif %}
                         </div>
-                        <p>
-                            <span class="text-muted">Since {{ object.date_joined|date:"Y.m.d" }}</span>
-                        </p>
+                        <div class="mb-3">
+                            {% if living_in %}
+                                <span class="text-muted">Based in</span>
+                                <a href="{% url 'visit:location_detail' living_in.0.content_object.id %}">
+                                    {{ living_in.0.content_object.name }}
+                                </a>
+                            {% endif %}
+                            <div class="text-muted">Joined {{ object.date_joined|daysince }} days ago</div>
+                        </div>
                         {% if object.bio %}
                             <div>{{ object.bio | linkify_tags | markdownify }}</div>
                         {% endif %}
@@ -1423,6 +1576,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             updateTabSetIds('.mobile-version .tabbed-set', '-mobile');
             updateTabSetIds('.desktop-version .tabbed-set', '-desktop');
+            updateMapIds('.mobile-version .map-container', '-mobile');
+            updateMapIds('.desktop-version .map-container', '-desktop');
         });
     
         function updateTabSetIds(selector, suffix) {
@@ -1436,13 +1591,28 @@
                     var baseId = inputs[i].id || 'tab';
                     var newId = baseId + '-set' + setIndex + '-input' + i + suffix;
     
-                    console.log('Updating ID from:', inputs[i].id, 'to:', newId); // Debugging log
+                    // console.log('Updating ID from:', inputs[i].id, 'to:', newId); // Debugging log
                     inputs[i].id = newId;
     
                     if (i < labels.length) {
-                        console.log('Updating label for from:', labels[i].getAttribute('for'), 'to:', newId); // Debugging log
+                        // console.log('Updating label for from:', labels[i].getAttribute('for'), 'to:', newId); // Debugging log
                         labels[i].setAttribute('for', newId);
                     }
+                }
+            });
+        }
+        function updateMapIds(selector, suffix) {
+            var mapContainers = document.querySelectorAll(selector);
+            mapContainers.forEach(function(container, index) {
+                var baseId = container.id || 'mapid';
+                var newId = baseId + suffix;
+        
+                // console.log('Updating map container ID from:', container.id, 'to:', newId); // Debugging log
+                container.id = newId;
+        
+                // Re-initialize map with new ID
+                if (container.getAttribute('data-osm-id')) {
+                    initializeMap(newId, container.getAttribute('data-osm-id'));
                 }
             });
         }

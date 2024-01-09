@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load linkify %}
 {% load markdownify %}
 {% load parse_activity_type %}
@@ -41,44 +42,29 @@
                                 <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=visited_revisited"
                                     class="btn btn-sm btn-success mb-1">(Re)Visited</a>
                                 <a href="?status=living&order={{ order }}"
-                                    class="btn btn-sm btn-success mb-1">Living</a>
+                                    class="btn btn-sm btn-primary mb-1">Living Here</a>
                                 <a href="?status=lived&order={{ order }}"
-                                    class="btn btn-sm btn-success mb-1">Lived</a>      
+                                    class="btn btn-sm btn-success mb-1">Lived There</a>      
                         </div>
                     </div>
                     {% if profile_user.is_public or request.user.is_authenticated %}
                         {% if layout == "grid" %}
                                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                                 {% for checkin in page_obj %}
-                                    <div class="mb-1 mb-md-0 flex-shrink-0 checkin-cover">
-                                        {% if user.pure_text_mode %}
-                                            {% if checkin.content_object.title %}
-                                                <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>
-                                            {% else %}
-                                                <div class="cover-placeholder bg-light">{{ checkin.content_object.periodical.title }} Vol. {{checkin.content_object.volume}} Nr. {{checkin.content_object.number}}</div>
-                                            {% endif %}
-                                        {% else %}
-                                            {% if checkin.content_object.cover %}
-                                                {% if checkin.content_object.cover_sens %}
-                                                    <img src="{{ checkin.content_object.cover.url }}"
-                                                            alt="{{ checkin.content_object.title }} cover"
-                                                            class="img-fluid blur cover-border"
-                                                            onclick="this.classList.toggle('blur')"
-                                                            loading="lazy">
-                                                {% else %}
-                                                    <a href="{% url 'write:play_checkin_list' checkin.user.username checkin.content_object.id %}">
-                                                        <img src="{{ checkin.content_object.cover.url }}"
-                                                                alt="{{ checkin.content_object.title }}"
-                                                                class="img-fluid cover-border cover-border-{{checkin.status}}"
-                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>';"
-                                                                loading="lazy">
-                                                    </a>
-                                                {% endif %}
-                                            {% else %}
-                                                <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>
-                                            {% endif %}
-                                        {% endif %}
+                                    {% if checkin.content_object.osm_id %}
+                                    <div class="mb-1 mb-md-0 flex-shrink-0">
+                                        <a href="{% url 'visit:location_detail' checkin.content_object.id %}">
+                                            <div id="mapid-{{ checkin.id }}" style="height: 280px;"></div>
+                                        </a>
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                setTimeout(function() {
+                                                    initializeMap('mapid-{{ checkin.id }}', "{{ checkin.content_object.osm_id }}", "{{ checkin.content_object.level }}");
+                                                }, {{ forloop.counter0 }} * 1500); // 1000 milliseconds delay per iteration
+                                            });
+                                        </script>
                                     </div>
+                                    {% endif %}
                                 {% endfor %}
                                 </div>
                         {% else %}
@@ -101,43 +87,39 @@
                                                         {# djlint:off #}
                                                         Day{% if checkin.progress != 1 %}s{% endif %}
                                                         {# djlint:on #}
-                                                    {% else %}
-                                                        %
                                                     {% endif %}
                                                 </span>
                                             {% endif %}
                                         </div>
                                         <div class="mt-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
-                                        <div class="media-card d-flex flex-row bg-light p-3 mt-2">
-                                            <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                                                {% if user.pure_text_mode %}
-                                                    <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
-                                                {% else %}
-                                                    {% if checkin.content_object.cover %}
-                                                        {% if checkin.content_object.cover_sens %}
-                                                            <img src="{{ checkin.content_object.cover.url }}"
-                                                                alt="{{ checkin.content_object.title }} cover"
-                                                                class="img-fluid blur cover-border"
-                                                                onclick="this.classList.toggle('blur')"
-                                                                loading="lazy">
-                                                        {% else %}
-                                                            <img src="{{ checkin.content_object.cover.url }}"
-                                                                alt="{{ checkin.content_object.title }} cover"
-                                                                class="img-fluid cover-border"
-                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ checkin.content_object.title }}{% if object.subtitle %}: {{object.subtitle}}{% endif %}</div>';"
-                                                                loading="lazy">
-                                                        {% endif %}
-                                                    {% else %}
-                                                        <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
-                                                    {% endif %}
+                                        <div class="media-card bg-light p-3 mt-2">
+                                            <div class="d-flex flex-wrap align-items-baseline">
+                                                <div class="me-2">
+                                                    <a href="{% url 'visit:location_detail' checkin.content_object.id %}"
+                                                    class="text-decoration-none h-cite p-name">
+                                                        <div class="fs-5">{{ checkin.content_object.name }}</div>
+                                                    </a>
+                                                </div>
+                                                <div class="text-muted">{{ checkin.content_object.other_names }}</div>
+                                            </div>
+                                            <div>
+                                                {{checkin.content_object.level_name}} 
+                                                {% if checkin.content_object.parent %}
+                                                    of {{checkin.content_object.parent.name}}
                                                 {% endif %}
                                             </div>
-                                            <div class="flex-grow-1 ms-3">
-                                                <a href="{% url 'visit:location_detail' checkin.content_object.id %}"
-                                                class="text-decoration-none ">
-                                                    <div class="fs-5">{{ checkin.content_object.name }}</div>
-                                                </a>
+                                            {% if checkin.content_object.osm_id %}
+                                            <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 ">
+                                                <div id="mapid-{{ checkin.id }}" style="height: 200px;"></div>
+                                                <script>
+                                                    document.addEventListener('DOMContentLoaded', function() {
+                                                        setTimeout(function() {
+                                                            initializeMap('mapid-{{ checkin.id }}', "{{ checkin.content_object.osm_id }}", "{{ checkin.content_object.level }}");
+                                                        }, {{ forloop.counter0 }} * 1500); // 1000 milliseconds delay per iteration
+                                                    });
+                                                </script>
                                             </div>
+                                            {% endif %}
                                         </div>
                                         <div class="d-flex mt-2">
                                             <p class="me-2">
@@ -196,4 +178,9 @@
         </div>
     </div>
     {% include 'mathjax+mermaid.html' %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/osmtogeojson@3.0.0-beta.5/osmtogeojson.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js"></script>
+    <script src="{% static 'js/osm.js' %}"></script>
 {% endblock content %}

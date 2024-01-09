@@ -579,9 +579,14 @@
                         <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js"></script>
                         <script src="{% static 'js/osm.js' %}"></script>
                         <script>
-                            setTimeout(function() {
-                                initializeMap('mapid-{{ activity.id }}', "{{ activity.content_object.original_activity.content_object.content_object.osm_id }}");
-                            }, 1500);
+                            document.addEventListener('DOMContentLoaded', function() {
+                                setTimeout(function() {
+                                    initializeMap(
+                                        'mapid-{{ activity.id }}', 
+                                        "{{ activity.content_object.original_activity.content_object.content_object.osm_id }}",
+                                        "{{ activity.content_object.original_activity.content_object.content_object.level }}");
+                                }, 1500);
+                            });
                         </script>
                     </div>
                     {% endif %}

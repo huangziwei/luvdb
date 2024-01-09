@@ -51,7 +51,7 @@ from read.models import Book, BookSeries
 from read.models import Instance as LitInstance
 from read.models import Issue, Periodical, ReadCheckIn
 from read.models import Work as LitWork
-from visit.models import Location
+from visit.models import Location, VisitCheckIn
 from watch.models import Episode, Movie, Series, WatchCheckIn
 from write.models import Comment, ContentInList, LuvList, Pin, Post, Repost, Say, Tag
 from write.utils_formatting import check_required_js
@@ -205,6 +205,27 @@ class AccountDetailView(DetailView):
         latest_play_checkins = get_latest_checkins(
             user=self.object, checkin_model=PlayCheckIn
         )
+        latest_visit_checkins = get_latest_checkins(
+            user=self.object, checkin_model=VisitCheckIn
+        )
+
+        visiting = latest_visit_checkins.filter(
+            status__in=["visiting", "revisiting"]
+        ).order_by("-timestamp")[:6]
+        visited = latest_visit_checkins.filter(
+            status__in=["visited", "revisited"]
+        ).order_by("-timestamp")[:6]
+        living_in = latest_visit_checkins.filter(status__in=["living-here"]).order_by(
+            "-timestamp"
+        )[:6]
+
+        context["visiting"] = visiting
+        context["visited"] = visited
+        context["living_in"] = living_in
+        context["does_visit_exist"] = does_visit_exist = (
+            visited.exists() or visiting.exists()
+        )
+        print(visited.exists(), visiting.exists(), living_in.exists(), does_visit_exist)
 
         reading = latest_read_checkins.filter(
             status__in=["reading", "rereading"]
@@ -719,7 +740,11 @@ def filter_play(query, search_terms):
                 | Q(gamecasts__character_name__icontains=term)
             )
             .distinct()
-            .annotate(annotated_earliest_release_date=Min("region_release_dates__release_date"))
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
             .order_by("annotated_earliest_release_date")
         )
     return gamework_results, game_results
