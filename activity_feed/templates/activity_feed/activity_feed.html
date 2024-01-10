@@ -271,21 +271,28 @@
                     {% endif %}
                 </div>
             {% elif feed_type == "personal" %}
+                <div class="col-0 col-md-1"></div>
                 <div class="col-12 col-md-4 right-column">
                     <div class="bio p-3 bg-light">
                         <div>
                             {% if feed_user.display_name %}
                                 <span>
-                                    {{ object.display_name }}
+                                    {{ feed_user.display_name }}
                                 </span>
                             {% endif %}
                             <a class="h-card" href="https://luvdb.com{% url 'accounts:detail' feed_user.username %}" rel="me">
                                 @{{ feed_user.username }}
                             </a>
                         </div>
-                        <p>
-                            <span class="text-muted">Since {{ feed_user.date_joined|date:"Y.m.d" }}</span>
-                        </p>
+                        <div class="mb-3">
+                            {% if living_in %}
+                                <span class="text-muted">Based in</span>
+                                <a href="{% url 'visit:location_detail' living_in.0.content_object.id %}">
+                                    {{ living_in.0.content_object.name }}
+                                </a>
+                            {% endif %}
+                            <div class="text-muted">Joined {{ feed_user.date_joined|daysince }} days ago</div>
+                        </div>
                         {% if feed_user.bio %}
                             <div>{{ feed_user.bio | linkify_tags |  markdownify }}</div>
                         {% endif %}

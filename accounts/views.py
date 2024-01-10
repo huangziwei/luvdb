@@ -350,12 +350,20 @@ class PersonalActivityFeedView(ListView):
         context["feed_type"] = "personal"
         context["no_citation_css"] = True
         username = self.kwargs["username"]
-        context["feed_user"] = User.objects.get(username=username)
+        context["feed_user"] = user = User.objects.get(username=username)
 
         # Add the flags to the context
         include_mathjax, include_mermaid = check_required_js(context["page_obj"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
+
+        latest_visit_checkins = get_latest_checkins(
+            user=user, checkin_model=VisitCheckIn
+        )
+        living_in = latest_visit_checkins.filter(status__in=["living-here"]).order_by(
+            "-timestamp"
+        )[:1]
+        context["living_in"] = living_in
 
         return context
 
