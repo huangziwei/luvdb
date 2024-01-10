@@ -18,6 +18,8 @@ function initializeMap(mapContainerId, osmId, locationLevel = "default") {
     var overpassApiUrl =
         "https://overpass-api.de/api/interpreter?data=[out:json];(node(" +
         osmId +
+        ");way(" +
+        osmId +
         ");relation(" +
         osmId +
         "););out body;>;out skel qt;";
@@ -27,19 +29,19 @@ function initializeMap(mapContainerId, osmId, locationLevel = "default") {
         .then((response) => response.json())
         .then((data) => {
             var geojsonData = osmtogeojson(data);
-            var hasRelation = false;
+            var hasRelationOrWay = false;
 
             var geoJsonLayer = L.geoJSON(geojsonData, {
                 filter: function (feature, layer) {
                     if (feature.geometry.type !== "Point") {
-                        hasRelation = true;
+                        hasRelationOrWay = true;
                         return true; // Include non-point features
                     }
                     return false; // Exclude point features within relations
                 },
             }).addTo(map);
 
-            if (hasRelation) {
+            if (hasRelationOrWay) {
                 map.fitBounds(geoJsonLayer.getBounds()); // Fit map to GeoJSON bounds of the relation
             } else {
                 // If there are no relations, check for standalone nodes
