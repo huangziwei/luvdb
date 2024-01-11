@@ -6,47 +6,9 @@
         <div class="row">
             <!--left column-->
             <div class="col-12 col-md-7">
-                <h1>Update Location</h1>
-                <form action="" method="post">
-                    {% csrf_token %}
-                    {{ form.name|as_crispy_field }}
-                    {{form.other_names|as_crispy_field}}
-                    {{form.level|as_crispy_field}}
-                    {{form.level_name|as_crispy_field}}
-                    {{form.parent|as_crispy_field }}
-                    {{form.wikipedia|as_crispy_field}}
-                    {{form.website|as_crispy_field}}
-                    <div class="bg-light p-3 mb-3">
-                        <div class="fw-bold mb-3">OpenStreeMap</div>
-                        <div class="row">
-                            <div class="col-md-8">
-                                {{form.osm_id|as_crispy_field}}
-                            </div>
-                            <div class="col-md-4">
-                                {{form.osm_id_type|as_crispy_field}}
-                            </div>
-                        </div>
-                    </div>                    
-                    <div class="bg-light p-3 mb-3">
-                        <div class="fw-bold mb-3">Historical</div>
-                        {{form.historical|as_crispy_field}}
-                        {{form.historical_period|as_crispy_field}}
-                        {{form.current_identity|as_crispy_field}}
-                    </div>
-                    {{form.notes|as_crispy_field}}
-                    <input type="submit" value="Update" class="btn btn-primary">
-                </form>
+                <h2>Update Location</h2>
+                {% include "visit/location_form.html" %}
             </div>
         </div>
     </div>
-    <script type="text/javascript"
-        src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-    {{ form.media }}
-    <script type="text/javascript"
-        src="{% static 'js/generalFormsetHandler.js' %}"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('select:not([name="model"], [name="level"], [name="osm_id_type"])').removeClass('form-select');
-        });
-    </script>
 {% endblock %}

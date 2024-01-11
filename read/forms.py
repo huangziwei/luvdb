@@ -111,7 +111,7 @@ WorkRoleFormSet = inlineformset_factory(
     Work,
     WorkRole,
     form=WorkRoleForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -123,6 +123,10 @@ WorkRoleFormSet = inlineformset_factory(
             forward=["domain"],  # forward the domain field to the RoleAutocomplete view
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -198,7 +202,7 @@ InstanceRoleFormSet = inlineformset_factory(
     Instance,
     InstanceRole,
     form=InstanceRoleForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -210,6 +214,10 @@ InstanceRoleFormSet = inlineformset_factory(
             forward=["domain"],  # forward the domain field to the RoleAutocomplete view
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -272,18 +280,18 @@ class BookRoleForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         creator = cleaned_data.get("creator")
-        role = cleaned_data.get("role")
 
         # if the person field is filled but the role field is not
-        if creator and not role:
+        if creator and not cleaned_data.get("role"):
             raise ValidationError("Role is required when Creator is filled.")
 
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if instance.creator is None:  # if the person field is empty
-            if commit and instance.pk:
+        if instance.creator is None:
+            # Only delete the instance if it has been saved before (i.e., it has a non-None id)
+            if instance.pk and commit:
                 instance.delete()
             return None
         if commit:
@@ -295,7 +303,7 @@ BookRoleFormSet = inlineformset_factory(
     Book,
     BookRole,
     form=BookRoleForm,
-    extra=10,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -310,6 +318,10 @@ BookRoleFormSet = inlineformset_factory(
             forward=["domain"],  # forward the domain field to the RoleAutocomplete view
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -331,7 +343,7 @@ BookInstanceFormSet = inlineformset_factory(
     Book,
     BookInstance,
     form=BookInstanceForm,
-    extra=100,
+    extra=1,
     can_delete=True,
     widgets={
         "instance": autocomplete.ModelSelect2(
@@ -341,6 +353,9 @@ BookInstanceFormSet = inlineformset_factory(
                 "data-placeholder": "Type to search",
             },
         ),
+    },
+    help_texts={
+        "instance": "<a href='/read/instance/create/'>Add a new instance</a>.",
     },
 )
 
@@ -398,20 +413,30 @@ class IssueInstanceForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = IssueInstance
         fields = ["instance", "order"]
-        widgets = {
-            "instance": autocomplete.ModelSelect2(
-                url=reverse_lazy("read:instance-autocomplete"),
-                attrs={"data-create-url": reverse_lazy("read:instance_create")},
-            ),
-        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        instance = cleaned_data.get("instance")
+        if self.instance and not instance:  # if the instance field is empty
+            self.instance.delete()  # delete the BookInstance instance
+        return cleaned_data
 
 
 IssueInstanceFormSet = inlineformset_factory(
     Issue,
     IssueInstance,
     form=IssueInstanceForm,
-    extra=100,
+    extra=1,
     can_delete=True,
+    widgets={
+        "instance": autocomplete.ModelSelect2(
+            url=reverse_lazy("read:instance-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("read:instance_create")},
+        ),
+    },
+    help_texts={
+        "instance": "<a href='/read/instance/create/'>Add a new instance</a>.",
+    },
 )
 
 

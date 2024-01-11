@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-{% load static %}
 {% block title %}New Series{% endblock %}
 {% block content %}
     <div class="container">
@@ -11,19 +10,4 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript"
-            src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-    <script type="text/javascript"
-            src="{% static 'js/generalFormsetHandler.js' %}"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    
-        window.handleFormset('#series-role-formset', 'add-series-role');
-    });
-    
-    $(document).ready(function() {
-        $('select:not([name="model"], [name="poster_sens"])').removeClass('form-select');
-    });
-    </script>
-    {{ form.media }}
 {% endblock content %}

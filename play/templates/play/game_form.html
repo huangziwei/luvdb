@@ -1,3 +1,4 @@
+{% load static %}
 {% load crispy_forms_tags %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -16,51 +17,53 @@
     <div id="region-release-date-formset" class="bg-light p-3 mb-3">
         <strong>Regions and release dates of this Game</strong>
         <p class='text-muted'>E.g. North America, Europe, Japan, etc.</p>
-        {% for form in regionreleasedates %}
-            <div class="form-wrapper" data-existing-record>
-                <div class="row">
-                    {{ form.id }}
-                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
-                    <div class="col-md-4 mb-3">{{ form.region | as_crispy_field }}</div>
-                    <div class="col-md-4 mb-3">{{ form.release_date | as_crispy_field }}</div>
+        <div id="region_release_dates">
+            {% for form in regionreleasedates %}
+                <div class="form-wrapper row" data-existing-record>
+                        {{ form.id }}
+                        {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                        <div class="col-md-4 mb-3">{{ form.region | as_crispy_field }}</div>
+                        <div class="col-md-4 mb-3">{{ form.release_date | as_crispy_field }}</div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <button type="button" id="add-region-release-date-formset" class="btn btn-secondary mt-2">Add More</button>
     </div>
     {{ gameroles.management_form|crispy }}
     <div id="game-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this Game</strong>
         <p class='text-muted'>E.g. Directors, Writers, Designers, etc.</p>
-        {% for form in gameroles %}
-            <div class="form-wrapper">
-                <div class="row">
+        <div id="gameroles">
+            {% for form in gameroles %}
+                <div class="form-wrapper row">
                     {{ form.id }}
                     {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
                     <div class="col-md-4 mb-3">
                         {{ form.creator | as_crispy_field }}
                         <a href="{% url 'entity:creator_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new creator?</a>
+                            class="text-secondary"
+                            target="_blank">Add a new creator?</a>
                     </div>
                     <div class="col-md-4 mb-3">
                         {{ form.role | as_crispy_field }}
                         {{ form.domain | as_crispy_field }}
                         <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new role?</a>
+                            class="text-secondary"
+                            target="_blank">Add a new role?</a>
                     </div>
-                    <div class="col-md-3 mb-3">{{ form.alt_name | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <button type="button" id="add-game-role-formset" class="btn btn-secondary mt-2">Add More</button>
     </div>
     {{ gamecasts.management_form|crispy }}
     <div id="game-cast-formset" class="bg-light p-3 mb-3">
         <strong>Casts related to this Game</strong>
         <p class='text-muted'>E.g. Actors, Actresses, Charactor Voices, etc.</p>
-        {% for form in gamecasts %}
-            <div class="form-wrapper">
-                <div class="row">
+        <div id="gamecasts">
+            {% for form in gamecasts %}
+                <div class="form-wrapper row">
                     {{ form.id }}
                     {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
                     <div class="col-md-4 mb-3">
@@ -76,10 +79,11 @@
                            class="text-secondary"
                            target="_blank">Add a new role?</a>
                     </div>
-                    <div class="col-md-3 mb-3">{{ form.character_name | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.character_name | as_crispy_field }}</div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <button type="button" id="add-game-cast-formset" class="btn btn-secondary mt-2">Add More</button>
     </div>
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
@@ -92,3 +96,13 @@
         </ul>
     </div>
 {% endif %}
+<script type="text/javascript"
+    src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript"
+    src="{% static 'js/FormsetHandler.js' %}"></script>
+<script>
+    initFormset('add-region-release-date-formset', 'region_release_dates');
+    initFormset('add-game-role-formset', 'gameroles');
+    initFormset('add-game-cast-formset', 'gamecasts');
+</script>
+{{ form.media }}

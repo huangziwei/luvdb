@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-{% load static %}
 {% block title %}Update Audiobook{% endblock %}
 {% block content %}
     <div class="container">
@@ -11,22 +10,4 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript"
-            src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-    {{ form.media }}
-    <script type="text/javascript"
-            src="{% static 'js/generalFormsetHandler.js' %}"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    
-        // Call the function for book-role-formset and book-work-formset
-        window.handleFormset('#book-role-formset', 'add-book-role');
-        window.handleFormset('#book-instance-formset', 'add-book-instance');
-    });
-    
-    $(document).ready(function() {
-        $('select:not([name="model", name="cover_sens"])').removeClass('form-select');
-    });
-    
-    </script>
 {% endblock content %}

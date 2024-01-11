@@ -1,3 +1,4 @@
+{% load static %}
 {% load crispy_forms_tags %}
 <form method="post">
     {% csrf_token %}
@@ -12,38 +13,30 @@
     {{ form.wikipedia|as_crispy_field }}
     {{ form.notes|as_crispy_field }}
     {{ trackroles.management_form|crispy }}
-    <div id="track-role-formset" class="bg-light p-2 mb-3">
+    <div id="track-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this track</strong>
         <p class='text-muted'>E.g. Singers, Lyricist, Composer, etc.</p>
-        {% for form in trackroles %}
-            <div class="form-wrapper">
-                <div class="row">
+        <div id="trackrole_set">
+            {% for form in trackroles %}
+                <div class="form-wrapper row">
                     {{ form.id }}
                     {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-2">
                         {{ form.creator|as_crispy_field }}
-                        <a href="{% url 'entity:creator_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new creator?</a>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-2">
                         {{ form.role|as_crispy_field }}
                         {{ form.domain|as_crispy_field }}
-                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new role?</a>
                     </div>
-                    <div class="col-md-4 mb-3">{{ form.alt_name|as_crispy_field }}</div>
+                    <div class="col-md-4 mb-2">{{ form.alt_name|as_crispy_field }}</div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <button type="button" id="add-track-role-formset" class="btn btn-secondary mt-2">Add More</button>
     </div>
     <div class="bg-light p-3 mb-3">
         <strong>The Work related to this Track</strong>
         {{ form.work|as_crispy_field }}
-        <a href="{% url 'listen:work_create' %}?next={{ request.path }}"
-           class="text-secondary"
-           target="_blank">Add a new work?</a>
     </div>
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
@@ -56,3 +49,9 @@
         </ul>
     </div>
 {% endif %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+{{ form.media }}
+<script src="{% static 'js/FormsetHandler.js' %}"></script>
+<script>
+    initFormset('add-track-role-formset', 'trackrole_set');
+</script>

@@ -11,19 +11,4 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript"
-            src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-    {{ issueinstances.media }}
-    <script type="text/javascript"
-            src="{% static 'js/generalFormsetHandler.js' %}"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      // Call the function for work-role-formset
-      window.handleFormset('#issue-instance-formset', 'add-issue-instance');
-  });
-    
-    $(document).ready(function() {
-        $('select:not([id="id_periodical"],[name="model"])').removeClass('form-select');
-    });
-    </script>
 {% endblock %}

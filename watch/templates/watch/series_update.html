@@ -11,20 +11,4 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript"
-            src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-    {{ form.media }}
-    <script type="text/javascript"
-            src="{% static 'js/generalFormsetHandler.js' %}"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    
-        window.handleFormset('#series-role-formset', 'add-series-role');
-        window.handleFormset('#series-cast-formset', 'add-series-cast');
-    });
-    
-    $(document).ready(function() {
-        $('select:not([name="model"], [name="poster_sens"])').removeClass('form-select');
-    });
-    </script>
 {% endblock content %}

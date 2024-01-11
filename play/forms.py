@@ -90,7 +90,7 @@ WorkRoleFormSet = inlineformset_factory(
     Work,
     WorkRole,
     form=WorkRoleForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -102,6 +102,10 @@ WorkRoleFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -182,7 +186,7 @@ GameReleaseDateFormSet = inlineformset_factory(
     Game,
     GameReleaseDate,
     form=GameReleaseDateForm,
-    extra=15,
+    extra=1,
     can_delete=True,
 )
 
@@ -220,7 +224,7 @@ GameRoleFormSet = inlineformset_factory(
     Game,
     GameRole,
     form=GameRoleForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -232,6 +236,10 @@ GameRoleFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -269,7 +277,7 @@ GameCastFormSet = inlineformset_factory(
     Game,
     GameCast,
     form=GameCastForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -281,6 +289,10 @@ GameCastFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -431,7 +443,7 @@ DLCRoleFormSet = inlineformset_factory(
     DLC,
     DLCRole,
     form=DLCRoleForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -443,6 +455,10 @@ DLCRoleFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -480,7 +496,7 @@ DLCCastFormSet = inlineformset_factory(
     DLC,
     DLCCast,
     form=DLCCastForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -492,5 +508,9 @@ DLCCastFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )

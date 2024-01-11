@@ -3,8 +3,13 @@
     border: 1px solid #ced4da !important;
 }
 
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding: 0.25em 0 !important;
+}
+
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: calc(1.5em + .75rem + 2px) !important;
+    /* height: calc(1.5em + .75rem + 2px) !important; */
+    display: none !important;
 }
 
 .select2-selection__choice {
@@ -517,6 +522,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: var(--bs-body-bg) !important;
     border-color: rgb(73, 80, 87) !important;
 }
+
+.select2-selection__arrow {
+    display: none !important;
+}
+
+
 
 [data-bs-theme='dark'] .select2-selection__rendered {
     line-height: normal !important;

@@ -1,4 +1,5 @@
 {% load crispy_forms_tags %}
+{% load static %}
 <form method="post">
     {% csrf_token %}
     {{ form.title | as_crispy_field }}
@@ -9,34 +10,32 @@
     {{ form.wikipedia | as_crispy_field }}
     {{ form.notes | as_crispy_field }}
     {{ instanceroles.management_form|crispy }}
-    <div id="instance-role-formset" class="bg-light p-2 mb-3">
+    {{ instanceroles.management_form|crispy }}
+    <div id="instance-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this instance</strong>
-        <p class='text-muted'>E.g. Authors, Editors, Illustrators, etc.</p>
-        {% for form in instanceroles %}
+        <p class="text-muted">E.g. Authors, Editors, Illustrators, etc.</p>
+
+        <div id="instancerole_set">
+            {% for form in instanceroles %}
             <div class="form-wrapper">
                 <div class="row">
-                    {{ form.id }}
-                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    {{ form.id }} {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                    <div class="col-md-4 mb-3">{{ form.creator | as_crispy_field }}</div>
                     <div class="col-md-4 mb-3">
-                        {{ form.creator | as_crispy_field }}
-                        <a href="{% url 'entity:creator_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new creator?</a>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        {{ form.role | as_crispy_field }}
-                        {{ form.domain | as_crispy_field }}
-                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new role?</a>
+                        {{ form.role | as_crispy_field }} {{ form.domain | as_crispy_field }}
                     </div>
                     <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
                 </div>
             </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <!-- Button to add new formsets -->
+        <button type="button" id="add-formset" class="btn btn-secondary mt-2">Add More</button>
     </div>
     <div class="bg-light p-3 mb-3">
-        <strong>The Work related to this instance</strong>
+        <strong>The work related to this instance</strong>
         {{ form.work|as_crispy_field }}
         <a href="{% url 'read:work_create' %}?next={{ request.path }}"
            class="text-secondary"
@@ -53,3 +52,9 @@
         </ul>
     </div>
 {% endif %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+{{ instanceroles.media }}
+<script type="text/javascript" src="{% static 'js/FormsetHandler.js' %}"></script>
+<script>
+    initFormset('add-formset', 'instancerole_set'); 
+</script>

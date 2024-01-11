@@ -11,22 +11,4 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript"
-            src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-    <script type="text/javascript"
-            src="{% static 'js/generalFormsetHandler.js' %}"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    
-        // Call the function for dlc-role-formset
-        window.handleFormset('#dlc-role-formset', 'add-dlc-role');
-        window.handleFormset('#dlc-cast-formset', 'add-dlc-cast');
-    });
-    
-    $(document).ready(function() {
-        $('select:not([name="model"], [id="id_game"])').removeClass('form-select');
-    });
-    </script>
-    {{ dlcroles.media }}
-    {{ dlccasts.media }}
 {% endblock content %}

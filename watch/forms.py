@@ -99,7 +99,7 @@ MovieReleaseDateFormSet = inlineformset_factory(
     Movie,
     MovieReleaseDate,
     form=MovieReleaseDateForm,
-    extra=15,
+    extra=1,
     can_delete=True,
 )
 
@@ -137,7 +137,7 @@ MovieRoleFormSet = inlineformset_factory(
     Movie,
     MovieRole,
     form=MovieRoleForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -149,6 +149,10 @@ MovieRoleFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -186,7 +190,7 @@ MovieCastFormSet = inlineformset_factory(
     Movie,
     MovieCast,
     form=MovieCastForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -198,6 +202,10 @@ MovieCastFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -221,6 +229,12 @@ class SeriesForm(forms.ModelForm):
                 url=reverse_lazy("watch:genre-autocomplete")
             ),
             "other_titles": forms.TextInput(),
+        }
+        help_texts = {
+            "other_titles": "e.g. translated titles in different languages, separated by slashes (`/`).",
+            "studios": "Production companies. <a href='/entity/company/create/'>Add a new company</a>.",
+            "distributors": "Distribution companies. <a href='/entity/company/create/'>Add a new company</a>.",
+            "based_on": "The original work that the movie is based on. <a href='/read/work/create/'>Add a new work</a>.",
         }
 
     def __init__(self, *args, **kwargs):
@@ -268,7 +282,7 @@ SeriesRoleFormSet = inlineformset_factory(
     Series,
     SeriesRole,
     form=SeriesRoleForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -280,6 +294,10 @@ SeriesRoleFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -349,7 +367,7 @@ EpisodeRoleFormSet = inlineformset_factory(
     Episode,
     EpisodeRole,
     form=EpisodeRoleForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -361,6 +379,10 @@ EpisodeRoleFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -398,7 +420,7 @@ EpisodeCastFormSet = inlineformset_factory(
     Episode,
     EpisodeCast,
     form=EpisodeCastForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -410,6 +432,10 @@ EpisodeCastFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 

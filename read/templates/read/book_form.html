@@ -1,3 +1,4 @@
+{% load static %}
 {% load crispy_forms_tags %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -21,29 +22,25 @@
     {{ bookroles.management_form|crispy }}
     <div id="book-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this book</strong>
-        <p class='text-muted'>E.g. Authors, Editors, Designers, etc.</p>
-        {% for form in bookroles %}
+        <p class="text-muted">E.g. Authors, Editors, Illustrators, etc.</p>
+        <div id="bookrole_set">
+            {% for form in bookroles %}
             <div class="form-wrapper">
                 <div class="row">
-                    {{ form.id }}
-                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
-                    <div class="col-md-4">
-                        {{ form.creator | as_crispy_field }}
-                        <a href="{% url 'entity:creator_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new creator?</a>
+                    {{ form.id }} {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                    <div class="col-md-4 mb-3">{{ form.creator | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.role | as_crispy_field }} {{ form.domain | as_crispy_field }}
                     </div>
-                    <div class="col-md-4">
-                        {{ form.role | as_crispy_field }}
-                        {{ form.domain | as_crispy_field }}
-                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new role?</a>
-                    </div>
-                    <div class="col-md-3">{{ form.alt_name | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
                 </div>
             </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <!-- Button to add new formsets -->
+        <button type="button" id="add-book-role-formset" class="btn btn-secondary mt-2">Add More</button>
     </div>
     {{ bookinstances.management_form|crispy }}
     <div id="book-instance-formset" class="bg-light p-3 mb-3">
@@ -51,20 +48,21 @@
         <p class='text-muted'>
             An "Instance" is any representation of a literature work, e.g. the original version, revised version, or translation, etc.
         </p>
-        {% for form in bookinstances %}
-            <div class="form-wrapper">
-                <div class="row">
-                    {{ form.id }}
-                    <div class="col-md-9">
-                        {{ form.instance | as_crispy_field }}
-                        <a href="{% url 'read:instance_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new instance?</a>
+        <div id="bookinstance_set">
+            {% for form in bookinstances %}
+                <div class="form-wrapper">
+                    <div class="row">
+                        {{ form.id }}
+                        <div class="col-md-10">
+                            {{ form.instance | as_crispy_field }}
+                        </div>
+                        <div class="col-md-2">{{ form.order | as_crispy_field }}</div>
                     </div>
-                    <div class="col-md-2">{{ form.order | as_crispy_field }}</div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <!-- Button to add new formsets -->
+        <button type="button" id="add-book-instance-formset" class="btn btn-secondary mt-2">Add More</button>
     </div>
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
@@ -77,3 +75,10 @@
         </ul>
     </div>
 {% endif %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+{{ form.media }}
+<script src="{% static 'js/FormsetHandler.js' %}"></script>
+<script>
+    initFormset('add-book-role-formset', 'bookrole_set');
+    initFormset('add-book-instance-formset', 'bookinstance_set');
+</script>

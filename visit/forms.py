@@ -54,6 +54,7 @@ class LocationForm(forms.ModelForm):
             "historical": "Is this a historical location?",
             "historical_period": "Historical period",
             "osm_id": "OpenStreetMap ID",
+            "osm_id_type": "Type",
         }
 
     def __init__(self, *args, **kwargs):
@@ -72,6 +73,7 @@ class LocationForm(forms.ModelForm):
         self.fields["level"].choices = [
             (key, custom_level_labels[key]) for key, _ in self.fields["level"].choices
         ]
+        self.fields["level"].required = True
 
 
 class VisitCheckInForm(forms.ModelForm):

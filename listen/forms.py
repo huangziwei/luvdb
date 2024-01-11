@@ -102,7 +102,7 @@ WorkRoleFormSet = inlineformset_factory(
     Work,
     WorkRole,
     form=WorkRoleForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -114,6 +114,10 @@ WorkRoleFormSet = inlineformset_factory(
             forward=["domain"],  # forward the domain field to the RoleAutocomplete view
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -192,7 +196,7 @@ TrackRoleFormSet = inlineformset_factory(
     Track,
     TrackRole,
     form=TrackRoleForm,
-    extra=15,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -204,6 +208,10 @@ TrackRoleFormSet = inlineformset_factory(
             forward=["domain"],  # forward the domain field to the RoleAutocomplete view
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -285,7 +293,7 @@ ReleaseRoleFormSet = inlineformset_factory(
     Release,
     ReleaseRole,
     form=ReleaseRoleForm,
-    extra=10,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -300,6 +308,10 @@ ReleaseRoleFormSet = inlineformset_factory(
             forward=["domain"],  # forward the domain field to the RoleAutocomplete view
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -321,7 +333,7 @@ ReleaseTrackFormSet = inlineformset_factory(
     Release,
     ReleaseTrack,
     form=ReleaseTrackForm,
-    extra=100,
+    extra=1,
     can_delete=True,
     widgets={
         "track": autocomplete.ModelSelect2(
@@ -331,6 +343,9 @@ ReleaseTrackFormSet = inlineformset_factory(
                 "data-placeholder": "Type to search",
             },
         ),
+    },
+    help_texts={
+        "track": "<a href='/listen/track/create/'>Add a new track</a>.",
     },
 )
 
@@ -493,7 +508,7 @@ AudiobookRoleFormSet = inlineformset_factory(
     Audiobook,
     AudiobookRole,
     form=AudiobookRoleForm,
-    extra=10,
+    extra=1,
     can_delete=True,
     widgets={
         "creator": autocomplete.ModelSelect2(
@@ -508,6 +523,10 @@ AudiobookRoleFormSet = inlineformset_factory(
             forward=["domain"],  # forward the domain field to the RoleAutocomplete view
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
 )
 
@@ -529,7 +548,7 @@ AudiobookInstanceFormSet = inlineformset_factory(
     Audiobook,
     AudiobookInstance,
     form=AudiobookInstanceForm,
-    extra=100,
+    extra=1,
     can_delete=True,
     widgets={
         "instance": autocomplete.ModelSelect2(
@@ -539,5 +558,8 @@ AudiobookInstanceFormSet = inlineformset_factory(
                 "data-placeholder": "Type to search",
             },
         ),
+    },
+    help_texts={
+        "instance": "<a href='/read/instance/create/'>Add a new instance</a>.",
     },
 )

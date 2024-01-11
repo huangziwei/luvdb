@@ -1,3 +1,4 @@
+{% load static %}
 {% load crispy_forms_tags %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -16,20 +17,18 @@
         <p class="text-muted">
             An "Instance" is any representation of a literature work, e.g. the original version, revised version, or translation, etc.
         </p>
-        {% for form in issueinstances %}
-            <div class="form-wrapper">
-                <div class="row">
+        <div id="issueinstance_set">
+            {% for form in issueinstances %}
+                <div class="form-wrapper row">
                     {{ form.id }}
-                    <div class="col-md-9">
+                    <div class="col-md-10">
                         {{ form.instance|as_crispy_field }}
-                        <a href="{% url 'read:instance_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new instance?</a>
                     </div>
                     <div class="col-md-2">{{ form.order|as_crispy_field }}</div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <button type="button" id="add-issue-instance-formset" class="btn btn-secondary">Add More</button>
     </div>
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
@@ -42,3 +41,11 @@
         </ul>
     </div>
 {% endif %}
+<script type="text/javascript"
+    src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript"
+    src="{% static 'js/FormsetHandler.js' %}"></script>
+<script>
+    initFormset('add-issue-instance-formset', 'issueinstance_set');
+</script>
+{{ form.media }}

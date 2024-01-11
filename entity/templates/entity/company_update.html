@@ -18,11 +18,4 @@
     <script type="text/javascript"
         src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
     {{ form.media }}
-    <script type="text/javascript"
-        src="{% static 'js/generalFormsetHandler.js' %}"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('select:not([name="model"], [name="creator_type"])').removeClass('form-select');
-        });
-    </script>
 {% endblock %}

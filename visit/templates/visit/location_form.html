@@ -1,0 +1,33 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{form.name|as_crispy_field }}
+    {{form.other_names|as_crispy_field}}
+    {{form.level|as_crispy_field}}
+    {{form.level_name|as_crispy_field}}
+    {{form.parent|as_crispy_field }}
+    {{form.wikipedia|as_crispy_field}}
+    {{form.website|as_crispy_field}}
+    <div class="bg-light p-3 mb-3">
+        <div class="fw-bold mb-3">OpenStreeMap</div>
+        <div class="row">
+            <div class="col-md-8">
+                {{form.osm_id|as_crispy_field}}
+            </div>
+            <div class="col-md-4">
+                {{form.osm_id_type|as_crispy_field}}
+            </div>
+        </div>
+    </div>
+    <div class="bg-light p-3 mb-3">
+        <div class="fw-bold mb-3">Historical</div>
+        {{form.historical|as_crispy_field}}
+        {{form.historical_period|as_crispy_field}}
+        {{form.current_identity|as_crispy_field}}
+    </div>
+    {{form.notes|as_crispy_field}}
+    <input type="submit" value="Create" class="btn btn-primary">
+</form>
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+{{ form.media }}

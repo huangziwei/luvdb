@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
-
 {% block content %}
 <div class="container">
     <div class="row">
@@ -9,7 +8,6 @@
             <h2>Create a new Work entry</h2>
             {% include "play/work_form.html" %}
         </div>
-
         <!--Instruction-->
         <div class="col-12 col-md-5 right column">
             <div class="bg-light p-3">
@@ -28,20 +26,4 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-
-{{ workroles.media }}
-
-<script type="text/javascript" src="{% static 'js/generalFormsetHandler.js' %}"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-
-        // Call the function for work-role-formset
-        window.handleFormset('#work-role-formset', 'add-work-role');
-    });
-    
-    $(document).ready(function() {
-        $('select:not([name="work_type"], [name="model"])').removeClass('form-select');
-    });
-</script>
 {% endblock %}

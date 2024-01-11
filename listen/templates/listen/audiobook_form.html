@@ -1,3 +1,4 @@
+{% load static %}
 {% load crispy_forms_tags %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -5,12 +6,7 @@
     {{ form.subtitle|as_crispy_field }}
     {{ form.cover|as_crispy_field }}
     {{ form.cover_sens|as_crispy_field }}
-    <div class="mb-3">
-        {{ form.publisher|as_crispy_field }}
-        <a href="{% url 'entity:company_create' %}?next={{ request.path }}"
-           class="text-secondary"
-           target="_blank">Add a new company?</a>
-    </div>
+    {{ form.publisher|as_crispy_field }}
     {{ form.language|as_crispy_field }}
     {{ form.notes|as_crispy_field }}
     {{ form.release_date|as_crispy_field }}
@@ -21,28 +17,23 @@
     <div id="book-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this audiobook</strong>
         <p class='text-muted'>E.g. Authors, Editors, Designers, etc.</p>
-        {% for form in audiobookroles %}
-            <div class="form-wrapper">
-                <div class="row">
+        <div id="audiobookrole_set">
+            {% for form in audiobookroles %}
+                <div class="form-wrapper row">
                     {{ form.id }}
                     {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
                     <div class="col-md-4">
                         {{ form.creator | as_crispy_field }}
-                        <a href="{% url 'entity:creator_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new creator?</a>
                     </div>
                     <div class="col-md-4">
                         {{ form.role | as_crispy_field }}
                         {{ form.domain | as_crispy_field }}
-                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new role?</a>
                     </div>
-                    <div class="col-md-3">{{ form.alt_name | as_crispy_field }}</div>
+                    <div class="col-md-4">{{ form.alt_name | as_crispy_field }}</div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <button type="button" id="add-audiobook-role-formset" class="btn btn-secondary mt-2">Add More</button>
     </div>
     {{ audiobookinstances.management_form|crispy }}
     <div id="book-instance-formset" class="bg-light p-3 mb-3">
@@ -50,20 +41,18 @@
         <p class='text-muted'>
             An "Instance" is any representation of a literature work, e.g. the original version, revised version, or translation, etc.
         </p>
-        {% for form in audiobookinstances %}
-            <div class="form-wrapper">
-                <div class="row">
+        <div id="audiobookinstance_set">
+            {% for form in audiobookinstances %}
+                <div class="form-wrapper row">
                     {{ form.id }}
-                    <div class="col-md-9">
+                    <div class="col-md-10">
                         {{ form.instance | as_crispy_field }}
-                        <a href="{% url 'read:instance_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new instance?</a>
                     </div>
                     <div class="col-md-2">{{ form.order | as_crispy_field }}</div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <button type="button" id="add-audiobook-instance-formset" class="btn btn-secondary mt-2">Add More</button>
     </div>
     <button type="submit" class="btn btn-primary btn-sm">Submit</button>
 </form>
@@ -76,3 +65,10 @@
         </ul>
     </div>
 {% endif %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+{{ form.media }}
+<script src="{% static 'js/FormsetHandler.js' %}"></script>
+<script>
+    initFormset('add-audiobook-role-formset', 'audiobookrole_set');
+    initFormset('add-audiobook-instance-formset', 'audiobookinstance_set');
+</script>

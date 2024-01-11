@@ -843,8 +843,6 @@ class IssueInstance(auto_prefetch.Model):
         null=True, blank=True, default=1
     )  # Ordering of the works in a book
 
-    history = HistoricalRecords(inherit=True)
-
     class Meta(auto_prefetch.Model.Meta):
         ordering = ["order"]
 
