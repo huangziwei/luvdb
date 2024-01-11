@@ -106,7 +106,11 @@ class WorkDetailView(DetailView):
 
         games = (
             work.games.all()
-            .annotate(annotated_earliest_release_date=Min("region_release_dates__release_date"))
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
             .order_by("annotated_earliest_release_date")
         )
 
@@ -515,7 +519,11 @@ class PlatformDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["sorted_games"] = (
             self.object.games.all()
-            .annotate(annotated_earliest_release_date=Min("region_release_dates__release_date"))
+            .annotate(
+                annotated_earliest_release_date=Min(
+                    "region_release_dates__release_date"
+                )
+            )
             .order_by("annotated_earliest_release_date")
         )
 
@@ -1036,7 +1044,7 @@ class PlayListAllView(LoginRequiredMixin, ListView):
 class GameSeriesCreateView(LoginRequiredMixin, CreateView):
     model = GameSeries
     form_class = GameSeriesForm
-    template_name = "play/game_create.html"
+    template_name = "play/series_create.html"
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
