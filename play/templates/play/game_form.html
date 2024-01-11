@@ -40,16 +40,10 @@
                     {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
                     <div class="col-md-4 mb-3">
                         {{ form.creator | as_crispy_field }}
-                        <a href="{% url 'entity:creator_create' %}?next={{ request.path }}"
-                            class="text-secondary"
-                            target="_blank">Add a new creator?</a>
                     </div>
                     <div class="col-md-4 mb-3">
                         {{ form.role | as_crispy_field }}
                         {{ form.domain | as_crispy_field }}
-                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
-                            class="text-secondary"
-                            target="_blank">Add a new role?</a>
                     </div>
                     <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
                 </div>
@@ -68,16 +62,10 @@
                     {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
                     <div class="col-md-4 mb-3">
                         {{ form.creator | as_crispy_field }}
-                        <a href="{% url 'entity:creator_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new creator?</a>
                     </div>
                     <div class="col-md-4 mb-3">
                         {{ form.role | as_crispy_field }}
                         {{ form.domain | as_crispy_field }}
-                        <a href="{% url 'entity:role_create' %}?next={{ request.path }}"
-                           class="text-secondary"
-                           target="_blank">Add a new role?</a>
                     </div>
                     <div class="col-md-4 mb-3">{{ form.character_name | as_crispy_field }}</div>
                 </div>
