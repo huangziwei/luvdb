@@ -1,4 +1,4 @@
-function initializeMap(mapContainerId, osmId, locationLevel = "default") {
+function initializeMap(mapContainerId, osmId, osmIDType, locationLevel = "default") {
     var map = L.map(mapContainerId, {
         dragging: false,
         touchZoom: false,
@@ -11,18 +11,11 @@ function initializeMap(mapContainerId, osmId, locationLevel = "default") {
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
-        attribution: "© OpenStreetMap contributors",
+        attribution: `&copy; <a href="https://www.openstreetmap.org/${osmIDType}/${osmId}">OpenStreetMap</a> contributors`,
     }).addTo(map);
 
     // Modified Overpass API URL to fetch both nodes and relations
-    var overpassApiUrl =
-        "https://overpass-api.de/api/interpreter?data=[out:json];(node(" +
-        osmId +
-        ");way(" +
-        osmId +
-        ");relation(" +
-        osmId +
-        "););out body;>;out skel qt;";
+    var overpassApiUrl = `https://overpass-api.de/api/interpreter?data=[out:json];(${osmIDType}(${osmId}););out body;>;out skel qt;`;
 
     // Fetch the data
     fetch(overpassApiUrl)
@@ -61,7 +54,7 @@ function initializeMap(mapContainerId, osmId, locationLevel = "default") {
 function getZoomLevelForLocationLevel(locationLevel) {
     switch (locationLevel) {
         case "level0": // Continent
-            return 4;
+            return 3;
         case "level1": // Country
             return 7;
         case "level2": // State
@@ -69,6 +62,6 @@ function getZoomLevelForLocationLevel(locationLevel) {
         case "level3": // City
             return 11;
         default: // Default zoom level
-            return 13;
+            return 19;
     }
 }

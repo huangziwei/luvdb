@@ -59,7 +59,7 @@
                                         <script>
                                             document.addEventListener('DOMContentLoaded', function() {
                                                 setTimeout(function() {
-                                                    initializeMap('mapid-{{ checkin.id }}', "{{ checkin.content_object.osm_id }}", "{{ checkin.content_object.level }}");
+                                                    initializeMap('mapid-{{ checkin.id }}', "{{ checkin.content_object.osm_id }}", "{{ checkin.content_object.osm_id_type }}", "{{ checkin.content_object.level }}");
                                                 }, {{ forloop.counter0 }} * 1500); // 1000 milliseconds delay per iteration
                                             });
                                         </script>
@@ -114,7 +114,7 @@
                                                 <script>
                                                     document.addEventListener('DOMContentLoaded', function() {
                                                         setTimeout(function() {
-                                                            initializeMap('mapid-{{ checkin.id }}', "{{ checkin.content_object.osm_id }}", "{{ checkin.content_object.level }}");
+                                                            initializeMap('mapid-{{ checkin.id }}', "{{ checkin.content_object.osm_id }}", "{{ checkin.content_object.osm_id_type }}", "{{ checkin.content_object.level }}");
                                                         }, {{ forloop.counter0 }} * 1500); // 1000 milliseconds delay per iteration
                                                     });
                                                 </script>

@@ -146,7 +146,7 @@
     <script src="{% static 'js/osm.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            initializeMap('mapid', "{{ location.osm_id }}", "{{ location.level }}");
+            initializeMap('mapid', "{{ location.osm_id }}", "{{ location.osm_id_type }}", "{{ location.level }}");
         });
     </script>
 {% endif %}

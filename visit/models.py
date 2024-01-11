@@ -88,7 +88,15 @@ class Location(models.Model):
         related_name="historical_identity",
     )
 
-    osm_id = models.CharField(max_length=255, null=True, blank=True)  # for POI
+    osm_id = models.CharField(max_length=255, null=True, blank=True)
+    OSM_ID_TYPES = [
+        ("node", "Node"),
+        ("way", "Way"),
+        ("relation", "Relation"),
+    ]
+    osm_id_type = models.CharField(
+        max_length=20, choices=OSM_ID_TYPES, null=True, blank=True, default="relation"
+    )
     address = models.TextField(null=True, blank=True)  # for POI
 
     wikipedia = models.URLField(null=True, blank=True)

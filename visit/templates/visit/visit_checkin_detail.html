@@ -118,7 +118,7 @@
         <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js"></script>
         <script src="{% static 'js/osm.js' %}"></script>
         <script>
-            initializeMap('mapid-{{ object.content_object.id }}', "{{ object.content_object.osm_id }}");
+            initializeMap('mapid-{{ object.content_object.id }}', "{{ object.content_object.osm_id }}", "{{ object.content_object.osm_id_type }}", "{{ object.content_object.level }}");
         </script>
     {% endif %}
 {% endblock content %}

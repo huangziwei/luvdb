@@ -584,6 +584,7 @@
                                     initializeMap(
                                         'mapid-{{ activity.id }}', 
                                         "{{ activity.content_object.original_activity.content_object.content_object.osm_id }}",
+                                        "{{ activity.content_object.original_activity.content_object.content_object.osm_id_type }}",
                                         "{{ activity.content_object.original_activity.content_object.content_object.level }}");
                                 }, 1500);
                             });

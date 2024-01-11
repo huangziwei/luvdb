@@ -22,6 +22,7 @@ class LocationForm(forms.ModelForm):
             "wikipedia",
             "website",
             "osm_id",
+            "osm_id_type",
             "notes",
         ]
         help_texts = {

@@ -906,7 +906,7 @@
                             // Fallback to base ID if specific versions are not found
                             mapIdToUse = baseId;
                         }
-                        initializeMap(mapIdToUse, "{{ activity.content_object.content_object.osm_id }}",  "{{ activity.content_object.content_object.level }}");
+                        initializeMap(mapIdToUse, "{{ activity.content_object.content_object.osm_id }}", "{{ activity.content_object.content_object.osm_id_type }}",  "{{ activity.content_object.content_object.level }}");
                     }, {{ forloop.counter0 }} * 1500);
                 });
             </script>
