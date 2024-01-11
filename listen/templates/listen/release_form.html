@@ -48,15 +48,14 @@
             {% for form in releasetracks %}
                 <div class="form-wrapper row">
                     {{ form.id }}
-                    <div class="col-md-4">
-                        {{ form.track | as_crispy_field }}
-                    </div>
-                    <div class="col-md-3">{{ form.alt_title | as_crispy_field }}</div>
+                    <div class="col-md-4">{{ form.track | as_crispy_field }}</div>
+                    <div class="col-md-4">{{ form.alt_title | as_crispy_field }}</div>
                     <div class="col-md-2">{{ form.order | as_crispy_field }}</div>
                     <div class="col-md-2">{{ form.disk | as_crispy_field }}</div>
                 </div>
             {% endfor %}
         </div>
+        <button type="button" id="add-release-track-formset" class="btn btn-secondary mt-2">Add More</button>
     </div>
     <div class="bg-light p-3 mb-3">
         <strong>Links</strong>

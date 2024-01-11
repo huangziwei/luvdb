@@ -33,3 +33,7 @@ console_command = "/code/manage.py shell"
       hard_limit = 100
       soft_limit = 75
       type = "connections"
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+    force_https = true 
