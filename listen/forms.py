@@ -237,6 +237,7 @@ class ReleaseForm(forms.ModelForm):
             "other_titles": forms.TextInput(),
         }
         help_texts = {
+            "label": "<a href='/entity/company/create/'>Add a new label</a>.",
             "release_format": "For the medium of the release, e.g. Vinyl, CD, Digital, etc.",
             "release_type": " For the length of the release, e.g. Single, EP, LP, etc.",
             "recording_type": "e.g. Live, Studio, etc.",
@@ -248,6 +249,7 @@ class ReleaseForm(forms.ModelForm):
         super(ReleaseForm, self).__init__(*args, **kwargs)
         self.fields["cover_sens"].label = "Is the cover sensitive or explicit?"
         self.fields["label"].required = False
+        self.fields["label"].label = "Labels"
 
 
 class ReleaseRoleForm(forms.ModelForm):
