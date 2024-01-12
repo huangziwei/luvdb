@@ -764,6 +764,7 @@ class LuvList(auto_prefetch.Model):
     order_preference = models.CharField(
         max_length=4, choices=ORDER_CHOICES, default="ASC"
     )
+    items_per_page = models.PositiveIntegerField(default=10, null=True, blank=True)
 
     user = auto_prefetch.ForeignKey(
         User,

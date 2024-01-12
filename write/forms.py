@@ -201,7 +201,11 @@ class LuvListForm(forms.ModelForm):
             "wikipedia",
             "order_preference",
             "allow_collaboration",
+            "items_per_page",
         ]
+        help_texts = {
+            "items_per_page": "How many items to show per page. Leave blank to show all.",
+        }
 
 
 class ContentInListForm(forms.ModelForm):

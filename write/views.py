@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Count, Q
 from django.db.models.functions import Lower
 from django.http import (
@@ -974,7 +975,13 @@ class LuvListCreateView(LoginRequiredMixin, CreateView):
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class LuvListDetailView(DetailView):
     model = LuvList
-    template_name = "write/luvlist_detail.html"  # Assuming 'luvlist_detail.html' is the template for the detail view
+    template_name = "write/luvlist_detail.html"
+
+    def get_paginate_by(self, queryset):
+        """
+        Get the number of items to paginate by, according to the user's preference.
+        """
+        return self.object.items_per_page  # Default is 10 if not set
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -1029,6 +1036,19 @@ class LuvListDetailView(DetailView):
             if self.request.user.is_authenticated
             else False
         )
+
+        paginate_by = self.get_paginate_by(context["contents"])
+        if paginate_by is not None:
+            # Pagination logic
+            page = self.request.GET.get("page")
+            paginator = Paginator(context["contents"], paginate_by)
+            try:
+                context["contents"] = paginator.page(page)
+            except PageNotAnInteger:
+                context["contents"] = paginator.page(1)
+            except EmptyPage:
+                context["contents"] = paginator.page(paginator.num_pages)
+
         return context
 
     def get_success_url(self):
