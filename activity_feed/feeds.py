@@ -67,7 +67,10 @@ class UserActivityFeed(Feed):
         elif model_name == "follow":
             return f"{related_object.follower.username} followed {related_object.followed.username}"
         elif "checkin" in model_name:
-            return f"{related_object.user.username} checked in to {related_object.content_object.title}"
+            if "visit" in model_name:
+                return f"{related_object.user.username} checked in to {related_object.content_object.name}"
+            else:
+                return f"{related_object.user.username} checked in to {related_object.content_object.title}"
         else:
             return str(related_object)
 
@@ -108,6 +111,7 @@ class UserActivityFeed(Feed):
             "readcheckin": "write:read_checkin_detail",
             "watchcheckin": "write:watch_checkin_detail",
             "listencheckin": "write:listen_checkin_detail",
+            "visitcheckin": "write:visit_checkin_detail",
             "follow": "accounts:detail",
         }
 

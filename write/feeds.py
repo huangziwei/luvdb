@@ -244,7 +244,10 @@ class TagListFeed(Feed):
         elif model_name == "follow":
             return f"{item.follower.username} followed {item.followed.username}"
         elif "checkin" in model_name:
-            return f"{item.user.username} checked in to {item.content_object.title}"
+            if "visit" in model_name:
+                return f"{item.user.username} checked in to {item.content_object.name}"
+            else:
+                return f"{item.user.username} checked in to {item.content_object.title}"
         else:
             return str(item)
 
@@ -272,6 +275,7 @@ class TagListFeed(Feed):
             "readcheckin": "write:read_checkin_detail",
             "watchcheckin": "write:watch_checkin_detail",
             "listencheckin": "write:listen_checkin_detail",
+            "visitcheckin": "write:visit_checkin_detail",
             "follow": "accounts:detail",
         }
         url_name = mapping.get(model_name)
@@ -355,7 +359,10 @@ class TagUserListFeed(Feed):
         elif model_name == "follow":
             return f"{item.follower.username} followed {item.followed.username}"
         elif "checkin" in model_name:
-            return f"{item.user.username} checked in to {item.content_object.title}"
+            if "visit" in model_name:
+                return f"{item.user.username} checked in to {item.content_object.name}"
+            else:
+                return f"{item.user.username} checked in to {item.content_object.title}"
         else:
             return str(item)
 
@@ -383,6 +390,7 @@ class TagUserListFeed(Feed):
             "readcheckin": "write:read_checkin_detail",
             "watchcheckin": "write:watch_checkin_detail",
             "listencheckin": "write:listen_checkin_detail",
+            "visitcheckin": "write:visit_checkin_detail",
             "follow": "accounts:detail",
         }
         url_name = mapping.get(model_name)
