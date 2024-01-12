@@ -37,7 +37,13 @@
                                 <ul>
                                     {% for work in lit_works %}
                                         <li>
-                                            <a href="{% url 'read:work_detail' work.pk %}">{{ work.title }}</a> ({{work.get_work_type_display}}, {{ work.publication_date }})
+                                            <a href="{% url 'read:work_detail' work.pk %}">
+                                                {% if work.work_type == "NO" %}
+                                                    <b>{{ work.title }}</b>
+                                                {% else %}
+                                                    {{ work.title }}
+                                                {% endif %}
+                                            </a> ({{work.get_work_type_display}}, {{ work.publication_date }})
                                         </li>
                                     {% endfor %}
                                 </ul>
