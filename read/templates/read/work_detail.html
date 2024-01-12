@@ -74,7 +74,7 @@
                                         <a href="{% url "read:instance_detail" instance_data.instance.id %}">{{ instance_data.instance.title }}</a>
                                         {% if instance_data.instance.subtitle %}: {{ instance_data.instance.subtitle }}{% endif %}
                                         {# djlint:off #}
-                                        ({% if instance_data.instance.edition %}{{ instance_data.instance.edition }}, {% endif %}{{ instance_data.instance.publication_date }})
+                                        ({% for role in instance_data.instance_roles.all %}{% if role.role.name == "Translator" %}<a href="{% url 'entity:creator_detail' role.creator.id %}">{{role.creator.name}}</a>{% if not forloop.last %} / {% else %}, {% endif %}{% endif %}{% endfor %}{% if instance_data.instance.edition %}{{ instance_data.instance.edition }}, {% endif %}{{ instance_data.instance.publication_date }})
                                         {# djlint:on #}
                                         {% for item in instance_data.items %}
                                             <ul>
@@ -83,7 +83,7 @@
                                                         <a href="{% url 'read:book_detail' item.id %}">{{ item.title }}</a>
                                                         {# djlint:off #}
                                                         {% if item.publication_date %}
-                                                            ({% if item.format %}{{ item.format }}, {% endif %}{% if item.publisher %}{{ item.publisher }}, {% endif %}{% if item.publication_date %}{{ item.publication_date }}{% endif %})
+                                                            ({% if item.format %}{{ item.format }}, {% endif %}{% if item.publisher %}{{ item.publisher.name }}, {% endif %}{% if item.publication_date %}{{ item.publication_date }}{% endif %})
                                                         {% endif %}
                                                         {# djlint:on #}
                                                     {% elif item.type == 'issue' %}

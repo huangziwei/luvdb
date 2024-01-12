@@ -176,6 +176,10 @@ class WorkDetailView(DetailView):
             for audiobook in audiobooks:  # newly added
                 audiobook.type = "audiobook"
 
+            sorted_instance_roles = instance.instancerole_set.all().order_by(
+                "role__name"
+            )
+
             def sorting_key(item):
                 if item.type == "audiobook":
                     return item.release_date
@@ -185,7 +189,11 @@ class WorkDetailView(DetailView):
                 list(books) + list(issues) + list(audiobooks), key=sorting_key
             )
             language_grouped_instances[lang].append(
-                {"instance": instance, "items": items}
+                {
+                    "instance": instance,
+                    "items": items,
+                    "instance_roles": sorted_instance_roles,
+                }
             )
 
         context["grouped_instances"] = language_grouped_instances
