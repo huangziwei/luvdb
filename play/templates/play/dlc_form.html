@@ -26,7 +26,7 @@
                 </div>
             {% endfor %}
         </div>
-        <button type="button" id="add-dlc-role-formset" class="btn btn-secondary mt-2">Add More</button>
+        <button type="button" id="add-dlc-role-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
     {{ dlccasts.management_form|crispy }}
     <div id="dlc-cast-formset" class="bg-light p-3 mb-3">
@@ -47,9 +47,9 @@
                 </div>
             {% endfor %}
         </div>
-        <button type="button" id="add-dlc-cast-formset" class="btn btn-secondary mt-2">Add More</button>
+        <button type="button" id="add-dlc-cast-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
-    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% if form.errors %}
     <div class="alert alert-danger mt-5">

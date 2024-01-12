@@ -36,7 +36,7 @@
                 </div>
             {% endfor %}
         </div>
-        <button type="button" id="add-release-role-formset" class="btn btn-secondary mt-2">Add More</button>
+        <button type="button" id="add-release-role-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
     {{ releasetracks.management_form|crispy }}
     <div id="release-track-formset" class="bg-light p-3 mb-3">
@@ -55,7 +55,7 @@
                 </div>
             {% endfor %}
         </div>
-        <button type="button" id="add-release-track-formset" class="btn btn-secondary mt-2">Add More</button>
+        <button type="button" id="add-release-track-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
     <div class="bg-light p-3 mb-3">
         <strong>Links</strong>
@@ -64,7 +64,7 @@
         {{ form.discogs | as_crispy_field }}
         {{ form.wikipedia | as_crispy_field }}
     </div>
-    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% if form.errors %}
     <div class="alert alert-danger mt-5">

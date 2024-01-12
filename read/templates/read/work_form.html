@@ -3,11 +3,11 @@
 <form method="post">
     {% csrf_token %} {{ form | crispy }} 
     {{ workroles.management_form|crispy }}
-    <div id="workrole_set" class="bg-light p-3 mb-3">
+    <div id="work-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this work</strong>
         <p class="text-muted">E.g. Authors, Editors, Illustrators, etc.</p>
 
-        <div id="formset-container">
+        <div id="workrole_set">
             {% for form in workroles %}
             <div class="form-wrapper row">
                 {{ form.id }} {% for error in form.non_field_errors %}
@@ -22,9 +22,9 @@
             {% endfor %}
         </div>
         <!-- Button to add new formsets -->
-        <button type="button" id="add-formset" class="btn btn-secondary mt-2">Add More</button>
+        <button type="button" id="add-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
-    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% if form.errors %}
 <div class="alert alert-danger mt-5">
