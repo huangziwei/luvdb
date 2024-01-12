@@ -17,8 +17,7 @@
 
         <div id="instancerole_set">
             {% for form in instanceroles %}
-            <div class="form-wrapper">
-                <div class="row">
+                <div class="form-wrapper row">
                     {{ form.id }} {% for error in form.non_field_errors %}
                     <div class="alert alert-danger">{{ error }}</div>
                     {% endfor %}
@@ -28,7 +27,6 @@
                     </div>
                     <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
                 </div>
-            </div>
             {% endfor %}
         </div>
         <!-- Button to add new formsets -->
