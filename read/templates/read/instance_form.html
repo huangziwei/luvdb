@@ -10,11 +10,9 @@
     {{ form.wikipedia | as_crispy_field }}
     {{ form.notes | as_crispy_field }}
     {{ instanceroles.management_form|crispy }}
-    {{ instanceroles.management_form|crispy }}
     <div id="instance-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this instance</strong>
         <p class="text-muted">E.g. Authors, Editors, Illustrators, etc.</p>
-
         <div id="instancerole_set">
             {% for form in instanceroles %}
                 <div class="form-wrapper row">
@@ -51,7 +49,7 @@
     </div>
 {% endif %}
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-{{ instanceroles.media }}
+{{ form.media }}
 <script type="text/javascript" src="{% static 'js/FormsetHandler.js' %}"></script>
 <script>
     initFormset('add-formset', 'instancerole_set'); 
