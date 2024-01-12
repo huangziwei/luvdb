@@ -13,8 +13,8 @@
 }
 
 .select2-selection__choice {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
+    margin-top: 0.5 !important;
+    margin-bottom: 0.5 !important;
 }
 
 /* https://github.com/yourlabs/django-autocomplete-light/issues/1055#issuecomment-610613743  */
@@ -220,17 +220,21 @@ li:last-child {
 }
 
 .select2-selection__clear {
-    margin-top: 0 !important;
+    margin-top: 0.2rem !important;
 }
 
 .select2-selection__rendered {
     line-height: normal !important;
-    margin-bottom: 0.6em !important;
-    padding: 0.6em 1.5em 0em 0.8em !important;
+    margin-bottom: 0.2rem !important;
+    /* padding: 0.6em 1.5em 0em 0.8em !important; */
     vertical-align: middle !important;
     color: var(--text-default) !important;
 }
 
+.select2-search {
+    margin-top: 0.3rem !important;
+
+}
 
 .activity-filter.selected {
     background-color: #979797 !important;
@@ -514,6 +518,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: var(--bs-body-bg) !important;
     border-color: rgb(73, 80, 87) !important;
     color: #adb5bd !important;
+    /* margin-top: 0.4em !important; */
 }
 
 [data-bs-theme='dark'] .select2-container--default .select2-dropdown,
@@ -531,8 +536,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 [data-bs-theme='dark'] .select2-selection__rendered {
     line-height: normal !important;
-    margin-bottom: 0.6em !important;
-    padding: 0.6em 1.5em 0em 0.8em !important;
+    /* padding: 0.6em 1.5em 0em 0.8em !important; */
     vertical-align: middle !important;
     color: darkgray !important;
 }
@@ -552,8 +556,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 [data-bs-theme='dark'] .select2-selection__choice {
     background-color: rgb(51, 51, 51) !important;
     border-color: rgb(51, 51, 51) !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
 }
 
 /* Tab style starts here */
