@@ -1,0 +1,40 @@
+rss {
+    display: block;
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+title, description, item, link, docs {
+    display: block;
+    margin: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+title, description {
+    font-weight: bold;
+    color: #444;
+}
+
+link {
+    font-size: 0.9em;
+    color: #0066cc;
+    text-decoration: none;
+}
+
+item {
+    border-top: 1px solid #ddd;
+}
+
+docs {
+    background-color: #fffbe6;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+/* Hidden elements */
+language, lastBuildDate, ttl, guid, category, pubDate {
+    display: none;
+}

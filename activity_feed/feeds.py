@@ -1,10 +1,14 @@
+import io
+
 import markdown
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.urls import reverse
+from django.utils.feedgenerator import Rss201rev2Feed
 
 from write.models import Say
 
@@ -13,12 +17,36 @@ from .models import Activity
 User = get_user_model()
 
 
+class StyledRSSFeed(Rss201rev2Feed):
+    def write(self, outfile, encoding):
+        stream = io.StringIO()
+        super(StyledRSSFeed, self).write(stream, encoding)
+        content = stream.getvalue()
+        stylesheet_link = (
+            '<?xml-stylesheet type="text/css" href="%scss/rss.css"?>\n'
+            % settings.STATIC_URL
+        )
+        content_with_stylesheet = content.replace(
+            '<?xml version="1.0" encoding="utf-8"?>',
+            '<?xml version="1.0" encoding="utf-8"?>\n' + stylesheet_link,
+            1,
+        )
+        outfile.write(content_with_stylesheet)
+
+
 class UserActivityFeed(Feed):
+    feed_type = StyledRSSFeed
+
     def __call__(self, request, *args, **kwargs):
         user = self.get_object(request, *args, **kwargs)
         if not user.is_public:
             raise Http404("This feed is private.")
-        return super().__call__(request, *args, **kwargs)
+
+        response = super().__call__(request, *args, **kwargs)
+        if isinstance(response, HttpResponse):
+            response["Content-Type"] = "application/xml; charset=utf-8"
+
+            return response
 
     def get_object(self, request, username):
         return User.objects.get(username=username)
@@ -59,7 +87,7 @@ class UserActivityFeed(Feed):
         ).model_class()
         model_name = related_model.__name__.lower()
         if model_name == "say" or model_name == "repost":
-            return related_object.content
+            return f'{related_object.user.username} said "{related_object.content[:80]}..."'
         elif model_name == "post":
             return f'{related_object.user.username} posted "{related_object.title}"'
         elif model_name == "pin":
@@ -80,9 +108,6 @@ class UserActivityFeed(Feed):
             activity.content_type_id
         ).model_class()
         model_name = related_model.__name__.lower()
-
-        if model_name == "say" or model_name == "repost":
-            return None
 
         if hasattr(related_object, "content"):
             return markdown.markdown(
