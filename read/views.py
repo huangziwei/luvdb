@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import Count, F, Max, OuterRef, Q, Subquery
+from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -210,12 +210,16 @@ class WorkDetailView(DetailView):
             else:
                 return None
 
-        adaptations = list(Movie.objects.filter(based_on=self.object)) + list(
-            Series.objects.filter(based_on=self.object)
+        adaptation_movies = (
+            Movie.objects.filter(based_on_litworks=self.object)
+            .annotate(release_date=Min("region_release_dates__release_date"))
+            .order_by("release_date")
         )
-        adaptations.sort(key=lambda x: get_adaptation_release_date(x))
-        context["adaptations"] = adaptations
-
+        adaptation_series = Series.objects.filter(
+            based_on_litworks=self.object
+        ).order_by("release_date")
+        context["adaptation_movies"] = adaptation_movies
+        context["adaptation_series"] = adaptation_series
         grouped_roles = {}
         for role in work.workrole_set.all():
             if role.role.name not in grouped_roles:
