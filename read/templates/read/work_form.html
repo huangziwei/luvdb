@@ -1,7 +1,23 @@
 {% load crispy_forms_tags %}
 {% load static %}
 <form method="post">
-    {% csrf_token %} {{ form | crispy }} 
+    {% csrf_token %} 
+    {{ form.title|as_crispy_field }} 
+    {{ form.subtitle|as_crispy_field }} 
+    {{ form.publication_date|as_crispy_field }} 
+    {{ form.language|as_crispy_field}}
+    {{ form.work_type|as_crispy_field}}
+    {{ form.genres|as_crispy_field}}
+    {{ form.related_locations|as_crispy_field}}
+    {{ form.wikipedia|as_crispy_field }}
+    <div class="bg-light p-3 mb-3">
+        <strong>Based on</strong>
+        <p class="text-muted">The original works that the movie is based on.</p>
+        {{ form.based_on_litworks|as_crispy_field }}
+        {{ form.based_on_games|as_crispy_field }}
+        {{ form.based_on_movies|as_crispy_field }}
+        {{ form.based_on_series|as_crispy_field }}
+    </div>
     {{ workroles.management_form|crispy }}
     <div id="work-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this work</strong>

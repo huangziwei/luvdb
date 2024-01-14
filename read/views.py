@@ -220,6 +220,7 @@ class WorkDetailView(DetailView):
         ).order_by("release_date")
         context["adaptation_movies"] = adaptation_movies
         context["adaptation_series"] = adaptation_series
+
         grouped_roles = {}
         for role in work.workrole_set.all():
             if role.role.name not in grouped_roles:

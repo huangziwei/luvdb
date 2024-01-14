@@ -172,6 +172,17 @@ class Work(auto_prefetch.Model):  # Renamed from Book
     wikipedia = models.URLField(max_length=200, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
+    based_on_litworks = models.ManyToManyField("self", blank=True)
+    based_on_games = models.ManyToManyField(
+        "play.Work", blank=True, related_name="publications"
+    )
+    based_on_movies = models.ManyToManyField(
+        "watch.Movie", blank=True, related_name="publications"
+    )
+    based_on_series = models.ManyToManyField(
+        "watch.Series", blank=True, related_name="publications"
+    )
+
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

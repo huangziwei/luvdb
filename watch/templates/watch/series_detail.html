@@ -161,6 +161,17 @@
                                             <span class="text-muted fw-bold">More Metadata</span>
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
+
+                                            {% if object.publications %}
+                                            <div class="mb-1">
+                                                <span class="text-muted">Novelization:</span>
+                                                {% for publication in object.publications.all %}
+                                                    <a href="{% url 'read:work_detail' publication.id %}">{{publication.title}}</a> ({{publication.publication_date|extract_year}})
+                                                    {% if not forloop.last %} / {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+
                                             {% if filming_locations_with_parents %}
                                             <div class="mb-1">
                                                 {# djlint:off #}

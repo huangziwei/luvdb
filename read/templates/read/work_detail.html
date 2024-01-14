@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load language_name %}
 {% load markdownify %}
+{% load util_filters %}
 {% block title %}{{ object.title }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -34,6 +35,45 @@
                     <div>
                         <span class="text-muted">First publication date:</span>
                         {{ object.publication_date }}
+                    </div>
+                {% endif %}
+                {% if object.based_on_litworks.count != 0 or object.based_on_games.count != 0 or object.based_on_movies.count != 0 or object.based_on_series.count != 0 %}
+                    <div class="mb-1">
+                        <span class="text-muted">Novelization from:</span> 
+                        <ul class='mb-0'>
+                        {% if object.based_on_litworks.count != 0 %}
+                            <li>Publication{% if object.based_on_litworks.count > 1 %}s{% endif %}: 
+                            {% for litwork in object.based_on_litworks.all %}
+                                <a href="{% url "read:work_detail" litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
+                                {% if not forloop.last %} / {% endif %}
+                            {% endfor %}
+                            </li>
+                        {% endif %}
+                        {% if object.based_on_games.count != 0 %}
+                            <li>Game{% if object.based_on_games.count > 1 %}s{% endif %}: 
+                            {% for game in object.based_on_games.all %}
+                                <a href="{% url "play:work_detail" game.id %}">{{ game.title }}</a> ({{ game.first_release_date|extract_year }})
+                                {% if not forloop.last %} / {% endif %}
+                            {% endfor %}
+                            </li>
+                        {% endif %}
+                        {% if object.based_on_movies.count != 0 %}
+                            <li>Movie{% if object.based_on_movies.count > 1 %}s{% endif %}: 
+                            {% for movie in object.based_on_movies.all %}
+                                <a href="{% url "watch:movie_detail" movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date|extract_year }})
+                                {% if not forloop.last %} / {% endif %}
+                            {% endfor %}
+                            </li>
+                        {% endif %}
+                        {% if object.based_on_series.count != 0 %}
+                            <li>Series: 
+                            {% for series in object.based_on_series.all %}
+                                <a href="{% url "watch:series_detail" series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
+                                {% if not forloop.last %} / {% endif %}
+                            {% endfor %}
+                            </li>
+                        {% endif %}
+                        </ul>
                     </div>
                 {% endif %}
                 {% if related_locations_with_parents %}
