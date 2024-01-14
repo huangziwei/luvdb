@@ -150,7 +150,7 @@
                                             </ul>
                                         </div>
                                     {% endif %}
-                                    {% if object.notes or ordered_release_dates or filming_locations_with_parents or setting_locations_with_parents%}
+                                    {% if object.publications or object.notes or filming_locations_with_parents or setting_locations_with_parents%}
                                     <div class="my-3">
                                         <p class="text-muted"
                                            type="button"
@@ -161,7 +161,6 @@
                                             <span class="text-muted fw-bold">More Metadata</span>
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
-
                                             {% if object.publications %}
                                             <div class="mb-1">
                                                 <span class="text-muted">Novelization:</span>
@@ -171,7 +170,6 @@
                                                 {% endfor %}
                                             </div>
                                             {% endif %}
-
                                             {% if filming_locations_with_parents %}
                                             <div class="mb-1">
                                                 {# djlint:off #}
@@ -212,12 +210,13 @@
                                             {% endif %}
                                             {% if object.notes %}
                                             <div class="mb-1">
+                                                <div class="mb-1 text-muted">Notes:</div>
                                                 <div class="card card-body">
-                                                    <span class="text-muted">Extra</span>
                                                     {{ object.notes|markdownify }}
                                                 </div>
                                             </div>
-                                            {% endif %}                                        </div>
+                                            {% endif %}                                        
+                                        </div>
                                     </div>
                                     {% endif %}
                                 </div>
