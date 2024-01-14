@@ -13,19 +13,18 @@ from .views import (
     GenericCheckInListView,
     GenreAutocomplete,
     GenreDetailView,
+    MovieAutocomplete,
     MovieCastDetailView,
     MovieCreateView,
     MovieDetailView,
     MovieHistoryView,
     MovieUpdateView,
+    SeriesAutocomplete,
     SeriesCastDetailView,
     SeriesCreateView,
     SeriesDetailView,
     SeriesHistoryView,
     SeriesUpdateView,
-    WatchCheckInDeleteView,
-    WatchCheckInDetailView,
-    WatchCheckInUpdateView,
     WatchListAllView,
     WatchListView,
 )
@@ -136,4 +135,8 @@ urlpatterns = [
         CollectionHistoryView.as_view(),
         name="collection_history",
     ),
+    path(
+        "series-autocomplete/", SeriesAutocomplete.as_view(), name="series-autocomplete"
+    ),
+    path("movie-autocomplete/", MovieAutocomplete.as_view(), name="movie-autocomplete"),
 ]

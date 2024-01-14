@@ -11,9 +11,16 @@
     {{ form.notes|as_crispy_field }}
     {{ form.release_date|as_crispy_field }}
     {{ form.genres|as_crispy_field }}
-    {{ form.based_on |as_crispy_field }}
     {{ form.imdb|as_crispy_field }}
     {{ form.wikipedia|as_crispy_field }}
+    <div class="bg-light p-3 mb-3">
+        <strong>Based on</strong>
+        <p class="text-muted">The original works that the movie is based on.</p>
+        {{ form.based_on_litworks|as_crispy_field }}
+        {{ form.based_on_games|as_crispy_field }}
+        {{ form.based_on_movies|as_crispy_field }}
+        {{ form.based_on_series|as_crispy_field }}
+    </div>
     {{ seriesroles.management_form|crispy }}
     <div id="series-role-formset" class="bg-light p-3 mb-3">
         <strong>Entities related to this Series</strong>

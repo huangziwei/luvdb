@@ -36,8 +36,17 @@ class MovieForm(forms.ModelForm):
             "distributors": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("entity:company-autocomplete")
             ),
-            "based_on": autocomplete.ModelSelect2(
+            "based_on_litworks": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("read:work-autocomplete")
+            ),
+            "based_on_games": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("play:work-autocomplete")
+            ),
+            "based_on_movies": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:movie-autocomplete")
+            ),
+            "based_on_series": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:series-autocomplete")
             ),
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("watch:genre-autocomplete")
@@ -56,7 +65,12 @@ class MovieForm(forms.ModelForm):
             "setting_locations": "Locations of where the movie was set. <a href='/visit/location/create/'>Add a new location</a>.",
             "studios": "Production companies. <a href='/entity/company/create/'>Add a new company</a>.",
             "distributors": "Distribution companies. <a href='/entity/company/create/'>Add a new company</a>.",
-            "based_on": "The original work that the movie is based on. <a href='/read/work/create/'>Add a new work</a>.",
+        }
+        labels = {
+            "based_on_litworks": "Publications",
+            "based_on_games": "Games",
+            "based_on_movies": "Movies",
+            "based_on_series": "Series",
         }
 
     def __init__(self, *args, **kwargs):
@@ -222,8 +236,17 @@ class SeriesForm(forms.ModelForm):
             "distributors": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("entity:company-autocomplete")
             ),
-            "based_on": autocomplete.ModelSelect2(
+            "based_on_litworks": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("read:work-autocomplete")
+            ),
+            "based_on_games": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("play:work-autocomplete")
+            ),
+            "based_on_movies": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:movie-autocomplete")
+            ),
+            "based_on_series": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:series-autocomplete")
             ),
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("watch:genre-autocomplete")
@@ -235,6 +258,12 @@ class SeriesForm(forms.ModelForm):
             "studios": "Production companies. <a href='/entity/company/create/'>Add a new company</a>.",
             "distributors": "Distribution companies. <a href='/entity/company/create/'>Add a new company</a>.",
             "based_on": "The original work that the movie is based on. <a href='/read/work/create/'>Add a new work</a>.",
+        }
+        labels = {
+            "based_on_litworks": "Publications",
+            "based_on_games": "Games",
+            "based_on_movies": "Movies",
+            "based_on_series": "Series",
         }
 
     def __init__(self, *args, **kwargs):

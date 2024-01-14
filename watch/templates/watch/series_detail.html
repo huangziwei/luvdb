@@ -83,11 +83,6 @@
                                             <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
                                         </p>
                                     {% endif %}
-                                    {% if object.based_on %}
-                                        <p>
-                                            <span class="text-muted">Based on:</span> <a href="{% url "read:work_detail" object.based_on.id %}">{{ object.based_on.title }}</a> ({{ object.based_on.publication_date|extract_year }})
-                                        </p>
-                                    {% endif %}
                                     {% if object.genres %}
                                         <p>
                                             {# djlint:off #}
@@ -115,6 +110,45 @@
                                         <p>
                                             <span class="text-muted">Premiere on:</span> {{ object.release_date }}
                                         </p>
+                                    {% endif %}
+                                    {% if object.based_on_litworks.count != 0 or object.based_on_games.count != 0  %} <!--or  or object.based_on_movies or object.based_on_series -->
+                                        <div class="mb-1">
+                                            <span class="text-muted">Based on:</span> 
+                                            <ul class='mb-0'>
+                                            {% if object.based_on_litworks.count != 0 %}
+                                                <li>Publication{% if object.based_on_litworks.count > 1 %}s{% endif %}: 
+                                                {% for litwork in object.based_on_litworks.all %}
+                                                    <a href="{% url "read:work_detail" litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
+                                                    {% if not forloop.last %} / {% endif %}
+                                                {% endfor %}
+                                                </li>
+                                            {% endif %}
+                                            {% if object.based_on_games.count != 0 %}
+                                                <li>Game{% if object.based_on_games.count > 1 %}s{% endif %}: 
+                                                {% for game in object.based_on_games.all %}
+                                                    <a href="{% url "play:work_detail" game.id %}">{{ game.title }}</a> ({{ game.first_release_date|extract_year }})
+                                                    {% if not forloop.last %} / {% endif %}
+                                                {% endfor %}
+                                                </li>
+                                            {% endif %}
+                                            {% if object.based_on_movies.count != 0 %}
+                                                <li>Movie{% if object.based_on_movies.count > 1 %}s{% endif %}: 
+                                                {% for movie in object.based_on_movies.all %}
+                                                    <a href="{% url "watch:movie_detail" movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date|extract_year }})
+                                                    {% if not forloop.last %} / {% endif %}
+                                                {% endfor %}
+                                                </li>
+                                            {% endif %}
+                                            {% if object.based_on_series.count != 0 %}
+                                                <li>Series: 
+                                                {% for series in object.based_on_series.all %}
+                                                    <a href="{% url "watch:series_detail" series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
+                                                    {% if not forloop.last %} / {% endif %}
+                                                {% endfor %}
+                                                </li>
+                                            {% endif %}
+                                            </ul>
+                                        </div>
                                     {% endif %}
                                     {% if object.notes or ordered_release_dates or filming_locations_with_parents or setting_locations_with_parents%}
                                     <div class="my-3">

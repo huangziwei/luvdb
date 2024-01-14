@@ -1614,3 +1614,34 @@ class CollectionHistoryView(HistoryViewMixin, DetailView):
         object = self.get_object()
         context["history_data"] = self.get_history_data(object)
         return context
+
+
+################
+# Autocomplete #
+################
+
+
+class MovieAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Movie.objects.none()
+
+        qs = Movie.objects.all()
+
+        if self.q:
+            qs = qs.filter(title__icontains=self.q)
+
+        return qs.order_by("title")
+
+
+class SeriesAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Series.objects.none()
+
+        qs = Series.objects.all()
+
+        if self.q:
+            qs = qs.filter(title__icontains=self.q)
+
+        return qs.order_by("title")

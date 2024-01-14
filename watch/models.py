@@ -17,6 +17,7 @@ from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
 from entity.models import Company, Creator, LanguageField, Role
+from play.models import Work as GameWork
 from read.models import Work as LitWork
 from visit.models import Location
 from visit.utils import get_location_hierarchy_ids
@@ -59,8 +60,13 @@ class Movie(auto_prefetch.Model):
     casts = models.ManyToManyField(
         Creator, through="MovieCast", related_name="movies_cast"
     )
-    based_on = auto_prefetch.ForeignKey(
-        LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="movies"
+    based_on_litworks = models.ManyToManyField(
+        LitWork, blank=True, related_name="movies"
+    )
+    based_on_games = models.ManyToManyField(GameWork, blank=True, related_name="movies")
+    based_on_movies = models.ManyToManyField("self", blank=True)
+    based_on_series = models.ManyToManyField(
+        "Series", blank=True, related_name="movies"
     )
 
     notes = models.TextField(blank=True, null=True)
@@ -256,9 +262,12 @@ class Series(auto_prefetch.Model):
     duration = models.CharField(max_length=10, blank=True, null=True)
     languages = LanguageField(blank=True, null=True)
     genres = models.ManyToManyField(Genre, related_name="series", blank=True)
-    based_on = auto_prefetch.ForeignKey(
-        LitWork, on_delete=models.CASCADE, null=True, blank=True, related_name="series"
+    based_on_litworks = models.ManyToManyField(
+        LitWork, blank=True, related_name="series"
     )
+    based_on_games = models.ManyToManyField(GameWork, blank=True, related_name="series")
+    based_on_series = models.ManyToManyField("self", blank=True)
+    based_on_movies = models.ManyToManyField(Movie, blank=True, related_name="series")
     imdb = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
     watchcheckin = GenericRelation("WatchCheckIn")

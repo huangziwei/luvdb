@@ -116,25 +116,34 @@
                         {% endfor %}
                     {% endwith %}
                 {% endif %}
-                {% if adaptations %}
+                {% if adaptation_movies or adaptation_series %}
                     <h3 class="mt-2">Adaptations</h3>
-                    <ul>
-                        {% for adaptation in adaptations %}
-                            <li>
-                                {% if adaptation.model_name == "Movie" %}
-                                    <a href="{% url 'watch:movie_detail' adaptation.id %}">{{ adaptation.title }}</a>
-                                {% else %}
-                                    <a href="{% url 'watch:series_detail' adaptation.id %}">{{ adaptation.title }}</a>
-                                {% endif %}
-                                {% if adaptation.release_date %}({{ adaptation.release_date }}){% endif %}
-                                {% with earliest_date=adaptation.region_release_dates.all|dictsort:"release_date"|first %}
-                                    {% if earliest_date %}
-                                        ({{ earliest_date.release_date }})
-                                    {% endif %}
-                                {% endwith %}
-                            </li>
-                        {% endfor %}
-                    </ul>
+                    {% if adaptation_movies %}
+                        <div class="col-12 col-md-6">
+                            <div class="fs-5">Movies</div>
+                            <ul>
+                                {% for adaptation in adaptation_movies %}
+                                    <li>
+                                        <a href="{% url 'watch:movie_detail' adaptation.id %}">{{ adaptation.title }}</a>
+                                        {% if adaptation.earliest_release_date %}({{ adaptation.earliest_release_date }}){% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    {% if adaptation_series %}
+                        <div class="col-12 col-md-6">
+                            <div class="fs-5">Series</div>
+                            <ul>
+                                {% for adaptation in adaptation_series %}
+                                    <li>
+                                        <a href="{% url 'watch:series_detail' adaptation.id %}">{{ adaptation.title }}</a>
+                                        {% if adaptation.release_date %}({{ adaptation.release_date }}){% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
                 {% endif %}
             </div>
             <!--Right columns-->
