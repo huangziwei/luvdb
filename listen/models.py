@@ -214,6 +214,7 @@ class Release(auto_prefetch.Model):
     genres = models.ManyToManyField(Genre, related_name="releases", blank=True)
     discogs = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
+
     catalog_number = models.CharField(max_length=255, blank=True, null=True)
 
     release_date = models.CharField(
@@ -249,6 +250,7 @@ class Release(auto_prefetch.Model):
 
     spotify_url = models.URLField(blank=True, null=True)
     apple_music_url = models.URLField(blank=True, null=True)
+    internet_archive_url = models.URLField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
     # Entry metadata

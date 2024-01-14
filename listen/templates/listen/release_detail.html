@@ -206,13 +206,18 @@
                     </div>
                 </div>
                 <!--Listen on-->
-                {% if object.apple_music_url or object.spotify_url %}
+                {% if object.apple_music_url or object.spotify_url or object.internet_archive_url%}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <div class="fs-5">Listen on</div>
                         {% if object.apple_music_url %}
                             <div>
                                 <a href="{{ object.apple_music_url }}">Apple Music</a>
                             </div>
+                        {% endif %}
+                        {% if object.internet_archive_url %}
+                        <div>
+                            <a href="{{ object.internet_archive_url }}">Internet Archive</a>
+                        </div>                        
                         {% endif %}
                         {% if object.spotify_url %}
                             <div>

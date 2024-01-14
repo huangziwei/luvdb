@@ -244,6 +244,11 @@ class ReleaseForm(forms.ModelForm):
             "other_titles": "e.g. translated titles in different languages, separated by slashes (`/`).",
             "apple_music_url": "add `geo` in the beginning of the URL to redirect to the user's country, e.g. `https://geo.music.apple.com/us/album/...`",
         }
+        labels = {
+            "apple_music_url": "Apple Music",
+            "spotify_url": "Spotify",
+            "internet_archive_url": "Internet Archive",
+        }
 
     def __init__(self, *args, **kwargs):
         super(ReleaseForm, self).__init__(*args, **kwargs)
