@@ -172,7 +172,9 @@ class Work(auto_prefetch.Model):  # Renamed from Book
     wikipedia = models.URLField(max_length=200, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
-    based_on_litworks = models.ManyToManyField("self", blank=True)
+    based_on_litworks = models.ManyToManyField(
+        "self", blank=True, symmetrical=False, related_name="related_publications"
+    )
     based_on_games = models.ManyToManyField(
         "play.Work", blank=True, related_name="publications"
     )

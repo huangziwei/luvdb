@@ -64,7 +64,9 @@ class Movie(auto_prefetch.Model):
         LitWork, blank=True, related_name="movies"
     )
     based_on_games = models.ManyToManyField(GameWork, blank=True, related_name="movies")
-    based_on_movies = models.ManyToManyField("self", blank=True)
+    based_on_movies = models.ManyToManyField(
+        "self", blank=True, symmetrical=False, related_name="related_movies"
+    )
     based_on_series = models.ManyToManyField(
         "Series", blank=True, related_name="movies"
     )
@@ -266,7 +268,9 @@ class Series(auto_prefetch.Model):
         LitWork, blank=True, related_name="series"
     )
     based_on_games = models.ManyToManyField(GameWork, blank=True, related_name="series")
-    based_on_series = models.ManyToManyField("self", blank=True)
+    based_on_series = models.ManyToManyField(
+        "self", blank=True, symmetrical=False, related_name="related_series"
+    )
     based_on_movies = models.ManyToManyField(Movie, blank=True, related_name="series")
     imdb = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)

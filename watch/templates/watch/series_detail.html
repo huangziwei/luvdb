@@ -111,7 +111,7 @@
                                             <span class="text-muted">Premiere on:</span> {{ object.release_date }}
                                         </p>
                                     {% endif %}
-                                    {% if object.based_on_litworks.count != 0 or object.based_on_games.count != 0  %} <!--or  or object.based_on_movies or object.based_on_series -->
+                                    {% if object.based_on_litworks.count != 0 or object.based_on_games.count != 0  or object.based_on_movies.count != 0 or object.based_on_series.count != 0 %} <!--or  or  -->
                                         <div class="mb-1">
                                             <span class="text-muted">Based on:</span> 
                                             <ul class='mb-0'>
@@ -161,7 +161,7 @@
                                             <span class="text-muted fw-bold">More Metadata</span>
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
-                                            {% if object.publications %}
+                                            {% if object.publications.count != 0 %}
                                             <div class="mb-1">
                                                 <span class="text-muted">Novelization:</span>
                                                 {% for publication in object.publications.all %}
@@ -169,6 +169,33 @@
                                                     {% if not forloop.last %} / {% endif %}
                                                 {% endfor %}
                                             </div>
+                                            {% endif %}
+                                            {% if object.games.count != 0 %}
+                                            <div class="mb-1">
+                                                <span class="text-muted">Related Game{% if object.games.count > 1 %}s{% endif %}:</span>
+                                                {% for game in object.games.all %}
+                                                    <a href="{% url 'play:work_detail' game.id %}">{{game.title}}</a> ({{game.first_release_date|extract_year}})
+                                                    {% if not forloop.last %} / {% endif %}
+                                                {% endfor %}
+                                            </div>                                            
+                                            {% endif %}
+                                            {% if object.movies.count != 0 %}
+                                            <div class="mb-1">
+                                                <span class="text-muted">Related Movie{% if object.movies.count > 1 %}s{% endif %}:</span>
+                                                {% for movie in object.movies.all %}
+                                                    <a href="{% url 'watch:movie_detail' movie.id %}">{{movie.title}}</a> ({{movie.earliest_release_date|extract_year}})
+                                                    {% if not forloop.last %} / {% endif %}
+                                                {% endfor %}
+                                            </div>                                            
+                                            {% endif %}
+                                            {% if object.related_series.count != 0 %}
+                                            <div class="mb-1">
+                                                <span class="text-muted">Related Series:</span>
+                                                {% for series in object.related_series.all %}
+                                                    <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
+                                                    {% if not forloop.last %} / {% endif %}
+                                                {% endfor %}
+                                            </div>                                            
                                             {% endif %}
                                             {% if filming_locations_with_parents %}
                                             <div class="mb-1">

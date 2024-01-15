@@ -39,7 +39,7 @@
                 {% endif %}
                 {% if object.based_on_litworks.count != 0 or object.based_on_games.count != 0 or object.based_on_movies.count != 0 or object.based_on_series.count != 0 %}
                     <div class="mb-1">
-                        <span class="text-muted">Novelization from:</span> 
+                        <span class="text-muted">Adapted from:</span> 
                         <ul class='mb-0'>
                         {% if object.based_on_litworks.count != 0 %}
                             <li>Publication{% if object.based_on_litworks.count > 1 %}s{% endif %}: 
@@ -75,6 +75,42 @@
                         {% endif %}
                         </ul>
                     </div>
+                {% endif %}
+                {% if object.related_publications.count != 0 %}
+                <div class="mb-1">
+                    <span class="text-muted">Related Publication{% if object.related_publications.count > 1 %}s{% endif %}:</span>
+                    {% for publication in object.related_publications.all %}
+                        <a href="{% url 'read:work_detail' publication.id %}">{{publication.title}}</a> ({{publication.publication_date|extract_year}})
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if object.games.count != 0 %}
+                <div class="mb-1">
+                    <span class="text-muted">Related Game{% if object.games.count > 1 %}s{% endif %}:</span>
+                    {% for game in object.games.all %}
+                        <a href="{% url 'play:work_detail' game.id %}">{{game.title}}</a> ({{game.first_release_date|extract_year}})
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}
+                </div>                                            
+                {% endif %}
+                {% if object.movies.count != 0 %}
+                <div class="mb-1">
+                    <span class="text-muted">Related Movie{% if object.movies.count > 1 %}s{% endif %}:</span>
+                    {% for movie in object.movies.all %}
+                        <a href="{% url 'watch:movie_detail' movie.id %}">{{movie.title}}</a> ({{movie.earliest_release_date|extract_year}})
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}
+                </div>                                            
+                {% endif %}
+                {% if object.series.count != 0 %}
+                <div class="mb-1">
+                    <span class="text-muted">Related Series:</span>
+                    {% for series in object.series.all %}
+                        <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}
+                </div>                                            
                 {% endif %}
                 {% if related_locations_with_parents %}
                 <div class="mb-1">
@@ -156,7 +192,7 @@
                         {% endfor %}
                     {% endwith %}
                 {% endif %}
-                {% if adaptation_movies or adaptation_series %}
+                {% if adaptation_movies or adaptation_series or adaptation_games%}
                     <h3 class="mt-2">Adaptations</h3>
                     {% if adaptation_movies %}
                         <div class="col-12 col-md-6">
@@ -179,6 +215,19 @@
                                     <li>
                                         <a href="{% url 'watch:series_detail' adaptation.id %}">{{ adaptation.title }}</a>
                                         {% if adaptation.release_date %}({{ adaptation.release_date }}){% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    {% if adaptation_games %}
+                        <div class="col-12 col-md-6">
+                            <div class="fs-5">Games</div>
+                            <ul>
+                                {% for adaptation in adaptation_games %}
+                                    <li>
+                                        <a href="{% url 'play:game_detail' adaptation.id %}">{{ adaptation.title }}</a>
+                                        {% if adaptation.first_release_date %}({{ adaptation.first_release_date }}){% endif %}
                                     </li>
                                 {% endfor %}
                             </ul>

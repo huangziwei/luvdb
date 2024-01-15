@@ -40,10 +40,28 @@ class WorkForm(forms.ModelForm):
                 url=reverse_lazy("visit:location-autocomplete")
             ),
             "other_titles": forms.TextInput(),
+            "based_on_litworks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:work-autocomplete")
+            ),
+            "based_on_games": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("play:work-autocomplete")
+            ),
+            "based_on_movies": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:movie-autocomplete")
+            ),
+            "based_on_series": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:series-autocomplete")
+            ),
         }
         help_texts = {
             "developers": "Developers of the movie. <a href='/entity/company/create/'>Add a new company</a>.",
             "setting_locations": "Locations of where the movie was set. <a href='/visit/location/create/'>Add a new location</a>.",
+        }
+        labels = {
+            "based_on_litworks": "Publications",
+            "based_on_games": "Games",
+            "based_on_movies": "Movies",
+            "based_on_series": "Series",
         }
 
     def __init__(self, *args, **kwargs):

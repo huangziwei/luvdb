@@ -26,6 +26,7 @@ from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.models import LanguageField
 from entity.views import HistoryViewMixin, get_contributors
+from play.models import Work as GameWork
 from visit.models import Location
 from visit.utils import get_locations_with_parents
 from watch.models import Movie, Series
@@ -198,18 +199,6 @@ class WorkDetailView(DetailView):
 
         context["grouped_instances"] = language_grouped_instances
 
-        def get_adaptation_release_date(adaptation):
-            if isinstance(adaptation, Movie):
-                # Assuming you want to take the earliest release date for each movie
-                regional_dates = adaptation.region_release_dates.all().order_by(
-                    "release_date"
-                )
-                return regional_dates[0].release_date if regional_dates else None
-            elif isinstance(adaptation, Series):
-                return adaptation.release_date
-            else:
-                return None
-
         adaptation_movies = (
             Movie.objects.filter(based_on_litworks=self.object)
             .annotate(release_date=Min("region_release_dates__release_date"))
@@ -218,8 +207,16 @@ class WorkDetailView(DetailView):
         adaptation_series = Series.objects.filter(
             based_on_litworks=self.object
         ).order_by("release_date")
+        adaptation_games = GameWork.objects.filter(
+            based_on_litworks=self.object
+        ).order_by("first_release_date")
+        adaptation_publications = Work.objects.filter(
+            based_on_litworks=self.object
+        ).order_by("publication_date")
         context["adaptation_movies"] = adaptation_movies
         context["adaptation_series"] = adaptation_series
+        context["adaptation_games"] = adaptation_games
+        context["adaptation_publications"] = adaptation_publications
 
         grouped_roles = {}
         for role in work.workrole_set.all():

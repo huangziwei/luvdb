@@ -128,7 +128,7 @@
                                     <div class="mb-1">
                                         <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View All</a>
                                     </div>
-                                    {% if object.based_on_litworks.count != 0 or object.based_on_games.count != 0  %} <!--or  or object.based_on_movies or object.based_on_series -->
+                                    {% if object.based_on_litworks.count != 0 or object.based_on_games.count != 0  or object.based_on_movies.count != 0 or object.based_on_series.count != 0 %} <!--or  or  -->
                                         <div class="mb-1">
                                             <span class="text-muted">Based on:</span> 
                                             <ul class='mb-0'>
@@ -178,7 +178,7 @@
                                             <span class="text-muted fw-bold">More Metadata</span>
                                         </p>
                                         <div class="collapse" id="detailsCollapse">
-                                            {% if object.publications %}
+                                            {% if object.publications.count != 0 %}
                                             <div class="mb-1">
                                                 <span class="text-muted">Novelization:</span>
                                                 {% for publication in object.publications.all %}
@@ -186,6 +186,33 @@
                                                     {% if not forloop.last %} / {% endif %}
                                                 {% endfor %}
                                             </div>
+                                            {% endif %}
+                                            {% if object.games.count != 0 %}
+                                            <div class="mb-1">
+                                                <span class="text-muted">Related Game{% if object.games.count > 1 %}s{% endif %}:</span>
+                                                {% for game in object.games.all %}
+                                                    <a href="{% url 'play:work_detail' game.id %}">{{game.title}}</a> ({{game.first_release_date|extract_year}})
+                                                    {% if not forloop.last %} / {% endif %}
+                                                {% endfor %}
+                                            </div>                                            
+                                            {% endif %}
+                                            {% if object.related_movies.count != 0 %}
+                                            <div class="mb-1">
+                                                <span class="text-muted">Related Movie{% if object.related_movies.count > 1 %}s{% endif %}:</span>
+                                                {% for movie in object.related_movies.all %}
+                                                    <a href="{% url 'watch:movie_detail' movie.id %}">{{movie.title}}</a> ({{movie.earliest_release_date|extract_year}})
+                                                    {% if not forloop.last %} / {% endif %}
+                                                {% endfor %}
+                                            </div>                                            
+                                            {% endif %}
+                                            {% if object.series.count != 0 %}
+                                            <div class="mb-1">
+                                                <span class="text-muted">Related Series:</span>
+                                                {% for series in object.series.all %}
+                                                    <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
+                                                    {% if not forloop.last %} / {% endif %}
+                                                {% endfor %}
+                                            </div>                                            
                                             {% endif %}
                                             {% if filming_locations_with_parents %}
                                             <div class="mb-1">
@@ -228,12 +255,10 @@
                                             {% if ordered_release_dates %}
                                             <div class="mb-1">
                                                 <span class="text-muted">Release Date:</span>
-                                                <div>
                                                 {% for release_date in ordered_release_dates %}
                                                     {{ release_date.release_date }} ({{ release_date.region }})
                                                     {% if not forloop.last %}/{% endif %}
                                                 {% endfor %}
-                                                </div>
                                             </div>
                                             {% endif %}
                                             {% if object.notes %}
