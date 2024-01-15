@@ -64,6 +64,7 @@ def main(file_path):
         "watch.watchcheckin",
         "listen.listencheckin",
         "play.playcheckin",
+        "visit.visitcheckin",
         "notify.notification",
         "activity_feed.activity",
         "activity_feed.follow",
