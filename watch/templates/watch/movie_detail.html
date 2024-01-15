@@ -252,14 +252,21 @@
                                                 </ul>
                                             </div>
                                             {% endif %}
-                                            {% if ordered_release_dates %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Release Date:</span>
-                                                {% for release_date in ordered_release_dates %}
-                                                    {{ release_date.release_date }} ({{ release_date.region }})
-                                                    {% if not forloop.last %}/{% endif %}
-                                                {% endfor %}
-                                            </div>
+                                            {% if grouped_release_dates %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Release Dates:</span>
+                                                    {% for release_type, dates in grouped_release_dates.items %}
+                                                        <div class="mb-1">
+                                                            <strong>{{ release_type }}</strong>
+                                                            <div class="ms-2">
+                                                            {% for release_date in dates %}
+                                                                {{ release_date.release_date }} ({% if release_date.notes %}{{ release_date.notes }}, {% endif %}{{ release_date.region }})
+                                                                {% if not forloop.last %}/{% endif %}
+                                                            {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
                                             {% endif %}
                                             {% if object.notes %}
                                             <div class="mb-1">

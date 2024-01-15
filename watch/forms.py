@@ -85,7 +85,7 @@ class MovieForm(forms.ModelForm):
 class MovieReleaseDateForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = MovieReleaseDate
-        fields = ("region", "release_date")
+        fields = ("release_type", "region", "notes", "release_date")
 
     def clean(self):
         cleaned_data = super().clean()

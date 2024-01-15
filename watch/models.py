@@ -188,11 +188,24 @@ class MovieReleaseDate(auto_prefetch.Model):
     A Release Date with region of a Movie
     """
 
+    RELEASE_TYPES = [
+        ("PREMIERE", "Premiere"),
+        ("THEATRICAL", "Theatrical"),
+        ("DIGITAL", "Digital"),
+        ("PHYSICAL", "Physical"),
+        ("TV", "TV"),
+        ("OTHER", "Other"),
+    ]
+
     movie = auto_prefetch.ForeignKey(
         Movie, on_delete=models.CASCADE, related_name="region_release_dates"
     )
     region = models.CharField(max_length=100, blank=True, null=True)
     release_date = models.CharField(max_length=10, blank=True, null=True)
+    notes = models.CharField(max_length=300, blank=True, null=True)
+    release_type = models.CharField(
+        max_length=10, choices=RELEASE_TYPES, default="THEATRICAL"
+    )
     history = HistoricalRecords(inherit=True)
 
     def __str__(self):

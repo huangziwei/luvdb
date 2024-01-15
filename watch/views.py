@@ -271,9 +271,14 @@ class MovieDetailView(DetailView):
         else:
             context["latest_user_status"] = "to_watch"
 
-        context["ordered_release_dates"] = movie.region_release_dates.all().order_by(
-            "release_date"
-        )
+        release_dates = movie.region_release_dates.all().order_by("release_date")
+        grouped_release_dates = {}
+        for release_date in release_dates:
+            if release_date.release_type not in grouped_release_dates:
+                grouped_release_dates[release_date.release_type] = []
+            grouped_release_dates[release_date.release_type].append(release_date)
+
+        context["grouped_release_dates"] = grouped_release_dates
 
         # contributors
         context["contributors"] = get_contributors(self.object)
