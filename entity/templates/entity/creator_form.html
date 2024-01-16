@@ -15,7 +15,7 @@
     <div id="memberof-formset" class="bg-light p-3 mb-3">
         <strong>Member of</strong>
         <p class='text-muted'>Groups this person is a member of.</p>
-        <div id="memberof">
+        <div id="member_of">
             {% for form in memberof %}
                 <div class="form-wrapper row" data-existing-record>
                     {{ form.id }}
@@ -46,6 +46,6 @@
 <script type="text/javascript"
     src="{% static 'js/FormsetHandler.js' %}"></script>
 <script>
-    initFormset('add-memberof-formset', 'memberof');
+    initFormset('add-memberof-formset', 'member_of');
 </script>
 {{ form.media }}
