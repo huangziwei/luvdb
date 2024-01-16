@@ -1,0 +1,67 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.name|as_crispy_field }}
+    {{ form.other_names|as_crispy_field }}
+    {{ form.location|as_crispy_field}}
+    {{ form.founded_date|as_crispy_field}}
+    {{ form.defunct_date|as_crispy_field}}
+    {{ form.website|as_crispy_field}}
+    {{ form.wikipedia|as_crispy_field }}
+    {{ pastnames.management_form|crispy }}
+    <div id="pastnames-formset" class="bg-light p-3 mb-3">
+        <strong>Past names</strong>
+        <p class='text-muted'>Names the company used in different time period.</p>
+        <div id="past_names">
+            {% for form in pastnames %}
+                <div class="form-wrapper row" data-existing-record>
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4 mb-3">{{ form.name | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.start_date | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.end_date | as_crispy_field }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-past-name-formset" class="btn btn-secondary">Add More</button>
+    </div>
+
+    {{ companyparents.management_form|crispy }}
+    <div id="company-parent-formset" class="bg-light p-3 mb-3">
+        <strong>Parent company/ies</strong>
+        <p class='text-muted'>Leave `end_date` blank for current parent.</p>
+        <div id="parent_companies">
+            {% for form in companyparents %}
+                <div class="form-wrapper row" data-existing-record>
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4 mb-3">{{ form.parent | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
+                    <div class="col-md-2 mb-3">{{ form.start_date | as_crispy_field }}</div>
+                    <div class="col-md-2 mb-3">{{ form.end_date | as_crispy_field }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-company-parent-formset" class="btn btn-secondary">Add More</button>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% if form.errors %}
+    <div class="alert alert-danger mt-5">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}<li>{{ field }}: {{ error }}</li>{% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+<script type="text/javascript"
+    src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript"
+    src="{% static 'js/FormsetHandler.js' %}"></script>
+<script>
+    initFormset('add-company-parent-formset', 'parent_companies');
+    initFormset('add-past-name-formset', 'past_names');
+</script>
+{{ form.media }}

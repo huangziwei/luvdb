@@ -1,6 +1,7 @@
 from dal import autocomplete
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.db.models import Count, Min, Q
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
@@ -22,7 +23,12 @@ from scrape.wikipedia import scrape_company, scrape_creator
 from visit.models import Location
 from watch.models import Episode, Movie, Series
 
-from .forms import CompanyForm, CreatorForm
+from .forms import (
+    CompanyForm,
+    CompanyParentFormSet,
+    CompanyPastNameFormSet,
+    CreatorForm,
+)
 from .models import Company, Creator, Role
 
 
@@ -578,9 +584,42 @@ class CompanyCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["companyparents"] = CompanyParentFormSet(
+                self.request.POST, instance=self.object
+            )
+            data["pastnames"] = CompanyPastNameFormSet(
+                self.request.POST, instance=self.object
+            )
+
+        else:
+            data["companyparents"] = CompanyParentFormSet(instance=self.object)
+            data["pastnames"] = CompanyPastNameFormSet(instance=self.object)
+        return data
+
     def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        form.instance.updated_by = self.request.user
+        context = self.get_context_data()
+        companyparents = context["companyparents"]
+        pastnames = context["pastnames"]
+        if not all(
+            companyparent_form.is_valid() for companyparent_form in companyparents
+        ):
+            return self.form_invalid(form)
+        if not all(pastname_form.is_valid() for pastname_form in pastnames):
+            return self.form_invalid(form)
+
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if companyparents.is_valid():
+                companyparents.instance = self.object
+                companyparents.save()
+            if pastnames.is_valid():
+                pastnames.instance = self.object
+                pastnames.save()
         return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
@@ -682,6 +721,15 @@ class CompanyDetailView(DetailView):
 
         context["location_label"] = get_location_labels(company.location)
 
+        # parent companies
+        context["current_parent_companies"] = company.parent_companies.filter(
+            end_date=None
+        ).order_by("start_date")
+        context["past_parent_companies"] = company.parent_companies.exclude(
+            end_date=None
+        ).order_by("-end_date")
+        context["past_names"] = company.past_names.all().order_by("start_date")
+
         return context
 
 
@@ -697,16 +745,49 @@ class CompanyUpdateView(LoginRequiredMixin, UpdateView):
             return HttpResponseForbidden("This entry is locked and cannot be edited.")
         return super().dispatch(request, *args, **kwargs)
 
+    def get_success_url(self):
+        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
+
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.fields["other_names"].widget = forms.TextInput()
         return form
 
-    def get_success_url(self):
-        return reverse_lazy("entity:company_detail", kwargs={"pk": self.object.pk})
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["companyparents"] = CompanyParentFormSet(
+                self.request.POST, instance=self.object
+            )
+            data["pastnames"] = CompanyPastNameFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["companyparents"] = CompanyParentFormSet(instance=self.object)
+            data["pastnames"] = CompanyPastNameFormSet(instance=self.object)
+        return data
 
     def form_valid(self, form):
-        form.instance.updated_by = self.request.user
+        context = self.get_context_data()
+        companyparents = context["companyparents"]
+        pastnames = context["pastnames"]
+        if not all(
+            companyparent_form.is_valid() for companyparent_form in companyparents
+        ):
+            return self.form_invalid(form)
+        if not all(pastname_form.is_valid() for pastname_form in pastnames):
+            return self.form_invalid(form)
+
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if companyparents.is_valid():
+                companyparents.instance = self.object
+                companyparents.save()
+            if pastnames.is_valid():
+                pastnames.instance = self.object
+                pastnames.save()
         return super().form_valid(form)
 
 

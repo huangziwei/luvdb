@@ -3,7 +3,7 @@ from dal import autocomplete
 from django import forms
 from django.urls import reverse_lazy
 
-from .models import Company, Creator
+from .models import Company, CompanyParent, CompanyPastName, Creator
 
 
 class CreatorForm(forms.ModelForm):
@@ -60,8 +60,6 @@ class CompanyForm(forms.ModelForm):
             "location",
             "founded_date",
             "defunct_date",
-            "parent",
-            "successor",
             "wikipedia",
             "website",
             "notes",
@@ -72,8 +70,6 @@ class CompanyForm(forms.ModelForm):
             "location": "Enter the location of the company. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
             "founded_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
             "defunct_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
-            "parent": "Enter the parent company. <a href='/entity/company/create/'>Add a new company</a>.",
-            "successor": "Enter the successor company. <a href='/entity/company/create/'>Add a new company</a>. ",
             "wikipedia": "Enter the company's Wikipedia URL.",
             "website": "Enter the company's website URL.",
             "notes": "Enter any additional information about the person or the group.",
@@ -83,15 +79,74 @@ class CompanyForm(forms.ModelForm):
             "location": autocomplete.ModelSelect2(
                 url=reverse_lazy("visit:location-autocomplete"),
             ),
-            "parent": autocomplete.ModelSelect2(
-                url=reverse_lazy("entity:company-autocomplete"),
-            ),
-            "successor": autocomplete.ModelSelect2(
-                url=reverse_lazy("entity:company-autocomplete"),
-            ),
         }
         labels = {
             "location": "Location",
-            "parent": "Parent Company",
-            "successor": "Successor Company",
         }
+
+
+class CompanyParentForm(forms.ModelForm):
+    class Meta(auto_prefetch.Model.Meta):
+        model = CompanyParent
+        fields = ("child", "parent", "start_date", "end_date")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        child = cleaned_data.get("child")
+        parent = cleaned_data.get("parent")
+        if child == parent:
+            raise forms.ValidationError("Child and parent cannot be the same")
+        return cleaned_data
+
+    def fsave(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.parent is None:
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
+
+
+CompanyParentFormSet = forms.inlineformset_factory(
+    Company,
+    CompanyParent,
+    fk_name="child",
+    form=CompanyParentForm,
+    fields=("parent", "alt_name", "start_date", "end_date"),
+    extra=1,
+    can_delete=True,
+    widgets={
+        "parent": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:company-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
+        ),
+    },
+)
+
+
+class CompanyPastNameForm(forms.ModelForm):
+    class Meta(auto_prefetch.Model.Meta):
+        model = CompanyPastName
+        fields = ("name", "start_date", "end_date")
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.name is None:
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
+
+
+CompanyPastNameFormSet = forms.inlineformset_factory(
+    Company,
+    CompanyPastName,
+    form=CompanyPastNameForm,
+    fields=("name", "start_date", "end_date"),
+    extra=1,
+    can_delete=True,
+)

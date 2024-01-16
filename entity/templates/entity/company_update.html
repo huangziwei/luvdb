@@ -4,13 +4,9 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-8">
-                <h1>Update Company</h1>
-                <form action="" method="post">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <input type="submit" value="Update" class="btn btn-primary">
-                </form>
+            <div class="col-12 col-md-7">
+                <h3>Update Company</h3>
+                {% include "entity/company_form.html" %}
             </div>
         </div>
     </div>

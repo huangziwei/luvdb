@@ -197,17 +197,6 @@ class Company(Entity):
     wikipedia = models.URLField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
-    parent = models.ForeignKey(
-        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
-    )
-    successor = models.ForeignKey(
-        "self",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="predecessor",
-    )
-
     def __str__(self):
         if self.location:
             return f"{self.location}: {self.name}"
@@ -219,3 +208,42 @@ class Company(Entity):
                 get_location_hierarchy_ids(self.location)
             )
         super().save(*args, **kwargs)
+
+
+class CompanyParent(auto_prefetch.Model):
+    """
+    Parent Company
+    """
+
+    child = auto_prefetch.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name="parent_companies"
+    )
+    parent = auto_prefetch.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name="child_companies",
+        null=True,
+        blank=True,
+    )
+    alt_name = models.CharField(max_length=255, blank=True, null=True)
+    start_date = models.CharField(max_length=10, blank=True, null=True)
+    end_date = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.child} < {self.alt_name}"
+
+
+class CompanyPastName(auto_prefetch.Model):
+    """
+    Past Name
+    """
+
+    company = auto_prefetch.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name="past_names"
+    )
+    name = models.CharField(max_length=255, blank=True, null=True)
+    start_date = models.CharField(max_length=10, blank=True, null=True)
+    end_date = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.company} < {self.name}"

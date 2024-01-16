@@ -33,6 +33,7 @@ from PIL import Image
 from activity_feed.models import Block
 from discover.views import user_has_upvoted
 from entity.models import Creator, Role
+from entity.utils import get_company_name, parse_date
 from entity.views import HistoryViewMixin, get_contributors
 from scrape.wikipedia import scrape_release
 from write.forms import CommentForm, RepostForm
@@ -734,6 +735,28 @@ class ReleaseDetailView(DetailView):
         context["include_mermaid"] = include_mermaid
 
         context["genres"] = self.object.get_genres()
+
+        # labels_with_modified_names = []
+        # release_date = (
+        #     parse_date(release.release_date) if release.release_date else None
+        # )
+
+        # for label in release.label.all():
+        #     label_name = label.name  # Default to current name
+
+        #     if release_date:
+        #         past_names = CompanyPastName.objects.filter(company=label)
+        #         for past_name in past_names:
+        #             start_date = parse_date(past_name.start_date or "0001.01.01")
+        #             end_date = parse_date(past_name.end_date or "9999.12.31")
+
+        #             if start_date <= release_date <= end_date:
+        #                 label_name = past_name.name
+        #                 break
+
+        #     labels_with_modified_names.append({"label": label, "name": label_name})
+
+        context["labels"] = get_company_name(release.label.all(), release.release_date)
 
         return context
 

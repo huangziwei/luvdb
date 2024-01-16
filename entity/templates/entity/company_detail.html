@@ -17,6 +17,34 @@
                     {% endif %}
                     {% if object.defunct_date %}{{ object.defunct_date }}{% endif %}
                 </span>
+                {% if past_names.exists %}
+                <div>
+                    <span class="text-muted">Past Names:</span>
+                    {% for past_name in past_names %}
+                        {{ past_name.name }} ({{ past_name.start_date }}-{{ past_name.end_date }})
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if current_parent_companies.exists or past_parent_companies.exists %}
+                <div>
+                    <span class="text-muted">Parent Companies:</span>
+                    {% if current_parent_companies.exists %}
+                        {% for parent_company in current_parent_companies %}
+                            <a href="{% url 'entity:company_detail' parent_company.parent.id %}">{{ parent_company.alt_name|default:parent_company.parent.name }}</a> ({{ parent_company.start_date }}-now)
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if past_parent_companies.exists %}
+                        {% for parent_company in past_parent_companies %}
+                            {% if forloop.first %} / {% endif %}
+                            <a href="{% url 'entity:company_detail' parent_company.parent.id %}">{{ parent_company.alt_name|default:parent_company.parent.name }}</a> ({{ parent_company.start_date }}-{{ parent_company.end_date }})
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    {% endif %}                    
+                </div>
+                {% endif %}
                 {% if object.notes %}
                 <div class="text-muted">
                     {{ object.notes | markdownify }}
@@ -238,46 +266,6 @@
                 <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                     <a href="{% url 'entity:company_update' object.pk %}"
                            class='fs-6 text-secondary'>Edit Company</a>
-                </div>
-                {% endif %}
-
-                {% if object.parent or object.children.count != 0 or object.successor or object.predecessor.count != 0 %}
-                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <div class="fs-5">Relationship</div>
-                    {% if object.parent %}
-                    <div>
-                        <span class="text-muted">Parent:</span>
-                        <a href="{% url 'entity:company_detail' object.parent.id %}">{{ object.parent.name }}</a>
-                    </div>
-                    {% endif %}
-                    {% if object.children.count != 0 %}
-                    <div>
-                        {% if object.children.count == 1 %}
-                            <span class="text-muted">Child:</span>
-                        {% else %}
-                            <span class="text-muted">Children:</span>
-                        {% endif %}
-                        {% for child in object.children.all %}
-                            <a href="{% url 'entity:company_detail' child.id %}">{{ child.name }}</a>
-                            {% if not forloop.last %} / {% endif %}
-                        {% endfor %}
-                    </div>
-                    {% endif %}                    
-                    {% if object.successor %}
-                    <div>
-                        <span class="text-muted">Successor:</span>
-                        <a href="{% url 'entity:company_detail' object.successor.id %}">{{ object.successor.name }}</a>
-                    </div>      
-                    {% endif %}  
-                    {% if object.predecessor.count != 0 %}
-                    <div>
-                        <span class="text-muted">Predecessors:</span>
-                        {% for predecessor in object.predecessor.all %}
-                            <a href="{% url 'entity:company_detail' predecessor.id %}">{{ predecessor.name }}</a>
-                            {% if not forloop.last %} / {% endif %}
-                        {% endfor %}
-                    </div>
-                    {% endif %}             
                 </div>
                 {% endif %}
 
