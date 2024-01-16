@@ -85,7 +85,10 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
             wiki_url = request.POST.get("wiki_url")
             data = scrape_creator(wiki_url)
             form = self.form_class(initial=data)
-            return render(request, self.template_name, {"form": form})
+            memberof = MemberOfFormSet()
+            return render(
+                request, self.template_name, {"form": form, "memberof": memberof}
+            )
         else:
             return super().post(request, *args, **kwargs)
 
