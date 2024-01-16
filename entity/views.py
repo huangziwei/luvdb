@@ -28,6 +28,7 @@ from .forms import (
     CompanyParentFormSet,
     CompanyPastNameFormSet,
     CreatorForm,
+    MemberOfFormSet,
 )
 from .models import Company, Creator, Role
 
@@ -53,9 +54,27 @@ class CreatorCreateView(LoginRequiredMixin, CreateView):
     form_class = CreatorForm
     template_name = "entity/creator_create.html"
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["memberof"] = MemberOfFormSet(self.request.POST, instance=self.object)
+        else:
+            data["memberof"] = MemberOfFormSet(instance=self.object)
+        return data
+
     def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        form.instance.updated_by = self.request.user
+        context = self.get_context_data()
+        memberof = context["memberof"]
+        if not all(memberof_form.is_valid() for memberof_form in memberof):
+            return self.form_invalid(form)
+
+        with transaction.atomic():
+            form.instance.created_by = self.request.user
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if memberof.is_valid():
+                memberof.instance = self.object
+                memberof.save()
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -483,8 +502,26 @@ class CreatorUpdateView(LoginRequiredMixin, UpdateView):
             return HttpResponseForbidden("This entry is locked and cannot be edited.")
         return super().dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["memberof"] = MemberOfFormSet(self.request.POST, instance=self.object)
+        else:
+            data["memberof"] = MemberOfFormSet(instance=self.object)
+        return data
+
     def form_valid(self, form):
-        form.instance.updated_by = self.request.user
+        context = self.get_context_data()
+        memberof = context["memberof"]
+        if not all(memberof_form.is_valid() for memberof_form in memberof):
+            return self.form_invalid(form)
+
+        with transaction.atomic():
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if memberof.is_valid():
+                memberof.instance = self.object
+                memberof.save()
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -533,6 +570,30 @@ class RoleDetailView(LoginRequiredMixin, DetailView):
 class CreatorAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         qs = Creator.objects.all()
+
+        if self.q:
+            qs = qs.filter(
+                Q(name__icontains=self.q) | Q(other_names__icontains=self.q)
+            ).distinct()
+
+            return qs
+
+        return Creator.objects.none()
+
+    def get_result_label(self, item):
+        # Get the birth and death years
+        birth_year = item.birth_date[:4] if item.birth_date else "?"
+        death_year = item.death_date[:4] if item.death_date else ""
+
+        # Format the label
+        label = format_html("{} ({} - {})", item.name, birth_year, death_year)
+
+        return label
+
+
+class GroupAutoComplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Creator.objects.exclude(creator_type="Person")
 
         if self.q:
             qs = qs.filter(

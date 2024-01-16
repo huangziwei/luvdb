@@ -19,7 +19,7 @@
                 </span>
                 {% if past_names.exists %}
                 <div>
-                    <span class="text-muted">Past Names:</span>
+                    <span class="text-muted">Also known as</span>
                     {% for past_name in past_names %}
                         {{ past_name.name }} ({{ past_name.start_date }}-{{ past_name.end_date }})
                         {% if not forloop.last %} / {% endif %}
@@ -31,7 +31,7 @@
                     <span class="text-muted">Parent Companies:</span>
                     {% if current_parent_companies.exists %}
                         {% for parent_company in current_parent_companies %}
-                            <a href="{% url 'entity:company_detail' parent_company.parent.id %}">{{ parent_company.alt_name|default:parent_company.parent.name }}</a> ({{ parent_company.start_date }}-now)
+                            <a href="{% url 'entity:company_detail' parent_company.parent.id %}">{{ parent_company.alt_name|default:parent_company.parent.name }}</a> ({{ parent_company.start_date }}-Now)
                             {% if not forloop.last %} / {% endif %}
                         {% endfor %}
                     {% endif %}

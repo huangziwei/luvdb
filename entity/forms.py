@@ -3,7 +3,7 @@ from dal import autocomplete
 from django import forms
 from django.urls import reverse_lazy
 
-from .models import Company, CompanyParent, CompanyPastName, Creator
+from .models import Company, CompanyParent, CompanyPastName, Creator, MemberOf
 
 
 class CreatorForm(forms.ModelForm):
@@ -49,6 +49,47 @@ class CreatorForm(forms.ModelForm):
             "death_date": "Date of Death / Dissolution",
             "death_location": "Place of Death / Dissolution",
         }
+
+
+class MemberOfForm(forms.ModelForm):
+    class Meta(auto_prefetch.Model.Meta):
+        model = MemberOf
+        fields = ("group", "start_date", "end_date")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        creator = cleaned_data.get("creator")
+        group = cleaned_data.get("group")
+        if creator == group:
+            raise forms.ValidationError("Creator and group cannot be the same")
+        return cleaned_data
+
+    def fsave(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.group is None:
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
+
+
+MemberOfFormSet = forms.inlineformset_factory(
+    Creator,
+    MemberOf,
+    fk_name="creator",
+    form=MemberOfForm,
+    fields=("group", "notes", "start_date", "end_date"),
+    extra=1,
+    can_delete=True,
+    widgets={
+        "group": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:group-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
+        ),
+    },
+)
 
 
 class CompanyForm(forms.ModelForm):

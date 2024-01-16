@@ -159,6 +159,29 @@ class Creator(Entity):
         super().save(*args, **kwargs)
 
 
+class MemberOf(auto_prefetch.Model):
+    """
+    Member Of
+    """
+
+    creator = auto_prefetch.ForeignKey(
+        Creator, on_delete=models.CASCADE, related_name="member_of"
+    )
+    group = auto_prefetch.ForeignKey(
+        Creator,
+        on_delete=models.CASCADE,
+        related_name="members",
+        null=True,
+        blank=True,
+    )
+    notes = models.CharField(max_length=100, blank=True, null=True)
+    start_date = models.CharField(max_length=10, blank=True, null=True)
+    end_date = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.creator} < {self.group}"
+
+
 class Role(auto_prefetch.Model):
     DOMAIN_CHOICES = (
         ("read", "Read"),
@@ -199,7 +222,7 @@ class Company(Entity):
 
     def __str__(self):
         if self.location:
-            return f"{self.location}: {self.name}"
+            return f"{self.location.name}: {self.name}"
         return self.name
 
     def save(self, *args, **kwargs):

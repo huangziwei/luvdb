@@ -11,6 +11,7 @@ from .views import (
     CreatorDetailView,
     CreatorHistoryView,
     CreatorUpdateView,
+    GroupAutoComplete,
     RoleAutocomplete,
     RoleCreateView,
     RoleDetailView,
@@ -35,6 +36,11 @@ urlpatterns = [
         "creator-autocomplete/",
         CreatorAutoComplete.as_view(),
         name="creator-autocomplete",
+    ),
+    path(
+        "group-autocomplete/",
+        GroupAutoComplete.as_view(),
+        name="group-autocomplete",
     ),
     # role
     path("role/create/", RoleCreateView.as_view(), name="role_create"),

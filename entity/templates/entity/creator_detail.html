@@ -6,8 +6,9 @@
         <div class="row">
             <!--meta-->
             <div class="col-12 col-md-8">
-                <span class='d-flex align-items-start'>
-                    <h2>{{ object.name }}</h2>
+                <span class='d-flex flex-wrap align-items-baseline'>
+                    <h2 class="me-2">{{ object.name }}</h2>
+                    {% if object.creator_type == "group" %}<div class="text-muted">Group</div> {% endif %}
                 </span>
                 <!--Other names in muted text in a line-->
                 {% if object.other_names %}<div class="text-muted">{{ object.other_names }}</div>{% endif %}
@@ -20,8 +21,25 @@
                     {% if object.death_date %}{{ object.death_date }}{% endif %}
                     {% if object.death_location %}(<a href="{% url 'visit:location_detail' object.death_location.id %}">{% if death_location_label %}{{ death_location_label }}{% else %}{{ object.death_location.name }}, {{ object.death_location.parent.name }}{% endif %}</a>){% endif %}
                 </span>
-                {% if object.creator_type == "group" %}<div class="text-muted">Group</div> {% endif %}
-
+                {% if object.members.exists %}
+                <div>
+                    <span class="text-muted">Members:</span>
+                    {% for member in object.members.all %}
+                        <a href="{% url 'entity:creator_detail' member.creator.id %}">{{ member.creator.name }}</a>
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if object.member_of.exists %}
+                <div>
+                    <span class="text-muted">Member of</span>
+                    {% for member_of in object.member_of.all %}
+                        <a href="{% url 'entity:creator_detail' member_of.group.id %}">{{ member_of.group.name }}</a> ({{member_of.start_date}} - {{member_of.end_date|default:"Now"}})
+                        {% if not forloop.last %} / {% endif %}
+                        {% if not forloop.last %} / {% endif %}
+                    {% endfor %}               
+                </div>                
+                {% endif %}
                 {% if object.notes %}
                 <div class="text-muted">
                     {{ object.notes | markdownify }}

@@ -5,12 +5,8 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-md-7 left-column">
-                <h2>Edit Creator</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
+                <h3>Edit Creator</h3>
+                {% include "entity/creator_form.html" %}
             </div>
         </div>
     </div>

@@ -6,12 +6,8 @@
         <div class="row">
             <!--left column-->
             <div class="col-12 col-md-7 left-column">
-                <h2>Create a new Creator</h2>
-                <form method="post" en>
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
+                <h3>Create a new Creator</h3>
+                {% include "entity/creator_form.html" %}
             </div>
             <!--right column-->
             <div class="col-12 col-md-5 right-column">

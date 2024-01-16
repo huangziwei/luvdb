@@ -1,0 +1,51 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.name|as_crispy_field }}
+    {{ form.other_names|as_crispy_field }}
+    {{ form.creator_type|as_crispy_field}}
+    {{ form.birth_date|as_crispy_field}}
+    {{ form.birth_location|as_crispy_field}}
+    {{ form.death_date|as_crispy_field}}
+    {{ form.death_location|as_crispy_field}}    
+    {{ form.website|as_crispy_field}}
+    {{ form.wikipedia|as_crispy_field }}
+    {{ memberof.management_form|crispy }}
+    <div id="memberof-formset" class="bg-light p-3 mb-3">
+        <strong>Member of</strong>
+        <p class='text-muted'>Groups this person is a member of.</p>
+        <div id="memberof">
+            {% for form in memberof %}
+                <div class="form-wrapper row" data-existing-record>
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4 mb-3">{{ form.group | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.notes | as_crispy_field }}</div>
+                    <div class="col-md-2 mb-3">{{ form.start_date | as_crispy_field }}</div>
+                    <div class="col-md-2 mb-3">{{ form.end_date | as_crispy_field }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-memberof-formset" class="btn btn-secondary">Add More</button>
+    </div>
+    {{ form.notes|as_crispy_field}}
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% if form.errors %}
+    <div class="alert alert-danger mt-5">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}<li>{{ field }}: {{ error }}</li>{% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+<script type="text/javascript"
+    src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript"
+    src="{% static 'js/FormsetHandler.js' %}"></script>
+<script>
+    initFormset('add-memberof-formset', 'memberof');
+</script>
+{{ form.media }}
