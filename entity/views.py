@@ -596,7 +596,7 @@ class CreatorAutoComplete(autocomplete.Select2QuerySetView):
 
 class GroupAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        qs = Creator.objects.exclude(creator_type="Person")
+        qs = Creator.objects.exclude(creator_type="person")
 
         if self.q:
             qs = qs.filter(
