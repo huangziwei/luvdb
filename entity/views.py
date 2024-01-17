@@ -696,7 +696,17 @@ class CompanyCreateView(LoginRequiredMixin, CreateView):
                 form_class = self.get_form_class()
                 form = form_class(initial=data)
                 form.fields["other_names"].widget = forms.TextInput()
-                return render(request, self.template_name, {"form": form})
+                companyparentfromset = CompanyParentFormSet()
+                pastnameformset = CompanyPastNameFormSet()
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": form,
+                        "companyparents": companyparentfromset,
+                        "pastnames": pastnameformset,
+                    },
+                )
             else:
                 # Handle the case where scraping fails
                 return render(request, self.template_name, {"form": self.get_form()})
