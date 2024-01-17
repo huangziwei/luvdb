@@ -111,9 +111,10 @@ class LocationDetailView(DetailView):
 
         context["contributors"] = get_contributors(self.object)
 
-        context["movies_filmed_here"] = Movie.objects.filter(
-            filming_locations_hierarchy__regex=regex_pattern
-        ).order_by("title")
+        context["movies_filmed_here"] = sorted(
+            Movie.objects.filter(filming_locations_hierarchy__regex=regex_pattern),
+            key=attrgetter("earliest_release_date"),
+        )
         context["movies_set_here"] = sorted(
             Movie.objects.filter(setting_locations_hierarchy__regex=regex_pattern),
             key=attrgetter("earliest_release_date"),

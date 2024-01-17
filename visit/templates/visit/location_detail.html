@@ -58,6 +58,7 @@
                             <div>
                                 {% for creator in creators_born_here_persons %}
                                     <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                    ({{creator.birth_date|extract_year}})
                                     {% if not forloop.last %} / {% endif %}
                                 {% endfor %}
                             </div>
@@ -67,6 +68,7 @@
                             <div>
                             {% for creator in creators_died_here %}
                                 <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                ({{creator.death_date|extract_year}})
                                 {% if not forloop.last %} / {% endif %}
                             {% endfor %}
                             </div>
@@ -78,6 +80,7 @@
                         <div>
                             {% for creator in creators_born_here_groups %}
                                 <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                ({{creator.birth_date|extract_year}})
                                 {% if not forloop.last %} / {% endif %}
                             {% endfor %}
                         </div>
@@ -92,6 +95,7 @@
                     <div id="companiesContent" class="collapse mt-2">
                     {% for company in companies_here %}
                         <a href="{% url 'entity:company_detail' company.id %}">{{ company.name }}</a>
+                        ({{company.founded_date|extract_year}})
                         {% if not forloop.last %} / {% endif %}
                     {% endfor %}
                     </div>
