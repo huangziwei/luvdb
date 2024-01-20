@@ -31,7 +31,7 @@
             <!--Left columns-->
             <div class="col-lg-8 col-md-8 col-sm-12">
                 <!-- movie-card -->
-                <div class="movie-card justify-content-start">
+                <div class="row movie-card justify-content-start">
                     <div class="d-flex flex-column flex-lg-row mt-2">
                         <!--poster-box-->
                         <div class="col-12 col-lg-auto mb-3 mb-lg-0">
@@ -130,41 +130,45 @@
                                     </div>
                                     {% if object.based_on_litworks.count != 0 or object.based_on_games.count != 0  or object.based_on_movies.count != 0 or object.based_on_series.count != 0 %} <!--or  or  -->
                                         <div class="mb-1">
-                                            <span class="text-muted">Based on:</span> 
-                                            <ul class='mb-0'>
+                                            <span class="text-muted">Based on</span> 
+                                            <div class='mb-0'>
                                             {% if object.based_on_litworks.count != 0 %}
-                                                <li>Publication{% if object.based_on_litworks.count > 1 %}s{% endif %}: 
-                                                {% for litwork in object.based_on_litworks.all %}
-                                                    <a href="{% url "read:work_detail" litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                                </li>
+                                                <div> 
+                                                    <span class="text-muted fw-lighter">Publication{% if object.based_on_litworks.count > 1 %}s{% endif %}:</span>
+                                                    {% for litwork in object.based_on_litworks.all %}
+                                                        <a href="{% url "read:work_detail" litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
+                                                        {% if not forloop.last %} / {% endif %}
+                                                    {% endfor %}
+                                                </div>
                                             {% endif %}
                                             {% if object.based_on_games.count != 0 %}
-                                                <li>Game{% if object.based_on_games.count > 1 %}s{% endif %}: 
-                                                {% for game in object.based_on_games.all %}
-                                                    <a href="{% url "play:work_detail" game.id %}">{{ game.title }}</a> ({{ game.first_release_date|extract_year }})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                                </li>
+                                                <div>
+                                                    <span class="text-muted fw-lighter">Game{% if object.based_on_games.count > 1 %}s{% endif %}:</span>
+                                                    {% for game in object.based_on_games.all %}
+                                                        <a href="{% url "play:work_detail" game.id %}">{{ game.title }}</a> ({{ game.first_release_date|extract_year }})
+                                                        {% if not forloop.last %} / {% endif %}
+                                                    {% endfor %}
+                                                </div>
                                             {% endif %}
                                             {% if object.based_on_movies.count != 0 %}
-                                                <li>Movie{% if object.based_on_movies.count > 1 %}s{% endif %}: 
-                                                {% for movie in object.based_on_movies.all %}
-                                                    <a href="{% url "watch:movie_detail" movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date|extract_year }})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                                </li>
+                                                <div>
+                                                    <span class="text-muted fw-lighter">Movie{% if object.based_on_movies.count > 1 %}s{% endif %}:</span>
+                                                    {% for movie in object.based_on_movies.all %}
+                                                        <a href="{% url "watch:movie_detail" movie.id %}">{{ movie.title }}</a> ({{ movie.eardivest_release_date|extract_year }})
+                                                        {% if not forloop.last %} / {% endif %}
+                                                    {% endfor %}
+                                                </div>
                                             {% endif %}
                                             {% if object.based_on_series.count != 0 %}
-                                                <li>Series: 
-                                                {% for series in object.based_on_series.all %}
-                                                    <a href="{% url "watch:series_detail" series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                                </li>
+                                                <div>
+                                                    <span class="text-muted fw-lighter">Series:</span>
+                                                    {% for series in object.based_on_series.all %}
+                                                        <a href="{% url "watch:series_detail" series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
+                                                        {% if not forloop.last %} / {% endif %}
+                                                    {% endfor %}
+                                                </div>
                                             {% endif %}
-                                            </ul>
+                                            </div>
                                         </div>
                                     {% endif %}
                                     {% if object.publications or object.notes or ordered_release_dates or filming_locations_with_parents or setting_locations_with_parents%}
@@ -254,10 +258,10 @@
                                             {% endif %}
                                             {% if grouped_release_dates %}
                                                 <div class="mb-1">
-                                                    <span class="text-muted">Release Dates:</span>
+                                                    <span class="text-muted">Release Dates</span>
                                                     {% for release_type, dates in grouped_release_dates.items %}
                                                         <div class="mb-1">
-                                                            <strong>{{ release_type }}</strong>
+                                                            <div class="text-muted fw-lighter">{{ release_type|title }}:</div>
                                                             <div class="ms-2">
                                                             {% for release_date in dates %}
                                                                 {{ release_date.release_date }} ({% if release_date.notes %}{{ release_date.notes }}, {% endif %}{{ release_date.region }})
@@ -287,6 +291,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!--Movie Check-In-->
                 <div class="mt-4">
                     {% include "watch/watch_checkin_form.html" %}
