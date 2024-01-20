@@ -5,12 +5,24 @@
     {{ form.name|as_crispy_field }}
     {{ form.other_names|as_crispy_field }}
     {{ form.creator_type|as_crispy_field}}
-    {{ form.birth_date|as_crispy_field}}
-    {{ form.birth_location|as_crispy_field}}
-    {{ form.death_date|as_crispy_field}}
-    {{ form.death_location|as_crispy_field}}    
-    {{ form.website|as_crispy_field}}
-    {{ form.wikipedia|as_crispy_field }}
+    <div class="bg-light p-3 mb-3" id="person-fields">
+        <strong>Person</strong>
+        <div class="row">
+            <div class="col-md-4 mb-1">{{ form.birth_date|as_crispy_field}}</div>
+            <div class="col-md-8 mb-1">{{ form.birth_location|as_crispy_field}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-1">{{ form.death_date|as_crispy_field}}</div>
+            <div class="col-md-8 mb-1">{{ form.death_location|as_crispy_field}}</div>
+        </div>
+    </div> 
+    <div class="bg-light p-3 mb-3" id="group-fields">
+        <strong>Group</strong>
+        <div class="row">
+            <div class="col-md-4 mb-1">{{ form.active_years|as_crispy_field}}</div>
+                <div class="col-md-8 mb-1">{{ form.origin_location|as_crispy_field}}</div>
+        </div>
+    </div> 
     {{ memberof.management_form|crispy }}
     <div id="memberof-formset" class="bg-light p-3 mb-3">
         <strong>Member of</strong>
@@ -29,6 +41,8 @@
         </div>
         <button type="button" id="add-memberof-formset" class="btn btn-secondary">Add More</button>
     </div>
+    {{ form.website|as_crispy_field}}
+    {{ form.wikipedia|as_crispy_field }}
     {{ form.notes|as_crispy_field}}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
@@ -49,3 +63,27 @@
     initFormset('add-memberof-formset', 'member_of');
 </script>
 {{ form.media }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function toggleFields() {
+        var creatorType = document.getElementById('id_creator_type').value;
+        var personFields = document.getElementById('person-fields');
+        var groupFields = document.getElementById('group-fields');
+
+        if (creatorType === 'person') {
+            personFields.style.display = '';
+            groupFields.style.display = 'none';
+        } else if (creatorType === 'group') {
+            personFields.style.display = 'none';
+            groupFields.style.display = '';
+        }
+    }
+
+    // Initial toggle on page load
+    toggleFields();
+
+    // Add change event listener to the creator_type field
+    document.getElementById('id_creator_type').addEventListener('change', toggleFields);
+});
+</script>
+    

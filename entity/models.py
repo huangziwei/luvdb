@@ -119,8 +119,7 @@ class Creator(Entity):
     death_date = models.CharField(
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
-    birth_place = models.CharField(max_length=255, blank=True, null=True)
-    death_place = models.CharField(max_length=255, blank=True, null=True)
+
     birth_location = auto_prefetch.ForeignKey(
         Location,
         on_delete=models.SET_NULL,
@@ -135,8 +134,19 @@ class Creator(Entity):
         blank=True,
         related_name="death_location",
     )
+    # group meta data
+    active_years = models.CharField(max_length=100, blank=True, null=True)
+    origin_location = auto_prefetch.ForeignKey(
+        Location,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="origin_location",
+    )
+
     birth_location_hierarchy = models.TextField(blank=True, null=True)
     death_location_hierarchy = models.TextField(blank=True, null=True)
+    origin_location_hierarchy = models.TextField(blank=True, null=True)
 
     wikipedia = models.URLField(blank=True, null=True)
     website = models.URLField(blank=True, null=True)
@@ -155,6 +165,10 @@ class Creator(Entity):
         if self.death_location:
             self.death_location_hierarchy = ",".join(
                 get_location_hierarchy_ids(self.death_location)
+            )
+        if self.origin_location:
+            self.origin_location_hierarchy = ",".join(
+                get_location_hierarchy_ids(self.origin_location)
             )
         super().save(*args, **kwargs)
 

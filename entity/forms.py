@@ -17,6 +17,8 @@ class CreatorForm(forms.ModelForm):
             "birth_location",
             "death_date",
             "death_location",
+            "active_years",
+            "origin_location",
             "wikipedia",
             "website",
             "notes",
@@ -26,9 +28,11 @@ class CreatorForm(forms.ModelForm):
             "other_names": "Enter any other names the person or the group is known by, separated by slashes (`/`).",
             "creator_type": "Select whether the entity is a person or a group.",
             "birth_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
-            "birth_location": "Enter the location of birth or formation. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
+            "birth_location": "Enter the person's location of birth. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
             "death_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
-            "death_location": "Enter the place of death or dissolution. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
+            "death_location": "Enter the person's location of death. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
+            "active_years": "Recommended formats: `YYYY-YYYY, YYYY, YYYY-`,",
+            "origin_location": "Enter the group's location of origin. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
             "wikipedia": "Enter the person's or the group's Wikipedia URL.",
             "website": "Enter the person's or the group's website URL.",
             "notes": "Enter any additional information about the person or the group.",
@@ -41,13 +45,18 @@ class CreatorForm(forms.ModelForm):
             "death_location": autocomplete.ModelSelect2(
                 url=reverse_lazy("visit:location-autocomplete"),
             ),
+            "origin_location": autocomplete.ModelSelect2(
+                url=reverse_lazy("visit:location-autocomplete"),
+            ),
         }
         labels = {
             "creator_type": "Type",
-            "birth_date": "Date of Birth / Formation",
-            "birth_location": "Place of Birth / Formation",
-            "death_date": "Date of Death / Dissolution",
-            "death_location": "Place of Death / Dissolution",
+            "birth_date": "Date of Birth",
+            "birth_location": "Place of Birth",
+            "death_date": "Date of Death",
+            "death_location": "Place of Death",
+            "active_years": "Years Active",
+            "origin_location": "Place of Origin",
         }
 
 
