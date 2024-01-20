@@ -38,9 +38,16 @@
                         {% for creator in creator_results %}
                             <p>
                                 <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name|truncatechars:50 }}</a>
-                                {% if creator.birth_date %}
-                                    ({{creator.birth_date|extract_year}}-{% if creator.death_date %}{{creator.death_date|extract_year}}{% endif %})
+                                {% if creator.creator_type == "person" %}
+                                    {% if creator.birth_date %}
+                                        ({{creator.birth_date|extract_year}}-{% if creator.death_date %}{{creator.death_date|extract_year}}{% endif %})
+                                    {% endif %}
+                                {% else %}
+                                    {% if creator.active_years %}
+                                        ({{creator.active_years}})
+                                    {% endif %}
                                 {% endif %}
+
                             </p>
                         {% endfor %}
                     {% endif %}
