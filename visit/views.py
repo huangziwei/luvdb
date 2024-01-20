@@ -95,9 +95,9 @@ class LocationDetailView(DetailView):
         ).order_by("birth_date")
 
         creators_born_here_groups = Creator.objects.filter(
-            birth_location_hierarchy__regex=regex_pattern,
+            origin_location_hierarchy__regex=regex_pattern,
             creator_type="group",  # Adjust the filter based on your model
-        ).order_by("birth_date")
+        ).order_by("active_years")
 
         context["creators_born_here_persons"] = creators_born_here_persons
         context["creators_born_here_groups"] = creators_born_here_groups

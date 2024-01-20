@@ -135,7 +135,7 @@ class Creator(Entity):
         related_name="death_location",
     )
     # group meta data
-    active_years = models.CharField(max_length=100, blank=True, null=True)
+    active_years = models.CharField(max_length=255, blank=True, null=True)
     origin_location = auto_prefetch.ForeignKey(
         Location,
         on_delete=models.SET_NULL,
