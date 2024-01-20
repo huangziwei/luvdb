@@ -61,7 +61,7 @@
                                 {% if object.other_titles %}<p class='text-muted'>{{ object.other_titles }}</p>{% endif %}
                                 <div class="movie-meta">
                                     {% if object.studios.count != 0 %}
-                                        <p>
+                                        <div class="mb-1">
                                             {# djlint:off #}
                                             <span class="text-muted">Studio{% if object.studios.count > 1 %}s{% endif %}:</span>
                                             {# djlint:on #}
@@ -69,10 +69,10 @@
                                                 <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if object.distributors.count != 0 %}
-                                        <p>
+                                        <div class="mb-1">
                                             {# djlint:off #}
                                             <span class="text-muted">Distributor{% if object.distributors.count > 1 %}s{% endif %}:</span>
                                             {# djlint:on #}
@@ -80,15 +80,15 @@
                                                 <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if object.website %}
-                                        <p>
+                                        <div class="mb-1">
                                             <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if object.genres %}
-                                        <p>
+                                        <div class="mb-1">
                                             {# djlint:off #}
                                                 <span class="text-muted">Genre{% if object.genres.count > 1 %}s{% endif %}:</span>
                                             {# djlint:on #}
@@ -96,160 +96,199 @@
                                                 <a href="{% url 'watch:genre_detail' genre.name %}">{{ genre.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if collections %}
-                                        <p>
+                                        <div class="mb-1">
                                             <span class="text-muted">Collection{% if collections.count > 1 %}s{% endif %}:</span>
                                             {% for collection in collections %}
                                                 <a href="{% url 'watch:collection_detail' collection.id %}">{{ collection.title }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
-                                    {% endif %}                                  
-                                    <p>
-                                        <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:series_cast_detail' object.id %}">View All</a>
-                                    </p>
-                                    {% if object.release_date %}
-                                        <p>
-                                            <span class="text-muted">Premiere on:</span> {{ object.release_date }}
-                                        </p>
-                                    {% endif %}
-                                    {% if object.based_on_litworks.count != 0 or object.based_on_games.count != 0  or object.based_on_movies.count != 0 or object.based_on_series.count != 0 %} <!--or  or  -->
-                                        <div class="mb-1">
-                                            <span class="text-muted">Based on:</span> 
-                                            <ul class='mb-0'>
-                                            {% if object.based_on_litworks.count != 0 %}
-                                                <li>Publication{% if object.based_on_litworks.count > 1 %}s{% endif %}: 
-                                                {% for litwork in object.based_on_litworks.all %}
-                                                    <a href="{% url "read:work_detail" litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                                </li>
-                                            {% endif %}
-                                            {% if object.based_on_games.count != 0 %}
-                                                <li>Game{% if object.based_on_games.count > 1 %}s{% endif %}: 
-                                                {% for game in object.based_on_games.all %}
-                                                    <a href="{% url "play:work_detail" game.id %}">{{ game.title }}</a> ({{ game.first_release_date|extract_year }})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                                </li>
-                                            {% endif %}
-                                            {% if object.based_on_movies.count != 0 %}
-                                                <li>Movie{% if object.based_on_movies.count > 1 %}s{% endif %}: 
-                                                {% for movie in object.based_on_movies.all %}
-                                                    <a href="{% url "watch:movie_detail" movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date|extract_year }})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                                </li>
-                                            {% endif %}
-                                            {% if object.based_on_series.count != 0 %}
-                                                <li>Series: 
-                                                {% for series in object.based_on_series.all %}
-                                                    <a href="{% url "watch:series_detail" series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                                </li>
-                                            {% endif %}
-                                            </ul>
                                         </div>
-                                    {% endif %}
-                                    {% if object.publications or object.notes or filming_locations_with_parents or setting_locations_with_parents%}
+                                    {% endif %}                                  
+                                    <div class="mb-1">
+                                        <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:series_cast_detail' object.id %}">View All</a>
+                                    </div>
+
+                                    {% if object.release_date or object.notes or object.publications.exists or object.games.exists or object.movies.exists or object.related_series.exists or grouped_release_dates or filming_locations_with_parents or setting_locations_with_parents or object.based_on_litworks.exists or object.based_on_litworks.exists or object.based_on_movies.exists or object.based_on_series.exists or object.based_on_games.exists%}
                                     <div class="my-3">
-                                        <p class="text-muted"
-                                           type="button"
-                                           data-bs-toggle="collapse"
-                                           data-bs-target="#detailsCollapse"
-                                           aria-expanded="false"
-                                           aria-controls="detailsCollapse">
-                                            <span class="text-muted fw-bold">More Metadata</span>
-                                        </p>
-                                        <div class="collapse" id="detailsCollapse">
-                                            {% if object.publications.count != 0 %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Novelization:</span>
-                                                {% for publication in object.publications.all %}
-                                                    <a href="{% url 'read:work_detail' publication.id %}">{{publication.title}}</a> ({{publication.publication_date|extract_year}})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                            </div>
+                                        <ul class="nav nav-tabs col-11 scrollable-tabs" id="myTab" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted active" id="more-tab" data-bs-toggle="tab" data-bs-target="#more" type="button" role="tab" aria-controls="release-dates" aria-selected="false">More</button>
+                                            </li>
+                                            {% if object.based_on_litworks.exists or object.based_on_games.exists  or object.based_on_movies.exists or object.based_on_series.exists %}
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link text-muted" id="based-on-tab" data-bs-toggle="tab" data-bs-target="#based-on" type="button" role="tab" aria-controls="based-on" aria-selected="false">Based on</button>
+                                                </li>
                                             {% endif %}
-                                            {% if object.games.count != 0 %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Related Game{% if object.games.count > 1 %}s{% endif %}:</span>
-                                                {% for game in object.games.all %}
-                                                    <a href="{% url 'play:work_detail' game.id %}">{{game.title}}</a> ({{game.first_release_date|extract_year}})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                            </div>                                            
+                                            {% if object.publications.exists or object.games.exists or object.movies.exists or object.related_series.exists  %}
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link text-muted" id="related-tab" data-bs-toggle="tab" data-bs-target="#related" type="button" role="tab" aria-controls="related" aria-selected="true">Adaptations</button>
+                                                </li>
                                             {% endif %}
-                                            {% if object.movies.count != 0 %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Related Movie{% if object.movies.count > 1 %}s{% endif %}:</span>
-                                                {% for movie in object.movies.all %}
-                                                    <a href="{% url 'watch:movie_detail' movie.id %}">{{movie.title}}</a> ({{movie.earliest_release_date|extract_year}})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                            </div>                                            
-                                            {% endif %}
-                                            {% if object.related_series.count != 0 %}
-                                            <div class="mb-1">
-                                                <span class="text-muted">Related Series:</span>
-                                                {% for series in object.related_series.all %}
-                                                    <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
-                                                    {% if not forloop.last %} / {% endif %}
-                                                {% endfor %}
-                                            </div>                                            
-                                            {% endif %}
-                                            {% if filming_locations_with_parents %}
-                                            <div class="mb-1">
-                                                {# djlint:off #}
-                                                <span class="text-muted">Filming Location{% if object.filming_locations.count > 1 %}s{% endif %}:</span>
-                                                {# djlint:on #}
-                                                <ul>
-                                                    {% for location, parents in filming_locations_with_parents %}
-                                                        <li>
-                                                            {% if parents %}
-                                                                {% for parent in parents %}
-                                                                    <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
-                                                                {% endfor %}
-                                                            {% endif %}
-                                                            <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                            {% endif %}
-                                            {% if setting_locations_with_parents %}
-                                            <div class="mb-1">
-                                                {# djlint:off #}
-                                                <span class="text-muted">Setting Location{% if object.setting_locations.count > 1 %}s{% endif %}:</span>
-                                                {# djlint:on #}
-                                                <ul>
-                                                    {% for location, parents in setting_locations_with_parents %}
-                                                        <li>
-                                                            {% if parents %}
-                                                                {% for parent in parents %}
-                                                                    <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
-                                                                {% endfor %}
-                                                            {% endif %}
-                                                            <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
+                                            {% if filming_locations_with_parents or setting_locations_with_parents %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations" type="button" role="tab" aria-controls="locations" aria-selected="false">Locations</button>
+                                            </li>
                                             {% endif %}
                                             {% if object.notes %}
-                                            <div class="mb-1">
-                                                <div class="mb-1 text-muted">Notes:</div>
-                                                <div class="card card-body">
-                                                    {{ object.notes|markdownify }}
-                                                </div>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab" aria-controls="related" aria-selected="true">Notes</button>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                        <div class="tab-content" id="myTabContent">
+                                            <div class="tab-pane mt-1 show active" id="more" role="tabpanel" aria-labelledby="more-tab">
+                                                {% for role_name, creator_altname_tuples in main_roles.items %}
+                                                    <div class="mb-1">
+                                                        <span class="text-muted">{{ role_name }}:</span>
+                                                        {% for creator, alt_name in creator_altname_tuples %}
+                                                            <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
+                                                            {% if not forloop.last %}/{% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endfor %}
+                                                {% if object.release_date %}
+                                                    <div class="mb-1" >
+                                                        <span class="text-muted">Premiere Date:</span> {{ object.release_date }}
+                                                    </div>
+                                                {% endif %}
                                             </div>
-                                            {% endif %}                                        
+                                            <div class="tab-pane mt-1" id="related" role="tabpanel" aria-labelledby="related-tab">
+                                                {% if object.publications.count != 0 %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Novelization:</span>
+                                                    {% for publication in object.publications.all %}
+                                                        <a href="{% url 'read:work_detail' publication.id %}">{{publication.title}}</a> ({{publication.publication_date|extract_year}})
+                                                        {% if not forloop.last %} / {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                                {% if object.games.count != 0 %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Related Game{% if object.games.count > 1 %}s{% endif %}:</span>
+                                                    {% for game in object.games.all %}
+                                                        <a href="{% url 'play:work_detail' game.id %}">{{game.title}}</a> ({{game.first_release_date|extract_year}})
+                                                        {% if not forloop.last %} / {% endif %}
+                                                    {% endfor %}
+                                                </div>                                            
+                                                {% endif %}
+                                                {% if object.movies.count != 0 %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Related Movie{% if object.related_movies.count > 1 %}s{% endif %}:</span>
+                                                    {% for movie in object.related_movies.all %}
+                                                        <a href="{% url 'watch:movie_detail' movie.id %}">{{movie.title}}</a> ({{movie.earliest_release_date|extract_year}})
+                                                        {% if not forloop.last %} / {% endif %}
+                                                    {% endfor %}
+                                                </div>                                            
+                                                {% endif %}
+                                                {% if object.related_series.count != 0 %}
+                                                <div class="mb-1">
+                                                    <span class="text-muted">Related Series:</span>
+                                                    {% for series in object.series.all %}
+                                                        <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
+                                                        {% if not forloop.last %} / {% endif %}
+                                                    {% endfor %}
+                                                </div>                                            
+                                                {% endif %}
+                                            </div>
+                                            <div class="tab-pane mt-1" id="locations" role="tabpanel" aria-labelledby="locations-tab">
+                                                {% if filming_locations_with_parents %}
+                                                    <div class="mb-1">
+                                                        {# djlint:off #}
+                                                        <span class="text-muted">Filming Location{% if object.filming_locations.count > 1 %}s{% endif %}:</span>
+                                                        {# djlint:on #}
+                                                        <ul>
+                                                            {% for location, parents in filming_locations_with_parents %}
+                                                                <li>
+                                                                    {% if parents %}
+                                                                        {% for parent in parents %}
+                                                                            <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
+                                                                        {% endfor %}
+                                                                    {% endif %}
+                                                                    <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                                {% if setting_locations_with_parents %}
+                                                    <div class="mb-1">
+                                                        {# djlint:off #}
+                                                        <span class="text-muted">Setting Location{% if object.setting_locations.count > 1 %}s{% endif %}:</span>
+                                                        {# djlint:on #}
+                                                        <ul>
+                                                            {% for location, parents in setting_locations_with_parents %}
+                                                                <li>
+                                                                    {% if parents %}
+                                                                        {% for parent in parents %}
+                                                                            <a href="{% url 'visit:location_detail' parent.id %}">{{ parent.name }}</a> > 
+                                                                        {% endfor %}
+                                                                    {% endif %}
+                                                                    <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a> 
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="tab-pane mt-1" id="based-on" role="tabpanel" aria-labelledby="based-on-tab">
+                                                {% if object.based_on_litworks.count != 0 or object.based_on_games.count != 0  or object.based_on_movies.count != 0 or object.based_on_series.count != 0 %} <!--or  or  -->
+                                                    <div class="mb-1">
+                                                        <div class='mb-0'>
+                                                        {% if object.based_on_litworks.count != 0 %}
+                                                            <div> 
+                                                                <div class="text-muted">Publication{% if object.based_on_litworks.count > 1 %}s{% endif %}</div>
+                                                                {% for litwork in object.based_on_litworks.all %}
+                                                                    <a href="{% url "read:work_detail" litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if object.based_on_games.count != 0 %}
+                                                            <div>
+                                                                <div class="text-muted">Game{% if object.based_on_games.count > 1 %}s{% endif %}</div>
+                                                                {% for game in object.based_on_games.all %}
+                                                                    <a href="{% url "play:work_detail" game.id %}">{{ game.title }}</a> ({{ game.first_release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if object.based_on_movies.count != 0 %}
+                                                            <div>
+                                                                <div class="text-muted">Movie{% if object.based_on_movies.count > 1 %}s{% endif %}</div>
+                                                                {% for movie in object.based_on_movies.all %}
+                                                                    <a href="{% url "watch:movie_detail" movie.id %}">{{ movie.title }}</a> ({{ movie.eardivest_release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if object.based_on_series.count != 0 %}
+                                                            <div>
+                                                                <div class="text-muted">Series</div>
+                                                                {% for series in object.based_on_series.all %}
+                                                                    <a href="{% url "watch:series_detail" series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="tab-pane mt-1" id="notes" role="tabpanel" aria-labelledby="notes-tab">
+                                                {% if object.notes %}
+                                                    <div class="mb-1">
+                                                        <div class="mb-1">
+                                                            {{ object.notes|markdownify }}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
-                                    {% endif %}
+                                {% endif %}
                                 </div>
                             </div>
                             <!-- End of series-card -->

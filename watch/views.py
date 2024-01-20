@@ -729,6 +729,36 @@ class SeriesDetailView(DetailView):
             for location_id, parent_ids in unique_setting_locations_with_parents_set
         ]
 
+        main_role_names = [
+            "Director",
+            "Screenwriter",
+            "Producer",
+            "Story By",
+            "Music By",
+        ]
+        main_roles = {}
+        other_roles = {}
+
+        for series_role in series.seriesroles.all():
+            role_name = series_role.role.name
+            alt_name_or_creator_name = series_role.alt_name or series_role.creator.name
+
+            if role_name in main_role_names:
+                if role_name not in main_roles:
+                    main_roles[role_name] = []
+                main_roles[role_name].append(
+                    (series_role.creator, alt_name_or_creator_name)
+                )
+            else:
+                if role_name not in other_roles:
+                    other_roles[role_name] = []
+                other_roles[role_name].append(
+                    (series_role.creator, alt_name_or_creator_name)
+                )
+
+        context["main_roles"] = main_roles
+        context["other_roles"] = other_roles
+
         return context
 
     def post(self, request, *args, **kwargs):
