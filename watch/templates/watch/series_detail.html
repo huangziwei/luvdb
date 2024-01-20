@@ -53,7 +53,11 @@
                         <!--series-meta-->
                         <div class="col flex-grow-1 ms-lg-3">
                             <div class="card-body">
-                                <h2>{{ object.title }}</h2>
+                                <div class="d-flex flex-wrap align-items-baseline">
+                                    <h2>{{ object.title }}
+                                        <span class="text-muted">({{ object.release_date|extract_year }})</span>
+                                    </h2>
+                                </div>
                                 {% if object.other_titles %}<p class='text-muted'>{{ object.other_titles }}</p>{% endif %}
                                 <div class="movie-meta">
                                     {% if object.studios.count != 0 %}

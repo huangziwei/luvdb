@@ -54,111 +54,134 @@
                         <!--book-meta-->
                         <div class="col flex-grow-1 ms-lg-3">
                             <div class="card-body">
-                                <span class='d-flex align-items-start'>
-                                    <h2>{{ object.title }}</h2>
-                                </span>
+                                <div class="d-flex flex-wrap align-items-baseline">
+                                    <h2>{{ object.title }}
+                                        <span class="text-muted">({{ object.publication_date|extract_year }})</span>
+                                    </h2>
+                                </div>
                                 <div class="book-meta">
                                     {% if object.subtitle %}<p class='text-secondary'>{{ object.subtitle }}</p>{% endif %}
                                     {% for role_name, creator_altname_tuples in main_roles.items %}
-                                        <p>
+                                        <div class="mb-1" >
                                             <span class="text-muted">{{ role_name }}:</span>
                                             {% for creator, alt_name in creator_altname_tuples %}
                                                 <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
                                     {% endfor %}
                                     {% if object.publisher %}
-                                        <p>
+                                        <div class="mb-1" >
                                             <span class="text-muted">Publisher:</span>
                                             <a href="{% url 'entity:company_detail' object.publisher.id %}">
                                                 {{ object.publisher.name }}
                                             </a>
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if object.bookinseries_set.all %}
-                                        <p>
+                                        <div class="mb-1" >
                                             <span class="text-muted">Series:</span>
                                             {% for bookinseries in object.bookinseries_set.all %}
                                                 <a href="{% url 'read:series_detail' bookinseries.series.id %}">{{ bookinseries.series.title }}</a> #{{ bookinseries.order }}
                                                 {% if not forloop.last %}/{% endif %}
                                             {% endfor %}
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if genres %}
-                                        <p>
+                                        <div class="mb-1" >
                                             <span class="text-muted">Genres:</span>
                                             {% for genre in genres %}
                                                 <a href="{% url "read:genre_detail" genre.slug %}">{{ genre.name }}</a>
                                                 {% if not forloop.last %} / {% endif %}
                                             {% endfor %}
-                                        </p>
-                                    {% endif %}
-                                    {% if object.publication_date %}
-                                        <p>
-                                            <span class="text-muted">Date:</span> {{ object.publication_date }}
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     {% if object.bookinstance_set.count == 1 %}
-                                        <p>
+                                        <div class="mb-1" >
                                             <span class="text-muted">Other Editions:</span>
                                             <a href="{% url 'read:work_detail' object.bookinstance_set.first.instance.work.id %}">
                                                 View All
                                             </a>
-                                        </p>
+                                        </div>
                                     {% endif %}
                                     
                                     <div class="my-3">
-                                        <p role="button"
-                                           class="text-muted"
-                                           data-bs-toggle="collapse"
-                                           data-bs-target="#detailsCollapse"
-                                           aria-expanded="false"
-                                           aria-controls="detailsCollapse">
-                                            <span class="text-muted fw-bold">More Metadata</span>
-                                        </p>
-                                        <div class="collapse" id="detailsCollapse">
-                                            {% for role_name, creator_altname_tuples in other_roles.items %}
-                                                <p>
-                                                    <span class="text-muted">{{ role_name }}:</span>
-                                                    {% for creator, alt_name in creator_altname_tuples %}
-                                                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
-                                                        {% if not forloop.last %}/{% endif %}
-                                                    {% endfor %}
-                                                </p>
-                                            {% endfor %}
-                                            {% if object.format %}
-                                                <p>
-                                                    <span class="text-muted">Format:</span> {{ object.format }}
-                                                </p>
+                                        <ul class="nav nav-tabs col-11 scrollable-tabs" id="myTab" role="tablist">
+                                            {% if other_roles.exists or object.format or object.length or object.isbn_13 or object.isbn_10 or object.eisbn_13 or object.publication_date%}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted active" id="more-tab" data-bs-toggle="tab" data-bs-target="#more" type="button" role="tab" aria-controls="release-dates" aria-selected="false">More</button>
+                                            </li>
                                             {% endif %}
-                                            {% if object.length %}
-                                                <p>
-                                                    <span class="text-muted">Length:</span> {{ object.length }}
-                                                </p>
+                                            {% if object.based_on_litworks.exists or object.based_on_games.exists  or object.based_on_movies.exists or object.based_on_series.exists %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="based-on-tab" data-bs-toggle="tab" data-bs-target="#based-on" type="button" role="tab" aria-controls="based-on" aria-selected="false">Based on</button>
+                                            </li>
                                             {% endif %}
-                                            {% if object.isbn_10 %}
-                                                <p>
-                                                    <span class="text-muted">ISBN-10:</span> {{ object.isbn_10 }}
-                                                </p>
-                                            {% endif %}
-                                            {% if object.isbn_13 %}
-                                                <p>
-                                                    <span class="text-muted">ISBN-13:</span> {{ object.isbn_13 }}
-                                                </p>
-                                            {% endif %}
-                                            {% if object.eisbn_13 %}
-                                                <p>
-                                                    <span class="text-muted">E-ISBN-13:</span> {{ object.eisbn_13 }}
-                                                </p>
-                                            {% endif %}
-                                            {% if object.asin %}
-                                                <p>
-                                                    <span class="text-muted">ASIN:</span> {{ object.asin }}
-                                                </p>
+                                            {% if object.related_publications.exists or object.games.exists or object.movies.exists or object.series.exists  %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="related-tab" data-bs-toggle="tab" data-bs-target="#related" type="button" role="tab" aria-controls="related" aria-selected="true">Adaptations</button>
+                                            </li>
                                             {% endif %}
                                             {% if related_locations_with_parents %}
-                                            <p class="mb-1">
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations" type="button" role="tab" aria-controls="locations" aria-selected="false">Locations</button>
+                                            </li>
+                                            {% endif %}
+                                            {% if object.notes %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab" aria-controls="notes" aria-selected="true">Notes</button>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                        <div class="tab-content" id="myTabContent">
+                                            <div class="tab-pane mt-1 show active" id="more" role="tabpanel" aria-labelledby="more-tab">
+                                                {% for role_name, creator_altname_tuples in other_roles.items %}
+                                                    <div class="mb-1">
+                                                        <span class="text-muted">{{ role_name }}:</span>
+                                                        {% for creator, alt_name in creator_altname_tuples %}
+                                                            <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
+                                                            {% if not forloop.last %}/{% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endfor %}
+                                                {% if object.format %}
+                                                    <div class="mb-1">
+                                                        <span class="text-muted">Format:</span> {{ object.format }}
+                                                    </div>
+                                                {% endif %}
+                                                {% if object.length %}
+                                                    <div class="mb-1">
+                                                        <span class="text-muted">Length:</span> {{ object.length }}
+                                                    </div>
+                                                {% endif %}
+                                                {% if object.isbn_10 %}
+                                                    <div class="mb-1">
+                                                        <span class="text-muted">ISBN-10:</span> {{ object.isbn_10 }}
+                                                    </div>
+                                                {% endif %}
+                                                {% if object.isbn_13 %}
+                                                    <div class="mb-1">
+                                                        <span class="text-muted">ISBN-13:</span> {{ object.isbn_13 }}
+                                                    </div>
+                                                {% endif %}
+                                                {% if object.eisbn_13 %}
+                                                    <div class="mb-1">
+                                                        <span class="text-muted">E-ISBN-13:</span> {{ object.eisbn_13 }}
+                                                    </div>
+                                                {% endif %}
+                                                {% if object.asin %}
+                                                    <div class="mb-1">
+                                                        <span class="text-muted">ASIN:</span> {{ object.asin }}
+                                                    </div>
+                                                {% endif %}
+                                                {% if object.publication_date %}
+                                                    <div class="mb-1" >
+                                                        <span class="text-muted">Publication Date:</span> {{ object.publication_date }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            {% if related_locations_with_parents %}
+                                            <div class="tab-pane mt-1" id="locations" role="tabpanel" aria-labelledby="locations-tab">
                                                 {# djlint:off #}
                                                 <span class="text-muted">Related Location{% if related_locations_with_parents.count > 1 %}s{% endif %}:</span>
                                                 {# djlint:on #}
@@ -174,13 +197,12 @@
                                                         </li>
                                                     {% endfor %}
                                                 </ul>
-                                            </p>
+                                            </div>
                                             {% endif %}
                                             {% if object.notes %}
-                                                <p class="fs-6 text-muted">Details:</p>
-                                                <div class="card card-body col-12 col-md-11">
-                                                    {{ object.notes|markdownify }}
-                                                </div>
+                                            <div class="tab-pane mt-1" id="notes" role="tabpanel" aria-labelledby="notes-tab">
+                                                {{ object.notes|markdownify }}
+                                            </div>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -272,7 +294,7 @@
                                         </div>
                                     </div>
                                 {% empty %}
-                                    <p>No related instances found.</p>
+                                    <div>No related instances found.</div>
                                 {% endfor %}
                             </div>
                         </div>

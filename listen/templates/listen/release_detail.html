@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load concat_sets %}
+{% load util_filters %}
 {% block meta %}
     <meta property="og:title" content="{{ object.title }}">
     {% if object.notes %}
@@ -54,9 +55,11 @@
                         <!--release-meta-->
                         <div class="col flex-grow-1 ms-lg-3">
                             <div class="card-body">
-                                <span class="d-flex align-items-start">
-                                    <h2>{{ object.title }}</h2>
-                                </span>
+                                <div class="d-flex flex-wrap align-items-baseline">
+                                    <h2>{{ object.title }}
+                                        <span class="text-muted">({{ object.release_date|extract_year }})</span>
+                                    </h2>
+                                </div>
                                 <div class="release-meta">
                                     {% if object.subtitle %}
                                         <div class="text-secondary mb-2">

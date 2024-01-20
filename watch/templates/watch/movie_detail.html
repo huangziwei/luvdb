@@ -128,7 +128,7 @@
                                     <div class="mb-1">
                                         <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View All</a>
                                     </div>
-                                    {% if object.notes or object.publications.exists or object.games.exists or object.related_movies.exists or object.series.exists or grouped_release_dates or filming_locations_with_parents or setting_locations_with_parents%}
+                                    {% if object.notes or object.publications.exists or object.games.exists or object.related_movies.exists or object.series.exists or grouped_release_dates or filming_locations_with_parents or setting_locations_with_parents %}
                                     <div class="my-3">
                                         <ul class="nav nav-tabs col-11 scrollable-tabs" id="myTab" role="tablist">
                                             {% if grouped_release_dates %}
@@ -157,7 +157,7 @@
                                             </li>
                                             {% endif %}
                                         </ul>
-                                        <div class="tab-content ps-2 pe-2" id="myTabContent">
+                                        <div class="tab-content" id="myTabContent">
                                             <div class="tab-pane mt-1" id="related" role="tabpanel" aria-labelledby="related-tab">
                                                 {% if object.publications.count != 0 %}
                                                 <div class="mb-1">
