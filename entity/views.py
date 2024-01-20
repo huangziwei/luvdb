@@ -543,7 +543,7 @@ class CreatorDetailView(DetailView):
 
         context["birth_location_label"] = get_location_labels(creator.birth_location)
         context["death_location_label"] = get_location_labels(creator.death_location)
-
+        context["origin_location_label"] = get_location_labels(creator.origin_location)
         return context
 
 

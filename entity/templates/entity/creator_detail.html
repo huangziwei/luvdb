@@ -12,15 +12,26 @@
                 </span>
                 <!--Other names in muted text in a line-->
                 {% if object.other_names %}<div class="text-muted">{{ object.other_names }}</div>{% endif %}
-                <span class="text-secondary">
-                    {% if object.birth_date %}
-                        {{ object.birth_date }}
-                        {% if object.birth_location %}(<a href="{% url 'visit:location_detail' object.birth_location.id %}">{% if birth_location_label %}{{ birth_location_label }}{% else %}{{ object.birth_location.name }}, {{ object.birth_location.parent.name }}{% endif %}</a>){% endif %}
-                        -
-                    {% endif %}
-                    {% if object.death_date %}{{ object.death_date }}{% endif %}
-                    {% if object.death_location %}(<a href="{% url 'visit:location_detail' object.death_location.id %}">{% if death_location_label %}{{ death_location_label }}{% else %}{{ object.death_location.name }}, {{ object.death_location.parent.name }}{% endif %}</a>){% endif %}
-                </span>
+                {% if object.creator_type == "person" %}
+                    <div class="text-secondary">
+                        {% if object.birth_date %}
+                            {{ object.birth_date }}
+                            {% if object.birth_location %}(<a href="{% url 'visit:location_detail' object.birth_location.id %}">{% if birth_location_label %}{{ birth_location_label }}{% else %}{{ object.birth_location.name }}, {{ object.birth_location.parent.name }}{% endif %}</a>){% endif %}
+                            -
+                        {% endif %}
+                        {% if object.death_date %}{{ object.death_date }}{% endif %}
+                        {% if object.death_location %}(<a href="{% url 'visit:location_detail' object.death_location.id %}">{% if death_location_label %}{{ death_location_label }}{% else %}{{ object.death_location.name }}, {{ object.death_location.parent.name }}{% endif %}</a>){% endif %}
+                    </div>
+                {% else %}
+                    <div class="text-secondary">
+                        Origin: {% if object.origin_location %}<a href="{% url 'visit:location_detail' object.origin_location.id %}">{% if origin_location_label %}{{ origin_location_label }}{% else %}{{ object.origin_location.name }}, {{ object.origin_location.parent.name }}{% endif %}</a>{% endif %}
+                    </div>     
+                    <div class="text-secondary">
+                        {% if object.active_years %}
+                            Years active: {{ object.active_years }}
+                        {% endif %}
+                    </div>         
+                {% endif %}
                 {% if object.members.exists %}
                 <div>
                     <span class="text-muted">Members:</span>
@@ -323,7 +334,7 @@
                     {% if LPs_as_performer or EPs_as_performer or singles_as_performer %}
                         <div class="row">
                             {% if singles_as_performer %}
-                                <div class="col-md-4 mt-2">
+                                <div class="col-md-4">
                                     <div class="fs-4">Single</div>
                                     <ul>
                                         {% for single in singles_as_performer %}
@@ -342,7 +353,7 @@
                                 </div>
                             {% endif %}
                             {% if EPs_as_performer %}
-                                <div class="col-md-4 mt-2">
+                                <div class="col-md-4">
                                     <div class="fs-4">EP</div>
                                     <ul>
                                         {% for ep in EPs_as_performer %}
@@ -361,7 +372,7 @@
                                 </div>
                             {% endif %}
                             {% if LPs_as_performer %}
-                                <div class="col-md-4 mt-2">
+                                <div class="col-md-4">
                                     <div class="fs-4">LP</div>
                                     <ul>
                                         {% for lp in LPs_as_performer %}
