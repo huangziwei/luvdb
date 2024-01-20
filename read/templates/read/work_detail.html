@@ -76,7 +76,7 @@
                         </ul>
                     </div>
                 {% endif %}
-                {% if object.related_publications.count != 0 %}
+                {% comment %} {% if object.related_publications.count != 0 %}
                 <div class="mb-1">
                     <span class="text-muted">Related Publication{% if object.related_publications.count > 1 %}s{% endif %}:</span>
                     {% for publication in object.related_publications.all %}
@@ -111,7 +111,7 @@
                         {% if not forloop.last %} / {% endif %}
                     {% endfor %}
                 </div>                                            
-                {% endif %}
+                {% endif %} {% endcomment %}
                 {% if related_locations_with_parents %}
                 <div class="mb-1">
                     {# djlint:off #}
@@ -192,8 +192,21 @@
                         {% endfor %}
                     {% endwith %}
                 {% endif %}
-                {% if adaptation_movies or adaptation_series or adaptation_games%}
+                {% if adaptation_publications or adaptation_movies or adaptation_series or adaptation_games %}
                     <h3 class="mt-2">Adaptations</h3>
+                    {% if adaptation_publications %}
+                        <div class="col-12">
+                            <div class="fs-5">Publications</div>
+                            <ul>
+                                {% for adaptation in adaptation_publications %}
+                                    <li>
+                                        <a href="{% url 'read:work_detail' adaptation.id %}">{{ adaptation.title }}</a>
+                                        {% if adaptation.publication_date %}({{ adaptation.publication_date }}){% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>                    
+                    {% endif %}
                     {% if adaptation_movies %}
                         <div class="col-12 col-md-6">
                             <div class="fs-5">Movies</div>
