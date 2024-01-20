@@ -671,11 +671,21 @@ em {
 
 .scrollable-tabs {
     display: flex;
+    flex-direction: row; /* Ensure the flex direction is set to row */
     flex-wrap: nowrap;
-    overflow-x: auto;
+    overflow-x: auto; /* Only allow horizontal scrolling */
+    overflow-y: hidden; /* Prevent vertical scrolling */
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; /* For Firefox */
     -ms-overflow-style: none;  /* For Internet Explorer 10+ */
+}
+
+.scrollable-tabs::-webkit-scrollbar {
+    display: none; /* For Safari and Chrome */
+}
+
+.scrollable-tabs .nav-item {
+    flex-shrink: 0; /* Prevent flex items from shrinking */
 }
 
 .scrollable-tabs .nav-link {

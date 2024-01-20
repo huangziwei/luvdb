@@ -638,12 +638,16 @@ class CreatorAutoComplete(autocomplete.Select2QuerySetView):
         return Creator.objects.none()
 
     def get_result_label(self, item):
-        # Get the birth and death years
-        birth_year = item.birth_date[:4] if item.birth_date else "?"
-        death_year = item.death_date[:4] if item.death_date else ""
+        if item.active_years:
+            active_years = item.active_years
+            label = format_html("{} ({})", item.name, active_years)
+        else:
+            # Get the birth and death years
+            birth_year = item.birth_date[:4] if item.birth_date else "?"
+            death_year = item.death_date[:4] if item.death_date else ""
 
-        # Format the label
-        label = format_html("{} ({} - {})", item.name, birth_year, death_year)
+            # Format the label
+            label = format_html("{} ({} - {})", item.name, birth_year, death_year)
 
         return label
 

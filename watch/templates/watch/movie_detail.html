@@ -29,10 +29,10 @@
     <div class="container">
         <div class="row">
             <!--Left columns-->
-            <div class="col-lg-8 col-md-8 col-sm-12">
+            <div class="col-lg-8 col-md-8 col-12">
                 <!-- movie-card -->
                 <div class="row movie-card justify-content-start">
-                    <div class="d-flex flex-column flex-lg-row mt-2">
+                    <div class="d-flex flex-column flex-lg-row mt-2 col-12 col-md-11">
                         <!--poster-box-->
                         <div class="col-12 col-lg-auto mb-3 mb-lg-0">
                             <div class="watch-cover-box mt-1">
@@ -130,7 +130,7 @@
                                     </div>
                                     {% if object.notes or object.publications.exists or object.games.exists or object.related_movies.exists or object.series.exists or grouped_release_dates or filming_locations_with_parents or setting_locations_with_parents %}
                                     <div class="my-3">
-                                        <ul class="nav nav-tabs col-11 scrollable-tabs" id="myTab" role="tablist">
+                                        <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
                                             {% if grouped_release_dates %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted active" id="release-dates-tab" data-bs-toggle="tab" data-bs-target="#release-dates" type="button" role="tab" aria-controls="release-dates" aria-selected="false">Release Dates</button>

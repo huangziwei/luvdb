@@ -21,10 +21,10 @@
     <div class="container">
         <div class="row">
             <!--Left columns-->
-            <div class="col-sm-8">
+            <div class="col-12 col-md-8">
                 <!-- book-card -->
                 <div class="book-card justify-content-start">
-                    <div class="d-flex flex-column flex-lg-row mt-2">
+                    <div class="d-flex flex-column flex-lg-row mt-2 col-12 col-md-11">
                         <!--cover-box-->
                         <div class="col-12 col-lg-auto mb-3 mb-lg-0">
                             <div class="read-cover-box mt-1">
@@ -106,7 +106,7 @@
                                     {% endif %}
                                     
                                     <div class="my-3">
-                                        <ul class="nav nav-tabs col-11 scrollable-tabs" id="myTab" role="tablist">
+                                        <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
                                             {% if other_roles.exists or object.format or object.length or object.isbn_13 or object.isbn_10 or object.eisbn_13 or object.publication_date%}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted active" id="more-tab" data-bs-toggle="tab" data-bs-target="#more" type="button" role="tab" aria-controls="release-dates" aria-selected="false">More</button>
