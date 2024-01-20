@@ -20,6 +20,7 @@ def scrape_creator(url):
         "creator_type": extract_creator_type(infobox, get_date_label(language, "born")),
         "birth_date": extract_date(infobox, get_date_label(language, "born")),
         "death_date": extract_date(infobox, get_date_label(language, "died")),
+        "active_years": extract_active_years(infobox, "Years active"),
         "website": extract_website(infobox),
         "wikipedia": url,
     }
@@ -136,6 +137,33 @@ def extract_date(infobox, label):
                 date_info.get_text(),
             )
             return format_date(date_matches.group(1)) if date_matches else None
+    return None
+
+
+def extract_active_years(infobox, label):
+    date_info = infobox.find("th", text=re.compile(label))
+    if date_info:
+        date_info = date_info.find_next_sibling("td")
+        if date_info:
+            # Extract the content of each <li> tag
+            list_items = date_info.find_all("li")
+            dates = []
+
+            for item in list_items:
+                # Remove all HTML tags and get clean text
+                item_text = "".join(item.find_all(text=True, recursive=False))
+                # Match year range or individual year
+                year_match = re.search(r"(\d{4})(?:\s*–\s*(\d{4}))?", item_text)
+                if year_match:
+                    # Check if it's a range or a single year
+                    if year_match.group(2):
+                        # Year range
+                        dates.append(year_match.group(1) + "-" + year_match.group(2))
+                    else:
+                        # Single year
+                        dates.append(year_match.group(1))
+
+            return ", ".join(dates) if dates else None
     return None
 
 
