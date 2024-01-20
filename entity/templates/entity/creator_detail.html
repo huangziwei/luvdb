@@ -23,14 +23,16 @@
                         {% if object.death_location %}(<a href="{% url 'visit:location_detail' object.death_location.id %}">{% if death_location_label %}{{ death_location_label }}{% else %}{{ object.death_location.name }}, {{ object.death_location.parent.name }}{% endif %}</a>){% endif %}
                     </div>
                 {% else %}
+                    {% if object.origin_location %}
                     <div class="text-secondary">
                         Origin: {% if object.origin_location %}<a href="{% url 'visit:location_detail' object.origin_location.id %}">{% if origin_location_label %}{{ origin_location_label }}{% else %}{{ object.origin_location.name }}, {{ object.origin_location.parent.name }}{% endif %}</a>{% endif %}
                     </div>     
+                    {% endif %}
+                    {% if object.active_years %}
                     <div class="text-secondary">
-                        {% if object.active_years %}
-                            Years active: {{ object.active_years }}
-                        {% endif %}
+                        Years active: {{ object.active_years }}
                     </div>         
+                    {% endif %}
                 {% endif %}
                 {% if object.members.exists %}
                 <div>
