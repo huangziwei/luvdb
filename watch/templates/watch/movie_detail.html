@@ -130,7 +130,7 @@
                                     </div>
                                     {% if object.notes or object.publications.exists or object.games.exists or object.related_movies.exists or object.series.exists or grouped_release_dates or filming_locations_with_parents or setting_locations_with_parents%}
                                     <div class="my-3">
-                                        <ul class="nav nav-tabs col-11" id="myTab" role="tablist">
+                                        <ul class="nav nav-tabs col-11 scrollable-tabs" id="myTab" role="tablist">
                                             {% if grouped_release_dates %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted active" id="release-dates-tab" data-bs-toggle="tab" data-bs-target="#release-dates" type="button" role="tab" aria-controls="release-dates" aria-selected="false">Release Dates</button>
@@ -297,14 +297,11 @@
                                                     </div>
                                                 {% endif %}
                                             </div>
-                                            <div class="tab-pane show active" id="notes" role="tabpanel" aria-labelledby="notes-tab">
+                                            <div class="tab-pane mt-1" id="notes" role="tabpanel" aria-labelledby="notes-tab">
                                                 {% if object.notes %}
                                                     <div class="mb-1">
                                                         <div class="mb-1">
-                                                            <div class="mb-1 text-muted">Notes:</div>
-                                                            <div class="card card-body">
-                                                                {{ object.notes|markdownify }}
-                                                            </div>
+                                                            {{ object.notes|markdownify }}
                                                         </div>
                                                     </div>
                                                 {% endif %}

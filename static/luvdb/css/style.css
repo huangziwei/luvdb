@@ -668,3 +668,18 @@ em {
     font-style: italic;
     color: var(--text-contrast);
 }
+
+.scrollable-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none;  /* For Internet Explorer 10+ */
+}
+
+.scrollable-tabs .nav-link {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem; 
+    white-space: nowrap;
+}
