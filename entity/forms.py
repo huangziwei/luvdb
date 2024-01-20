@@ -31,7 +31,7 @@ class CreatorForm(forms.ModelForm):
             "birth_location": "Enter the person's location of birth. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
             "death_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
             "death_location": "Enter the person's location of death. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
-            "active_years": "Recommended formats: `YYYY-YYYY, YYYY, YYYY-`,",
+            "active_years": "E.g. `YYYY-YYYY, YYYY, YYYY-`,",
             "origin_location": "Enter the group's location of origin. <a href='/visit/location/create/?next=/entity/creator/create/'>Add a new location</a>.",
             "wikipedia": "Enter the person's or the group's Wikipedia URL.",
             "website": "Enter the person's or the group's website URL.",

@@ -5,28 +5,27 @@
     {{ form.name|as_crispy_field }}
     {{ form.other_names|as_crispy_field }}
     {{ form.creator_type|as_crispy_field}}
-    <div class="bg-light p-3 mb-3" id="person-fields">
-        <strong>Person</strong>
+    <div class="bg-light p-3 mb-2" id="person-fields">
+        <strong>Person Info</strong>
         <div class="row">
-            <div class="col-md-4 mb-1">{{ form.birth_date|as_crispy_field}}</div>
-            <div class="col-md-8 mb-1">{{ form.birth_location|as_crispy_field}}</div>
+            <div class="col-md-4">{{ form.birth_date|as_crispy_field}}</div>
+            <div class="col-md-8">{{ form.birth_location|as_crispy_field}}</div>
         </div>
         <div class="row">
-            <div class="col-md-4 mb-1">{{ form.death_date|as_crispy_field}}</div>
-            <div class="col-md-8 mb-1">{{ form.death_location|as_crispy_field}}</div>
+            <div class="col-md-4">{{ form.death_date|as_crispy_field}}</div>
+            <div class="col-md-8">{{ form.death_location|as_crispy_field}}</div>
         </div>
     </div> 
-    <div class="bg-light p-3 mb-3" id="group-fields">
-        <strong>Group</strong>
+    <div class="bg-light p-3 mb-2" id="group-fields">
+        <strong>Group Info</strong>
         <div class="row">
-            <div class="col-md-4 mb-1">{{ form.active_years|as_crispy_field}}</div>
-                <div class="col-md-8 mb-1">{{ form.origin_location|as_crispy_field}}</div>
+            <div class="col-md-4">{{ form.active_years|as_crispy_field}}</div>
+            <div class="col-md-8">{{ form.origin_location|as_crispy_field}}</div>
         </div>
     </div> 
     {{ memberof.management_form|crispy }}
-    <div id="memberof-formset" class="bg-light p-3 mb-3">
+    <div id="memberof-formset" class="bg-light p-3 mb-2">
         <strong>Member of</strong>
-        <p class='text-muted'>Groups this person is a member of.</p>
         <div id="member_of">
             {% for form in memberof %}
                 <div class="form-wrapper row" data-existing-record>
@@ -69,12 +68,15 @@ document.addEventListener('DOMContentLoaded', function() {
         var creatorType = document.getElementById('id_creator_type').value;
         var personFields = document.getElementById('person-fields');
         var groupFields = document.getElementById('group-fields');
+        var memberOfFields = document.getElementById('memberof-formset');
 
         if (creatorType === 'person') {
             personFields.style.display = '';
+            memberOfFields.style.display = '';
             groupFields.style.display = 'none';
         } else if (creatorType === 'group') {
             personFields.style.display = 'none';
+            memberOfFields.style.display = 'none';
             groupFields.style.display = '';
         }
     }
@@ -86,4 +88,3 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('id_creator_type').addEventListener('change', toggleFields);
 });
 </script>
-    
