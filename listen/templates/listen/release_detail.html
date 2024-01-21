@@ -87,11 +87,6 @@
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    {% if object.catalog_number %}
-                                        <div class="mb-1">
-                                            <span class="text-muted">Catalog number:</span> {{ object.catalog_number }}
-                                        </div>
-                                    {% endif %}
                                     {% if genres %}
                                         <div class="mb-1">
                                             <span class="text-muted">Genres:</span>
@@ -99,12 +94,6 @@
                                                 <a href="{% url "listen:genre_detail" genre.slug %}">{{ genre.name }}</a>
                                                 {% if not forloop.last %} / {% endif %}
                                             {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                    {% if object.release_date %}
-                                        <div class="mb-1">
-                                            <span class="text-muted">Date:</span> {{ object.release_date }}
-                                            {% if object.release_region  %}({{object.release_region}}){% endif %}
                                         </div>
                                     {% endif %}
                                     {% if object.releaseingroup_set.all %}
@@ -148,6 +137,11 @@
                                                 {% if object.release_length %}
                                                     <div class="mb-1">
                                                         <span class="text-muted">Length:</span> {{ object.release_length }}
+                                                    </div>
+                                                {% endif %}
+                                                {% if object.catalog_number %}
+                                                    <div class="mb-1">
+                                                        <span class="text-muted">Catalog number:</span> {{ object.catalog_number }}
                                                     </div>
                                                 {% endif %}
                                                 {% if object.release_date %}
