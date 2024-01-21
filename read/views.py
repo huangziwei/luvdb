@@ -442,7 +442,7 @@ class BookDetailView(DetailView):
             "Author",
             "Translator",
             "Editor",
-            "Created By",
+            "Story By",
             "Novelization By",
             "Ghost Writer",
         ]
@@ -1718,7 +1718,7 @@ class GenreDetailView(DetailView):
                 read_workrole_set__work=work,
                 read_workrole_set__role__name__in=[
                     "Author",
-                    "Created By",
+                    "Story By",
                     "Novelization By",
                 ],
             )

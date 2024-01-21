@@ -138,7 +138,7 @@ class CreatorDetailView(DetailView):
         book_roles = [
             "Author",
             "Ghost Writer",
-            "Created By",
+            "Story By",
             "Novelization By",
             "Translator",
             "Editor",
