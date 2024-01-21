@@ -33,6 +33,16 @@
                                 > <a href="{% url 'visit:location_detail' object.current_identity.id %}"> {{ object.current_identity.name }}</a>
                             </div>
                         {% endif %}
+                        {% if historical_identities %}
+                            <div>
+                                <span class="text-muted">Previously </span>
+                                {% for identity in historical_identities %}
+                                    <a href="{% url 'visit:location_detail' identity.id %}">{{ identity.name }}</a>
+                                    ({{identity.historical_period}})
+                                    {% if not forloop.last %} / {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                     <span class="text-secondary">
                         {% if object.founded_date %}

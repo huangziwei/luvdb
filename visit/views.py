@@ -71,6 +71,10 @@ class LocationDetailView(DetailView):
             context["current_identity_parents"] = get_parent_locations(
                 self.object.current_identity
             )
+
+        historical_identities = Location.objects.filter(current_identity=self.object).order_by("historical_period")
+        context["historical_identities"] = historical_identities
+
         # Group children by their levels
         children_grouped_by_level_current = defaultdict(list)
         children_grouped_by_level_historical = defaultdict(list)
