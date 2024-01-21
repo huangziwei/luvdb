@@ -8,7 +8,6 @@
     {{ form.cover_sens|as_crispy_field }}
     {{ form.publisher|as_crispy_field }}
     {{ form.language|as_crispy_field }}
-    {{ form.notes|as_crispy_field }}
     {{ form.publication_date|as_crispy_field }}
     {{ form.format|as_crispy_field }}
     {{ form.length|as_crispy_field }}
@@ -64,6 +63,7 @@
         <!-- Button to add new formsets -->
         <button type="button" id="add-book-instance-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
+    {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% if form.errors %}

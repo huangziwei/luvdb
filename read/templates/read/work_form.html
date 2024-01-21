@@ -40,6 +40,7 @@
         <!-- Button to add new formsets -->
         <button type="button" id="add-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
+    {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% if form.errors %}

@@ -45,6 +45,7 @@ class WorkForm(forms.ModelForm):
             "title": "Enter the work's title in its original language. ",
             "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For works published before common era, use negative numbers, e.g. `-100`.",
             "related_locations": "Locations that are important to the work, e.g. the setting of the story, etc. <a href='/visit/location/create/'>Add a new location</a>.",
+            "notes": "Extra information about the work.",
         }
         widgets = {
             "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
@@ -52,7 +53,6 @@ class WorkForm(forms.ModelForm):
                 url=reverse_lazy("read:genre-autocomplete")
             ),
             "publication_date": forms.TextInput(),
-            "notes": forms.Textarea(attrs={"rows": 3}),
             "related_locations": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("visit:location-autocomplete")
             ),
@@ -160,6 +160,7 @@ class InstanceForm(forms.ModelForm):
         help_texts = {
             "title": "Enter the instance's title. ",
             "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For instances published before common era, use negative numbers, e.g. `-100`.",
+            "notes": "Extra information about the instance.",
         }
         widgets = {
             "work": autocomplete.ModelSelect2(
@@ -167,7 +168,6 @@ class InstanceForm(forms.ModelForm):
             ),
             "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
             "publication_date": forms.TextInput(),
-            "notes": forms.Textarea(attrs={"rows": 3}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -270,6 +270,8 @@ class BookForm(forms.ModelForm):
             "length": "e.g. 300 pages, 10:20:33, etc.",
             "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For books published before common era, use negative numbers, e.g. `-100`.",
             "publisher": "<a href='/entity/company/create/?next=/read/book/create/'>Add a new publisher</a>.",
+            "instance": "<a href='/read/instance/create/'>Add a new instance</a>.",
+            "notes": "Extra information about the book.",
         }
 
     def __init__(self, *args, **kwargs):
