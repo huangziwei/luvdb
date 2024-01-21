@@ -14,7 +14,12 @@ def root_url(url):
 @register.filter(name="extract_year")
 def extract_year(value):
     """Extracts the year from a string formatted as 'YYYY.MM.DD' or 'YYYY.MM'."""
-    return value.split(".")[0] if value and "." in value else value
+    if "-" in value:
+        return value.split("-")[0]
+    elif "–" in value:
+        return value.split("–")[0]
+    else:
+        return value.split(".")[0] if value and "." in value else value
 
 
 @register.filter(name="daysince")

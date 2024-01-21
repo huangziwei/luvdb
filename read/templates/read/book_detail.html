@@ -205,9 +205,8 @@
                                                 <div class="mb-1">
                                                     <div class="text-muted">Novelization</div>
                                                     {% for publication in related_publications %}
-                                                        {{publication}}
-                                                        {% comment %} <a href="{% url 'read:work_detail' publication.id %}">{{publication.title}}</a> ({{publication.publication_date|extract_year}}) {% endcomment %}
-                                                        {% comment %} {% if not forloop.last %} / {% endif %} {% endcomment %}
+                                                        <a href="{% url 'read:work_detail' publication.id %}">{{publication.title}}</a> ({{publication.publication_date|extract_year}})
+                                                        {% if not forloop.last %} / {% endif %}
                                                     {% endfor %}
                                                 </div>
                                                 {% endif %}
@@ -233,9 +232,8 @@
                                                 <div class="mb-1">
                                                     <div class="text-muted">Related Series</div>
                                                     {% for series in related_series %}
-                                                        {{series}}
-                                                        {% comment %} <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
-                                                        {% if not forloop.last %} / {% endif %} {% endcomment %}
+                                                        <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
+                                                        {% if not forloop.last %} / {% endif %}
                                                     {% endfor %}
                                                 </div>                                            
                                                 {% endif %}
