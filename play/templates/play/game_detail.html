@@ -153,7 +153,7 @@
                                             <div class="tab-pane mt-1" id="related" role="tabpanel" aria-labelledby="related-tab">
                                                 {% if object.work.publications.count != 0 %}
                                                 <div class="mb-1">
-                                                    <span class="text-muted">Novelization:</span>
+                                                    <div class="text-muted">Novelization</div>
                                                     {% for publication in object.work.publications.all %}
                                                         <a href="{% url 'read:work_detail' publication.id %}">{{publication.title}}</a> ({{publication.publication_date|extract_year}})
                                                         {% if not forloop.last %} / {% endif %}
@@ -162,7 +162,7 @@
                                                 {% endif %}
                                                 {% if object.work.related_games.count != 0 %}
                                                 <div class="mb-1">
-                                                    <span class="text-muted">Related Game{% if object.work.related_games.count > 1 %}s{% endif %}:</span>
+                                                    <div class="text-muted">Related Game{% if object.work.related_games.count > 1 %}s{% endif %}</div>
                                                     {% for game in object.work.related_games.all %}
                                                         <a href="{% url 'play:work_detail' game.id %}">{{game.title}}</a> ({{game.first_release_date|extract_year}})
                                                         {% if not forloop.last %} / {% endif %}
@@ -171,7 +171,7 @@
                                                 {% endif %}
                                                 {% if object.work.movies.count != 0 %}
                                                 <div class="mb-1">
-                                                    <span class="text-muted">Related Movie{% if object.work.movies.count > 1 %}s{% endif %}:</span>
+                                                    <div class="text-muted">Related Movie{% if object.work.movies.count > 1 %}s{% endif %}</div>
                                                     {% for movie in object.work.movies.all %}
                                                         <a href="{% url 'watch:movie_detail' movie.id %}">{{movie.title}}</a> ({{movie.earliest_release_date|extract_year}})
                                                         {% if not forloop.last %} / {% endif %}
@@ -180,7 +180,7 @@
                                                 {% endif %}
                                                 {% if object.work.series.count != 0 %}
                                                 <div class="mb-1">
-                                                    <span class="text-muted">Related Series:</span>
+                                                    <div class="text-muted">Related Series</div>
                                                     {% for series in object.work.series.all %}
                                                         <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
                                                         {% if not forloop.last %} / {% endif %}

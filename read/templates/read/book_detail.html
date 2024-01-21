@@ -117,12 +117,12 @@
                                                 <button class="nav-link text-muted {%if not object.notes%}active{% endif %}" id="more-tab" data-bs-toggle="tab" data-bs-target="#more" type="button" role="tab" aria-controls="release-dates" aria-selected="false">More</button>
                                             </li>
                                             {% endif %}
-                                            {% if object.based_on_litworks.exists or object.based_on_games.exists  or object.based_on_movies.exists or object.based_on_series.exists %}
+                                            {% if based_on_publications or based_on_games  or based_on_movies or based_on_series %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted" id="based-on-tab" data-bs-toggle="tab" data-bs-target="#based-on" type="button" role="tab" aria-controls="based-on" aria-selected="false">Based on</button>
                                             </li>
                                             {% endif %}
-                                            {% if object.related_publications.exists or object.games.exists or object.movies.exists or object.series.exists  %}
+                                            {% if related_publications or related_games or related_movies or related_series  %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted" id="related-tab" data-bs-toggle="tab" data-bs-target="#related" type="button" role="tab" aria-controls="related" aria-selected="true">Adaptations</button>
                                             </li>
@@ -200,6 +200,90 @@
                                                 </ul>
                                             </div>
                                             {% endif %}
+                                            <div class="tab-pane mt-1" id="related" role="tabpanel" aria-labelledby="related-tab">
+                                                {% if related_publications %}
+                                                <div class="mb-1">
+                                                    <div class="text-muted">Novelization</div>
+                                                    {% for publication in related_publications %}
+                                                        {{publication}}
+                                                        {% comment %} <a href="{% url 'read:work_detail' publication.id %}">{{publication.title}}</a> ({{publication.publication_date|extract_year}}) {% endcomment %}
+                                                        {% comment %} {% if not forloop.last %} / {% endif %} {% endcomment %}
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                                {% if related_games %}
+                                                <div class="mb-1">
+                                                    <div class="text-muted">Related Game{% if related_games.count > 1 %}s{% endif %}</div>
+                                                    {% for game in related_games %}
+                                                        <a href="{% url 'play:work_detail' game.id %}">{{game.title}}</a> ({{game.first_release_date|extract_year}})
+                                                        {% if not forloop.last %} / {% endif %}
+                                                    {% endfor %}
+                                                </div>                                            
+                                                {% endif %}
+                                                {% if related_related_movies %}
+                                                <div class="mb-1">
+                                                    <div class="text-muted">Related Movie{% if object.related_movies.count > 1 %}s{% endif %}</div>
+                                                    {% for movie in object.related_movies.all %}
+                                                        <a href="{% url 'watch:movie_detail' movie.id %}">{{movie.title}}</a> ({{movie.earliest_release_date|extract_year}})
+                                                        {% if not forloop.last %} / {% endif %}
+                                                    {% endfor %}
+                                                </div>                                            
+                                                {% endif %}
+                                                {% if related_series %}
+                                                <div class="mb-1">
+                                                    <div class="text-muted">Related Series</div>
+                                                    {% for series in related_series %}
+                                                        {{series}}
+                                                        {% comment %} <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
+                                                        {% if not forloop.last %} / {% endif %} {% endcomment %}
+                                                    {% endfor %}
+                                                </div>                                            
+                                                {% endif %}
+                                            </div>
+                                            <div class="tab-pane mt-1" id="based-on" role="tabpanel" aria-labelledby="based-on-tab">
+                                                {% if based_on_publications or based_on_games  or based_on_movies or based_on_series %} <!--or  or  -->
+                                                    <div class="mb-1">
+                                                        <div class='mb-0'>
+                                                        {% if based_on_publications %}
+                                                            <div> 
+                                                                <div class="text-muted">Publication{% if based_on_publications > 1 %}s{% endif %}</div>
+                                                                {% for litwork in based_on_publications %}
+                                                                    <a href="{% url "read:work_detail" litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if based_on_games %}
+                                                            <div>
+                                                                <div class="text-muted">Game{% if based_on_games > 1 %}s{% endif %}</div>
+                                                                {% for game in based_on_games %}
+                                                                    <a href="{% url "play:work_detail" game.id %}">{{ game.title }}</a> ({{ game.first_release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if based_on_movies %}
+                                                            <div>
+                                                                <div class="text-muted">Movie{% if based_on_movies > 1 %}s{% endif %}</div>
+                                                                {% for movie in based_on_movies %}
+                                                                    <a href="{% url "watch:movie_detail" movie.id %}">{{ movie.title }}</a> ({{ movie.eardivest_release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if based_on_series %}
+                                                            <div>
+                                                                <div class="text-muted">Series</div>
+                                                                {% for series in based_on_series %}
+                                                                    <a href="{% url "watch:series_detail" series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
                                             {% if object.notes %}
                                             <div class="tab-pane mt-1 {% if object.notes %} show active {% endif %}" id="notes" role="tabpanel" aria-labelledby="notes-tab">
                                                 {{ object.notes|markdownify }}
@@ -332,7 +416,7 @@
                         <span class="fw-semibold text-muted">Read:</span> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=read_reread">{{ read_count }}</a>
                     </div>
                 </div>
-                {% if lists_containing_book.count != 0 %}
+                {% if lists_containing_book.count %}
                     <!--LuvLists that included this book-->
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <div class="fs-5">Lists</div>

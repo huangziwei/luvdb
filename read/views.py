@@ -606,12 +606,43 @@ class BookDetailView(DetailView):
         ).order_by("-received_at")[:5]
 
         unique_locations_with_parents_set = set()
-
+        unique_related_publications_set = set()
+        unique_related_games_set = set()
+        unique_related_movies_set = set()
+        unique_related_series_set = set()
+        unique_based_on_publications_set = set()
+        unique_based_on_games_set = set()
+        unique_based_on_movies_set = set()
+        unique_based_on_series_set = set()
         for instance in book.instances.all():
             locations_with_parents = get_locations_with_parents(
                 instance.work.related_locations
             )
 
+            unique_related_publications_set.update(
+                instance.work.related_publications.values_list("pk", flat=True)
+            )
+            unique_based_on_publications_set.update(
+                instance.work.based_on_litworks.values_list("pk", flat=True)
+            )
+            unique_related_games_set.update(
+                instance.work.games.values_list("pk", flat=True)
+            )
+            unique_based_on_games_set.update(
+                instance.work.based_on_games.values_list("pk", flat=True)
+            )
+            unique_related_movies_set.update(
+                instance.work.movies.values_list("pk", flat=True)
+            )
+            unique_based_on_movies_set.update(
+                instance.work.based_on_movies.values_list("pk", flat=True)
+            )
+            unique_related_series_set.update(
+                instance.work.series.values_list("pk", flat=True)
+            )
+            unique_based_on_series_set.update(
+                instance.work.based_on_series.values_list("pk", flat=True)
+            )
             # Process each location with its parents
             for location, parents in locations_with_parents:
                 # Convert location and its parents to their unique identifiers
@@ -628,6 +659,30 @@ class BookDetailView(DetailView):
                 [Location.objects.get(pk=parent_id) for parent_id in parent_ids],
             )
             for location_id, parent_ids in unique_locations_with_parents_set
+        ]
+        context["related_publications"] = [
+            Work.objects.get(pk=pk) for pk in unique_related_publications_set
+        ]
+        context["related_games"] = [
+            GameWork.objects.get(pk=pk) for pk in unique_related_games_set
+        ]
+        context["related_movies"] = [
+            Movie.objects.get(pk=pk) for pk in unique_related_movies_set
+        ]
+        context["related_series"] = [
+            Series.objects.get(pk=pk) for pk in unique_related_series_set
+        ]
+        context["based_on_publications"] = [
+            Work.objects.get(pk=pk) for pk in unique_based_on_publications_set
+        ]
+        context["based_on_games"] = [
+            GameWork.objects.get(pk=pk) for pk in unique_based_on_games_set
+        ]
+        context["based_on_movies"] = [
+            Movie.objects.get(pk=pk) for pk in unique_based_on_movies_set
+        ]
+        context["based_on_series"] = [
+            Series.objects.get(pk=pk) for pk in unique_based_on_series_set
         ]
         return context
 
