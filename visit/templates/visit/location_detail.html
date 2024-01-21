@@ -6,7 +6,7 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-sm-8 left-column mb-2">
+            <div class="col-12 col-md-8 left-column mb-2">
                 <div class="mb-3"> <!--geo meta-->
                     <div class="d-flex flex-wrap align-items-center">
                         <h2 class="fs-2 me-2">{{ object.name }}</h2>
@@ -57,136 +57,177 @@
                         </div>
                     {% endif %}
                 </div>
-                {% if creators_born_here_persons or creators_born_here_groups or creators_died_here %}
-                <div class="bg-light p-3 mb-3 col-12 col-md-11"> <!--people-->
-                    <h5 data-bs-toggle="collapse" data-bs-target="#creatorsContent" class="mb-0 fw-bold">Creators</h5>
-                    <div id="creatorsContent" class="collapse">
-                    {% if creators_born_here_persons or creators_died_here %}
-                        <h5 class="mt-2">Persons</h5>
-                        {% if creators_born_here_persons %}
-                            <h6 class="mt-2">Born</h6>
-                            <div>
-                                {% for creator in creators_born_here_persons %}
+
+                <!-- Tab navigation -->
+                <ul class="nav nav-tabs scrollable-tabs col-12 col-md-11" id="myTab" role="tablist">
+                    {% if creators_born_here_persons or creators_born_here_groups or creators_died_here or companies_here or publications_set_here or movies_filmed_here or movies_set_here or series_filmed_here or series_set_here or games_set_here%}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-muted active" id="collapse-tab" data-bs-toggle="tab" data-bs-target="#collapse" type="button" role="tab" aria-controls="games" aria-selected="false">Hide All</button>
+                    </li>                    
+                    {% endif %}
+                    {% if creators_born_here_persons or creators_born_here_groups or creators_died_here %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-muted fw-bold" id="creators-tab" data-bs-toggle="tab" data-bs-target="#creators" type="button" role="tab" aria-controls="creators" aria-selected="false">Creators</button>
+                    </li>
+                    {% endif %}
+                    {% if companies_here %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-muted fw-bold" id="companies-tab" data-bs-toggle="tab" data-bs-target="#companies" type="button" role="tab" aria-controls="companies" aria-selected="false">Companies</button>
+                    </li>
+                    {% endif %}
+                    {% if publications_set_here %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-muted fw-bold" id="publications-tab" data-bs-toggle="tab" data-bs-target="#publications" type="button" role="tab" aria-controls="publications" aria-selected="false">Publications</button>
+                    </li>
+                    {% endif %}
+                    {% if movies_filmed_here or movies_set_here %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-muted fw-bold" id="movies-tab" data-bs-toggle="tab" data-bs-target="#movies" type="button" role="tab" aria-controls="movies" aria-selected="false">Movies</button>
+                    </li>
+                    {% endif %}
+                    {% if series_filmed_here or series_set_here %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-muted fw-bold" id="series-tab" data-bs-toggle="tab" data-bs-target="#series" type="button" role="tab" aria-controls="series" aria-selected="false">Series</button>
+                    </li>
+                    {% endif %}
+                    {% if games_set_here %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-muted fw-bold" id="games-tab" data-bs-toggle="tab" data-bs-target="#games" type="button" role="tab" aria-controls="games" aria-selected="false">Games</button>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <div class="tab-content col-12 col-md-11" id="myTabContent">
+                    {% if creators_born_here_persons or creators_born_here_groups or creators_died_here %}
+                    <div class="tab-pane" id="creators" role="tabpanel" aria-labelledby="creators-tab">
+                        <div>
+                        {% if creators_born_here_persons or creators_died_here %}
+                            <h5 class="mt-2">Persons</h5>
+                            {% if creators_born_here_persons %}
+                                <h6 class="mt-2">Born</h6>
+                                <div>
+                                    {% for creator in creators_born_here_persons %}
+                                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                        ({{creator.birth_date|extract_year}})
+                                        {% if not forloop.last %} / {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if creators_died_here %}
+                                <h6 class="mt-2">Died</h6>
+                                <div>
+                                {% for creator in creators_died_here %}
                                     <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                    ({{creator.birth_date|extract_year}})
+                                    ({{creator.death_date|extract_year}})
+                                    {% if not forloop.last %} / {% endif %}
+                                {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        {% if creators_born_here_groups %}
+                            <h5 class="mt-3">Groups </h5>
+                            <h6 class="mt-2">Formed</h6>
+                            <div>
+                                {% for creator in creators_born_here_groups %}
+                                    <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                    ({{creator.active_years|extract_year}})
                                     {% if not forloop.last %} / {% endif %}
                                 {% endfor %}
                             </div>
                         {% endif %}
-                        {% if creators_died_here %}
-                            <h6 class="mt-2">Died</h6>
-                            <div>
-                            {% for creator in creators_died_here %}
-                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                ({{creator.death_date|extract_year}})
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if companies_here %}
+                    <div class="tab-pane" id="companies" role="tabpanel" aria-labelledby="companies-tab">
+                        <div class="mt-1">
+                        {% for company in companies_here %}
+                            <a href="{% url 'entity:company_detail' company.id %}">{{ company.name }}</a>
+                            ({{company.founded_date|extract_year}})
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if publications_set_here %}
+                    <div class="tab-pane" id="publications" role="tabpanel" aria-labelledby="publications-tab">
+                        <div id="publicationContent">
+                            {% for pub in publications_set_here %}
+                                <a href="{% url 'read:work_detail' pub.id %}">{{ pub.title }}</a> ({{ pub.publication_date|extract_year }})
                                 {% if not forloop.last %} / {% endif %}
                             {% endfor %}
+                        </div>
+                    </div>                
+                    {% endif %}
+
+                    {% if movies_filmed_here or movies_set_here %}
+                    <div class="tab-pane" id="movies" role="tabpanel" aria-labelledby="movies-tab">
+                        <div id="moviesContent">
+                            {% if movies_filmed_here %}
+                            <div class="mt-2">
+                                <h6>Filmed</h6>
+                                {% for movie in movies_filmed_here %}
+
+                                    <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.region_release_dates.first.release_date|extract_year }})
+                                    {% if not forloop.last %} / {% endif %}
+                                {% endfor %}
                             </div>
-                        {% endif %}
+                            {% endif %}
+                            {% if movies_set_here %}
+                            <div class="mt-2">
+                                <h6>Set</h6>
+                                {% for movie in movies_set_here %}
+                                    <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.region_release_dates.first.release_date|extract_year }})
+                                    {% if not forloop.last %} / {% endif %}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                     {% endif %}
-                    {% if creators_born_here_groups %}
-                        <h5 class="mt-3">Groups </h5>
-                        <h6 class="mt-2">Formed</h6>
-                        <div>
-                            {% for creator in creators_born_here_groups %}
-                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                ({{creator.active_years|extract_year}})
-                                {% if not forloop.last %} / {% endif %}
-                            {% endfor %}
+
+                    {% if series_filmed_here or series_set_here %}
+                    <div class="tab-pane" id="series" role="tabpanel" aria-labelledby="series-tab">
+                        <div id="seriesContent">
+                            {% if series_filmed_here %}
+                            <div class="mt-2">
+                                <h6>Filmed</h6>
+                                {% for series in series_filmed_here %}
+                                    <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
+                                    {% if not forloop.last %} / {% endif %}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% if series_set_here %}
+                            <div class="mt-2">
+                                <h6>Set</h6>
+                                {% for series in series_set_here %}
+                                    <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
+                                    {% if not forloop.last %} / {% endif %}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
                         </div>
+                    </div>
                     {% endif %}
-                    </div>
-                </div>
-                {% endif %}
 
-                {% if companies_here %}
-                <div class="bg-light p-3 mb-3 col-12 col-md-11">
-                    <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#companiesContent">Companies</h5>
-                    <div id="companiesContent" class="collapse mt-2">
-                    {% for company in companies_here %}
-                        <a href="{% url 'entity:company_detail' company.id %}">{{ company.name }}</a>
-                        ({{company.founded_date|extract_year}})
-                        {% if not forloop.last %} / {% endif %}
-                    {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
-                {% if publications_set_here %}
-                <div class="bg-light p-3 mb-3 col-12 col-md-11">
-                    <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#publicationContent">Publications</h5>
-                    <div id="publicationContent" class="collapse mt-2">
-                        {% for pub in publications_set_here %}
-                            <a href="{% url 'read:work_detail' pub.id %}">{{ pub.title }}</a> ({{ pub.publication_date|extract_year }})
-                            {% if not forloop.last %} / {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>                
-                {% endif %}
-
-                {% if movies_filmed_here or movies_set_here %}
-                <div class="bg-light p-3 mb-3 col-12 col-md-11">
-                    <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#moviesContent">Movies</h5>
-                    <div id="moviesContent" class="collapse">
-                        {% if movies_filmed_here %}
-                        <div class="mt-2">
-                            <h6>Filmed</h6>
-                            {% for movie in movies_filmed_here %}
-
-                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.region_release_dates.first.release_date|extract_year }})
+                    {% if games_set_here %}
+                    <div class="tab-pane" id="games" role="tabpanel" aria-labelledby="games-tab">
+                        <div id="gamesContent" class="mt-2">
+                            {% for game in games_set_here %}
+                                <a href="{% url 'play:work_detail' game.id %}">{{ game.title }}</a> ({{ game.first_release_date|extract_year }})
                                 {% if not forloop.last %} / {% endif %}
                             {% endfor %}
                         </div>
-                        {% endif %}
-                        {% if movies_set_here %}
-                        <div class="mt-2">
-                            <h6>Set</h6>
-                            {% for movie in movies_set_here %}
-                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.region_release_dates.first.release_date|extract_year }})
-                                {% if not forloop.last %} / {% endif %}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endif %}
+                    </div>                
+                    {% endif %}
 
-                {% if series_filmed_here or series_set_here %}
-                <div class="bg-light p-3 mb-3 col-12 col-md-11">
-                    <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#seriesContent">Series</h5>
-                    <div id="seriesContent" class="collapse">
-                        {% if series_filmed_here %}
-                        <div class="mt-2">
-                            <h6>Filmed</h6>
-                            {% for series in series_filmed_here %}
-                                <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
-                                {% if not forloop.last %} / {% endif %}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                        {% if series_set_here %}
-                        <div class="mt-2">
-                            <h6>Set</h6>
-                            {% for series in series_set_here %}
-                                <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
-                                {% if not forloop.last %} / {% endif %}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
+                    {% if creators_born_here_persons or creators_born_here_groups or creators_died_here or companies_here or publications_set_here or movies_filmed_here or movies_set_here or series_filmed_here or series_set_here or games_set_here%}
+                    <div class="tab-pane" id="collapse" role="tabpanel" aria-labelledby="collapse-tab">
+                    </div>  
+                    {% endif %}
                 </div>
-                {% endif %}
-
-                {% if games_set_here %}
-                <div class="bg-light p-3 col-12 col-md-11">
-                    <h5 class="mb-0 fw-bold" data-bs-toggle="collapse" data-bs-target="#gamesContent">Games</h5>
-                    <div id="gamesContent" class="collapse mt-2">
-                        {% for game in games_set_here %}
-                            <a href="{% url 'play:work_detail' game.id %}">{{ game.title }}</a> ({{ game.first_release_date|extract_year }})
-                            {% if not forloop.last %} / {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>                
-                {% endif %}
 
                 <!--Game Check-In-->
                 {% if not object.historical %}
@@ -305,6 +346,5 @@
         <script>
             initializeMap('mapid', "{{ object.osm_id }}", "{{ object.osm_id_type }}", "{{ object.level }}");
         </script>
-    {% endif %}
-
+    {% endif %}            
 {% endblock %}
