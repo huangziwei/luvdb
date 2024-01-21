@@ -346,7 +346,7 @@
                                                 {% else %}
                                                     <a href="{% url 'listen:release_detail' single.pk %}">{{ single.title }}</a>
                                                 {% endif %}
-                                                ({{ single.release_date }})
+                                                ({% if single.release_type %}{{single.release_type}}, {% endif %}{{ single.release_date }})
                                             </li>
                                         {% empty %}
                                             <li>This person has no singles.</li>
@@ -384,7 +384,7 @@
                                                 {% else %}
                                                     <a href="{% url 'listen:release_detail' lp.pk %}">{{ lp.title }}</a>
                                                 {% endif %}
-                                                ({{ lp.release_date }})
+                                                ({% if lp.recording_type %}{{lp.recording_type}}, {% endif %}{{ lp.release_date }})
                                             </li>
                                         {% empty %}
                                             <li>This person has no LPs.</li>
