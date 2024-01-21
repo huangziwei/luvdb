@@ -138,7 +138,7 @@
                                                 <button class="nav-link text-muted" id="based-on-tab" data-bs-toggle="tab" data-bs-target="#based-on" type="button" role="tab" aria-controls="based-on" aria-selected="false">Based on</button>
                                             </li>
                                             {% endif %}
-                                            {% if object.work.publications.exists or object.work.games.exists or object.work.related_movies.exists or object.work.series.exists  %}
+                                            {% if object.work.publications.exists or object.work.related_games.exists or object.work.movies.exists or object.work.series.exists  %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted" id="related-tab" data-bs-toggle="tab" data-bs-target="#related" type="button" role="tab" aria-controls="related" aria-selected="true">Adaptations</button>
                                             </li>
