@@ -28,7 +28,11 @@
     <link rel="apple-touch-icon"
             sizes="180x180"
             href="{% static 'img/apple-touch-icon.png' %}">
-    <link rel="manifest" href="{% static 'img/randomizer.webmanifest' %}">
+    {% if luv_list.allow_collaboration %}
+        <link rel="manifest" href="{% url 'write:surprise_manifest_collab' luvlist_id=luv_list.id %}">
+    {% else %}
+        <link rel="manifest" href="{% url 'write:surprise_manifest' luvlist_id=luv_list.id username=luv_list.user.username %}">
+    {% endif %}
     <link rel="icon"
             type="image/png"
             sizes="192x192"

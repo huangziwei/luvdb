@@ -3,6 +3,7 @@
     {% csrf_token %}
     <div class="row">
         <div class="col-md-12">{{ form.title|as_crispy_field }}</div>
+        <div class="col-md-12">{{ form.short_name|as_crispy_field }}</div>
         <div class="col-md-12">{{ form.source|as_crispy_field }}</div>
         <div class="col-md-12">{{ form.wikipedia|as_crispy_field }}</div>
         <div class="col-md-12">{{ form.order_preference|as_crispy_field }}</div>

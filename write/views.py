@@ -1,3 +1,4 @@
+import json
 from datetime import timedelta
 from itertools import chain
 from operator import attrgetter
@@ -13,6 +14,7 @@ from django.db.models import Count, Q
 from django.db.models.functions import Lower
 from django.http import (
     Http404,
+    HttpResponse,
     HttpResponseBadRequest,
     HttpResponseForbidden,
     HttpResponseRedirect,
@@ -1268,6 +1270,30 @@ class CommentListView(ListView):
         context = super().get_context_data(**kwargs)
         context["object"] = self.request.user
         return context
+
+def surprise_manifest(request, luvlist_id, username=None):
+    luvlist = LuvList.objects.get(id=luvlist_id)
+    data = {
+        "short_name": luvlist.short_name if luvlist.short_name else "Surprise",
+        "name": luvlist.title,
+        "scope": "/luvlist/",
+        "display": "standalone",
+        "icons": [
+            {
+                "src": "https://img-luvdb.s3.amazonaws.com/static/img/android-chrome-192x192.png",
+                "sizes": "192x192",
+                "type": "image/png",
+            },
+            {
+                "src": "https://img-luvdb.s3.amazonaws.com/static/img/android-chrome-512x512.png",
+                "sizes": "512x512",
+                "type": "image/png",
+            },
+        ],
+        "theme_color": "#ffffff",
+        "background_color": "#ffffff",
+    }
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 #################

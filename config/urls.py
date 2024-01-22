@@ -30,6 +30,7 @@ from listen.sitemaps import ReleaseSiteMap
 from play.sitemaps import GameSiteMap
 from read.sitemaps import BookSiteMap, InstanceSiteMap, LitWorkSiteMap
 from watch.sitemaps import MovieSiteMap, SeriesSiteMap
+from write.models import LuvList
 
 sitemaps = {
     "entity": PersonSiteMap,

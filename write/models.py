@@ -757,6 +757,7 @@ def delete_say(sender, instance, **kwargs):
 
 class LuvList(auto_prefetch.Model):
     title = models.CharField(max_length=100)
+    short_name = models.CharField(max_length=50, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     source = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)

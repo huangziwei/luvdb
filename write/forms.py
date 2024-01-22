@@ -196,6 +196,7 @@ class LuvListForm(forms.ModelForm):
         model = LuvList
         fields = [
             "title",
+            "short_name",
             "notes",
             "source",
             "wikipedia",
@@ -205,6 +206,7 @@ class LuvListForm(forms.ModelForm):
         ]
         help_texts = {
             "items_per_page": "How many items to show per page. Leave blank to show all.",
+            "short_name": "A short name for adding the surprise page to the home screen.",
         }
 
 

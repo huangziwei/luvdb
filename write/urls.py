@@ -80,6 +80,7 @@ from .views import (
     TagListView,
     TagUserListView,
     delete_webmention,
+    surprise_manifest,
     webmention,
 )
 
@@ -265,6 +266,11 @@ urlpatterns = [
         name="surprise",
     ),
     path(
+        "@<str:username>/list/<int:luvlist_id>/manifest/",
+        surprise_manifest,
+        name="surprise_manifest",
+    ),
+    path(
         "list/<int:pk>/",
         LuvListDetailView.as_view(),
         name="luvlist_detail_collab",
@@ -278,6 +284,11 @@ urlpatterns = [
         "list/<int:pk>/surprise/",
         RandomizerDetailView.as_view(),
         name="surprise_collab",
+    ),
+    path(
+        "list/<int:luvlist_id>/manifest/",
+        surprise_manifest,
+        name="surprise_manifest_collab",
     ),
     # move check-ins from individual apps/urls.py to write/urls.py
     ## Read
