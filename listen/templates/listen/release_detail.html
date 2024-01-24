@@ -151,9 +151,9 @@
                                                 {% endif %}
                                             </div>
                                             {% if object.notes %}
-                                            <div class="tab-pane mt-1 {% if object.notes %} show active {% endif %}" id="notes" role="tabpanel" aria-labelledby="notes-tab">
+                                            <small class="tab-pane mt-1 {% if object.notes %} show active {% endif %}" id="notes" role="tabpanel" aria-labelledby="notes-tab">
                                                 {{ object.notes|markdownify }}
-                                            </div>
+                                            </small>
                                             {% endif %}
                                         </div>
                                     </div>

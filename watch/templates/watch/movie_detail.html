@@ -299,11 +299,9 @@
                                             </div>
                                             <div class="tab-pane mt-1 {% if object.notes %} show active {% endif %}" id="notes" role="tabpanel" aria-labelledby="notes-tab">
                                                 {% if object.notes %}
-                                                    <div class="mb-1">
-                                                        <div class="mb-1">
+                                                    <small class="mb-1">
                                                             {{ object.notes|markdownify }}
-                                                        </div>
-                                                    </div>
+                                                    </small>
                                                 {% endif %}
                                             </div>
                                         </div>
