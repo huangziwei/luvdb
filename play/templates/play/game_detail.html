@@ -56,6 +56,7 @@
                                 <span class='d-flex align-items-start'>
                                     <h2>{{ object.title }}</h2>
                                 </span>
+                                {% if object.subtitle or object.other_titles %}
                                 <p class='d-flex'>
                                     {% if object.subtitle and object.other_titles %}
                                         <span class='text-secondary'>{{ object.subtitle }} / {{ object.other_titles }}</span>
@@ -65,6 +66,7 @@
                                         <span class='text-secondary'>{{ object.other_titles }}</span>
                                     {% endif %}
                                 </p>
+                                {% endif %}
                                 <div class="game-meta">
                                     {% if object.developers.count != 0 %}
                                         <div class="mb-1">
