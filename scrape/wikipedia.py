@@ -90,6 +90,32 @@ def scrape_release(url):
     }
 
 
+def scrape_location(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "html.parser")
+    infobox = soup.find("table", {"class": re.compile("infobox")})
+
+    if not infobox:
+        return None
+
+    name = (
+        infobox.find("th", {"class": "infobox-above"}).get_text(strip=True)
+        if infobox.find("th", {"class": "infobox-above"})
+        else None
+    )
+    website = (
+        infobox.find("a", {"class": "external text"}).get("href")
+        if infobox.find("a", {"class": "external text"})
+        else None
+    )
+
+    return {
+        "name": name,
+        "website": website,
+        "wikipedia": url,
+    }
+
+
 def extract_language_from_url(url):
     match = re.search(r"https?://([a-z]{2,3})\.wikipedia\.org", url)
     return match.group(1) if match else "en"

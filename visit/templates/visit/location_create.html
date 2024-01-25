@@ -9,6 +9,21 @@
                 <h2>Create Location</h2>
                 {% include "visit/location_form.html" %}
             </div>
+            <!--right column-->
+            <div class="col-12 col-md-5">
+                <div class="bg-light p-3">
+                    <div class="fs-4 mb-2">Import</div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="wikiUrl" class="form-label">Wikipedia URL</label>
+                            <input type="text" class="form-control" id="wikiUrl" name="wiki_url" placeholder="Enter Wikipedia URL">
+                            <p class="text-muted mt-1">Only pages with an infobox can be imported. The imported data may not always be accurate; please edit it accordingly.</p>
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Import</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

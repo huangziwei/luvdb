@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
 from django.http import HttpResponseForbidden
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import (
@@ -27,6 +27,7 @@ from entity.models import Company, Creator
 from entity.views import HistoryViewMixin, get_contributors
 from play.models import Work as GameWork
 from read.models import Work as Publicaiton
+from scrape.wikipedia import scrape_location
 from watch.models import Episode, Movie, Series
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, WebMention
@@ -58,6 +59,29 @@ class LocationCreateView(LoginRequiredMixin, CreateView):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
+    def post(self, request, *args, **kwargs):
+        if "wiki_url" in request.POST:
+            wiki_url = request.POST.get("wiki_url")
+            scraped_data = scrape_location(wiki_url)
+            if scraped_data:
+                # Initialize the form with imported data
+                form = self.form_class(initial=scraped_data)
+                form.fields["other_names"].widget = forms.TextInput()
+                form.fields["address"].widget = forms.TextInput()
+                # Render response with initialized form and formsets
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": form,
+                    },
+                )
+            else:
+                # Handle case where import fails
+                return self.form_invalid(form)
+        else:
+            return super().post(request, *args, **kwargs)
+
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class LocationDetailView(DetailView):
@@ -72,7 +96,9 @@ class LocationDetailView(DetailView):
                 self.object.current_identity
             )
 
-        historical_identities = Location.objects.filter(current_identity=self.object).order_by("historical_period")
+        historical_identities = Location.objects.filter(
+            current_identity=self.object
+        ).order_by("historical_period")
         context["historical_identities"] = historical_identities
 
         # Group children by their levels
