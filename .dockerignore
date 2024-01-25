@@ -9,3 +9,6 @@ db.sqlite3*
 datadump_anonymized.json
 anonymize_datadump.py
 cache/*
+*.csv
+*.json
+embedding.py

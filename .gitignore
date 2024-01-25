@@ -15,3 +15,5 @@ config/settings/development_psql.py
 *.pem
 follow_activity.json
 cache/*
+*.csv
+embedding.py
