@@ -299,7 +299,9 @@
                            class='fs-6 text-secondary'>Edit Game</a>
                     </div>
                 {% endif %}
-                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                
+                {% if dlcs or user.is_authenticated %}
+                <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                     {% if dlcs %}
                         <div class="fs-5">DLCs</div>
                         {% for dlc in dlcs %}
@@ -309,16 +311,17 @@
                                 <span>({{ dlc.release_date }})</span>
                             </div>
                         {% endfor %}
-                        <hr>
                     {% endif %}
                     {% if user.is_authenticated %}
+                        <hr>
                         <div>
                             <a href="{% url 'play:dlc_create' object.id %}"
                                class='fs-6 text-secondary'>Add DLC</a>
                         </div>
                     {% endif %}
                 </div>
-                
+                {% endif %}
+
                 {% if object.wikipedia %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                         <div class="fs-5">Links</div>
