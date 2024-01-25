@@ -176,7 +176,7 @@ class GameForm(forms.ModelForm):
 class GameReleaseDateForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = GameReleaseDate
-        fields = ("region", "release_date")
+        fields = ("region", "release_date", "notes")
 
     def clean(self):
         cleaned_data = super().clean()
