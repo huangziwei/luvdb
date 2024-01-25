@@ -20,10 +20,11 @@
         <div id="region_release_dates">
             {% for form in regionreleasedates %}
                 <div class="form-wrapper row" data-existing-record>
-                        {{ form.id }}
-                        {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
-                        <div class="col-md-4 mb-3">{{ form.region | as_crispy_field }}</div>
-                        <div class="col-md-4 mb-3">{{ form.release_date | as_crispy_field }}</div>
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4 mb-3">{{ form.region | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.release_date | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.notes | as_crispy_field }}</div>
                 </div>
             {% endfor %}
         </div>

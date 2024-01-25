@@ -307,6 +307,8 @@ class GameReleaseDate(auto_prefetch.Model):
     )
     region = models.CharField(max_length=100, blank=True, null=True)
     release_date = models.CharField(max_length=10, blank=True, null=True)
+    notes = models.CharField(max_length=300, blank=True, null=True)
+
     history = HistoricalRecords(inherit=True)
 
     def __str__(self):

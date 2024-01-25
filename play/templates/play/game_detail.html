@@ -253,11 +253,11 @@
                                             <div class="tab-pane mt-1 {% if not object.notes %} show active {% endif %}" id="release-dates" role="tabpanel" aria-labelledby="release-dates-tab">
                                                 {% if ordered_release_dates %}
                                                 <div class="mt-1">
-                                                    <span class="text-muted">Release Date:</span>
+                                                    <ul>
                                                     {% for release_date in ordered_release_dates %}
-                                                        {{ release_date.release_date }} ({{ release_date.region }})
-                                                        {% if not forloop.last %}/{% endif %}
+                                                        <li>{{ release_date.release_date }} ({% if release_date.notes %}{{ release_date.notes }}, {% endif %}{{ release_date.region }})</li>
                                                     {% endfor %}
+                                                    </ul>
                                                 </div>
                                                 {% endif %}
                                             </div>

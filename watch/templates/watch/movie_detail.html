@@ -286,12 +286,11 @@
                                                         {% for release_type, dates in grouped_release_dates.items %}
                                                             <div class="mb-1">
                                                                 <div class="text-muted">{{ release_type|title }}</div>
-                                                                <div>
+                                                                <ul>
                                                                 {% for release_date in dates %}
-                                                                    {{ release_date.release_date }} ({% if release_date.notes %}{{ release_date.notes }}, {% endif %}{{ release_date.region }})
-                                                                    {% if not forloop.last %}/{% endif %}
+                                                                    <li>{{ release_date.release_date }} ({% if release_date.notes %}{{ release_date.notes }}, {% endif %}{{ release_date.region }})</li>
                                                                 {% endfor %}
-                                                                </div>
+                                                                </ul>
                                                             </div>
                                                         {% endfor %}
                                                     </div>
