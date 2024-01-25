@@ -313,7 +313,9 @@
                         {% endfor %}
                     {% endif %}
                     {% if user.is_authenticated %}
+                        {% if dlcs %}
                         <hr>
+                        {% endif %}
                         <div>
                             <a href="{% url 'play:dlc_create' object.id %}"
                                class='fs-6 text-secondary'>Add DLC</a>
