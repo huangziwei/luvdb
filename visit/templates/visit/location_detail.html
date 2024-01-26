@@ -108,7 +108,7 @@
                                 <div>
                                     {% for creator in creators_born_here_persons %}
                                         <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                        ({{creator.birth_date|extract_year}})
+                                        {% if creator.birth_date %}({{creator.birth_date|extract_year}}){% else %}(?){% endif %}
                                         {% if not forloop.last %} / {% endif %}
                                     {% endfor %}
                                 </div>

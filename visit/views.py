@@ -7,7 +7,18 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
+from django.db.models import (
+    Case,
+    CharField,
+    Count,
+    F,
+    OuterRef,
+    Q,
+    Subquery,
+    Value,
+    When,
+)
+from django.db.models.functions import Length
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -119,10 +130,26 @@ class LocationDetailView(DetailView):
         )
 
         regex_pattern = r"(?:^|,)" + re.escape(str(self.object.id)) + r"(?:,|$)"
-        creators_born_here_persons = Creator.objects.filter(
-            birth_location_hierarchy__regex=regex_pattern,
-            creator_type="person",  # Adjust the filter based on your model
-        ).order_by("birth_date")
+        creators_born_here_persons = (
+            Creator.objects.annotate(
+                birth_date_order=Case(
+                    # Assuming birth_date is a string; adjust the condition if it's stored differently
+                    When(
+                        birth_date__regex=r"^\?.*$", then=Value(2)
+                    ),  # Partial dates get a value of 2
+                    When(
+                        birth_date__isnull=True, then=Value(3)
+                    ),  # Unknown dates get a value of 3
+                    default=Value(1),  # Fully known dates get a value of 1
+                    output_field=CharField(),
+                )
+            )
+            .filter(
+                birth_location_hierarchy__regex=regex_pattern,
+                creator_type="person",
+            )
+            .order_by("birth_date_order", "birth_date", "name")
+        )
 
         creators_born_here_groups = Creator.objects.filter(
             origin_location_hierarchy__regex=regex_pattern,
@@ -137,7 +164,7 @@ class LocationDetailView(DetailView):
         ).order_by("death_date")
         context["companies_here"] = Company.objects.filter(
             location_hierarchy__regex=regex_pattern
-        ).order_by("founded_date")
+        ).order_by("name")
 
         context["contributors"] = get_contributors(self.object)
 

@@ -18,6 +18,10 @@
                             {{ object.birth_date }}
                             {% if object.birth_location %}(<a href="{% url 'visit:location_detail' object.birth_location.id %}">{% if birth_location_label %}{{ birth_location_label }}{% else %}{{ object.birth_location.name }}, {{ object.birth_location.parent.name }}{% endif %}</a>){% endif %}
                             -
+                        {% else %}
+                            ?
+                            {% if object.birth_location %}(<a href="{% url 'visit:location_detail' object.birth_location.id %}">{% if birth_location_label %}{{ birth_location_label }}{% else %}{{ object.birth_location.name }}, {{ object.birth_location.parent.name }}{% endif %}</a>){% endif %}
+                            -                            
                         {% endif %}
                         {% if object.death_date %}{{ object.death_date }}{% endif %}
                         {% if object.death_location %}(<a href="{% url 'visit:location_detail' object.death_location.id %}">{% if death_location_label %}{{ death_location_label }}{% else %}{{ object.death_location.name }}, {{ object.death_location.parent.name }}{% endif %}</a>){% endif %}
