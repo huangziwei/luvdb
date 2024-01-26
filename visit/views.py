@@ -164,7 +164,7 @@ class LocationDetailView(DetailView):
         ).order_by("death_date")
         context["companies_here"] = Company.objects.filter(
             location_hierarchy__regex=regex_pattern
-        ).order_by("name")
+        ).order_by("founded_date", "name")
 
         context["contributors"] = get_contributors(self.object)
 
