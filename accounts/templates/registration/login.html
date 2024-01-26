@@ -58,11 +58,11 @@
                                 <img src="{{ book.cover.url }}"
                                     alt="{{ book.title }}"
                                     class="img-fluid cover-border"
-                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ book.title }}{% if book.subtitle %}: {{book.subtitle}}{% endif %}</div>';"
+                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ book.title }}{% if book.subtitle %}: {{book.subtitle}}{% endif %}</div>';"
                                     loading="lazy">
                             {% endif %}      
                         {% else %}
-                            <div class="cover-placeholder">{{ book.title }}{% if book.subtitle %}: {{book.subtitle}}{% endif %}</div>
+                            <div class="cover-placeholder bg-light">{{ book.title }}{% if book.subtitle %}: {{book.subtitle}}{% endif %}</div>
                         {% endif %}              
                     </a>
                 </div>
@@ -86,7 +86,7 @@
                                     loading="lazy">
                             {% endif %}      
                         {% else %}
-                            <div class="cover-placeholder">{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>
+                            <div class="cover-placeholder bg-light">{{ movie.title }}{% if movie.subtitle %}: {{movie.subtitle}}{% endif %}</div>
                         {% endif %}              
                     </a>
                 </div>
@@ -110,7 +110,7 @@
                                     loading="lazy">
                             {% endif %}      
                         {% else %}
-                            <div class="cover-placeholder">{{ series.title }}{% if series.subtitle %}: {{series.subtitle}}{% endif %}</div>
+                            <div class="cover-placeholder bg-light">{{ series.title }}{% if series.subtitle %}: {{series.subtitle}}{% endif %}</div>
                         {% endif %}              
                     </a>
                 </div>
@@ -130,11 +130,11 @@
                                 <img src="{{ music.cover.url }}"
                                     alt="{{ music.title }}"
                                     class="img-fluid cover-border"
-                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ music.title }}{% if music.subtitle %}: {{music.subtitle}}{% endif %}</div>';"
+                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ music.title }}{% if music.subtitle %}: {{music.subtitle}}{% endif %}</div>';"
                                     loading="lazy">
                             {% endif %}      
                         {% else %}
-                            <div class="cover-placeholder">{{ music.title }}{% if music.subtitle %}: {{music.subtitle}}{% endif %}</div>
+                            <div class="cover-placeholder bg-light">{{ music.title }}{% if music.subtitle %}: {{music.subtitle}}{% endif %}</div>
                         {% endif %}              
                     </a>
                 </div>
@@ -154,11 +154,11 @@
                             <img src="{{ game.cover.url }}"
                                 alt="{{ game.title }}"
                                 class="img-fluid cover-border"
-                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>';"
+                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>';"
                                 loading="lazy">
                         {% endif %}      
                     {% else %}
-                        <div class="cover-placeholder">{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>
+                        <div class="cover-placeholder bg-light">{{ game.title }}{% if game.subtitle %}: {{game.subtitle}}{% endif %}</div>
                     {% endif %}              
                 </a>
             </div>
