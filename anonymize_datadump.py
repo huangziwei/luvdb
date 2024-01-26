@@ -113,7 +113,7 @@ def main(file_path):
         os.path.dirname(file_path), "datadump_anonymized.json"
     )
     with open(output_file_path, "w") as f:
-        json.dump(postprocessed_data, f, indent=4)
+        json.dump(postprocessed_data, f, separators=(",", ":"))
 
 
 if __name__ == "__main__":
