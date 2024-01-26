@@ -144,7 +144,7 @@
                         <div class="mt-1">
                         {% for company in companies_here %}
                             <a href="{% url 'entity:company_detail' company.id %}">{{ company.name }}</a>
-                            ({{company.founded_date|extract_year}})
+                            {% if company.founded_date %}({{company.founded_date|extract_year}}){% else %}(?){% endif %}
                             {% if not forloop.last %} / {% endif %}
                         {% endfor %}
                         </div>
