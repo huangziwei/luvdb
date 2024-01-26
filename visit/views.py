@@ -162,9 +162,23 @@ class LocationDetailView(DetailView):
         context["creators_died_here"] = Creator.objects.filter(
             death_location_hierarchy__regex=regex_pattern
         ).order_by("death_date")
-        context["companies_here"] = Company.objects.filter(
-            location_hierarchy__regex=regex_pattern
-        ).order_by("founded_date", "name")
+        context["companies_here"] = (
+            Company.objects.annotate(
+                founded_date_order=Case(
+                    # Assuming founded_date is a string; adjust the condition if it's stored differently
+                    When(
+                        founded_date__regex=r"^\?.*$", then=Value(2)
+                    ),  # Partial dates get a value of 2
+                    When(
+                        founded_date__isnull=True, then=Value(3)
+                    ),  # Unknown dates get a value of 3
+                    default=Value(1),  # Fully known dates get a value of 1
+                    output_field=CharField(),
+                )
+            )
+            .filter(location_hierarchy__regex=regex_pattern)
+            .order_by("founded_date_order", "founded_date", "name")
+        )
 
         context["contributors"] = get_contributors(self.object)
 
