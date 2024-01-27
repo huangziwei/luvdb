@@ -441,6 +441,7 @@ class BookDetailView(DetailView):
         main_role_names = [
             "Author",
             "Translator",
+            "Illustrator",
             "Editor",
             "Story By",
             "Novelization By",
