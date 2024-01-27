@@ -146,6 +146,7 @@ class CreatorDetailView(DetailView):
             "Foreword",
             "Afterword",
             "Annotator",
+            "Illustrator",
         ]
         for role in book_roles:
             context_key = f"books_as_{role.lower()}"
