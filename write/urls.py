@@ -80,6 +80,7 @@ from .views import (
     TagListView,
     TagUserListView,
     delete_webmention,
+    send_webmention,
     surprise_manifest,
     webmention,
 )
@@ -456,4 +457,5 @@ urlpatterns = [
         delete_webmention,
         name="delete_webmention",
     ),
+    path("webmention/send/", send_webmention, name="send_webmention"),
 ]

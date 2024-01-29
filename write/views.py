@@ -4,7 +4,9 @@ from itertools import chain
 from operator import attrgetter
 
 import pytz
+import requests
 from dal import autocomplete
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -1271,6 +1273,7 @@ class CommentListView(ListView):
         context["object"] = self.request.user
         return context
 
+
 def surprise_manifest(request, luvlist_id, username=None):
     luvlist = LuvList.objects.get(id=luvlist_id)
     data = {
@@ -1384,3 +1387,15 @@ def delete_webmention(request, webmention_id):
         return HttpResponseRedirect(referer_url)
     else:
         return redirect("activity_feed:activity_feed")
+
+
+def send_webmention(request):
+    if request.method == "POST":
+        source = request.POST.get("source")
+        target = "https://brid.gy/publish/mastodon"
+        url = "https://brid.gy/publish/webmention"
+
+        data = {"source": source, "target": target}
+        response = requests.post(url, data=data)
+
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
