@@ -33,7 +33,7 @@
                 </div>
                 <div class="mb-2">
                     <div class="bg-light p-3">
-                        <a href="{{ object.url }}" class="p-name u-bookmark-of">{{ object.title }}</a>
+                        <a href="{{ object.url }}" class="u-bookmark-of">{{ object.title }}</a>
                         <a href="{% url 'write:pins_from_url' object.url|root_url %}"
                            class="link-secondary">({{ pin.url|root_url }})</a>
                     </div>
