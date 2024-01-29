@@ -82,18 +82,18 @@
                             {% if object.content_type.model == 'release' %}
                                 <a href="{% url 'listen:release_detail' object.content_object.id %}"
                                    class="text-decoration-none ">
-                                    <div class="fs-5 p-name">{{ object.content_object.title }}</div>
+                                    <div class="fs-5">{{ object.content_object.title }}</div>
                                 </a>
                             {% elif object.content_type.model == 'podcast' %}
                                 <a href="{% url 'listen:podcast_detail' object.content_object.id %}"
                                    class="text-decoration-none ">
-                                    <div class="fs-5  p-name">{{ object.content_object.title }}</div>
+                                    <div class="fs-5">{{ object.content_object.title }}</div>
                                 </a>
                                 <div class="text-muted">{{ object.content_object.notes | truncatechars:600 }}</div>
                             {% elif object.content_type.model == 'audiobook' %}
                                 <a href="{% url 'listen:audiobook_detail' object.content_object.id %}"
                                    class="text-decoration-none ">
-                                    <div class="fs-5  p-name">{{ object.content_object.title }}</div>
+                                    <div class="fs-5">{{ object.content_object.title }}</div>
                                 </a>
                             {% endif %}
 

@@ -523,9 +523,9 @@
                                 class="btn btn-secondary btn-sm mx-auto toggle-button">Webmentions</button>
                         {% endif %}
                     </div>
-                    {% if checkin.user != request.user %}
+                    {% if object.user != request.user %}
                     <div>
-                        <a href="{% url 'discover:vote' 'repost' object.id 'up' %}" 
+                        <a href="{% url 'discover:vote' 'repost' repost.id 'up' %}" 
                             class="me-2 btn btn-sm {% if has_voted %}btn-outline-danger active{% else %}btn-outline-danger{% endif %}" 
                             title="Like this repost">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
@@ -534,7 +534,7 @@
                         </a>
                     </div>
                     {% endif %}
-                    {% if checkin.user == request.user and request.user.enable_webmentions %}
+                    {% if object.user == request.user and request.user.enable_webmentions %}
                     <div>
                         <form action="{% url 'write:send_webmention' %}" method="post">
                             {% csrf_token %}

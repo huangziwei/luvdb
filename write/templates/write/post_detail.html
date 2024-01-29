@@ -63,7 +63,7 @@
                                 class="btn btn-secondary btn-sm mx-auto toggle-button">Webmentions</button>
                         {% endif %}                    
                     </div>
-                    {% if checkin.user != request.user %}
+                    {% if object.user != request.user %}
                     <div>
                         <a href="{% url 'discover:vote' 'post' object.id 'up' %}" 
                             class="me-2 btn btn-sm {% if has_voted %}btn-outline-danger active{% else %}btn-outline-danger{% endif %}" 
@@ -74,7 +74,7 @@
                         </a>
                     </div>
                     {% endif %}
-                    {% if checkin.user == request.user and request.user.enable_webmentions %}
+                    {% if object.user == request.user and request.user.enable_webmentions %}
                     <div>
                         <form action="{% url 'write:send_webmention' %}" method="post">
                             {% csrf_token %}

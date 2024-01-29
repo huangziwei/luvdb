@@ -69,7 +69,7 @@
                         <div class="flex-grow-1 ms-3">
                             <a href="{% url 'play:game_detail' object.content_object.id %}"
                                class="text-decoration-none ">
-                                <div class="fs-5 p-name">{{ object.content_object.title }}</div>
+                                <div class="fs-5">{{ object.content_object.title }}</div>
                             </a>
                             {% regroup object.content_object.gameroles.all by role as roles_list %}
                             {% for role in roles_list %}

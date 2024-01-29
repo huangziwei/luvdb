@@ -68,13 +68,13 @@
                             {% if object.content_type.model == 'movie' %}
                                 <a href="{% url 'watch:movie_detail' object.content_object.id %}"
                                    class="text-decoration-none ">
-                                    <div class="fs-5  p-ame">{{ object.content_object.title }}</div>
+                                    <div class="fs-5">{{ object.content_object.title }}</div>
                                 </a>
                             {% elif object.content_type.model == 'series' %}
                                 <div class="fs-4">{{ object.content_object.series.title }}</div>
                                 <a href="{% url 'watch:series_detail' object.content_object.id %}"
                                    class="text-decoration-none ">
-                                    <div class="fs-5  p-ame">{{ object.content_object.title }}</div>
+                                    <div class="fs-5">{{ object.content_object.title }}</div>
                                 </a>
                             {% endif %}
                             {% if object.content_type.model == 'movie' %}
