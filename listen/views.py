@@ -944,6 +944,7 @@ class ListenCheckInDetailView(DetailView):
         context["webmentions"] = WebMention.objects.filter(
             target__endswith=partial_target_url
         ).order_by("received_at")
+        context["source_url"] = self.request.build_absolute_uri()
         return context
 
 

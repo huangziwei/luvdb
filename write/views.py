@@ -109,7 +109,7 @@ class ShareDetailView(DetailView):
         context["webmentions"] = WebMention.objects.filter(
             target__endswith=partial_target_url
         ).order_by("received_at")
-
+        context["source_url"] = self.request.build_absolute_uri()
         return context
 
 
@@ -416,6 +416,8 @@ class SayDetailView(ShareDetailView):
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
 
+        # for webmention
+        context["source_url"] = self.request.build_absolute_uri()
         return context
 
 
@@ -570,7 +572,6 @@ class PinDetailView(ShareDetailView):
         include_mathjax, include_mermaid = check_required_js([self.object])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
-
         return context
 
 
@@ -920,7 +921,6 @@ class RepostDetailView(ShareDetailView):
         include_mathjax, include_mermaid = check_required_js([self.object])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mathjax
-
         return context
 
 
@@ -1394,8 +1394,10 @@ def send_webmention(request):
         source = request.POST.get("source")
         target = "https://brid.gy/publish/mastodon"
         url = "https://brid.gy/publish/webmention"
+        print("Source URL:", source)  # Debug print
 
         data = {"source": source, "target": target}
         response = requests.post(url, data=data)
+        print("Response from Bridgy:", response.text)  # Debug print
 
         return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
