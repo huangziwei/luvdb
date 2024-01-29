@@ -93,6 +93,22 @@
                     
                     <hr>
 
+                    {% if contents.paginator.num_pages > 1 %}
+                        <div class="pagination mt-3 mb-3">
+                            <span class="step-links">
+                                {% for page_num, range in page_ranges %}
+                                    {% if contents.number == page_num %}
+                                        <span class="current me-2">{{ range }}</span>
+                                    {% else %}
+                                        <a href="?page={{ page_num }}" class="me-2">{{ range }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                    {% endif %}
+
+                    
+
                     {% for content in contents %}
                         {% if content.content_object %}
                             {% if content.content_type.model == 'luvlist' %}
@@ -758,11 +774,11 @@
         {% if contents.paginator.num_pages > 1 %}
             <div class="pagination mb-3 mb-md-1">
                 <span class="step-links">
-                    {% for i in contents.paginator.page_range %}
-                        {% if contents.number == i %}
-                            <span class="current">{{ i }}</span>
+                    {% for page_num, range in page_ranges %}
+                        {% if contents.number == page_num %}
+                            <span class="current me-2">{{ range }}</span>
                         {% else %}
-                            <a href="?page={{ i }}">{{ i }}</a>
+                            <a href="?page={{ page_num }}" class="me-2">{{ range }}</a>
                         {% endif %}
                     {% endfor %}
                 </span>

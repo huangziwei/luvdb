@@ -1046,6 +1046,8 @@ class LuvListDetailView(DetailView):
             # Pagination logic
             page = self.request.GET.get("page")
             paginator = Paginator(context["contents"], paginate_by)
+            context["page_ranges"] = self.get_page_ranges(paginator, paginate_by, order)
+
             try:
                 context["contents"] = paginator.page(page)
             except PageNotAnInteger:
@@ -1054,6 +1056,31 @@ class LuvListDetailView(DetailView):
                 context["contents"] = paginator.page(paginator.num_pages)
 
         return context
+
+    def get_page_ranges(self, paginator, items_per_page, order):
+        page_ranges = []
+        total_pages = paginator.num_pages
+        total_items = paginator.count
+
+        for i in range(1, total_pages + 1):
+            if order == "ASC":
+                start = (i - 1) * items_per_page + 1
+                end = start + items_per_page - 1
+                if end > total_items:
+                    end = total_items
+                page_ranges.append((i, f"{start}-{end}"))
+            else:  # order == "DSC"
+                end = total_items - (i - 1) * items_per_page
+                start = end - items_per_page + 1
+                if start < 1:
+                    start = 1
+                page_ranges.append((i, f"{end}-{start}"))
+            
+
+        if order == "DSC":
+            page_ranges.reverse()
+
+        return page_ranges
 
     def get_success_url(self):
         return reverse(
