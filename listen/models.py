@@ -236,6 +236,7 @@ class Release(auto_prefetch.Model):
         ("Studio and Live", "Studio and Live"),
         ("Compilation", "Compilation"),
         ("Bootleg", "Bootleg"),
+        ("Soundtrack", "Soundtrack"),
     ]
     recording_type = models.CharField(
         max_length=255, choices=RECORDING_TYPES, blank=True, null=True
