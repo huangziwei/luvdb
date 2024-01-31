@@ -15,22 +15,25 @@
                 </div>
             {% else %}
                 <div class='col-12 col-md-8'>
-                    <h2>{{ object.title }}</h2>
-                    <div class='d-flex justify-content-between align-items-start mb-2'>
-                        <div class="d-flex align-items-start">
-                            
-                            {% if not object.allow_collaboration %}
-                            <div class="me-2">
-                                by <a href="{% url 'accounts:detail' object.user.username %}">{{ object.user.display_name | default:object.user.username }}</a>
-                            </div>
-                            {% endif %}
-
-                            <div class='me-2 text-secondary d-none d-lg-block'>
+                    <h2>{{ object.title }}</h2>                    
+                    <div class="mb-2">
+                        {{ object.notes|linkify_tags:object.user|markdownify}}
+                    </div>
+                    <div class='d-flex justify-content-between align-items-baseline mb-2'>
+                        <div class="d-flex flex-wrap">
+                            <div class="mb-3 me-2 text-secondary">
                                 Updated
                                 <a href="{% url 'write:luvlist_list' object.user.username %}"
                                     class="text-muted">{{ object.updated_at|timesince }} ago</a>
                             </div>
-                        </div>    
+                            <div class="d-flex align-items-start">
+                                {% if not object.allow_collaboration %}
+                                <div class="me-2">
+                                    by <a href="{% url 'accounts:detail' object.user.username %}">{{ object.user.display_name | default:object.user.username }}</a>
+                                </div>
+                                {% endif %}
+                            </div>    
+                        </div>
                         <div class="d-flex justify-content-end align-items-center">
                             <form method="post" action="">
                                 {% csrf_token %}
@@ -81,15 +84,7 @@
                             {% endif %}
                         </div>
                     </div>
-                    
-                    <div class="mb-2">
-                        {{ object.notes|linkify_tags:object.user|markdownify}}
-                    </div>
-                    <div class="mb-3 me-2 text-secondary d-lg-none">
-                        Updated
-                        <a href="{% url 'write:luvlist_list' object.user.username %}"
-                            class="text-muted">{{ object.updated_at|timesince }} ago</a>
-                    </div>
+
                     
                     <hr>
 
