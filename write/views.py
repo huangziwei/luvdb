@@ -976,7 +976,7 @@ class LuvListCreateView(LoginRequiredMixin, CreateView):
         )
 
 
-@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="20/m", block=True), name="dispatch")
 class LuvListDetailView(DetailView):
     model = LuvList
     template_name = "write/luvlist_detail.html"
@@ -1075,7 +1075,6 @@ class LuvListDetailView(DetailView):
                 if start < 1:
                     start = 1
                 page_ranges.append((i, f"{end}-{start}"))
-            
 
         if order == "DSC":
             page_ranges.reverse()

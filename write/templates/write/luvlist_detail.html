@@ -94,8 +94,13 @@
                     <hr>
 
                     {% if contents.paginator.num_pages > 1 %}
-                        <div class="pagination mt-3 mb-3">
+                        <div class="pagination mt-3 mb-3 d-flex justify-content-center">
                             <span class="step-links">
+                                <!-- Double left arrow for previous page -->
+                                {% if contents.has_previous %}
+                                    <a href="?page={{ contents.previous_page_number }}" class="me-2">«</a>
+                                {% endif %}
+
                                 {% for page_num, range in page_ranges %}
                                     {% if contents.number == page_num %}
                                         <span class="current me-2">{{ range }}</span>
@@ -103,6 +108,11 @@
                                         <a href="?page={{ page_num }}" class="me-2">{{ range }}</a>
                                     {% endif %}
                                 {% endfor %}
+
+                                <!-- Double right arrow for next page -->
+                                {% if contents.has_next %}
+                                    <a href="?page={{ contents.next_page_number }}" class="ms-2">»</a>
+                                {% endif %}
                             </span>
                         </div>
                     {% endif %}
@@ -675,8 +685,31 @@
                                 </div>
                             </div>
                         {% endif %}
-                        <hr>
+                        {% if not forloop.last %}<hr>{% endif %}
                     {% endfor %}
+                    {% if contents.paginator.num_pages > 1 %}
+                        <div class="pagination mt-3 mb-3 d-flex justify-content-center">
+                            <span class="step-links">
+                                <!-- Double left arrow for previous page -->
+                                {% if contents.has_previous %}
+                                    <a href="?page={{ contents.previous_page_number }}" class="me-2">«</a>
+                                {% endif %}
+
+                                {% for page_num, range in page_ranges %}
+                                    {% if contents.number == page_num %}
+                                        <span class="current me-2">{{ range }}</span>
+                                    {% else %}
+                                        <a href="?page={{ page_num }}" class="me-2">{{ range }}</a>
+                                    {% endif %}
+                                {% endfor %}
+
+                                <!-- Double right arrow for next page -->
+                                {% if contents.has_next %}
+                                    <a href="?page={{ contents.next_page_number }}" class="ms-2">»</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="d-flex flex-column col-sm-4">
                     {% if request.user.is_authenticated %}
@@ -771,19 +804,6 @@
                 </div>
             {% endif %}
         </div>
-        {% if contents.paginator.num_pages > 1 %}
-            <div class="pagination mb-3 mb-md-1">
-                <span class="step-links">
-                    {% for page_num, range in page_ranges %}
-                        {% if contents.number == page_num %}
-                            <span class="current me-2">{{ range }}</span>
-                        {% else %}
-                            <a href="?page={{ page_num }}" class="me-2">{{ range }}</a>
-                        {% endif %}
-                    {% endfor %}
-                </span>
-            </div>
-        {% endif %}
     </div>
     {% include 'mathjax+mermaid.html' %}
     <style>
