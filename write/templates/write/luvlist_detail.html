@@ -98,20 +98,20 @@
                             <span class="step-links">
                                 <!-- Double left arrow for previous page -->
                                 {% if contents.has_previous %}
-                                    <a href="?page={{ contents.previous_page_number }}" class="me-2">«</a>
+                                    <a href="?page={{ contents.previous_page_number }}" class="me-1">«</a>
                                 {% endif %}
 
                                 {% for page_num, range in page_ranges %}
                                     {% if contents.number == page_num %}
-                                        <span class="current me-2">{{ range }}</span>
+                                        <span class="current ms-1 me-1">{{ range }}</span>
                                     {% else %}
-                                        <a href="?page={{ page_num }}" class="me-2">{{ range }}</a>
+                                        <a href="?page={{ page_num }}" class="ms-1 me-1">{{ range }}</a>
                                     {% endif %}
                                 {% endfor %}
 
                                 <!-- Double right arrow for next page -->
                                 {% if contents.has_next %}
-                                    <a href="?page={{ contents.next_page_number }}" class="ms-2">»</a>
+                                    <a href="?page={{ contents.next_page_number }}" class="ms-1">»</a>
                                 {% endif %}
                             </span>
                         </div>
@@ -692,20 +692,20 @@
                             <span class="step-links">
                                 <!-- Double left arrow for previous page -->
                                 {% if contents.has_previous %}
-                                    <a href="?page={{ contents.previous_page_number }}" class="me-2">«</a>
+                                    <a href="?page={{ contents.previous_page_number }}" class="me-1">«</a>
                                 {% endif %}
 
                                 {% for page_num, range in page_ranges %}
                                     {% if contents.number == page_num %}
-                                        <span class="current me-2">{{ range }}</span>
+                                        <span class="current ms-1 me-1">{{ range }}</span>
                                     {% else %}
-                                        <a href="?page={{ page_num }}" class="me-2">{{ range }}</a>
+                                        <a href="?page={{ page_num }}" class="ms-1 me-1">{{ range }}</a>
                                     {% endif %}
                                 {% endfor %}
 
                                 <!-- Double right arrow for next page -->
                                 {% if contents.has_next %}
-                                    <a href="?page={{ contents.next_page_number }}" class="ms-2">»</a>
+                                    <a href="?page={{ contents.next_page_number }}" class="ms-1">»</a>
                                 {% endif %}
                             </span>
                         </div>
