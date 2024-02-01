@@ -110,6 +110,7 @@ class Work(auto_prefetch.Model):  # Renamed from Book
     wikipedia = models.URLField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
+    # based on
     based_on_games = models.ManyToManyField(
         "self", blank=True, symmetrical=False, related_name="related_games"
     )
@@ -121,6 +122,46 @@ class Work(auto_prefetch.Model):  # Renamed from Book
     )
     based_on_series = models.ManyToManyField(
         "watch.Series", blank=True, related_name="games"
+    )
+    # mentions
+    mentioned_litworks = models.ManyToManyField(
+        "read.Work", blank=True, related_name="mentioned_in_gameworks"
+    )
+    mentioned_litinstances = models.ManyToManyField(
+        "read.Instance", blank=True, related_name="mentioned_in_gameworks"
+    )
+    mentioned_books = models.ManyToManyField(
+        "read.Book", blank=True, related_name="mentioned_in_gameworks"
+    )
+    mentioned_periodicals = models.ManyToManyField(
+        "read.Periodical", blank=True, related_name="mentioned_in_gameworks"
+    )
+    mentioned_issues = models.ManyToManyField(
+        "read.Issue", blank=True, related_name="mentioned_in_gameworks"
+    )
+    mentioned_gameworks = models.ManyToManyField(
+        "self", blank=True, symmetrical=False, related_name="mentioned_in_gameworks"
+    )
+    mentioned_games = models.ManyToManyField(
+        "play.Game", blank=True, related_name="mentioned_in_gameworks"
+    )
+    mentioned_movies = models.ManyToManyField(
+        "watch.Movie", blank=True, related_name="mentioned_in_gameworks"
+    )
+    mentioned_series = models.ManyToManyField(
+        "watch.Series", blank=True, related_name="mentioned_in_gameworks"
+    )
+    mentioned_musicalworks = models.ManyToManyField(
+        "listen.Work", blank=True, related_name="mentioned_in_gameworks"
+    )
+    mentioned_tracks = models.ManyToManyField(
+        "listen.Track", blank=True, related_name="mentioned_in_gameworks"
+    )
+    mentioned_releases = models.ManyToManyField(
+        "listen.Release", blank=True, related_name="mentioned_in_gameworks"
+    )
+    mentioned_locations = models.ManyToManyField(
+        "visit.Location", blank=True, related_name="mentioned_in_gameworks"
     )
 
     # entry meta data

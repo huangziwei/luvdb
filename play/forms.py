@@ -52,16 +52,60 @@ class WorkForm(forms.ModelForm):
             "based_on_series": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("watch:series-autocomplete")
             ),
+            "mentioned_litworks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:work-autocomplete")
+            ),
+            "mentioned_litinstances": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:instance-autocomplete")
+            ),
+            "mentioned_books": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:book-autocomplete")
+            ),
+            "mentioned_gameworks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("play:work-autocomplete")
+            ),
+            "mentioned_games": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("play:work-autocomplete")
+            ),
+            "mentioned_movies": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:movie-autocomplete")
+            ),
+            "mentioned_series": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:series-autocomplete")
+            ),
+            "mentioned_locations": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("visit:location-autocomplete")
+            ),
+            "mentioned_musicalworks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:work-autocomplete")
+            ),
+            "mentioned_tracks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:track-autocomplete")
+            ),
+            "mentioned_releases": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:release-autocomplete")
+            ),
         }
         help_texts = {
             "developers": "Developers of the movie. <a href='/entity/company/create/'>Add a new company</a>.",
             "setting_locations": "Locations of where the movie was set. <a href='/visit/location/create/'>Add a new location</a>.",
         }
         labels = {
-            "based_on_litworks": "Publications",
-            "based_on_games": "Games",
+            "based_on_litworks": "Publications (Work)",
+            "based_on_games": "Games (Work)",
             "based_on_movies": "Movies",
             "based_on_series": "Series",
+            "mentioned_litworks": "Works",
+            "mentioned_litinstances": "Instances",
+            "mentioned_books": "Books",
+            "mentioned_gameworks": "Works",
+            "mentioned_games": "Games",
+            "mentioned_movies": "Movies",
+            "mentioned_series": "Series",
+            "mentioned_musicalworks": "Works",
+            "mentioned_tracks": "Tracks",
+            "mentioned_releases": "Releases",
+            "mentioned_locations": "Locations",
         }
 
     def __init__(self, *args, **kwargs):

@@ -11,7 +11,6 @@
     {{ form.isrc|as_crispy_field }}
     {{ form.genres|as_crispy_field }}
     {{ form.wikipedia|as_crispy_field }}
-    {{ form.notes|as_crispy_field }}
     {{ trackroles.management_form|crispy }}
     <div id="track-role-formset" class="bg-light p-3 mb-3">
         <strong>Creators related to this track</strong>
@@ -38,6 +37,7 @@
         <strong>The Work related to this Track</strong>
         {{ form.work|as_crispy_field }}
     </div>
+    {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% if form.errors %}

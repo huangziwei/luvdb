@@ -8,20 +8,11 @@
     {{ form.poster_sens|as_crispy_field}}
     {{ form.studios|as_crispy_field }}
     {{ form.distributors|as_crispy_field }}
-    {{ form.notes|as_crispy_field }}
     {{ form.genres|as_crispy_field }}
     {{ form.filming_locations|as_crispy_field}}
     {{ form.setting_locations|as_crispy_field}}
     {{ form.imdb|as_crispy_field }}
     {{ form.wikipedia|as_crispy_field }}
-    <div class="bg-light p-3 mb-3">
-        <strong>Based on</strong>
-        <p class="text-muted">The original works that the movie is based on.</p>
-        {{ form.based_on_litworks|as_crispy_field }}
-        {{ form.based_on_games|as_crispy_field }}
-        {{ form.based_on_movies|as_crispy_field }}
-        {{ form.based_on_series|as_crispy_field }}
-    </div>
     {{ regionreleasedates.management_form|crispy }}
     <div id="region-release-date-formset" class="bg-light p-3 mb-3">
         <strong>Regions and release dates of this Movie</strong>
@@ -84,6 +75,59 @@
         </div>
         <button type="button" id="add-movie-cast-formset" class="btn btn-secondary">Add More</button>
     </div>
+    <div class="mb-2">Cross-media</div>
+    <div class="accordion mb-3">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <strong>Based on</strong>
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body bg-light">
+                    <p class="text-muted">The original works that the movie is based on.</p>
+                    {{ form.based_on_litworks|as_crispy_field }}
+                    {{ form.based_on_games|as_crispy_field }}
+                    {{ form.based_on_movies|as_crispy_field }}
+                    {{ form.based_on_series|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <strong>Mentioned</strong>
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body bg-light">
+                    <p class="text-muted">Entries that mentioned in this episode.</p>
+                    <div class="fw-bold mb-2">Read</div>
+                    {{ form.mentioned_litworks|as_crispy_field }}
+                    {{ form.mentioned_litinstances|as_crispy_field }}
+                    {{ form.mentioned_books|as_crispy_field }}
+                    <hr class="mt-2 mb-2">
+                    <div class="fw-bold mb-2">Watch</div>
+                    {{ form.mentioned_movies|as_crispy_field }}
+                    {{ form.mentioned_series|as_crispy_field }}
+                    <hr class="mt-2 mb-2">
+                    <div class="fw-bold mb-2">Listen</div>
+                    {{ form.mentioned_musicalworks|as_crispy_field }}
+                    {{ form.mentioned_tracks|as_crispy_field }}
+                    {{ form.mentioned_releases|as_crispy_field }}
+                    <hr class="mt-2 mb-2">
+                    <div class="fw-bold mb-2">Play</div>
+                    {{ form.mentioned_gameworks|as_crispy_field }}
+                    {{ form.mentioned_games|as_crispy_field }}
+                    <hr class="mt-2 mb-2">
+                    <div class="fw-bold mb-2">Visit</div>
+                    {{ form.mentioned_locations|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% if form.errors %}

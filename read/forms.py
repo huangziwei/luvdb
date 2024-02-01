@@ -103,20 +103,20 @@ class WorkForm(forms.ModelForm):
             ),
         }
         labels = {
-            "based_on_litworks": "Publications",
-            "based_on_games": "Games",
+            "based_on_litworks": "Publications (Work)",
+            "based_on_games": "Games (Work)",
             "based_on_movies": "Movies",
             "based_on_series": "Series",
-            "mentioned_litworks": "Publication Works",
+            "mentioned_litworks": "Works",
             "mentioned_litinstances": "Instances",
             "mentioned_books": "Books",
-            "mentioned_gameworks": "Game Works",
+            "mentioned_gameworks": "Works",
             "mentioned_games": "Games",
             "mentioned_movies": "Movies",
             "mentioned_series": "Series",
-            "mentioned_musicalworks": "Musical Works",
+            "mentioned_musicalworks": "Works",
             "mentioned_tracks": "Tracks",
-            "mentioned_releases": "Musical Releases",
+            "mentioned_releases": "Releases",
             "mentioned_locations": "Locations",
         }
 

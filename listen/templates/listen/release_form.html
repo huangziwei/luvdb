@@ -15,7 +15,6 @@
     {{ form.recording_type|as_crispy_field }}
     {{ form.release_region|as_crispy_field }}
     {{ form.catalog_number|as_crispy_field }}
-    {{ form.notes|as_crispy_field }}
     {{ releaseroles.management_form|crispy }}
     <div id="release-role-formset" class="bg-light p-3 mb-3">
         <strong>Creators related to this release</strong>
@@ -65,6 +64,7 @@
         {{ form.discogs | as_crispy_field }}
         {{ form.wikipedia | as_crispy_field }}
     </div>
+    {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% if form.errors %}

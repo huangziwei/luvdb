@@ -60,6 +60,8 @@ class Movie(auto_prefetch.Model):
     casts = models.ManyToManyField(
         Creator, through="MovieCast", related_name="movies_cast"
     )
+
+    # based on
     based_on_litworks = models.ManyToManyField(
         LitWork, blank=True, related_name="movies"
     )
@@ -69,6 +71,50 @@ class Movie(auto_prefetch.Model):
     )
     based_on_series = models.ManyToManyField(
         "Series", blank=True, related_name="movies"
+    )
+
+    # mentions
+    mentioned_litworks = models.ManyToManyField(
+        "read.Work", blank=True, related_name="mentioned_in_movies"
+    )
+    mentioned_litinstances = models.ManyToManyField(
+        "read.Instance", blank=True, related_name="mentioned_in_movies"
+    )
+    mentioned_books = models.ManyToManyField(
+        "read.Book", blank=True, related_name="mentioned_in_movies"
+    )
+    mentioned_periodicals = models.ManyToManyField(
+        "read.Periodical", blank=True, related_name="mentioned_in_movies"
+    )
+    mentioned_issues = models.ManyToManyField(
+        "read.Issue", blank=True, related_name="mentioned_in_movies"
+    )
+    mentioned_gameworks = models.ManyToManyField(
+        "play.Work", blank=True, related_name="mentioned_in_movies"
+    )
+    mentioned_games = models.ManyToManyField(
+        "play.Game", blank=True, related_name="mentioned_in_movies"
+    )
+    mentioned_movies = models.ManyToManyField(
+        "self",
+        blank=True,
+        symmetrical=False,
+        related_name="mentioned_in_movies",
+    )
+    mentioned_series = models.ManyToManyField(
+        "watch.Series", blank=True, related_name="mentioned_in_movies"
+    )
+    mentioned_musicalworks = models.ManyToManyField(
+        "listen.Work", blank=True, related_name="mentioned_in_movies"
+    )
+    mentioned_tracks = models.ManyToManyField(
+        "listen.Track", blank=True, related_name="mentioned_in_movies"
+    )
+    mentioned_releases = models.ManyToManyField(
+        "listen.Release", blank=True, related_name="mentioned_in_movies"
+    )
+    mentioned_locations = models.ManyToManyField(
+        "visit.Location", blank=True, related_name="mentioned_in_movies"
     )
 
     notes = models.TextField(blank=True, null=True)
@@ -412,6 +458,61 @@ class Episode(auto_prefetch.Model):
     setting_locations_hierarchy = models.TextField(blank=True, null=True)
 
     history = HistoricalRecords(inherit=True)
+
+    # based on
+    based_on_litworks = models.ManyToManyField(
+        "read.Work", blank=True, related_name="adapted_episodes"
+    )
+    based_on_games = models.ManyToManyField(
+        "play.Work", blank=True, related_name="adapted_episodes"
+    )
+    based_on_series = models.ManyToManyField(
+        "watch.Series", blank=True, related_name="adapted_episodes"
+    )
+    based_on_movies = models.ManyToManyField(
+        "watch.Movie", blank=True, related_name="adapted_episodes"
+    )
+
+    # mentions
+    mentioned_litworks = models.ManyToManyField(
+        "read.Work", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_litinstances = models.ManyToManyField(
+        "read.Instance", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_books = models.ManyToManyField(
+        "read.Book", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_periodicals = models.ManyToManyField(
+        "read.Periodical", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_issues = models.ManyToManyField(
+        "read.Issue", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_gameworks = models.ManyToManyField(
+        "play.Work", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_games = models.ManyToManyField(
+        "play.Game", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_movies = models.ManyToManyField(
+        "watch.Movie", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_series = models.ManyToManyField(
+        "watch.Series", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_musicalworks = models.ManyToManyField(
+        "listen.Work", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_tracks = models.ManyToManyField(
+        "listen.Track", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_releases = models.ManyToManyField(
+        "listen.Release", blank=True, related_name="mentioned_in_episodes"
+    )
+    mentioned_locations = models.ManyToManyField(
+        "visit.Location", blank=True, related_name="mentioned_in_episodes"
+    )
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)

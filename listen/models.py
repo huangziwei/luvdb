@@ -357,7 +357,7 @@ class ReleaseTrack(auto_prefetch.Model):
         Track, on_delete=models.CASCADE, null=True, blank=True
     )
     alt_title = models.CharField(max_length=255, blank=True, null=True)
-    disk = models.CharField(max_length=10, default="1")
+    disk = models.CharField(max_length=10, default="1", blank=True, null=True)
     order = models.PositiveIntegerField(default=1, null=True, blank=True)
     history = HistoricalRecords(inherit=True)
 
