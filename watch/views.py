@@ -295,6 +295,17 @@ class MovieDetailView(DetailView):
             self.object.setting_locations
         )
 
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["can_vote"] = (
+            self.request.user.is_authenticated
+            and WatchCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Movie),
+                object_id=self.object.id,
+                user=self.request.user,
+                status__in=["watched", "rewatched"],
+            ).exists()
+        )
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -758,6 +769,17 @@ class SeriesDetailView(DetailView):
 
         context["main_roles"] = main_roles
         context["other_roles"] = other_roles
+
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["can_vote"] = (
+            self.request.user.is_authenticated
+            and WatchCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Series),
+                object_id=self.object.id,
+                user=self.request.user,
+                status__in=["watched", "rewatched"],
+            ).exists()
+        )
 
         return context
 

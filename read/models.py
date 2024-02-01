@@ -442,6 +442,7 @@ class Book(auto_prefetch.Model):
     )
     internet_archive_url = models.URLField(max_length=200, blank=True, null=True)
     readcheckin = GenericRelation("ReadCheckIn")
+    votes = GenericRelation("discover.Vote")
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -482,6 +483,9 @@ class Book(auto_prefetch.Model):
         return (
             self.readcheckin_set.count()
         )  # adjust this if your related name is different
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
     def save(self, *args, **kwargs):
         # To hold a flag indicating if the cover is new or updated
@@ -828,6 +832,7 @@ class Issue(auto_prefetch.Model):
     history = HistoricalRecords(inherit=True)
 
     readcheckin = GenericRelation("ReadCheckIn")
+    votes = GenericRelation("discover.Vote")
 
     def __str__(self):
         return f"{self.periodical.title} - Issue {self.number} - Volume {self.volume}"
@@ -840,6 +845,9 @@ class Issue(auto_prefetch.Model):
     @property
     def checkin_count(self):
         return self.readcheckin_set.count()
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
     def save(self, *args, **kwargs):
         new_or_updated_cover = False

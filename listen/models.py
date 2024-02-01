@@ -271,6 +271,7 @@ class Release(auto_prefetch.Model):
     )
     history = HistoricalRecords(inherit=True)
     listencheckin = GenericRelation("ListenCheckIn")
+    votes = GenericRelation("discover.Vote")
 
     def __str__(self):
         return self.title
@@ -330,6 +331,9 @@ class Release(auto_prefetch.Model):
 
     def model_name(self):
         return "Release"
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
 
 class ReleaseRole(auto_prefetch.Model):

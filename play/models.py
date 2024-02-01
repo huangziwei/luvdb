@@ -259,6 +259,7 @@ class Game(auto_prefetch.Model):
     rating = models.TextField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
     playcheckin = GenericRelation("PlayCheckIn")
+    votes = GenericRelation("discover.Vote")
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -337,6 +338,8 @@ class Game(auto_prefetch.Model):
         except IndexError:
             return None
 
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
 class GameReleaseDate(auto_prefetch.Model):
     """

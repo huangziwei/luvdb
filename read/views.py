@@ -685,6 +685,18 @@ class BookDetailView(DetailView):
         context["based_on_series"] = [
             Series.objects.get(pk=pk) for pk in unique_based_on_series_set
         ]
+
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        # can vote only if user checked in "read" or "reread"
+        context["can_vote"] = (
+            self.request.user.is_authenticated
+            and ReadCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Book),
+                object_id=self.object.id,
+                user=self.request.user,
+                status__in=["finished_reading", "reread"],
+            ).exists()
+        )
         return context
 
     def post(self, request, *args, **kwargs):
@@ -969,6 +981,17 @@ class IssueDetailView(DetailView):
 
         # contributors
         context["contributors"] = get_contributors(self.object)
+
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["can_vote"] = (
+            self.request.user.is_authenticated
+            and ReadCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Issue),
+                object_id=self.object.id,
+                user=self.request.user,
+                status__in=["finished_reading", "reread"],
+            ).exists()
+        )
 
         return context
 

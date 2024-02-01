@@ -281,27 +281,27 @@
                                                             {% endif %}
                                                         {% endif %}
                                                     </a>
-                                                {% elif item.content_type.model == 'issue' %}
+                                                    {% elif item.content_type.model == 'issue' %}
                                                     <a href="{% url 'write:issue_checkin_list' item.user.username item.content_object.periodical.id item.content_object.id %}">
                                                         {% if user.pure_text_mode %}
                                                             <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>
                                                         {% else %}
-                                                            {% if item.cover %}
+                                                            {% if item.content_object.cover %}
                                                                 {% if item.cover_sens %}
-                                                                    <img src="{{ item.cover.url }}"
+                                                                    <img src="{{ item.content_object.cover.url }}"
                                                                             alt="{{ item.title }} cover"
                                                                             class="img-fluid blur cover-border"
                                                                             onclick="this.classList.toggle('blur')"
                                                                             loading="lazy">
                                                                 {% else %}
-                                                                    <img src="{{ item.cover.url }}"
+                                                                    <img src="{{ item.content_object.cover.url }}"
                                                                             alt="{{ item.title }}"
                                                                             class="img-fluid cover-border"
-                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>';"
+                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ item.content_object.number }}</div>';"
                                                                             loading="lazy">
                                                                 {% endif %}
                                                             {% else %}
-                                                                <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ issue.number }}</div>
+                                                                <div class="cover-placeholder bg-light">{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ issue.content_object.number }}</div>
                                                             {% endif %}
                                                         {% endif %}
                                                     </a>
@@ -922,31 +922,31 @@
                                                             {% endif %}
                                                         {% endif %}
                                                     </a>
-                                                {% elif item.content_type.model == 'issue' %}
-                                                    <a href="{% url 'write:issue_checkin_list' item.user.username item.content_object.periodical.id item.content_object.id %}">
-                                                        {% if user.pure_text_mode %}
-                                                            <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>
-                                                        {% else %}
-                                                            {% if item.cover %}
-                                                                {% if item.cover_sens %}
-                                                                    <img src="{{ item.cover.url }}"
-                                                                            alt="{{ item.title }} cover"
-                                                                            class="img-fluid blur cover-border"
-                                                                            onclick="this.classList.toggle('blur')"
-                                                                            loading="lazy">
-                                                                {% else %}
-                                                                    <img src="{{ item.cover.url }}"
-                                                                            alt="{{ item.title }}"
-                                                                            class="img-fluid cover-border"
-                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>';"
-                                                                            loading="lazy">
-                                                                {% endif %}
+                                                    {% elif item.content_type.model == 'issue' %}
+                                                        <a href="{% url 'write:issue_checkin_list' item.user.username item.content_object.periodical.id item.content_object.id %}">
+                                                            {% if user.pure_text_mode %}
+                                                                <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>
                                                             {% else %}
-                                                                <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ issue.number }}</div>
+                                                                {% if item.content_object.cover %}
+                                                                    {% if item.cover_sens %}
+                                                                        <img src="{{ item.content_object.cover.url }}"
+                                                                                alt="{{ item.title }} cover"
+                                                                                class="img-fluid blur cover-border"
+                                                                                onclick="this.classList.toggle('blur')"
+                                                                                loading="lazy">
+                                                                    {% else %}
+                                                                        <img src="{{ item.content_object.cover.url }}"
+                                                                                alt="{{ item.title }}"
+                                                                                class="img-fluid cover-border"
+                                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ item.content_object.number }}</div>';"
+                                                                                loading="lazy">
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <div class="cover-placeholder bg-light">{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ issue.content_object.number }}</div>
+                                                                {% endif %}
                                                             {% endif %}
-                                                        {% endif %}
-                                                    </a>
-                                                {% endif %}
+                                                        </a>
+                                                    {% endif %}
                                             </div>
                                         {% empty %}
                                             <p>No items.</p>

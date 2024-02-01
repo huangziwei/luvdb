@@ -758,6 +758,17 @@ class ReleaseDetailView(DetailView):
 
         context["labels"] = get_company_name(release.label.all(), release.release_date)
 
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["can_vote"] = (
+            self.request.user.is_authenticated
+            and ListenCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Release),
+                object_id=self.object.id,
+                user=self.request.user,
+                status__in=["listened", "relistened"],
+            ).exists()
+        )
+
         return context
 
     def post(self, request, *args, **kwargs):

@@ -379,6 +379,17 @@ class GameDetailView(DetailView):
                 self.object.work.setting_locations
             )
 
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["can_vote"] = (
+            self.request.user.is_authenticated
+            and PlayCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Game),
+                object_id=self.object.id,
+                user=self.request.user,
+                status__in=["played", "replayed"],
+            ).exists()
+        )
+
         return context
 
     def post(self, request, *args, **kwargs):

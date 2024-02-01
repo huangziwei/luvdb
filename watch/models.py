@@ -138,6 +138,7 @@ class Movie(auto_prefetch.Model):
     setting_locations_hierarchy = models.TextField(blank=True, null=True)
 
     watchcheckin = GenericRelation("WatchCheckIn")
+    votes = GenericRelation("discover.Vote")
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -227,6 +228,9 @@ class Movie(auto_prefetch.Model):
         return self.region_release_dates.aggregate(Min("release_date"))[
             "release_date__min"
         ]
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
 
 class MovieReleaseDate(auto_prefetch.Model):
@@ -334,6 +338,8 @@ class Series(auto_prefetch.Model):
     imdb = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
     watchcheckin = GenericRelation("WatchCheckIn")
+    votes = GenericRelation("discover.Vote")
+
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -402,6 +408,9 @@ class Series(auto_prefetch.Model):
     def model_name(self):
         return "Series"
 
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
+
 
 class SeriesRole(auto_prefetch.Model):
     """
@@ -456,6 +465,8 @@ class Episode(auto_prefetch.Model):
         Location, related_name="episodes_set_here", blank=True
     )
     setting_locations_hierarchy = models.TextField(blank=True, null=True)
+
+    votes = GenericRelation("discover.Vote")
 
     history = HistoricalRecords(inherit=True)
 
@@ -557,6 +568,9 @@ class Episode(auto_prefetch.Model):
             )
 
         super().save(*args, **kwargs)
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
 
 class EpisodeRole(auto_prefetch.Model):

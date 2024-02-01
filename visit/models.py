@@ -119,6 +119,7 @@ class Location(models.Model):
         null=True,
     )
     history = HistoricalRecords(inherit=True)
+    votes = GenericRelation("discover.Vote")
 
     def __str__(self):
         return " / ".join(get_location_full_name(self))
@@ -131,6 +132,9 @@ class Location(models.Model):
 
     def get_absolute_url(self):
         return reverse("visit:location_detail", kwargs={"pk": self.pk})
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
     # @property
     # def full_name_on_feed(self):
