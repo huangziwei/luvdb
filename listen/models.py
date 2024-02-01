@@ -547,6 +547,7 @@ class Podcast(auto_prefetch.Model):
     author = models.CharField(max_length=255, blank=True, null=True)
 
     listencheckin = GenericRelation("ListenCheckIn")
+    votes = GenericRelation("discover.Vote")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -605,6 +606,9 @@ class Podcast(auto_prefetch.Model):
 
         # Save the instance again to persist the changes.
         super().save(*args, **kwargs)
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
 
 class ReleaseGroup(auto_prefetch.Model):
@@ -690,6 +694,7 @@ class Audiobook(auto_prefetch.Model):
 
     internet_archive_url = models.URLField(max_length=200, blank=True, null=True)
     listencheckin = GenericRelation("ListenCheckIn")
+    votes = GenericRelation("discover.Vote")
 
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
@@ -776,6 +781,9 @@ class Audiobook(auto_prefetch.Model):
             self.release_date = standardize_date(self.release_date)
 
         super().save(*args, **kwargs)
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
 
 class AudiobookRole(auto_prefetch.Model):

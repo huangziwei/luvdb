@@ -1030,9 +1030,18 @@ class ListenCheckInDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "listen/listen_checkin_delete.html"
 
     def get_success_url(self):
-        return reverse_lazy(
-            "listen:release_detail", kwargs={"pk": self.object.content_object.pk}
-        )
+        if self.object.content_type.model == "release":
+            return reverse_lazy(
+                "listen:release_detail", kwargs={"pk": self.object.content_object.pk}
+            )
+        elif self.object.content_type.model == "podcast":
+            return reverse_lazy(
+                "listen:podcast_detail", kwargs={"pk": self.object.content_object.pk}
+            )
+        elif self.object.content_type.model == "audiobook":
+            return reverse_lazy(
+                "listen:audiobook_detail", kwargs={"pk": self.object.content_object.pk}
+            )
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
@@ -1582,6 +1591,17 @@ class PodcastDetailView(DetailView):
                 context["latest_user_status"] = "to_listen"
         else:
             context["latest_user_status"] = "to_listen"
+
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["can_vote"] = (
+            self.request.user.is_authenticated
+            and ListenCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Podcast),
+                object_id=self.object.id,
+                user=self.request.user,
+                status__in=["subscribed", "sampled"],
+            ).exists()
+        )
 
         return context
 
@@ -2158,6 +2178,17 @@ class AudiobookDetailView(DetailView):
 
         # contributors
         context["contributors"] = get_contributors(self.object)
+
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["can_vote"] = (
+            self.request.user.is_authenticated
+            and ListenCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Audiobook),
+                object_id=self.object.id,
+                user=self.request.user,
+                status__in=["listened", "relistened"],
+            ).exists()
+        )
 
         return context
 
