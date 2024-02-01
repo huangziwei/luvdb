@@ -20,7 +20,7 @@
     {{ form.wikipedia|as_crispy_field }}
     {{ bookroles.management_form|crispy }}
     <div id="book-role-formset" class="bg-light p-3 mb-3">
-        <strong>Entities related to this book</strong>
+        <strong>Creators related to this book</strong>
         <p class="text-muted">E.g. Authors, Editors, Illustrators, etc.</p>
         <div id="bookrole_set">
             {% for form in bookroles %}

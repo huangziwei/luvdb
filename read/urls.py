@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    BookAutoComplete,
     BookCreateView,
     BookDetailView,
     BookHistoryView,
@@ -128,6 +129,7 @@ urlpatterns = [
         name="issue_history",
     ),
     # autocomplete views
+    path("book-autocomplete/", BookAutoComplete.as_view(), name="book-autocomplete"),
     path(
         "instance-autocomplete/",
         InstanceAutocomplete.as_view(),

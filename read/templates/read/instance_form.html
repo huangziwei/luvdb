@@ -10,7 +10,7 @@
     {{ form.wikipedia | as_crispy_field }}
     {{ instanceroles.management_form|crispy }}
     <div id="instance-role-formset" class="bg-light p-3 mb-3">
-        <strong>Entities related to this instance</strong>
+        <strong>Creators related to this instance</strong>
         <p class="text-muted">E.g. Authors, Editors, Illustrators, etc.</p>
         <div id="instancerole_set">
             {% for form in instanceroles %}

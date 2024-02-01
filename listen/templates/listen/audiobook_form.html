@@ -15,7 +15,7 @@
     {{ form.wikipedia|as_crispy_field }}
     {{ audiobookroles.management_form|crispy }}
     <div id="book-role-formset" class="bg-light p-3 mb-3">
-        <strong>Entities related to this audiobook</strong>
+        <strong>Creators related to this audiobook</strong>
         <p class='text-muted'>E.g. Authors, Editors, Designers, etc.</p>
         <div id="audiobookrole_set">
             {% for form in audiobookroles %}

@@ -841,6 +841,60 @@ class ReleaseUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
+class ReleaseAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Release.objects.none()
+
+        qs = Release.objects.all()
+
+        if self.q:
+            # get all the authors whose name starts with query
+            creators = Creator.objects.filter(name__icontains=self.q)
+
+            # get the author role
+            performer_role = Role.objects.filter(name="Performer").first()
+
+            # get all the instances which are associated with these authors
+            qs = qs.filter(
+                Q(releaserole__role=performer_role, releaserole__creator__in=creators)
+                | Q(title__icontains=self.q)
+                | Q(other_titles__icontains=self.q)
+                | Q(release_date__icontains=self.q)
+            ).distinct()
+
+            return qs
+
+        return Release.objects.none()  # If no query is provided, return no objects
+
+    def get_result_label(self, item):
+        # Get the role objects for 'Performer'
+        performer_role = Role.objects.filter(name="Performer").first()
+
+        # Fetch the release_role for 'Performer'
+        performer_release_role = item.releaserole_set.filter(
+            role=performer_role
+        ).first()
+
+        # Check if performer_release_role exists and a creator is associated
+        if performer_release_role:
+            creator_name = (
+                performer_release_role.alt_name
+                if performer_release_role.alt_name
+                else performer_release_role.creator.name
+            )
+        else:
+            creator_name = "Unknown"
+
+        # Get the year from the release_date
+        release_year = item.release_date[:4] if item.release_date else "Unknown"
+
+        # Format the label
+        label = format_html("{} ({}, {})", item.title, creator_name, release_year)
+
+        return label
+
+
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class ReleaseCreditDetailView(DetailView):
     model = Release

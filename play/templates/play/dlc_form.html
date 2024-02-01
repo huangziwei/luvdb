@@ -8,7 +8,7 @@
     {{ form.release_date|as_crispy_field }}
     {{ dlcroles.management_form|crispy }}
     <div id="dlc-role-formset" class="bg-light p-3 mb-3">
-        <strong>Entities related to this DLC</strong>
+        <strong>Creators related to this DLC</strong>
         <p class='text-muted'>E.g. Directors, Writers, Designers, etc.</p>
         <div id="dlcroles">
             {% for form in dlcroles %}

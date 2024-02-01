@@ -10,17 +10,9 @@
     {{ form.genres|as_crispy_field}}
     {{ form.related_locations|as_crispy_field}}
     {{ form.wikipedia|as_crispy_field }}
-    <div class="bg-light p-3 mb-3">
-        <strong>Based on</strong>
-        <p class="text-muted">The original works that the movie is based on.</p>
-        {{ form.based_on_litworks|as_crispy_field }}
-        {{ form.based_on_games|as_crispy_field }}
-        {{ form.based_on_movies|as_crispy_field }}
-        {{ form.based_on_series|as_crispy_field }}
-    </div>
     {{ workroles.management_form|crispy }}
     <div id="work-role-formset" class="bg-light p-3 mb-3">
-        <strong>Entities related to this work</strong>
+        <strong>Creators related to this work</strong>
         <p class="text-muted">E.g. Authors, Editors, Illustrators, etc.</p>
 
         <div id="workrole_set">
@@ -40,6 +32,51 @@
         <!-- Button to add new formsets -->
         <button type="button" id="add-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
+    <div class="mb-2">Cross-media</div>
+    <div class="accordion mb-3">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <strong>Based on</strong>
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body bg-light">
+                    <p class="text-muted">The original works that the publication is based on.</p>
+                    {{ form.based_on_litworks|as_crispy_field }}
+                    {{ form.based_on_games|as_crispy_field }}
+                    {{ form.based_on_movies|as_crispy_field }}
+                    {{ form.based_on_series|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <strong>Mentioned</strong>
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body bg-light">
+                    <p class="text-muted">Entries that mentioned in this work.</p>
+                    {{ form.mentioned_litworks|as_crispy_field }}
+                    {{ form.mentioned_litinstances|as_crispy_field }}
+                    {{ form.mentioned_books|as_crispy_field }}
+                    {{ form.mentioned_gameworks|as_crispy_field }}
+                    {{ form.mentioned_games|as_crispy_field }}
+                    {{ form.mentioned_movies|as_crispy_field }}
+                    {{ form.mentioned_series|as_crispy_field }}
+                    {{ form.mentioned_musicalworks|as_crispy_field }}
+                    {{ form.mentioned_tracks|as_crispy_field }}
+                    {{ form.mentioned_releases|as_crispy_field }}
+                    {{ form.mentioned_locations|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

@@ -1155,6 +1155,59 @@ class InstanceAutocomplete(autocomplete.Select2QuerySetView):
         return label
 
 
+class BookAutoComplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Book.objects.none()
+
+        qs = Book.objects.all()
+
+        if self.q:
+            # get all the authors whose name starts with query
+            authors = Creator.objects.filter(name__icontains=self.q)
+
+            # get the author role
+            author_role = Role.objects.filter(name="Author").first()
+
+            # get all the instances which are associated with these authors
+            qs = qs.filter(
+                Q(bookrole__role=author_role, bookrole__creator__in=authors)
+                | Q(title__icontains=self.q)
+                | Q(publication_date__icontains=self.q)
+            ).distinct()
+
+            return qs
+
+        return Instance.objects.none()
+
+    def get_result_label(self, item):
+        # Get the first person with a role of 'Author' for the book
+        author_role = Role.objects.filter(
+            name="Author"
+        ).first()  # Adjust 'Author' to match your data
+
+        book_role = item.bookrole_set.filter(role=author_role).first()
+
+        author_name = None
+        if book_role:
+            author_name = book_role.alt_name or book_role.creator.name
+
+        # Get the year from the publication_date
+        publication_year = (
+            item.publication_date.split(".")[0] if item.publication_date else "?"
+        )
+
+        # Format the label
+        if author_name:
+            label = format_html(
+                "{} ({} - {})", item.title, author_name, publication_year
+            )
+        else:
+            label = format_html("{} ({})", item.title, publication_year)
+
+        return label
+
+
 class LanguageAutocomplete(autocomplete.Select2ListView):
     def get_list(self):
         # Extract the display names from your LanguageField's choices

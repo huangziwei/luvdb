@@ -14,6 +14,7 @@ from .views import (
     PodcastCreateView,
     PodcastDetailView,
     PodcastUpdateView,
+    ReleaseAutocomplete,
     ReleaseCreateView,
     ReleaseCreditDetailView,
     ReleaseDetailView,
@@ -71,6 +72,11 @@ urlpatterns = [
     ),
     path("work-autocomplete/", WorkAutocomplete.as_view(), name="work-autocomplete"),
     path("track-autocomplete/", TrackAutocomplete.as_view(), name="track-autocomplete"),
+    path(
+        "release-autocomplete/",
+        ReleaseAutocomplete.as_view(),
+        name="release-autocomplete",
+    ),
     # checkin
     path(
         "release/<int:object_id>/checkins/",

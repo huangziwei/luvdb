@@ -37,6 +37,7 @@
                         {{ object.publication_date }}
                     </div>
                 {% endif %}
+                <!--Based on / Adapt from -->
                 {% if object.based_on_litworks.count != 0 or object.based_on_games.count != 0 or object.based_on_movies.count != 0 or object.based_on_series.count != 0 %}
                     <div class="mb-1">
                         <span class="text-muted">Adapted from:</span> 
@@ -76,42 +77,6 @@
                         </ul>
                     </div>
                 {% endif %}
-                {% comment %} {% if object.related_publications.count != 0 %}
-                <div class="mb-1">
-                    <span class="text-muted">Related Publication{% if object.related_publications.count > 1 %}s{% endif %}:</span>
-                    {% for publication in object.related_publications.all %}
-                        <a href="{% url 'read:work_detail' publication.id %}">{{publication.title}}</a> ({{publication.publication_date|extract_year}})
-                        {% if not forloop.last %} / {% endif %}
-                    {% endfor %}
-                </div>
-                {% endif %}
-                {% if object.games.count != 0 %}
-                <div class="mb-1">
-                    <span class="text-muted">Related Game{% if object.games.count > 1 %}s{% endif %}:</span>
-                    {% for game in object.games.all %}
-                        <a href="{% url 'play:work_detail' game.id %}">{{game.title}}</a> ({{game.first_release_date|extract_year}})
-                        {% if not forloop.last %} / {% endif %}
-                    {% endfor %}
-                </div>                                            
-                {% endif %}
-                {% if object.movies.count != 0 %}
-                <div class="mb-1">
-                    <span class="text-muted">Related Movie{% if object.movies.count > 1 %}s{% endif %}:</span>
-                    {% for movie in object.movies.all %}
-                        <a href="{% url 'watch:movie_detail' movie.id %}">{{movie.title}}</a> ({{movie.earliest_release_date|extract_year}})
-                        {% if not forloop.last %} / {% endif %}
-                    {% endfor %}
-                </div>                                            
-                {% endif %}
-                {% if object.series.count != 0 %}
-                <div class="mb-1">
-                    <span class="text-muted">Related Series:</span>
-                    {% for series in object.series.all %}
-                        <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
-                        {% if not forloop.last %} / {% endif %}
-                    {% endfor %}
-                </div>                                            
-                {% endif %} {% endcomment %}
                 {% if related_locations_with_parents %}
                 <div class="mb-1">
                     {# djlint:off #}
@@ -192,6 +157,7 @@
                         {% endfor %}
                     {% endwith %}
                 {% endif %}
+                <!--Adaptations-->
                 {% if adaptation_publications or adaptation_movies or adaptation_series or adaptation_games %}
                     <h3 class="mt-2">Adaptations</h3>
                     {% if adaptation_publications %}
@@ -246,6 +212,38 @@
                             </ul>
                         </div>
                     {% endif %}
+                {% endif %}
+
+                <!--Mentioned-->
+                {% if object.mentioned_litworks.exists %}
+                    <h3 class="mt-2">Mentioned</h3>
+                    <div class="col-12 col-md-6">
+                        <div class="fs-5">Publication Work</div>
+                        <ul>
+                            {% for mention in object.mentioned_litworks.all %}
+                                <li>
+                                    <a href="{% url 'read:work_detail' mention.id %}">{{ mention.title }}</a>
+                                    {% if mention.publication_date %}({{ mention.publication_date }}){% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <!--Mentioned in-->
+                {% if object.mentioned_in_publications.exists %}
+                    <h3 class="mt-2">Mentioned by</h3>
+                    <div class="col-12 col-md-6">
+                        <div class="fs-5">Publication Work</div>
+                        <ul>
+                            {% for mention in object.mentioned_in_publications.all %}
+                                <li>
+                                    <a href="{% url 'read:work_detail' mention.id %}">{{ mention.title }}</a>
+                                    {% if mention.publication_date %}({{ mention.publication_date }}){% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 {% endif %}
             </div>
             <!--Right columns-->
