@@ -126,9 +126,14 @@
                                             {% endif %}
                                             {% if other_roles.exists or object.release_format or object.length or object.isbn_10 or object.eisbn_13 or object.publication_date%}
                                             <li class="nav-item" role="presentation">
-                                                <button class="nav-link text-muted {%if not object.notes%}active{% endif %}" id="more-tab" data-bs-toggle="tab" data-bs-target="#more" type="button" role="tab" aria-controls="release-dates" aria-selected="false">More</button>
+                                                <button class="nav-link text-muted {%if not object.notes%}active{% endif %}" id="more-tab" data-bs-toggle="tab" data-bs-target="#more" type="button" role="tab" aria-controls="release-lists" aria-selected="false">More</button>
                                             </li>
                                             {% endif %}
+                                            {% if lists_containing_release.exists %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="lists-tab" data-bs-toggle="tab" data-bs-target="#lists" type="button" role="tab" aria-controls="release-lists" aria-selected="false">Lists</button>
+                                            </li>        
+                                            {% endif %}              
                                         </ul>
                                         <div class="tab-content" id="myTabContent">
                                             <div class="tab-pane mt-1 {% if not object.notes %} show active {% endif %}" id="more" role="tabpanel" aria-labelledby="more-tab">
@@ -166,6 +171,28 @@
                                             <small class="tab-pane mt-1 {% if object.notes %} show active {% endif %}" id="notes" role="tabpanel" aria-labelledby="notes-tab">
                                                 {{ object.notes|markdownify }}
                                             </small>
+                                            {% endif %}
+                                            {% if lists_containing_release.exists %}
+                                                <div class="tab-pane mt-1" id="lists" role="tabpanel" aria-labelledby="lists-tab">
+                                                    <ul>
+                                                    {% for content_in_list in lists_containing_release %}
+                                                        {% if content_in_list.luv_list.allow_collaboration %}
+                                                            <li>
+                                                                <a href="{% url 'write:luvlist_detail_collab' content_in_list.luv_list.id %}">
+                                                                    {{ content_in_list.luv_list.title }}
+                                                                </a>
+                                                            </li>
+                                                        {% else %}
+                                                            <li>
+                                                                <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.user.username content_in_list.luv_list.id %}">
+                                                                    {{ content_in_list.luv_list.title }}
+                                                                </a>
+                                                                (by <a href="{% url 'accounts:detail' content_in_list.luv_list.user.username %}">{{content_in_list.luv_list.user.display_name|default:content_in_list.luv_list.user.username}}</a>)
+                                                            </li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    </ul>
+                                                </div>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -223,6 +250,21 @@
                         {% endif %}
                     </div>
                 </div>
+                {% if object.wikipedia or object.discogs %}
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                        <div class="fs-5">Links</div>
+                        {% if object.discogs %}
+                        <div>
+                            <a href="{{ object.discogs }}">Discogs</a>
+                        </div>
+                        {% endif %}
+                        {% if object.wikipedia %}
+                        <div>
+                            <a href="{{ object.wikipedia }}">Wikipedia</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
                 <!--Listen on-->
                 {% if object.apple_music_url or object.spotify_url or object.internet_archive_url%}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
@@ -244,21 +286,6 @@
                         {% endif %}
                     </div>
                 {% endif %}
-                {% if object.wikipedia or object.discogs %}
-                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <div class="fs-5">Links</div>
-                        {% if object.discogs %}
-                        <div>
-                            <a href="{{ object.discogs }}">Discogs</a>
-                        </div>
-                        {% endif %}
-                        {% if object.wikipedia %}
-                        <div>
-                            <a href="{{ object.wikipedia }}">Wikipedia</a>
-                        </div>
-                        {% endif %}
-                    </div>
-                {% endif %}
                 <!--Release Stats-->
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5">Statistics</div>
@@ -272,31 +299,6 @@
                         <span class="fw-semibold text-muted">Listened:</span> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a>
                     </div>
                 </div>
-                {% if lists_containing_release.count != 0 %}
-                    <!--LuvLists that included this release-->
-                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <div class="fs-5">Lists</div>
-                        <div class='mb-0'>
-                            {% for content_in_list in lists_containing_release %}
-                                <div class="d-flex flex-nowrap justify-content-start">
-                                    {% if content_in_list.luv_list.allow_collaboration %}
-                                        <a href="{% url 'write:luvlist_detail_collab' content_in_list.luv_list.id %}" class="text-truncate">
-                                            {{ content_in_list.luv_list.title }}
-                                        </a>
-                                    {% else %}
-                                        <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.user.username content_in_list.luv_list.id %}" class="text-truncate" style="max-width: 80%;">
-                                            {{ content_in_list.luv_list.title }}
-                                        </a>
-                                        <span class="d-flex flex-nowrap justify-content-between">(by <a class="ms-1" href="{% url 'accounts:detail' content_in_list.luv_list.user.username %}">{{content_in_list.luv_list.user.display_name|default:content_in_list.luv_list.user.username}}</a>)</span>
-                                    {% endif %}
-                                </div>
-                                {% if not forloop.last %}<hr class="m-1">{% endif %}
-                            {% empty %}
-                                <div>This release is not included in any LuvLists.</div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5">Contributors</div>
