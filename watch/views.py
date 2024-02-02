@@ -406,9 +406,9 @@ class MovieCastDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context[
-            "moviecasts"
-        ] = self.object.moviecasts.all()  # Update with your correct related name
+        context["moviecasts"] = (
+            self.object.moviecasts.all()
+        )  # Update with your correct related name
         context["moviecrew"] = self.object.movieroles.all()
         # contributors
         context["contributors"] = get_contributors(self.object)
@@ -1255,9 +1255,9 @@ class GenericCheckInListView(ListView):
         else:
             content_type = ContentType.objects.get_for_model(model)
             object_id = self.kwargs["object_id"]  # Get object id from url param
-            context[
-                "checkins"
-            ] = self.get_queryset()  # Use the queryset method to handle status filter
+            context["checkins"] = (
+                self.get_queryset()
+            )  # Use the queryset method to handle status filter
 
         context["model_name"] = self.kwargs.get("model_name", "movie")
 
