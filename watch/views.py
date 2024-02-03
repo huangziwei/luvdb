@@ -25,7 +25,7 @@ from django.views.generic import (
 from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Block
-from discover.views import user_has_upvoted
+from discover.utils import user_has_upvoted
 from entity.views import HistoryViewMixin, get_contributors
 from visit.models import Location
 from visit.utils import get_locations_with_parents, get_parent_locations

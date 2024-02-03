@@ -31,7 +31,7 @@ from django_ratelimit.decorators import ratelimit
 from PIL import Image
 
 from activity_feed.models import Block
-from discover.views import user_has_upvoted
+from discover.utils import user_has_upvoted
 from entity.models import Creator, Role
 from entity.utils import get_company_name, parse_date
 from entity.views import HistoryViewMixin, get_contributors
@@ -952,9 +952,9 @@ class ReleaseCreditDetailView(DetailView):
             order = release_track.order
 
             track_roles = TrackRole.objects.filter(track=release_track.track)
-            categorized_track_credits[
-                (release_track.track, disk, order)
-            ] = categorize_roles(track_roles, CATEGORIES)
+            categorized_track_credits[(release_track.track, disk, order)] = (
+                categorize_roles(track_roles, CATEGORIES)
+            )
 
         context["categorized_release_credits"] = categorized_release_credits
         context["categorized_track_credits"] = categorized_track_credits
@@ -1315,15 +1315,17 @@ def parse_podcast(rss_feed_url):
 
     podcast_info = {
         "title": feed.feed.title,
-        "description": feed.feed.description
-        if hasattr(feed.feed, "description")
-        else None,
+        "description": (
+            feed.feed.description if hasattr(feed.feed, "description") else None
+        ),
         "publisher": feed.feed.publisher if hasattr(feed.feed, "publisher") else None,
         "rss_feed_url": rss_feed_url,
         "website_url": feed.feed.link if hasattr(feed.feed, "link") else None,
-        "cover": fetch_image_from_url(feed.feed.image.href)
-        if hasattr(feed.feed, "image")
-        else None,
+        "cover": (
+            fetch_image_from_url(feed.feed.image.href)
+            if hasattr(feed.feed, "image")
+            else None
+        ),
     }
     podcast_info["author"] = getattr(feed.feed, "author", None)
     podcast_info["language"] = getattr(feed.feed, "language", None)
@@ -1713,9 +1715,9 @@ class GenericCheckInListView(ListView):
         else:
             content_type = ContentType.objects.get_for_model(model)
             object_id = self.kwargs["object_id"]  # Get object id from url param
-            context[
-                "checkins"
-            ] = self.get_queryset()  # Use the queryset method to handle status filter
+            context["checkins"] = (
+                self.get_queryset()
+            )  # Use the queryset method to handle status filter
             context["object"] = model.objects.get(
                 pk=object_id
             )  # Get the object details

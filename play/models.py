@@ -15,6 +15,7 @@ from PIL import Image
 from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
+from discover.utils import user_has_upvoted
 from entity.models import Company, Creator, Entity, Role
 from visit.models import Location
 from visit.utils import get_location_hierarchy_ids
@@ -341,6 +342,7 @@ class Game(auto_prefetch.Model):
     def get_votes(self):
         return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
 
+
 class GameReleaseDate(auto_prefetch.Model):
     """
     A Release Date with region of a Game
@@ -459,6 +461,10 @@ class PlayCheckIn(auto_prefetch.Model):
 
     def get_votes(self):
         return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
+
+    @property
+    def has_voted(self):
+        return user_has_upvoted(self.user, self.content_object)
 
     def model_name(self):
         return "Play Check-In"

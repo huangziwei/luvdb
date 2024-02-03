@@ -51,27 +51,36 @@
                 </div>
                 <div class="media-card d-flex flex-row bg-white p-3 mt-2">
                     <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
-                        {% if user.pure_text_mode %}
-                            <div class="cover-placeholder bg-light">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
-                        {% else %}
-                            {% if activity.content_object.original_activity.content_object.content_object.cover %}
-                                {% if activity.content_object.original_activity.content_object.content_object.cover_sens %}
-                                    <img src="{{ activity.content_object.original_activity.content_object.content_object.cover.url }}"
-                                        alt="{{ activity.content_object.original_activity.content_object.content_object.title }} cover"
-                                        class="img-fluid blur cover-border"
-                                        onclick="this.classList.toggle('blur')"
-                                        loading="lazy">
-                                {% else %}
-                                    <img src="{{ activity.content_object.original_activity.content_object.content_object.cover.url }}"
-                                        alt="{{ activity.content_object.original_activity.content_object.content_object.title }} cover"
-                                        class="img-fluid cover-border"
-                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ activity.content_object.original_activity.content_object.content_object.title }}</div>';"
-                                        loading="lazy">
-                                {% endif %}
+                        <div class="position-relative">
+                            {% if user.pure_text_mode %}
+                                <div class="cover-placeholder bg-light">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
                             {% else %}
-                                <div class="cover-placeholder">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
+                                {% if activity.content_object.original_activity.content_object.content_object.cover %}
+                                    {% if activity.content_object.original_activity.content_object.content_object.cover_sens %}
+                                        <img src="{{ activity.content_object.original_activity.content_object.content_object.cover.url }}"
+                                            alt="{{ activity.content_object.original_activity.content_object.content_object.title }} cover"
+                                            class="img-fluid blur cover-border"
+                                            onclick="this.classList.toggle('blur')"
+                                            loading="lazy">
+                                    {% else %}
+                                        <img src="{{ activity.content_object.original_activity.content_object.content_object.cover.url }}"
+                                            alt="{{ activity.content_object.original_activity.content_object.content_object.title }} cover"
+                                            class="img-fluid cover-border"
+                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ activity.content_object.original_activity.content_object.content_object.title }}</div>';"
+                                            loading="lazy">
+                                    {% endif %}
+                                {% else %}
+                                    <div class="cover-placeholder">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
+                            {% if activity.content_object.original_activity.content_object.has_voted %}
+                                <div class="position-absolute bottom-0 start-0 m-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                        <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                    </svg>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
                         {% if activity.content_object.original_activity.content_object.content_type.model == 'book' %}
@@ -154,6 +163,7 @@
                 </div>
                 <div class="media-card d-flex flex-row bg-white p-3 mt-2">
                     <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                        <div class="position-relative">
                         {% if user.pure_text_mode %}
                             <div class="cover-placeholder bg-light">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
                         {% else %}
@@ -175,6 +185,14 @@
                                 <div class="cover-placeholder">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
                             {% endif %}
                         {% endif %}
+                        {% if activity.content_object.original_activity.content_object.has_voted %}
+                            <div class="position-absolute bottom-0 start-0 m-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                </svg>
+                            </div>
+                        {% endif %}
+                        </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
                         {% if activity.content_object.original_activity.content_object.content_type.model == 'movie' %}
@@ -282,6 +300,7 @@
                 </div>
                 <div class="media-card d-flex flex-row bg-white p-3 mt-2">
                     <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                        <div class="position-relative">
                         {% if user.pure_text_mode %}
                             <div class="cover-placeholder bg-light">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
                         {% else %}
@@ -304,6 +323,14 @@
                                 <div class="cover-placeholder">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
                             {% endif %}
                         {% endif %}
+                        {% if activity.content_object.original_activity.content_object.has_voted %}
+                            <div class="position-absolute bottom-0 start-0 m-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                </svg>
+                            </div>
+                        {% endif %}
+                        </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
                         <a href="{% url 'play:game_detail' activity.content_object.original_activity.content_object.content_object.id %}"
@@ -421,6 +448,7 @@
                 </div>
                 <div class="media-card d-flex flex-row bg-white p-3 mt-2">
                     <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                        <div class="position-relative">
                         {% if user.pure_text_mode %}
                             <div class="listen-cover-placeholder bg-light">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
                         {% else %}
@@ -443,6 +471,14 @@
                                 <div class="listen-cover-placeholder">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
                             {% endif %}
                         {% endif %}
+                        {% if activity.content_object.original_activity.content_object.has_voted %}
+                            <div class="position-absolute bottom-0 start-0 m-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                </svg>
+                            </div>
+                        {% endif %}
+                        </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
                         

@@ -51,6 +51,7 @@
                                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                                 {% for checkin in page_obj %}
                                     <div class="mb-1 mb-md-0 flex-shrink-0 checkin-cover">
+                                        <div class="position-relative">
                                         {% if user.pure_text_mode %}
                                             {% if checkin.content_object.title %}
                                                 <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>
@@ -78,6 +79,14 @@
                                                 <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}{% if checkin.content_object.subtitle %}: {{checkin.content_object.subtitle}}{% endif %}</div>
                                             {% endif %}
                                         {% endif %}
+                                        {% if checkin.has_voted %}
+                                            <div class="position-absolute bottom-0 start-0 m-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                </svg>
+                                            </div>
+                                        {% endif %}
+                                        </div>
                                     </div>
                                 {% endfor %}
                                 </div>
@@ -110,6 +119,7 @@
                                         <div class="mt-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
                                         <div class="media-card d-flex flex-row bg-light p-3 mt-2">
                                             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                                <div class="position-relative">
                                                 {% if user.pure_text_mode %}
                                                     <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
                                                 {% else %}
@@ -131,6 +141,14 @@
                                                         <div class="cover-placeholder bg-light">{{ checkin.content_object.title }}</div>
                                                     {% endif %}
                                                 {% endif %}
+                                                {% if checkin.has_voted %}
+                                                    <div class="position-absolute bottom-0 start-0 m-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                            <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                        </svg>
+                                                    </div>
+                                                {% endif %}
+                                                </div>
                                             </div>
                                             <div class="flex-grow-1 ms-3">
                                                 <a href="{% url 'play:game_detail' checkin.content_object.id %}"

@@ -259,51 +259,69 @@
                                             <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                                 {% if item.content_type.model == 'book' %}
                                                     <a href="{% url 'write:book_checkin_list' item.user.username item.content_object.id  %}">
-                                                        {% if user.pure_text_mode %}
-                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                        {% else %}
-                                                            {% if item.content_object.cover %}
-                                                                {% if item.content_object.cover_sens %}
-                                                                    <img src="{{ item.content_object.cover.url }}"
-                                                                            alt="{{ item.content_object.title }} cover"
-                                                                            class="img-fluid blur cover-border"
-                                                                            onclick="this.classList.toggle('blur')"
-                                                                            loading="lazy">
-                                                                {% else %}
-                                                                    <img src="{{ item.content_object.cover.url }}"
-                                                                            alt="{{ item.content_object.title }}"
-                                                                            class="img-fluid cover-border"
-                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                            loading="lazy">
-                                                                {% endif %}
-                                                            {% else %}
+                                                        <div class="position-relative">
+                                                            {% if user.pure_text_mode %}
                                                                 <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% else %}
+                                                                {% if item.content_object.cover %}
+                                                                    {% if item.content_object.cover_sens %}
+                                                                        <img src="{{ item.content_object.cover.url }}"
+                                                                                alt="{{ item.content_object.title }} cover"
+                                                                                class="img-fluid blur cover-border"
+                                                                                onclick="this.classList.toggle('blur')"
+                                                                                loading="lazy">
+                                                                    {% else %}
+                                                                        <img src="{{ item.content_object.cover.url }}"
+                                                                                alt="{{ item.content_object.title }}"
+                                                                                class="img-fluid cover-border"
+                                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                                loading="lazy">
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                                {% endif %}
                                                             {% endif %}
-                                                        {% endif %}
+                                                            {% if item.has_voted %}
+                                                                <div class="position-absolute bottom-0 start-0 m-1">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                        <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                    </svg>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
                                                     </a>
                                                     {% elif item.content_type.model == 'issue' %}
                                                     <a href="{% url 'write:issue_checkin_list' item.user.username item.content_object.periodical.id item.content_object.id %}">
-                                                        {% if user.pure_text_mode %}
-                                                            <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>
-                                                        {% else %}
-                                                            {% if item.content_object.cover %}
-                                                                {% if item.cover_sens %}
-                                                                    <img src="{{ item.content_object.cover.url }}"
-                                                                            alt="{{ item.title }} cover"
-                                                                            class="img-fluid blur cover-border"
-                                                                            onclick="this.classList.toggle('blur')"
-                                                                            loading="lazy">
-                                                                {% else %}
-                                                                    <img src="{{ item.content_object.cover.url }}"
-                                                                            alt="{{ item.title }}"
-                                                                            class="img-fluid cover-border"
-                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ item.content_object.number }}</div>';"
-                                                                            loading="lazy">
-                                                                {% endif %}
+                                                        <div class="position-relative">
+                                                            {% if user.pure_text_mode %}
+                                                                <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>
                                                             {% else %}
-                                                                <div class="cover-placeholder bg-light">{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ issue.content_object.number }}</div>
+                                                                {% if item.content_object.cover %}
+                                                                    {% if item.cover_sens %}
+                                                                        <img src="{{ item.content_object.cover.url }}"
+                                                                                alt="{{ item.title }} cover"
+                                                                                class="img-fluid blur cover-border"
+                                                                                onclick="this.classList.toggle('blur')"
+                                                                                loading="lazy">
+                                                                    {% else %}
+                                                                        <img src="{{ item.content_object.cover.url }}"
+                                                                                alt="{{ item.title }}"
+                                                                                class="img-fluid cover-border"
+                                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ item.content_object.number }}</div>';"
+                                                                                loading="lazy">
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <div class="cover-placeholder bg-light">{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ issue.content_object.number }}</div>
+                                                                {% endif %}
                                                             {% endif %}
-                                                        {% endif %}
+                                                            {% if item.has_voted %}
+                                                                <div class="position-absolute bottom-0 start-0 m-1">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                        <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                    </svg>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
                                                     </a>
                                                 {% endif %}
                                             </div>
@@ -392,53 +410,72 @@
                                             <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                                 {% if item.content_type.model == 'movie' %}
                                                     <a href="{% url 'write:movie_checkin_list' item.user.username item.content_object.id %}">
-                                                        {% if user.pure_text_mode %}
-                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                        {% else %}
-                                                            {% if item.content_object.poster %}
-                                                                {% if item.content_object.poster_sens %}
-                                                                    <img src="{{ item.content_object.poster.url }}"
-                                                                            alt="{{ item.content_object.title }} poster"
-                                                                            class="img-fluid blur cover-border"
-                                                                            onclick="this.classList.toggle('blur')"
-                                                                            loading="lazy">
-                                                                {% else %}
-                                                                    <img src="{{ item.content_object.poster.url }}"
-                                                                            alt="{{ item.content_object.title }}"
-                                                                            class="img-fluid cover-border bg-light"
-                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                            loading="lazy">
-                                                                {% endif %}
-                                                            {% else %}
+                                                        <div class="position-relative">
+                                                            {% if user.pure_text_mode %}
                                                                 <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% else %}
+                                                                {% if item.content_object.poster %}
+                                                                    {% if item.content_object.poster_sens %}
+                                                                        <img src="{{ item.content_object.poster.url }}"
+                                                                                alt="{{ item.content_object.title }} poster"
+                                                                                class="img-fluid blur cover-border"
+                                                                                onclick="this.classList.toggle('blur')"
+                                                                                loading="lazy">
+                                                                    {% else %}
+                                                                        <img src="{{ item.content_object.poster.url }}"
+                                                                                alt="{{ item.content_object.title }}"
+                                                                                class="img-fluid cover-border bg-light"
+                                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                                loading="lazy">
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                                {% endif %}
                                                             {% endif %}
-                                                        {% endif %}
+                                                            {% if item.has_voted %}
+                                                                <div class="position-absolute bottom-0 start-0 m-1">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                        <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                    </svg>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
                                                     </a>
                                                 {% elif item.content_type.model == 'series' %}
                                                     <a href="{% url 'write:series_checkin_list' item.user.username item.content_object.id %}">
-                                                        {% if user.pure_text_mode %}
-                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                        {% else %}
-                                                            {% if item.content_object.poster %}
-                                                                {% if item.content_object.poster_sens %}
-                                                                    <img src="{{ item.content_object.poster.url }}"
-                                                                            alt="{{ item.content_object.title }} poster"
-                                                                            class="img-fluid blur cover-border"
-                                                                            onclick="this.classList.toggle('blur')"
-                                                                            loading="lazy">
-                                                                {% else %}
-                                                                    <img src="{{ item.content_object.poster.url }}"
-                                                                            alt="{{ item.content_object.title }}"
-                                                                            class="img-fluid cover-border"
-                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                            loading="lazy">
-                                                                {% endif %}
-                                                            {% else %}
+                                                        <div class="position-relative">
+                                                            {% if user.pure_text_mode %}
                                                                 <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% else %}
+                                                                {% if item.content_object.poster %}
+                                                                    {% if item.content_object.poster_sens %}
+                                                                        <img src="{{ item.content_object.poster.url }}"
+                                                                                alt="{{ item.content_object.title }} poster"
+                                                                                class="img-fluid blur cover-border"
+                                                                                onclick="this.classList.toggle('blur')"
+                                                                                loading="lazy">
+                                                                    {% else %}
+                                                                        <img src="{{ item.content_object.poster.url }}"
+                                                                                alt="{{ item.content_object.title }}"
+                                                                                class="img-fluid cover-border"
+                                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                                loading="lazy">
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                                {% endif %}
                                                             {% endif %}
-                                                        {% endif %}
+                                                            {% if item.has_voted %}
+                                                                <div class="position-absolute bottom-0 start-0 m-1">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                        <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                    </svg>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
                                                     </a>
                                                 {% endif %}
+
                                             </div>
                                         {% empty %}
                                             <p>No items.</p>
@@ -533,51 +570,69 @@
                                             <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                             {% if item.content_object.model_name == "Release" %}
                                                 <a href="{% url 'write:release_checkin_list' item.user.username item.content_object.id %}">
-                                                    {% if user.pure_text_mode %}
-                                                        <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                    {% else %}
-                                                        {% if item.content_object.cover %}
-                                                            {% if item.content_object.cover_sens %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }} cover"
-                                                                        class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')"
-                                                                        loading="lazy">
-                                                            {% else %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }}"
-                                                                        class="img-fluid cover-border bg-light"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                        loading="lazy">
-                                                            {% endif %}
-                                                        {% else %}
+                                                    <div class="position-relative">
+                                                        {% if user.pure_text_mode %}
                                                             <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% else %}
+                                                            {% if item.content_object.cover %}
+                                                                {% if item.content_object.cover_sens %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }} cover"
+                                                                            class="img-fluid blur cover-border"
+                                                                            onclick="this.classList.toggle('blur')"
+                                                                            loading="lazy">
+                                                                {% else %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }}"
+                                                                            class="img-fluid cover-border bg-light"
+                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                            loading="lazy">
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% endif %}
                                                         {% endif %}
-                                                    {% endif %}
+                                                        {% if item.has_voted %}
+                                                            <div class="position-absolute bottom-0 start-0 m-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                </svg>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
                                                 </a>
                                                 {% elif item.content_object.model_name == "Audiobook" %}
                                                 <a href="{% url 'write:audiobook_checkin_list' item.user.username item.content_object.id %}">
-                                                    {% if user.pure_text_mode %}
-                                                        <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                    {% else %}
-                                                        {% if item.content_object.cover %}
-                                                            {% if item.content_object.cover_sens %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }} cover"
-                                                                        class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')"
-                                                                        loading="lazy">
-                                                            {% else %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }}"
-                                                                        class="img-fluid cover-border bg-light"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                        loading="lazy">
-                                                            {% endif %}
-                                                        {% else %}
+                                                    <div class="position-relative">
+                                                        {% if user.pure_text_mode %}
                                                             <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% else %}
+                                                            {% if item.content_object.cover %}
+                                                                {% if item.content_object.cover_sens %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }} cover"
+                                                                            class="img-fluid blur cover-border"
+                                                                            onclick="this.classList.toggle('blur')"
+                                                                            loading="lazy">
+                                                                {% else %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }}"
+                                                                            class="img-fluid cover-border bg-light"
+                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                            loading="lazy">
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% endif %}
                                                         {% endif %}
-                                                    {% endif %}
+                                                        {% if item.has_voted %}
+                                                            <div class="position-absolute bottom-0 start-0 m-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                </svg>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
                                                 </a>
                                                 {% endif %}
                                             </div>
@@ -592,27 +647,36 @@
                                         {% for item in subscribed %}
                                             <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                                 <a href="{% url 'write:podcast_checkin_list' item.user.username item.content_object.id %}">
-                                                    {% if user.pure_text_mode %}
-                                                        <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                    {% else %}
-                                                        {% if item.content_object.cover %}
-                                                            {% if item.content_object.cover_sens %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }} cover"
-                                                                        class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')"
-                                                                        loading="lazy">
-                                                            {% else %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }}"
-                                                                        class="img-fluid cover-border bg-light"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                        loading="lazy">
-                                                            {% endif %}
-                                                        {% else %}
+                                                    <div class="position-relative">
+                                                        {% if user.pure_text_mode %}
                                                             <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% else %}
+                                                            {% if item.content_object.cover %}
+                                                                {% if item.content_object.cover_sens %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }} cover"
+                                                                            class="img-fluid blur cover-border"
+                                                                            onclick="this.classList.toggle('blur')"
+                                                                            loading="lazy">
+                                                                {% else %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }}"
+                                                                            class="img-fluid cover-border bg-light"
+                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                            loading="lazy">
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% endif %}
                                                         {% endif %}
-                                                    {% endif %}
+                                                        {% if item.has_voted %}
+                                                            <div class="position-absolute bottom-0 start-0 m-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                </svg>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
                                                 </a>
                                             </div>
                                         {% empty %}
@@ -673,27 +737,36 @@
                                         {% for item in played %}
                                             <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                                 <a href="{% url 'write:play_checkin_list' item.user.username item.content_object.id %}">
-                                                    {% if user.pure_text_mode %}
-                                                        <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                    {% else %}
-                                                        {% if item.content_object.cover %}
-                                                            {% if item.content_object.cover_sens %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }} cover"
-                                                                        class="img-fluid blur bg-light"
-                                                                        onclick="this.classList.toggle('blur')"
-                                                                        loading="lazy">
-                                                            {% else %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }}"
-                                                                        class="img-fluid cover-border bg-light"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                        loading="lazy">
-                                                            {% endif %}
+                                                    <div class="position-relative">
+                                                        {% if user.pure_text_mode %}
+                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
                                                         {% else %}
-                                                            <div class="cover-placeholder img-fluid bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% if item.content_object.cover %}
+                                                                {% if item.content_object.cover_sens %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }} cover"
+                                                                            class="img-fluid blur bg-light"
+                                                                            onclick="this.classList.toggle('blur')"
+                                                                            loading="lazy">
+                                                                {% else %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }}"
+                                                                            class="img-fluid cover-border bg-light"
+                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                            loading="lazy">
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <div class="cover-placeholder img-fluid bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% endif %}
                                                         {% endif %}
-                                                    {% endif %}
+                                                        {% if item.has_voted %}
+                                                            <div class="position-absolute bottom-0 start-0 m-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                </svg>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
                                                 </a>
                                             </div>
                                         {% empty %}
@@ -899,52 +972,70 @@
                                         {% for item in read %}
                                             <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                                 {% if item.content_type.model == 'book' %}
-                                                    <a href="{% url 'write:book_checkin_list' item.user.username item.content_object.id  %}">
-                                                        {% if user.pure_text_mode %}
-                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                        {% else %}
-                                                            {% if item.content_object.cover %}
-                                                                {% if item.content_object.cover_sens %}
-                                                                    <img src="{{ item.content_object.cover.url }}"
-                                                                            alt="{{ item.content_object.title }} cover"
-                                                                            class="img-fluid blur cover-border"
-                                                                            onclick="this.classList.toggle('blur')"
-                                                                            loading="lazy">
-                                                                {% else %}
-                                                                    <img src="{{ item.content_object.cover.url }}"
-                                                                            alt="{{ item.content_object.title }}"
-                                                                            class="img-fluid cover-border"
-                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                            loading="lazy">
-                                                                {% endif %}
-                                                            {% else %}
-                                                                <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    </a>
-                                                    {% elif item.content_type.model == 'issue' %}
-                                                        <a href="{% url 'write:issue_checkin_list' item.user.username item.content_object.periodical.id item.content_object.id %}">
+                                                    <a href="{% url 'write:book_checkin_list' item.user.username item.content_object.id  %}" >
+                                                        <div class="position-relative">
                                                             {% if user.pure_text_mode %}
-                                                                <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>
+                                                                <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
                                                             {% else %}
                                                                 {% if item.content_object.cover %}
-                                                                    {% if item.cover_sens %}
+                                                                    {% if item.content_object.cover_sens %}
                                                                         <img src="{{ item.content_object.cover.url }}"
-                                                                                alt="{{ item.title }} cover"
+                                                                                alt="{{ item.content_object.title }} cover"
                                                                                 class="img-fluid blur cover-border"
                                                                                 onclick="this.classList.toggle('blur')"
                                                                                 loading="lazy">
                                                                     {% else %}
                                                                         <img src="{{ item.content_object.cover.url }}"
-                                                                                alt="{{ item.title }}"
+                                                                                alt="{{ item.content_object.title }}"
                                                                                 class="img-fluid cover-border"
-                                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ item.content_object.number }}</div>';"
+                                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
                                                                                 loading="lazy">
                                                                     {% endif %}
                                                                 {% else %}
-                                                                    <div class="cover-placeholder bg-light">{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ issue.content_object.number }}</div>
+                                                                    <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
                                                                 {% endif %}
                                                             {% endif %}
+                                                            {% if item.has_voted %}
+                                                                <div class="position-absolute bottom-0 start-0 m-1">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                        <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                    </svg>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </a>
+                                                    {% elif item.content_type.model == 'issue' %}
+                                                        <a href="{% url 'write:issue_checkin_list' item.user.username item.content_object.periodical.id item.content_object.id %}">
+                                                            <div class="position-relative">
+                                                                {% if user.pure_text_mode %}
+                                                                    <div class="cover-placeholder bg-light">{{ item.periodical.title }} Vol. {{ item.volume }} Nr. {{ item.number }}</div>
+                                                                {% else %}
+                                                                    {% if item.content_object.cover %}
+                                                                        {% if item.cover_sens %}
+                                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                                    alt="{{ item.title }} cover"
+                                                                                    class="img-fluid blur cover-border"
+                                                                                    onclick="this.classList.toggle('blur')"
+                                                                                    loading="lazy">
+                                                                        {% else %}
+                                                                            <img src="{{ item.content_object.cover.url }}"
+                                                                                    alt="{{ item.title }}"
+                                                                                    class="img-fluid cover-border"
+                                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ item.content_object.number }}</div>';"
+                                                                                    loading="lazy">
+                                                                        {% endif %}
+                                                                    {% else %}
+                                                                        <div class="cover-placeholder bg-light">{{ item.content_object.periodical.title }} Vol. {{ item.content_object.volume }} Nr. {{ issue.content_object.number }}</div>
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                                {% if item.has_voted %}
+                                                                    <div class="position-absolute bottom-0 start-0 m-1">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                            <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                        </svg>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
                                                         </a>
                                                     {% endif %}
                                             </div>
@@ -1033,51 +1124,69 @@
                                             <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                                 {% if item.content_type.model == 'movie' %}
                                                     <a href="{% url 'write:movie_checkin_list' item.user.username item.content_object.id %}">
-                                                        {% if user.pure_text_mode %}
-                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                        {% else %}
-                                                            {% if item.content_object.poster %}
-                                                                {% if item.content_object.poster_sens %}
-                                                                    <img src="{{ item.content_object.poster.url }}"
-                                                                            alt="{{ item.content_object.title }} poster"
-                                                                            class="img-fluid blur cover-border"
-                                                                            onclick="this.classList.toggle('blur')"
-                                                                            loading="lazy">
-                                                                {% else %}
-                                                                    <img src="{{ item.content_object.poster.url }}"
-                                                                            alt="{{ item.content_object.title }}"
-                                                                            class="img-fluid cover-border bg-light"
-                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                            loading="lazy">
-                                                                {% endif %}
-                                                            {% else %}
+                                                        <div class="position-relative">
+                                                            {% if user.pure_text_mode %}
                                                                 <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% else %}
+                                                                {% if item.content_object.poster %}
+                                                                    {% if item.content_object.poster_sens %}
+                                                                        <img src="{{ item.content_object.poster.url }}"
+                                                                                alt="{{ item.content_object.title }} poster"
+                                                                                class="img-fluid blur cover-border"
+                                                                                onclick="this.classList.toggle('blur')"
+                                                                                loading="lazy">
+                                                                    {% else %}
+                                                                        <img src="{{ item.content_object.poster.url }}"
+                                                                                alt="{{ item.content_object.title }}"
+                                                                                class="img-fluid cover-border bg-light"
+                                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                                loading="lazy">
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                                {% endif %}
                                                             {% endif %}
-                                                        {% endif %}
+                                                            {% if item.has_voted %}
+                                                                <div class="position-absolute bottom-0 start-0 m-1">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                        <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                    </svg>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
                                                     </a>
                                                 {% elif item.content_type.model == 'series' %}
                                                     <a href="{% url 'write:series_checkin_list' item.user.username item.content_object.id %}">
-                                                        {% if user.pure_text_mode %}
-                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                        {% else %}
-                                                            {% if item.content_object.poster %}
-                                                                {% if item.content_object.poster_sens %}
-                                                                    <img src="{{ item.content_object.poster.url }}"
-                                                                            alt="{{ item.content_object.title }} poster"
-                                                                            class="img-fluid blur cover-border"
-                                                                            onclick="this.classList.toggle('blur')"
-                                                                            loading="lazy">
-                                                                {% else %}
-                                                                    <img src="{{ item.content_object.poster.url }}"
-                                                                            alt="{{ item.content_object.title }}"
-                                                                            class="img-fluid cover-border"
-                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                            loading="lazy">
-                                                                {% endif %}
-                                                            {% else %}
+                                                        <div class="position-relative">
+                                                            {% if user.pure_text_mode %}
                                                                 <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% else %}
+                                                                {% if item.content_object.poster %}
+                                                                    {% if item.content_object.poster_sens %}
+                                                                        <img src="{{ item.content_object.poster.url }}"
+                                                                                alt="{{ item.content_object.title }} poster"
+                                                                                class="img-fluid blur cover-border"
+                                                                                onclick="this.classList.toggle('blur')"
+                                                                                loading="lazy">
+                                                                    {% else %}
+                                                                        <img src="{{ item.content_object.poster.url }}"
+                                                                                alt="{{ item.content_object.title }}"
+                                                                                class="img-fluid cover-border"
+                                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                                loading="lazy">
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                                {% endif %}
                                                             {% endif %}
-                                                        {% endif %}
+                                                            {% if item.has_voted %}
+                                                                <div class="position-absolute bottom-0 start-0 m-1">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                        <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                    </svg>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
                                                     </a>
                                                 {% endif %}
                                             </div>
@@ -1174,51 +1283,69 @@
                                             <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                             {% if item.content_object.model_name == "Release" %}
                                                 <a href="{% url 'write:release_checkin_list' item.user.username item.content_object.id %}">
-                                                    {% if user.pure_text_mode %}
-                                                        <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                    {% else %}
-                                                        {% if item.content_object.cover %}
-                                                            {% if item.content_object.cover_sens %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }} cover"
-                                                                        class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')"
-                                                                        loading="lazy">
-                                                            {% else %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }}"
-                                                                        class="img-fluid cover-border bg-light"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                        loading="lazy">
-                                                            {% endif %}
-                                                        {% else %}
+                                                    <div class="position-relative">
+                                                        {% if user.pure_text_mode %}
                                                             <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% else %}
+                                                            {% if item.content_object.cover %}
+                                                                {% if item.content_object.cover_sens %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }} cover"
+                                                                            class="img-fluid blur cover-border"
+                                                                            onclick="this.classList.toggle('blur')"
+                                                                            loading="lazy">
+                                                                {% else %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }}"
+                                                                            class="img-fluid cover-border bg-light"
+                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                            loading="lazy">
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% endif %}
                                                         {% endif %}
-                                                    {% endif %}
+                                                        {% if item.has_voted %}
+                                                            <div class="position-absolute bottom-0 start-0 m-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                </svg>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
                                                 </a>
                                                 {% elif item.content_object.model_name == "Audiobook" %}
                                                 <a href="{% url 'write:audiobook_checkin_list' item.user.username item.content_object.id %}">
-                                                    {% if user.pure_text_mode %}
-                                                        <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                    {% else %}
-                                                        {% if item.content_object.cover %}
-                                                            {% if item.content_object.cover_sens %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }} cover"
-                                                                        class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')"
-                                                                        loading="lazy">
-                                                            {% else %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }}"
-                                                                        class="img-fluid cover-border bg-light"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                        loading="lazy">
-                                                            {% endif %}
-                                                        {% else %}
+                                                    <div class="position-relative">
+                                                        {% if user.pure_text_mode %}
                                                             <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% else %}
+                                                            {% if item.content_object.cover %}
+                                                                {% if item.content_object.cover_sens %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }} cover"
+                                                                            class="img-fluid blur cover-border"
+                                                                            onclick="this.classList.toggle('blur')"
+                                                                            loading="lazy">
+                                                                {% else %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }}"
+                                                                            class="img-fluid cover-border bg-light"
+                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                            loading="lazy">
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% endif %}
                                                         {% endif %}
-                                                    {% endif %}
+                                                        {% if item.has_voted %}
+                                                            <div class="position-absolute bottom-0 start-0 m-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                </svg>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
                                                 </a>
                                                 {% endif %}
                                             </div>
@@ -1233,27 +1360,36 @@
                                         {% for item in subscribed %}
                                             <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                                 <a href="{% url 'write:podcast_checkin_list' item.user.username item.content_object.id %}">
-                                                    {% if user.pure_text_mode %}
-                                                        <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                    {% else %}
-                                                        {% if item.content_object.cover %}
-                                                            {% if item.content_object.cover_sens %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }} cover"
-                                                                        class="img-fluid blur cover-border"
-                                                                        onclick="this.classList.toggle('blur')"
-                                                                        loading="lazy">
-                                                            {% else %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }}"
-                                                                        class="img-fluid cover-border bg-light"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                        loading="lazy">
-                                                            {% endif %}
-                                                        {% else %}
+                                                    <div class="position-relative">
+                                                        {% if user.pure_text_mode %}
                                                             <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                        {% else %}
+                                                            {% if item.content_object.cover %}
+                                                                {% if item.content_object.cover_sens %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }} cover"
+                                                                            class="img-fluid blur cover-border"
+                                                                            onclick="this.classList.toggle('blur')"
+                                                                            loading="lazy">
+                                                                {% else %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }}"
+                                                                            class="img-fluid cover-border bg-light"
+                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                            loading="lazy">
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <div class="listen-cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% endif %}
                                                         {% endif %}
-                                                    {% endif %}
+                                                        {% if item.has_voted %}
+                                                            <div class="position-absolute bottom-0 start-0 m-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                </svg>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
                                                 </a>
                                             </div>
                                         {% empty %}
@@ -1301,6 +1437,13 @@
                                                             <div class="cover-placeholder img-fluid bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
                                                         {% endif %}
                                                     {% endif %}
+                                                    {% if item.has_voted %}
+                                                        <div class="position-absolute bottom-0 start-0 m-1">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                            </svg>
+                                                        </div>
+                                                    {% endif %}
                                                 </a>
                                             </div>
                                         {% empty %}
@@ -1314,27 +1457,36 @@
                                         {% for item in played %}
                                             <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-1 me-2">
                                                 <a href="{% url 'write:play_checkin_list' item.user.username item.content_object.id %}">
-                                                    {% if user.pure_text_mode %}
-                                                        <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
-                                                    {% else %}
-                                                        {% if item.content_object.cover %}
-                                                            {% if item.content_object.cover_sens %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }} cover"
-                                                                        class="img-fluid blur bg-light"
-                                                                        onclick="this.classList.toggle('blur')"
-                                                                        loading="lazy">
-                                                            {% else %}
-                                                                <img src="{{ item.content_object.cover.url }}"
-                                                                        alt="{{ item.content_object.title }}"
-                                                                        class="img-fluid cover-border bg-light"
-                                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
-                                                                        loading="lazy">
-                                                            {% endif %}
+                                                    <div class="position-relative">
+                                                        {% if user.pure_text_mode %}
+                                                            <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
                                                         {% else %}
-                                                            <div class="cover-placeholder img-fluid bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% if item.content_object.cover %}
+                                                                {% if item.content_object.cover_sens %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }} cover"
+                                                                            class="img-fluid blur bg-light"
+                                                                            onclick="this.classList.toggle('blur')"
+                                                                            loading="lazy">
+                                                                {% else %}
+                                                                    <img src="{{ item.content_object.cover.url }}"
+                                                                            alt="{{ item.content_object.title }}"
+                                                                            class="img-fluid cover-border bg-light"
+                                                                            onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder bg-light\'>{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>';"
+                                                                            loading="lazy">
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <div class="cover-placeholder img-fluid bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
+                                                            {% endif %}
                                                         {% endif %}
-                                                    {% endif %}
+                                                        {% if item.has_voted %}
+                                                            <div class="position-absolute bottom-0 start-0 m-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                                </svg>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
                                                 </a>
                                             </div>
                                         {% empty %}

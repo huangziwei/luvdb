@@ -16,6 +16,7 @@ from PIL import Image
 from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
+from discover.utils import user_has_upvoted
 from entity.models import Company, Creator, LanguageField, Role
 from play.models import Work as GameWork
 from read.models import Work as LitWork
@@ -674,6 +675,10 @@ class WatchCheckIn(auto_prefetch.Model):
 
     def get_votes(self):
         return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
+
+    @property
+    def has_voted(self):
+        return user_has_upvoted(self.user, self.content_object)
 
     def model_name(self):
         return "Watch Check-In"

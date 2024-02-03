@@ -23,7 +23,7 @@ from django.views.generic import (
 from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Block
-from discover.views import user_has_upvoted
+from discover.utils import user_has_upvoted
 from entity.models import LanguageField
 from entity.views import HistoryViewMixin, get_contributors
 from play.models import Work as GameWork
@@ -1446,7 +1446,6 @@ class ReadCheckInDeleteView(LoginRequiredMixin, DeleteView):
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class GenericCheckInListView(ListView):
-
     """
     All check-ins from a given user for a book or an issue.
     """
@@ -1508,9 +1507,9 @@ class GenericCheckInListView(ListView):
         else:
             content_type = ContentType.objects.get_for_model(model)
             object_id = self.kwargs["object_id"]  # Get object id from url param
-            context[
-                "checkins"
-            ] = self.get_queryset()  # Use the queryset method to handle status filter
+            context["checkins"] = (
+                self.get_queryset()
+            )  # Use the queryset method to handle status filter
             context["object"] = model.objects.get(
                 pk=object_id
             )  # Get the object details

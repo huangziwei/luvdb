@@ -33,7 +33,7 @@ from django.views.generic import (
 from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Block
-from discover.views import user_has_upvoted
+from discover.utils import user_has_upvoted
 from entity.models import Company, Creator
 from entity.views import HistoryViewMixin, get_contributors
 from play.models import Work as GameWork
@@ -489,7 +489,7 @@ class VisitCheckInDetailView(DetailView):
         context["webmentions"] = WebMention.objects.filter(
             target__endswith=partial_target_url
         ).order_by("received_at")
-        context['source_url'] = self.request.build_absolute_uri()
+        context["source_url"] = self.request.build_absolute_uri()
         return context
 
 
