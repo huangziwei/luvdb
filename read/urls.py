@@ -69,6 +69,11 @@ urlpatterns = [
     ),
     # instance
     path("instance/create/", InstanceCreateView.as_view(), name="instance_create"),
+    path(
+        "instance/create/<int:work_id>/",
+        InstanceCreateView.as_view(),
+        name="instance_create_with_work",
+    ),
     path("instance/<int:pk>/", InstanceDetailView.as_view(), name="instance_detail"),
     path(
         "instance/<int:pk>/update/",

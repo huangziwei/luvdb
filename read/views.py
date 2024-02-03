@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
+from django.forms.models import modelformset_factory
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -42,6 +43,8 @@ from .forms import (
     BookRoleFormSet,
     BookSeriesForm,
     InstanceForm,
+    InstanceRole,
+    InstanceRoleForm,
     InstanceRoleFormSet,
     IssueForm,
     IssueInstance,
@@ -250,14 +253,68 @@ class InstanceCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy("read:instance_detail", kwargs={"pk": self.object.pk})
 
+    def get_initial(self):
+        initial = super().get_initial()
+        work_id = self.kwargs.get(
+            "work_id"
+        )  # Assuming 'work_id' is passed as URL parameter
+
+        if not work_id and "work_id" in self.request.session:
+            # If 'work_id' is not in URL parameters, try getting it from the session
+            work_id = self.request.session["work_id"]
+
+        if work_id:
+            work = get_object_or_404(Work, id=work_id)
+            work_roles = work.workrole_set.all()
+            initial.update(
+                {
+                    "work": work,
+                    "title": work.title,
+                    "subtitle": work.subtitle,
+                    "publication_date": work.publication_date,
+                    "language": work.language,
+                    "wikipedia": work.wikipedia,
+                }
+            )
+
+        return initial
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        if self.request.POST:
+        work_id = self.kwargs.get("work_id")
+
+        if work_id and not self.request.POST:
+            work = get_object_or_404(Work, id=work_id)
+            # Assuming WorkRole is a model similar to InstanceRole but for Work
+            work_roles = (
+                work.workrole_set.all()
+            )  # or however you access roles for a Work
+
+            initial_roles = []
+            for work_role in work_roles:
+                # Assuming WorkRole and InstanceRole have similar fields
+                initial_roles.append(
+                    {
+                        "creator": work_role.creator.id,
+                        "role": work_role.role.id,
+                        "alt_name": work_role.alt_name,
+                        # Add any other fields that are needed
+                    }
+                )
+
+            InstanceRoleFormSetInitial = modelformset_factory(
+                InstanceRole, form=InstanceRoleForm, extra=len(initial_roles)
+            )
+            data["instanceroles"] = InstanceRoleFormSetInitial(
+                queryset=InstanceRole.objects.none(), initial=initial_roles
+            )
+        elif self.request.POST:
             data["instanceroles"] = InstanceRoleFormSet(
                 self.request.POST, instance=self.object
             )
         else:
             data["instanceroles"] = InstanceRoleFormSet(instance=self.object)
+
         return data
 
     def form_valid(self, form):
