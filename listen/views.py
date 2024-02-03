@@ -13,6 +13,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import transaction
 from django.db.models import Count, F, Max, OuterRef, Q, Subquery
+from django.forms import inlineformset_factory
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -54,6 +55,7 @@ from .forms import (
     ReleaseTrackFormSet,
     TrackForm,
     TrackRole,
+    TrackRoleForm,
     TrackRoleFormSet,
     WorkForm,
     WorkRoleFormSet,
@@ -308,14 +310,91 @@ class TrackCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy("listen:track_detail", kwargs={"pk": self.object.pk})
 
+    def get_initial(self):
+        initial = super().get_initial()
+        work_id = self.kwargs.get("work_id")  # Attempt to get 'work_id' from URL
+
+        if not work_id and "work_id" in self.request.session:
+            # Fallback to session if 'work_id' is not in URL
+            work_id = self.request.session["work_id"]
+
+        if work_id:
+            work = get_object_or_404(Work, id=work_id)
+            # Prefill form fields based on the Work
+            initial.update(
+                {
+                    "work": work,
+                    "title": work.title,
+                    "other_titles": work.other_titles,
+                    "release_date": work.release_date,
+                    "recorded_date": work.recorded_date,
+                    "wikipedia": work.wikipedia,
+                    "genres": work.genres.all(),
+                }
+            )
+
+        return initial
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        work_id = self.kwargs.get("work_id") or self.request.session.get("work_id")
+
         if self.request.POST:
             data["trackroles"] = TrackRoleFormSet(
                 self.request.POST, instance=self.object
             )
         else:
             data["trackroles"] = TrackRoleFormSet(instance=self.object)
+            if work_id:
+                work = get_object_or_404(Work, id=work_id)
+                work_roles = work.workrole_set.all()
+
+                initial_roles = [
+                    {
+                        "creator": role.creator.id,
+                        "role": role.role.id,
+                        "alt_name": role.alt_name,
+                        "domain": "listen",  # Assuming 'listen' is the correct domain for tracks
+                    }
+                    for role in work_roles
+                ]
+
+                # Adjust the formset based on the number of roles when work is provided
+                TrackRoleFormSet_prefilled = inlineformset_factory(
+                    Track,
+                    TrackRole,
+                    form=TrackRoleForm,
+                    extra=len(initial_roles),
+                    can_delete=True,
+                    widgets={
+                        "creator": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:creator-autocomplete"),
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:creator_create")
+                            },
+                        ),
+                        "role": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:role-autocomplete"),
+                            forward=[
+                                "domain"
+                            ],  # forward the domain field to the RoleAutocomplete view
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:role_create")
+                            },
+                        ),
+                    },
+                    help_texts={
+                        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+                        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
+                    },
+                )
+
+                data["trackroles"] = TrackRoleFormSet_prefilled(
+                    instance=self.object,
+                    initial=initial_roles,
+                    queryset=TrackRole.objects.none(),
+                )
+
         return data
 
     def form_valid(self, form):

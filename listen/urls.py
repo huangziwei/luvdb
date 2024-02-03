@@ -45,6 +45,11 @@ urlpatterns = [
     path("work/<int:pk>/history/", WorkHistoryView.as_view(), name="work_history"),
     # track
     path("track/create/", TrackCreateView.as_view(), name="track_create"),
+    path(
+        "track/create/<int:work_id>/",
+        TrackCreateView.as_view(),
+        name="track_create_with_work",
+    ),
     path("track/<int:pk>/", TrackDetailView.as_view(), name="track_detail"),
     path("track/<int:pk>/update/", TrackUpdateView.as_view(), name="track_update"),
     path("track/<int:pk>/history/", TrackHistoryView.as_view(), name="track_history"),
