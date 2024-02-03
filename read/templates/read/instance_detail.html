@@ -187,7 +187,7 @@
                            class='fs-6 text-secondary'>Edit Instance</a>
                         <br>
                         {% endif %}
-                        <a href="{% url 'read:book_create' %}" class='fs-6 text-secondary'>Add Book</a>
+                        <a href="{% url 'read:book_create_with_instance' object.pk %}" class='fs-6 text-secondary'>Add Book</a>
                     </div>
                 {% endif %}
                 {% if object.work.id %}

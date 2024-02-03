@@ -92,6 +92,11 @@ urlpatterns = [
     path("work/<int:pk>/history/", WorkHistoryView.as_view(), name="work_history"),
     # book
     path("book/create/", BookCreateView.as_view(), name="book_create"),
+    path(
+        "book/create/<int:instance_id>/",
+        BookCreateView.as_view(),
+        name="book_create_with_instance",
+    ),
     path("book/<int:pk>/", BookDetailView.as_view(), name="book_detail"),
     path("book/<int:pk>/update/", BookUpdateView.as_view(), name="book_update"),
     path("book/<int:pk>/history/", BookHistoryView.as_view(), name="book_history"),

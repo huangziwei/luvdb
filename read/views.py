@@ -306,7 +306,8 @@ class InstanceCreateView(LoginRequiredMixin, CreateView):
                 )
             else:
                 data["instanceroles"] = InstanceRoleFormSet(
-                    instance=self.object, queryset=InstanceRole.objects.none(),
+                    instance=self.object,
+                    queryset=InstanceRole.objects.none(),
                 )
         return data
 
@@ -441,8 +442,28 @@ class BookCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy("read:book_detail", kwargs={"pk": self.object.pk})
 
+    def get_initial(self):
+        initial = super().get_initial()
+        instance_id = self.kwargs.get("instance_id")
+
+        if instance_id:
+            source_instance = get_object_or_404(Instance, id=instance_id)
+            initial.update(
+                {
+                    "title": source_instance.title,
+                    "subtitle": source_instance.subtitle,
+                    "publication_date": source_instance.publication_date,
+                    "language": source_instance.language,
+                    "wikipedia": source_instance.wikipedia,
+                }
+            )
+
+        return initial
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        instance_id = self.kwargs.get("instance_id")
+
         if self.request.POST:
             data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
             data["bookinstances"] = BookInstanceFormSet(
@@ -451,6 +472,32 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         else:
             data["bookroles"] = BookRoleFormSet(instance=self.object)
             data["bookinstances"] = BookInstanceFormSet(instance=self.object)
+
+            if instance_id:
+                source_instance = get_object_or_404(Instance, id=instance_id)
+                # Prefill bookroles from InstanceRoles
+                instance_roles = source_instance.instancerole_set.all()
+                initial_roles = [
+                    {
+                        "creator": role.creator.id,
+                        "role": role.role.id,
+                        "alt_name": role.alt_name,
+                    }
+                    for role in instance_roles
+                ]
+
+                data["bookroles"] = BookRoleFormSet(
+                    instance=self.object, initial=initial_roles
+                )
+
+                # Prefill bookinstances with the source instance
+                initial_instances = [{"instance": source_instance}]
+                data["bookinstances"] = BookInstanceFormSet(
+                    instance=self.object,
+                    initial=initial_instances,
+                    queryset=BookInstance.objects.none(),
+                )
+
         return data
 
     def form_valid(self, form):
