@@ -48,6 +48,11 @@ urlpatterns = [
     path("work/<int:pk>/history/", WorkHistoryView.as_view(), name="work_history"),
     # game
     path("game/create/", GameCreateView.as_view(), name="game_create"),
+    path(
+        "game/create/<int:work_id>/",
+        GameCreateView.as_view(),
+        name="game_create_with_work",
+    ),
     path("game/<int:pk>/", GameDetailView.as_view(), name="game_detail"),
     path("game/<int:pk>/update/", GameUpdateView.as_view(), name="game_update"),
     path("game/<int:pk>/history/", GameHistoryView.as_view(), name="game_history"),

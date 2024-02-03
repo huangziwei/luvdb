@@ -129,7 +129,7 @@
                     <a href="{% url 'play:work_update' object.pk %}" class='fs-6 text-secondary'>Edit Work</a>
                 </div>
                 <div>
-                    <a href="{% url 'play:game_create'%}" class='fs-6 text-secondary'>Add Game Release</a>
+                    <a href="{% url 'play:game_create_with_work' object.pk %}" class='fs-6 text-secondary'>Add Game Release</a>
                 </div>
             </div>
             {% endif %}

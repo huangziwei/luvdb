@@ -112,9 +112,7 @@ class WorkForm(forms.ModelForm):
         super(WorkForm, self).__init__(*args, **kwargs)
         self.fields["developers"].required = False
         self.fields["genres"].required = False
-        self.fields[
-            "other_titles"
-        ].help_text = (
+        self.fields["other_titles"].help_text = (
             "e.g. translated titles in different languages, separated by slashes (`/`)"
         )
 
@@ -205,14 +203,10 @@ class GameForm(forms.ModelForm):
         self.fields["developers"].required = False
         self.fields["platforms"].required = False
         self.fields["publishers"].required = False
-        self.fields[
-            "other_titles"
-        ].help_text = (
+        self.fields["other_titles"].help_text = (
             "e.g. translated titles in different languages, separated by slashes (`/`)"
         )
-        self.fields[
-            "rating"
-        ].help_text = (
+        self.fields["rating"].help_text = (
             "e.g. ESRB, PEGI, CERO, OFLC, USK, GRAC, VET, DJCTQ, IARC, ACB, GSRR"
         )
 
@@ -440,9 +434,9 @@ class GameInSeriesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(GameInSeriesForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.pk and self.instance.game:
-            self.fields[
-                "game_url"
-            ].initial = f"{settings.ROOT_URL}/play/game/{self.instance.game.pk}"
+            self.fields["game_url"].initial = (
+                f"{settings.ROOT_URL}/play/game/{self.instance.game.pk}"
+            )
         self.fields["game_url"].required = False
         self.fields["game_url"].label = "URL"
         self.fields["order"].required = False
@@ -465,9 +459,7 @@ class DLCForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DLCForm, self).__init__(*args, **kwargs)
-        self.fields[
-            "other_titles"
-        ].help_text = (
+        self.fields["other_titles"].help_text = (
             "e.g. translated titles in different languages, separated by slashes (`/`)."
         )
 

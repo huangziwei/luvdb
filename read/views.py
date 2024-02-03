@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
-from django.forms.models import modelformset_factory
+from django.forms import inlineformset_factory
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -40,6 +40,8 @@ from .forms import (
     BookInSeriesFormSet,
     BookInstance,
     BookInstanceFormSet,
+    BookRole,
+    BookRoleForm,
     BookRoleFormSet,
     BookSeriesForm,
     InstanceForm,
@@ -298,8 +300,36 @@ class InstanceCreateView(LoginRequiredMixin, CreateView):
                     }
                     for work_role in work_roles
                 ]
+                InstanceRoleFormSet_prefilled = inlineformset_factory(
+                    Instance,
+                    InstanceRole,
+                    form=InstanceRoleForm,
+                    extra=len(initial_roles),
+                    can_delete=True,
+                    widgets={
+                        "creator": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:creator-autocomplete"),
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:creator_create")
+                            },
+                        ),
+                        "role": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:role-autocomplete"),
+                            forward=[
+                                "domain"
+                            ],  # forward the domain field to the RoleAutocomplete view
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:role_create")
+                            },
+                        ),
+                    },
+                    help_texts={
+                        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+                        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
+                    },
+                )
 
-                data["instanceroles"] = InstanceRoleFormSet(
+                data["instanceroles"] = InstanceRoleFormSet_prefilled(
                     instance=self.object,
                     queryset=InstanceRole.objects.none(),
                     initial=initial_roles,
@@ -486,7 +516,36 @@ class BookCreateView(LoginRequiredMixin, CreateView):
                     for role in instance_roles
                 ]
 
-                data["bookroles"] = BookRoleFormSet(
+                BookRoleFormSet_prefilled = inlineformset_factory(
+                    Book,
+                    BookRole,
+                    form=BookRoleForm,
+                    extra=len(initial_roles),
+                    can_delete=True,
+                    widgets={
+                        "creator": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:creator-autocomplete"),
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:creator_create")
+                            },
+                        ),
+                        "role": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:role-autocomplete"),
+                            forward=[
+                                "domain"
+                            ],  # forward the domain field to the RoleAutocomplete view
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:role_create")
+                            },
+                        ),
+                    },
+                    help_texts={
+                        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+                        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
+                    },
+                )
+
+                data["bookroles"] = BookRoleFormSet_prefilled(
                     instance=self.object, initial=initial_roles
                 )
 

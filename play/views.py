@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
+from django.forms import inlineformset_factory
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -40,13 +41,14 @@ from .forms import (
     GameForm,
     GameInSeriesFormSet,
     GameReleaseDateFormSet,
+    GameRoleForm,
     GameRoleFormSet,
     GameSeriesForm,
     PlayCheckInForm,
     WorkForm,
     WorkRoleFormSet,
 )
-from .models import DLC, Game, GameSeries, Genre, Platform, PlayCheckIn, Work
+from .models import DLC, Game, GameRole, GameSeries, Genre, Platform, PlayCheckIn, Work
 
 User = get_user_model()
 
@@ -175,8 +177,38 @@ class GameCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy("play:game_detail", kwargs={"pk": self.object.pk})
 
+    def get_initial(self):
+        initial = super().get_initial()
+        work_id = self.kwargs.get(
+            "work_id"
+        )  # Assuming 'work_id' is passed as URL parameter
+
+        if not work_id and "work_id" in self.request.session:
+            # If 'work_id' is not in URL parameters, try getting it from the session
+            work_id = self.request.session["work_id"]
+
+        if work_id:
+            work = get_object_or_404(Work, id=work_id)
+            initial.update(
+                {
+                    "work": work,
+                    "title": work.title,
+                    "subtitle": work.subtitle,
+                    "other_titles": work.other_titles,
+                    "wikipedia": work.wikipedia,
+                    "developers": work.developers.all(),
+                }
+            )
+
+        return initial
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        work_id = self.kwargs.get("work_id")
+
+        if not work_id and "work_id" in self.request.session:
+            work_id = self.request.session["work_id"]
+
         if self.request.POST:
             data["gameroles"] = GameRoleFormSet(self.request.POST, instance=self.object)
             data["gamecasts"] = GameCastFormSet(self.request.POST, instance=self.object)
@@ -184,9 +216,58 @@ class GameCreateView(LoginRequiredMixin, CreateView):
                 self.request.POST, instance=self.object
             )
         else:
-            data["gameroles"] = GameRoleFormSet(instance=self.object)
             data["gamecasts"] = GameCastFormSet(instance=self.object)
             data["regionreleasedates"] = GameReleaseDateFormSet(instance=self.object)
+
+            if work_id:
+                work = get_object_or_404(Work, id=work_id)
+                work_roles = work.workrole_set.all()
+
+                initial_roles = [
+                    {
+                        "creator": role.creator.id,
+                        "role": role.role.id,
+                        "alt_name": role.alt_name,
+                        # Add other fields as needed
+                    }
+                    for role in work_roles
+                ]
+
+                GameRoleFormSet_prefilled = inlineformset_factory(
+                    Game,
+                    GameRole,
+                    form=GameRoleForm,
+                    extra=len(initial_roles),
+                    can_delete=True,
+                    widgets={
+                        "creator": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:creator-autocomplete"),
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:creator_create")
+                            },
+                        ),
+                        "role": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:role-autocomplete"),
+                            forward=["domain"],
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:role_create")
+                            },
+                        ),
+                    },
+                    help_texts={
+                        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+                        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
+                    },
+                )
+
+                # Assuming GameRole has similar fields to WorkRole
+                data["gameroles"] = GameRoleFormSet_prefilled(
+                    instance=self.object,
+                    initial=initial_roles,
+                    queryset=GameRole.objects.none(),
+                )
+            else:
+                data["gameroles"] = GameRoleFormSet(instance=self.object)
 
         return data
 
