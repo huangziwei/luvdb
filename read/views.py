@@ -265,7 +265,6 @@ class InstanceCreateView(LoginRequiredMixin, CreateView):
 
         if work_id:
             work = get_object_or_404(Work, id=work_id)
-            work_roles = work.workrole_set.all()
             initial.update(
                 {
                     "work": work,
@@ -280,41 +279,35 @@ class InstanceCreateView(LoginRequiredMixin, CreateView):
         return initial
 
     def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        work_id = self.kwargs.get("work_id")
-
-        if work_id and not self.request.POST:
-            work = get_object_or_404(Work, id=work_id)
-            # Assuming WorkRole is a model similar to InstanceRole but for Work
-            work_roles = (
-                work.workrole_set.all()
-            )  # or however you access roles for a Work
-
-            initial_roles = []
-            for work_role in work_roles:
-                # Assuming WorkRole and InstanceRole have similar fields
-                initial_roles.append(
-                    {
-                        "creator": work_role.creator.id,
-                        "role": work_role.role.id,
-                        "alt_name": work_role.alt_name,
-                        # Add any other fields that are needed
-                    }
-                )
-
-            InstanceRoleFormSetInitial = modelformset_factory(
-                InstanceRole, form=InstanceRoleForm, extra=len(initial_roles)
-            )
-            data["instanceroles"] = InstanceRoleFormSetInitial(
-                queryset=InstanceRole.objects.none(), initial=initial_roles
-            )
-        elif self.request.POST:
+        data = super(InstanceCreateView, self).get_context_data(**kwargs)
+        if self.request.POST:
             data["instanceroles"] = InstanceRoleFormSet(
-                self.request.POST, instance=self.object
+                self.request.POST, self.request.FILES, instance=self.object
             )
         else:
-            data["instanceroles"] = InstanceRoleFormSet(instance=self.object)
+            work_id = self.kwargs.get("work_id")
+            if work_id:
+                work = get_object_or_404(Work, id=work_id)
+                work_roles = work.workrole_set.all()
 
+                initial_roles = [
+                    {
+                        "creator": work_role.creator,
+                        "role": work_role.role,
+                        "alt_name": work_role.alt_name,
+                    }
+                    for work_role in work_roles
+                ]
+
+                data["instanceroles"] = InstanceRoleFormSet(
+                    instance=self.object,
+                    queryset=InstanceRole.objects.none(),
+                    initial=initial_roles,
+                )
+            else:
+                data["instanceroles"] = InstanceRoleFormSet(
+                    instance=self.object, queryset=InstanceRole.objects.none(),
+                )
         return data
 
     def form_valid(self, form):
