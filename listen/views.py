@@ -83,7 +83,7 @@ CATEGORIES = {
         "Choir",
         "Clarinettist",
         "Conductor",
-        "Double Bassist",
+        "Double-Bassist",
         "Flautist",
         "Harpist",
         "Pianist",
@@ -95,7 +95,7 @@ CATEGORIES = {
         "Ensemble",
         "Performer",
     ],
-    "Composition and Lyrics": ["Composer", "Lyricist", "Arranger"],
+    "Composition and Lyrics": ["Composer", "Lyricist", "Arranger", "Songwriter"],
     "Production and Engineering": [
         "Producer",
         "Recording Engineer",
