@@ -62,7 +62,8 @@ class Movie(auto_prefetch.Model):
         Creator, through="MovieCast", related_name="movies_cast"
     )
 
-    # based on
+    # cross-media references
+    ## based on
     based_on_litworks = models.ManyToManyField(
         LitWork, blank=True, related_name="movies"
     )
@@ -74,7 +75,7 @@ class Movie(auto_prefetch.Model):
         "Series", blank=True, related_name="movies"
     )
 
-    # mentions
+    ## mentions
     mentioned_litworks = models.ManyToManyField(
         "read.Work", blank=True, related_name="mentioned_in_movies"
     )
@@ -116,6 +117,24 @@ class Movie(auto_prefetch.Model):
     )
     mentioned_locations = models.ManyToManyField(
         "visit.Location", blank=True, related_name="mentioned_in_movies"
+    )
+
+    ## soundtracks
+    soundtracks = models.ManyToManyField(
+        "listen.Release", blank=True, related_name="movies_with_soundtrack"
+    )  # official soundtracks (OST) release
+    tracks = models.ManyToManyField(
+        "listen.Track", blank=True, related_name="movies_featuring_track"
+    )  # tracks that are featured in the movie, either in the OST or not
+    theme_songs = models.ManyToManyField(
+        "listen.Track",
+        blank=True,
+        related_name="movies_as_theme_song",
+    )
+    ending_songs = models.ManyToManyField(
+        "listen.Track",
+        blank=True,
+        related_name="movies_as_ending_song",
     )
 
     notes = models.TextField(blank=True, null=True)
@@ -328,6 +347,9 @@ class Series(auto_prefetch.Model):
     duration = models.CharField(max_length=10, blank=True, null=True)
     languages = LanguageField(blank=True, null=True)
     genres = models.ManyToManyField(Genre, related_name="series", blank=True)
+
+    # Cross-media references
+    ## Base on
     based_on_litworks = models.ManyToManyField(
         LitWork, blank=True, related_name="series"
     )
@@ -336,6 +358,11 @@ class Series(auto_prefetch.Model):
         "self", blank=True, symmetrical=False, related_name="related_series"
     )
     based_on_movies = models.ManyToManyField(Movie, blank=True, related_name="series")
+    ## Soundtracks
+    soundtracks = models.ManyToManyField(
+        "listen.Release", blank=True, related_name="series_with_soundtrack"
+    )  # official soundtracks (OST) release
+
     imdb = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
     watchcheckin = GenericRelation("WatchCheckIn")
@@ -524,6 +551,20 @@ class Episode(auto_prefetch.Model):
     )
     mentioned_locations = models.ManyToManyField(
         "visit.Location", blank=True, related_name="mentioned_in_episodes"
+    )
+
+    tracks = models.ManyToManyField(
+        "listen.Track", blank=True, related_name="episodes_featuring_track"
+    )  # tracks that are featured in the movie, either in the OST or not
+    theme_songs = models.ManyToManyField(
+        "listen.Track",
+        blank=True,
+        related_name="episodes_as_theme_song",
+    )
+    ending_songs = models.ManyToManyField(
+        "listen.Track",
+        blank=True,
+        related_name="episodes_as_ending_song",
     )
 
     # entry meta data

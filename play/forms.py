@@ -190,12 +190,30 @@ class GameForm(forms.ModelForm):
             ),
             "other_titles": forms.TextInput(),
             "rating": forms.TextInput(),
+            "soundtracks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:release-autocomplete")
+            ),
+            "tracks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:track-autocomplete")
+            ),
+            "theme_songs": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:track-autocomplete")
+            ),
+            "ending_songs": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:track-autocomplete")
+            ),
         }
         help_texts = {
             "work": "The meta entry of the game for grouping different releases across various platforms. <a href='/play/work/create/'>Add a new work</a>.",
             "developers": "Developers of the game. <a href='/entity/company/create/'>Add a new company</a>.",
             "publishers": "Publishers of the game. <a href='/entity/company/create/'>Add a new company</a>.",
             "platforms": "Platforms the game was released on. <a href='/play/platform/create/'>Add a new platform</a>.",
+        }
+        labels = {
+            "soundtracks": "Official Soundtracks (OST)",
+            "tracks": "Tracks featured in the movie",
+            "theme_songs": "Theme Songs",
+            "ending_songs": "Ending Songs",
         }
 
     def __init__(self, *args, **kwargs):

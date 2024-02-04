@@ -91,6 +91,18 @@ class MovieForm(forms.ModelForm):
             "mentioned_releases": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("listen:release-autocomplete")
             ),
+            "soundtracks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:release-autocomplete")
+            ),
+            "tracks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:track-autocomplete")
+            ),
+            "theme_songs": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:track-autocomplete")
+            ),
+            "ending_songs": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:track-autocomplete")
+            ),
         }
         help_texts = {
             "other_titles": "e.g. translated titles in different languages, separated by slashes (`/`).",
@@ -115,6 +127,10 @@ class MovieForm(forms.ModelForm):
             "mentioned_tracks": "Tracks",
             "mentioned_releases": "Releases",
             "mentioned_locations": "Locations",
+            "soundtracks": "Official Soundtracks (OST)",
+            "tracks": "Tracks featured in the movie",
+            "theme_songs": "Theme Songs",
+            "ending_songs": "Ending Songs",
         }
 
     def __init__(self, *args, **kwargs):
@@ -292,6 +308,9 @@ class SeriesForm(forms.ModelForm):
             "based_on_series": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("watch:series-autocomplete")
             ),
+            "soundtracks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:release-autocomplete")
+            ),
             "genres": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("watch:genre-autocomplete")
             ),
@@ -308,6 +327,7 @@ class SeriesForm(forms.ModelForm):
             "based_on_games": "Games (Work)",
             "based_on_movies": "Movies",
             "based_on_series": "Series",
+            "soundtracks": "Official Soundtracks (OST)",
         }
 
     def __init__(self, *args, **kwargs):
@@ -315,9 +335,7 @@ class SeriesForm(forms.ModelForm):
         self.fields["studios"].required = False
         self.fields["distributors"].required = False
         self.fields["genres"].required = False
-        self.fields[
-            "other_titles"
-        ].help_text = (
+        self.fields["other_titles"].help_text = (
             "e.g. translated titles in different languages, separated by slashes (`/`)."
         )
 
@@ -434,6 +452,15 @@ class EpisodeForm(forms.ModelForm):
             "mentioned_releases": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("listen:release-autocomplete")
             ),
+            "tracks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:track-autocomplete")
+            ),
+            "theme_songs": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:track-autocomplete")
+            ),
+            "ending_songs": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:track-autocomplete")
+            ),
         }
         help_texts = {
             "filming_locations": "Locations of where the episode was filmed. <a href='/visit/location/create/'>Add a new location</a>.",
@@ -456,13 +483,14 @@ class EpisodeForm(forms.ModelForm):
             "mentioned_tracks": "Tracks",
             "mentioned_releases": "Releases",
             "mentioned_locations": "Locations",
+            "tracks": "Tracks featured in the Episode",
+            "theme_songs": "Theme Songs",
+            "ending_songs": "Ending Songs",
         }
 
     def __init__(self, *args, **kwargs):
         super(EpisodeForm, self).__init__(*args, **kwargs)
-        self.fields[
-            "other_titles"
-        ].help_text = (
+        self.fields["other_titles"].help_text = (
             "e.g. translated titles in different languages, separated by slashes (`/`)."
         )
         self.fields["filming_locations"].required = False
@@ -655,9 +683,9 @@ class ContentInCollectionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ContentInCollectionForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.pk and self.instance.content_object:
-            self.fields[
-                "content_url"
-            ].initial = f"{settings.ROOT_URL}/watch/{self.instance.content_type.model}/{self.instance.content_object.pk}"
+            self.fields["content_url"].initial = (
+                f"{settings.ROOT_URL}/watch/{self.instance.content_type.model}/{self.instance.content_object.pk}"
+            )
         self.fields["content_url"].required = False
         self.fields["order"].required = False
 

@@ -262,6 +262,24 @@ class Game(auto_prefetch.Model):
     playcheckin = GenericRelation("PlayCheckIn")
     votes = GenericRelation("discover.Vote")
 
+    ## soundtracks
+    soundtracks = models.ManyToManyField(
+        "listen.Release", blank=True, related_name="games_with_soundtrack"
+    )  # official soundtracks (OST) release
+    tracks = models.ManyToManyField(
+        "listen.Track", blank=True, related_name="games_featuring_track"
+    )  # tracks that are featured in the game, either in the OST or not
+    theme_songs = models.ManyToManyField(
+        "listen.Track",
+        blank=True,
+        related_name="games_as_theme_song",
+    )
+    ending_songs = models.ManyToManyField(
+        "listen.Track",
+        blank=True,
+        related_name="games_as_ending_song",
+    )
+
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -12,7 +12,6 @@
     {{ form.developers|as_crispy_field }}
     {{ form.publishers|as_crispy_field }}
     {{ form.platforms|as_crispy_field }}
-    {{ form.notes|as_crispy_field }}
     {{ regionreleasedates.management_form|crispy }}
     <div id="region-release-date-formset" class="bg-light p-3 mb-3">
         <strong>Regions and release dates of this Game</strong>
@@ -74,6 +73,26 @@
         </div>
         <button type="button" id="add-game-cast-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
+    <div class="mb-2">Cross-media</div>
+    <div class="accordion mb-3">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <strong>Soundtracks</strong>
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div class="accordion-body bg-light">
+                    <p class="text-muted">The music featured in this game.</p>
+                    {{ form.soundtracks|as_crispy_field }}
+                    {{ form.tracks|as_crispy_field }}
+                    {{ form.theme_songs|as_crispy_field }}
+                    {{ form.ending_songs|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% if form.errors %}
