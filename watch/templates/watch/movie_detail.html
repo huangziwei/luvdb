@@ -169,6 +169,11 @@
                                                 <button class="nav-link text-muted" id="based-on-tab" data-bs-toggle="tab" data-bs-target="#based-on" type="button" role="tab" aria-controls="based-on" aria-selected="false">Based on</button>
                                             </li>
                                             {% endif %}
+                                            {% if official_sountracks.exists or featured_tracks.exists or opening_theme_songs.exists or ending_credit_songs.exists %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="soundtracks-tab" data-bs-toggle="tab" data-bs-target="#soundtracks" type="button" role="tab" aria-controls="movie-soundtracks" aria-selected="false">Soundtracks</button>
+                                            </li>        
+                                            {% endif %}    
                                             {% if object.publications.exists or object.games.exists or object.related_movies.exists or object.series.exists  %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted" id="related-tab" data-bs-toggle="tab" data-bs-target="#related" type="button" role="tab" aria-controls="related" aria-selected="true">Adaptations</button>
@@ -184,7 +189,6 @@
                                                 <button class="nav-link text-muted" id="lists-tab" data-bs-toggle="tab" data-bs-target="#lists" type="button" role="tab" aria-controls="movie-lists" aria-selected="false">Lists</button>
                                             </li>        
                                             {% endif %}   
-
                                         </ul>
                                         <div class="tab-content" id="myTabContent">
                                             <div class="tab-pane mt-1" id="related" role="tabpanel" aria-labelledby="related-tab">
@@ -229,7 +233,7 @@
                                                 {% if filming_locations_with_parents %}
                                                     <div class="mb-1">
                                                         {# djlint:off #}
-                                                        <span class="text-muted">Filming Location{% if object.filming_locations.count > 1 %}s{% endif %}:</span>
+                                                        <span class="text-muted">Filming Location{% if object.filming_locations.count > 1 %}s{% endif %}</span>
                                                         {# djlint:on #}
                                                         <ul>
                                                             {% for location, parents in filming_locations_with_parents %}
@@ -248,7 +252,7 @@
                                                 {% if setting_locations_with_parents %}
                                                     <div class="mb-1">
                                                         {# djlint:off #}
-                                                        <span class="text-muted">Setting Location{% if object.setting_locations.count > 1 %}s{% endif %}:</span>
+                                                        <span class="text-muted">Setting Location{% if object.setting_locations.count > 1 %}s{% endif %}</span>
                                                         {# djlint:on #}
                                                         <ul>
                                                             {% for location, parents in setting_locations_with_parents %}
@@ -354,6 +358,51 @@
                                                     </ul>
                                                 </div>
                                             {% endif %}
+                                            {% if official_sountracks.exists or featured_tracks.exists or opening_theme_songs.exists or ending_credit_songs.exists %}
+                                                <div class="tab-pane mt-1" id="soundtracks" role="tabpanel" aria-labelledby="soundtracks-tab">
+                                                    <div class="mb-1">
+                                                        <div class='mb-0'>
+                                                        {% if official_sountracks.exists %}
+                                                            <div> 
+                                                                <div class="text-muted">Official Soundtrack{% if official_sountracks.count > 1 %}s{% endif %}</div>
+                                                                {% for release in official_sountracks.all %}
+                                                                    <a href="{% url "listen:release_detail" release.id %}">{{ release.title }}</a> ({{ release.release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if featured_tracks.exists %}
+                                                            <div>
+                                                                <div class="text-muted">Featured Track{% if featured_tracks.count > 1 %}s{% endif %}</div>
+                                                                {% for track in featured_tracks.all %}
+                                                                    <a href="{% url "listen:track_detail" track.id %}">{{ track.title }}</a> ({{ track.release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if opening_theme_songs.exists %}
+                                                            <div>
+                                                                <div class="text-muted">Theme Song{% if opening_theme_songs.count > 1 %}s{% endif %}</div>
+                                                                {% for track in opening_theme_songs.all %}
+                                                                    <a href="{% url "listen:track_detail" track.id %}">{{ track.title }}</a> ({{ track.release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if ending_credit_songs.exists %}
+                                                            <div>
+                                                                <div class="text-muted">Ending Song{% if ending_credit_songs.count > 1 %}s{% endif %}</div>
+                                                                {% for track in ending_credit_songs.all %}
+                                                                    <a href="{% url "listen:track_detail" track.id %}">{{ track.title }}</a> ({{ track.release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                
                                         </div>
                                     </div>
                                     {% endif %}

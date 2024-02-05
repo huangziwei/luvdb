@@ -306,6 +306,11 @@ class MovieDetailView(DetailView):
             ).exists()
         )
 
+        context["official_sountracks"] = self.object.soundtracks.all().order_by("release_date")
+        context["featured_tracks"] = self.object.tracks.all().order_by("release_date")
+        context["opening_theme_songs"] = self.object.theme_songs.all().order_by("release_date") 
+        context["ending_credit_songs"] = self.object.ending_songs.all().order_by("release_date")
+
         return context
 
     def post(self, request, *args, **kwargs):
