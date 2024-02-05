@@ -10,8 +10,6 @@
     {{ form.distributors|as_crispy_field }}
     {{ form.release_date|as_crispy_field }}
     {{ form.genres|as_crispy_field }}
-    {{ form.imdb|as_crispy_field }}
-    {{ form.wikipedia|as_crispy_field }}
     {{ seriesroles.management_form|crispy }}
     <div id="series-role-formset" class="bg-light p-3 mb-3">
         <strong>Creators related to this Series</strong>
@@ -34,34 +32,42 @@
         </div>
         <button type="button" id="add-series-role-formset" class="btn btn-secondary">Add More</button>
     </div>
-    <div class="mb-2">Cross-media</div>
-    <div class="accordion mb-3">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    <strong>Based on</strong>
-                </button>
-            </h2>
-            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body bg-light">
-                    <p class="text-muted">The original works that the movie is based on.</p>
-                    {{ form.based_on_litworks|as_crispy_field }}
-                    {{ form.based_on_games|as_crispy_field }}
-                    {{ form.based_on_movies|as_crispy_field }}
-                    {{ form.based_on_series|as_crispy_field }}
+    <div class="bg-light p-3 mb-3">
+        <strong>Links</strong>
+        {{ form.imdb|as_crispy_field }}
+        {{ form.wikipedia|as_crispy_field }}
+        {{ form.official_website|as_crispy_field }}
+    </div>
+    <div class="bg-light p-3 mb-3">
+        <strong>Cross-media</strong>
+        <div class="accordion mb-3 mt-3">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <strong>Based on</strong>
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p class="text-muted">The original works that the movie is based on.</p>
+                        {{ form.based_on_litworks|as_crispy_field }}
+                        {{ form.based_on_games|as_crispy_field }}
+                        {{ form.based_on_movies|as_crispy_field }}
+                        {{ form.based_on_series|as_crispy_field }}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    <strong>Soundtracks</strong>
-                </button>
-            </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                <div class="accordion-body bg-light">
-                    {{ form.soundtracks|as_crispy_field }}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <strong>Soundtracks</strong>
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        {{ form.soundtracks|as_crispy_field }}
+                    </div>
                 </div>
             </div>
         </div>

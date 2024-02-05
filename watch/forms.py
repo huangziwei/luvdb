@@ -112,6 +112,9 @@ class MovieForm(forms.ModelForm):
             "distributors": "Distribution companies. <a href='/entity/company/create/'>Add a new company</a>.",
         }
         labels = {
+            "imdb": "IMDB URL",
+            "wikipedia": "Wikipedia URL",
+            "official_website": "Official Website",
             "based_on_litworks": "Publications (Work)",
             "based_on_games": "Games (Work)",
             "based_on_movies": "Movies",

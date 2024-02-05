@@ -147,6 +147,7 @@ class Movie(auto_prefetch.Model):
     genres = models.ManyToManyField(Genre, related_name="movies", blank=True)
     imdb = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
+    official_website = models.URLField(blank=True, null=True)
 
     filming_locations = models.ManyToManyField(
         Location, related_name="movies_filmed_here", blank=True
@@ -365,6 +366,8 @@ class Series(auto_prefetch.Model):
 
     imdb = models.URLField(blank=True, null=True)
     wikipedia = models.URLField(blank=True, null=True)
+    official_website = models.URLField(blank=True, null=True)
+
     watchcheckin = GenericRelation("WatchCheckIn")
     votes = GenericRelation("discover.Vote")
 
