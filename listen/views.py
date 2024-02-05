@@ -358,13 +358,14 @@ class TrackCreateView(LoginRequiredMixin, CreateView):
                     }
                     for role in work_roles
                 ]
+                num_initial_roles = len(initial_roles) if len(initial_roles) > 0 else 1
 
                 # Adjust the formset based on the number of roles when work is provided
                 TrackRoleFormSet_prefilled = inlineformset_factory(
                     Track,
                     TrackRole,
                     form=TrackRoleForm,
-                    extra=len(initial_roles),
+                    extra=num_initial_roles,
                     can_delete=True,
                     widgets={
                         "creator": autocomplete.ModelSelect2(
