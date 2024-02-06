@@ -13,8 +13,6 @@
         <div class="col-6 mb-1">{{ form.release_date|as_crispy_field }}</div>
         <div class="col-6 mb-1">{{ form.length|as_crispy_field }}</div>
     </div>
-    {{ form.filming_locations|as_crispy_field }}
-    {{ form.setting_locations|as_crispy_field }}
     {{ episoderoles.management_form|crispy }}
     <div id="episode-role-formset" class="bg-light p-3 mb-3">
         <strong>Creators related to this Episode</strong>
@@ -58,7 +56,9 @@
         </div>
         <button type="button" id="add-episode-cast-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
-    <div class="mb-2">Cross-media</div>
+
+    <div class="bg-light p-3 mb-3">
+    <div class="mb-2">Cross-reference</div>
     <div class="accordion mb-3">
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingOne">
@@ -67,7 +67,7 @@
                 </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body bg-light">
+                <div class="accordion-body">
                     <p class="text-muted">The original works that the episode is based on.</p>
                     {{ form.based_on_litworks|as_crispy_field }}
                     {{ form.based_on_games|as_crispy_field }}
@@ -78,14 +78,29 @@
         </div>
 
         <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFourth">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFourth" aria-expanded="false" aria-controls="collapseFourth">
+                    <strong>Locations</strong>
+                </button>
+            </h2>
+            <div id="collapseFourth" class="accordion-collapse collapse" aria-labelledby="headingFourth" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <p class="text-muted">The locations realted to this episode.</p>
+                    {{ form.filming_locations|as_crispy_field}}
+                    {{ form.setting_locations|as_crispy_field}}
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
             <h2 class="accordion-header" id="headingTwo">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    <strong>Mentioned</strong>
+                    <strong>Mentioned / Featured</strong>
                 </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                <div class="accordion-body bg-light">
-                    <p class="text-muted">Entries that mentioned in this episode.</p>
+                <div class="accordion-body">
+                    <p class="text-muted">Media that mentioned or featured in this episode.</p>
                     <div class="fw-bold mb-2">Read</div>
                     {{ form.mentioned_litworks|as_crispy_field }}
                     {{ form.mentioned_litinstances|as_crispy_field }}
@@ -117,14 +132,15 @@
                 </button>
             </h2>
             <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                <div class="accordion-body bg-light">
-                    <p class="text-muted">The music featured in this movie.</p>
+                <div class="accordion-body">
+                    <p class="text-muted">The music featured in this episode.</p>
                     {{ form.tracks|as_crispy_field }}
                     {{ form.theme_songs|as_crispy_field }}
                     {{ form.ending_songs|as_crispy_field }}
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>

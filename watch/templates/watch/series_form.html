@@ -6,8 +6,6 @@
     {{ form.other_titles|as_crispy_field }}
     {{ form.poster|as_crispy_field }}
     {{ form.poster_sens|as_crispy_field}}
-    {{ form.studios|as_crispy_field }}
-    {{ form.distributors|as_crispy_field }}
     {{ form.release_date|as_crispy_field }}
     {{ form.genres|as_crispy_field }}
     {{ seriesroles.management_form|crispy }}
@@ -33,13 +31,12 @@
         <button type="button" id="add-series-role-formset" class="btn btn-secondary">Add More</button>
     </div>
     <div class="bg-light p-3 mb-3">
-        <strong>Links</strong>
-        {{ form.imdb|as_crispy_field }}
-        {{ form.wikipedia|as_crispy_field }}
-        {{ form.official_website|as_crispy_field }}
+        <strong>Companies related to this Movie</strong>
+        {{ form.studios|as_crispy_field }}
+        {{ form.distributors|as_crispy_field }}
     </div>
     <div class="bg-light p-3 mb-3">
-        <strong>Cross-media</strong>
+        <strong>Cross-reference</strong>
         <div class="accordion mb-3 mt-3">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
@@ -49,7 +46,7 @@
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
-                        <p class="text-muted">The original works that the movie is based on.</p>
+                        <p class="text-muted">The original works that the series is based on.</p>
                         {{ form.based_on_litworks|as_crispy_field }}
                         {{ form.based_on_games|as_crispy_field }}
                         {{ form.based_on_movies|as_crispy_field }}
@@ -71,6 +68,12 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="bg-light p-3 mb-3">
+        <strong>Links</strong>
+        {{ form.imdb|as_crispy_field }}
+        {{ form.wikipedia|as_crispy_field }}
+        {{ form.official_website|as_crispy_field }}
     </div>
     {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>

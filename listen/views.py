@@ -278,13 +278,17 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
             name="Singer"
         ).first()  # Adjust 'Singer' to match your data
         composer_role = Role.objects.filter(name="Composer").first()
+        performer_role = Role.objects.filter(name="Performer").first()
 
         singer_work_role = item.workrole_set.filter(role=singer_role).first()
         composer_work_role = item.workrole_set.filter(role=composer_role).first()
+        performer_work_role = item.workrole_set.filter(role=performer_role).first()
         if singer_work_role:
             creator_name = singer_work_role.creator.name
         elif composer_work_role:
             creator_name = composer_work_role.creator.name
+        elif performer_work_role:
+            creator_name = performer_work_role.creator.name
         else:
             creator_name = "Unknown"
 
@@ -543,10 +547,12 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
         # Get the role objects for 'Singer' and 'Composer'
         singer_role = Role.objects.filter(name="Singer").first()
         composer_role = Role.objects.filter(name="Composer").first()
+        performer_role = Role.objects.filter(name="Performer").first()
 
         # Fetch the track_role for 'Singer' and 'Composer'
         singer_track_role = item.trackrole_set.filter(role=singer_role).first()
         composer_track_role = item.trackrole_set.filter(role=composer_role).first()
+        performer_track_role = item.trackrole_set.filter(role=performer_role).first()
 
         # Check if singer_track_role exists and a creator is associated
         if singer_track_role:
@@ -561,6 +567,13 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
                 composer_track_role.alt_name
                 if composer_track_role.alt_name
                 else composer_track_role.creator.name
+            )
+        # If no composer, use performer
+        elif performer_track_role:
+            creator_name = (
+                performer_track_role.alt_name
+                if performer_track_role.alt_name
+                else performer_track_role.creator.name
             )
         else:
             creator_name = "Unknown"

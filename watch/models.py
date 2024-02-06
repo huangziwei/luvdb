@@ -120,12 +120,14 @@ class Movie(auto_prefetch.Model):
     )
 
     ## soundtracks
+    ### official soundtracks (OST) release
     soundtracks = models.ManyToManyField(
         "listen.Release", blank=True, related_name="movies_with_soundtrack"
-    )  # official soundtracks (OST) release
+    )
+    ### tracks that are featured in the movie, either in the OST or not
     tracks = models.ManyToManyField(
         "listen.Track", blank=True, related_name="movies_featuring_track"
-    )  # tracks that are featured in the movie, either in the OST or not
+    )
     theme_songs = models.ManyToManyField(
         "listen.Track",
         blank=True,
@@ -349,7 +351,7 @@ class Series(auto_prefetch.Model):
     languages = LanguageField(blank=True, null=True)
     genres = models.ManyToManyField(Genre, related_name="series", blank=True)
 
-    # Cross-media references
+    # Cross-references
     ## Base on
     based_on_litworks = models.ManyToManyField(
         LitWork, blank=True, related_name="series"

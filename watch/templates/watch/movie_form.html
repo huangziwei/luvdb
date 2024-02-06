@@ -6,11 +6,7 @@
     {{ form.other_titles|as_crispy_field }}
     {{ form.poster|as_crispy_field }}
     {{ form.poster_sens|as_crispy_field}}
-    {{ form.studios|as_crispy_field }}
-    {{ form.distributors|as_crispy_field }}
     {{ form.genres|as_crispy_field }}
-    {{ form.filming_locations|as_crispy_field}}
-    {{ form.setting_locations|as_crispy_field}}
     {{ regionreleasedates.management_form|crispy }}
     <div id="region-release-date-formset" class="bg-light p-3 mb-3">
         <strong>Regions and release dates of this Movie</strong>
@@ -74,13 +70,13 @@
         <button type="button" id="add-movie-cast-formset" class="btn btn-secondary">Add More</button>
     </div>
     <div class="bg-light p-3 mb-3">
-        <strong>Links</strong>
-        {{ form.imdb|as_crispy_field }}
-        {{ form.wikipedia|as_crispy_field }}
-        {{ form.official_website|as_crispy_field }}
+        <strong>Companies related to this Movie</strong>
+        {{ form.studios|as_crispy_field }}
+        {{ form.distributors|as_crispy_field }}
     </div>
+
     <div class="bg-light p-3 mb-3">
-        <strong>Cross-media</strong>
+        <strong>Cross-reference</strong>
         <div class="accordion mb-3 mt-3">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
@@ -100,14 +96,47 @@
             </div>
 
             <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <strong>Soundtracks</strong>
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p class="text-muted">The music featured in this movie.</p>
+                        {{ form.soundtracks|as_crispy_field }}
+                        {{ form.tracks|as_crispy_field }}
+                        {{ form.theme_songs|as_crispy_field }}
+                        {{ form.ending_songs|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFourth">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFourth" aria-expanded="false" aria-controls="collapseFourth">
+                        <strong>Locations</strong>
+                    </button>
+                </h2>
+                <div id="collapseFourth" class="accordion-collapse collapse" aria-labelledby="headingFourth" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p class="text-muted">The locations realted to this movie.</p>
+                        {{ form.filming_locations|as_crispy_field}}
+                        {{ form.setting_locations|as_crispy_field}}
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="accordion-item">
                 <h2 class="accordion-header" id="headingTwo">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        <strong>Mentioned</strong>
+                        <strong>Other Mentioned or Featured</strong>
                     </button>
                 </h2>
                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
-                        <p class="text-muted">Entries that mentioned in this episode.</p>
+                        <p class="text-muted">Media that mentioned or featured in this movie.</p>
                         <div class="fw-bold mb-2">Read</div>
                         {{ form.mentioned_litworks|as_crispy_field }}
                         {{ form.mentioned_litinstances|as_crispy_field }}
@@ -132,24 +161,16 @@
                 </div>
             </div>
 
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingThree">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        <strong>Soundtracks</strong>
-                    </button>
-                </h2>
-                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                        <p class="text-muted">The music featured in this movie.</p>
-                        {{ form.soundtracks|as_crispy_field }}
-                        {{ form.tracks|as_crispy_field }}
-                        {{ form.theme_songs|as_crispy_field }}
-                        {{ form.ending_songs|as_crispy_field }}
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
+
+    <div class="bg-light p-3 mb-3">
+        <strong>Links</strong>
+        {{ form.imdb|as_crispy_field }}
+        {{ form.wikipedia|as_crispy_field }}
+        {{ form.official_website|as_crispy_field }}
+    </div>
+
     {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

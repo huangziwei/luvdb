@@ -104,11 +104,21 @@
                     </span>
                     {% endif %}
                     {% if object.series_featuring_track.exists %}
-                    <span class="text-muted ms-2">Movie{% if object.series_as_ending_song > 1 %}s{% endif %}: </span>
+                    <span class="text-muted ms-2">Series: </span>
                     <span>
                         {% for serie in object.series_as_ending_song.all %}
                                 <a href="{% url 'watch:serie_detail' serie.pk %}">{{ serie.title }}</a>
                                 ({{ serie.release_date|extract_year }})
+                                {% if not forloop.last %}/{% endif %}
+                        {% endfor %}
+                    </span>
+                    {% endif %}
+                    {% if object.games_featuring_track.exists %}
+                    <span class="text-muted ms-2">Game{% if object.games_featuring_track > 1 %}s{% endif %}: </span>
+                    <span>
+                        {% for game in object.games_as_ending_song.all %}
+                                <a href="{% url 'play:game_detail' game.pk %}">{{ game.title }}</a>
+                                ({{ game.release_date|extract_year }})
                                 {% if not forloop.last %}/{% endif %}
                         {% endfor %}
                     </span>
