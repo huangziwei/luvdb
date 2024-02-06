@@ -87,8 +87,8 @@ class WorkForm(forms.ModelForm):
             ),
         }
         help_texts = {
-            "developers": "Developers of the movie. <a href='/entity/company/create/'>Add a new company</a>.",
-            "setting_locations": "Locations of where the movie was set. <a href='/visit/location/create/'>Add a new location</a>.",
+            "developers": "Developers of the game. <a href='/entity/company/create/'>Add a new company</a>.",
+            "setting_locations": "Locations of where the game was set. <a href='/visit/location/create/'>Add a new location</a>.",
         }
         labels = {
             "based_on_litworks": "Publications (Work)",

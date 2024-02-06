@@ -58,8 +58,8 @@
     </div>
 
     <div class="bg-light p-3 mb-3">
-    <div class="mb-2">Cross-reference</div>
-    <div class="accordion mb-3">
+    <strong>Cross-reference</strong>
+    <div class="accordion mt-3 mb-3">
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
@@ -68,7 +68,7 @@
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    <p class="text-muted">The original works that the episode is based on.</p>
+                    <p class="text-muted">The original sources that the episode is based on.</p>
                     {{ form.based_on_litworks|as_crispy_field }}
                     {{ form.based_on_games|as_crispy_field }}
                     {{ form.based_on_movies|as_crispy_field }}

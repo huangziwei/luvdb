@@ -2,7 +2,13 @@
 {% load crispy_forms_tags %}
 <form method="post">
     {% csrf_token %}
-    {{ form | crispy }}
+    {{ form.title|as_crispy_field }}
+    {{ form.subtitle|as_crispy_field }}
+    {{ form.other_titles|as_crispy_field }}
+    {{ form.release_date|as_crispy_field }}
+    {{ form.recorded_date|as_crispy_field }}
+    {{ form.genres|as_crispy_field }}
+    {{ form.wikipedia|as_crispy_field }}
     {{ workroles.management_form|crispy }}
     <div id="work-role-formset" class="bg-light p-3 mb-3">
         <strong>Creators related to this work</strong>
@@ -25,6 +31,7 @@
         </div>
         <button type="button" id="add-work-role-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
+    {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% if form.errors %}
