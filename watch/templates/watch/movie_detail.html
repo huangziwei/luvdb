@@ -151,7 +151,7 @@
                                     <div class="mb-1">
                                         <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.id %}">View All</a>
                                     </div>
-                                    {% if object.notes or object.publications.exists or object.games.exists or object.related_movies.exists or object.series.exists or grouped_release_dates or filming_locations_with_parents or setting_locations_with_parents %}
+                                    {% if object.notes or object.publications.exists or object.games.exists or object.related_movies.exists or object.series.exists or grouped_release_dates or filming_locations_with_parents or setting_locations_with_parents or mentioned_litworks.exists or mentioned_litinstances.exists or mentioned_books.exists%}
                                     <div class="my-3">
                                         <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
                                             {% if object.notes %}
@@ -173,6 +173,11 @@
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted" id="soundtracks-tab" data-bs-toggle="tab" data-bs-target="#soundtracks" type="button" role="tab" aria-controls="movie-soundtracks" aria-selected="false">Soundtracks</button>
                                             </li>        
+                                            {% endif %}
+                                            {% if mentioned_litworks or mentioned_litinstances or mentioned_books %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="mentions-tab" data-bs-toggle="tab" data-bs-target="#mentions" type="button" role="tab" aria-controls="movie-mentions" aria-selected="false">Mentions</button>
+                                            </li>                                                    
                                             {% endif %}    
                                             {% if object.publications.exists or object.games.exists or object.related_movies.exists or object.series.exists  %}
                                             <li class="nav-item" role="presentation">
@@ -358,6 +363,7 @@
                                                     </ul>
                                                 </div>
                                             {% endif %}
+                                            <!--Soundtracks-->
                                             {% if official_sountracks.exists or featured_tracks.exists or opening_theme_songs.exists or ending_credit_songs.exists %}
                                                 <div class="tab-pane mt-1" id="soundtracks" role="tabpanel" aria-labelledby="soundtracks-tab">
                                                     <div class="mb-1">
@@ -394,6 +400,42 @@
                                                                 <div class="text-muted">Ending Song{% if ending_credit_songs.count > 1 %}s{% endif %}</div>
                                                                 {% for track in ending_credit_songs.all %}
                                                                     <a href="{% url "listen:track_detail" track.id %}">{{ track.title }}</a> ({{ track.release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            <!--Mentions-->
+                                            {% if mentioned_litworks.exists or mentioned_litinstances.exists or mentioned_books.exists %}
+                                                <div class="tab-pane mt-1" id="mentions" role="tabpanel" aria-labelledby="mentions-tab">
+                                                    <div class="mb-1">
+                                                        <div class='mb-0'>
+                                                        {% if mentioned_litworks.exists %}
+                                                            <div> 
+                                                                <div class="text-muted text-muted">Publication{% if mentioned_litworks.count > 1 %}s{% endif %}</div>
+                                                                {% for litwork in mentioned_litworks.all %}
+                                                                    <a href="{% url "read:work_detail" litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if mentioned_litinstances.exists %}
+                                                            <div>
+                                                                <div class="text-muted text-muted">Instance{% if mentioned_litinstances.count > 1 %}s{% endif %}</div>
+                                                                {% for litinstance in mentioned_litinstances.all %}
+                                                                    <a href="{% url "read:instance_detail" litinstance.id %}">{{ litinstance.title }}</a> ({{ litinstance.publication_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if mentioned_books.exists %}
+                                                            <div>
+                                                                <div class="text-muted">Book{% if mentioned_books.count > 1 %}s{% endif %}</div>
+                                                                {% for book in mentioned_books.all %}
+                                                                    <a href="{% url "read:book_detail" book.id %}">{{ book.title }}</a> ({{ book.publication_date|extract_year }})
                                                                     {% if not forloop.last %} / {% endif %}
                                                                 {% endfor %}
                                                             </div>

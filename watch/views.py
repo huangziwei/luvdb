@@ -311,6 +311,11 @@ class MovieDetailView(DetailView):
         context["opening_theme_songs"] = self.object.theme_songs.all().order_by("release_date") 
         context["ending_credit_songs"] = self.object.ending_songs.all().order_by("release_date")
 
+        # mentioned media
+        context["mentioned_litworks"] = self.object.mentioned_litworks.all().order_by("publication_date")
+        context["mentioned_litinstances"] = self.object.mentioned_litinstances.all().order_by("publication_date")
+        context["mentioned_books"] = self.object.mentioned_books.all().order_by("publication_date")
+
         return context
 
     def post(self, request, *args, **kwargs):
