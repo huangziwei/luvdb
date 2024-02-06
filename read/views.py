@@ -853,6 +853,13 @@ class BookDetailView(DetailView):
                 status__in=["finished_reading", "reread"],
             ).exists()
         )
+
+        # mentions by other media
+        context["mentioned_by_movies"] = (
+            self.object.mentioned_in_movies.distinct()
+            .annotate(annotated_release_date=Min("region_release_dates__release_date"))
+            .order_by("annotated_release_date")
+        )
         return context
 
     def post(self, request, *args, **kwargs):

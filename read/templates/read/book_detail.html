@@ -139,6 +139,11 @@
                                                 <button class="nav-link text-muted" id="related-tab" data-bs-toggle="tab" data-bs-target="#related" type="button" role="tab" aria-controls="related" aria-selected="true">Adaptations</button>
                                             </li>
                                             {% endif %}
+                                            {% if mentioned_by_movies %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="mentioned-by-tab" data-bs-toggle="tab" data-bs-target="#mentioned-by" type="button" role="tab" aria-controls="mentioned-by" aria-selected="true">Mentioned By</button>
+                                            </li>                                            
+                                            {% endif %}
                                             {% if related_locations_with_parents %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations" type="button" role="tab" aria-controls="locations" aria-selected="false">Locations</button>
@@ -323,6 +328,59 @@
                                                         {% endif %}
                                                     {% endfor %}
                                                     </ul>
+                                                </div>
+                                            {% endif %}
+                                            {% if mentioned_litworks.exists or mentioned_litinstances.exists or mentioned_books.exists %}
+                                                <div class="tab-pane mt-1" id="mentions" role="tabpanel" aria-labelledby="mentions-tab">
+                                                    <div class="mb-1">
+                                                        <div class='mb-0'>
+                                                        {% if mentioned_litworks.exists %}
+                                                            <div> 
+                                                                <div class="text-muted text-muted">Publication{% if mentioned_litworks.count > 1 %}s{% endif %}</div>
+                                                                {% for litwork in mentioned_litworks.all %}
+                                                                    <a href="{% url "read:work_detail" litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if mentioned_litinstances.exists %}
+                                                            <div>
+                                                                <div class="text-muted text-muted">Instance{% if mentioned_litinstances.count > 1 %}s{% endif %}</div>
+                                                                {% for litinstance in mentioned_litinstances.all %}
+                                                                    <a href="{% url "read:instance_detail" litinstance.id %}">{{ litinstance.title }}</a> ({{ litinstance.publication_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if mentioned_books.exists %}
+                                                            <div>
+                                                                <div class="text-muted">Book{% if mentioned_books.count > 1 %}s{% endif %}</div>
+                                                                {% for book in mentioned_books.all %}
+                                                                    <a href="{% url "read:book_detail" book.id %}">{{ book.title }}</a> ({{ book.publication_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if mentioned_by_movies.exists %}
+                                                <div class="tab-pane mt-1" id="mentioned-by" role="tabpanel" aria-labelledby="mentioned-by-tab">
+                                                    <div class="mb-1">
+                                                        <div class='mb-0'>
+                                                        {% if mentioned_by_movies.exists %}
+                                                            <div>
+                                                                <div class="text-muted">Movie{% if mentioned_by_movies.count > 1 %}s{% endif %}</div>
+                                                                {% for movie in mentioned_by_movies.all %}
+                                                                    <a href="{% url "watch:movie_detail" movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             {% endif %}
                                         </div>
