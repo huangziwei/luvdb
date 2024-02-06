@@ -125,7 +125,7 @@
                                     {% endfor %}
                                 </div>
                             {% endfor %}
-                            {% if object.content_object.label %}
+                            {% if object.content_object.label.exists %}
                                 <div>
                                     <span class="text-muted">Label:</span>
                                     {% for label in object.content_object.label.all %}

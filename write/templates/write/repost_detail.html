@@ -344,7 +344,7 @@
                                     {% for role in roles_list %}
                                         <div>
                                             {# djlint:off #}
-                                            {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                            <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                             {# djlint:on #}
                                             {% for release_role in role.list %}
                                                 {% if not forloop.first %}/{% endif %}
@@ -354,10 +354,10 @@
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
-                                    {% if repost.original_activity.content_object.content_object.label %}
+                                    {% if repost.original_activity.content_object.content_object.label.exists %}
                                     <div>
                                         {# djlint:off #}
-                                        Label{% if repost.original_activity.content_object.content_object.label.list|length > 1 %}s{% endif %}:
+                                        <span class="text-muted">Label{% if repost.original_activity.content_object.content_object.label.list|length > 1 %}s{% endif %}:</span>
                                         {# djlint:on #}
                                         {% for label in repost.original_activity.content_object.content_object.label.all %}
                                             {% if not forloop.first %},{% endif %}
@@ -368,20 +368,30 @@
                                     {% if repost.original_activity.content_object.content_object.publisher %}
                                     <div>
                                         {# djlint:off #}
-                                        Publisher{% if repost.original_activity.content_object.content_object.publisher.list|length > 1 %}s{% endif %}:
+                                        <span class="text-muted">Publisher{% if repost.original_activity.content_object.content_object.publisher.list|length > 1 %}s{% endif %}:</span>
                                         {# djlint:on #}
                                         <a href="{% url 'entity:company_detail' repost.original_activity.content_object.content_object.publisher.id %}">{{ repost.original_activity.content_object.content_object.publisher.name }}</a>
                                     </div>
                                     {% endif %}
                                     {% if repost.original_activity.content_object.content_object.catalog_number %}
                                     <div>
-                                        Catalog Number:
+                                        <span class="text-muted">Catalog Number:</span>
                                         {{repost.original_activity.content_object.content_object.catalog_number}}
+                                    </div>
+                                    {% endif %}
+                                    {% if repost.original_activity.content_object.content_object.get_genres %}
+                                    <div>
+                                        <span class="text-muted">Genres:</span>
+                                        {% for genre in repost.original_activity.content_object.content_object.get_genres %}
+                                            {% if not forloop.first %}/{% endif %}
+                                            <a href="{% url 'listen:genre_detail' genre.slug %}">{{ genre.name }}</a>
+                                        {% endfor %}
                                     </div>
                                     {% endif %}
                                     {% if repost.original_activity.content_object.content_object.release_date %}
                                     <div>
-                                        Release Date: {{ repost.original_activity.content_object.content_object.release_date }}
+                                        <span class="text-muted">Release Date:</span>
+                                        {{ repost.original_activity.content_object.content_object.release_date }}
                                     </div>
                                     {% endif %}
 

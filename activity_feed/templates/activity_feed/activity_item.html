@@ -633,7 +633,7 @@
                         {% endfor %}
                     </div>
                 {% endfor %}
-                {% if activity.content_object.content_object.label %}
+                {% if activity.content_object.content_object.label.exists %}
                 <div>
                     {# djlint:off #}
                     <span class="text-muted">Label{% if activity.content_object.content_object.label.list|length > 1 %}s{% endif %}:</span>
