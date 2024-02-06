@@ -103,11 +103,26 @@ def scrape_location(url):
         if infobox.find("th", {"class": "infobox-above"})
         else None
     )
-    website = (
-        infobox.find("a", {"class": "external text"}).get("href")
-        if infobox.find("a", {"class": "external text"})
-        else None
+    # Refactored to improve website extraction
+    website = None
+    website_cell = infobox.find(
+        lambda tag: tag.name == "a"
+        and tag.get("class", []) == ["external", "text"]
+        and "href" in tag.attrs
+        and (
+            tag.find_previous("th", string="Website")
+            or tag.find_previous("td", string="Website")
+        )
     )
+    if website_cell:
+        website = website_cell.get("href")
+
+    # Fallback if no explicit "Website" cell is found, extract the first "external text" link that doesn't lead to geohack.toolforge.org
+    if not website:
+        for link in infobox.find_all("a", {"class": "external text"}):
+            if "geohack.toolforge.org" not in link.get("href"):
+                website = link.get("href")
+                break
 
     return {
         "name": name,
