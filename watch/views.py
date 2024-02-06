@@ -306,15 +306,56 @@ class MovieDetailView(DetailView):
             ).exists()
         )
 
-        context["official_sountracks"] = self.object.soundtracks.all().order_by("release_date")
+        context["official_sountracks"] = self.object.soundtracks.all().order_by(
+            "release_date"
+        )
         context["featured_tracks"] = self.object.tracks.all().order_by("release_date")
-        context["opening_theme_songs"] = self.object.theme_songs.all().order_by("release_date") 
-        context["ending_credit_songs"] = self.object.ending_songs.all().order_by("release_date")
+        context["opening_theme_songs"] = self.object.theme_songs.all().order_by(
+            "release_date"
+        )
+        context["ending_credit_songs"] = self.object.ending_songs.all().order_by(
+            "release_date"
+        )
 
         # mentioned media
-        context["mentioned_litworks"] = self.object.mentioned_litworks.all().order_by("publication_date")
-        context["mentioned_litinstances"] = self.object.mentioned_litinstances.all().order_by("publication_date")
-        context["mentioned_books"] = self.object.mentioned_books.all().order_by("publication_date")
+        context["mentioned_litworks"] = self.object.mentioned_litworks.all().order_by(
+            "publication_date"
+        )
+        context["mentioned_litinstances"] = (
+            self.object.mentioned_litinstances.all().order_by("publication_date")
+        )
+        context["mentioned_books"] = self.object.mentioned_books.all().order_by(
+            "publication_date"
+        )
+        context["mentioned_gameworks"] = self.object.mentioned_gameworks.all().order_by(
+            "first_release_date"
+        )
+        context["mentioned_games"] = (
+            self.object.mentioned_games.all()
+            .annotate(release_date=Min("region_release_dates__release_date"))
+            .order_by("release_date")
+        )
+        context["mentioned_movies"] = (
+            self.object.mentioned_movies.all()
+            .annotate(release_date=Min("region_release_dates__release_date"))
+            .order_by("release_date")
+        )
+        context["mentioned_series"] = self.object.mentioned_series.all().order_by(
+            "release_date"
+        )
+        context["mentioned_musicalworks"] = (
+            self.object.mentioned_musicalworks.all().order_by("release_date")
+        )
+
+        context["mentioned_tracks"] = self.object.mentioned_tracks.all().order_by(
+            "release_date"
+        )
+        context["mentioned_releases"] = self.object.mentioned_releases.all().order_by(
+            "release_date"
+        )
+        context["mentioned_locations"] = self.object.mentioned_locations.all().order_by(
+            "name"
+        )
 
         return context
 
