@@ -118,6 +118,7 @@
                         </ul>
                     </div>
                 {% endif %}
+                {% if instance_checkins.exists %}
                 <div class="fs-3 mb-2">Instance Check-ins</div>
                 <div class="col-sm-11 mb-3">
                     {% for checkin in instance_checkins %}
@@ -172,10 +173,9 @@
                                 {% endif %}
                             </div>
                         {% endif %}
-                    {% empty %}
-                        <li>No checkins for this instance yet.</li>
                     {% endfor %}
                 </div>
+                {% endif %}
             </div>
             <!--Right columns-->
             <div class="d-flex flex-column col-sm-4">
