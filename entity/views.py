@@ -193,9 +193,9 @@ class CreatorDetailView(DetailView):
             # For releases that do not belong to any group, treat them as individual "groups"
             individual_releases = [r for r in releases if not r.release_group.exists()]
             for release in individual_releases:
-                release_by_group[
-                    release
-                ] = release  # Individual releases are their own "group"
+                release_by_group[release] = (
+                    release  # Individual releases are their own "group"
+                )
 
             # Sort the final release list by release date
             final_releases = sorted(
@@ -239,13 +239,16 @@ class CreatorDetailView(DetailView):
         ).order_by("release_date")
 
         context["tracks_as_singer"] = Track.objects.filter(
-            trackrole__role__name="Singer", trackrole__creator=creator
+            trackrole__role__name__in=["Singer", "Performer", "Vocalist"],
+            trackrole__creator=creator,
         ).order_by("release_date")
         context["works_as_composer"] = ListenWork.objects.filter(
-            workrole__role__name="Composer", workrole__creator=creator
+            workrole__role__name__in=["Lyricist", "Songwriter"],
+            workrole__creator=creator,
         ).order_by("release_date")
         context["works_as_lyricist"] = ListenWork.objects.filter(
-            workrole__role__name="Lyricist", workrole__creator=creator
+            workrole__role__name__in=["Lyricist", "Songwriter"],
+            workrole__creator=creator,
         ).order_by("release_date")
         context["tracks_as_producer"] = Track.objects.filter(
             trackrole__role__name="Producer", trackrole__creator=creator
@@ -495,11 +498,13 @@ class CreatorDetailView(DetailView):
             # Sort by release date
             final_list = sorted(
                 combined_dict.values(),
-                key=lambda x: x.first_release_date
-                if hasattr(x, "first_release_date")
-                else x.region_release_dates.aggregate(Min("release_date"))[
-                    "release_date__min"
-                ],
+                key=lambda x: (
+                    x.first_release_date
+                    if hasattr(x, "first_release_date")
+                    else x.region_release_dates.aggregate(Min("release_date"))[
+                        "release_date__min"
+                    ]
+                ),
             )
 
             return final_list
