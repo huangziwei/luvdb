@@ -81,6 +81,15 @@
                                 </div>
                                 {% if object.other_titles %}<p class='text-muted'>{{ object.other_titles }}</p>{% endif %}
                                 <div class="movie-meta">
+                                    {% for role_name, creator_altname_tuples in main_roles.items %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">{{ role_name }}:</span>
+                                            {% for creator, alt_name in creator_altname_tuples %}
+                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
                                     {% if object.studios.count != 0 %}
                                         <div class="mb-1">
                                             {# djlint:off #}
@@ -166,7 +175,7 @@
                                         </ul>
                                         <div class="tab-content" id="myTabContent">
                                             <div class="tab-pane mt-1 {% if not object.notes %} show active {% endif %}" id="more" role="tabpanel" aria-labelledby="more-tab">
-                                                {% for role_name, creator_altname_tuples in main_roles.items %}
+                                                {% for role_name, creator_altname_tuples in secondary_roles.items %}
                                                     <div class="mb-1">
                                                         <span class="text-muted">{{ role_name }}:</span>
                                                         {% for creator, alt_name in creator_altname_tuples %}

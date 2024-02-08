@@ -245,21 +245,13 @@ class MovieDetailView(DetailView):
 
         context["lists_containing_movie"] = lists_containing_movie
 
-        # roles = {}
-        # for movie_role in movie.movieroles.all():
-        #     if movie_role.role.name not in roles:
-        #         roles[movie_role.role.name] = []
-        #     d = movie_role.alt_name or movie_role.creator.name
-        #     roles[movie_role.role.name].append((movie_role.creator, d))
-        # context["roles"] = roles
-
         main_role_names = [
             "Director",
             "Screenwriter",
-            "Executive Producer",
             "Story By",
         ]
         secondary_role_names = [
+            "Exec. Producer",
             "Producer",
             "Editor",
             "Music By",
@@ -279,7 +271,7 @@ class MovieDetailView(DetailView):
                 main_roles[role_name].append(
                     (movie_role.creator, alt_name_or_creator_name)
                 )
-            else:
+            elif role_name in secondary_role_names:
                 if role_name not in secondary_roles:
                     secondary_roles[role_name] = []
                 secondary_roles[role_name].append(
@@ -830,12 +822,19 @@ class SeriesDetailView(DetailView):
         main_role_names = [
             "Director",
             "Screenwriter",
-            "Producer",
             "Story By",
-            "Music By",
         ]
+        secondary_role_names = [
+            "Exec. Producer",
+            "Producer",
+            "Editor",
+            "Music By",
+            "Cinematographer",
+            "Character Designer",
+        ]
+
         main_roles = {}
-        other_roles = {}
+        secondary_roles = {}
 
         for series_role in series.seriesroles.all():
             role_name = series_role.role.name
@@ -847,15 +846,15 @@ class SeriesDetailView(DetailView):
                 main_roles[role_name].append(
                     (series_role.creator, alt_name_or_creator_name)
                 )
-            else:
-                if role_name not in other_roles:
-                    other_roles[role_name] = []
-                other_roles[role_name].append(
+            elif role_name in secondary_role_names:
+                if role_name not in secondary_roles:
+                    secondary_roles[role_name] = []
+                secondary_roles[role_name].append(
                     (series_role.creator, alt_name_or_creator_name)
                 )
 
         context["main_roles"] = main_roles
-        context["other_roles"] = other_roles
+        context["secondary_roles"] = secondary_roles
 
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
         context["can_vote"] = (
