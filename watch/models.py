@@ -345,6 +345,7 @@ class Series(auto_prefetch.Model):
     other_titles = models.TextField(blank=True, null=True)
     studios = models.ManyToManyField(Company, related_name="series")
     distributors = models.ManyToManyField(Company, related_name="series_distributed")
+    stars = models.ManyToManyField(Creator, related_name="series_starred", blank=True)
     creators = models.ManyToManyField(
         Creator, through="SeriesRole", related_name="series"
     )

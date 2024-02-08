@@ -322,12 +322,16 @@ class SeriesForm(forms.ModelForm):
                 url=reverse_lazy("watch:genre-autocomplete")
             ),
             "other_titles": forms.TextInput(),
+            "stars": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("entity:creator-autocomplete")
+            ),
         }
         help_texts = {
             "other_titles": "e.g. translated titles in different languages, separated by slashes (`/`).",
             "studios": "Production companies. <a href='/entity/company/create/'>Add a new company</a>.",
             "distributors": "Distribution companies. <a href='/entity/company/create/'>Add a new company</a>.",
             "based_on": "The original work that the movie is based on. <a href='/read/work/create/'>Add a new work</a>.",
+            "stars": "Main casts. <a href='/entity/creator/create/'>Add a new creator</a>.",
         }
         labels = {
             "based_on_litworks": "Publications (Work)",

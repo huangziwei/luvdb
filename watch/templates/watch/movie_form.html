@@ -7,7 +7,6 @@
     {{ form.poster|as_crispy_field }}
     {{ form.poster_sens|as_crispy_field}}
     {{ form.genres|as_crispy_field }}
-    {{ form.stars|as_crispy_field }}
     {{ regionreleasedates.management_form|crispy }}
     <div id="region-release-date-formset" class="bg-light p-3 mb-3">
         <strong>Regions and release dates of this Movie</strong>
@@ -52,6 +51,7 @@
     <div id="movie-cast-formset" class="bg-light p-3 mb-3">
         <strong>Casts related to this Movie</strong>
         <p class='text-muted'>E.g. Actors, Actresses, Charactor Voices, etc.</p>
+        {{ form.stars|as_crispy_field }}
         <div id="moviecasts">
             {% for form in moviecasts %}
                 <div class="form-wrapper row">

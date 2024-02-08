@@ -30,6 +30,11 @@
         </div>
         <button type="button" id="add-series-role-formset" class="btn btn-secondary">Add More</button>
     </div>
+    <div id="movie-cast-formset" class="bg-light p-3 mb-3">
+        <strong>Casts related to this Movie</strong>
+        <p class='text-muted'>E.g. Actors, Actresses, Charactor Voices, etc.</p>
+        {{ form.stars|as_crispy_field }}
+    </div>
     <div class="bg-light p-3 mb-3">
         <strong>Companies related to this Movie</strong>
         {{ form.studios|as_crispy_field }}
