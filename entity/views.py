@@ -162,10 +162,24 @@ class CreatorDetailView(DetailView):
             "Illustrator",
         ]
         books = {}
+        has_books = False  # Initialize the flag as False
+
         for role in book_roles:
-            books[f"As {role}"] = get_books_by_role(role, creator)
+            # Using a display-friendly format for the role in the keys
+            formatted_role = f"As {role}"
+            books_by_role = get_books_by_role(role, creator)
+            books[formatted_role] = books_by_role
+
+            # Check if this role's books_by_role dictionary has any non-empty lists
+            if not has_books:  # Only check if we haven't found books yet
+                for lang_books in books_by_role.values():
+                    if lang_books:  # If there's at least one book for this language
+                        has_books = True
+                        break  # No need to continue checking once we've found books
 
         context["books"] = books
+        context["has_books"] = has_books
+
         context["lit_works"] = (
             LitWork.objects.filter(
                 Q(workrole__role__name__in=book_roles, workrole__creator=creator)
@@ -533,10 +547,19 @@ class CreatorDetailView(DetailView):
             "Programmer",
         ]
 
-        for role in game_roles:
-            context_key = f"games_as_{role.lower()}"
-            context[context_key] = get_games_by_role(role, creator)
+        games = {}
+        has_games = False  # Initialize the flag as False
 
+        for role in game_roles:
+            role_games = get_games_by_role(role, creator)
+            games[f"As {role}"] = role_games
+            if (
+                role_games and not has_games
+            ):  # Check if there are any games and update has_games accordingly
+                has_games = True
+
+        context["games"] = games
+        context["has_games"] = has_games
         context["games_as_cast"] = (
             Game.objects.filter(gamecasts__creator=creator)
             .distinct()

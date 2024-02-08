@@ -64,7 +64,7 @@
                 </div>
                 {% endif %}
                 <!--Read-->
-                {% if lit_works or books or audiobook_as_narrator %}
+                {% if lit_works or has_books or audiobook_as_narrator %}
                     <h3 class="mt-2">Bibliography</h3>
                     {% if lit_works %}
                         <div class="row">
@@ -420,139 +420,158 @@
                     {% endif %}
                 {% endif %}
                 <!--Play-->
-                {% if games_as_writer or games_as_artist or games_as_musician or games_as_producer or games_as_director or games_as_designer or games_as_programmer or games_as_cast%}
+                {% if has_games or games_as_cast%}
                     <h3 class="mt-2">Gameography</h3>
                     <div class="row">
-                        {% if games_as_writer %}
-                        <div class="col-sm-6">
-                            <div class="fs-4">As Writer</div>
-                            <ul>
-                                {% for item in games_as_writer %}
-                                <li>
-                                    {% if item.model_name == "GameWork" %}
-                                        <!-- This is a GameWork -->
-                                        <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
-                                    {% else %}
-                                        <!-- This is a Game -->
-                                        <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
-                                    {% endif %}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        {% endif %}
-                        {% if games_as_artist %}
-                        <div class="col-sm-6">
-                            <div class="fs-4">As Artist</div>
-                            <ul>
-                                {% for item in games_as_artist %}
-                                <li>
-                                    {% if item.model_name == "GameWork" %}
-                                        <!-- This is a GameWork -->
-                                        <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
-                                    {% else %}
-                                        <!-- This is a Game -->
-                                        <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
-                                    {% endif %}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+
+                        {% for role, games_by_role in games.items %}
+                            {% if games_by_role %}
+                                <div class="col-md-6">
+                                    <div class="fs-5 fw-bold">{{ role }}</div>
+                                    <div class="mb-3">
+                                        <ul>
+                                            {% for item in games_by_role %}
+                                                <li>
+                                                    {% if item.model_name == "GameWork" %}
+                                                        <!-- This is a GameWork -->
+                                                        <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
+                                                    {% else %}
+                                                        <!-- This is a Game -->
+                                                        <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% comment %} {% if games_as_writer %}
+                            <div class="col-sm-6">
+                                <div class="fs-4">As Writer</div>
+                                <ul>
+                                    {% for item in games_as_writer %}
+                                    <li>
+                                        {% if item.model_name == "GameWork" %}
+                                            <!-- This is a GameWork -->
+                                            <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
+                                        {% else %}
+                                            <!-- This is a Game -->
+                                            <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %} {% endcomment %}
+                        {% comment %} {% if games_as_artist %}
+                            <div class="col-sm-6">
+                                <div class="fs-4">As Artist</div>
+                                <ul>
+                                    {% for item in games_as_artist %}
+                                    <li>
+                                        {% if item.model_name == "GameWork" %}
+                                            <!-- This is a GameWork -->
+                                            <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
+                                        {% else %}
+                                            <!-- This is a Game -->
+                                            <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         {% endif %}
                         {% if games_as_musician %}
-                        <div class="col-sm-6">
-                            <div class="fs-4">As Musician</div>
-                            <ul>
-                                {% for item in games_as_musician %}
-                                <li>
-                                    {% if item.model_name == "GameWork" %}
-                                        <!-- This is a GameWork -->
-                                        <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
-                                    {% else %}
-                                        <!-- This is a Game -->
-                                        <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
-                                    {% endif %}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                            <div class="col-sm-6">
+                                <div class="fs-4">As Musician</div>
+                                <ul>
+                                    {% for item in games_as_musician %}
+                                    <li>
+                                        {% if item.model_name == "GameWork" %}
+                                            <!-- This is a GameWork -->
+                                            <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
+                                        {% else %}
+                                            <!-- This is a Game -->
+                                            <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         {% endif %}
-
                         {% if games_as_producer %}
-                        <div class="col-sm-6">
-                            <div class="fs-4">As Producer</div>
-                            <ul>
-                                {% for item in games_as_producer %}
-                                <li>
-                                    {% if item.model_name == "GameWork" %}
-                                        <!-- This is a GameWork -->
-                                        <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
-                                    {% else %}
-                                        <!-- This is a Game -->
-                                        <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
-                                    {% endif %}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                            <div class="col-sm-6">
+                                <div class="fs-4">As Producer</div>
+                                <ul>
+                                    {% for item in games_as_producer %}
+                                    <li>
+                                        {% if item.model_name == "GameWork" %}
+                                            <!-- This is a GameWork -->
+                                            <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
+                                        {% else %}
+                                            <!-- This is a Game -->
+                                            <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         {% endif %}
-
                         {% if games_as_director %}
-                        <div class="col-sm-6">
-                            <div class="fs-4">As Diretor</div>
-                            <ul>
-                                {% for item in games_as_director %}
-                                <li>
-                                    {% if item.model_name == "GameWork" %}
-                                        <!-- This is a GameWork -->
-                                        <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
-                                    {% else %}
-                                        <!-- This is a Game -->
-                                        <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
-                                    {% endif %}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                            <div class="col-sm-6">
+                                <div class="fs-4">As Diretor</div>
+                                <ul>
+                                    {% for item in games_as_director %}
+                                    <li>
+                                        {% if item.model_name == "GameWork" %}
+                                            <!-- This is a GameWork -->
+                                            <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
+                                        {% else %}
+                                            <!-- This is a Game -->
+                                            <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         {% endif %}
-
                         {% if games_as_designer %}
-                        <div class="col-sm-6">
-                            <div class="fs-4">As Designer</div>
-                            <ul>
-                                {% for item in games_as_designer %}
-                                <li>
-                                    {% if item.model_name == "GameWork" %}
-                                        <!-- This is a GameWork -->
-                                        <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
-                                    {% else %}
-                                        <!-- This is a Game -->
-                                        <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
-                                    {% endif %}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                            <div class="col-sm-6">
+                                <div class="fs-4">As Designer</div>
+                                <ul>
+                                    {% for item in games_as_designer %}
+                                    <li>
+                                        {% if item.model_name == "GameWork" %}
+                                            <!-- This is a GameWork -->
+                                            <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
+                                        {% else %}
+                                            <!-- This is a Game -->
+                                            <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         {% endif %}
-
                         {% if games_as_programmer %}
-                        <div class="col-sm-6">
-                            <div class="fs-4">As Programmer</div>
-                            <ul>
-                                {% for item in games_as_programmer %}
-                                <li>
-                                    {% if item.model_name == "GameWork" %}
-                                        <!-- This is a GameWork -->
-                                        <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
-                                    {% else %}
-                                        <!-- This is a Game -->
-                                        <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
-                                    {% endif %}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        {% endif %}
+                            <div class="col-sm-6">
+                                <div class="fs-4">As Programmer</div>
+                                <ul>
+                                    {% for item in games_as_programmer %}
+                                    <li>
+                                        {% if item.model_name == "GameWork" %}
+                                            <!-- This is a GameWork -->
+                                            <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
+                                        {% else %}
+                                            <!-- This is a Game -->
+                                            <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %} {% endcomment %}
 
                         {% if games_as_cast %}
                         <div class="col-sm-6">
