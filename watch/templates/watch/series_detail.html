@@ -90,6 +90,15 @@
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
+                                    {% if object.stars.exists %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Stars:</span>
+                                            {% for creator in object.stars.all %}
+                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                                {% if not forloop.last %} / {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                     {% if object.studios.count != 0 %}
                                         <div class="mb-1">
                                             {# djlint:off #}
@@ -109,15 +118,6 @@
                                             {% for studio in object.distributors.all %}
                                                 <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
                                                 {% if not forloop.last %}/{% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                    {% if object.stars.exists %}
-                                        <div class="mb-1">
-                                            <span class="text-muted">Stars:</span>
-                                            {% for creator in object.stars.all %}
-                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                                {% if not forloop.last %} / {% endif %}
                                             {% endfor %}
                                         </div>
                                     {% endif %}

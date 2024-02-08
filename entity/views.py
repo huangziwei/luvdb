@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from dal import autocomplete
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -104,8 +106,10 @@ class CreatorDetailView(DetailView):
 
         # read
         def get_books_by_role(role, creator):
-            # Dictionary to hold final items
-            final_dict = {}
+            # Dictionary to hold final items, grouped by language
+            final_dict = defaultdict(list)
+            # Set to keep track of instance IDs that have already been processed
+            processed_instances = set()
 
             # Step 1: Get books related to the role and creator
             books = Book.objects.filter(
@@ -113,27 +117,36 @@ class CreatorDetailView(DetailView):
             ).distinct()
 
             for book in books:
+                # Determine book's language, defaulting to 'Unknown' if not set
+                book_language = book.language or "Unknown"
+
                 # Check for instances
                 instances = LitInstance.objects.filter(books=book)
 
-                # No related instances
-                if not instances.exists():
-                    final_dict[book.id] = book
-                # Multiple related instances
-                elif instances.count() > 1:
-                    final_dict[book.id] = book
-                # Single related instance
+                # Handle the book or instance accordingly
+                if not instances.exists() or instances.count() > 1:
+                    final_dict[book_language].append(book)
                 else:
                     instance = instances.first()
-                    # Check if instance has a related work
-                    final_dict[instance.id] = instance
+                    # Check if this instance has already been processed
+                    if instance.id not in processed_instances:
+                        # If not, add it to the dictionary and mark it as processed
+                        processed_instances.add(instance.id)
+                        final_dict[instance.language or "Unknown"].append(instance)
+                    # If the instance has been processed, continue without adding it again
 
-            # Sort the final list by publication date
-            final_list = sorted(
-                final_dict.values(), key=lambda x: getattr(x, "publication_date", None)
+            # Sort each list in the dictionary by publication date
+            for language in final_dict:
+                final_dict[language].sort(
+                    key=lambda x: getattr(x, "publication_date", None)
+                )
+
+            # Convert the dictionary to a list of tuples and sort by the number of books in descending order
+            sorted_final_list = sorted(
+                final_dict.items(), key=lambda x: len(x[1]), reverse=True
             )
 
-            return final_list
+            return dict(sorted_final_list)
 
         book_roles = [
             "Author",
@@ -148,10 +161,11 @@ class CreatorDetailView(DetailView):
             "Annotator",
             "Illustrator",
         ]
+        books = {}
         for role in book_roles:
-            context_key = f"books_as_{role.lower()}"
-            context[context_key] = get_books_by_role(role, creator)
+            books[f"As {role}"] = get_books_by_role(role, creator)
 
+        context["books"] = books
         context["lit_works"] = (
             LitWork.objects.filter(
                 Q(workrole__role__name__in=book_roles, workrole__creator=creator)

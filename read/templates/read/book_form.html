@@ -11,13 +11,19 @@
     {{ form.publication_date|as_crispy_field }}
     {{ form.format|as_crispy_field }}
     {{ form.length|as_crispy_field }}
-    {{ form.price|as_crispy_field }}
-    {{ form.isbn_10|as_crispy_field }}
-    {{ form.isbn_13|as_crispy_field }}
-    {{ form.eisbn_13|as_crispy_field }}
-    {{ form.asin|as_crispy_field }}
-    {{ form.internet_archive_url|as_crispy_field }}
-    {{ form.wikipedia|as_crispy_field }}
+    <div class="bg-light p-3 mb-3">
+        <strong>Identifiers</strong>
+        {{ form.isbn_10|as_crispy_field }}
+        {{ form.isbn_13|as_crispy_field }}
+        {{ form.eisbn_13|as_crispy_field }}
+        {{ form.asin|as_crispy_field }}
+    </div>
+    <div class="bg-light p-3 mb-3">
+        <strong>Links</strong>
+        {{ form.internet_archive_url|as_crispy_field }}
+        {{ form.wikipedia|as_crispy_field }}
+    </div>
+
     {{ bookroles.management_form|crispy }}
     <div id="book-role-formset" class="bg-light p-3 mb-3">
         <strong>Creators related to this book</strong>
