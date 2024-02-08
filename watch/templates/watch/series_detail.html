@@ -112,9 +112,13 @@
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    {% if object.website %}
+                                    {% if object.stars.exists %}
                                         <div class="mb-1">
-                                            <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
+                                            <span class="text-muted">Stars:</span>
+                                            {% for creator in object.stars.all %}
+                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                                {% if not forloop.last %} / {% endif %}
+                                            {% endfor %}
                                         </div>
                                     {% endif %}
                                     {% if object.genres %}
