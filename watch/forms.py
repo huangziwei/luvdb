@@ -36,6 +36,9 @@ class MovieForm(forms.ModelForm):
             "distributors": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("entity:company-autocomplete")
             ),
+            "stars": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("entity:creator-autocomplete")
+            ),
             "based_on_litworks": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("read:work-autocomplete")
             ),
@@ -110,6 +113,7 @@ class MovieForm(forms.ModelForm):
             "setting_locations": "Locations of where the movie was set. <a href='/visit/location/create/'>Add a new location</a>.",
             "studios": "Production companies. <a href='/entity/company/create/'>Add a new company</a>.",
             "distributors": "Distribution companies. <a href='/entity/company/create/'>Add a new company</a>.",
+            "stars": "Main casts. <a href='/entity/creator/create/'>Add a new creator</a>.",
         }
         labels = {
             "imdb": "IMDB URL",

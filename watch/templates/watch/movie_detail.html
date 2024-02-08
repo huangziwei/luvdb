@@ -101,6 +101,15 @@
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
+                                    {% if object.stars.exists %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Stars:</span>
+                                            {% for creator in object.stars.all|slice:":5" %}
+                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                                {% if not forloop.last %} / {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                     {% if object.website %}
                                         <div class="mb-1">
                                             <span class="text-muted">Website:</span> <a href="{{ object.website }}">{{ object.website }}</a>
@@ -134,7 +143,7 @@
                                                 <button class="nav-link text-muted {%if object.notes%}active{% endif %}" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab" aria-controls="related" aria-selected="true">Notes</button>
                                             </li>
                                             {% endif %}
-                                            {% if main_roles or other_roles %}
+                                            {% if other_roles %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted {%if not object.notes%}active{% endif %}" id="credits-tab" data-bs-toggle="tab" data-bs-target="#credits" type="button" role="tab" aria-controls="credits" aria-selected="true">Credits</button>
                                             </li>
@@ -440,11 +449,11 @@
                                                 </div>
                                             {% endif %}
                                             <!--Credits-->
-                                            {% if other_roles %}
+                                            {% if secondary_roles %}
                                                 <div class="tab-pane mt-1 {% if not object.notes %}show active{% endif %}" id="credits" role="tabpanel" aria-labelledby="credits-tab">
-                                                    {% if other_roles %}
+                                                    {% if secondary_roles %}
                                                     <div class='mb-0'>
-                                                        {% for role_name, person_altname_tuples in other_roles.items %}
+                                                        {% for role_name, person_altname_tuples in secondary_roles.items %}
                                                         <div>
                                                             <span class="text-muted">{{ role_name }}:</span>
                                                             {% for creator, alt_name in person_altname_tuples %}
@@ -454,14 +463,6 @@
                                                         </div>
                                                         {% endfor %}
                                                     </div>
-                                                    {% endif %}
-                                                    {% if object.moviecasts.exists %}
-                                                    <span class="text-muted">Stars:</span>
-                                                    <!--top 3 casts-->
-                                                    {% for cast in object.moviecasts.all|slice:":3" %}
-                                                         <a href="{% url 'entity:creator_detail' cast.creator.id %}">{{ cast.creator.name }}</a>
-                                                         {% if not forloop.last %} / {% endif %}
-                                                        {% endfor %}
                                                     {% endif %}
                                                     <div class="mt-2">
                                                         <a href="{% url 'watch:movie_cast_detail' object.id %}">View Full Credits</a>

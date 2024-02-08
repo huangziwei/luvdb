@@ -7,6 +7,7 @@
     {{ form.poster|as_crispy_field }}
     {{ form.poster_sens|as_crispy_field}}
     {{ form.genres|as_crispy_field }}
+    {{ form.stars|as_crispy_field }}
     {{ regionreleasedates.management_form|crispy }}
     <div id="region-release-date-formset" class="bg-light p-3 mb-3">
         <strong>Regions and release dates of this Movie</strong>
@@ -74,7 +75,6 @@
         {{ form.studios|as_crispy_field }}
         {{ form.distributors|as_crispy_field }}
     </div>
-
     <div class="bg-light p-3 mb-3">
         <strong>Cross-reference</strong>
         <div class="accordion mb-3 mt-3">

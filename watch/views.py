@@ -257,9 +257,17 @@ class MovieDetailView(DetailView):
             "Director",
             "Screenwriter",
             "Executive Producer",
+            "Story By",
         ]
+        secondary_role_names = [
+            "Producer",
+            "Editor",
+            "Music By",
+            "Cinematographer",
+        ]
+
         main_roles = {}
-        other_roles = {}
+        secondary_roles = {}
 
         for movie_role in movie.movieroles.all():
             role_name = movie_role.role.name
@@ -272,14 +280,14 @@ class MovieDetailView(DetailView):
                     (movie_role.creator, alt_name_or_creator_name)
                 )
             else:
-                if role_name not in other_roles:
-                    other_roles[role_name] = []
-                other_roles[role_name].append(
+                if role_name not in secondary_roles:
+                    secondary_roles[role_name] = []
+                secondary_roles[role_name].append(
                     (movie_role.creator, alt_name_or_creator_name)
                 )
 
         context["main_roles"] = main_roles
-        context["other_roles"] = other_roles
+        context["secondary_roles"] = secondary_roles
 
         # Fetch the latest check-in from the current user for this book
         if self.request.user.is_authenticated:

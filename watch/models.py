@@ -53,14 +53,22 @@ class Movie(auto_prefetch.Model):
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
-    studios = models.ManyToManyField(Company, related_name="movies")
-    distributors = models.ManyToManyField(Company, related_name="movies_distributed")
+
+    # credits: crews and casts
+    ## crews
     creators = models.ManyToManyField(
         Creator, through="MovieRole", related_name="movies"
     )
+    ## casts
     casts = models.ManyToManyField(
         Creator, through="MovieCast", related_name="movies_cast"
     )
+    ## main actors and actresses, only for display purpose
+    stars = models.ManyToManyField(Creator, related_name="movies_starred", blank=True)
+
+    # companies
+    studios = models.ManyToManyField(Company, related_name="movies")
+    distributors = models.ManyToManyField(Company, related_name="movies_distributed")
 
     # cross-media references
     ## based on
