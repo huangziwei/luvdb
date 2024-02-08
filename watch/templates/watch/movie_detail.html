@@ -237,9 +237,11 @@
                                                             <div class="align-items-center">
                                                                 <span class="text-muted">Filming Location{% if object.filming_locations.count > 1 %}s{% endif %}</span>
                                                                 {% if filming_locations_with_parents|length > 3 %}
-                                                                    <a class="btn btn-sm text-muted" data-bs-toggle="collapse" href="#moreFilmingLocations" role="button" aria-expanded="false" aria-controls="moreFilmingLocations">
-                                                                        (Show All)
-                                                                    </a>
+                                                                    <small>
+                                                                        <a class="text-muted" data-bs-toggle="collapse" href="#moreFilmingLocations" role="button" aria-expanded="false" aria-controls="moreFilmingLocations">
+                                                                            (Show {{filming_locations_with_parents|length|add:-3}} More)
+                                                                        </a>
+                                                                    </small>
                                                                 {% endif %}
                                                             </div>
                                                             <ul>
@@ -267,9 +269,11 @@
                                                             <div class="align-items-center">
                                                                 <span class="text-muted">Setting Location{% if object.setting_locations.count > 1 %}s{% endif %}</span>
                                                                 {% if setting_locations_with_parents|length > 3 %}
-                                                                    <a class="btn btn-sm text-muted toggleLink" data-bs-toggle="collapse" href="#moreSettingLocations" role="button" aria-expanded="false" aria-controls="moreSettingLocations">
-                                                                        (Show All)
+                                                                <small>
+                                                                    <a class="text-muted" data-bs-toggle="collapse" href="#moreSettingLocations" role="button" aria-expanded="false" aria-controls="moreSettingLocations">
+                                                                        (Show {{setting_locations_with_parents|length|add:-3}} More)
                                                                     </a>
+                                                                </small>
                                                                 {% endif %}
                                                             </div>
                                                             <ul>
