@@ -155,23 +155,15 @@ class CreatorDetailView(DetailView):
             .order_by("role__name")
         )
         books = {}
-        has_books = False  # Initialize the flag as False
 
         for role in book_roles:
             # Using a display-friendly format for the role in the keys
             formatted_role = f"As {role}"
             books_by_role = get_books_by_role(role, creator)
-            books[formatted_role] = books_by_role
-
-            # Check if this role's books_by_role dictionary has any non-empty lists
-            if not has_books:  # Only check if we haven't found books yet
-                for lang_books in books_by_role.values():
-                    if lang_books:  # If there's at least one book for this language
-                        has_books = True
-                        break  # No need to continue checking once we've found books
+            if books_by_role:
+                books[formatted_role] = books_by_role
 
         context["books"] = books
-        context["has_books"] = has_books
 
         context["lit_works"] = (
             LitWork.objects.filter(
@@ -256,23 +248,22 @@ class CreatorDetailView(DetailView):
         )
 
         releases = {}
-        has_releases = False  # Initialize the flag as False
 
         for role in release_roles:
             # General case for other roles
-            role_releases = Release.objects.filter(
-                releaserole__role__name=role, releaserole__creator=creator
-            ).order_by("release_date")
+            role_releases = (
+                Release.objects.filter(
+                    releaserole__role__name=role, releaserole__creator=creator
+                )
+                .exclude(release_type="Single")
+                .order_by("release_date")
+            )
 
             # Update context with releases filtered by role, excluding "Performer"
-            releases[f"As {role}"] = role_releases
-
-            # Check if there are any releases and update has_releases accordingly
-            if role_releases and not has_releases:
-                has_releases = True
+            if role_releases:
+                releases[f"As {role}"] = role_releases
 
         context["releases"] = releases
-        context["has_releases"] = has_releases
 
         track_roles = (
             TrackRole.objects.exclude(
@@ -287,7 +278,6 @@ class CreatorDetailView(DetailView):
             .distinct()
         )
         tracks = {}
-        has_tracks = False  # Initialize the flag as False
 
         for role in track_roles:
             # Filter tracks for the current role and order them by release date
@@ -296,15 +286,11 @@ class CreatorDetailView(DetailView):
             ).order_by("release_date")
 
             # Dynamically update the context with tracks filtered by role
-            tracks[f"As {role}"] = role_tracks
-
-            # Check if there are any tracks and update has_tracks accordingly
-            if role_tracks and not has_tracks:
-                has_tracks = True
+            if role_tracks:
+                tracks[f"As {role}"] = role_tracks
 
         # Update context
         context["tracks"] = tracks
-        context["has_tracks"] = has_tracks
 
         work_roles = (
             WorkRole.objects.filter(
@@ -314,7 +300,6 @@ class CreatorDetailView(DetailView):
             .distinct()
         )
         works = {}
-        has_works = False  # Initialize the flag as False
 
         for role in work_roles:
             # Filter tracks for the current role and order them by release date
@@ -323,15 +308,11 @@ class CreatorDetailView(DetailView):
             ).order_by("release_date")
 
             # Dynamically update the context with works filtered by role
-            works[f"As {role}"] = role_works
-
-            # Check if there are any works and update has_works accordingly
-            if role_works and not has_works:
-                has_works = True
+            if role_works:
+                works[f"As {role}"] = role_works
 
         # Update context
         context["works"] = works
-        context["has_works"] = has_works
 
         context["audiobook_as_narrator"] = Audiobook.objects.filter(
             audiobookrole__role__name="Narrator", audiobookrole__creator=creator
