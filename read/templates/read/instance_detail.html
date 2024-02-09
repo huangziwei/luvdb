@@ -118,7 +118,7 @@
                         </ul>
                     </div>
                 {% endif %}
-                {% if instance_checkins.exists %}
+                {% if instance_checkins|length > 0 %}
                 <div class="fs-3 mb-2">Instance Check-ins</div>
                 <div class="col-sm-11 mb-3">
                     {% for checkin in instance_checkins %}

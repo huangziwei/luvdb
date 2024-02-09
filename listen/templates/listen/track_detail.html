@@ -136,7 +136,7 @@
                         {% endfor %}
                     </ul>
                 </div>
-                {% if track_checkins %}
+                {% if track_checkins|length > 0 %}
                 <div class="col-sm-11 mb-3">
                     <div class="fs-4 mb-2 fw-bold">Track Check-ins</div>
                     {% for checkin in track_checkins %}
