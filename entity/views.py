@@ -14,11 +14,12 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django_ratelimit.decorators import ratelimit
 
-from listen.models import Audiobook, Release, Track
+from listen.models import Audiobook, Release, ReleaseRole, Track, TrackRole
 from listen.models import Work as ListenWork
-from play.models import Game
+from listen.models import WorkRole
+from play.models import Game, GameRole
 from play.models import Work as GameWork
-from read.models import Book
+from read.models import Book, BookRole
 from read.models import Instance as LitInstance
 from read.models import Work as LitWork
 from scrape.wikipedia import scrape_company, scrape_creator
@@ -148,19 +149,11 @@ class CreatorDetailView(DetailView):
 
             return dict(sorted_final_list)
 
-        book_roles = [
-            "Author",
-            "Ghost Writer",
-            "Story By",
-            "Novelization By",
-            "Translator",
-            "Editor",
-            "Introduction",
-            "Foreword",
-            "Afterword",
-            "Annotator",
-            "Illustrator",
-        ]
+        book_roles = (
+            BookRole.objects.values_list("role__name", flat=True)
+            .distinct()
+            .order_by("role__name")
+        )
         books = {}
         has_books = False  # Initialize the flag as False
 
@@ -254,36 +247,92 @@ class CreatorDetailView(DetailView):
             single_releases
         )
 
-        compilation_releases = Release.objects.filter(
-            releaserole__role__name="Compiler",
-            releaserole__creator=creator,
-            recording_type="Compilation",
-        ).order_by("release_date")
-        context["releases_as_compiler"] = get_releases_by_type_and_group(
-            compilation_releases
+        release_roles = (
+            ReleaseRole.objects.exclude(
+                role__name__in=["Performer", "Conductor", "Lyricist", "Composer"]
+            )
+            .values_list("role__name", flat=True)
+            .distinct()
         )
-        context["releases_as_liner_notes_writer"] = Release.objects.filter(
-            releaserole__role__name="Liner Notes", releaserole__creator=creator
-        ).order_by("release_date")
 
-        context["tracks_as_singer"] = Track.objects.filter(
-            trackrole__role__name__in=["Singer", "Performer", "Vocalist"],
-            trackrole__creator=creator,
-        ).order_by("release_date")
-        context["works_as_composer"] = ListenWork.objects.filter(
-            workrole__role__name__in=["Lyricist", "Songwriter"],
-            workrole__creator=creator,
-        ).order_by("release_date")
-        context["works_as_lyricist"] = ListenWork.objects.filter(
-            workrole__role__name__in=["Lyricist", "Songwriter"],
-            workrole__creator=creator,
-        ).order_by("release_date")
-        context["tracks_as_producer"] = Track.objects.filter(
-            trackrole__role__name="Producer", trackrole__creator=creator
-        ).order_by("release_date")
-        context["tracks_as_arranger"] = Track.objects.filter(
-            trackrole__role__name="Arranger", trackrole__creator=creator
-        ).order_by("release_date")
+        releases = {}
+        has_releases = False  # Initialize the flag as False
+
+        for role in release_roles:
+            # General case for other roles
+            role_releases = Release.objects.filter(
+                releaserole__role__name=role, releaserole__creator=creator
+            ).order_by("release_date")
+
+            # Update context with releases filtered by role, excluding "Performer"
+            releases[f"As {role}"] = role_releases
+
+            # Check if there are any releases and update has_releases accordingly
+            if role_releases and not has_releases:
+                has_releases = True
+
+        context["releases"] = releases
+        context["has_releases"] = has_releases
+
+        track_roles = (
+            TrackRole.objects.exclude(
+                role__name__in=[
+                    "Conductor",
+                    "Lyricist",
+                    "Composer",
+                    "Songwriter",
+                ]
+            )
+            .values_list("role__name", flat=True)
+            .distinct()
+        )
+        tracks = {}
+        has_tracks = False  # Initialize the flag as False
+
+        for role in track_roles:
+            # Filter tracks for the current role and order them by release date
+            role_tracks = Track.objects.filter(
+                trackrole__role__name=role, trackrole__creator=creator
+            ).order_by("release_date")
+
+            # Dynamically update the context with tracks filtered by role
+            tracks[f"As {role}"] = role_tracks
+
+            # Check if there are any tracks and update has_tracks accordingly
+            if role_tracks and not has_tracks:
+                has_tracks = True
+
+        # Update context
+        context["tracks"] = tracks
+        context["has_tracks"] = has_tracks
+
+        work_roles = (
+            WorkRole.objects.filter(
+                role__name__in=["Lyricist", "Composer", "Songwriter"],
+            )
+            .values_list("role__name", flat=True)
+            .distinct()
+        )
+        works = {}
+        has_works = False  # Initialize the flag as False
+
+        for role in work_roles:
+            # Filter tracks for the current role and order them by release date
+            role_works = ListenWork.objects.filter(
+                workrole__role__name=role, workrole__creator=creator
+            ).order_by("release_date")
+
+            # Dynamically update the context with works filtered by role
+            works[f"As {role}"] = role_works
+
+            # Check if there are any works and update has_works accordingly
+            if role_works and not has_works:
+                has_works = True
+
+        # Update context
+        context["works"] = works
+        context["has_works"] = has_works
+
         context["audiobook_as_narrator"] = Audiobook.objects.filter(
             audiobookrole__role__name="Narrator", audiobookrole__creator=creator
         ).order_by("release_date")
@@ -537,15 +586,11 @@ class CreatorDetailView(DetailView):
 
             return final_list
 
-        game_roles = [
-            "Writer",
-            "Artist",
-            "Musician",
-            "Producer",
-            "Director",
-            "Designer",
-            "Programmer",
-        ]
+        game_roles = (
+            GameRole.objects.values_list("role__name", flat=True)
+            .distinct()
+            .order_by("role__name")
+        )
 
         games = {}
         has_games = False  # Initialize the flag as False

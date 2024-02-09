@@ -248,7 +248,7 @@
                     </div>
                 {% endif %}
                 <!--Listen-->
-                {% if LPs_as_performer or EPs_as_performer or singles_as_performer or works_as_lyricist or works_as_composer or tracks_as_singer or  tracks_as_arranger or tracks_as_producer or releases_as_liner_notes_writer or releases_as_compiler %}
+                {% if LPs_as_performer or EPs_as_performer or singles_as_performer or has_releases or has_tracks or has_works %}
                     <h3 class="mt-2">Discography</h3>
                     {% if LPs_as_performer or EPs_as_performer or singles_as_performer %}
                         <div class="row">
@@ -311,113 +311,70 @@
                             {% endif %}
                         </div>
                     {% endif %}
-                
-                    {% if works_as_lyricist or works_as_composer %}
-                        <div class='row'>
-                            <div class="mt-2 fs-4">Works</div>
-                            {% if works_as_lyricist.count != 0 %}
-                                <div class="col-md-4">
-                                    <div class="fs-5">As Lyricist</div>
-                                    <ul>
-                                        {% for work in works_as_lyricist %}
-                                            <li>
-                                                <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %} 
-                            {% if works_as_composer.count != 0 %}
-                                <div class="col-md-4">
-                                    <div class="fs-5">As Composer</div>
-                                    <ul>
-                                        {% for work in works_as_composer %}
-                                            <li>
-                                                <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                    {% if tracks_as_singer or  tracks_as_arranger or tracks_as_producer %}
-                        <div class="row">
-                            <div class="fs-4">Tracks</div>
-                            {% if tracks_as_singer.count != 0 %}
-                                <div class="col-md-4">
-                                    <div class="fs-5">As Singer</div>
-                                    <ul>
-                                        {% for track in tracks_as_singer %}
-                                            <li>
-                                                <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-                            {% if tracks_as_arranger.count != 0 %}
-                                <div class="col-md-4">
-                                    <div class="fs-5">As Arranger</div>
-                                    <ul>
-                                        {% for track in tracks_as_arranger %}
-                                            <li>
-                                                <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-                            {% if tracks_as_producer.count != 0 %}
-                                <div class="col-md-4">
-                                    <div class="fs-5">As Producer</div>
-                                    <ul>
-                                        {% for track in tracks_as_producer %}
-                                            <li>
-                                                <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endif %}
 
-                    {% if releases_as_liner_notes_writer or releases_as_compiler %}
+                    {% if has_releases %}
                         <div class="row">
                             <div class="fs-4">Releases</div>
-                            {% if releases_as_liner_notes_writer %}
-                                <div class="col-md-4">
-                                    <div class="fs-5">Liner Notes</div>
-                                    <ul>
-                                        {% for release in releases_as_liner_notes_writer %}
-                                            <li>
-                                                <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a> ({{ release.release_date }})
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-
-                            {% if releases_as_compiler %}
-                                <div class="col-md-42">
-                                    <div class="fs-5">As Compiler</div>
-                                    <ul>
-                                        {% for release in releases_as_compiler %}
-                                            <li>
-                                                {% if release.release_group.exists %}
-                                                    <a href="{% url 'listen:releasegroup_detail' release.release_group.first.id %}">{{ release.title }}</a>
-                                                {% else %}
-                                                    <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a>
-                                                {% endif %}
-                                                ({{ release.release_date }})
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
+                            {% for role, role_releases in releases.items %}
+                                {% if role_releases %}
+                                    <div class="col-md-4">
+                                        <div class="fs-5">{{ role }}</div>
+                                        <ul>
+                                            {% for release in role_releases %}
+                                                <li>
+                                                    <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a> ({{ release.release_date }})
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}       
+                    
+                    {% if has_works %}
+                        <div class="row">
+                            <div class="fs-4">Works</div>
+                            {% for role, role_works in works.items %}
+                                {% if role_works %}
+                                    <div class="col-md-4">
+                                        <div class="fs-5">{{ role }}</div>
+                                        <ul>
+                                            {% for work in role_works %}
+                                                <li>
+                                                    <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     {% endif %}
+
+                    {% if has_tracks %}
+                        <div class="row">
+                            <div class="fs-4">Tracks</div>
+                            {% for role, role_tracks in tracks.items %}
+                                {% if role_tracks %}
+                                    <div class="col-md-4">
+                                        <div class="fs-5">{{ role }}</div>
+                                        <ul>
+                                            {% for track in role_tracks %}
+                                                <li>
+                                                    <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+
+
+
                 {% endif %}
                 <!--Play-->
                 {% if has_games or games_as_cast%}
