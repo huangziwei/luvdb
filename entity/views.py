@@ -24,7 +24,7 @@ from read.models import Instance as LitInstance
 from read.models import Work as LitWork
 from scrape.wikipedia import scrape_company, scrape_creator
 from visit.models import Location
-from watch.models import Episode, Movie, Series
+from watch.models import Episode, EpisodeRole, Movie, MovieRole, Series, SeriesRole
 
 from .forms import (
     CompanyForm,
@@ -333,7 +333,7 @@ class CreatorDetailView(DetailView):
 
         # watch
         ## as casts
-        context["movies"] = (
+        context["movies_as_cast"] = (
             Movie.objects.filter(moviecasts__creator=creator)
             .distinct()
             .annotate(
@@ -343,169 +343,97 @@ class CreatorDetailView(DetailView):
             )
             .order_by("annotated_earliest_release_date")
         )
-        context["series"] = (
+        context["series_as_cast"] = (
             Series.objects.filter(episodes__episodecasts__creator=creator)
             .annotate(episode_count=Count("episodes"))
             .distinct()
             .order_by("release_date")
         )
         ## as staff
-        context["movies_as_director"] = (
-            Movie.objects.filter(
-                movieroles__creator=creator, movieroles__role__name="Director"
-            )
-            .distinct()
-            .annotate(
-                annotated_earliest_release_date=Min(
-                    "region_release_dates__release_date"
-                )
-            )
-            .order_by("annotated_earliest_release_date")
-        )
 
-        directed_series = Series.objects.filter(
-            seriesroles__creator=creator, seriesroles__role__name="Director"
+        movie_roles = (
+            MovieRole.objects.values_list("role__name", flat=True)
+            .distinct()
+            .order_by("role__name")
+        )
+        movies = {}
+
+        for role in movie_roles:
+            # Filter tracks for the current role and order them by release date
+            role_movies = (
+                Movie.objects.filter(
+                    movieroles__role__name=role, movieroles__creator=creator
+                )
+                .distinct()
+                .annotate(
+                    annotated_earliest_release_date=Min(
+                        "region_release_dates__release_date"
+                    )
+                )
+                .order_by("annotated_earliest_release_date")
+            )
+
+            # Dynamically update the context with works filtered by role
+            if role_movies:
+                movies[f"As {role}"] = role_movies
+
+        context["movies"] = movies
+
+        series_role_names = SeriesRole.objects.values_list(
+            "role__name", flat=True
+        ).distinct()
+        episode_role_names = EpisodeRole.objects.values_list(
+            "role__name", flat=True
         ).distinct()
 
-        episode_series = (
-            Episode.objects.filter(
-                episoderoles__creator=creator, episoderoles__role__name="Director"
-            )
-            .values("series__id", "series__title")
-            .annotate(episode_count=Count("id"))
-        )
+        combined_roles = sorted(set(list(series_role_names) + list(episode_role_names)))
 
-        series_directed_info = []
+        series_info = {}
 
-        # Add series directed by the creator
-        for series in directed_series:
-            series_directed_info.append({"series": series, "episode_count": None})
+        for role in combined_roles:
+            # Prepare a container for combined series and episode data
+            combined_series_data = []
 
-        # Add series based on episodes directed by the creator
-        for entry in episode_series:
-            # Check if series is already in series_directed_info
-            if any(
-                info["series"].id == entry["series__id"]
-                for info in series_directed_info
-            ):
-                # If the series is already in the list, update the episode_count
-                for info in series_directed_info:
-                    if info["series"].id == entry["series__id"]:
-                        info["episode_count"] = entry["episode_count"]
-            else:
-                # If the series is not in the list, add it with the episode count
-                series = Series.objects.get(pk=entry["series__id"])
-                series_directed_info.append(
-                    {"series": series, "episode_count": entry["episode_count"]}
-                )
+            # Fetch series directly associated with the creator for a given role in SeriesRole
+            role_series_direct = Series.objects.filter(
+                seriesroles__role__name=role, seriesroles__creator=creator
+            ).distinct()
 
-        # Add to context
-        context["series_as_director"] = series_directed_info
+            # Include series based on episode roles in EpisodeRole
+            role_series_from_episodes = Series.objects.filter(
+                episodes__episoderoles__role__name=role,
+                episodes__episoderoles__creator=creator,
+            ).distinct()
 
-        context["movies_as_writer"] = (
-            Movie.objects.filter(
-                movieroles__creator=creator, movieroles__role__name="Screenwriter"
-            )
-            .distinct()
-            .annotate(
-                annotated_earliest_release_date=Min(
-                    "region_release_dates__release_date"
-                )
-            )
-            .order_by("annotated_earliest_release_date")
-        )
+            # Combine and de-duplicate series from both direct and episode-derived associations
+            all_role_series = (
+                role_series_direct | role_series_from_episodes
+            ).distinct()
 
-        context["movies_as_original_author"] = (
-            Movie.objects.filter(
-                movieroles__creator=creator, movieroles__role__name="Story By"
-            )
-            .distinct()
-            .annotate(
-                annotated_earliest_release_date=Min(
-                    "region_release_dates__release_date"
-                )
-            )
-            .order_by("annotated_earliest_release_date")
-        )
+            for series in all_role_series:
+                # Initial series data, episode count to be added
+                series_data = {
+                    "series": series,
+                    "episode_count": 0,
+                }
 
-        written_series = Series.objects.filter(
-            seriesroles__creator=creator, seriesroles__role__name="Screenwriter"
-        ).distinct()
+                # Fetch episodes for this series and role, count them and get the earliest release date
+                episodes = Episode.objects.filter(
+                    episoderoles__role__name=role,
+                    episoderoles__creator=creator,
+                    series=series,
+                ).annotate(earliest_release_date=Min("release_date"))
 
-        episode_series_writer = (
-            Episode.objects.filter(
-                episoderoles__creator=creator, episoderoles__role__name="Screenwriter"
-            )
-            .values("series__id", "series__title")
-            .annotate(episode_count=Count("id"))
-        )
+                if episodes:
+                    series_data["episode_count"] = episodes.count()
 
-        series_written_info = []
+                combined_series_data.append(series_data)
 
-        # Add series written by the creator
-        for series in written_series:
-            series_written_info.append({"series": series, "episode_count": None})
+            # Only add to the context if there's at least one series for this role
+            if combined_series_data:
+                series_info[f"As {role}"] = combined_series_data
 
-        # Add series based on episodes written by the creator
-        for entry in episode_series_writer:
-            # Check if series is already in series_written_info
-            if any(
-                info["series"].id == entry["series__id"] for info in series_written_info
-            ):
-                # If the series is already in the list, update the episode_count
-                for info in series_written_info:
-                    if info["series"].id == entry["series__id"]:
-                        info["episode_count"] = entry["episode_count"]
-            else:
-                # If the series is not in the list, add it with the episode count
-                series = Series.objects.get(pk=entry["series__id"])
-                series_written_info.append(
-                    {"series": series, "episode_count": entry["episode_count"]}
-                )
-
-        # Add to context
-        context["series_as_writer"] = series_written_info
-
-        original_author_series = Series.objects.filter(
-            seriesroles__creator=creator, seriesroles__role__name="Story By"
-        ).distinct()
-
-        episode_series_original_author = (
-            Episode.objects.filter(
-                episoderoles__creator=creator, episoderoles__role__name="Story By"
-            )
-            .values("series__id", "series__title")
-            .annotate(episode_count=Count("id"))
-        )
-
-        series_original_author_info = []
-
-        # Add series written by the creator
-        for series in original_author_series:
-            series_original_author_info.append(
-                {"series": series, "episode_count": None}
-            )
-
-        # Add series based on episodes written by the creator
-        for entry in episode_series_original_author:
-            # Check if series is already in series_written_info
-            if any(
-                info["series"].id == entry["series__id"]
-                for info in series_original_author_info
-            ):
-                # If the series is already in the list, update the episode_count
-                for info in series_original_author_info:
-                    if info["series"].id == entry["series__id"]:
-                        info["episode_count"] = entry["episode_count"]
-            else:
-                # If the series is not in the list, add it with the episode count
-                series = Series.objects.get(pk=entry["series__id"])
-                series_original_author_info.append(
-                    {"series": series, "episode_count": entry["episode_count"]}
-                )
-
-        # Add to context
-        context["series_as_orignal_author"] = series_original_author_info
+        context["series"] = series_info
 
         context["movies_count"] = (
             Movie.objects.filter(
