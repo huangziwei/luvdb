@@ -165,13 +165,29 @@ class CreatorDetailView(DetailView):
 
         context["books"] = books
 
-        context["lit_works"] = (
+        work_roles = ["Author", "Illustrator"]
+
+        context["lit_works_all"] = (
             LitWork.objects.filter(
-                Q(workrole__role__name__in=book_roles, workrole__creator=creator)
+                workrole__role__name__in=work_roles, workrole__creator=creator
             )
             .distinct()
             .order_by("publication_date")
         )
+
+        work_types = LitWork.WORK_TYPES
+        lit_works = {}
+        for work_type in work_types:
+            lit_works[f"{work_type[1]}".replace(" ", "-").lower()] = (
+                LitWork.objects.filter(
+                    workrole__role__name__in=work_roles,
+                    workrole__creator=creator,
+                    work_type=work_type[0],
+                )
+                .distinct()
+                .order_by("publication_date")
+            )
+        context["lit_works"] = lit_works
 
         context["litworks_count"] = creator.read_works.distinct().count()
         context["litinstances_count"] = (
