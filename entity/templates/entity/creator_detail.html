@@ -64,7 +64,7 @@
                 </div>
                 {% endif %}
                 <!--Read-->
-                {% if lit_works or books or audiobook_as_narrator %}
+                {% if lit_works_all.exists or books or audiobook_as_narrator %}
                     <h3 class="mt-2">Bibliography</h3>
                     {% if lit_works_all.exists %}
                         <div class="row">
@@ -163,8 +163,8 @@
                     <h3 class="mt-2">Filmography</h3>
                     <div class="row">
                         <!--As cast-->
-                        {% if movies_as_cast.exists or series.exists %}
-                            <div class="mt-2 fs-4">As Cast</div>
+                        {% if movies_as_cast.exists or series_as_cast.exists %}
+                            <div class="fs-4">As Cast</div>
                             {% if movies_as_cast.exists %}
                                 <div class="col-md-6">
                                     <div class="fs-5">Movies</div>
