@@ -29,7 +29,7 @@
                         {{ form.role | as_crispy_field }}
                         {{ form.domain | as_crispy_field }}
                     </div>
-                    <div class="col-md-3 mb-3">{{ form.alt_name | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -50,7 +50,7 @@
                         {{ form.role | as_crispy_field }}
                         {{ form.domain | as_crispy_field }}
                     </div>
-                    <div class="col-md-3 mb-3">{{ form.character_name | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">{{ form.character_name | as_crispy_field }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -58,90 +58,91 @@
     </div>
 
     <div class="bg-light p-3 mb-3">
-    <strong>Cross-reference</strong>
-    <div class="accordion mt-3 mb-3">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    <strong>Based on</strong>
-                </button>
-            </h2>
-            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <p class="text-muted">The original sources that the episode is based on.</p>
-                    {{ form.based_on_litworks|as_crispy_field }}
-                    {{ form.based_on_games|as_crispy_field }}
-                    {{ form.based_on_movies|as_crispy_field }}
-                    {{ form.based_on_series|as_crispy_field }}
+        <strong>Cross-reference</strong>
+        <div class="accordion mt-3 mb-3">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <strong>Based on</strong>
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p class="text-muted">The original sources that the episode is based on.</p>
+                        {{ form.based_on_litworks|as_crispy_field }}
+                        {{ form.based_on_games|as_crispy_field }}
+                        {{ form.based_on_movies|as_crispy_field }}
+                        {{ form.based_on_series|as_crispy_field }}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingFourth">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFourth" aria-expanded="false" aria-controls="collapseFourth">
-                    <strong>Locations</strong>
-                </button>
-            </h2>
-            <div id="collapseFourth" class="accordion-collapse collapse" aria-labelledby="headingFourth" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <p class="text-muted">The locations realted to this episode.</p>
-                    {{ form.filming_locations|as_crispy_field}}
-                    {{ form.setting_locations|as_crispy_field}}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFourth">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFourth" aria-expanded="false" aria-controls="collapseFourth">
+                        <strong>Locations</strong>
+                    </button>
+                </h2>
+                <div id="collapseFourth" class="accordion-collapse collapse" aria-labelledby="headingFourth" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p class="text-muted">The locations realted to this episode.</p>
+                        {{ form.filming_locations|as_crispy_field}}
+                        {{ form.setting_locations|as_crispy_field}}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    <strong>Mentioned / Featured</strong>
-                </button>
-            </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <p class="text-muted">Media that mentioned or featured in this episode.</p>
-                    <div class="fw-bold mb-2">Read</div>
-                    {{ form.mentioned_litworks|as_crispy_field }}
-                    {{ form.mentioned_litinstances|as_crispy_field }}
-                    {{ form.mentioned_books|as_crispy_field }}
-                    <hr class="mt-2 mb-2">
-                    <div class="fw-bold mb-2">Watch</div>
-                    {{ form.mentioned_movies|as_crispy_field }}
-                    {{ form.mentioned_series|as_crispy_field }}
-                    <hr class="mt-2 mb-2">
-                    <div class="fw-bold mb-2">Listen</div>
-                    {{ form.mentioned_musicalworks|as_crispy_field }}
-                    {{ form.mentioned_tracks|as_crispy_field }}
-                    {{ form.mentioned_releases|as_crispy_field }}
-                    <hr class="mt-2 mb-2">
-                    <div class="fw-bold mb-2">Play</div>
-                    {{ form.mentioned_gameworks|as_crispy_field }}
-                    {{ form.mentioned_games|as_crispy_field }}
-                    <hr class="mt-2 mb-2">
-                    <div class="fw-bold mb-2">Visit</div>
-                    {{ form.mentioned_locations|as_crispy_field }}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <strong>Mentioned / Featured</strong>
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p class="text-muted">Media that mentioned or featured in this episode.</p>
+                        <div class="fw-bold mb-2">Read</div>
+                        {{ form.mentioned_litworks|as_crispy_field }}
+                        {{ form.mentioned_litinstances|as_crispy_field }}
+                        {{ form.mentioned_books|as_crispy_field }}
+                        <hr class="mt-2 mb-2">
+                        <div class="fw-bold mb-2">Watch</div>
+                        {{ form.mentioned_movies|as_crispy_field }}
+                        {{ form.mentioned_series|as_crispy_field }}
+                        <hr class="mt-2 mb-2">
+                        <div class="fw-bold mb-2">Listen</div>
+                        {{ form.mentioned_musicalworks|as_crispy_field }}
+                        {{ form.mentioned_tracks|as_crispy_field }}
+                        {{ form.mentioned_releases|as_crispy_field }}
+                        <hr class="mt-2 mb-2">
+                        <div class="fw-bold mb-2">Play</div>
+                        {{ form.mentioned_gameworks|as_crispy_field }}
+                        {{ form.mentioned_games|as_crispy_field }}
+                        <hr class="mt-2 mb-2">
+                        <div class="fw-bold mb-2">Visit</div>
+                        {{ form.mentioned_locations|as_crispy_field }}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingThree">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    <strong>Soundtracks</strong>
-                </button>
-            </h2>
-            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <p class="text-muted">The music featured in this episode.</p>
-                    {{ form.tracks|as_crispy_field }}
-                    {{ form.theme_songs|as_crispy_field }}
-                    {{ form.ending_songs|as_crispy_field }}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <strong>Soundtracks</strong>
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p class="text-muted">The music featured in this episode.</p>
+                        {{ form.tracks|as_crispy_field }}
+                        {{ form.theme_songs|as_crispy_field }}
+                        {{ form.ending_songs|as_crispy_field }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
+    {{ form.notes|as_crispy_field}}
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

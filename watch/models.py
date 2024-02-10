@@ -581,6 +581,8 @@ class Episode(auto_prefetch.Model):
         related_name="episodes_as_ending_song",
     )
 
+    notes = models.TextField(blank=True, null=True)
+
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
