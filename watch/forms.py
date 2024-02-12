@@ -113,7 +113,7 @@ class MovieForm(forms.ModelForm):
             "setting_locations": "Locations of where the movie was set. <a href='/visit/location/create/'>Add a new location</a>.",
             "studios": "Production companies. <a href='/entity/company/create/'>Add a new company</a>.",
             "distributors": "Distribution companies. <a href='/entity/company/create/'>Add a new company</a>.",
-            "stars": "Main casts. <a href='/entity/creator/create/'>Add a new creator</a>.",
+            "stars": "Main casts of the movie. <a href='/entity/creator/create/'>Add a new creator</a>.",
         }
         labels = {
             "imdb": "IMDB URL",
@@ -331,7 +331,7 @@ class SeriesForm(forms.ModelForm):
             "studios": "Production companies. <a href='/entity/company/create/'>Add a new company</a>.",
             "distributors": "Distribution companies. <a href='/entity/company/create/'>Add a new company</a>.",
             "based_on": "The original work that the movie is based on. <a href='/read/work/create/'>Add a new work</a>.",
-            "stars": "Main casts. <a href='/entity/creator/create/'>Add a new creator</a>.",
+            "stars": "Main casts of the series. <a href='/entity/creator/create/'>Add a new creator</a>. For episode-specific casts, add them in the Episode form.",
         }
         labels = {
             "based_on_litworks": "Publications (Work)",
