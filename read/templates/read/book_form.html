@@ -6,7 +6,6 @@
     {{ form.subtitle|as_crispy_field }}
     {{ form.cover|as_crispy_field }}
     {{ form.cover_sens|as_crispy_field }}
-    {{ form.publisher|as_crispy_field }}
     {{ form.language|as_crispy_field }}
     {{ form.publication_date|as_crispy_field }}
     {{ form.format|as_crispy_field }}
@@ -46,6 +45,10 @@
         </div>
         <!-- Button to add new formsets -->
         <button type="button" id="add-book-role-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
+    </div>
+    <div class="bg-light p-3 mb-3">
+        <strong>Companies related to this book</strong>
+        {{ form.publisher|as_crispy_field }}
     </div>
     {{ bookinstances.management_form|crispy }}
     <div id="book-instance-formset" class="bg-light p-3 mb-3">
