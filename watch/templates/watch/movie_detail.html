@@ -141,11 +141,6 @@
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted {%if not object.notes%}active{% endif %}" id="credits-tab" data-bs-toggle="tab" data-bs-target="#credits" type="button" role="tab" aria-controls="credits" aria-selected="true">Credits</button>
                                             </li>
-                                            {% if object.studios.exists or object.distributors.exists %}
-                                            <li class="nav-item" role="presentation">
-                                                <button class="nav-link text-muted" id="companies-tab" data-bs-toggle="tab" data-bs-target="#companies" type="button" role="tab" aria-controls="companies" aria-selected="true">Companies</button>
-                                            </li>
-                                            {% endif%}
                                             {% if grouped_release_dates %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted" id="release-dates-tab" data-bs-toggle="tab" data-bs-target="#release-dates" type="button" role="tab" aria-controls="release-dates" aria-selected="false">Release Dates</button>
@@ -483,37 +478,32 @@
                                                     {% endfor %}
                                                 </div>
                                                 {% endif %}
+                                                {% if object.studios.exists %}
+                                                    <div class="mb-0">
+                                                        {# djlint:off #}
+                                                        <span class="text-muted">Studio{% if object.studios.count > 1 %}s{% endif %}:</span>
+                                                        {# djlint:on #}
+                                                        {% for studio in object.studios.all %}
+                                                            <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
+                                                            {% if not forloop.last %}/{% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                                {% if object.distributors.exists %}
+                                                    <div class="mb-0">
+                                                        {# djlint:off #}
+                                                        <span class="text-muted">Distributor{% if object.distributors.count > 1 %}s{% endif %}:</span>
+                                                        {# djlint:on #}
+                                                        {% for studio in object.distributors.all %}
+                                                            <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
+                                                            {% if not forloop.last %}/{% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %} 
                                                 <div class="mt-2">
                                                     <a href="{% url 'watch:movie_cast_detail' object.id %}" class="text-muted">View Full Cast & Crew</a>
                                                 </div>
                                             </div>
-                                            <!--Companies-->
-                                            {% if object.studios.exists or object.distributors.exists %}
-                                                <div class="tab-pane mt-1" id="companies" role="tabpanel" aria-labelledby="companies-tab">
-                                                    {% if object.studios.exists %}
-                                                        <div class="mb-1">
-                                                            {# djlint:off #}
-                                                            <span class="text-muted">Studio{% if object.studios.count > 1 %}s{% endif %}:</span>
-                                                            {# djlint:on #}
-                                                            {% for studio in object.studios.all %}
-                                                                <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
-                                                                {% if not forloop.last %}/{% endif %}
-                                                            {% endfor %}
-                                                        </div>
-                                                    {% endif %}
-                                                    {% if object.distributors.exists %}
-                                                        <div class="mb-1">
-                                                            {# djlint:off #}
-                                                            <span class="text-muted">Distributor{% if object.distributors.count > 1 %}s{% endif %}:</span>
-                                                            {# djlint:on #}
-                                                            {% for studio in object.distributors.all %}
-                                                                <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
-                                                                {% if not forloop.last %}/{% endif %}
-                                                            {% endfor %}
-                                                        </div>
-                                                    {% endif %} 
-                                                </div>
-                                            {% endif %}
                                         </div>
                                     </div>
                                     {% endif %}
