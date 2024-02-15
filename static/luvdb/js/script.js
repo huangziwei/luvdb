@@ -371,6 +371,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const stickyNoteElements = document.querySelectorAll(".sticky-note");
     const faIcons = document.querySelectorAll(".fa-icon path");
     const metaThemeColor = document.querySelector("meta[name=theme-color]");
+    console.log(metaThemeColor);
     const pygmentsCss = document.getElementById("pygments-css");
 
     // Load saved theme from localStorage
@@ -395,7 +396,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             htmlElement.removeAttribute("data-bs-theme");
             bgLightElements.forEach((el) => el.classList.remove("bg-dark-highlight"));
-            metaThemeColor.setAttribute("content", "#F6F7F9");
+            metaThemeColor.setAttribute("content", "#ECEEEE");
             faIcons.forEach((el) => el.setAttribute("fill", "#6C757D")); // Original color for FontAwesome icons
             stickyNoteElements.forEach((el) => el.classList.remove("bg-dark"));
             pygmentsCss.href = "/static/luvdb/css/pygments-light.css"; // Light mode Pygments style
