@@ -39,3 +39,6 @@ HTTP_HOST = "luvdb.com"
 CORS_ALLOWED_ORIGINS = [
     "https://luvdb.com",
 ]
+
+WEBAUTHN_RP_ID = "luvdb.com"
+WEBAUTHN_RP_NAME = "luvdb"
