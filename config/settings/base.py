@@ -359,6 +359,3 @@ REST_FRAMEWORK = {
 
 ROOT_HOSTCONF = "config.hosts"
 DEFAULT_HOST = "root"
-
-WEBAUTHN_RP_ID = "localhost"
-WEBAUTHN_RP_NAME = "luvdb"

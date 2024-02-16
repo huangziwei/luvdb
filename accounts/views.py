@@ -9,7 +9,7 @@ from datetime import timedelta
 import qrcode
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import get_user_model, logout
+from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
@@ -44,8 +44,10 @@ from django_ratelimit.decorators import ratelimit
 from PIL import Image, ImageDraw, ImageFont
 from webauthn import (
     base64url_to_bytes,
+    generate_authentication_options,
     generate_registration_options,
     options_to_json,
+    verify_authentication_response,
     verify_registration_response,
 )
 from webauthn.helpers import base64url_to_bytes
@@ -2090,6 +2092,88 @@ def verify_registration_view(request):
         return HttpResponseBadRequest(f"Verification failed: {str(e)}")
 
 
+def generate_authentication_view(request):
+    # Generate simple or complex options as needed. Example with simple options:
+    authentication_options = generate_authentication_options(
+        rp_id=settings.WEBAUTHN_RP_ID
+    )
+
+    # For complex scenarios, customize the call to generate_authentication_options as needed
+
+    # Convert options to JSON for transmission to the client
+    options_json = options_to_json(authentication_options)
+
+    try:
+        import base64
+
+        # Store the challenge in the session for later verification
+        challenge_base64 = base64.urlsafe_b64encode(
+            authentication_options.challenge
+        ).decode("utf-8")
+        request.session["webauthn_challenge"] = challenge_base64
+    except Exception as e:
+        print(f"Error storing challenge: {str(e)}")
+
+    return JsonResponse(options_json, safe=False)
+
+
+def verify_authentication_view(request):
+    # Parse the incoming JSON data from the request body
+    data = json.loads(request.body.decode("utf-8"))
+
+    # Reconstructing the credential object
+    credential = {
+        "id": data["id"],
+        "rawId": data["rawId"],
+        "response": {
+            "authenticatorData": data["response"]["authenticatorData"],
+            "clientDataJSON": data["response"]["clientDataJSON"],
+            "signature": data["response"]["signature"],
+            "userHandle": data["response"].get("userHandle", ""),
+        },
+        "type": data["type"],
+    }
+
+    try:
+        credential_id = base64.urlsafe_b64encode(base64url_to_bytes(data["id"])).decode(
+            "utf-8"
+        )
+
+        # Fetch the WebAuthnCredential object based on credential_id
+        webauthn_credential = WebAuthnCredential.objects.get(
+            credential_id=credential_id
+        )
+
+        # Verify the authentication response
+        verification = verify_authentication_response(
+            credential=credential,
+            expected_challenge=base64url_to_bytes(
+                request.session.pop("webauthn_challenge")
+            ),
+            expected_origin=settings.ROOT_URL,
+            expected_rp_id=settings.WEBAUTHN_RP_ID,
+            credential_public_key=base64url_to_bytes(webauthn_credential.public_key),
+            credential_current_sign_count=webauthn_credential.sign_count,
+            require_user_verification=True,
+        )
+
+        # Update the sign_count in the database with the new sign_count from the verification
+        webauthn_credential.sign_count = verification.new_sign_count
+        webauthn_credential.save()
+
+        # Authenticate the user in your system based on the successful verification
+        user = webauthn_credential.user
+        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+
+        return HttpResponse("Authentication successful")
+
+    except WebAuthnCredential.DoesNotExist:
+        return HttpResponseBadRequest("Credential not found.")
+    except Exception as e:
+        print(f"Authentication failed: {str(e)}")  # Log the error
+        return HttpResponseBadRequest(f"Authentication failed: {str(e)}")
+
+
 @login_required
 def passkeys_view(request, username):
     # Fetch all WebAuthn credentials associated with the current user
@@ -2097,6 +2181,7 @@ def passkeys_view(request, username):
 
     # Render the passkeys.html template, passing the credentials to the template
     return render(request, "accounts/passkeys.html", {"credentials": credentials})
+
 
 @login_required
 def delete_passkey(request, username, pk):
