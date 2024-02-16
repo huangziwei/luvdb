@@ -1,4 +1,6 @@
+import base64
 import datetime
+import json
 import os
 import re
 import time
@@ -30,6 +32,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -39,6 +42,14 @@ from django.views.generic import (
 )
 from django_ratelimit.decorators import ratelimit
 from PIL import Image, ImageDraw, ImageFont
+from webauthn import (
+    base64url_to_bytes,
+    generate_registration_options,
+    options_to_json,
+    verify_registration_response,
+)
+from webauthn.helpers import base64url_to_bytes
+from webauthn.helpers.structs import RegistrationCredential
 
 from accounts.models import CustomUser
 from activity_feed.models import Activity, Block, Follow
@@ -70,6 +81,7 @@ from .models import (
     InvitationCode,
     InvitationRequest,
     MastodonAccount,
+    WebAuthnCredential,
 )
 
 TIME_RESTRICTION = 7  # time restriction for generating invitation codes
@@ -414,9 +426,9 @@ def export_user_data(request, username):
 
     # Create a HttpResponse with a 'Content-Disposition' header to suggest a filename
     response = HttpResponse(data, content_type="application/json")
-    response[
-        "Content-Disposition"
-    ] = f'attachment; filename="{request.user.username}_data.json"'
+    response["Content-Disposition"] = (
+        f'attachment; filename="{request.user.username}_data.json"'
+    )
 
     return response
 
@@ -1989,3 +2001,113 @@ def count_media_with_latest_status(checkin_model, app_label, model, user, year, 
     )
 
     return count
+
+
+@login_required
+def generate_registration_view(request):
+    # Replace these with actual values appropriate for your application
+    rp_id = settings.WEBAUTHN_RP_ID
+    rp_name = settings.WEBAUTHN_RP_NAME
+    user_id = str(request.user.id).encode()  # WebAuthn expects user ID to be a string
+    user_name = request.user.username
+
+    registration_options = generate_registration_options(
+        rp_id=rp_id,
+        rp_name=rp_name,
+        user_id=user_id,
+        user_name=user_name,
+    )
+
+    # Convert options to JSON for transmission to the client
+    options_json = options_to_json(registration_options)
+
+    try:
+        import base64
+
+        # Store the challenge in the session for later verification
+        challenge_base64 = base64.urlsafe_b64encode(
+            registration_options.challenge
+        ).decode("utf-8")
+        # Store the Base64-encoded challenge in the session
+        request.session["webauthn_challenge"] = challenge_base64
+    except Exception as e:
+        print(f"Error storing challenge: {str(e)}")
+
+    return JsonResponse(options_json, safe=False)
+
+
+@login_required
+def verify_registration_view(request):
+    # Parse the incoming JSON data from the request body
+    data = json.loads(request.body.decode("utf-8"))
+
+    # Reconstructing the credential object similar to the py_webauthn example
+    credential = {
+        "id": data["id"],
+        "rawId": data["rawId"],
+        "response": {
+            "attestationObject": data["response"]["attestationObject"],
+            "clientDataJSON": data["response"]["clientDataJSON"],
+        },
+        "type": data["type"],
+    }
+
+    try:
+        # Verify the registration response
+        verification = verify_registration_response(
+            credential=credential,
+            expected_challenge=base64url_to_bytes(
+                request.session.pop("webauthn_challenge")
+            ),
+            expected_origin=settings.ROOT_URL,
+            expected_rp_id=settings.WEBAUTHN_RP_ID,
+        )
+
+        credential_id = base64.urlsafe_b64encode(base64url_to_bytes(data["id"])).decode(
+            "utf-8"
+        )
+        public_key = base64.urlsafe_b64encode(
+            verification.credential_public_key
+        ).decode("utf-8")
+
+        if WebAuthnCredential.objects.filter(
+            user=request.user, public_key=public_key, credential_id=credential_id
+        ).exists():
+            return HttpResponseBadRequest("This passkey has already been registered.")
+
+        # Here, save the verified credential to your database
+        WebAuthnCredential.objects.create(
+            user=request.user,
+            credential_id=credential_id,
+            public_key=public_key,
+            sign_count=verification.sign_count,
+        )
+
+        return HttpResponse("Registration successful")
+
+    except Exception as e:
+        print(f"Verification failed: {str(e)}")  # Log the error
+        return HttpResponseBadRequest(f"Verification failed: {str(e)}")
+
+
+@login_required
+def passkeys_view(request, username):
+    # Fetch all WebAuthn credentials associated with the current user
+    credentials = WebAuthnCredential.objects.filter(user=request.user)
+
+    # Render the passkeys.html template, passing the credentials to the template
+    return render(request, "accounts/passkeys.html", {"credentials": credentials})
+
+@login_required
+def delete_passkey(request, username, pk):
+    # Fetch the WebAuthn credential to be deleted
+    credential = get_object_or_404(WebAuthnCredential, pk=pk)
+
+    # Check if the credential belongs to the current user
+    if credential.user != request.user:
+        return HttpResponseForbidden("You are not authorized to delete this passkey.")
+
+    # Delete the credential
+    credential.delete()
+
+    return redirect("accounts:passkeys", username=username)

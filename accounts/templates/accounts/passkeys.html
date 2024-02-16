@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <h1>Manage Passkeys</h1>
+            <hr>
+            {% for credentials in credentials %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="card-title d-flex justify-content-between align-items-center">
+                            {{ credentials.public_key|slice:10 }}..
+                            <span>Added at {{credentials.created_at}}</span>
+                            <span>
+                                <!--delete passkeys-->
+                                <a href="{% url 'accounts:delete_passkey' user.username credentials.id %}"
+                                 class="btn btn-danger">Delete</a>
+                            </span>
+                        </div>
+                        <p class="card-text">{{ credentials.description }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        async function registerCredential() {
+            try {
+                const response = await fetch('/passkey/generate_registration/', {method: 'GET'});
+                const optionsString = await response.json();
+                const options = JSON.parse(optionsString);
+
+                options.challenge = base64urlToArrayBuffer(options.challenge);
+                options.user.id = base64urlToArrayBuffer(options.user.id);
+        
+                // Call navigator.credentials.create with the corrected options
+                const credential = await navigator.credentials.create({publicKey: options});
+
+                // Serialize the credential object to send it back to the server
+                const credentialForServer = serializeCredential(credential);
+                
+                // Send the serialized credential to the server for verification
+                const verificationResponse = await fetch('/passkey/verify_registration/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include CSRF token if needed, for Django's CSRF protection
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify(credentialForServer),
+                });
+
+                if (verificationResponse.ok) {
+                    console.log('Credential registered successfully');
+                    // Handle successful registration, e.g., update UI or redirect
+                } else {
+                    console.error('Registration verification failed');
+                    // Handle verification failure
+                }
+        
+            } catch (err) {
+                
+                console.error('Registration failed:', err);
+            }
+        }
+
+        function serializeCredential(credential) {
+            let clientDataJSON = base64urlEncode(credential.response.clientDataJSON);
+            let attestationObject = base64urlEncode(credential.response.attestationObject);
+            return {
+                id: credential.id,
+                rawId: base64urlEncode(credential.rawId),
+                type: credential.type,
+                response: {
+                    clientDataJSON,
+                    attestationObject,
+                }
+            };
+        }
+        
+        // Utility function to encode ArrayBuffer to base64url string
+        function base64urlEncode(buffer) {
+            let binary = '';
+            let bytes = new Uint8Array(buffer);
+            let len = bytes.byteLength;
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+
+        // Utility function to get CSRF token for Django
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // Utility function to convert base64url string to ArrayBuffer
+        function base64urlToArrayBuffer(base64url) {
+            const padding = '='.repeat((4 - base64url.length % 4) % 4);
+            const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/') + padding;
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+        
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray.buffer;
+        }
+        
+    </script>
+    <button onclick="registerCredential(); refresh()">Add Passkey</button>        
+</div>
+{% endblock %}

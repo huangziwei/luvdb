@@ -13,9 +13,11 @@ from .views import (
     app_password_list,
     deactivate_account,
     delete_app_password,
+    delete_passkey,
     export_user_data,
     generate_qr_code,
     manage_crossposters,
+    passkeys_view,
 )
 
 app_name = "accounts"
@@ -70,5 +72,11 @@ urlpatterns = [
         "<str:username>/year-in-review/<int:year>/",
         YearInReviewView.as_view(),
         name="year_in_review_by_year",
+    ),
+    path("<str:username>/passkeys/", passkeys_view, name="passkeys"),
+    path(
+        "<str:username>/passkeys/delete/<int:pk>/",
+        delete_passkey,
+        name="delete_passkey",
     ),
 ]

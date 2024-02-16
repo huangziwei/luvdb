@@ -21,9 +21,11 @@ from accounts.views import (
     ManageInvitationRequestsView,
     RequestInvitationView,
     SignUpView,
+    generate_registration_view,
     get_followed_usernames,
     get_user_tags,
     search_view,
+    verify_registration_view,
 )
 from entity.sitemaps import PersonSiteMap
 from listen.sitemaps import ReleaseSiteMap
@@ -159,6 +161,17 @@ urlpatterns = [
     ),
     # alt profile
     path("alt/", include("altprofile.urls")),
+    # passkeys
+    path(
+        "passkey/generate_registration/",
+        generate_registration_view,
+        name="generate_registration",
+    ),
+    path(
+        "passkey/verify_registration/",
+        verify_registration_view,
+        name="verify_registration",
+    ),
     # apps
     path("entity/", include("entity.urls")),
     path("read/", include("read.urls")),

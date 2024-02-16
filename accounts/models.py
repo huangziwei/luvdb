@@ -242,3 +242,14 @@ class MastodonAccount(auto_prefetch.Model):
 
     def __str__(self):
         return self.mastodon_handle
+
+
+class WebAuthnCredential(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    credential_id = models.TextField(unique=True)
+    public_key = models.TextField()
+    sign_count = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Credential for {self.user}"
