@@ -51,7 +51,8 @@
               crossorigin="anonymous">
         <!-- Internal Stylesheets -->
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
-        <link id="pygments-css" rel="stylesheet" href="/static/luvdb/css/pygments-dark.css" defer="">        {% block extra_styles %}{% endblock extra_styles %}
+        <link id="pygments-css" rel="stylesheet" href="{% static 'css/pygments-dark.css' %}" defer="">        
+        {% block extra_styles %}{% endblock extra_styles %}
         {% if not no_citation_css %}
             <link rel="stylesheet" href="{% static 'css/citation.css' %}" defer>
         {% endif %}

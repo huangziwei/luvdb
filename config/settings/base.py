@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+
 import os
 from pathlib import Path
 
@@ -65,6 +66,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "simple_history",
     "rest_framework",
+    "sslserver",
     # local apps
     "notify",
     "activity_feed",
@@ -84,6 +86,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.gzip.GZipMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "config.middleware.CustomDomainMiddleware",
@@ -92,7 +95,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "config.middleware.TimezoneMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "notify.middlewares.MarkNotificationReadMiddleware",
