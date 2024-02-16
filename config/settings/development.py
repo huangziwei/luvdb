@@ -15,4 +15,6 @@ SECURE_HSTS_SECONDS = False
 SECURE_SSL_REDIRECT = False
 CSRF_COOKIE_SECURE = False
 
-ROOT_URL = "http://127.0.0.1:8000"
+ROOT_URL = "http://localhost:8000"
+WEBAUTHN_RP_ID = "localhost"
+WEBAUTHN_RP_NAME = "luvdb"
