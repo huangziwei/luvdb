@@ -23,7 +23,7 @@ MEDIA_URL = "https://%s/media/" % (AWS_S3_CUSTOM_DOMAIN)
 DEFAULT_FILE_STORAGE = "config.s3_storage_backends.MediaStorage"
 
 CSRF_COOKIE_SECURE = True
-CSRF_TRUSTED_ORIGINS = ["https://*.fly.dev/", "https://*.luvdb.com"]
+CSRF_TRUSTED_ORIGINS = ["https://luvdb.fly.dev/", "https://luvdb.com"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 SECURE_SSL_REDIRECT = True  # should be a boolean
