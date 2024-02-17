@@ -147,7 +147,7 @@
                                 href="{% url 'accounts:detail' user.username %}">Profile</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
+                                <a class="dropdown-item" href="{% url 'accounts:change_password' user.username %}">Change password</a>
                             </li>
                             <li>
                                 <a class="dropdown-item"

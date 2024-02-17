@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.db import transaction
@@ -72,6 +72,7 @@ from write.utils_formatting import check_required_js
 from .forms import (
     AppPasswordForm,
     BlueSkyAccountForm,
+    CustomPasswordChangeForm,
     CustomUserChangeForm,
     CustomUserCreationForm,
     InvitationRequestForm,
@@ -114,7 +115,7 @@ class SignUpView(CreateView):
         """If the form is valid, save the associated model."""
         self.object = form.save()
         login(self.request, self.object)
-        self.request.session['is_first_login'] = True
+        self.request.session["is_first_login"] = True
         # set invitation code as used
         if self.object.code_used:  # Check if the user used a code
             self.object.code_used.is_used = True
@@ -131,9 +132,10 @@ class SignUpView(CreateView):
             context["form"].fields["invitation_code"].widget.attrs[
                 "class"
             ] = "readonly-field"
-            context["inviter"] = InvitationCode.objects.get(
-                code=invite_code
-            ).generated_by
+            context["form"].fields["invitation_code"].help_text = ""
+            invite_code = InvitationCode.objects.get(code=invite_code)
+            context["inviter"] = invite_code.generated_by
+            context["invite_code_used"] = invite_code.is_used
         return context
 
 
@@ -158,6 +160,29 @@ class CustomLoginView(LoginView):
         context["recent_games"] = Game.objects.order_by("-created_at")[:6]
 
         return context
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    form_class = CustomPasswordChangeForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        username = self.kwargs.get("username")
+        user = get_object_or_404(User, username=username)
+        kwargs["request_user"] = user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        username = self.kwargs["username"]
+        user = get_object_or_404(CustomUser, username=username)
+        context["passkeys_exist"] = WebAuthnCredential.objects.filter(
+            user=user
+        ).exists()
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy("activity_feed:activity_feed")
 
 
 def get_latest_checkins(user, checkin_model):

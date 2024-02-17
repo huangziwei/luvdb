@@ -9,22 +9,26 @@
             <!-- Left column -->
             <div class="col-12 col-md-7 left-column">
                 <h2>Sign Up</h2>
-                {% if inviter %}
-                    <div class="fs-4 mb-3">
-                        {% if inviter.is_public %}
-                            <a href="{% url 'accounts:detail' inviter.username%}">{{inviter.display_name|default:inviter.username}} </a>
-                        {% else %}
-                            {{inviter.display_name|default:inviter.username}} 
-                        {% endif %}
-                        is inviting you to join LʌvDB.</div>
-                {% endif %}
+                {% if invite_code_used %}
+                    This invitation code has already been used.
+                {% else %}
+                    {% if inviter %}
+                        <div class="fs-4 mb-3">
+                            {% if inviter.is_public %}
+                                <a href="{% url 'accounts:detail' inviter.username%}">{{inviter.display_name|default:inviter.username}} </a>
+                            {% else %}
+                                {{inviter.display_name|default:inviter.username}} 
+                            {% endif %}
+                            is inviting you to join LʌvDB.</div>
+                    {% endif %}
 
-                {% if not user.is_authenticated %}
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <button type="submit" class="btn btn-primary">Sign Up</button>
-                    </form>
+                    {% if not user.is_authenticated %}
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-primary">Sign Up</button>
+                        </form>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>

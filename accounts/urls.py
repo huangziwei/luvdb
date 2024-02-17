@@ -6,6 +6,7 @@ from discover.views import DiscoverLikedView
 from .views import (
     AccountDetailView,
     AccountUpdateView,
+    CustomPasswordChangeView,
     FollowingListView,
     ManageInvitationsView,
     PersonalActivityFeedView,
@@ -23,6 +24,11 @@ from .views import (
 
 app_name = "accounts"
 urlpatterns = [
+    path(
+        "<str:username>/change_password/",
+        view=CustomPasswordChangeView.as_view(),
+        name="change_password",
+    ),
     path("<str:username>/export/", export_user_data, name="export_user_data"),
     path(
         "<str:username>/manage_invitations/",

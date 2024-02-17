@@ -2,7 +2,12 @@ import auto_prefetch
 import pytz
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import (
+    PasswordChangeForm,
+    UserChangeForm,
+    UserCreationForm,
+)
+from django.utils.safestring import mark_safe
 
 from .models import (
     AppPassword,
@@ -11,6 +16,7 @@ from .models import (
     InvitationCode,
     InvitationRequest,
     MastodonAccount,
+    WebAuthnCredential,
 )
 
 User = get_user_model()
@@ -21,19 +27,22 @@ class CustomUserCreationForm(UserCreationForm):
 
     invitation_code = forms.CharField(
         required=True,
-        help_text="Enter the invitation code you received. Or, <a href='/login'>request one</a>.",
+        help_text="<a href='/login'>Request</a> one.",
     )
 
     class Meta(auto_prefetch.Model.Meta):
         model = User
-        fields = ("username", "invitation_code")
+        fields = ("invitation_code", "username")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["username"].help_text = (
-            "Username can be changed later. For anonymity purpose, we don't record your email address. "
-            "But if you forget your username and password, you won't be able to recover it. "
-            "Please use password managers to keep your username and password safe."
+        self.fields["username"].help_text = "It can be changed later. "
+        self.fields["password1"].help_text = mark_safe(
+            "<ul>"
+            "<li>We do not record your email, so we also do not offer password resets via email.</li>"
+            "<li>Use a password manager to generate and store a strong, unique password, in case you forget it.</li>"
+            "<li>After registration, you can also add passkeys for passwordless login.</li>"
+            "</ul>"
         )
 
     def clean_username(self):
@@ -111,14 +120,14 @@ class CustomUserChangeForm(UserChangeForm):
         self.fields["is_public"].label = "Everyone can view my profile"
         self.fields["pure_text_mode"].label = "Don't display images"
         self.fields["timezone"].required = False
-        self.fields[
-            "enable_alt_profile"
-        ].label = "Enable alternative profile (experimental)"
+        self.fields["enable_alt_profile"].label = (
+            "Enable alternative profile (experimental)"
+        )
         self.fields["enable_webmentions"].label = "Enable webmentions (experimental)"
         self.fields["enable_replies_by_default"].label = "Allow replies by default"
-        self.fields[
-            "enable_share_to_feed_by_default"
-        ].label = "Share to feed by default"
+        self.fields["enable_share_to_feed_by_default"].label = (
+            "Share to feed by default"
+        )
 
         del self.fields["password"]
 
@@ -135,6 +144,40 @@ class InvitationRequestForm(forms.ModelForm):
                 }
             ),
         }
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        self.request_user = kwargs.pop("request_user", None)
+        super().__init__(*args, **kwargs)
+        # Check if the user has any passkeys
+        passkeys_exist = WebAuthnCredential.objects.filter(
+            user=self.request_user
+        ).exists()
+        if passkeys_exist:
+            # Make old_password not required
+            self.fields["old_password"].required = False
+
+    def clean_old_password(self):
+        # Check if old_password is actually required before cleaning it
+        if self.fields["old_password"].required:
+            return super().clean_old_password()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        passkeys_exist = WebAuthnCredential.objects.filter(
+            user=self.request_user
+        ).exists()
+        old_password = cleaned_data.get("old_password")
+
+        # If passkeys exist and old_password is not provided, skip the old password check
+        if passkeys_exist and not old_password:
+            return cleaned_data
+
+        # If old_password is required but not provided, raise a validation error
+        if not passkeys_exist and not old_password:
+            self.add_error("old_password", "This field is required.")
+        return cleaned_data
 
 
 class AppPasswordForm(forms.ModelForm):
