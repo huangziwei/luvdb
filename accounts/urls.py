@@ -14,6 +14,7 @@ from .views import (
     deactivate_account,
     delete_app_password,
     delete_passkey,
+    edit_passkey,
     export_user_data,
     generate_qr_code,
     manage_crossposters,
@@ -75,7 +76,12 @@ urlpatterns = [
     ),
     path("<str:username>/passkeys/", passkeys_view, name="passkeys"),
     path(
-        "<str:username>/passkeys/delete/<int:pk>/",
+        "<str:username>/passkey/<int:pk>/edit/",
+        edit_passkey,
+        name="edit_passkey",
+    ),
+    path(
+        "<str:username>/passkey/<int:pk>/delete/",
         delete_passkey,
         name="delete_passkey",
     ),

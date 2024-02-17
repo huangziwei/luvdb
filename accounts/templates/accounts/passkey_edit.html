@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Passkey</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="key_name">New Name:</label>
+        <input type="text" id="key_name" name="key_name" value="{{ credential.key_name }}" class="form-control">
+        <button type="submit" class="btn btn-primary mt-2">Save changes</button>
+    </form>
+</div>
+{% endblock %}

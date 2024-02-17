@@ -250,6 +250,10 @@ class WebAuthnCredential(models.Model):
     public_key = models.TextField()
     sign_count = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+    last_used_at = models.DateTimeField(blank=True, null=True)
+    key_name = models.CharField(
+        max_length=255, blank=True, null=True
+    )  # Optional field for key name
 
     def __str__(self):
         return f"Credential for {self.user}"

@@ -2083,6 +2083,7 @@ def verify_registration_view(request):
             credential_id=credential_id,
             public_key=public_key,
             sign_count=verification.sign_count,
+            key_name="Default Passkey Name",
         )
 
         return HttpResponse("Registration successful")
@@ -2159,6 +2160,7 @@ def verify_authentication_view(request):
 
         # Update the sign_count in the database with the new sign_count from the verification
         webauthn_credential.sign_count = verification.new_sign_count
+        webauthn_credential.last_used_at = timezone.now()
         webauthn_credential.save()
 
         # Authenticate the user in your system based on the successful verification
@@ -2181,6 +2183,28 @@ def passkeys_view(request, username):
 
     # Render the passkeys.html template, passing the credentials to the template
     return render(request, "accounts/passkeys.html", {"credentials": credentials})
+
+
+@login_required
+def edit_passkey(request, username, pk):
+    # Fetch the WebAuthn credential to be edited, ensuring it belongs to the current user
+    credential = get_object_or_404(WebAuthnCredential, pk=pk, user=request.user)
+
+    if request.method == "POST":
+        # Process the form submission
+        key_name = request.POST.get("key_name", "").strip()
+        if key_name:
+            credential.key_name = key_name
+            credential.save()
+            messages.success(request, "Passkey name updated successfully.")
+            return redirect("accounts:passkeys", username=request.user.username)
+        else:
+            messages.error(request, "Invalid passkey name.")
+
+    return render(request, "accounts/passkey_edit.html", {"credential": credential})
+
+    # For GET requests or if the form submission is invalid
+    # return redirect("accounts:passkeys", username=username)
 
 
 @login_required

@@ -12,14 +12,28 @@
                 <div class="list-group">
                     {% for credential in credentials %}
                     <div class="list-group-item list-group-item-action flex-column align-items-start mb-2 shadow">
+                        <h5 class="mb-1">{{credential.key_name}}</h5>
                         <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">Passkey: {{ credential.public_key|slice:":15" }}...</h5>
-                            <small>Added on {{ credential.created_at|date:"M d, Y" }}</small>
+                            <div>
+                                <div class="text-muted"><span>ID: </span> {{ credential.credential_id|slice:":15" }}...</div>
+                                <div class="text-muted"><span>Public Key:</span> {{ credential.public_key|slice:":15" }}...</div>
+                            </div>
+                            <div>
+                                <div>                                
+                                    <small>Added at {{ credential.created_at|date:"Y.m.d H:i" }}</small>
+                                </div>
+                                <div>
+                                    <small>Last used at {{ credential.last_used_at|date:"Y.m.d H:i"|default:"Never used." }}</small>
+                                </div>
+                            </div>
                         </div>
                         <p class="mb-1">{{ credential.description }}</p>
-                        <div class="mt-2">
-                            <a href="{% url 'accounts:delete_passkey' user.username credential.id %}" class="btn btn-outline-danger btn-sm" role="button">
-                                <i class="bi bi-trash-fill"></i> Delete
+                        <div class="mt-2 ms-0">
+                            <a href="{% url 'accounts:edit_passkey' user.username credential.id %}" class="btn btn-outline-secondary btn-sm" role="button">
+                                <i class="bi bi-pencil-fill"></i> Edit Key Name
+                            </a>
+                            <a href="{% url 'accounts:delete_passkey' user.username credential.id %}" class="btn btn-outline-danger btn-sm ms-1" role="button">
+                                <i class="bi bi-trash-fill"></i> Delete Key
                             </a>
                         </div>
                     </div>

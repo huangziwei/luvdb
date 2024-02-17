@@ -90,6 +90,11 @@
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false">More</button>
                                     <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                                        <li>
+                                            <a class="dropdown-item"
+                                            href="{% url 'accounts:manage_invitations' object.username %}"
+                                            role="button">Invite friends</a>
+                                        </li>
                                         {% if object.is_staff %}
                                         <li>
                                             <a class="dropdown-item"
@@ -97,11 +102,6 @@
                                                 role="button">Manage Invite Requests</a>
                                         </li>
                                         {% endif %}
-                                        <li>
-                                            <a class="dropdown-item"
-                                            href="{% url 'accounts:manage_invitations' object.username %}"
-                                            role="button">Invite friends</a>
-                                        </li>
                                         <li>
                                             <a class="dropdown-item"
                                             href="{% url 'accounts:app_password' object.username %}"
@@ -112,11 +112,6 @@
                                             href="{% url 'accounts:crossposters' object.username %}"
                                             role="button">Manage Crossposters</a>
                                         </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                            href="{% url 'accounts:passkeys' object.username %}"
-                                            role="button">Manage Passkeys</a>
-                                        </li>  
                                         <li>
                                             <a class="dropdown-item"
                                             href="{% url 'accounts:export_user_data' object.username %}"
@@ -1619,6 +1614,11 @@
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false">More</button>
                                     <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                                        <li>
+                                            <a class="dropdown-item"
+                                                href="{% url 'accounts:manage_invitations' object.username %}"
+                                                role="button">Invite Friends</a>
+                                        </li>
                                         {% if object.is_staff %}
                                         <li>
                                             <a class="dropdown-item"
@@ -1628,11 +1628,6 @@
                                         {% endif %}
                                         <li>
                                             <a class="dropdown-item"
-                                                href="{% url 'accounts:manage_invitations' object.username %}"
-                                                role="button">Invite Friends</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
                                             href="{% url 'accounts:app_password' object.username %}"
                                             role="button">Manage App Passwords</a>
                                         </li>
@@ -1640,12 +1635,7 @@
                                             <a class="dropdown-item"
                                             href="{% url 'accounts:crossposters' object.username %}"
                                             role="button">Manage Cross-posters</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                            href="{% url 'accounts:passkeys' object.username %}"
-                                            role="button">Manage Passkeys</a>
-                                        </li>    
+                                        </li>  
                                         <li>
                                             <a class="dropdown-item"
                                             href="{% url 'accounts:export_user_data' object.username %}"
