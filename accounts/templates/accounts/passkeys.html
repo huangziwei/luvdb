@@ -152,11 +152,12 @@
                 options.challenge = base64urlToArrayBuffer(options.challenge);
         
                 // Here's the critical change: correctly preparing the allowCredentials array
-                options.allowCredentials = [{
-                    id: base64urlToArrayBuffer(credentialId), 
-                    type: 'public-key',
-                    transports: ['usb', 'nfc', 'ble', 'internal'] // Example transports, adjust as necessary
-                }];
+                if (options.allowCredentials) {
+                    options.allowCredentials = options.allowCredentials.map(cred => ({
+                        ...cred,
+                        id: base64urlToArrayBuffer(cred.id),
+                    }));
+                }
         
                 const assertion = await navigator.credentials.get({ publicKey: options });
         
@@ -187,8 +188,6 @@
             }
         }
         
-        
-
         function serializeAssertion(assertion) {
             let authenticatorData = base64urlEncode(assertion.response.authenticatorData);
             let clientDataJSON = base64urlEncode(assertion.response.clientDataJSON);
