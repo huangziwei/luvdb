@@ -10,6 +10,14 @@
         <div class="row">
             <div class="col-12 col-md-7 left-column">
                 {% if feed_type == "public" %}
+                    {% if request.session.is_first_login and not has_passkeys %}
+                    <div class="alert alert-warning p-3 mb-3 d-block d-md-none" role="alert">
+                        <div>
+                            <strong>Welcome to LʌvDB!</strong>
+                            <p class="mb-0"><a href="{% url 'accounts:passkeys' user.username %}" class="alert-link">Add Passkeys</a> for passwordless login. Convenient & secure!</p>
+                        </div>
+                    </div>
+                    {% endif %}
                     <span style="display: flex;">
                         <p class="me-3">Say</p>
                         <p class="me-3">
@@ -62,6 +70,14 @@
             
             {% if feed_type == "public" %}
                 <div class="col-12 col-md-5 right-column">
+                    {% if request.session.is_first_login and not has_passkeys %}
+                    <div class="alert alert-warning d-flex align-items-center p-4 mb-4 d-none d-sm-block" role="alert">
+                        <div>
+                            <strong>Welcome to LʌvDB!</strong>
+                            <p class="mb-0"><a href="{% url 'accounts:passkeys' user.username %}" class="alert-link">Add Passkeys</a> to your account for a passwordless login.</p>
+                        </div>
+                    </div>
+                    {% endif %}                 
                     <div class='bg-light p-3 mb-3'>
                         <div class="fs-5">
                             On This Day (<input 

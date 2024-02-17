@@ -32,7 +32,7 @@
                             <a href="{% url 'accounts:edit_passkey' user.username credential.id %}" class="btn btn-outline-secondary btn-sm" role="button">
                                 <i class="bi bi-pencil-fill"></i> Edit Key Name
                             </a>
-                            <a href="{% url 'accounts:delete_passkey' user.username credential.id %}" class="btn btn-outline-danger btn-sm ms-1" role="button">
+                            <a href="{% url 'accounts:delete_passkey' user.username credential.id %}" class="btn btn-outline-danger btn-sm ms-1" role="button" onclick="return confirm('Are you sure you want to delete this key?');">
                                 <i class="bi bi-trash-fill"></i> Delete Key
                             </a>
                         </div>

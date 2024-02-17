@@ -16,6 +16,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import DeleteView, ListView
 
+from accounts.models import WebAuthnCredential
 from entity.models import Creator
 from listen.models import Release
 from play.models import Game, GameReleaseDate
@@ -253,6 +254,10 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         include_mathjax, include_mermaid = check_required_js(context["page_obj"])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
+
+        context["has_passkeys"] = WebAuthnCredential.objects.filter(
+            user=self.request.user
+        ).exists()
 
         return context
 

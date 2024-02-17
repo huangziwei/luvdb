@@ -100,7 +100,6 @@ class SignUpView(CreateView):
     """View for user signup."""
 
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
 
     def dispatch(self, request, *args, **kwargs):
@@ -114,12 +113,14 @@ class SignUpView(CreateView):
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
         self.object = form.save()
+        login(self.request, self.object)
+        self.request.session['is_first_login'] = True
         # set invitation code as used
         if self.object.code_used:  # Check if the user used a code
             self.object.code_used.is_used = True
             self.object.code_used.save()
 
-        return super().form_valid(form)
+        return redirect("activity_feed:activity_feed")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
