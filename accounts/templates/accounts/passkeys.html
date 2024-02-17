@@ -32,9 +32,9 @@
                             <a href="{% url 'accounts:edit_passkey' user.username credential.id %}" class="btn btn-outline-secondary btn-sm" role="button">
                                 <i class="bi bi-pencil-fill"></i> Edit Key Name
                             </a>
-                            <a href="{% url 'accounts:delete_passkey' user.username credential.id %}" class="btn btn-outline-danger btn-sm ms-1" role="button" onclick="return confirm('Are you sure you want to delete this key?');">
+                            <a href="javascript:void(0);" onclick="authenticateAndDelete('{{ credential.credential_id }}', '{{ credential.id }}'), '{{ credential.user.username }}';" class="btn btn-outline-danger btn-sm ms-1" role="button">
                                 <i class="bi bi-trash-fill"></i> Delete Key
-                            </a>
+                            </a>                            
                         </div>
                     </div>
                     {% empty %}
@@ -142,7 +142,71 @@
             }
             return outputArray.buffer;
         }
+
+        async function authenticateAndDelete(credentialId, credentialModelId, username) {
+            try {
+                const response = await fetch('/passkey/generate_authentication/', { method: 'GET' });
+                const optionsString = await response.json();
+                const options = JSON.parse(optionsString);
         
+                options.challenge = base64urlToArrayBuffer(options.challenge);
+        
+                // Here's the critical change: correctly preparing the allowCredentials array
+                options.allowCredentials = [{
+                    id: base64urlToArrayBuffer(credentialId), 
+                    type: 'public-key',
+                    transports: ['usb', 'nfc', 'ble', 'internal'] // Example transports, adjust as necessary
+                }];
+        
+                const assertion = await navigator.credentials.get({ publicKey: options });
+        
+                // Serialize the assertion for server verification
+                const credentialForServer = serializeAssertion(assertion);
+        
+                const verificationResponse = await fetch('/passkey/verify_authentication/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify(credentialForServer),
+                });
+        
+                if (verificationResponse.ok) {
+                    console.log('Authentication successful, proceeding with deletion');
+                    // Redirect to deletion URL
+                    console.log(credentialId)
+                    console.log(credentialModelId)
+                    console.log(username)
+                    window.location.href = `/@${username}/passkey/${credentialModelId}/delete/`;
+                } else {
+                    console.error('Authentication failed, deletion aborted');
+                }
+            } catch (err) {
+                console.error('Error during authentication:', err);
+            }
+        }
+        
+        
+
+        function serializeAssertion(assertion) {
+            let authenticatorData = base64urlEncode(assertion.response.authenticatorData);
+            let clientDataJSON = base64urlEncode(assertion.response.clientDataJSON);
+            let signature = base64urlEncode(assertion.response.signature);
+            let userHandle = assertion.response.userHandle ? base64urlEncode(assertion.response.userHandle) : null;
+        
+            return {
+                id: assertion.id,
+                rawId: base64urlEncode(assertion.rawId),
+                type: assertion.type,
+                response: {
+                    authenticatorData,
+                    clientDataJSON,
+                    signature,
+                    userHandle,
+                },
+            };
+        }
     </script>
 </div>
 {% endblock %}
