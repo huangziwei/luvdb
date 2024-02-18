@@ -15,8 +15,8 @@
                         <h5 class="mb-1">{{credential.key_name}}</h5>
                         <div class="d-flex w-100 justify-content-between">
                             <div>
-                                <div class="text-muted"><span>ID: </span> {{ credential.aaguid }}</div>
-                                <div class="text-muted"><span>Public Key:</span> {{ credential.public_key|slice:":15" }}...</div>
+                                <div class="text-muted"><span>ID: </span> {{ credential.aaguid|slice:":16" }}...</div>
+                                <div class="text-muted"><span>Public Key:</span> ...{{ credential.public_key|slice:"8:18" }}...</div>
                             </div>
                             <div>
                                 <div>                                
