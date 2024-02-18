@@ -4,8 +4,10 @@ import json
 import os
 import re
 import time
+from base64 import urlsafe_b64decode
 from datetime import timedelta
 
+import cbor2
 import qrcode
 from django.conf import settings
 from django.contrib import messages
@@ -51,7 +53,10 @@ from webauthn import (
     verify_registration_response,
 )
 from webauthn.helpers import base64url_to_bytes
-from webauthn.helpers.structs import RegistrationCredential
+from webauthn.helpers.structs import (
+    AttestationConveyancePreference,
+    RegistrationCredential,
+)
 
 from accounts.models import CustomUser
 from activity_feed.models import Activity, Block, Follow
@@ -2044,10 +2049,13 @@ def generate_registration_view(request):
         rp_name=rp_name,
         user_id=user_id,
         user_name=user_name,
+        attestation=AttestationConveyancePreference.DIRECT,
     )
 
     # Convert options to JSON for transmission to the client
     options_json = options_to_json(registration_options)
+
+    print(options_json)
 
     try:
         import base64
@@ -2098,21 +2106,37 @@ def verify_registration_view(request):
             verification.credential_public_key
         ).decode("utf-8")
 
-        if WebAuthnCredential.objects.filter(
-            user=request.user, public_key=public_key, credential_id=credential_id
-        ).exists():
-            return HttpResponseBadRequest("This passkey has already been registered.")
+        # Decode the attestationObject to extract the AAGUID
+        attestation_object_b64 = data["response"]["attestationObject"]
 
-        # Here, save the verified credential to your database
-        WebAuthnCredential.objects.create(
-            user=request.user,
-            credential_id=credential_id,
-            public_key=public_key,
-            sign_count=verification.sign_count,
-            key_name="Default Passkey Name",
+        attestation_object = cbor2.loads(
+            base64.urlsafe_b64decode(attestation_object_b64 + "==")
         )
+        auth_data = attestation_object.get("authData")
+        aaguid = auth_data[37:53].hex()
 
-        return HttpResponse("Registration successful")
+        existing_credential = WebAuthnCredential.objects.filter(
+            user=request.user, aaguid=aaguid
+        ).first()
+
+        if existing_credential:
+            # If the credential exists, update it instead of creating a new one
+            existing_credential.credential_id = credential_id
+            existing_credential.public_key = public_key
+            existing_credential.sign_count = verification.sign_count
+            existing_credential.save()
+            return HttpResponse("Credential updated successfully")
+        else:
+            # Here, save the verified credential to your database
+            WebAuthnCredential.objects.create(
+                user=request.user,
+                credential_id=credential_id,
+                public_key=public_key,
+                sign_count=verification.sign_count,
+                key_name="Default Passkey Name",
+                aaguid=aaguid,
+            )
+            return HttpResponse("Registration successful")
 
     except Exception as e:
         print(f"Verification failed: {str(e)}")  # Log the error

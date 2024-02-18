@@ -15,7 +15,7 @@
                         <h5 class="mb-1">{{credential.key_name}}</h5>
                         <div class="d-flex w-100 justify-content-between">
                             <div>
-                                <div class="text-muted"><span>ID: </span> {{ credential.credential_id|slice:":15" }}...</div>
+                                <div class="text-muted"><span>ID: </span> {{ credential.aaguid }}</div>
                                 <div class="text-muted"><span>Public Key:</span> {{ credential.public_key|slice:":15" }}...</div>
                             </div>
                             <div>
@@ -81,11 +81,13 @@
                 } else {
                     console.error('Registration verification failed');
                     // Handle verification failure
+                    const errorMessage = await verificationResponse.text();
+                    alert(errorMessage);
                 }
         
             } catch (err) {
-                
                 console.error('Registration failed:', err);
+                // Handle errors
             }
         }
 
@@ -182,6 +184,9 @@
                     window.location.href = `/@${username}/passkey/${credentialModelId}/delete/`;
                 } else {
                     console.error('Authentication failed, deletion aborted');
+                    // Handle verification failure
+                    const errorMessage = await verificationResponse.text();
+                    alert(errorMessage);
                 }
             } catch (err) {
                 console.error('Error during authentication:', err);

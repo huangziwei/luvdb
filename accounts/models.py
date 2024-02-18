@@ -251,6 +251,7 @@ class WebAuthnCredential(models.Model):
     sign_count = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     last_used_at = models.DateTimeField(blank=True, null=True)
+    aaguid = models.CharField(max_length=36, blank=True, null=True)
     key_name = models.CharField(
         max_length=255, blank=True, null=True
     )  # Optional field for key name

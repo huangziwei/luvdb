@@ -16,7 +16,7 @@ class InvitationRequestAdmin(admin.ModelAdmin):
 
 
 class WebAuthnCredentialAdmin(admin.ModelAdmin):
-    list_display = ("user", "credential_id", "public_key", "created_at")
+    list_display = ("user", "aaguid", "public_key", "created_at")
 
 
 admin.site.register(InvitationCode, InvitationCodeAdmin)

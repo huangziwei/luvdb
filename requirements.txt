@@ -35,3 +35,4 @@ django-autoslug
 qrcode
 django-sslserver
 webauthn
+cbor2

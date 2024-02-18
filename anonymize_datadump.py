@@ -57,6 +57,7 @@ def main(file_path):
         "accounts.customuser",
         "accounts.apppassword",
         "accounts.webmention",
+        "accounts.webauthncredential",
         "contenttypes.contenttype",
         "admin.logentry",
         "sessions.session",
