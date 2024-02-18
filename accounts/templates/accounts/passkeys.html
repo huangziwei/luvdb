@@ -155,10 +155,11 @@
         
                 // Here's the critical change: correctly preparing the allowCredentials array
                 if (options.allowCredentials) {
-                    options.allowCredentials = options.allowCredentials.map(cred => ({
-                        ...cred,
-                        id: base64urlToArrayBuffer(cred.id),
-                    }));
+                    options.allowCredentials = [{
+                        id: base64urlToArrayBuffer(credentialId), 
+                        type: 'public-key',
+                        transports: ['usb', 'nfc', 'ble', 'internal'] // Example transports, adjust as necessary
+                    }];
                 }
         
                 const assertion = await navigator.credentials.get({ publicKey: options });
