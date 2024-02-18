@@ -471,10 +471,16 @@ class GameDetailView(DetailView):
             ).exists()
         )
 
-        context["official_sountracks"] = self.object.soundtracks.all().order_by("release_date")
+        context["official_sountracks"] = self.object.soundtracks.all().order_by(
+            "release_date"
+        )
         context["featured_tracks"] = self.object.tracks.all().order_by("release_date")
-        context["opening_theme_songs"] = self.object.theme_songs.all().order_by("release_date") 
-        context["ending_credit_songs"] = self.object.ending_songs.all().order_by("release_date")
+        context["opening_theme_songs"] = self.object.theme_songs.all().order_by(
+            "release_date"
+        )
+        context["ending_credit_songs"] = self.object.ending_songs.all().order_by(
+            "release_date"
+        )
 
         return context
 
@@ -689,8 +695,6 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(
                 Q(title__icontains=self.q) | Q(other_titles__icontains=self.q)
             )
-            print(f"Filtered qs: {qs}")  # Debugging print
-
             return qs
 
         return Work.objects.none()
@@ -1198,7 +1202,6 @@ class GameSeriesUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context = self.get_context_data()
         games = context["games"]
-        print("Formset data:", self.request.POST)  # Print out the formset POST data.
         if games.is_valid():
             self.object = form.save()
             games.instance = self.object

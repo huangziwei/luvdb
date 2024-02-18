@@ -1263,7 +1263,6 @@ class ProjectAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_queryset(self):
         form_type = self.kwargs.get("form_type")
-        print(form_type)
         if form_type == "post":
             qs = Project.objects.filter(post__user=self.request.user).distinct()
         elif form_type == "pin":

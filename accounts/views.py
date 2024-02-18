@@ -275,7 +275,6 @@ class AccountDetailView(DetailView):
         context["does_visit_exist"] = does_visit_exist = (
             visited.exists() or visiting.exists()
         )
-        print(visited.exists(), visiting.exists(), living_in.exists(), does_visit_exist)
 
         reading = latest_read_checkins.filter(
             status__in=["reading", "rereading"]
@@ -2059,8 +2058,6 @@ def generate_registration_view(request):
 
     # Convert options to JSON for transmission to the client
     options_json = options_to_json(registration_options)
-
-    print(options_json)
 
     try:
         import base64
