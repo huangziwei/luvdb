@@ -45,11 +45,8 @@ class CustomUserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["username"].help_text = (
-            "Username can be changed later. For anonymity purpose, we don't record your email address. "
-            "But if you forget your username and password, you won't be able to recover it. "
-            "Please use password managers to keep your username and password safe."
-        )
+        self.fields["username"].help_text = "It can be changed later."
+        self.fields["signup_method"].help_text = "placeholder"
 
     def clean(self):
         cleaned_data = super().clean()

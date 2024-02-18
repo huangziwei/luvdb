@@ -21,12 +21,18 @@
                             {% endif %}
                             is inviting you to join LʌvDB.</div>
                     {% endif %}
-
                     {% if not user.is_authenticated %}
                         <form method="post">
                             {% csrf_token %}
-                            {{ form|crispy }}
-                            <button type="submit" class="btn btn-primary">Sign Up</button>
+                            {{ form.invitation_code|as_crispy_field }}
+                            {{ form.username |as_crispy_field }}
+                            {{ form.signup_method|as_crispy_field }}
+                            {{ form.password1|as_crispy_field }}
+                            {{ form.password2|as_crispy_field }}
+                            <div id="passkeySupportWarning" class="alert alert-warning" style="display: none;">
+                                Your browser does not support passkeys. Please choose "Password Only" or contact support.
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="signupSubmitButton">Sign Up</button>
                         </form>
                     {% endif %}
                 {% endif %}
@@ -64,6 +70,63 @@
                 adjustFormBasedOnSignupMethod(); // Call initially to set the correct state
         });
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const authMethodField = document.querySelector('select[name="signup_method"]'); // Assuming this is a <select>
+            const submitButton = document.getElementById('signupSubmitButton'); // Targeting by ID        
+            
+            function supportsPasskeys() {
+                return navigator.credentials && navigator.credentials.create;
+                // return false; // for debug
+            }
+        
+            function adjustFormBasedOnAuthMethod() {
+                const method = authMethodField.value;
+                const isPasskeySupported = supportsPasskeys();
+                if (method === "passkey" && !isPasskeySupported) {
+                    document.getElementById('passkeySupportWarning').style.display = 'block';
+                    submitButton.disabled = true; // Disable the submit button if passkey is selected but not supported
+                } else {
+                    document.getElementById('passkeySupportWarning').style.display = 'none';
+                    submitButton.disabled = false;
+                    console.log(submitButton)
+                }
+            }
+        
+            if (authMethodField) {
+                authMethodField.addEventListener("change", adjustFormBasedOnAuthMethod);
+                adjustFormBasedOnAuthMethod(); // Initial check
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const signupMethodSelect = document.getElementById('id_signup_method');
+            const signupMethodHelpText = document.getElementById('id_signup_method_helptext');
+        
+            function updateSignupMethodHelpText() {
+                const method = signupMethodSelect.value;
+                let helpText = '';
+                if (method === 'password') {
+                    helpText = 'Passwords are traditional but require you to remember them. Consider using a strong, unique password for security.';
+                } else if (method === 'passkey') {
+                    helpText = "Passkeys allow you to sign in safely and easily, without requiring a password and two-factor authentication. <a href='https://passkey.dev'>What is a passkey?</a>";
+                } else if (method === 'both') {
+                    helpText = 'Choosing both allows you the flexibility of using either a passkey or a password. This can be convenient if you later log in through devices that do not support passkeys.';
+                }
+                signupMethodHelpText.innerHTML = helpText;
+            }
+        
+            // Listen for changes to the signup method select field
+            signupMethodSelect.addEventListener('change', updateSignupMethodHelpText);
+        
+            // Initialize help text based on the current selection
+            updateSignupMethodHelpText();
+        });
+        </script>
+        
+        
     <style>
         .readonly-field {
             background-color: var(--bg-highlight) !important;
