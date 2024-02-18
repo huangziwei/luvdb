@@ -27,23 +27,43 @@ class CustomUserCreationForm(UserCreationForm):
 
     invitation_code = forms.CharField(
         required=True,
-        help_text="<a href='/login'>Request</a> one.",
+        help_text="Enter the invitation code you received. Or, <a href='/login'>request one</a>.",
+    )
+    SIGNUP_CHOICES = (
+        ("password", "Password Only"),
+        ("passkey", "Passkey Only"),
+        ("both", "Both Password and Passkey"),
+    )
+
+    signup_method = forms.ChoiceField(
+        choices=SIGNUP_CHOICES, label="Signup Method", initial="passkey"
     )
 
     class Meta(auto_prefetch.Model.Meta):
         model = User
-        fields = ("invitation_code", "username")
+        fields = ("username", "invitation_code", "signup_method")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["username"].help_text = "It can be changed later. "
-        self.fields["password1"].help_text = mark_safe(
-            "<ul>"
-            "<li>We do not record your email, so we also do not offer password resets via email.</li>"
-            "<li>Use a password manager to generate and store a strong, unique password, in case you forget it.</li>"
-            "<li>After registration, you can also add passkeys for passwordless login.</li>"
-            "</ul>"
+        self.fields["username"].help_text = (
+            "Username can be changed later. For anonymity purpose, we don't record your email address. "
+            "But if you forget your username and password, you won't be able to recover it. "
+            "Please use password managers to keep your username and password safe."
         )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        signup_method = cleaned_data.get("signup_method")
+
+        # If "Passkey Only" is selected, skip password field validation
+        if signup_method == "passkey":
+            if "password1" in self.errors:
+                del self.errors["password1"]
+            if "password2" in self.errors:
+                del self.errors["password2"]
+            cleaned_data["password1"] = User.objects.make_random_password()
+            cleaned_data["password2"] = cleaned_data["password1"]
+        return cleaned_data
 
     def clean_username(self):
         username = self.cleaned_data.get("username")
@@ -69,6 +89,11 @@ class CustomUserCreationForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
+        signup_method = self.cleaned_data.get("signup_method")
+        if signup_method == "passkey":
+            # Generate a secure, random password for the user only if passkey is chosen
+            user.set_password(User.objects.make_random_password())
+
         invitation = self.mark_invitation_code_as_used(user)
         if invitation.generated_by:
             user.invited_by = invitation.generated_by

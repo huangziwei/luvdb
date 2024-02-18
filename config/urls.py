@@ -26,6 +26,7 @@ from accounts.views import (
     get_followed_usernames,
     get_user_tags,
     search_view,
+    signup_passkey,
     verify_authentication_view,
     verify_registration_view,
 )
@@ -115,6 +116,11 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # accounts
     path("signup/", SignUpView.as_view(), name="signup"),
+    path(
+        "signup/passkey/",
+        signup_passkey,
+        name="signup_passkey",
+    ),
     path("@", include("accounts.urls")),
     path(
         "u/<str:username>/",

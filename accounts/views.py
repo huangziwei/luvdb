@@ -121,12 +121,17 @@ class SignUpView(CreateView):
         self.object = form.save()
         login(self.request, self.object)
         self.request.session["is_first_login"] = True
+
         # set invitation code as used
         if self.object.code_used:  # Check if the user used a code
             self.object.code_used.is_used = True
             self.object.code_used.save()
 
-        return redirect("activity_feed:activity_feed")
+        signup_method = form.cleaned_data.get("signup_method")
+        if signup_method in ["passkey", "both"]:
+            return redirect("signup_passkey")
+        else:
+            return redirect("activity_feed:activity_feed")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -2270,3 +2275,7 @@ def delete_passkey(request, username, pk):
     credential.delete()
 
     return redirect("accounts:passkeys", username=username)
+
+
+def signup_passkey(request):
+    return render(request, "registration/signup_passkey.html")

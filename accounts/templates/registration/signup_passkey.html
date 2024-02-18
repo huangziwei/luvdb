@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-4">
+                <h2 class="h2 mb-3 font-weight-normal">Finish Signing Up by Adding a Passkey</h2>
+                <p>Add a passkey to securely access your account without a password.</p>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button onclick="registerCredential()" class="btn btn-lg btn-primary">Add Passkey</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    async function registerCredential() {
+        try {
+            const response = await fetch('/passkey/generate_registration/', {method: 'GET'});
+            const optionsString = await response.json();
+            const options = JSON.parse(optionsString);
+
+            options.challenge = base64urlToArrayBuffer(options.challenge);
+            options.user.id = base64urlToArrayBuffer(options.user.id);
+    
+            // Call navigator.credentials.create with the corrected options
+            const credential = await navigator.credentials.create({publicKey: options});
+
+            // Serialize the credential object to send it back to the server
+            const credentialForServer = serializeCredential(credential);
+            
+            // Send the serialized credential to the server for verification
+            const verificationResponse = await fetch('/passkey/verify_registration/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Include CSRF token if needed, for Django's CSRF protection
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify(credentialForServer),
+            });
+
+            if (verificationResponse.ok) {
+                console.log('Credential registered successfully');
+                window.location.href = "{% url 'activity_feed:activity_feed' %}";
+                // Handle successful registration, e.g., update UI or redirect
+            } else {
+                console.error('Registration verification failed');
+                // Handle verification failure
+                const errorMessage = await verificationResponse.text();
+                alert(errorMessage);
+            }
+    
+        } catch (err) {
+            console.error('Registration failed:', err);
+            // Handle errors
+        }
+    }
+
+    function serializeCredential(credential) {
+        let clientDataJSON = base64urlEncode(credential.response.clientDataJSON);
+        let attestationObject = base64urlEncode(credential.response.attestationObject);
+        return {
+            id: credential.id,
+            rawId: base64urlEncode(credential.rawId),
+            type: credential.type,
+            response: {
+                clientDataJSON,
+                attestationObject,
+            }
+        };
+    }
+    
+    // Utility function to encode ArrayBuffer to base64url string
+    function base64urlEncode(buffer) {
+        let binary = '';
+        let bytes = new Uint8Array(buffer);
+        let len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    // Utility function to get CSRF token for Django
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Utility function to convert base64url string to ArrayBuffer
+    function base64urlToArrayBuffer(base64url) {
+        const padding = '='.repeat((4 - base64url.length % 4) % 4);
+        const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/') + padding;
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+    
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray.buffer;
+    }
+
+    async function authenticateAndDelete(credentialId, credentialModelId, username) {
+        try {
+            const response = await fetch('/passkey/generate_authentication/', { method: 'GET' });
+            const optionsString = await response.json();
+            const options = JSON.parse(optionsString);
+    
+            options.challenge = base64urlToArrayBuffer(options.challenge);
+    
+            // Here's the critical change: correctly preparing the allowCredentials array
+            if (options.allowCredentials) {
+                options.allowCredentials = [{
+                    id: base64urlToArrayBuffer(credentialId), 
+                    type: 'public-key',
+                    transports: ['usb', 'nfc', 'ble', 'internal'] // Example transports, adjust as necessary
+                }];
+            }
+    
+            const assertion = await navigator.credentials.get({ publicKey: options });
+    
+            // Serialize the assertion for server verification
+            const credentialForServer = serializeAssertion(assertion);
+    
+            const verificationResponse = await fetch('/passkey/verify_authentication/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify(credentialForServer),
+            });
+    
+            if (verificationResponse.ok) {
+                console.log('Authentication successful, proceeding with deletion');
+                // Redirect to deletion URL
+                console.log(credentialId)
+                console.log(credentialModelId)
+                console.log(username)
+                window.location.href = `/@${username}/passkey/${credentialModelId}/delete/`;
+            } else {
+                console.error('Authentication failed, deletion aborted');
+                // Handle verification failure
+                const errorMessage = await verificationResponse.text();
+                alert(errorMessage);
+            }
+        } catch (err) {
+            console.error('Error during authentication:', err);
+        }
+    }
+    
+    function serializeAssertion(assertion) {
+        let authenticatorData = base64urlEncode(assertion.response.authenticatorData);
+        let clientDataJSON = base64urlEncode(assertion.response.clientDataJSON);
+        let signature = base64urlEncode(assertion.response.signature);
+        let userHandle = assertion.response.userHandle ? base64urlEncode(assertion.response.userHandle) : null;
+    
+        return {
+            id: assertion.id,
+            rawId: base64urlEncode(assertion.rawId),
+            type: assertion.type,
+            response: {
+                authenticatorData,
+                clientDataJSON,
+                signature,
+                userHandle,
+            },
+        };
+    }
+</script>
+{% endblock %}

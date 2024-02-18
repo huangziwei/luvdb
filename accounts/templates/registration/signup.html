@@ -33,10 +33,42 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+                const form = document.querySelector("form");
+                const signupMethodField = document.querySelector("#id_signup_method");
+                const passwordFields = [
+                    document.querySelector("#id_password1"),
+                    document.querySelector("#id_password2")
+                ];
+            
+                function adjustFormBasedOnSignupMethod() {
+                    const method = signupMethodField.value;
+                    if (method === "passkey") {
+                        // Hide and disable password fields if "Passkey Only" is selected
+                        passwordFields.forEach(field => {
+                            field.parentNode.style.display = 'none'; // Hide container
+                            field.required = false; // Disable required validation
+                        });
+                    } else {
+                        // Show and enable password fields for "Password Only" or "Both"
+                        passwordFields.forEach(field => {
+                            field.parentNode.style.display = 'block'; // Show container
+                            field.required = true; // Enable required validation
+                        });
+                    }
+                }
+            
+                signupMethodField.addEventListener("change", adjustFormBasedOnSignupMethod);
+                adjustFormBasedOnSignupMethod(); // Call initially to set the correct state
+        });
+    </script>
     <style>
         .readonly-field {
             background-color: var(--bg-highlight) !important;
             border: none;
         }
     </style>
+
 {% endblock content %}

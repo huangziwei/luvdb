@@ -20,6 +20,7 @@ from .views import (
     generate_qr_code,
     manage_crossposters,
     passkeys_view,
+    signup_passkey,
 )
 
 app_name = "accounts"
