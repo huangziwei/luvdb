@@ -29,10 +29,11 @@
                             {{ form.signup_method|as_crispy_field }}
                             {{ form.password1|as_crispy_field }}
                             {{ form.password2|as_crispy_field }}
-                            <div id="passkeySupportWarning" class="alert alert-warning" style="display: none;">
+                            <button type="button" id="checkPasskeySupportButton" class="btn btn-info">Check Passkey Support</button>
+                            <button type="submit" class="btn btn-primary" id="signupSubmitButton" disabled>Sign Up</button>
+                            <div id="passkeySupportWarning" class="mt-2 alert alert-warning" style="display: none;">
                                 Your browser does not support passkeys. Please choose "Password Only" or contact support.
                             </div>
-                            <button type="submit" class="btn btn-primary" id="signupSubmitButton">Sign Up</button>
                         </form>
                     {% endif %}
                 {% endif %}
@@ -73,12 +74,25 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const authMethodField = document.querySelector('select[name="signup_method"]'); // Assuming this is a <select>
-            const submitButton = document.getElementById('signupSubmitButton'); // Targeting by ID        
-            
+            const checkPasskeySupportButton = document.getElementById('checkPasskeySupportButton');
+            const submitButton = document.getElementById('signupSubmitButton');
+            const passkeySupportWarning = document.getElementById('passkeySupportWarning');
+        
+            checkPasskeySupportButton.addEventListener('click', function() {
+                if (supportsPasskeys()) {
+                    // Passkeys are supported; enable the Sign Up button and hide the warning.
+                    submitButton.disabled = false;
+                    passkeySupportWarning.style.display = 'none';
+                    checkPasskeySupportButton.style.display = 'none'; // Optionally hide the check button
+                } else {
+                    // Passkeys are not supported; keep the Sign Up button disabled and show a warning.
+                    passkeySupportWarning.style.display = 'block';
+                }
+            });
+        
             function supportsPasskeys() {
-                return navigator.credentials && navigator.credentials.create;
-                // return false; // for debug
+                return navigator.credentials && typeof navigator.credentials.create === "function";
+                // return false;
             }
         
             function adjustFormBasedOnAuthMethod() {
