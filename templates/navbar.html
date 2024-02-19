@@ -63,7 +63,7 @@
                 </li>      
             {% endif %}
         </ul>
-        <form class="ms-2 me-2 mb-2 mb-md-0" method="GET" action="{% url 'search' %}">
+        <form class="ms-2 me-2 mb-2 mb-md-0" method="GET" action="{% url 'search' %}" autocomplete="off">
             <div class="input-group">
                 <label for="model" class="visually-hidden">Select Model</label>
                 <select name="model"
