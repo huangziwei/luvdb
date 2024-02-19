@@ -29,10 +29,12 @@
                             {{ form.signup_method|as_crispy_field }}
                             {{ form.password1|as_crispy_field }}
                             {{ form.password2|as_crispy_field }}
-                            <button type="button" id="checkPasskeySupportButton" class="btn btn-info">Check Passkey Support</button>
-                            <button type="submit" class="btn btn-primary" id="signupSubmitButton" disabled>Sign Up</button>
+                            <div class="d-flex">
+                                <button type="submit" class="btn btn-primary" id="signupSubmitButton" style="display: none;" disabled>Sign Up</button>
+                                <button type="button" id="checkPasskeySupportButton" class="btn btn-info">My Device supports Passkey</button>
+                            </div>
                             <div id="passkeySupportWarning" class="mt-2 alert alert-warning" style="display: none;">
-                                Your browser does not support passkeys. Please choose "Password Only" or contact support.
+                                Your browser does not support passkeys. Please choose "Password Only".
                             </div>
                         </form>
                     {% endif %}
@@ -43,75 +45,65 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-                const form = document.querySelector("form");
-                const signupMethodField = document.querySelector("#id_signup_method");
-                const passwordFields = [
-                    document.querySelector("#id_password1"),
-                    document.querySelector("#id_password2")
-                ];
-            
-                function adjustFormBasedOnSignupMethod() {
-                    const method = signupMethodField.value;
-                    if (method === "passkey") {
-                        // Hide and disable password fields if "Passkey Only" is selected
-                        passwordFields.forEach(field => {
-                            field.parentNode.style.display = 'none'; // Hide container
-                            field.required = false; // Disable required validation
-                        });
-                    } else {
-                        // Show and enable password fields for "Password Only" or "Both"
-                        passwordFields.forEach(field => {
-                            field.parentNode.style.display = 'block'; // Show container
-                            field.required = true; // Enable required validation
-                        });
-                    }
-                }
-            
-                signupMethodField.addEventListener("change", adjustFormBasedOnSignupMethod);
-                adjustFormBasedOnSignupMethod(); // Call initially to set the correct state
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
+            const signupMethodField = document.querySelector("#id_signup_method");
             const checkPasskeySupportButton = document.getElementById('checkPasskeySupportButton');
             const submitButton = document.getElementById('signupSubmitButton');
             const passkeySupportWarning = document.getElementById('passkeySupportWarning');
-        
+            const passwordFields = [
+                document.querySelector("#id_password1"),
+                document.querySelector("#id_password2")
+            ];
+
+            function supportsPasskeys() {
+                return navigator.credentials && typeof navigator.credentials.create === "function";
+            }
+
+            function adjustFormBasedOnSignupMethod() {
+                const method = signupMethodField.value;
+                if (method === "passkey") {
+                    // Hide and disable password fields if "Passkey Only" is selected
+                    passwordFields.forEach(field => {
+                        field.parentNode.style.display = 'none'; // Hide container
+                        field.required = false; // Disable required validation
+                    });
+                    checkPasskeySupportButton.style.display = 'block'; // Show check button for passkey support
+                    submitButton.style.display = "none";
+                    submitButton.disabled = true; // Keep submit button disabled until passkey support is checked
+                } else if (method == "both") {
+                    passwordFields.forEach(field => {
+                        field.parentNode.style.display = 'block'; // Show container
+                        field.required = true; // Enable required validation
+                    });
+                    checkPasskeySupportButton.style.display = 'block'; // Show check button for passkey support
+                    submitButton.style.display = "none";
+                    submitButton.disabled = true; // Keep submit button disabled until passkey support is checked
+                } else {
+                    // Show and enable password fields for "Password Only" or "Both"
+                    passwordFields.forEach(field => {
+                        field.parentNode.style.display = 'block'; // Show container
+                        field.required = true; // Enable required validation
+                    });
+                    checkPasskeySupportButton.style.display = 'none'; // Hide check button for password method
+                    submitButton.disabled = false; // Enable submit button immediately for password or both methods
+                    passkeySupportWarning.style.display = 'none'; // Hide passkey warning
+                }
+            }
+
+            signupMethodField.addEventListener("change", adjustFormBasedOnSignupMethod);
+            adjustFormBasedOnSignupMethod(); // Call initially to set the correct state
+
             checkPasskeySupportButton.addEventListener('click', function() {
                 if (supportsPasskeys()) {
                     // Passkeys are supported; enable the Sign Up button and hide the warning.
                     submitButton.disabled = false;
                     passkeySupportWarning.style.display = 'none';
                     checkPasskeySupportButton.style.display = 'none'; // Optionally hide the check button
+                    submitButton.style.display = "block";
                 } else {
                     // Passkeys are not supported; keep the Sign Up button disabled and show a warning.
                     passkeySupportWarning.style.display = 'block';
-                }
+                };
             });
-        
-            function supportsPasskeys() {
-                return navigator.credentials && typeof navigator.credentials.create === "function";
-                // return false;
-            }
-        
-            function adjustFormBasedOnAuthMethod() {
-                const method = authMethodField.value;
-                const isPasskeySupported = supportsPasskeys();
-                if (method === "passkey" && !isPasskeySupported) {
-                    document.getElementById('passkeySupportWarning').style.display = 'block';
-                    submitButton.disabled = true; // Disable the submit button if passkey is selected but not supported
-                } else {
-                    document.getElementById('passkeySupportWarning').style.display = 'none';
-                    submitButton.disabled = false;
-                    console.log(submitButton)
-                }
-            }
-        
-            if (authMethodField) {
-                authMethodField.addEventListener("change", adjustFormBasedOnAuthMethod);
-                adjustFormBasedOnAuthMethod(); // Initial check
-            }
         });
     </script>
     <script>
@@ -125,7 +117,7 @@
                 if (method === 'password') {
                     helpText = 'Passwords are traditional but require you to remember them. Consider using a strong, unique password for security.';
                 } else if (method === 'passkey') {
-                    helpText = "Passkeys allow you to sign in safely and easily, without requiring a password and two-factor authentication. <a href='https://passkey.dev'>What is a passkey?</a>";
+                    helpText = "Passkeys allow you to sign in safely and easily, without requiring a password and two-factor authentication. However, if you never used passkeys before with the current device, or you are not sure if the current device support passkeys, you should use password only.";
                 } else if (method === 'both') {
                     helpText = 'Choosing both allows you the flexibility of using either a passkey or a password. This can be convenient if you later log in through devices that do not support passkeys.';
                 }
@@ -138,7 +130,7 @@
             // Initialize help text based on the current selection
             updateSignupMethodHelpText();
         });
-        </script>
+    </script>
         
         
     <style>

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-start">
@@ -10,6 +11,10 @@
             <div class="d-flex justify-content-start">
                 <button onclick="registerCredential()" class="btn btn-lg btn-primary">Add Passkey</button>
             </div>
+            <hr>
+            <p>
+                If you are not able to add a passkey, you must <a href="{% url 'accounts:change_password' user.username %}">add a password</a> now instead, otherwise you are not able to log in again.
+            </p>
         </div>
     </div>
 </div>

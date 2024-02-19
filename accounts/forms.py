@@ -36,7 +36,7 @@ class CustomUserCreationForm(UserCreationForm):
     )
 
     signup_method = forms.ChoiceField(
-        choices=SIGNUP_CHOICES, label="Signup Method", initial="passkey"
+        choices=SIGNUP_CHOICES, label="Authentication Method", initial="password"
     )
 
     class Meta(auto_prefetch.Model.Meta):
@@ -170,13 +170,14 @@ class InvitationRequestForm(forms.ModelForm):
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     def __init__(self, *args, **kwargs):
-        self.request_user = kwargs.pop("request_user", None)
+        self.request = kwargs.pop("request", None)
         super().__init__(*args, **kwargs)
         # Check if the user has any passkeys
-        passkeys_exist = WebAuthnCredential.objects.filter(
-            user=self.request_user
+        self.passkeys_exist = WebAuthnCredential.objects.filter(
+            user=self.request.user
         ).exists()
-        if passkeys_exist:
+        self.is_first_login = self.request.session.get("is_first_login", False)
+        if self.passkeys_exist or self.is_first_login:
             # Make old_password not required
             self.fields["old_password"].required = False
 
@@ -187,17 +188,17 @@ class CustomPasswordChangeForm(PasswordChangeForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        passkeys_exist = WebAuthnCredential.objects.filter(
-            user=self.request_user
-        ).exists()
         old_password = cleaned_data.get("old_password")
 
-        # If passkeys exist and old_password is not provided, skip the old password check
-        if passkeys_exist and not old_password:
+        # Skip the old password check if passkeys exist or it's the first login
+        if self.passkeys_exist or self.is_first_login:
+            # Optionally, you might want to clear any error that might have been added
+            # to the old_password field due to form validation mechanisms.
+            self._errors.pop("old_password", None)
             return cleaned_data
 
         # If old_password is required but not provided, raise a validation error
-        if not passkeys_exist and not old_password:
+        if not self.passkeys_exist and not self.is_first_login and not old_password:
             self.add_error("old_password", "This field is required.")
         return cleaned_data
 

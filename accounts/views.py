@@ -121,7 +121,10 @@ class SignUpView(CreateView):
         self.object = form.save()
         login(self.request, self.object)
         self.request.session["is_first_login"] = True
-
+        self.request.session.save()
+        print(
+            "Session is_first_login set: %s", self.request.session.get("is_first_login")
+        )
         # set invitation code as used
         if self.object.code_used:  # Check if the user used a code
             self.object.code_used.is_used = True
@@ -177,9 +180,7 @@ class CustomPasswordChangeView(PasswordChangeView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        username = self.kwargs.get("username")
-        user = get_object_or_404(User, username=username)
-        kwargs["request_user"] = user
+        kwargs["request"] = self.request
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -189,6 +190,11 @@ class CustomPasswordChangeView(PasswordChangeView):
         context["passkeys_exist"] = WebAuthnCredential.objects.filter(
             user=user
         ).exists()
+        print(
+            "Accessing session is_first_login:",
+            self.request.session.get("is_first_login"),
+        )
+        context["is_first_login"] = self.request.session.get("is_first_login")
         return context
 
     def get_success_url(self):
@@ -2274,5 +2280,6 @@ def delete_passkey(request, username, pk):
     return redirect("accounts:passkeys", username=username)
 
 
+@login_required
 def signup_passkey(request):
     return render(request, "registration/signup_passkey.html")
