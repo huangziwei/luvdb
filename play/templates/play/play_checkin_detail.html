@@ -29,8 +29,8 @@
                     <span class="badge {{ object.status|get_status_class }} me-1">{{ object.get_status_display }}</span>
                     {% if object.progress %}
                         <span class="badge text-bg-warning me-2">
-                            At {{ activity.content_object.progress }}
-                            {% if activity.content_object.progress_type == "TT" %}
+                            At {{ object.progress }}
+                            {% if object.progress_type == "TT" %}
                                 {# djlint:off #}
                                 Hour{% if checkin.progress != 1 %}s{% endif %}
                                 {# djlint:on #}
