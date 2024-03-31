@@ -36,3 +36,4 @@ qrcode
 django-sslserver
 webauthn
 cbor2
+pytz
