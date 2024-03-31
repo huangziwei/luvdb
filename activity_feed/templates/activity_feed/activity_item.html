@@ -773,6 +773,19 @@
                    class="text-decoration-none h-cite p-name">
                     <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
                 </a>
+                {% if activity.content_object.content_object.subtitle and activity.content_object.content_object.other_titles %}
+                    <div class="text-muted mb-2 fs-6">
+                        {{ activity.content_object.content_object.subtitle }} / {{ activity.content_object.content_object.other_titles }}
+                    </div>
+                {% elif activity.content_object.content_object.subtitle %}
+                    <div class="text-muted mb-2 fs-6">
+                        {{ activity.content_object.content_object.subtitle }}
+                    </div>       
+                {% else %}
+                    <div class="text-muted mb-2 fs-6">
+                        {{ activity.content_object.content_object.other_titles }}
+                    </div>         
+                {% endif %}
                 {% regroup activity.content_object.content_object.gamerole_set.all by role as roles_list %}
                 {% for role in roles_list %}
                     <div>
@@ -816,7 +829,7 @@
                         <span class="text-muted">Platform{% if activity.content_object.content_object.platforms.list|length > 1 %}s{% endif %}:</span>
                         {# djlint:on #}
                         {% for platform in activity.content_object.content_object.platforms.all %}
-                            {% if not forloop.first %},{% endif %}
+                            {% if not forloop.first %}/{% endif %}
                             <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
                         {% endfor %}
                     {% endif %}

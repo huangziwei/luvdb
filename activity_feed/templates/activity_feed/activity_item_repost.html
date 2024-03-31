@@ -337,6 +337,19 @@
                            class="text-decoration-none ">
                             <div class="fs-5">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
                         </a>
+                        {% if activity.content_object.original_activity.content_object.content_object.subtitle and activity.content_object.original_activity.content_object.content_object.other_titles %}
+                            <div class="text-muted mb-2 fs-6">
+                                {{ activity.content_object.original_activity.content_object.content_object.subtitle }} / {{ activity.content_object.original_activity.content_object.content_object.other_titles }}
+                            </div>
+                        {% elif activity.content_object.original_activity.content_object.content_object.subtitle %}
+                            <div class="text-muted mb-2 fs-6">
+                                {{ activity.content_object.original_activity.content_object.content_object.subtitle }}
+                            </div>       
+                        {% else %}
+                            <div class="text-muted mb-2 fs-6">
+                                {{ activity.content_object.original_activity.content_object.content_object.other_titles }}
+                            </div>         
+                        {% endif %}
                         {% regroup activity.content_object.original_activity.content_object.content_object.gamerole_set.all by role as roles_list %}
                         {% for role in roles_list %}
                             <div>
@@ -387,11 +400,23 @@
                             </span>
                             {# djlint:on #}
                             {% for platform in activity.content_object.original_activity.content_object.content_object.platforms.all %}
-                                {% if not forloop.first %},{% endif %}
+                                {% if not forloop.first %} / {% endif %}
                                 <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
                             {% endfor %}
                         </div>
                         {% endif %}
+                        {% if activity.content_object.original_activity.content_object.content_object.work.genres %}
+                        <div>
+                            <span class="text-muted">Genres:</span>
+                            {% for genre in activity.content_object.original_activity.content_object.content_object.work.genres.all %}
+                                {% if not forloop.first %}/{% endif %}
+                                <a href="{% url 'play:genre_detail' genre.slug %}">{{ genre.name }}</a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div>
+                            <span class="text-muted">Crew and Cast:</span> <a href="{% url 'play:game_cast_detail' activity.content_object.original_activity.content_object.content_object.id %}">View All</a>
+                        </div>
                         {% if activity.content_object.original_activity.content_object.content_object.region_release_dates.all %}
                             <div>
                                 <span class="text-muted">Date:</span>
