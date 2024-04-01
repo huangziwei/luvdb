@@ -83,7 +83,7 @@ CATEGORIES = {
         "Choir",
         "Clarinettist",
         "Conductor",
-        "Double-Bassist",
+        "Double-bassist",
         "Flautist",
         "Harpist",
         "Pianist",
