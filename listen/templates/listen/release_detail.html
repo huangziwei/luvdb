@@ -154,14 +154,14 @@
                                                         {% endfor %}
                                                     </div>
                                                 {% endfor %}
-                                                {% if object.release_type or object.release_format or object.recording_type %}
-                                                    <div class="mb-1">
-                                                        <span class="text-muted">Format:</span> {{ object.release_format }} {{object.recording_type}} {{object.release_type}} 
-                                                    </div>
-                                                {% endif %}
                                                 {% if object.release_length %}
                                                     <div class="mb-1">
                                                         <span class="text-muted">Length:</span> {{ object.release_length }}
+                                                    </div>
+                                                {% endif %}
+                                                {% if object.release_type or object.release_format or object.recording_type %}
+                                                    <div class="mb-1">
+                                                        <span class="text-muted">Format:</span> {{ object.release_format }} {{object.recording_type}} {{object.release_type}} 
                                                     </div>
                                                 {% endif %}
                                                 {% if object.catalog_number %}
