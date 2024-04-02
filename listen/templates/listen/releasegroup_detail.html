@@ -11,7 +11,6 @@
             <div class='col-12 col-md-8'>
                 <h2>{{ object.title }}</h2>
                 <!-- Metadata from the oldest release in the group -->
-                {% with oldest_release=object.releaseingroup_set.all|dictsort:"release.release_date"|first %}
                 {% if oldest_release %}
                     <div class="mt-3 mb-3">
                         {% regroup oldest_release.release.releaserole_set.all by role as roles_list %}
@@ -42,10 +41,9 @@
                         {% endif %}
                     </div>
                 {% endif %}
-                {% endwith %}
 
                 <div class='mt-3'>
-                    {% for release_in_group in object.releaseingroup_set.all %}
+                    {% for release_in_group in sorted_releases %}
                         <!--Release Group Item-->
                         <div class="bg-light p-3 mb-3">
                             <div class="bg-white p-3 d-flex">

@@ -13,6 +13,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import transaction
 from django.db.models import Count, F, Max, OuterRef, Q, Subquery
+from django.db.models.functions import Length
 from django.forms import inlineformset_factory
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
@@ -2030,8 +2031,25 @@ class ReleaseGroupDetailView(DetailView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        # contributors
+
+        # Get contributors
         context["contributors"] = get_contributors(self.object)
+
+        # Custom sorting logic for releases by date completeness
+        # First, fetch all related releases
+        releases = self.object.releaseingroup_set.all()
+
+        # Then, sort them by their 'release_date' field length and value
+        releases = releases.annotate(
+            date_length=Length("release__release_date"),
+            padded_date=F("release__release_date"),
+        ).order_by("-date_length", "padded_date")
+
+        # Update the context with the sorted releases
+        context["sorted_releases"] = releases
+        if releases:
+            context["oldest_release"] = releases.first()
+
         return context
 
 
