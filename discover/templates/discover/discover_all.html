@@ -307,6 +307,40 @@
                         {% endfor %}
                     </ol>
                 </div>
+
+                <!-- Visit -->
+                <div class="col-12 col-md-6 mb-3">
+                    <h3>Visit Check-ins</h3>      
+                    <ol>
+                        {% for checkin in visit_checkins %}
+                            <li class="mb-3">
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted mb-2">
+                                                <a href="{% url 'accounts:detail' checkin.user.username %}">{{ checkin.user.display_name|default:checkin.user.username }}</a>
+                                                checked in to 
+                                                <a href="{% url 'visit:location_detail' checkin.content_object.id %}">{{checkin.content_object.name}}</a>
+                                            </div>
+                                        </span>
+                                        {% if checkin.content %}
+                                        <div class="bg-light p-3 mb-2">
+                                            {{checkin.content|truncatechars:300|linkify_tags|markdownify}}</a>
+                                        </div>
+                                        {% endif %}
+                                        <span class="d-flex">
+                                            <div class="me-2 text-muted">
+                                                <a href="{% url 'write:play_checkin_detail' checkin.user.username checkin.id %}" class="text-muted">
+                                                    {{ checkin.timestamp|timesince }} ago
+                                                </a>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
             </div>
 
         </div>

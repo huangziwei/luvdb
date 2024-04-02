@@ -18,6 +18,7 @@ from django_ratelimit.decorators import ratelimit
 from listen.models import ListenCheckIn
 from play.models import PlayCheckIn
 from read.models import ReadCheckIn
+from visit.models import VisitCheckIn
 from watch.models import WatchCheckIn
 from write.models import LuvList, Pin, Post, Repost, Say
 
@@ -121,6 +122,7 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
             (WatchCheckIn, "watch_checkins"),
             (ListenCheckIn, "listen_checkins"),
             (PlayCheckIn, "play_checkins"),
+            (VisitCheckIn, "visit_checkins"),
         ]
 
         if order_by == "trending":
@@ -498,6 +500,7 @@ class DiscoverLikedView(LoginRequiredMixin, ListView):
             (WatchCheckIn, "watch_checkins"),
             (ListenCheckIn, "listen_checkins"),
             (PlayCheckIn, "play_checkins"),
+            (VisitCheckIn, "visit_checkins"),
         ]
 
         says_and_reposts = list(
