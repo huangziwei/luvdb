@@ -65,7 +65,7 @@
                         <li>
                             <a href="{% url "listen:track_detail" track.track.id %}">{{ track.track.title }}</a>
                             {# djlint:off #}
-                            ({% if track.singers %}{% for singer in track.singers %}{{ singer.name }}{% if not forloop.last %}/{% endif %}{% endfor %}, {% endif %}{{ track.track.release_date }})
+                            ({% if track.singers %}{% for singer in track.singers %}{{ singer.alt_name|default:singer.name }}{% if not forloop.last %}/{% endif %}{% endfor %}, {% endif %}{{ track.track.release_date }})
                             {# djlint:on #}
                             {% for item in track.items %}
                                 <ul>

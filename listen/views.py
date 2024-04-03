@@ -237,6 +237,10 @@ class WorkDetailView(DetailView):
                 release.type = "release"
             items = sorted(list(releases), key=lambda x: x.release_date)
             singers = track.creators.filter(trackrole__role__name="Singer")
+            for singer in singers:
+                singer.alt_name = TrackRole.objects.get(
+                    track=track, creator=singer, role__name="Singer"
+                ).alt_name
             context["tracks"].append(
                 {"track": track, "items": items, "singers": singers}
             )
