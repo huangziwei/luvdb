@@ -55,6 +55,11 @@ urlpatterns = [
     path("track/<int:pk>/history/", TrackHistoryView.as_view(), name="track_history"),
     # release
     path("release/create/", ReleaseCreateView.as_view(), name="release_create"),
+    path(
+        "release/create/<int:track_id>/",
+        ReleaseCreateView.as_view(),
+        name="release_create_with_track",
+    ),
     path("release/<int:pk>/", ReleaseDetailView.as_view(), name="release_detail"),
     path(
         "release/<int:pk>/update/", ReleaseUpdateView.as_view(), name="release_update"

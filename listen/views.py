@@ -51,8 +51,10 @@ from .forms import (
     ReleaseGroupForm,
     ReleaseInGroupFormSet,
     ReleaseRole,
+    ReleaseRoleForm,
     ReleaseRoleFormSet,
     ReleaseTrack,
+    ReleaseTrackForm,
     ReleaseTrackFormSet,
     TrackForm,
     TrackRole,
@@ -605,8 +607,34 @@ class ReleaseCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy("listen:release_detail", kwargs={"pk": self.object.pk})
 
+    def get_initial(self):
+        initial = super().get_initial()
+        track_id = self.kwargs.get("track_id")  # Attempt to get 'track_id' from URL
+
+        if not track_id and "track_id" in self.request.session:
+            # Fallback to session if 'track_id' is not in URL
+            track_id = self.request.session["track_id"]
+
+        if track_id:
+            track = get_object_or_404(Track, id=track_id)
+            # Prefill form fields based on the Track
+            initial.update(
+                {
+                    "title": track.title,
+                    "other_titles": track.other_titles,
+                    "release_date": track.release_date,
+                    "recorded_date": track.recorded_date,
+                    "wikipedia": track.wikipedia,
+                    "release_length": track.length,
+                    "release_type": "Single",
+                    "wikipedia": track.wikipedia,
+                }
+            )
+        return initial
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        track_id = self.kwargs.get("track_id") or self.request.session.get("track_id")
         if self.request.POST:
             data["releaseroles"] = ReleaseRoleFormSet(
                 self.request.POST, instance=self.object
@@ -617,6 +645,86 @@ class ReleaseCreateView(LoginRequiredMixin, CreateView):
         else:
             data["releaseroles"] = ReleaseRoleFormSet(instance=self.object)
             data["releasetracks"] = ReleaseTrackFormSet(instance=self.object)
+
+            if track_id:
+                track = get_object_or_404(Track, id=track_id)
+                track_roles = track.trackrole_set.all()
+
+                initial_roles = [
+                    {
+                        "creator": role.creator.id,
+                        "role": role.role.id,
+                        "alt_name": role.alt_name,
+                        "domain": "listen",  # Assuming 'listen' is the correct domain for releases
+                    }
+                    for role in track_roles
+                ]
+                num_initial_roles = len(initial_roles) if len(initial_roles) > 0 else 1
+                ReleaseRoleFormSet_prefilled = inlineformset_factory(
+                    Release,
+                    ReleaseRole,
+                    form=ReleaseRoleForm,
+                    extra=num_initial_roles,
+                    can_delete=True,
+                    widgets={
+                        "creator": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:creator-autocomplete"),
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:creator_create")
+                            },
+                        ),
+                        "role": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:role-autocomplete"),
+                            forward=[
+                                "domain"
+                            ],  # forward the domain field to the RoleAutocomplete view
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:role_create")
+                            },
+                        ),
+                    },
+                    help_texts={
+                        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+                        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
+                    },
+                )
+
+                data["releaseroles"] = ReleaseRoleFormSet_prefilled(
+                    instance=self.object,
+                    initial=initial_roles,
+                    queryset=ReleaseRole.objects.none(),
+                )
+
+                initial_tracks = [
+                    {
+                        "track": track,
+                        "disk": 1,
+                        "order": 1,
+                    }
+                ]
+
+                num_initial_tracks = (
+                    len(initial_tracks) if len(initial_tracks) > 0 else 1
+                )
+                ReleaseTrackFormSet_prefilled = inlineformset_factory(
+                    Release,
+                    ReleaseTrack,
+                    form=ReleaseTrackForm,
+                    extra=num_initial_tracks,
+                    can_delete=True,
+                    widgets={
+                        "track": autocomplete.ModelSelect2(
+                            url=reverse_lazy("listen:track-autocomplete")
+                        ),
+                    },
+                )
+
+                data["releasetracks"] = ReleaseTrackFormSet_prefilled(
+                    instance=self.object,
+                    initial=initial_tracks,
+                    queryset=ReleaseTrack.objects.none(),
+                )
+
         return data
 
     def form_valid(self, form):
