@@ -797,16 +797,20 @@
                                                     {% if item.content_object.osm_id %}
                                                         <div class="mb-1 mb-md-0 flex-shrink-0">
                                                             <a href="{% url 'visit:location_detail' item.content_object.id %}" title="{{item.content_object.name}}">
-                                                                <div id="mapid-{{ item.id }} + 400" style="height: 200px;"></div>
+                                                                {% with map_id=item.content_object.id|add:400 %}
+                                                                    <div id="mapid-{{ map_id }}" style="height: 200px;"></div>
+                                                                {% endwith %}
                                                             </a>
                                                             <script>
                                                                 document.addEventListener('DOMContentLoaded', function() {
                                                                     setTimeout(function() {
-                                                                        initializeMap('mapid-{{ item.id }} + 400', "{{ item.content_object.osm_id }}", "{{ item.content_object.osm_id_type }}", "{{item.content_object.level}}");
+                                                                        {% with map_id=item.content_object.id|add:400 %}
+                                                                            initializeMap('mapid-{{ map_id }}', "{{ item.content_object.osm_id }}", "{{ item.content_object.osm_id_type }}", "{{item.content_object.level}}");
+                                                                        {% endwith %}
                                                                     }, {{ forloop.counter0 }} * 1500); 
                                                                 });
                                                             </script>
-                                                        </div>
+                                                        </div>                                                    
                                                     {% endif %}
                                                 </a>
                                             </div>
@@ -824,16 +828,20 @@
                                                     {% if item.content_object.osm_id %}
                                                         <div class="mb-1 mb-md-0 flex-shrink-0">
                                                             <a href="{% url 'visit:location_detail' item.content_object.id %}" title="{{item.content_object.name}}">
-                                                                <div id="mapid-{{ item.id }} + 300" style="height: 200px;"></div>
+                                                                {% with map_id=item.content_object.id|add:300 %}
+                                                                    <div id="mapid-{{ map_id }}" style="height: 200px;"></div>
+                                                                {% endwith %}
                                                             </a>
                                                             <script>
                                                                 document.addEventListener('DOMContentLoaded', function() {
                                                                     setTimeout(function() {
-                                                                        initializeMap('mapid-{{ item.id }} + 300', "{{ item.content_object.osm_id }}", "{{ item.content_object.osm_id }}", "{{item.content_object.level}}");
+                                                                        {% with map_id=item.content_object.id|add:300 %}
+                                                                            initializeMap('mapid-{{ map_id }}', "{{ item.content_object.osm_id }}", "{{ item.content_object.osm_id_type }}", "{{item.content_object.level}}");
+                                                                        {% endwith %}
                                                                     }, {{ forloop.counter0 }} * 1500); 
                                                                 });
                                                             </script>
-                                                        </div>
+                                                        </div>                                                    
                                                     {% endif %}
                                                 </a>
                                             </div>
@@ -1517,16 +1525,20 @@
                                                     {% if item.content_object.osm_id %}
                                                         <div class="mb-1 mb-md-0 flex-shrink-0">
                                                             <a href="{% url 'visit:location_detail' item.content_object.id %}" title="{{item.content_object.name}}">
-                                                                <div id="mapid-{{ item.id }} + 200" style="height: 200px;"></div>
+                                                                {% with map_id=item.content_object.id|add:200 %}
+                                                                    <div id="mapid-{{ map_id }}" style="height: 200px;"></div>
+                                                                {% endwith %}
                                                             </a>
                                                             <script>
                                                                 document.addEventListener('DOMContentLoaded', function() {
                                                                     setTimeout(function() {
-                                                                        initializeMap('mapid-{{ item.id }} + 200', "{{ item.content_object.osm_id }}", "{{ item.content_object.osm_id }}", "{{item.content_object.level}}");
+                                                                        {% with map_id=item.content_object.id|add:200 %}
+                                                                            initializeMap('mapid-{{ map_id }}', "{{ item.content_object.osm_id }}", "{{ item.content_object.osm_id_type }}", "{{item.content_object.level}}");
+                                                                        {% endwith %}
                                                                     }, {{ forloop.counter0 }} * 1500); 
                                                                 });
                                                             </script>
-                                                        </div>
+                                                        </div>                                                    
                                                     {% endif %}
                                                 </a>
                                             </div>
@@ -1544,16 +1556,20 @@
                                                     {% if item.content_object.osm_id %}
                                                         <div class="mb-1 mb-md-0 flex-shrink-0">
                                                             <a href="{% url 'visit:location_detail' item.content_object.id %}" title="{{item.content_object.name}}">
-                                                                <div id="mapid-{{ item.id }} + 100" style="height: 200px;"></div>
+                                                                {% with map_id=item.content_object.id|add:100 %}
+                                                                    <div id="mapid-{{ map_id }}" style="height: 200px;"></div>
+                                                                {% endwith %}
                                                             </a>
                                                             <script>
                                                                 document.addEventListener('DOMContentLoaded', function() {
                                                                     setTimeout(function() {
-                                                                        initializeMap('mapid-{{ item.id }} + 100', "{{ item.content_object.osm_id }}", "{{ item.content_object.osm_id }}", "{{item.content_object.level}}");
+                                                                        {% with map_id=item.content_object.id|add:100 %}
+                                                                            initializeMap('mapid-{{ map_id }}', "{{ item.content_object.osm_id }}", "{{ item.content_object.osm_id_type }}", "{{item.content_object.level}}");
+                                                                        {% endwith %}
                                                                     }, {{ forloop.counter0 }} * 1500); 
                                                                 });
                                                             </script>
-                                                        </div>
+                                                        </div>                                                    
                                                     {% endif %}
                                                 </a>
                                             </div>
