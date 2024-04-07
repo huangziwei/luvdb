@@ -24,7 +24,7 @@ class CreatorForm(forms.ModelForm):
             "notes",
         ]
         help_texts = {
-            "name": "Enter the person's or the group's most-used name in their original language. ",
+            "name": "Enter the person's or the group's name in the language they are most widely recognized.  ",
             "other_names": "Enter any other names the person or the group is known by, separated by slashes (`/`).",
             "creator_type": "Select whether the entity is a person or a group.",
             "birth_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`.",
