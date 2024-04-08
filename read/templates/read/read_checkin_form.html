@@ -190,8 +190,9 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         // Set default status and progress type values
-        var default_status = '{{ latest_user_status }}' || 'to_read';
+        var default_status = '{{ latest_user_status }}' || 'abandoned';
+        var default_progress_type = '{{ latest_progress_type }}' || 'CH';
         setStatus(event, default_status);
-        setProgressType(event, 'PG');
+        setProgressType(event, default_progress_type);
     });
 </script>

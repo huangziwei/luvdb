@@ -736,10 +736,13 @@ class BookDetailView(DetailView):
             )
             if latest_user_checkin is not None:
                 context["latest_user_status"] = latest_user_checkin.status
+                context["latest_progress_type"] = latest_user_checkin.progress_type
             else:
                 context["latest_user_status"] = "to_read"
+                context["latest_progress_type"] = "PG"
         else:
             context["latest_user_status"] = "to_read"
+            context["latest_progress_type"] = "PG"
 
         # contributors
         context["contributors"] = get_contributors(self.object)
