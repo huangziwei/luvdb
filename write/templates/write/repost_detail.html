@@ -565,7 +565,7 @@
                         <button id="show-reposts"
                                 class="btn btn-secondary btn-sm mx-auto toggle-button">Reposts</button>
                     </div>
-                    {% if object.user != request.user %}
+                    {% if object.user != request.user and request.user.is_authenticated %}
                     <div>
                         <a href="{% url 'discover:vote' 'repost' repost.id 'up' %}" 
                             class="me-2 btn btn-sm {% if has_voted %}btn-outline-danger active{% else %}btn-outline-danger{% endif %}" 
@@ -576,6 +576,7 @@
                         </a>
                     </div>
                     {% endif %}
+                    {% if can_crosspost_bluesky or can_crosspost_mastodon %}
                     <div class="d-flex">
                         {% if can_crosspost_bluesky %}
                         <div class="me-1">
@@ -600,6 +601,7 @@
                         </div>
                         {% endif %}
                     </div>
+                    {% endif %}
                 </div>
                 <hr>
                 <div id="comments-section">
