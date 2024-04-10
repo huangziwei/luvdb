@@ -43,7 +43,9 @@ from listen.models import ListenCheckIn
 from play.models import PlayCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
+from write.utils_bluesky import create_bluesky_post
 from write.utils_formatting import check_required_js
+from write.utils_mastodon import create_mastodon_post
 
 from .forms import (
     CommentForm,
@@ -391,9 +393,38 @@ class SayDetailView(ShareDetailView):
             raise Http404("You do not have permission to view this.")
         return obj
 
+    def post(self, request, *args, **kwargs):
+        say = self.get_object()
+        if "crosspost_mastodon" in request.POST and hasattr(
+            request.user, "mastodon_account"
+        ):
+            url = request.build_absolute_uri(say.get_absolute_url())
+            create_mastodon_post(
+                handle=request.user.mastodon_account.mastodon_handle,
+                access_token=request.user.mastodon_account.get_mastodon_access_token(),
+                text=say.content,
+                url=url,
+            )
+        elif "crosspost_bluesky" in request.POST and hasattr(
+            request.user, "bluesky_account"
+        ):
+            url = request.build_absolute_uri(say.get_absolute_url())
+            create_bluesky_post(
+                handle=request.user.bluesky_account.bluesky_handle,
+                pds_url=request.user.bluesky_account.bluesky_pds_url,
+                password=request.user.bluesky_account.get_bluesky_app_password(),
+                text=say.content,
+                content_id=say.id,
+                content_username=request.user.username,
+                content_type="Say",
+            )
+        return HttpResponseRedirect(request.path_info)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context['can_crosspost_mastodon'] = self.request.user.is_authenticated and hasattr(self.request.user, 'mastodon_account')
+        context['can_crosspost_bluesky'] = self.request.user.is_authenticated and hasattr(self.request.user, 'bluesky_account')
 
         # Add the flags to the context
         include_mathjax, include_mermaid = check_required_js([self.object])

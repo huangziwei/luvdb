@@ -110,6 +110,11 @@ def create_bluesky_post(
             "write:play_checkin_detail",
             kwargs={"pk": content_id, "username": content_username},
         )
+    elif content_type == "VisitCheckIn":
+        content_url = domain + reverse(
+            "write:visit_checkin_detail",
+            kwargs={"pk": content_id, "username": content_username},
+        )
     else:
         content_url = ""
 

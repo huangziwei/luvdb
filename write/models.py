@@ -25,9 +25,6 @@ from discover.models import Vote
 from notify.models import MutedNotification, Notification
 from notify.views import create_mentions_notifications
 
-from .utils_bluesky import create_bluesky_post
-from .utils_mastodon import create_mastodon_post
-
 User = get_user_model()
 
 
@@ -246,97 +243,66 @@ class Repost(auto_prefetch.Model):
                 content_object=self,
             )
 
-            if self.content and hasattr(self.user, "bluesky_account"):
-                try:
-                    bluesky_account = self.user.bluesky_account
-                    create_bluesky_post(
-                        bluesky_account.bluesky_handle,
-                        bluesky_account.bluesky_pds_url,
-                        bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
-                        self.content,
-                        self.id,
-                        self.user.username,
-                        "Repost",
-                    )
-                except Exception as e:
-                    print(f"Error creating Bluesky post: {e}")
+        if was_updated:
+            # Fetch and update the related Activity object
+            try:
+                activity = Activity.objects.get(
+                    content_type__model="repost", object_id=self.id
+                )
+                activity.save()  # This will trigger the update logic in Activity model
+            except Activity.DoesNotExist:
+                pass  # Handle the case where the Activity object does not exist
 
-            if self.content and hasattr(self.user, "mastodon_account"):
-                try:
-                    mastodon_account = self.user.mastodon_account
-                    create_mastodon_post(
-                        mastodon_account.mastodon_handle,
-                        mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
-                        self.content,
-                        self.id,
-                        self.user.username,
-                        "Repost",
-                    )
-                except Exception as e:
-                    print(f"Error creating Mastodon post: {e}")
+        original_activity_user = (
+            self.original_activity.user
+            if self.original_activity
+            else self.original_repost.user
+        )
 
-            if was_updated:
-                # Fetch and update the related Activity object
-                try:
-                    activity = Activity.objects.get(
-                        content_type__model="repost", object_id=self.id
-                    )
-                    activity.save()  # This will trigger the update logic in Activity model
-                except Activity.DoesNotExist:
-                    pass  # Handle the case where the Activity object does not exist
-
-            original_activity_user = (
-                self.original_activity.user
+        # Check if user has muted notifications for the original activity
+        has_muted = MutedNotification.objects.filter(
+            user=original_activity_user,
+            content_type=ContentType.objects.get_for_model(
+                self.original_activity.content_object
                 if self.original_activity
-                else self.original_repost.user
+                else self.original_repost.content_object
+            ),
+            object_id=(
+                self.original_activity.content_object.id
+                if self.original_activity
+                else self.original_repost.content_object.id
+            ),
+        ).exists()
+
+        # Create notification for repost
+        if not has_muted and self.user != original_activity_user:
+            user_url = reverse("accounts:detail", args=[self.user.username])
+            content_url = self.original_activity.content_object.get_absolute_url()
+            content_name = (
+                self.original_activity.content_object.__class__.__name__.capitalize()
             )
+            if "checkin" in content_name:
+                content_name = f"{content_name[:-7]} Check-in"
 
-            # Check if user has muted notifications for the original activity
-            has_muted = MutedNotification.objects.filter(
-                user=original_activity_user,
-                content_type=ContentType.objects.get_for_model(
+            repost_url = self.get_absolute_url()
+            message = f'<a href="{user_url}">@{self.user.username}</a> reposted your <a href="{content_url}">{content_name}</a>. See the <a href="{repost_url}">Repost</a>.'
+
+            notification = Notification.objects.create(
+                recipient=self.original_activity.user,
+                sender_content_type=ContentType.objects.get_for_model(self.user),
+                sender_object_id=self.user.id,
+                subject_content_type=ContentType.objects.get_for_model(
                     self.original_activity.content_object
-                    if self.original_activity
-                    else self.original_repost.content_object
                 ),
-                object_id=(
-                    self.original_activity.content_object.id
-                    if self.original_activity
-                    else self.original_repost.content_object.id
-                ),
-            ).exists()
-
-            # Create notification for repost
-            if not has_muted and self.user != original_activity_user:
-                user_url = reverse("accounts:detail", args=[self.user.username])
-                content_url = self.original_activity.content_object.get_absolute_url()
-                content_name = (
-                    self.original_activity.content_object.__class__.__name__.capitalize()
-                )
-                if "checkin" in content_name:
-                    content_name = f"{content_name[:-7]} Check-in"
-
-                repost_url = self.get_absolute_url()
-                message = f'<a href="{user_url}">@{self.user.username}</a> reposted your <a href="{content_url}">{content_name}</a>. See the <a href="{repost_url}">Repost</a>.'
-
-                notification = Notification.objects.create(
-                    recipient=self.original_activity.user,
-                    sender_content_type=ContentType.objects.get_for_model(self.user),
-                    sender_object_id=self.user.id,
-                    subject_content_type=ContentType.objects.get_for_model(
-                        self.original_activity.content_object
-                    ),
-                    subject_object_id=self.original_activity.content_object.id,
-                    notification_type="repost",
-                    message=message,
-                )
-                notification.save()
-                repost_url_with_read_marker = (
-                    f"{repost_url}?mark_read={notification.id}"
-                )
-                # Update the message with the new URL containing the marker
-                notification.message = f'<a href="{user_url}">@{self.user.username}</a> reposted your <a href="{content_url}">{content_name}</a>. See the <a href="{repost_url_with_read_marker}">Repost</a>.'
-                notification.save()
+                subject_object_id=self.original_activity.content_object.id,
+                notification_type="repost",
+                message=message,
+            )
+            notification.save()
+            repost_url_with_read_marker = f"{repost_url}?mark_read={notification.id}"
+            # Update the message with the new URL containing the marker
+            notification.message = f'<a href="{user_url}">@{self.user.username}</a> reposted your <a href="{content_url}">{content_name}</a>. See the <a href="{repost_url_with_read_marker}">Repost</a>.'
+            notification.save()
 
         # Handle tags
         handle_tags(self, self.content)
@@ -400,40 +366,6 @@ class Post(auto_prefetch.Model):
                     activity_type="post",
                     content_object=self,
                 )
-
-                if hasattr(self.user, "bluesky_account"):
-                    try:
-                        bluesky_account = self.user.bluesky_account
-                        create_bluesky_post(
-                            bluesky_account.bluesky_handle,
-                            bluesky_account.bluesky_pds_url,
-                            bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
-                            f'I posted "{self.title}" on LʌvDB\n\n'
-                            + self.content
-                            + "\n\n",
-                            self.id,
-                            self.user.username,
-                            "Post",
-                        )
-                    except Exception as e:
-                        print(f"Error creating Bluesky post: {e}")
-
-                if hasattr(self.user, "mastodon_account"):
-                    try:
-                        mastodon_account = self.user.mastodon_account
-                        create_mastodon_post(
-                            mastodon_account.mastodon_handle,
-                            mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
-                            f'I posted "{self.title}" on LʌvDB\n\n'
-                            + self.content
-                            + "\n\n",
-                            self.id,
-                            self.user.username,
-                            "Post",
-                        )
-                    except Exception as e:
-                        print(f"Error creating Mastodon post: {e}")
-
         elif activity is not None:
             # Optionally, remove the Activity if share_to_feed is False
             activity.delete()
@@ -505,35 +437,6 @@ class Say(auto_prefetch.Model):
                 content_object=self,
             )
 
-            if hasattr(self.user, "bluesky_account"):
-                try:
-                    bluesky_account = self.user.bluesky_account
-                    create_bluesky_post(
-                        bluesky_account.bluesky_handle,
-                        bluesky_account.bluesky_pds_url,
-                        bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
-                        self.content,
-                        self.id,
-                        self.user.username,
-                        "Say",
-                    )
-                except Exception as e:
-                    print(f"Error creating Bluesky post: {e}")
-
-            if hasattr(self.user, "mastodon_account"):
-                try:
-                    mastodon_account = self.user.mastodon_account
-                    create_mastodon_post(
-                        mastodon_account.mastodon_handle,
-                        mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
-                        self.content,
-                        self.id,
-                        self.user.username,
-                        "Say",
-                    )
-                except Exception as e:
-                    print(f"Error creating Mastodon post: {e}")
-
         if was_updated:
             # Fetch and update the related Activity object
             try:
@@ -602,39 +505,6 @@ class Pin(auto_prefetch.Model):
                     activity_type="pin",
                     content_object=self,
                 )
-
-                if hasattr(self.user, "bluesky_account"):
-                    try:
-                        bluesky_account = self.user.bluesky_account
-                        create_bluesky_post(
-                            bluesky_account.bluesky_handle,
-                            bluesky_account.bluesky_pds_url,
-                            bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
-                            f'I pinned "{self.title}" ({urlparse(self.url).netloc}) on LʌvDB\n\n'
-                            + self.content
-                            + "\n\n",
-                            self.id,
-                            self.user.username,
-                            "Pin",
-                        )
-                    except Exception as e:
-                        print(f"Error creating Bluesky post: {e}")
-
-                if hasattr(self.user, "mastodon_account"):
-                    try:
-                        mastodon_account = self.user.mastodon_account
-                        create_mastodon_post(
-                            mastodon_account.mastodon_handle,
-                            mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
-                            f'I pinned "{self.title}" ({urlparse(self.url).netloc}) on LʌvDB\n\n'
-                            + self.content
-                            + "\n\n",
-                            self.id,
-                            self.user.username,
-                            "Pin",
-                        )
-                    except Exception as e:
-                        print(f"Error creating Mastodon post: {e}")
 
         elif activity is not None:
             # Optionally, remove the Activity if share_to_feed is False

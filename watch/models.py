@@ -23,8 +23,6 @@ from read.models import Work as LitWork
 from visit.models import Location
 from visit.utils import get_location_hierarchy_ids
 from write.models import create_mentions_notifications, handle_tags
-from write.utils_bluesky import create_bluesky_post
-from write.utils_mastodon import create_mastodon_post
 
 
 # helpers
@@ -774,40 +772,6 @@ class WatchCheckIn(auto_prefetch.Model):
                     activity_type="watch-check-in",
                     content_object=self,
                 )
-
-                if hasattr(self.user, "bluesky_account"):
-                    try:
-                        bluesky_account = self.user.bluesky_account
-                        create_bluesky_post(
-                            bluesky_account.bluesky_handle,
-                            bluesky_account.bluesky_pds_url,
-                            bluesky_account.get_bluesky_app_password(),  # Ensure this method securely retrieves the password
-                            f'I checked in to "{self.content_object.title}" on LʌvDB\n\n'
-                            + self.content
-                            + "\n\n",
-                            self.id,
-                            self.user.username,
-                            "WatchCheckIn",
-                        )
-                    except Exception as e:
-                        print(f"Error creating Bluesky post: {e}")
-
-                if hasattr(self.user, "mastodon_account"):
-                    try:
-                        mastodon_account = self.user.mastodon_account
-                        create_mastodon_post(
-                            mastodon_account.mastodon_handle,
-                            mastodon_account.get_mastodon_access_token(),  # Ensure this method securely retrieves the password
-                            f'I checked in to "{self.content_object.title}" on LʌvDB\n\n'
-                            + self.content
-                            + "\n\n",
-                            self.id,
-                            self.user.username,
-                            "WatchCheckIn",
-                        )
-                    except Exception as e:
-                        print(f"Error creating Mastodon post: {e}")
-
         elif activity is not None:
             # Optionally, remove the Activity if share_to_feed is False
             activity.delete()
