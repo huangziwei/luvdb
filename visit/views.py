@@ -18,8 +18,7 @@ from django.db.models import (
     Value,
     When,
 )
-from django.db.models.functions import Length
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -42,7 +41,9 @@ from scrape.wikipedia import scrape_location
 from watch.models import Episode, Movie, Series
 from write.forms import CommentForm, RepostForm
 from write.models import Comment
+from write.utils_bluesky import create_bluesky_post
 from write.utils_formatting import check_required_js
+from write.utils_mastodon import create_mastodon_post
 
 from .forms import LocationForm, VisitCheckInForm
 from .models import Location, VisitCheckIn
@@ -449,6 +450,33 @@ class VisitCheckInDetailView(DetailView):
     template_name = "visit/visit_checkin_detail.html"
     context_object_name = "checkin"  # This name will be used in your template
 
+    def post(self, request, *args, **kwargs):
+        checkin = self.get_object()
+        if "crosspost_mastodon" in request.POST and hasattr(
+            request.user, "mastodon_account"
+        ):
+            url = request.build_absolute_uri(checkin.get_absolute_url())
+            create_mastodon_post(
+                handle=request.user.mastodon_account.mastodon_handle,
+                access_token=request.user.mastodon_account.get_mastodon_access_token(),
+                text=checkin.content,
+                url=url,
+            )
+        elif "crosspost_bluesky" in request.POST and hasattr(
+            request.user, "bluesky_account"
+        ):
+            url = request.build_absolute_uri(checkin.get_absolute_url())
+            create_bluesky_post(
+                handle=request.user.bluesky_account.bluesky_handle,
+                pds_url=request.user.bluesky_account.bluesky_pds_url,
+                password=request.user.bluesky_account.get_bluesky_app_password(),
+                text=checkin.content,
+                content_id=checkin.id,
+                content_username=request.user.username,
+                content_type="VisitCheckIn",
+            )
+        return HttpResponseRedirect(request.path_info)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["comments"] = Comment.objects.filter(
@@ -469,7 +497,14 @@ class VisitCheckInDetailView(DetailView):
 
         # Determine if the user has upvoted this ReadCheckIn object
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
-
+        context["can_crosspost_mastodon"] = (
+            self.request.user.is_authenticated
+            and hasattr(self.request.user, "mastodon_account")
+        )
+        context["can_crosspost_bluesky"] = (
+            self.request.user.is_authenticated
+            and hasattr(self.request.user, "bluesky_account")
+        )
         context["is_blocked"] = (
             Block.objects.filter(
                 blocker=self.object.user, blocked=self.request.user

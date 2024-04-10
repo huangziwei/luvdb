@@ -96,11 +96,21 @@ class ShareDetailView(DetailView):
             else False
         )
 
-        obj = self.get_object()
-        partial_target_url = (
-            f"@{obj.user.username}/{obj._meta.model_name.lower()}/{obj.id}/"
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["can_crosspost_mastodon"] = (
+            self.request.user.is_authenticated
+            and hasattr(self.request.user, "mastodon_account")
         )
-        context["source_url"] = self.request.build_absolute_uri()
+        context["can_crosspost_bluesky"] = (
+            self.request.user.is_authenticated
+            and hasattr(self.request.user, "bluesky_account")
+        )
+
+        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js([self.object])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 
@@ -201,18 +211,36 @@ class PostDetailView(ShareDetailView):
     model = Post
     template_name = "write/post_detail.html"
 
+    def post(self, request, *args, **kwargs):
+        luvpost = self.get_object()
+        if "crosspost_mastodon" in request.POST and hasattr(
+            request.user, "mastodon_account"
+        ):
+            url = request.build_absolute_uri(luvpost.get_absolute_url())
+            create_mastodon_post(
+                handle=request.user.mastodon_account.mastodon_handle,
+                access_token=request.user.mastodon_account.get_mastodon_access_token(),
+                text=luvpost.title,
+                url=url,
+            )
+        elif "crosspost_bluesky" in request.POST and hasattr(
+            request.user, "bluesky_account"
+        ):
+            url = request.build_absolute_uri(luvpost.get_absolute_url())
+            create_bluesky_post(
+                handle=request.user.bluesky_account.bluesky_handle,
+                pds_url=request.user.bluesky_account.bluesky_pds_url,
+                password=request.user.bluesky_account.get_bluesky_app_password(),
+                text=luvpost.title,
+                content_id=luvpost.id,
+                content_username=request.user.username,
+                content_type="Post",
+            )
+        return HttpResponseRedirect(request.path_info)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
         context["projects"] = self.object.projects.all()
-
-        # Add the flags to the context
-        include_mathjax, include_mermaid = check_required_js([self.object])
-        context["include_mathjax"] = include_mathjax
-        context["include_mermaid"] = include_mermaid
-
-        obj = self.get_object()
-        partial_target_url = f"@{obj.user.username}/post/{obj.slug}/"
 
         # New code to order posts within projects
         projects_with_ordered_posts = []
@@ -420,18 +448,6 @@ class SayDetailView(ShareDetailView):
             )
         return HttpResponseRedirect(request.path_info)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
-        context['can_crosspost_mastodon'] = self.request.user.is_authenticated and hasattr(self.request.user, 'mastodon_account')
-        context['can_crosspost_bluesky'] = self.request.user.is_authenticated and hasattr(self.request.user, 'bluesky_account')
-
-        # Add the flags to the context
-        include_mathjax, include_mermaid = check_required_js([self.object])
-        context["include_mathjax"] = include_mathjax
-        context["include_mermaid"] = include_mermaid
-        return context
-
 
 class SayCreateView(LoginRequiredMixin, CreateView):
     model = Say
@@ -575,15 +591,36 @@ class PinDetailView(ShareDetailView):
     model = Pin
     template_name = "write/pin_detail.html"
 
+    def post(self, request, *args, **kwargs):
+        pin = self.get_object()
+        if "crosspost_mastodon" in request.POST and hasattr(
+            request.user, "mastodon_account"
+        ):
+            url = pin.url
+            create_mastodon_post(
+                handle=request.user.mastodon_account.mastodon_handle,
+                access_token=request.user.mastodon_account.get_mastodon_access_token(),
+                text=pin.title,
+                url=url,
+            )
+        elif "crosspost_bluesky" in request.POST and hasattr(
+            request.user, "bluesky_account"
+        ):
+            url = pin.url
+            create_bluesky_post(
+                handle=request.user.bluesky_account.bluesky_handle,
+                pds_url=request.user.bluesky_account.bluesky_pds_url,
+                password=request.user.bluesky_account.get_bluesky_app_password(),
+                text=pin.content if pin.content else pin.title,
+                content_id=pin.id,
+                content_username=request.user.username,
+                content_type="Pin",
+            )
+        return HttpResponseRedirect(request.path_info)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
         context["projects"] = self.object.projects.all()
-
-        # Add the flags to the context
-        include_mathjax, include_mermaid = check_required_js([self.object])
-        context["include_mathjax"] = include_mathjax
-        context["include_mermaid"] = include_mermaid
         return context
 
 
@@ -925,14 +962,35 @@ class RepostDetailView(ShareDetailView):
     template_name = "write/repost_detail.html"
     context_object_name = "repost"
 
+    def post(self, request, *args, **kwargs):
+        repost = self.get_object()
+        if "crosspost_mastodon" in request.POST and hasattr(
+            request.user, "mastodon_account"
+        ):
+            url = request.build_absolute_uri(repost.get_absolute_url())
+            create_mastodon_post(
+                handle=request.user.mastodon_account.mastodon_handle,
+                access_token=request.user.mastodon_account.get_mastodon_access_token(),
+                text=repost.content,
+                url=url,
+            )
+        elif "crosspost_bluesky" in request.POST and hasattr(
+            request.user, "bluesky_account"
+        ):
+            url = request.build_absolute_uri(repost.get_absolute_url())
+            create_bluesky_post(
+                handle=request.user.bluesky_account.bluesky_handle,
+                pds_url=request.user.bluesky_account.bluesky_pds_url,
+                password=request.user.bluesky_account.get_bluesky_app_password(),
+                text=repost.content,
+                content_id=repost.id,
+                content_username=request.user.username,
+                content_type="Repost",
+            )
+        return HttpResponseRedirect(request.path_info)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
-
-        # Add the flags to the context
-        include_mathjax, include_mermaid = check_required_js([self.object])
-        context["include_mathjax"] = include_mathjax
-        context["include_mermaid"] = include_mathjax
         return context
 
 
@@ -1019,7 +1077,6 @@ class LuvListDetailView(DetailView):
 
         context["order"] = order
         context["contents"] = contents
-        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
         context["collaborators"] = self.object.collaborators.all().order_by("username")
 
         # statistics
