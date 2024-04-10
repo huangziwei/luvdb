@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load markdownify %}
 {% block content %}
 
 <div class="container mt-4">
@@ -12,24 +13,32 @@
             <h2>Invitation Requests</h2>
             <ul class="list-group mb-4">
                 {% for request in invitation_requests %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{ request.email }}
-                    <span class="badge badge-{{ request.is_invited|yesno:'success,secondary' }}">
-                        {{ request.is_invited|yesno:"Invited,Not Invited" }}
-                    </span>
-                    <div class="d-flex">
-                        <!-- Mark as Invited Form -->
-                        <form method="post" action="{% url 'manage_invitation_requests' %}" style="display: inline;">
-                            {% csrf_token %}
-                            <input type="hidden" name="mark_invite_id" value="{{ request.id }}">
-                            <button type="submit" class="btn btn-success btn-sm me-1">Mark Invite</button>
-                        </form>
-                        <!-- Delete Form -->
-                        <form method="post" action="{% url 'manage_invitation_requests' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="delete_id" value="{{ request.id }}">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        {{ request.email }}
+                        <div class="d-flex align-items-center">
+                            <span class="me-1 badge bg-{{ request.is_invited|yesno:'success,secondary' }}">
+                                {{ request.is_invited|yesno:"Invited,Not Invited" }}
+                            </span>
+                            <div class="d-flex">
+                                <!-- Mark as Invited Form -->
+                                <form method="post" action="{% url 'manage_invitation_requests' %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="mark_invite_id" value="{{ request.id }}">
+                                    <button type="submit" class="btn btn-success btn-sm me-1">Mark</button>
+                                </form>
+                                <!-- Delete Form -->
+                                <form method="post" action="{% url 'manage_invitation_requests' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="delete_id" value="{{ request.id }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                                <!-- Blacklist -->
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        {{request.about_me|markdownify}}
                     </div>
                 </li>
                 {% empty %}
@@ -39,5 +48,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
