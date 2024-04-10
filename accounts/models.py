@@ -257,3 +257,11 @@ class WebAuthnCredential(models.Model):
 
     def __str__(self):
         return f"Credential for {self.user}"
+
+
+class BlacklistedDomain(models.Model):
+    domain = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.domain

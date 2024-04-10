@@ -1,6 +1,12 @@
 from django.contrib import admin
 
-from .models import CustomUser, InvitationCode, InvitationRequest, WebAuthnCredential
+from .models import (
+    BlacklistedDomain,
+    CustomUser,
+    InvitationCode,
+    InvitationRequest,
+    WebAuthnCredential,
+)
 
 
 class InvitationCodeAdmin(admin.ModelAdmin):
@@ -19,7 +25,12 @@ class WebAuthnCredentialAdmin(admin.ModelAdmin):
     list_display = ("user", "aaguid", "public_key", "created_at")
 
 
+class BlacklistedDomainAdmin(admin.ModelAdmin):
+    list_display = ("domain", "created_at")
+
+
 admin.site.register(InvitationCode, InvitationCodeAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(InvitationRequest, InvitationRequestAdmin)
 admin.site.register(WebAuthnCredential, WebAuthnCredentialAdmin)
+admin.site.register(BlacklistedDomain, BlacklistedDomainAdmin)

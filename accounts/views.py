@@ -58,7 +58,7 @@ from webauthn.helpers.structs import (
     RegistrationCredential,
 )
 
-from accounts.models import CustomUser
+from accounts.models import BlacklistedDomain, CustomUser
 from activity_feed.models import Activity, Block, Follow
 from entity.models import Company, Creator
 from listen.models import Audiobook, ListenCheckIn, Podcast, Release, Track
@@ -477,8 +477,6 @@ def export_user_data(request, username):
 
 
 class RequestInvitationView(View):
-    BLACKLISTED_DOMAINS = ["example.com", "data-backup-store.com"]
-
     def post(self, request):
         email = request.POST.get("email")
         if email:
@@ -486,7 +484,7 @@ class RequestInvitationView(View):
             domain = email.split("@")[-1]
 
             # Check if the domain is blacklisted
-            if domain in self.BLACKLISTED_DOMAINS:
+            if BlacklistedDomain.objects.filter(domain=domain).exists():
                 return HttpResponseBadRequest("Email domain is blacklisted")
 
             # Create or get the invitation request
@@ -547,6 +545,16 @@ class ManageInvitationRequestsView(UserPassesTestMixin, ListView):
                 invitation.save()
             except InvitationRequest.DoesNotExist:
                 pass  # Handle non-existent invitation
+        elif "blacklist_email_id" in request.POST:
+            # New logic to blacklist a domain
+            invitation_request = InvitationRequest.objects.get(
+                id=request.POST.get("blacklist_email_id")
+            )
+            domain = invitation_request.email.split("@")[-1]
+            BlacklistedDomain.objects.get_or_create(domain=domain)
+            # Optionally, delete all requests from this domain or mark them as handled
+            InvitationRequest.objects.filter(email__endswith=domain).delete()
+            return HttpResponseRedirect(reverse("manage_invitation_requests"))
 
         return redirect("manage_invitation_requests")
 
