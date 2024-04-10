@@ -38,7 +38,6 @@ We can curate a comprehensive bibliography, filmography, discography, and gameog
 
 -   LʌvDB offers comprehensive RSS support. If you set your profile to public, others can subscribe to your activity feed, or to specific content such as your Say, Post, or Pin, and even your updates with a specific hashtag, using RSS readers.
 -   You can cross-post activities to Mastodon and BlueSky using built-in cross-posters.
--   Interactions on Mastodon and BlueSky can be aggregated to LʌvDB with WebMention through [brid.gy](https://brid.gy).
 
 You can read more about the Making-of LʌvDB [here](https://luvdb.com/@_hzw/posts/making-of/).
 

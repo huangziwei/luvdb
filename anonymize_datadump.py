@@ -28,7 +28,6 @@ def anonymize_custom_user(user_data):
         "pure_text_mode": False,
         "enable_alt_profile": False,
         "custom_domain": "",
-        "enable_webmentions": False,
         "enable_replies_by_default": True,
         "enable_share_to_feed_by_default": True,
         "is_deactivated": False,

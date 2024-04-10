@@ -79,10 +79,7 @@ from .views import (
     SayUpdateView,
     TagListView,
     TagUserListView,
-    delete_webmention,
-    send_webmention,
     surprise_manifest,
-    webmention,
 )
 
 app_name = "write"
@@ -450,12 +447,4 @@ urlpatterns = [
         kwargs={"model_name": "location"},
         name="visit_checkin_list",
     ),
-    # webmention
-    path("webmention/", webmention, name="webmention"),
-    path(
-        "webmention/delete/<int:webmention_id>/",
-        delete_webmention,
-        name="delete_webmention",
-    ),
-    path("webmention/send/", send_webmention, name="send_webmention"),
 ]

@@ -1,16 +1,6 @@
 from django.contrib import admin
 
-from .models import (
-    Comment,
-    ContentInList,
-    LuvList,
-    Pin,
-    Post,
-    Project,
-    Repost,
-    Say,
-    WebMention,
-)
+from .models import Comment, ContentInList, LuvList, Pin, Post, Project, Repost, Say
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -51,10 +41,6 @@ class LuvListAdmin(admin.ModelAdmin):
     inlines = [ContentInListInline]
 
 
-class WebMentionAdmin(admin.ModelAdmin):
-    list_display = ("source", "target", "received_at")
-
-
 admin.site.register(LuvList, LuvListAdmin)
 admin.site.register(Repost, RepostAdmin)
 admin.site.register(Comment, CommentAdmin)
@@ -62,4 +48,3 @@ admin.site.register(Pin, PinAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Say, SayAdmin)
 admin.site.register(Project, ProjectAdmin)
-admin.site.register(WebMention, WebMentionAdmin)

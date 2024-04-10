@@ -900,38 +900,3 @@ class Randomizer(auto_prefetch.Model):
 
         self.save()
         return next_item
-
-
-################
-## Webmention ##
-################
-
-
-class WebMention(models.Model):
-    # CORE
-    source = models.URLField(max_length=2048)
-    target = models.URLField(max_length=2048)
-    verified = models.BooleanField(default=False)
-    received_at = models.DateTimeField(auto_now_add=True)
-
-    # CONTENT
-    author_name = models.CharField(max_length=255, null=True, blank=True)
-    author_url = models.URLField(max_length=2048, null=True, blank=True)
-    author_handle = models.CharField(max_length=255, null=True, blank=True)
-    content_title = models.CharField(max_length=255, null=True, blank=True)
-    content_url = models.URLField(max_length=2048, null=True, blank=True)
-    content = models.TextField(null=True, blank=True)
-
-    # WebMention TYPE
-    MENTION_TYPES = (
-        ("post", "Post"),
-        ("comment", "Comment"),
-        ("repost", "Repost"),
-        ("other", "Other"),
-    )
-    mention_type = models.CharField(
-        max_length=20, choices=MENTION_TYPES, default="other"
-    )
-
-    def __str__(self):
-        return f"WebMention from {self.source} to {self.target}"

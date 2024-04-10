@@ -122,7 +122,6 @@ class CustomUserChangeForm(UserChangeForm):
             "pure_text_mode",
             "enable_alt_profile",
             # "custom_domain",
-            "enable_webmentions",
         )
         help_texts = {
             "username": "Required. Letters, digits and ./+/-/_ only.",
@@ -132,7 +131,6 @@ class CustomUserChangeForm(UserChangeForm):
             "timezone": "Set your preferred timezone. This will adjust the display of all timestamps to match your local date and time.",
             "enable_alt_profile": "Enable this option to activate your alternative profile (`luvdb.com/alt/@username`).",
             # "custom_domain": "Set your custom domain for your alternative profile. Add a CNAME record to your DNS settings to point to `luvdb.com`.",
-            "enable_webmentions": "Enable this option to allow send and receive webmentions.",
             "enable_replies_by_default": "Enable this option to allow replies to your posts by default.",
             "enable_share_to_feed_by_default": "Enable this option to allow sharing your posts to your feed by default.",
         }
@@ -145,7 +143,6 @@ class CustomUserChangeForm(UserChangeForm):
         self.fields["enable_alt_profile"].label = (
             "Enable alternative profile (experimental)"
         )
-        self.fields["enable_webmentions"].label = "Enable webmentions (experimental)"
         self.fields["enable_replies_by_default"].label = "Allow replies by default"
         self.fields["enable_share_to_feed_by_default"].label = (
             "Share to feed by default"

@@ -64,7 +64,6 @@ class CustomUser(AbstractUser):
     )
     enable_alt_profile = models.BooleanField(default=False)
     custom_domain = models.CharField(max_length=100, blank=True, null=True)
-    enable_webmentions = models.BooleanField(default=False)
 
     # fine-grained settings
     enable_replies_by_default = models.BooleanField(default=True)

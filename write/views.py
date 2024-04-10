@@ -43,13 +43,7 @@ from listen.models import ListenCheckIn
 from play.models import PlayCheckIn
 from read.models import ReadCheckIn
 from watch.models import WatchCheckIn
-from write.models import WebMention
 from write.utils_formatting import check_required_js
-from write.utils_webmention import (
-    fetch_webmention_data,
-    is_valid_url,
-    verify_webmention,
-)
 
 from .forms import (
     CommentForm,
@@ -104,11 +98,6 @@ class ShareDetailView(DetailView):
         partial_target_url = (
             f"@{obj.user.username}/{obj._meta.model_name.lower()}/{obj.id}/"
         )
-
-        # Filter WebMentions based on the constructed URL
-        context["webmentions"] = WebMention.objects.filter(
-            target__endswith=partial_target_url
-        ).order_by("received_at")
         context["source_url"] = self.request.build_absolute_uri()
         return context
 
@@ -222,11 +211,6 @@ class PostDetailView(ShareDetailView):
 
         obj = self.get_object()
         partial_target_url = f"@{obj.user.username}/post/{obj.slug}/"
-
-        # Filter WebMentions based on the constructed URL
-        context["webmentions"] = WebMention.objects.filter(
-            target__endswith=partial_target_url
-        ).order_by("received_at")
 
         # New code to order posts within projects
         projects_with_ordered_posts = []
@@ -415,9 +399,6 @@ class SayDetailView(ShareDetailView):
         include_mathjax, include_mermaid = check_required_js([self.object])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
-
-        # for webmention
-        context["source_url"] = self.request.build_absolute_uri()
         return context
 
 
@@ -1322,107 +1303,3 @@ def surprise_manifest(request, luvlist_id, username=None):
         "background_color": "#ffffff",
     }
     return HttpResponse(json.dumps(data), content_type="application/json")
-
-
-#################
-## Webmentions ##
-#################
-
-
-@csrf_exempt
-@require_http_methods(["POST"])
-def webmention(request):
-    source = request.POST.get("source")
-    target = request.POST.get("target")
-
-    if not source or not target:
-        return HttpResponseBadRequest("Source and target must be provided.")
-
-    if not is_valid_url(source) or not is_valid_url(target):
-        return HttpResponseBadRequest("Source and target must be valid URLs.")
-
-    if "/like/" in source:
-        return JsonResponse({"status": "refused", "message": "Likes are not accepted."})
-
-    existing_webmention = WebMention.objects.filter(
-        source=source, target=target
-    ).first()
-
-    verified = verify_webmention(source, target)
-    webmention_data = fetch_webmention_data(source)
-
-    if not verified:
-        return JsonResponse(
-            {"status": "failure", "message": "WebMention not verified."}
-        )
-
-    if existing_webmention:
-        # Check if the source no longer links to the target (treat as deletion)
-        if not verified:
-            existing_webmention.delete()
-            return JsonResponse({"status": "success", "message": "WebMention deleted."})
-
-        # Check for content changes (treat as edit)
-        if webmention_data and webmention_data != existing_webmention.to_dict():
-            # Update existing WebMention instance
-            for key, value in webmention_data.items():
-                setattr(existing_webmention, key, value)
-            existing_webmention.save()
-            return JsonResponse({"status": "success", "message": "WebMention updated."})
-        else:
-            return JsonResponse(
-                {"status": "info", "message": "No changes detected in WebMention."}
-            )
-
-    # Handle new WebMention creation
-    if webmention_data:
-        # Create and save the WebMention instance
-        webmention_instance = WebMention(
-            source=source,
-            target=target,
-            verified=True,
-            author_name=webmention_data.get("author_name"),
-            author_url=webmention_data.get("author_url"),
-            author_handle=webmention_data.get("author_handle"),
-            content_title=webmention_data.get("content_title"),
-            content_url=webmention_data.get("content_url"),
-            content=webmention_data.get("content"),
-            mention_type=webmention_data.get("mention_type"),
-        )
-        webmention_instance.save()
-        return JsonResponse({"status": "success", "message": "WebMention received."})
-    else:
-        return JsonResponse(
-            {"status": "failure", "message": "Failed to fetch WebMention data."}
-        )
-
-
-@login_required
-def delete_webmention(request, webmention_id):
-    webmention = get_object_or_404(WebMention, id=webmention_id)
-
-    # Optional: Check if the request.user has permission to delete the WebMention
-    if not request.user.has_perm("delete_webmention", webmention):
-        return HttpResponseForbidden()
-
-    webmention.delete()
-    # Redirect back to the referring page
-    referer_url = request.META.get("HTTP_REFERER")
-    if referer_url:
-        return HttpResponseRedirect(referer_url)
-    else:
-        return redirect("activity_feed:activity_feed")
-
-
-def send_webmention(request):
-    if request.method == "POST":
-        source = request.POST.get("source")
-        target = "https://brid.gy/publish/mastodon"
-        url = "https://brid.gy/publish/webmention"
-        print("Source URL:", source)  # Debug print
-
-        data = {"source": source, "target": target}
-        response = requests.post(url, data=data)
-        print("Response from Bridgy:", response.text)  # Debug print
-
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))

@@ -39,7 +39,7 @@ from entity.utils import get_company_name, parse_date
 from entity.views import HistoryViewMixin, get_contributors
 from scrape.wikipedia import scrape_release
 from write.forms import CommentForm, RepostForm
-from write.models import Comment, ContentInList, WebMention
+from write.models import Comment, ContentInList
 from write.utils_formatting import check_required_js
 
 from .forms import (
@@ -1207,14 +1207,6 @@ class ListenCheckInDetailView(DetailView):
         include_mathjax, include_mermaid = check_required_js([self.object])
         context["include_mathjax"] = include_mathjax
         context["include_mermaid"] = include_mermaid
-
-        obj = self.get_object()
-        partial_target_url = f"@{obj.user.username}/listen/checkin/{obj.id}/"
-
-        # Filter WebMentions based on the constructed URL
-        context["webmentions"] = WebMention.objects.filter(
-            target__endswith=partial_target_url
-        ).order_by("received_at")
         context["source_url"] = self.request.build_absolute_uri()
         return context
 
