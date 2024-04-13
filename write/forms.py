@@ -45,9 +45,9 @@ class PostForm(forms.ModelForm):
             user.enable_replies_by_default if user else True
         )
         self.fields["projects"].label = ""
-        self.fields[
-            "projects"
-        ].help_text = "Posts in projects appear only on their respective project pages, not in the general post list."
+        self.fields["projects"].help_text = (
+            "Posts in projects appear only on their respective project pages, not in the general post list."
+        )
         self.fields["share_to_feed"].label = "Share to feed"
         self.fields["share_to_feed"].initial = (
             user.enable_share_to_feed_by_default if user else False
@@ -114,9 +114,9 @@ class PinForm(forms.ModelForm):
         self.fields["url"].label = ""
         self.fields["content"].label = ""
         self.fields["projects"].label = ""
-        self.fields[
-            "projects"
-        ].help_text = "Pins in projects appear only on their respective project pages, not in the general pin list."
+        self.fields["projects"].help_text = (
+            "Pins in projects appear only on their respective project pages, not in the general pin list."
+        )
         self.fields["comments_enabled"].label = "Enable replies"
         self.fields["comments_enabled"].initial = (
             user.enable_replies_by_default if user else True
@@ -190,7 +190,14 @@ class LuvListForm(forms.ModelForm):
             self.fields["allow_collaboration"].disabled = True
 
         self.fields["order_preference"].required = False
+        self.fields["order_preference"].label = "Display Order"
+        self.fields["order_preference"].help_text = (
+            "e.g. Ascending = 1, 2, 3...; Descending = 3, 2, 1..."
+        )
         self.fields["source"].help_text = "e.g. URL to the source of the list."
+        self.fields["allow_collaboration"].help_text = (
+            "Allow others to add items to the list."
+        )
 
     class Meta(auto_prefetch.Model.Meta):
         model = LuvList

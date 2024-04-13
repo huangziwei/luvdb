@@ -1,16 +1,20 @@
 {% load crispy_forms_tags %}
 <form method="post">
     {% csrf_token %}
-    <div class="row">
-        <div class="col-md-12">{{ form.title|as_crispy_field }}</div>
-        <div class="col-md-12">{{ form.short_name|as_crispy_field }}</div>
-        <div class="col-md-12">{{ form.source|as_crispy_field }}</div>
-        <div class="col-md-12">{{ form.wikipedia|as_crispy_field }}</div>
-        <div class="col-md-12">{{ form.order_preference|as_crispy_field }}</div>
-        <div class="col-md-12">{{ form.items_per_page|as_crispy_field }}</div>
-        <div class="col-md-12">{{ form.notes|as_crispy_field }}</div>
-        <div class="col-md-12">{{ form.allow_collaboration|as_crispy_field }}</div>
-    </div>
+        {{ form.title|as_crispy_field }}
+        {{ form.short_name|as_crispy_field }}
+        <div class="bg-light p-3 mb-3">
+            <strong>Links</strong>
+            {{ form.source|as_crispy_field }}
+            {{ form.wikipedia|as_crispy_field }}        
+        </div>
+        <div class="bg-light p-3 mb-3">
+            <strong>Preference</strong>
+            {{ form.order_preference|as_crispy_field }}
+            {{ form.items_per_page|as_crispy_field }}    
+            {{ form.allow_collaboration|as_crispy_field }}
+        </div>
+        {{ form.notes|as_crispy_field }}
     {{ contents.management_form }}
     <div id="contentInListDiv">
         {% for form in contents %}
