@@ -26,7 +26,6 @@ def anonymize_custom_user(user_data):
         "is_public": False,
         "timezone": "UTC",
         "pure_text_mode": False,
-        "enable_alt_profile": False,
         "custom_domain": "",
         "enable_replies_by_default": True,
         "enable_share_to_feed_by_default": True,
@@ -70,7 +69,6 @@ def main(file_path):
         "activity_feed.follow",
         "activity_feed.block",
         "discover.vote",
-        "altprofile.altprofile",
         "pages.page",
     ]
 

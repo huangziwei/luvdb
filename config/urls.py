@@ -167,8 +167,6 @@ urlpatterns = [
         ManageInvitationRequestsView.as_view(),
         name="manage_invitation_requests",
     ),
-    # alt profile
-    path("alt/", include("altprofile.urls")),
     # passkeys
     path(
         "passkey/generate_registration/",

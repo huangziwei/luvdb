@@ -78,7 +78,6 @@ INSTALLED_APPS = [
     "watch",
     "discover",
     "api",
-    "altprofile",
     "visit",
     "pages",
 ]
