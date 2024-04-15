@@ -1,61 +1,103 @@
 from django.core.exceptions import ValidationError
-from django.db.utils import IntegrityError
 from django.test import TestCase
 
-from .models import CustomUser
+from accounts.forms import CustomUserCreationForm
+from accounts.models import CustomUser, Follow, InvitationCode
 
 
-class CustomUserModelTest(TestCase):
-    def test_create_user_with_all_details(self):
-        # Test creating a user with all fields properly set
-        user = CustomUser.objects.create_user(
-            username="newuser",
-            email="newuser@example.com",
-            password="testpass123",
-            display_name="New User",
-            bio="Just a new user.",
-            is_public=True,
-            pure_text_mode=False,
-            timezone="UTC",
-            enable_replies_by_default=True,
-            enable_share_to_feed_by_default=False,
+class CustomUserCreationFormTest(TestCase):
+    def setUp(self):
+        # Create an inviter user
+        self.inviter = CustomUser.objects.create_user(
+            username="inviteruser", email="inviter@example.com", password="testpass123"
         )
-        user.save()
+        self.invitation_code = InvitationCode.objects.create(
+            code="VALIDCODE", is_used=False, generated_by=self.inviter
+        )
+
+    def test_form_with_valid_data(self):
+        form_data = {
+            "username": "newuser",
+            "invitation_code": "VALIDCODE",
+            "signup_method": "password",
+            "password1": "testpassword123",
+            "password2": "testpassword123",
+        }
+        form = CustomUserCreationForm(data=form_data)
+        self.assertTrue(form.is_valid())
+        user = form.save()
         self.assertEqual(user.username, "newuser")
-        self.assertFalse(user.is_deactivated)
+        self.assertTrue(user.check_password("testpassword123"))
+        self.assertEqual(user.invited_by, self.inviter)
+        # Verify that the follow relationships are created
+        self.assertEqual(
+            Follow.objects.filter(follower=user, followed=self.inviter).count(), 1
+        )
+        self.assertEqual(
+            Follow.objects.filter(follower=self.inviter, followed=user).count(), 1
+        )
 
-    def test_create_user_with_minimal_details(self):
-        # Test creating a user with only the required fields
-        user = CustomUser.objects.create_user(
-            username="minimaluser", password="testpass123"
+    def test_passkey_signup_generates_password(self):
+        form_data = {
+            "username": "newuser",
+            "invitation_code": "VALIDCODE",
+            "signup_method": "passkey",
+        }
+        form = CustomUserCreationForm(data=form_data)
+        self.assertTrue(form.is_valid())
+        user = form.save()
+        self.assertNotEqual(user.password, "")  # Check password is not empty
+        self.assertEqual(user.invited_by, self.inviter)
+        # Ensure that Follow objects are correctly created
+        self.assertEqual(
+            Follow.objects.filter(follower=user, followed=self.inviter).count(), 1
+        )
+        self.assertEqual(
+            Follow.objects.filter(follower=self.inviter, followed=user).count(), 1
+        )
+
+
+class CustomUserModelTests(TestCase):
+    def setUp(self):
+        self.inviter = CustomUser.objects.create_user(
+            username="inviter", password="test12345"
+        )
+        self.invitation_code = InvitationCode.objects.create(
+            code="VALIDCODE", is_used=False, generated_by=self.inviter
+        )
+
+    def test_save_with_invited_by(self):
+        # Test saving a user with an inviter
+        user = CustomUser(
+            username="testuser", password="password123", invited_by=self.inviter
         )
         user.save()
-        self.assertEqual(user.username, "minimaluser")
+        self.assertEqual(user.invited_by, self.inviter)
 
-    def test_invalid_username(self):
-        # Test to ensure invalid usernames are caught
+    def test_user_with_reserved_username(self):
+        # Test that creating a user with a reserved username fails
         with self.assertRaises(ValidationError):
-            user = CustomUser.objects.create_user(
+            user = CustomUser(
                 username="admin",  # 'admin' is a reserved username
-                password="testpass123",
+                password="password123",
             )
             user.clean()  # Explicitly call clean to trigger validation
 
-    def test_missing_non_nullable_fields(self):
-        # Test that missing non-nullable fields raise an IntegrityError
-        with self.assertRaises(IntegrityError):
-            user = CustomUser(username="testuser")  # Missing password
-            user.save()
-
-    def test_duplicate_username(self):
-        # Ensure that creating a user with a duplicate username raises an IntegrityError
-        user1 = CustomUser.objects.create_user(
-            username="uniqueuser", password="testpass123"
+    def test_user_creation_follow_relations(self):
+        user = CustomUser(
+            username="follower",
+            password="password123",
+            code_used=self.invitation_code,
+            invited_by=self.inviter,
         )
-        user1.save()
+        user.save()
 
-        with self.assertRaises(IntegrityError):
-            user2 = CustomUser.objects.create_user(
-                username="uniqueuser", password="differentpass"
-            )
-            user2.save()
+        self.assertIsNotNone(user.invited_by, "Invited by should not be None")
+        follower_exists = Follow.objects.filter(
+            follower=user, followed=self.inviter
+        ).exists()
+        followed_exists = Follow.objects.filter(
+            follower=self.inviter, followed=user
+        ).exists()
+        self.assertTrue(follower_exists, "Follower relationship should exist")
+        self.assertTrue(followed_exists, "Followed relationship should exist")

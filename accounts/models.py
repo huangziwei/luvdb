@@ -124,15 +124,16 @@ class CustomUser(AbstractUser):
             # # Save the user instance before creating the Follow and Activity instances
             super().save(*args, **kwargs)
 
-            # Get or create a Follow instance for the new user following the inviter
-            follow_new_user, created = Follow.objects.get_or_create(
-                follower=self, followed=self.invited_by
-            )
+            if self.invited_by:
+                # Get or create a Follow instance for the new user following the inviter
+                follow_new_user, created = Follow.objects.get_or_create(
+                    follower=self, followed=self.invited_by
+                )
 
-            # Get or create a Follow instance for the inviter following the new user
-            follow_inviter, created = Follow.objects.get_or_create(
-                follower=self.invited_by, followed=self
-            )
+                # Get or create a Follow instance for the inviter following the new user
+                follow_inviter, created = Follow.objects.get_or_create(
+                    follower=self.invited_by, followed=self
+                )
         else:
             super().save(*args, **kwargs)
 
