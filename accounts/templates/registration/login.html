@@ -170,6 +170,16 @@
     </div>
 
     <script>
+
+        // Function to extract query parameters
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Extract 'next' parameter from URL
+        const nextUrl = getQueryParam('next') || '/';  // Default to home if no next parameter
+
         document.getElementById('loginWithPasskey').addEventListener('click', async function() {
             try {
                 const response = await fetch('/passkey/generate_authentication/'); // Adjust the path to where your generate_authentication_view is
@@ -201,7 +211,8 @@
     
                 if (verificationResponse.ok) {
                     console.log('Authentication successful');
-                    window.location.reload(); // Or redirect to the dashboard or another appropriate page
+                    // window.location.reload(); // Or redirect to the dashboard or another appropriate page
+                    window.location.href = nextUrl;
                 } else {
                     console.error('Authentication verification failed');
                     alert('Authentication failed.');

@@ -251,6 +251,7 @@ class MovieDetailView(DetailView):
             "Director",
             "Screenwriter",
             "Story By",
+            "Created By",
         ]
         secondary_role_names = [
             "Exec. Producer",
@@ -825,6 +826,7 @@ class SeriesDetailView(DetailView):
             "Director",
             "Screenwriter",
             "Story By",
+            "Created By",
         ]
         secondary_role_names = [
             "Exec. Producer",
