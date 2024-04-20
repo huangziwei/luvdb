@@ -600,7 +600,7 @@ class PinDetailView(ShareDetailView):
             create_mastodon_post(
                 handle=request.user.mastodon_account.mastodon_handle,
                 access_token=request.user.mastodon_account.get_mastodon_access_token(),
-                text=pin.title,
+                text=pin.title + "\n\n" + "> " + pin.content,
                 url=url,
             )
         elif "crosspost_bluesky" in request.POST and hasattr(
@@ -611,7 +611,7 @@ class PinDetailView(ShareDetailView):
                 handle=request.user.bluesky_account.bluesky_handle,
                 pds_url=request.user.bluesky_account.bluesky_pds_url,
                 password=request.user.bluesky_account.get_bluesky_app_password(),
-                text=pin.content if pin.content else pin.title,
+                text=pin.title + "\n\n" + "> " + pin.content,
                 content_id=pin.id,
                 content_username=request.user.username,
                 content_type="Pin",
