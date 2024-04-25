@@ -70,18 +70,12 @@ li:last-child {
 .game-cover-box,
 .listen-cover-box {
     min-width: 200px;
-    min-height: 200px;
     max-width: 200px;
-    /* sets the maximum width */
-    /* background-color: #f0f0f0; */
-    /* light gray */
     display: inline-flex;
-    /* changed from flex to inline-flex */
     align-items: start;
     justify-content: center;
     overflow: hidden;
-    /* padding: 2px; */
-    /* creates the gray border effect */
+
 }
 
 .cover-image {
