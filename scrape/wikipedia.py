@@ -168,16 +168,29 @@ def extract_creator_type(infobox, label):
 
 
 def extract_date(infobox, label):
+    # First, try to find the date in hidden <span> elements, which are more consistent
     date_info = infobox.find("th", text=re.compile(label))
     if date_info:
         date_info = date_info.find_next_sibling("td")
         if date_info:
-            # Updated regex to include standalone year format
-            date_matches = re.search(
-                r"\b(\d{1,2}\s+\w+\s+\d{4}|\d{4}-\d{2}-\d{2}|\d{4})\b",
-                date_info.get_text(),
+            # Look for a <span> with class "bday" or similar hidden date formats
+            hidden_date = date_info.find(
+                "span", style=lambda value: value and "display:none" in value
             )
-            return format_date(date_matches.group(1)) if date_matches else None
+            if hidden_date:
+                date_text = hidden_date.get_text(strip=True)
+                # Extract the date directly if it's in ISO format within these spans
+                date_matches = re.search(r"(\d{4}-\d{2}-\d{2})", date_text)
+                if date_matches:
+                    return format_date(date_matches.group(1))
+
+            # If no hidden span is found, fall back to extracting from visible text using regex
+            text = date_info.get_text(" ", strip=True)
+            date_matches = re.search(
+                r"\b(\d{1,2},?\s+\w+\s+\d{4}|\d{4}-\d{2}-\d{2}|\d{4})\b", text
+            )
+            if date_matches:
+                return format_date(date_matches.group(1))
     return None
 
 
@@ -255,19 +268,23 @@ def extract_website(infobox):
 
 
 def format_date(date_str):
-    # Define possible date formats and their corresponding expected output formats
-    date_formats = ["%Y-%m-%d", "%Y-%m", "%Y", "%d %B %Y", "%B %d, %Y"]
-    expected_date_format = ["%Y.%m.%d", "%Y.%m", "%Y", "%Y.%m.%d", "%Y.%m.%d"]
+    # Handle various date formats
+    date_formats = ["%d, %B %Y", "%Y-%m-%d", "%Y-%m", "%Y", "%d %B %Y", "%B %d, %Y"]
+    expected_date_format = [
+        "%Y.%m.%d",
+        "%Y.%m.%d",
+        "%Y.%m",
+        "%Y",
+        "%Y.%m.%d",
+        "%Y.%m.%d",
+    ]
 
     for i, fmt in enumerate(date_formats):
         try:
-            # Try to parse the date
             return datetime.strptime(date_str, fmt).strftime(expected_date_format[i])
         except ValueError:
-            # If parsing fails, try the next format
             continue
 
-    # If all parsing attempts fail, return the original string
     return date_str
 
 
