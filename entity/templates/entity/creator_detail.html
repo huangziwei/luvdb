@@ -250,7 +250,7 @@
                                                 {% else %}
                                                     <a href="{% url 'listen:release_detail' single.pk %}">{{ single.title }}</a>
                                                 {% endif %}
-                                                ({% if single.release_type %}{{single.release_type}}, {% endif %}{{ single.release_date }})
+                                                ({% if single.recording_type %}{{single.recording_type}}, {% endif %}{{ single.release_date }})
                                             </li>
                                         {% empty %}
                                             <li>This person has no singles.</li>
@@ -269,7 +269,7 @@
                                                 {% else %}
                                                     <a href="{% url 'listen:release_detail' ep.pk %}">{{ ep.title }}</a>
                                                 {% endif %}
-                                                ({{ ep.release_date }})
+                                                ({% if ep.recording_type %}{{ep.recording_type}}, {% endif %}{{ ep.release_date }})
                                             </li>
                                         {% empty %}
                                             <li>This person has no EPs.</li>
