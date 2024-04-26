@@ -417,7 +417,7 @@
                         {% if object.bookinstance_set.count != 1 %}
                         <div class="row">
                             <div class="d-flex align-items-center">
-                                <div class="mb-0 fs-5">Table of Content</div>
+                                <div class="mb-0 fs-5 fw-semibold">Table of Content</div>
                                 <a class="text-muted mb-0 ms-1" type="button" data-bs-toggle="collapse" data-bs-target=".creditCollapse" aria-expanded="false" aria-controls="creditCollapse">
                                     (Show Credits)
                                 </a>
@@ -458,7 +458,7 @@
                 {% endif %}
                 {% if object.internet_archive_url %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <div class="fs-5">Read on</div>
+                        <div class="fs-5 fw-semibold">Read on</div>
                         <div>
                             <a href="{{ object.internet_archive_url }}">Internet Archive</a>
                         </div>
@@ -466,7 +466,7 @@
                 {% endif %}
                 {% if object.wikipedia %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <div class="fs-5">Links</div>
+                        <div class="fs-5 fw-semibold">Links</div>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
                         </div>
@@ -474,20 +474,20 @@
                 {% endif %}
                 <!--Book Stats-->
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <div class="fs-5">Statistics</div>
+                    <div class="fs-5 fw-semibold">Statistics</div>
                     <div>
-                        <span class="fw-semibold text-muted">To Read:</span> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=to_read">{{ to_read_count }}</a>
+                        <span class="text-muted">To Read:</span> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=to_read">{{ to_read_count }}</a>
                     </div>
                     <div>
-                        <span class="fw-semibold text-muted">Reading:</span> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=reading_rereading">{{ reading_count }}</a>
+                        <span class="text-muted">Reading:</span> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=reading_rereading">{{ reading_count }}</a>
                     </div>
                     <div>
-                        <span class="fw-semibold text-muted">Read:</span> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=read_reread">{{ read_count }}</a>
+                        <span class="text-muted">Read:</span> <a href="{% url 'read:book_checkin_all_list' object.id %}?status=read_reread">{{ read_count }}</a>
                     </div>
                 </div>
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
-                        <div class="me-1 fs-5">Contributors</div>
+                        <div class="me-1 fs-5 fw-semibold">Contributors</div>
                         <div>(<a href="{% url 'read:book_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>
                     </div>
                     <div>

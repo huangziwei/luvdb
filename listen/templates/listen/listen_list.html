@@ -216,7 +216,7 @@
             </div>
             <div class='col-12 col-md-4'>
                 <div class="bg-light p-3 mb-3">
-                    <div class="fs-5">Add New</div>
+                    <div class="fs-5 fw-semibold">Add New</div>
                     <div>
                         <a href="{% url "listen:work_create" %}" class="text-muted">Work</a>
                     </div>
@@ -237,7 +237,7 @@
                     </div>
                 </div>
                 <div class="bg-light p-3 mb-3">
-                    <div class="fs-5">Statistics</div>
+                    <div class="fs-5 fw-semibold">Statistics</div>
                     <div>
                         <span class="text-muted">Works</span>: {{ works_count }}
                     </div>
@@ -256,7 +256,7 @@
                 </div>
                 {% if genres %}
                     <div class="bg-light p-3 mb-3">
-                        <div class="fs-5">Genres</div>
+                        <div class="fs-5 fw-semibold">Genres</div>
                         <div class='d-flex flex-wrap'>
                             {% for genre in genres %}
                                 <a href="{% url 'listen:genre_detail' genre.slug %}" class="me-2">{{ genre.name }}</a>

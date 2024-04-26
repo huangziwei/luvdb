@@ -235,13 +235,13 @@
                     </div>
                 {% endif %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <div class="fs-5">Tracklist</div>
+                    <div class="fs-5 fw-semibold">Tracklist</div>
                     <!--list all related tracks by order-->
                     <div class="col-sm-12">
                         {% for release_track in object.releasetrack_set.all %}
                             <div class="related-track">
                                 <div>
-                                    <strong>{{ release_track.disk }}.{{ release_track.order }}</strong>
+                                    <span class="text-muted fw-semibold">{{ release_track.disk }}.{{ release_track.order }}</span class="text-muted">
                                     <a href="{% url 'listen:track_detail' release_track.track.id %}">
                                         {{ release_track.alt_title|default:release_track.track.title }}
                                     </a>
@@ -255,14 +255,14 @@
                         <hr>
                         <div>
                             <a href="{% url 'listen:release_credit' object.id %}"
-                               class='fs-6 text-secondary'>View All Credits</a>
+                               class='fs-6 text-muted'>View All Credits</a>
                         </div>
                         {% endif %}
                     </div>
                 </div>
                 {% if object.wikipedia or object.discogs %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <div class="fs-5">Links</div>
+                        <div class="fs-5 fw-semibold">Links</div>
                         {% if object.discogs %}
                         <div>
                             <a href="{{ object.discogs }}">Discogs</a>
@@ -278,7 +278,7 @@
                 <!--Listen on-->
                 {% if object.apple_music_url or object.spotify_url or object.internet_archive_url%}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                        <div class="fs-5">Listen on</div>
+                        <div class="fs-5 fw-semibold">Listen on</div>
                         {% if object.apple_music_url %}
                             <div>
                                 <a href="{{ object.apple_music_url }}">Apple Music</a>
@@ -298,20 +298,20 @@
                 {% endif %}
                 <!--Release Stats-->
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <div class="fs-5">Statistics</div>
+                    <div class="fs-5 fw-semibold">Statistics</div>
                     <div>
-                        <span class="fw-semibold text-muted">To Listen:</span> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a>
+                        <span class="text-muted">To Listen:</span> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=to_listen">{{ to_listen_count }}</a>
                     </div>
                     <div>
-                        <span class="fw-semibold text-muted">Looping:</span> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a>
+                        <span class="text-muted">Looping:</span> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=looping">{{ listening_count }}</a>
                     </div>
                     <div>
-                        <span class="fw-semibold text-muted">Listened:</span> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a>
+                        <span class="text-muted">Listened:</span> <a href="{% url 'listen:release_checkin_all_list' release.id %}?status=listened">{{ listened_count }}</a>
                     </div>
                 </div>
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
-                        <div class="me-1 fs-5">Contributors</div>
+                        <div class="me-1 fs-5 fw-semibold">Contributors</div>
                         <div>(<a href="{% url 'listen:release_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>
                     </div>
                     <div>

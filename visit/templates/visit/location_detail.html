@@ -255,7 +255,7 @@
 
                 {% if object.wikipedia or object.website %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <div class="fs-5">Link</div>
+                    <div class="fs-5 fw-bold">Link</div>
                     {% if object.wikipedia %}
                         <div>
                             <a href="{{ object.wikipedia }}" target="_blank">Wikipedia</a>
@@ -281,7 +281,7 @@
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     {% if children_grouped_by_level_current %}
                         <div>
-                            <div class="fs-5">Current</div>
+                            <div class="fs-5 fw-bold">Current</div>
                             {% for level, children in children_grouped_by_level_current.items %}
                                     <div class="fs-6 mt-2">{{ level }}</div>
                                     <div>
@@ -296,7 +296,7 @@
                     
                     {% if children_grouped_by_level_historical %}
                         <div>
-                            <div class="fs-5 mt-2">Historical</div>
+                            <div class="fs-5 fw-bold mt-2">Historical</div>
                             {% for level, children in children_grouped_by_level_historical.items %}
                                     <div class="fs-6">{{ level }}</div>
                                     <div>
@@ -313,7 +313,7 @@
 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
-                        <div class="me-1 fs-5">Contributors</div>
+                        <div class="me-1 fs-5 fw-bold">Contributors</div>
                         <div>(<a href="{% url 'visit:location_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>
                     </div>
                     <div>
