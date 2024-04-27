@@ -285,10 +285,20 @@ class ContentInListForm(forms.ModelForm):
         self.fields["content_url"].label = "URL"
 
 
+class CustomContentInListFormSet(forms.models.BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        # Optionally receive a pre-filtered queryset that should not be re-filtered
+        qs = kwargs.pop("queryset", None)
+        super(CustomContentInListFormSet, self).__init__(*args, **kwargs)
+        if qs is not None:
+            self.queryset = qs
+
+
 ContentInListFormSet = forms.inlineformset_factory(
     LuvList,
     ContentInList,
     form=ContentInListForm,
+    formset=CustomContentInListFormSet,
     extra=1,
     can_delete=True,
     widgets={

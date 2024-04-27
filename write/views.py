@@ -1162,14 +1162,58 @@ class LuvListUpdateView(LoginRequiredMixin, UpdateView):
     form_class = LuvListForm
     template_name = "write/luvlist_update.html"  # Assuming 'luvlist_form.html' is the template for the update view
 
+    def get_page_ranges(self, paginator, items_per_page, order):
+        page_ranges = []
+        total_pages = paginator.num_pages
+        total_items = paginator.count
+
+        for i in range(1, total_pages + 1):
+            if order == "ASC":
+                start = (i - 1) * items_per_page + 1
+                end = start + items_per_page - 1
+                if end > total_items:
+                    end = total_items
+                page_ranges.append((i, f"{start}-{end}"))
+            else:  # "DSC"
+                end = total_items - (i - 1) * items_per_page
+                start = end - items_per_page + 1
+                if start < 1:
+                    start = 1
+                page_ranges.append((i, f"{end}-{start}"))
+
+        if order == "DSC":
+            page_ranges.reverse()
+
+        return page_ranges
+
     def get_context_data(self, **kwargs):
         data = super(LuvListUpdateView, self).get_context_data(**kwargs)
+        items_per_page = self.object.items_per_page  # Set the number of items per page
+
+        # Get all content items related to the LuvList instance
+        all_contents = ContentInList.objects.filter(luv_list=self.object)
+
+        # Setting up pagination
+        paginator = Paginator(all_contents, items_per_page)
+        page_number = self.request.GET.get("page") or 1
+        page_obj = paginator.get_page(page_number)
+
         if self.request.POST:
             data["contents"] = ContentInListFormSet(
-                self.request.POST, instance=self.object
+                self.request.POST,
+                queryset=page_obj.object_list,  # Load only the current page items
+                instance=self.object,
             )
         else:
-            data["contents"] = ContentInListFormSet(instance=self.object)
+            data["contents"] = ContentInListFormSet(
+                queryset=page_obj.object_list,  # Load only the current page items
+                instance=self.object,
+            )
+
+        data["page_obj"] = page_obj  # Add page object to context to use in template
+        data["page_ranges"] = self.get_page_ranges(
+            paginator, items_per_page, self.object.order_preference
+        )  # Adjust "ASC" as needed
         return data
 
     def get_form_kwargs(self):

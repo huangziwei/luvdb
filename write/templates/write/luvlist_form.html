@@ -26,6 +26,29 @@
                 <div class="col-md-12">{{ form.comment|as_crispy_field }}</div>
             </div>
         {% endfor %}
+        {% if page_obj.has_other_pages %}
+            <div class="pagination mt-3 mb-3 d-flex justify-content-center">
+                <span class="step-links">
+                    <!-- Double left arrow for previous page -->
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="me-1">«</a>
+                    {% endif %}
+        
+                    {% for page_num, range in page_ranges %}
+                        {% if page_obj.number == page_num %}
+                            <span class="current ms-1 me-1">{{ range }}</span>
+                        {% else %}
+                            <a href="?page={{ page_num }}" class="ms-1 me-1">{{ range }}</a>
+                        {% endif %}
+                    {% endfor %}
+        
+                    <!-- Double right arrow for next page -->
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="ms-1">»</a>
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
     </div>
     <div class="d-flex justify-content-between">
         <button type="submit" class="btn btn-primary">Submit</button>
