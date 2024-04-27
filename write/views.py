@@ -1191,7 +1191,12 @@ class LuvListUpdateView(LoginRequiredMixin, UpdateView):
         items_per_page = self.object.items_per_page  # Set the number of items per page
 
         # Get all content items related to the LuvList instance
-        all_contents = ContentInList.objects.filter(luv_list=self.object)
+        order_preference = self.object.order_preference
+        order_by_field = "order" if order_preference == "ASC" else "-order"
+
+        all_contents = ContentInList.objects.filter(luv_list=self.object).order_by(
+            order_by_field
+        )
 
         # Setting up pagination
         paginator = Paginator(all_contents, items_per_page)
