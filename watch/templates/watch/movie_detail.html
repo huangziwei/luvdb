@@ -369,12 +369,14 @@
                                                                 <a href="{% url 'write:luvlist_detail_collab' content_in_list.luv_list.id %}">
                                                                     {{ content_in_list.luv_list.title }}
                                                                 </a>
+                                                                #{{ content_in_list.order }}
                                                             </li>
                                                         {% else %}
                                                             <li>
                                                                 <a href="{% url 'write:luvlist_detail' content_in_list.luv_list.user.username content_in_list.luv_list.id %}">
                                                                     {{ content_in_list.luv_list.title }}
                                                                 </a> 
+                                                                #{{ content_in_list.order }}
                                                                 (by <a href="{% url 'accounts:detail' content_in_list.luv_list.user.username %}">{{content_in_list.luv_list.user.display_name|default:content_in_list.luv_list.user.username}}</a>)
                                                             </li>
                                                         {% endif %}
