@@ -83,10 +83,12 @@
                                 </div>
                                 <div class="release-meta">
                                     {% if object.subtitle or object.other_titles %}
-                                        
                                         <div class="text-secondary mb-2">
-                                            {% if object.subtitle %}{{ object.subtitle }} /{% endif %}
-                                            {% if object.other_titles %}{{ object.other_titles }}{% endif %}
+                                            {% if object.subtitle %}{{ object.subtitle }}{% endif %}
+                                            {% if object.subtitle and object.other_titles %}
+                                                / 
+                                            {% endif %}
+                                            {{ object.other_titles }}
                                         </div>
                                     {% endif %}
                                     {% for role_name, creator_altname_tuples in main_roles.items %}

@@ -11,15 +11,15 @@
             <div class="col-sm-8">
                 <h2>{{ object.title }}</h2>
                 {% if object.subtitle or object.other_titles %}
-                <p class='d-flex'>
-                    {% if object.subtitle and object.other_titles %}
-                        <span class='text-secondary'>{{ object.subtitle }} / {{ object.other_titles }}</span>
-                    {% elif object.subtitle %}
-                        <span class='text-secondary'>{{ object.subtitle }}</span>
-                    {% elif object.other_titles %}
-                        <span class='text-secondary'>{{ object.other_titles }}</span>
-                    {% endif %}
-                </p>
+                    <p class='d-flex'>
+                        <span class='text-secondary'>
+                            {% if object.subtitle %}{{ object.subtitle }}{% endif %}
+                            {% if object.subtitle and object.other_titles %}
+                                / 
+                            {% endif %}
+                            {{ object.other_titles }}
+                        </span>
+                    </p>
                 {% endif %}
                 {% if object.genres.count != 0 %}
                     <div>
