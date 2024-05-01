@@ -743,7 +743,14 @@ class SeriesDetailView(DetailView):
 
         context["model_name"] = "series"
         series = get_object_or_404(Series, pk=self.kwargs["pk"])
-        context["episodes"] = series.episodes.all().order_by("season", "episode")
+
+        episodes = series.episodes.all().order_by("season", "episode")
+        context["episodes"] = episodes
+        seasons = defaultdict(list)
+        for episode in episodes:
+            seasons[episode.season].append(episode)
+        context["seasons"] = dict(seasons)
+        context["latest_season"] = max(seasons.keys()) if seasons else 0
 
         # Get the ContentType for the Issue model
         series_content_type = ContentType.objects.get_for_model(Series)
@@ -1126,9 +1133,13 @@ class EpisodeDetailView(DetailView):
             Q(object_id=series_id) & Q(progress__in=progress_formats)
         )
         context["episode_checkins"] = check_ins
-        context["episodes"] = episode.series.episodes.all().order_by(
-            "season", "episode"
-        )
+        episodes = episode.series.episodes.all().order_by("season", "episode")
+        context["episodes"] = episodes
+        seasons = defaultdict(list)
+        for episode in episodes:
+            seasons[episode.season].append(episode)
+        context["seasons"] = dict(seasons)
+        context["latest_season"] = max(seasons.keys()) if seasons else 0
 
         context["filming_locations_with_parents"] = get_locations_with_parents(
             episode.filming_locations

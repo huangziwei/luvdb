@@ -162,20 +162,60 @@
                 </div>
                 {% endif %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <div class="fs-5">Episode List</div>
-                    {% for episode in episodes %}
-                        <div class="mt-3">
-                            S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}
-                            <a href="{% url 'watch:episode_detail' object.series.id episode.season_episode_format %}"
-                               class='fs-6'>{{ episode.title }}</a>
-                            <span>({{ episode.release_date }})</span>
+                    <div class="fs-5 fw-semibold">Episode List</div>
+                    {% if episodes %}
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link text-muted" id="all-tab" data-bs-toggle="tab"
+                                    data-bs-target="#all" type="button" role="tab"
+                                    aria-controls="all" aria-selected="false">
+                                All
+                            </button>
+                        </li>
+                        {% for season, episodes in seasons.items %}
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link  text-muted {% if season == latest_season %}active{% endif %}"
+                                        id="season{{ forloop.counter }}-tab" data-bs-toggle="tab"
+                                        data-bs-target="#season{{ forloop.counter }}" type="button" role="tab"
+                                        aria-controls="season{{ forloop.counter }}" aria-selected="{% if season == latest_season %}true{% else %}false{% endif %}">
+                                    S{{ season|stringformat:"02d" }}
+                                </button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                
+                    <!-- Tab content -->
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade" id="all" role="tabpanel" aria-labelledby="all-tab">
+                            {% for episode in episodes %}
+                                <div class="mt-3">
+                                    S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}
+                                    <a href="{% url 'watch:episode_detail' episode.series.id episode.season_episode_format %}"
+                                        class='fs-6'>{{ episode.title }}</a>
+                                    <span>({{ episode.release_date }})</span>
+                                </div>
+                            {% endfor %}
                         </div>
-                    {% endfor %}
+                        {% for season, episodes in seasons.items %}
+                            <div class="tab-pane fade {% if season == latest_season %}show active{% endif %}" id="season{{ forloop.counter }}" role="tabpanel"
+                                 aria-labelledby="season{{ forloop.counter }}-tab">
+                                {% for episode in episodes %}
+                                    <div class="mt-3">
+                                        S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}
+                                        <a href="{% url 'watch:episode_detail' episode.series.id episode.season_episode_format %}"
+                                            class='fs-6'>{{ episode.title }}</a>
+                                        <span>({{ episode.release_date }})</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                     <hr>
                     {% if user.is_authenticated %}
                         <div>
-                            <a href="{% url 'watch:episode_create' object.series.id %}"
-                               class='fs-6 text-secondary'>Add episode</a>
+                            <a href="{% url 'watch:episode_create' episode.series.id %}" class='fs-6 text-secondary'>Add episode</a>
                         </div>
                     {% endif %}
                 </div>
