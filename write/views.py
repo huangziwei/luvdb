@@ -1376,15 +1376,12 @@ class RandomizerDetailView(DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         if "restart_order" in request.POST:
             luv_list = self.get_object()
             user = request.user if request.user.is_authenticated else None
             randomizer = Randomizer.get_randomizer(luv_list, user)
             randomizer.restart_random_order()  # Restart the randomized order
-            print(randomizer.randomized_order)
-        else:
-            print("failed")
+
         return self.get(
             request, *args, **kwargs
         )  # Redirect to the same page to display the updated order
