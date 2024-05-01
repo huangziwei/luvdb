@@ -299,12 +299,12 @@
                                             {% if luv_list.allow_collaboration %}
                                                 <form method="post" action="{% url 'write:surprise_collab' pk=luv_list.id %}">
                                                     {% csrf_token %}
-                                                    <button type="submit" name="restart_order" class="dropdown-item">Restart</button>
+                                                    <button type="submit" name="restart_order" class="dropdown-item" onclick="confirmRestart('restartFormCollab')">Restart</button>
                                                 </form>
                                             {% else %}
                                                 <form method="post" action="{% url 'write:surprise' pk=luv_list.id username=user.username %}">
                                                     {% csrf_token %}
-                                                    <button type="submit" name="restart_order" class="dropdown-item">Restart</button>
+                                                    <button type="submit" name="restart_order" class="dropdown-item" onclick="confirmRestart('restartForm')">Restart</button>
                                                 </form>
                                             {% endif %}
                                         </li>
@@ -355,6 +355,12 @@
                 refreshButton.addEventListener('click', function() {
                     window.location.reload();
                 });
+            }
+        }
+
+        function confirmRestart(formId) {
+            if (confirm("Are you sure you want to restart the order? This will shuffle all items anew.")) {
+                document.getElementById(formId).submit();  // Submit the form if the user confirms
             }
         }
 
