@@ -359,6 +359,24 @@ class Series(auto_prefetch.Model):
     languages = LanguageField(blank=True, null=True)
     genres = models.ManyToManyField(Genre, related_name="series", blank=True)
 
+    STATUS_CHOICES = (
+        ("continuing", "Continuing"),
+        ("season-ended", "Season Ended"),
+        ("ended", "Series Ended"),
+        ("canceled", "Canceled"),
+        ("hiatus", "On Hiatus"),
+        ("renewed", "Renewed"),
+        ("limbo", "In Limbo"),
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="ended",
+        blank=True,
+        null=True,
+    )
+
     # Cross-references
     ## Base on
     based_on_litworks = models.ManyToManyField(

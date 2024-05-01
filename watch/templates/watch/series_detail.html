@@ -110,6 +110,11 @@
                                             {% endfor %}
                                         </div>
                                     {% endif %}
+                                    <!-- status -->
+                                    <div  class="mb-1">
+                                        <span class="text-muted">Status:</span>
+                                        {{ object.get_status_display }}
+                                    </div>
                                     {% if collections %}
                                         <div class="mb-1">
                                             <span class="text-muted">Collection{% if collections.count > 1 %}s{% endif %}:</span>
