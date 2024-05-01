@@ -281,13 +281,38 @@
                                     <small>Next update will be at {{ next_generated_datetime | date:"Y-m-d H:i:s" }}</small>
                                 </noscript>
                             </p>
-                            <span class="d-flex justify-content-center">
-                                <form action="{% url 'logout' %}?next={{ request.path }}" method="post" class="btn btn-sm btn-danger me-2">
-                                    {% csrf_token %}
-                                    <button type="submit" class="dropdown-item" style="border: none; background: none;">Log Out</button>
-                                </form>
-                                <button id="refreshButton" class="btn btn-sm btn-outline-secondary" style="display:none;">Refresh</button>
-                            </span>
+                            <div class="d-flex justify-content-center mt-2">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Options
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <!-- Log Out Button -->
+                                        <li>
+                                            <form action="{% url 'logout' %}?next={{ request.path }}" method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" name="logout" class="dropdown-item">Log Out</button>
+                                            </form>
+                                        </li>
+                                        <!-- Restart Button -->
+                                        <li>
+                                            {% if luv_list.allow_collaboration %}
+                                                <form method="post" action="{% url 'write:surprise_collab' pk=luv_list.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" name="restart_order" class="dropdown-item">Restart</button>
+                                                </form>
+                                            {% else %}
+                                                <form method="post" action="{% url 'write:surprise' pk=luv_list.id username=user.username %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" name="restart_order" class="dropdown-item">Restart</button>
+                                                </form>
+                                            {% endif %}
+                                        </li>
+                                        <!-- Refresh Button -->
+                                        <li><button id="refreshButton" class="dropdown-item">Refresh</button></li>
+                                    </ul>
+                                </div>
+                            </div>
                         {% else %}
                         <p class="card-text">
                             Viewing today's public, random item. 

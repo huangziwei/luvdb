@@ -770,3 +770,8 @@ class Randomizer(auto_prefetch.Model):
 
         self.save()
         return next_item
+
+    def restart_random_order(self):
+        self.randomized_order = None  # Clear the existing order
+        self.last_generated_datetime = None  # Clear the last generated datetime
+        self.generate_item()  # Regenerate the order
