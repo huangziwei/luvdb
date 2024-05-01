@@ -1,6 +1,16 @@
 from django.contrib import admin
 
-from .models import Comment, ContentInList, LuvList, Pin, Post, Project, Repost, Say
+from .models import (
+    Comment,
+    ContentInList,
+    LuvList,
+    Pin,
+    Post,
+    Project,
+    Randomizer,
+    Repost,
+    Say,
+)
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -41,6 +51,14 @@ class LuvListAdmin(admin.ModelAdmin):
     inlines = [ContentInListInline]
 
 
+class RandomizerAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "luv_list",
+        "last_generated_datetime",
+    )
+
+
 admin.site.register(LuvList, LuvListAdmin)
 admin.site.register(Repost, RepostAdmin)
 admin.site.register(Comment, CommentAdmin)
@@ -48,3 +66,4 @@ admin.site.register(Pin, PinAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Say, SayAdmin)
 admin.site.register(Project, ProjectAdmin)
+admin.site.register(Randomizer, RandomizerAdmin)
