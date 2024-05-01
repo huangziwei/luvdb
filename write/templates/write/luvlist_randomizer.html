@@ -297,17 +297,19 @@
                                         <!-- Restart Button -->
                                         <li>
                                             {% if luv_list.allow_collaboration %}
-                                                <form method="post" action="{% url 'write:surprise_collab' pk=luv_list.id %}">
+                                                <form method="post" action="{% url 'write:surprise_collab' pk=luv_list.id %}" id="restartFormCollab">
                                                     {% csrf_token %}
-                                                    <button type="submit" name="restart_order" class="dropdown-item" onclick="confirmRestart('restartFormCollab')">Restart</button>
+                                                    <input type="hidden" name="restart_order" value="1">
+                                                    <button type="button" onclick="confirmRestart(event, 'restartFormCollab')" class="dropdown-item">Restart</button>
                                                 </form>
                                             {% else %}
-                                                <form method="post" action="{% url 'write:surprise' pk=luv_list.id username=user.username %}">
+                                                <form method="post" action="{% url 'write:surprise' pk=luv_list.id username=user.username %}" id="restartForm">
                                                     {% csrf_token %}
-                                                    <button type="submit" name="restart_order" class="dropdown-item" onclick="confirmRestart('restartForm')">Restart</button>
+                                                    <input type="hidden" name="restart_order" value="1">
+                                                    <button type="button" onclick="confirmRestart(event, 'restartForm')" class="dropdown-item">Restart</button>
                                                 </form>
                                             {% endif %}
-                                        </li>
+                                        </li>                                                                             
                                         <!-- Refresh Button -->
                                         <li><button id="refreshButton" class="dropdown-item">Refresh</button></li>
                                     </ul>
@@ -358,9 +360,16 @@
             }
         }
 
-        function confirmRestart(formId) {
+        function confirmRestart(event, formId) {
+            // Prevent the form from submitting if the user does not confirm
+            event.preventDefault();
+    
             if (confirm("Are you sure you want to restart the order? This will shuffle all items anew.")) {
-                document.getElementById(formId).submit();  // Submit the form if the user confirms
+                console.log("User confirmed, submitting form for:", formId);
+                document.getElementById(formId).submit();
+            } else {
+                console.log("User cancelled the restart.");
+                // No action is required here as the form submission has already been prevented
             }
         }
 
