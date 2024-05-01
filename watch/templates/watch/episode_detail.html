@@ -171,13 +171,6 @@
                             <span>({{ episode.release_date }})</span>
                         </div>
                     {% endfor %}
-                    <hr>
-                    {% if user.is_authenticated %}
-                        <div>
-                            <a href="{% url 'watch:episode_create' object.id %}"
-                               class='fs-6 text-secondary'>Add episode</a>
-                        </div>
-                    {% endif %}
                 </div>
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
