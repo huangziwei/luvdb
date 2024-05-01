@@ -90,7 +90,7 @@
 
                     {% if contents.paginator.num_pages > 1 %}
                         <div class="pagination mt-3 mb-3 d-flex justify-content-center">
-                            <span class="step-links">
+                            <small class="step-links">
                                 <!-- Double left arrow for previous page -->
                                 {% if contents.has_previous %}
                                     <a href="?page={{ contents.previous_page_number }}" class="me-1">«</a>
@@ -108,7 +108,7 @@
                                 {% if contents.has_next %}
                                     <a href="?page={{ contents.next_page_number }}" class="ms-1">»</a>
                                 {% endif %}
-                            </span>
+                            </small>
                         </div>
                     {% endif %}
 
@@ -684,7 +684,7 @@
                     {% endfor %}
                     {% if contents.paginator.num_pages > 1 %}
                         <div class="pagination mt-3 mb-3 d-flex justify-content-center">
-                            <span class="step-links">
+                            <small class="step-links">
                                 <!-- Double left arrow for previous page -->
                                 {% if contents.has_previous %}
                                     <a href="?page={{ contents.previous_page_number }}" class="me-1">«</a>
@@ -702,7 +702,7 @@
                                 {% if contents.has_next %}
                                     <a href="?page={{ contents.next_page_number }}" class="ms-1">»</a>
                                 {% endif %}
-                            </span>
+                            </small>
                         </div>
                     {% endif %}
                 </div>
