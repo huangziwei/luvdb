@@ -166,11 +166,18 @@
                     {% for episode in episodes %}
                         <div class="mt-3">
                             S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}
-                            <a href="{% url 'watch:episode_detail' object.series.id episode.id %}"
+                            <a href="{% url 'watch:episode_detail' object.series.id episode.season_episode_format %}"
                                class='fs-6'>{{ episode.title }}</a>
                             <span>({{ episode.release_date }})</span>
                         </div>
                     {% endfor %}
+                    <hr>
+                    {% if user.is_authenticated %}
+                        <div>
+                            <a href="{% url 'watch:episode_create' object.series.id %}"
+                               class='fs-6 text-secondary'>Add episode</a>
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">

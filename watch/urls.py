@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from .views import (
     CollectionCreateView,
@@ -62,8 +62,8 @@ urlpatterns = [
         EpisodeCreateView.as_view(),
         name="episode_create",
     ),
-    path(
-        "series/<int:series_id>/episode/<int:pk>/",
+    re_path(
+        r"series/(?P<series_id>\d+)/(?P<season_episode>S\d+E\d+)/$",
         EpisodeDetailView.as_view(),
         name="episode_detail",
     ),

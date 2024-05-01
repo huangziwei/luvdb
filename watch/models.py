@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.files.base import ContentFile
 from django.db import models
 from django.db.models import Min
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.text import slugify
 from PIL import Image
@@ -600,8 +601,18 @@ class Episode(auto_prefetch.Model):
     def __str__(self):
         return f"{self.series.title} - Season {self.season} - Episode {self.episode}"
 
+    def season_episode_format(self):
+        return f"S{self.season:02}E{self.episode:02}"
+
     def get_absolute_url(self):
-        return reverse("watch:episode_detail", args=[str(self.series.id), str(self.id)])
+        return reverse(
+            "episode_detail",
+            kwargs={
+                "series_id": self.series.id,
+                "season": f"{self.season:02}",
+                "episode": f"{self.episode:02}",
+            },
+        )
 
     def save(self, *args, **kwargs):
         is_new_instance = not self.pk

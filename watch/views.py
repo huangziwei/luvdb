@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 from datetime import timedelta
 from typing import Any
@@ -9,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -1098,7 +1099,7 @@ class EpisodeDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        episode = get_object_or_404(Episode, pk=self.kwargs["pk"])
+        episode = self.get_object()
         context["episodecasts"] = episode.episodecasts.all()
         # Group episoderoles by their roles
         episoderoles_grouped = defaultdict(list)
@@ -1136,6 +1137,23 @@ class EpisodeDetailView(DetailView):
             episode.setting_locations
         )
         return context
+
+    def get_object(self):
+        # Get the series_id and season_episode string from the URL parameters
+        series_id = self.kwargs.get("series_id")
+        season_episode = self.kwargs.get("season_episode")
+
+        # Use regex to extract season and episode numbers from the season_episode string
+        match = re.match(r"S(\d+)E(\d+)", season_episode)
+        if not match:
+            raise Http404("Invalid episode format")
+
+        season, episode = int(match.group(1)), int(match.group(2))
+
+        # Fetch the Episode object based on series_id, season, and episode
+        return get_object_or_404(
+            Episode, series_id=series_id, season=season, episode=episode
+        )
 
 
 class EpisodeUpdateView(LoginRequiredMixin, UpdateView):
