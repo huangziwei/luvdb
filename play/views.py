@@ -15,7 +15,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -708,9 +708,9 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         )
 
         # Format the label
-        label = format_html("{} ({})", item.title, release_year)
+        label = "{} ({})".format(item.title, release_year)
 
-        return label
+        return mark_safe(label)
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")

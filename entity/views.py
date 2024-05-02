@@ -9,7 +9,7 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django_ratelimit.decorators import ratelimit
@@ -661,16 +661,16 @@ class CreatorAutoComplete(autocomplete.Select2QuerySetView):
     def get_result_label(self, item):
         if item.active_years:
             active_years = item.active_years
-            label = format_html("{} ({})", item.name, active_years)
+            label = "{} ({})".format(item.name, active_years)
         else:
             # Get the birth and death years
             birth_year = item.birth_date[:4] if item.birth_date else "?"
             death_year = item.death_date[:4] if item.death_date else ""
 
             # Format the label
-            label = format_html("{} ({} - {})", item.name, birth_year, death_year)
+            label = "{} ({} - {})".format(item.name, birth_year, death_year)
 
-        return label
+        return mark_safe(label)
 
 
 class GroupAutoComplete(autocomplete.Select2QuerySetView):
@@ -692,9 +692,9 @@ class GroupAutoComplete(autocomplete.Select2QuerySetView):
         death_year = item.death_date[:4] if item.death_date else ""
 
         # Format the label
-        label = format_html("{} ({} - {})", item.name, birth_year, death_year)
+        label = "{} ({} - {})".format(item.name, birth_year, death_year)
 
-        return label
+        return mark_safe(label)
 
 
 class RoleAutocomplete(autocomplete.Select2QuerySetView):

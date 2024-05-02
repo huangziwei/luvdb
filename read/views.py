@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -1278,13 +1278,11 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
 
         # Format the label
         if author_name:
-            label = format_html(
-                "{} ({} - {})", item.title, author_name, publication_year
-            )
+            label = "{} ({} - {})".format(item.title, author_name, publication_year)
         else:
-            label = format_html("{} ({})", item.title, publication_year)
+            label = "{} ({})".format(item.title, publication_year)
 
-        return label
+        return mark_safe(label)
 
 
 class InstanceAutocomplete(autocomplete.Select2QuerySetView):
@@ -1331,13 +1329,11 @@ class InstanceAutocomplete(autocomplete.Select2QuerySetView):
 
         # Format the label
         if author_name:
-            label = format_html(
-                "{} ({} - {})", item.title, author_name, publication_year
-            )
+            label = "{} ({} - {})".format(item.title, author_name, publication_year)
         else:
-            label = format_html("{} ({})", item.title, publication_year)
+            label = "{} ({})".format(item.title, publication_year)
 
-        return label
+        return mark_safe(label)
 
 
 class BookAutoComplete(autocomplete.Select2QuerySetView):
@@ -1384,13 +1380,11 @@ class BookAutoComplete(autocomplete.Select2QuerySetView):
 
         # Format the label
         if author_name:
-            label = format_html(
-                "{} ({} - {})", item.title, author_name, publication_year
-            )
+            label = "{} ({} - {})".format(item.title, author_name, publication_year)
         else:
-            label = format_html("{} ({})", item.title, publication_year)
+            label = "{} ({})".format(item.title, publication_year)
 
-        return label
+        return mark_safe(label)
 
 
 class LanguageAutocomplete(autocomplete.Select2ListView):

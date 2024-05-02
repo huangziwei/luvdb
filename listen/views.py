@@ -20,7 +20,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -305,9 +305,9 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         publication_year = item.release_date[:4] if item.release_date else "Unknown"
 
         # Format the label
-        label = format_html("{} ({}, {})", item.title, creator_name, publication_year)
+        label = "{} ({}, {})".format(item.title, creator_name, publication_year)
 
-        return label
+        return mark_safe(label)
 
 
 ###########
@@ -591,9 +591,9 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
         release_year = item.release_date[:4] if item.release_date else "Unknown"
 
         # Format the label
-        label = format_html("{} ({}, {})", item.title, creator_name, release_year)
+        label = "{} ({}, {})".format(item.title, creator_name, release_year)
 
-        return label
+        return mark_safe(label)
 
 
 ###########
@@ -1109,9 +1109,9 @@ class ReleaseAutocomplete(autocomplete.Select2QuerySetView):
         release_year = item.release_date[:4] if item.release_date else "Unknown"
 
         # Format the label
-        label = format_html("{} ({}, {})", item.title, creator_name, release_year)
+        label = "{} ({}, {})".format(item.title, creator_name, release_year)
 
-        return label
+        return mark_safe(label)
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
