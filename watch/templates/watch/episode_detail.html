@@ -153,13 +153,13 @@
                 </div>
             </div>
             <!--right columns-->
-            <div class="col-12 col-md-4">
+            <div class="d-flex flex-column col-12 col-md-4">
                 <!--Related works / Edit -->
                 {% if user.is_authenticated and not object.locked %}
-                <div class="bg-light p-3 mb-3">
-                    <a href="{% url 'watch:episode_update' object.series.id object.season_episode_format %}"
-                               class='fs-6 text-secondary'>Edit Episode</a>
-                </div>
+                    <div class="bg-light p-3 mb-3  order-2 order-sm-1">
+                        <a href="{% url 'watch:episode_update' object.series.id object.season_episode_format %}"
+                                class='fs-6 text-secondary'>Edit Episode</a>
+                    </div>
                 {% endif %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5 fw-semibold">Episode List</div>
