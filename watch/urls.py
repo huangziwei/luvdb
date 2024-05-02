@@ -67,13 +67,13 @@ urlpatterns = [
         EpisodeDetailView.as_view(),
         name="episode_detail",
     ),
-    path(
-        "series/<int:series_id>/episode/<int:pk>/update/",
+    re_path(
+        r"series/(?P<series_id>\d+)/(?P<season_episode>S\d+E\d+)/update/$",
         EpisodeUpdateView.as_view(),
         name="episode_update",
     ),
-    path(
-        "series/<int:series_id>/episode/<int:pk>/history/",
+    re_path(
+        r"series/(?P<series_id>\d+)/(?P<season_episode>S\d+E\d+)/history/$",
         EpisodeHistoryView.as_view(),
         name="episode_history",
     ),

@@ -1193,7 +1193,10 @@ class EpisodeUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy(
             "watch:episode_detail",
-            kwargs={"pk": self.object.pk, "series_id": self.object.series.pk},
+            kwargs={
+                "season_episode": self.object.season_episode_format(),
+                "series_id": self.object.series.pk,
+            },
         )
 
     def get_context_data(self, **kwargs):
@@ -1232,6 +1235,23 @@ class EpisodeUpdateView(LoginRequiredMixin, UpdateView):
                 episodecasts.instance = self.object
                 episodecasts.save()
         return super().form_valid(form)
+
+    def get_object(self):
+        # Get the series_id and season_episode string from the URL parameters
+        series_id = self.kwargs.get("series_id")
+        season_episode = self.kwargs.get("season_episode")
+
+        # Use regex to extract season and episode numbers from the season_episode string
+        match = re.match(r"S(\d+)E(\d+)", season_episode)
+        if not match:
+            raise Http404("Invalid episode format")
+
+        season, episode = int(match.group(1)), int(match.group(2))
+
+        # Fetch the Episode object based on series_id, season, and episode
+        return get_object_or_404(
+            Episode, series_id=series_id, season=season, episode=episode
+        )
 
 
 ###########
@@ -1804,6 +1824,23 @@ class EpisodeHistoryView(HistoryViewMixin, DetailView):
         object = self.get_object()
         context["history_data"] = self.get_history_data(object)
         return context
+
+    def get_object(self):
+        # Get the series_id and season_episode string from the URL parameters
+        series_id = self.kwargs.get("series_id")
+        season_episode = self.kwargs.get("season_episode")
+
+        # Use regex to extract season and episode numbers from the season_episode string
+        match = re.match(r"S(\d+)E(\d+)", season_episode)
+        if not match:
+            raise Http404("Invalid episode format")
+
+        season, episode = int(match.group(1)), int(match.group(2))
+
+        # Fetch the Episode object based on series_id, season, and episode
+        return get_object_or_404(
+            Episode, series_id=series_id, season=season, episode=episode
+        )
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")

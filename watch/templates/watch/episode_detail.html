@@ -157,7 +157,7 @@
                 <!--Related works / Edit -->
                 {% if user.is_authenticated and not object.locked %}
                 <div class="bg-light p-3 mb-3">
-                    <a href="{% url 'watch:episode_update' object.series.id object.id %}"
+                    <a href="{% url 'watch:episode_update' object.series.id object.season_episode_format %}"
                                class='fs-6 text-secondary'>Edit Episode</a>
                 </div>
                 {% endif %}
@@ -222,7 +222,7 @@
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5">Contributors</div>
-                        <div>(<a href="{% url 'watch:episode_history' object.series.id object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>
+                        <div>(<a href="{% url 'watch:episode_history' object.series.id object.season_episode_format %}" class="fs-6 text-secondary">Changelog</a>)</div>
                     </div>
                     <div>
                         {% for contributor in contributors %}
