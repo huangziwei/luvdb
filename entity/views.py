@@ -233,6 +233,11 @@ class CreatorDetailView(DetailView):
 
             return final_releases
 
+        All_releases = Release.objects.filter(
+            releaserole__role__name__in=roles_as_performer,
+            releaserole__creator=creator,
+        ).order_by("release_date")
+
         LP_releases = Release.objects.filter(
             releaserole__role__name__in=roles_as_performer,
             releaserole__creator=creator,
@@ -249,6 +254,9 @@ class CreatorDetailView(DetailView):
             release_type="Single",
         ).order_by("release_date")
 
+        context["All_releases_as_performer"] = get_releases_by_type_and_group(
+            All_releases
+        )
         context["LPs_as_performer"] = get_releases_by_type_and_group(LP_releases)
         context["EPs_as_performer"] = get_releases_by_type_and_group(EP_releases)
         context["singles_as_performer"] = get_releases_by_type_and_group(
