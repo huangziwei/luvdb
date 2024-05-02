@@ -835,6 +835,7 @@ class SeriesDetailView(DetailView):
             "Screenwriter",
             "Story By",
             "Created By",
+            "Showrunner",
         ]
         secondary_role_names = [
             "Exec. Producer",
