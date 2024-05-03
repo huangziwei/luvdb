@@ -509,6 +509,9 @@ class Episode(auto_prefetch.Model):
         max_length=10, blank=True, null=True
     )  # YYYY or YYYY-MM or YYYY-MM-DD
     length = models.CharField(max_length=10, blank=True, null=True)  # in minutes
+    imdb = models.URLField(blank=True, null=True)
+    wikipedia = models.URLField(blank=True, null=True)
+
     creators = models.ManyToManyField(
         Creator, through="EpisodeRole", related_name="episodes_role"
     )
