@@ -131,7 +131,7 @@
                                     {% endif %}
                                     <div class="my-3">
                                         <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
-                                            {% if other_roles.exists or object.release_format or object.length or object.isbn_10 or object.eisbn_13 or object.publication_date%}
+                                            {% if other_roles.exists or object.release_format or object.length or object.release_date %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted active" id="more-tab" data-bs-toggle="tab" data-bs-target="#more" type="button" role="tab" aria-controls="release-lists" aria-selected="false">More</button>
                                             </li>
