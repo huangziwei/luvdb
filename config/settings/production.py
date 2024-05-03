@@ -9,7 +9,7 @@ AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = env.str("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_CUSTOM_DOMAIN = env.str("AWS_S3_CUSTOM_DOMAIN")
 AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=604800",
+    "CacheControl": "max-age=31536000",  # 1 year
 }
 AWS_LOCATION = "static"
 
