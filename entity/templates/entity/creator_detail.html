@@ -244,24 +244,29 @@
                                     <button class="btn btn-outline-secondary btn-sm active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">
                                         All
                                     </button>
-                                </div>    
-                                {% if singles_as_performer %}
+                                </div>   
+                                {% if boxset_releases_as_performer %}
+                                <button class="btn btn-outline-secondary btn-sm" id="boxset-tab" data-bs-toggle="tab" data-bs-target="#boxset" type="button" role="tab" aria-controls="boxset" aria-selected="false">
+                                    Box Set
+                                </button>
+                                {% endif %}
+                                {% if LPs_as_performer %}
                                 <div class="btn-group">
-                                    <button class="btn btn-outline-secondary btn-sm" id="single-tab" data-bs-toggle="tab" data-bs-target="#singles" type="button" role="tab" aria-controls="single" aria-selected="false">
-                                        Single
+                                    <button class="btn btn-outline-secondary btn-sm" id="lp-tab" data-bs-toggle="tab" data-bs-target="#lps" type="button" role="tab" aria-controls="lp" aria-selected="false">
+                                        LP
                                     </button>
                                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span class="visually-hidden">Toggle Dropdown</span>
                                     </button>
                                     <div class="dropdown-menu">
-                                        {% if studio_singles_as_performer %}
-                                        <a class="dropdown-item" id="studio-singles-tab" data-bs-toggle="tab" data-bs-target="#studio-singles" role="tab" aria-controls="studio-singles">Studio</a>
+                                        {% if studio_LPs_as_performer %}
+                                        <a class="dropdown-item" id="studio-lps-tab" data-bs-toggle="tab" data-bs-target="#studio-lps" role="tab" aria-controls="studio-lps">Studio</a>
                                         {% endif %}
-                                        {% if live_singles_as_performer %}
-                                        <a class="dropdown-item" id="live-singles-tab" data-bs-toggle="tab" data-bs-target="#live-singles" role="tab" aria-controls="live-singles">Live</a>
+                                        {% if live_LPs_as_performer %}
+                                        <a class="dropdown-item" id="live-lps-tab" data-bs-toggle="tab" data-bs-target="#live-lps" role="tab" aria-controls="live-lps">Live</a>
                                         {% endif %}
-                                        {% if demo_singles_as_performer %}
-                                        <a class="dropdown-item" id="demo-singles-tab" data-bs-toggle="tab" data-bs-target="#demo-singles" role="tab" aria-controls="demo-singles">Demo</a>
+                                        {% if compilation_LPs_as_performer %}
+                                        <a class="dropdown-item" id="compilation-lps-tab" data-bs-toggle="tab" data-bs-target="#compilation-lps" role="tab" aria-controls="compilation-lps">Compilation</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -287,32 +292,26 @@
                                         </div>
                                     </div>
                                 {% endif %}
-                                {% if LPs_as_performer %}
+                                {% if singles_as_performer %}
                                 <div class="btn-group">
-                                    <button class="btn btn-outline-secondary btn-sm" id="lp-tab" data-bs-toggle="tab" data-bs-target="#lps" type="button" role="tab" aria-controls="lp" aria-selected="false">
-                                        LP
+                                    <button class="btn btn-outline-secondary btn-sm" id="single-tab" data-bs-toggle="tab" data-bs-target="#singles" type="button" role="tab" aria-controls="single" aria-selected="false">
+                                        Single
                                     </button>
                                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span class="visually-hidden">Toggle Dropdown</span>
                                     </button>
                                     <div class="dropdown-menu">
-                                        {% if studio_LPs_as_performer %}
-                                        <a class="dropdown-item" id="studio-lps-tab" data-bs-toggle="tab" data-bs-target="#studio-lps" role="tab" aria-controls="studio-lps">Studio</a>
+                                        {% if studio_singles_as_performer %}
+                                        <a class="dropdown-item" id="studio-singles-tab" data-bs-toggle="tab" data-bs-target="#studio-singles" role="tab" aria-controls="studio-singles">Studio</a>
                                         {% endif %}
-                                        {% if live_LPs_as_performer %}
-                                        <a class="dropdown-item" id="live-lps-tab" data-bs-toggle="tab" data-bs-target="#live-lps" role="tab" aria-controls="live-lps">Live</a>
+                                        {% if live_singles_as_performer %}
+                                        <a class="dropdown-item" id="live-singles-tab" data-bs-toggle="tab" data-bs-target="#live-singles" role="tab" aria-controls="live-singles">Live</a>
                                         {% endif %}
-                                        {% if compilation_LPs_as_performer %}
-                                        <a class="dropdown-item" id="compilation-lps-tab" data-bs-toggle="tab" data-bs-target="#compilation-lps" role="tab" aria-controls="compilation-lps">Compilation</a>
+                                        {% if demo_singles_as_performer %}
+                                        <a class="dropdown-item" id="demo-singles-tab" data-bs-toggle="tab" data-bs-target="#demo-singles" role="tab" aria-controls="demo-singles">Demo</a>
                                         {% endif %}
                                     </div>
                                 </div>
-                                {% endif %}
-
-                                {% if boxset_as_performer %}
-                                <button class="btn btn-outline-secondary btn-sm" id="boxset-tab" data-bs-toggle="tab" data-bs-target="#boxsets" type="button" role="tab" aria-controls="boxset" aria-selected="false">
-                                    Box Set
-                                </button>
                                 {% endif %}
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane mt-1 show active" id="all" role="tabpanel" aria-labelledby="all-tab">
@@ -507,6 +506,22 @@
                                             {% endfor %}
                                         </ul>
                                     </div>
+                                    <div class="tab-pane mt-1" id="boxset" role="tabpanel" aria-labelledby="boxset-tab">
+                                        <ul class="mt-2">
+                                            {% for release in boxset_releases_as_performer %}
+                                                <li>
+                                                    {% if release.release_group.exists %}
+                                                        <a href="{% url 'listen:releasegroup_detail' release.release_group.first.id %}">{{ release.title }}</a>
+                                                    {% else %}
+                                                        <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a>
+                                                    {% endif %}
+                                                    ({% if release.recording_type %}{{release.recording_type}} {{release.release_type}}, {% endif %}{{ release.release_date }})
+                                                </li>
+                                            {% empty %}
+                                                <li>This creator has no release.</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>    
                                 </div>
 
                             </div>
