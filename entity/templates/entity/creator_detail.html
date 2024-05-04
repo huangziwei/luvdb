@@ -68,15 +68,19 @@
                     <h3 class="mt-2">Bibliography</h3>
                     {% if lit_works_all.exists %}
                         <div class="row">
-                            <div class="col-12" role="tablist">
-                                <div class="btn-group me-2" role="group" aria-label="First group">
-                                    <button class="btn btn-outline-secondary btn-sm active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">All</button>
+                            <div class="col-12">
+                                <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link text-muted active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">All</button>
+                                    </li>
                                     {% for work_type, lit_work in lit_works.items %}
                                         {% if lit_work.exists %}
-                                            <button class="btn btn-outline-secondary btn-sm" id="{{ work_type }}-tab" data-bs-toggle="tab" data-bs-target="#{{ work_type }}" type="button" role="tab" aria-controls="{{ work_type }}" aria-selected="false">{{ work_type|capfirst }}</button>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="{{work_type}}-tab" data-bs-toggle="tab" data-bs-target="#{{work_type}}" type="button" role="tab" aria-controls="{{work_type}}" aria-selected="true">{{work_type|capfirst}}</button>
+                                            </li>
                                         {% endif %}
                                     {% endfor %}
-                                </div>
+                                </ul>
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane mt-1 show active" id="all" role="tabpanel" aria-labelledby="all-tab">
                                         <ul class="mt-2">
