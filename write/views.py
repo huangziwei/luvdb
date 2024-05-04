@@ -1067,16 +1067,19 @@ class LuvListDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        search_query = self.request.GET.get("search", "")
 
         # Optimize content fetching
         order = self.request.session.get(
             f"order_{self.object.id}", self.object.order_preference
         )
         order_by_field = "order" if order == "ASC" else "-order"
-        contents = self.object.contents.order_by(order_by_field).all()
+        contents_queryset = self.object.contents.all()
+        if search_query:
+            contents_queryset = self.filter_contents(contents_queryset, search_query)
 
         context["order"] = order
-        context["contents"] = contents
+        context["contents"] = contents_queryset.order_by(order_by_field)
         context["collaborators"] = self.object.collaborators.all().order_by("username")
 
         # statistics
@@ -1149,6 +1152,53 @@ class LuvListDetailView(DetailView):
             page_ranges.reverse()
 
         return page_ranges
+
+    def filter_contents(self, queryset, keyword):
+        filtered_queryset = queryset
+        valid_contents = []
+        content_role_map = {
+            "Release": "ReleaseRole",
+            "Book": "BookRole",
+            "Movie": "MovieRole",
+            "Series": "SeriesRole",
+            "Game": "GameRole",
+        }
+        for content in queryset:
+            try:
+                # Check if the content_object has a title field and match the keyword
+                has_title = False
+                if hasattr(content.content_object, "title"):
+                    if keyword.lower() in content.content_object.title.lower():
+                        has_title = True
+
+                # Check for creators dynamically based on content_object type
+                has_creator = False
+                content_type = type(content.content_object).__name__
+                role_model = content_role_map.get(content_type, None)
+
+                if role_model and hasattr(content.content_object, "creators"):
+                    # Access the through model dynamically
+                    creators = (
+                        getattr(content.content_object, "creators")
+                        .through.objects.filter(
+                            **{content_type.lower(): content.content_object}
+                        )
+                        .select_related("creator")
+                    )
+
+                    for role in creators:
+                        if keyword.lower() in role.creator.name.lower():
+                            has_creator = True
+
+                # Add content to valid_contents if either title or creator matches
+                if has_title or has_creator:
+                    valid_contents.append(content.id)
+
+            except Exception as e:
+                # Handle exceptions, potentially log or further investigate these
+                continue
+
+        return filtered_queryset.filter(id__in=valid_contents)
 
     def get_success_url(self):
         return reverse(
