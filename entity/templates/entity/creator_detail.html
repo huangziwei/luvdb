@@ -276,13 +276,13 @@
                                         </button>
                                         <div class="dropdown-menu">
                                             {% if studio_EPs_as_performer %}
-                                            <a class="dropdown-item" id="studio-tab" data-bs-toggle="tab" data-bs-target="#studio" role="tab" aria-controls="studio">Studio</a>
+                                            <a class="dropdown-item" id="studio-eps-tab" data-bs-toggle="tab" data-bs-target="#studio-eps" role="tab" aria-controls="studio-eps">Studio</a>
                                             {% endif %}
                                             {% if live_EPs_as_performer %}
-                                            <a class="dropdown-item" id="live-tab" data-bs-toggle="tab" data-bs-target="#live" role="tab" aria-controls="live">Live</a>
+                                            <a class="dropdown-item" id="live-eps-tab" data-bs-toggle="tab" data-bs-target="#live-eps" role="tab" aria-controls="live-eps">Live</a>
                                             {% endif %}
                                             {% if compilation_EPs_as_performer %}
-                                            <a class="dropdown-item" id="compilation-tab" data-bs-toggle="tab" data-bs-target="#compilation" role="tab" aria-controls="compilation">Compilation</a>
+                                            <a class="dropdown-item" id="compilation-eps-tab" data-bs-toggle="tab" data-bs-target="#compilation-eps" role="tab" aria-controls="compilation-eps">Compilation</a>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -359,7 +359,7 @@
                                                     ({% if single.recording_type %}{{single.recording_type}}, {% endif %}{{ single.release_date }})
                                                 </li>
                                             {% empty %}
-                                                <li>This creator has no studio LPs.</li>
+                                                <li>This creator has no studio singles.</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -375,7 +375,7 @@
                                                     ({% if single.recording_type %}{{single.recording_type}}, {% endif %}{{ single.release_date }})
                                                 </li>
                                             {% empty %}
-                                                <li>This creator has no live LPs.</li>
+                                                <li>This creator has no live singles.</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -391,11 +391,11 @@
                                                     ({% if single.recording_type %}{{single.recording_type}}, {% endif %}{{ single.release_date }})
                                                 </li>
                                             {% empty %}
-                                                <li>This creator has no demo LPs.</li>
+                                                <li>This creator has no demo singles.</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
-                                    <div class="tab-pane mt-1" id="singles" role="tabpanel" aria-labelledby="single-tab">
+                                    <div class="tab-pane mt-1" id="eps" role="tabpanel" aria-labelledby="single-tab">
                                         <ul class="mt-2">
                                             {% for ep in EPs_as_performer %}
                                                 <li>
