@@ -239,38 +239,82 @@
                     <h3 class="mt-2">Discography</h3>
                     {% if LPs_as_performer or EPs_as_performer or singles_as_performer %}
                         <div class="row">
-                            <div class="col-12">
-                                <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link text-muted active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">
-                                            All
-                                        </button>                                     
-                                    </li>
-                                    {% if singles_as_performer %}
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link text-muted" id="single-tab" data-bs-toggle="tab" data-bs-target="#singles" type="button" role="tab" aria-controls="single" aria-selected="false">
-                                            Singles
-                                        </button>    
-                                    </li>
-                                    {% endif %}
-                                    {% if EPs_as_performer %}
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link text-muted" id="ep-tab" data-bs-toggle="tab" data-bs-target="#eps" type="button" role="tab" aria-controls="ep" aria-selected="false">
-                                            EPs
-                                        </button>   
-                                    </li>
-                                    {% endif %}
-                                    {% if LPs_as_performer %}
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link text-muted" id="lp-tab" data-bs-toggle="tab" data-bs-target="#lps" type="button" role="tab" aria-controls="lp" aria-selected="false">
-                                            LPs
-                                        </button>   
-                                    </li>
-                                    {% endif %}
-                                </ul>
+                            <div class="col-12"  role="tablist">
+                                <div class="btn-group">
+                                    <button class="btn btn-outline-secondary btn-sm active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">
+                                        All
+                                    </button>
+                                </div>    
+                                {% if singles_as_performer %}
+                                <div class="btn-group">
+                                    <button class="btn btn-outline-secondary btn-sm" id="single-tab" data-bs-toggle="tab" data-bs-target="#singles" type="button" role="tab" aria-controls="single" aria-selected="false">
+                                        Single
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        {% if studio_singles_as_performer %}
+                                        <a class="dropdown-item" id="studio-singles-tab" data-bs-toggle="tab" data-bs-target="#studio-singles" role="tab" aria-controls="studio-singles">Studio</a>
+                                        {% endif %}
+                                        {% if live_singles_as_performer %}
+                                        <a class="dropdown-item" id="live-singles-tab" data-bs-toggle="tab" data-bs-target="#live-singles" role="tab" aria-controls="live-singles">Live</a>
+                                        {% endif %}
+                                        {% if demo_singles_as_performer %}
+                                        <a class="dropdown-item" id="demo-singles-tab" data-bs-toggle="tab" data-bs-target="#demo-singles" role="tab" aria-controls="demo-singles">Demo</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% if EPs_as_performer %}
+                                    <div class="btn-group">
+                                        <button class="btn btn-outline-secondary btn-sm" id="ep-tab" data-bs-toggle="tab" data-bs-target="#eps" type="button" role="tab" aria-controls="ep" aria-selected="false">
+                                            EP
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            {% if studio_EPs_as_performer %}
+                                            <a class="dropdown-item" id="studio-tab" data-bs-toggle="tab" data-bs-target="#studio" role="tab" aria-controls="studio">Studio</a>
+                                            {% endif %}
+                                            {% if live_EPs_as_performer %}
+                                            <a class="dropdown-item" id="live-tab" data-bs-toggle="tab" data-bs-target="#live" role="tab" aria-controls="live">Live</a>
+                                            {% endif %}
+                                            {% if compilation_EPs_as_performer %}
+                                            <a class="dropdown-item" id="compilation-tab" data-bs-toggle="tab" data-bs-target="#compilation" role="tab" aria-controls="compilation">Compilation</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if LPs_as_performer %}
+                                <div class="btn-group">
+                                    <button class="btn btn-outline-secondary btn-sm" id="lp-tab" data-bs-toggle="tab" data-bs-target="#lps" type="button" role="tab" aria-controls="lp" aria-selected="false">
+                                        LP
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        {% if studio_LPs_as_performer %}
+                                        <a class="dropdown-item" id="studio-lps-tab" data-bs-toggle="tab" data-bs-target="#studio-lps" role="tab" aria-controls="studio-lps">Studio</a>
+                                        {% endif %}
+                                        {% if live_LPs_as_performer %}
+                                        <a class="dropdown-item" id="live-lps-tab" data-bs-toggle="tab" data-bs-target="#live-lps" role="tab" aria-controls="live-lps">Live</a>
+                                        {% endif %}
+                                        {% if compilation_LPs_as_performer %}
+                                        <a class="dropdown-item" id="compilation-lps-tab" data-bs-toggle="tab" data-bs-target="#compilation-lps" role="tab" aria-controls="compilation-lps">Compilation</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
 
+                                {% if boxset_as_performer %}
+                                <button class="btn btn-outline-secondary btn-sm" id="boxset-tab" data-bs-toggle="tab" data-bs-target="#boxsets" type="button" role="tab" aria-controls="boxset" aria-selected="false">
+                                    Box Set
+                                </button>
+                                {% endif %}
                                 <div class="tab-content" id="myTabContent">
-                                    
                                     <div class="tab-pane mt-1 show active" id="all" role="tabpanel" aria-labelledby="all-tab">
                                         <ul class="mt-2">
                                             {% for release in All_releases_as_performer %}
@@ -283,7 +327,7 @@
                                                     ({% if release.recording_type %}{{release.recording_type}} {{release.release_type}}, {% endif %}{{ release.release_date }})
                                                 </li>
                                             {% empty %}
-                                                <li>This person has no release.</li>
+                                                <li>This creator has no release.</li>
                                             {% endfor %}
                                         </ul>
                                     </div>                                    
@@ -299,10 +343,58 @@
                                                     ({% if single.recording_type %}{{single.recording_type}}, {% endif %}{{ single.release_date }})
                                                 </li>
                                             {% empty %}
-                                                <li>This person has no singles.</li>
+                                                <li>This creator has no singles.</li>
                                             {% endfor %}
                                         </ul>
                                     </div>   
+                                    <div class="tab-pane mt-1" id="studio-singles" role="tabpanel" aria-labelledby="studio-singles-tab">
+                                        <ul class="mt-2">                                       
+                                            {% for single in studio_singles_as_performer %}
+                                                <li>
+                                                    {% if single.release_group.exists %}
+                                                        <a href="{% url 'listen:releasegroup_detail' single.release_group.first.id %}">{{ single.title }}</a>
+                                                    {% else %}
+                                                        <a href="{% url 'listen:release_detail' single.pk %}">{{ single.title }}</a>
+                                                    {% endif %}
+                                                    ({% if single.recording_type %}{{single.recording_type}}, {% endif %}{{ single.release_date }})
+                                                </li>
+                                            {% empty %}
+                                                <li>This creator has no studio LPs.</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane mt-1" id="live-singles" role="tabpanel" aria-labelledby="live-singles-tab">
+                                        <ul class="mt-2">                                       
+                                            {% for single in live_singles_as_performer %}
+                                                <li>
+                                                    {% if single.release_group.exists %}
+                                                        <a href="{% url 'listen:releasegroup_detail' single.release_group.first.id %}">{{ single.title }}</a>
+                                                    {% else %}
+                                                        <a href="{% url 'listen:release_detail' single.pk %}">{{ single.title }}</a>
+                                                    {% endif %}
+                                                    ({% if single.recording_type %}{{single.recording_type}}, {% endif %}{{ single.release_date }})
+                                                </li>
+                                            {% empty %}
+                                                <li>This creator has no live LPs.</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane mt-1" id="demo-singles" role="tabpanel" aria-labelledby="demo-singles-tab">
+                                        <ul class="mt-2">                                       
+                                            {% for single in demo_singles_as_performer %}
+                                                <li>
+                                                    {% if single.release_group.exists %}
+                                                        <a href="{% url 'listen:releasegroup_detail' single.release_group.first.id %}">{{ single.title }}</a>
+                                                    {% else %}
+                                                        <a href="{% url 'listen:release_detail' single.pk %}">{{ single.title }}</a>
+                                                    {% endif %}
+                                                    ({% if single.recording_type %}{{single.recording_type}}, {% endif %}{{ single.release_date }})
+                                                </li>
+                                            {% empty %}
+                                                <li>This creator has no demo LPs.</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
                                     <div class="tab-pane mt-1" id="singles" role="tabpanel" aria-labelledby="single-tab">
                                         <ul class="mt-2">
                                             {% for ep in EPs_as_performer %}
@@ -315,7 +407,39 @@
                                                     ({% if ep.recording_type %}{{ep.recording_type}}, {% endif %}{{ ep.release_date }})
                                                 </li>
                                             {% empty %}
-                                                <li>This person has no EPs.</li>
+                                                <li>This creator has no EPs.</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane mt-1" id="studio-eps" role="tabpanel" aria-labelledby="studio-eps-tab">
+                                        <ul class="mt-2">                                       
+                                            {% for ep in studio_EPs_as_performer %}
+                                                <li>
+                                                    {% if ep.release_group.exists %}
+                                                        <a href="{% url 'listen:releasegroup_detail' ep.release_group.first.id %}">{{ ep.title }}</a>
+                                                    {% else %}
+                                                        <a href="{% url 'listen:release_detail' ep.pk %}">{{ ep.title }}</a>
+                                                    {% endif %}
+                                                    ({% if ep.recording_type %}{{ep.recording_type}}, {% endif %}{{ ep.release_date }})
+                                                </li>
+                                            {% empty %}
+                                                <li>This creator has no studio EPs.</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane mt-1" id="live-eps" role="tabpanel" aria-labelledby="live-eps-tab">
+                                        <ul class="mt-2">                                       
+                                            {% for ep in live_EPs_as_performer %}
+                                                <li>
+                                                    {% if ep.release_group.exists %}
+                                                        <a href="{% url 'listen:releasegroup_detail' ep.release_group.first.id %}">{{ ep.title }}</a>
+                                                    {% else %}
+                                                        <a href="{% url 'listen:release_detail' ep.pk %}">{{ ep.title }}</a>
+                                                    {% endif %}
+                                                    ({% if ep.recording_type %}{{ep.recording_type}}, {% endif %}{{ ep.release_date }})
+                                                </li>
+                                            {% empty %}
+                                                <li>This creator has no live EPs.</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -331,7 +455,55 @@
                                                     ({% if lp.recording_type %}{{lp.recording_type}}, {% endif %}{{ lp.release_date }})
                                                 </li>
                                             {% empty %}
-                                                <li>This person has no LPs.</li>
+                                                <li>This creator has no LPs.</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane mt-1" id="studio-lps" role="tabpanel" aria-labelledby="studio-lps-tab">
+                                        <ul class="mt-2">                                       
+                                            {% for lp in studio_LPs_as_performer %}
+                                                <li>
+                                                    {% if lp.release_group.exists %}
+                                                        <a href="{% url 'listen:releasegroup_detail' lp.release_group.first.id %}">{{ lp.title }}</a>
+                                                    {% else %}
+                                                        <a href="{% url 'listen:release_detail' lp.pk %}">{{ lp.title }}</a>
+                                                    {% endif %}
+                                                    ({% if lp.recording_type %}{{lp.recording_type}}, {% endif %}{{ lp.release_date }})
+                                                </li>
+                                            {% empty %}
+                                                <li>This creator has no studio LPs.</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane mt-1" id="live-lps" role="tabpanel" aria-labelledby="live-lps-tab">
+                                        <ul class="mt-2">                                       
+                                            {% for lp in live_LPs_as_performer %}
+                                                <li>
+                                                    {% if lp.release_group.exists %}
+                                                        <a href="{% url 'listen:releasegroup_detail' lp.release_group.first.id %}">{{ lp.title }}</a>
+                                                    {% else %}
+                                                        <a href="{% url 'listen:release_detail' lp.pk %}">{{ lp.title }}</a>
+                                                    {% endif %}
+                                                    ({% if lp.recording_type %}{{lp.recording_type}}, {% endif %}{{ lp.release_date }})
+                                                </li>
+                                            {% empty %}
+                                                <li>This creator has no live LPs.</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane mt-1" id="compilation-lps" role="tabpanel" aria-labelledby="compilation-lps-tab">
+                                        <ul class="mt-2">                                       
+                                            {% for lp in compilation_LPs_as_performer %}
+                                                <li>
+                                                    {% if lp.release_group.exists %}
+                                                        <a href="{% url 'listen:releasegroup_detail' lp.release_group.first.id %}">{{ lp.title }}</a>
+                                                    {% else %}
+                                                        <a href="{% url 'listen:release_detail' lp.pk %}">{{ lp.title }}</a>
+                                                    {% endif %}
+                                                    ({% if lp.recording_type %}{{lp.recording_type}}, {% endif %}{{ lp.release_date }})
+                                                </li>
+                                            {% empty %}
+                                                <li>This creator has no compilation LPs.</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -578,4 +750,23 @@
             </div>
         </div>
     </div>
+    <style>
+        .nav-item.d-flex {
+            align-items: center;
+        }
+        
+        .nav-link.dropdown-toggle-split {
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+        }
+        
+        .dropdown-toggle-split::after {
+            margin-left: 0;
+        }
+        
+        .nav-link {
+            border: none; /* Removes the border, adjust according to your design */
+        }
+        
+    </style>
 {% endblock %}

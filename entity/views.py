@@ -233,34 +233,65 @@ class CreatorDetailView(DetailView):
 
             return final_releases
 
-        All_releases = Release.objects.filter(
-            releaserole__role__name__in=roles_as_performer,
-            releaserole__creator=creator,
-        ).order_by("release_date")
+        def get_filtered_releases(
+            creator, role, release_type=None, recording_type=None
+        ):
+            query = Release.objects.filter(
+                releaserole__role__name__in=role, releaserole__creator=creator
+            )
+            if release_type:
+                query = query.filter(release_type=release_type)
+            if recording_type:
+                query = query.filter(recording_type=recording_type)
 
-        LP_releases = Release.objects.filter(
-            releaserole__role__name__in=roles_as_performer,
-            releaserole__creator=creator,
-            release_type__in=["LP", "Box Set"],
-        ).order_by("release_date")
-        EP_releases = Release.objects.filter(
-            releaserole__role__name__in=roles_as_performer,
-            releaserole__creator=creator,
-            release_type="EP",
-        ).order_by("release_date")
-        single_releases = Release.objects.filter(
-            releaserole__role__name__in=roles_as_performer,
-            releaserole__creator=creator,
-            release_type="Single",
-        ).order_by("release_date")
+            query = query.order_by("release_date")
+            return get_releases_by_type_and_group(query)
 
-        context["All_releases_as_performer"] = get_releases_by_type_and_group(
-            All_releases
-        )
-        context["LPs_as_performer"] = get_releases_by_type_and_group(LP_releases)
-        context["EPs_as_performer"] = get_releases_by_type_and_group(EP_releases)
-        context["singles_as_performer"] = get_releases_by_type_and_group(
-            single_releases
+        context.update(
+            {
+                "All_releases_as_performer": get_filtered_releases(
+                    creator, roles_as_performer
+                ),
+                "boxset_releases_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "Box Set"
+                ),
+                "LPs_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "LP"
+                ),
+                "studio_LPs_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "LP", "Studio"
+                ),
+                "live_LPs_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "LP", "Live"
+                ),
+                "compilation_LPs_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "LP", "Compilation"
+                ),
+                "EPs_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "EP"
+                ),
+                "studio_EPs_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "EP", "Studio"
+                ),
+                "live_EPs_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "EP", "Live"
+                ),
+                "compilation_EPs_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "EP", "Compilation"
+                ),
+                "singles_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "Single"
+                ),
+                "studio_singles_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "Single", "Studio"
+                ),
+                "live_singles_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "Single", "Live"
+                ),
+                "demo_singles_as_performer": get_filtered_releases(
+                    creator, roles_as_performer, "Single", "Demo"
+                ),
+            }
         )
 
         release_roles = (
