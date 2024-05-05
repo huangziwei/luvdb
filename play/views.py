@@ -1197,7 +1197,7 @@ class GameSeriesCreateView(LoginRequiredMixin, CreateView):
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class GameSeriesDetailView(DetailView):
     model = GameSeries
-    template_name = "play/game_detail.html"  # Update this
+    template_name = "play/series_detail.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -1209,7 +1209,7 @@ class GameSeriesDetailView(DetailView):
 class GameSeriesUpdateView(LoginRequiredMixin, UpdateView):
     model = GameSeries
     form_class = GameSeriesForm
-    template_name = "play/game_update.html"
+    template_name = "play/series_update.html"
 
     def dispatch(self, request, *args, **kwargs):
         # Check if the object is locked for editing.
