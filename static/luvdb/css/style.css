@@ -688,3 +688,28 @@ em {
     font-size: 0.875rem; 
     white-space: nowrap;
 }
+
+.scrollable-btn-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;  /* For Firefox */
+    -ms-overflow-style: none;  /* For Internet Explorer 10+ */
+}
+
+.scrollable-btn-group::-webkit-scrollbar {
+    display: none; /* For Safari and Chrome */
+}
+
+.scrollable-btn-group .btn-group {
+    flex-shrink: 0; /* Prevent flex items from shrinking */
+}
+
+.scrollable-btn-group .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    white-space: nowrap; /* Prevent wrapping and ensure proper spacing */
+}

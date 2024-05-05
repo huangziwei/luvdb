@@ -71,7 +71,7 @@
                             <div class="col-12">
                                 <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link text-muted active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">All</button>
+                                        <button class="nav-link text-muted active" id="all-biblio-tab" data-bs-toggle="tab" data-bs-target="#all-biblio" type="button" role="tab" aria-controls="all" aria-selected="true">All</button>
                                     </li>
                                     {% for work_type, lit_work in lit_works.items %}
                                         {% if lit_work.exists %}
@@ -82,7 +82,7 @@
                                     {% endfor %}
                                 </ul>
                                 <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane mt-1 show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                                    <div class="tab-pane mt-1 show active" id="all-biblio" role="tabpanel" aria-labelledby="all-biblio-tab">
                                         <ul class="mt-2">
                                             {% for work in lit_works_all %}
                                                 <li>
@@ -240,7 +240,7 @@
                         <div class="row">
                             <div class="col-12" role="tablist">
                                 <div class="btn-group">
-                                    <button class="btn btn-outline-secondary btn-sm active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">
+                                    <button class="btn btn-outline-secondary btn-sm active" id="all-disco-tab" data-bs-toggle="tab" data-bs-target="#all-disco" type="button" role="tab" aria-controls="all-disco" aria-selected="true">
                                         All
                                     </button>
                                 </div>   
@@ -313,7 +313,7 @@
                                 </div>
                                 {% endif %}
                                 <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane mt-1 show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                                    <div class="tab-pane mt-1 show active" id="all-disco" role="tabpanel" aria-labelledby="all-disco-tab">
                                         <ul class="mt-2">
                                             {% for release in All_releases_as_performer %}
                                                 <li>
