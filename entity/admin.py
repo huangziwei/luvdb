@@ -27,7 +27,7 @@ class PersonAdmin(admin.ModelAdmin):
 
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
-    list_display = ["name", "domain"]
+    list_display = ["name", "domain", "category"]
     search_fields = ["name", "domain"]
     list_filter = ["domain"]
 
