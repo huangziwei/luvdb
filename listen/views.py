@@ -538,7 +538,7 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
             creators = Creator.objects.filter(name__icontains=self.q)
 
             # get the author role
-            singer_role = Role.objects.filter(name__in=["Singer", "Performer"]).first()
+            singer_role = Role.objects.filter(name__in=["Performer", "Singer"]).first()
 
             # get all the instances which are associated with these authors
             qs = qs.filter(
@@ -554,7 +554,7 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_result_label(self, item):
         # Get the role objects for 'Singer' and 'Composer'
-        singer_role = Role.objects.filter(name__in=["Singer", "Performer"]).first()
+        singer_role = Role.objects.filter(name="Singer").first()
         composer_role = Role.objects.filter(name="Composer").first()
         performer_role = Role.objects.filter(name="Performer").first()
 
@@ -570,19 +570,19 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
                 if singer_track_role.alt_name
                 else singer_track_role.creator.name
             )
-        # If no singer, use composer
-        elif composer_track_role:
-            creator_name = (
-                composer_track_role.alt_name
-                if composer_track_role.alt_name
-                else composer_track_role.creator.name
-            )
-        # If no composer, use performer
+        # If no singer, use performer
         elif performer_track_role:
             creator_name = (
                 performer_track_role.alt_name
                 if performer_track_role.alt_name
                 else performer_track_role.creator.name
+            )
+        # If no perfomer, use composer
+        elif composer_track_role:
+            creator_name = (
+                composer_track_role.alt_name
+                if composer_track_role.alt_name
+                else composer_track_role.creator.name
             )
         else:
             creator_name = "Unknown"
