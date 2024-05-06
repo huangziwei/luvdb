@@ -639,7 +639,7 @@ class CreatorUpdateView(LoginRequiredMixin, UpdateView):
 
 class RoleCreateView(LoginRequiredMixin, CreateView):
     model = Role
-    fields = ["name", "domain"]
+    fields = ["name", "domain", "category"]
     template_name = "entity/role_create.html"
 
     def form_valid(self, form):
@@ -656,7 +656,7 @@ class RoleCreateView(LoginRequiredMixin, CreateView):
 
 class RoleUpdateView(LoginRequiredMixin, UpdateView):
     model = Role
-    fields = ["name", "domain"]
+    fields = ["name", "domain", "category"]
     template_name = "entity/role_update.html"
 
     def form_valid(self, form):

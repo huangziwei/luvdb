@@ -11,9 +11,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.db import transaction
+from django.db import DatabaseError, connection, connections, transaction
 from django.db.models import Count, F, Max, OuterRef, Q, Subquery
 from django.db.models.functions import Length
+from django.db.utils import OperationalError
 from django.forms import inlineformset_factory
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
@@ -80,26 +81,41 @@ from .models import (
 User = get_user_model()
 
 
-def generate_categories_dict():
-    # Fetch all roles with the domain 'Listen' from the database
-    roles = Role.objects.filter(domain="listen")
+class LazyCategoriesDict:
+    def __init__(self):
+        self._categories = None
 
-    # Initialize a defaultdict to group roles by category
-    categories = defaultdict(list)
+    @property
+    def categories(self):
+        if self._categories is None:
+            self._categories = self.generate_categories_dict()
+        return self._categories
 
-    # Iterate over the fetched roles and group them by category
-    for role in roles:
-        if role.category:
-            categories[role.category].append(role.name)
+    def generate_categories_dict(self):
+        try:
+            # Attempt to fetch a connection and call a simple operation to check readiness
+            connections["default"].cursor()
+        except (OperationalError, DatabaseError):
+            # Handle the case where the database is unavailable or unready
+            print("Database is unavailable or unready at the moment.")
+            return {}
 
-    # Convert defaultdict to a regular dictionary
-    categories_dict = dict(categories)
+        from entity.models import Role  # Import here to avoid premature imports
 
-    # Return the constructed dictionary
-    return categories_dict
+        try:
+            roles = Role.objects.filter(domain="listen")
+            categories = defaultdict(list)
+            for role in roles:
+                if role.category:
+                    categories[role.category].append(role.name)
+            return dict(categories)
+        except Exception as e:
+            print("Failed to generate categories:", e)
+            return {}
 
 
-CATEGORIES = generate_categories_dict()
+# Create a global instance of the lazy loader
+CATEGORIES_LOADER = LazyCategoriesDict()
 
 # CATEGORIES = {
 #     "Performing Artists": [
@@ -242,7 +258,11 @@ class WorkDetailView(DetailView):
         for role in work.workrole_set.all():
             role_name = role.role.name
             category = next(
-                (cat for cat, roles in CATEGORIES.items() if role_name in roles),
+                (
+                    cat
+                    for cat, roles in CATEGORIES_LOADER.categories.items()
+                    if role_name in roles
+                ),
                 "Other",
             )
 
@@ -514,7 +534,11 @@ class TrackDetailView(DetailView):
         for role in track.trackrole_set.all():
             role_name = role.role.name
             category = next(
-                (cat for cat, roles in CATEGORIES.items() if role_name in roles),
+                (
+                    cat
+                    for cat, roles in CATEGORIES_LOADER.categories.items()
+                    if role_name in roles
+                ),
                 "Other",
             )
 
@@ -1171,7 +1195,9 @@ class ReleaseCreditDetailView(DetailView):
 
         # Aggregate and categorize Release level credits
         release_roles = ReleaseRole.objects.filter(release=release)
-        categorized_release_credits = categorize_roles(release_roles, CATEGORIES)
+        categorized_release_credits = categorize_roles(
+            release_roles, CATEGORIES_LOADER.categories
+        )
 
         # Aggregate and categorize Track level credits
         release_tracks = ReleaseTrack.objects.filter(release=release).order_by(
@@ -1185,7 +1211,7 @@ class ReleaseCreditDetailView(DetailView):
 
             track_roles = TrackRole.objects.filter(track=release_track.track)
             categorized_track_credits[(release_track.track, disk, order)] = (
-                categorize_roles(track_roles, CATEGORIES)
+                categorize_roles(track_roles, CATEGORIES_LOADER.categories)
             )
 
         context["categorized_release_credits"] = categorized_release_credits

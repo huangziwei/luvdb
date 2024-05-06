@@ -1,0 +1,30 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.name|as_crispy_field }}
+    {{ form.domain|as_crispy_field }}
+    <div id="form-category" style="display: none;">
+        {{ form.category|as_crispy_field }}
+    </div>
+    <input type="submit" value="Create" class="btn btn-primary">
+</form>
+
+<script>
+    // Function to show or hide the category field
+    function toggleCategoryDisplay() {
+        var domainField = document.getElementById('id_domain');  // Assuming the ID of the domain field is 'id_domain'
+        var categoryDiv = document.getElementById('form-category');
+        if (domainField.value === 'listen') {
+            categoryDiv.style.display = 'block';  // Show the category field
+        } else {
+            categoryDiv.style.display = 'none';  // Hide the category field
+        }
+    }
+
+    // Set up the event listener
+    document.getElementById('id_domain').addEventListener('change', toggleCategoryDisplay);
+
+    // Call on initial load in case the form is pre-filled or has default values
+    window.onload = toggleCategoryDisplay;
+</script>
