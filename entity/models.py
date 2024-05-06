@@ -205,11 +205,20 @@ class Role(auto_prefetch.Model):
         # Add more domains as needed
     )
 
+    CATEGORIES = (
+        ("Performing Artists", "Performing Artists"),
+        ("Composition and Lyrics", "Composition and Lyrics"),
+        ("Production and Engineering", "Production and Engineering"),
+    )
+
     name = models.CharField(max_length=255)
     domain = models.CharField(max_length=20, choices=DOMAIN_CHOICES)
+    category = models.CharField(
+        max_length=255, choices=CATEGORIES, blank=True, null=True
+    )
 
     class Meta(auto_prefetch.Model.Meta):
-        unique_together = ("name", "domain")
+        unique_together = ("name", "domain", "category")
 
     def __str__(self):
         return self.name

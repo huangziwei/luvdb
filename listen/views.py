@@ -79,38 +79,60 @@ from .models import (
 
 User = get_user_model()
 
-CATEGORIES = {
-    "Performing Artists": [
-        "Singer",
-        "Guitar",
-        "Electric Guitar",
-        "Bass Guitar",
-        "Drumms",
-        "Alto Saxophone",
-        "Choir",
-        "Clarinet",
-        "Conductor",
-        "Double-bass",
-        "Flautist",
-        "Harpist",
-        "Pianist",
-        "Piano"
-        "Saxophone",
-        "Trombone",
-        "Trumpet",
-        "Violinist",
-        "Vocals",
-        "Ensemble",
-        "Performer",
-    ],
-    "Composition and Lyrics": ["Composer", "Lyricist", "Arranger", "Songwriter"],
-    "Production and Engineering": [
-        "Producer",
-        "Recording Engineer",
-        "Mixing Engineer",
-        "Mastering Engineer",
-    ],
-}
+
+def generate_categories_dict():
+    # Fetch all roles with the domain 'Listen' from the database
+    roles = Role.objects.filter(domain="listen")
+
+    # Initialize a defaultdict to group roles by category
+    categories = defaultdict(list)
+
+    # Iterate over the fetched roles and group them by category
+    for role in roles:
+        if role.category:
+            categories[role.category].append(role.name)
+
+    # Convert defaultdict to a regular dictionary
+    categories_dict = dict(categories)
+
+    # Return the constructed dictionary
+    return categories_dict
+
+
+CATEGORIES = generate_categories_dict()
+
+# CATEGORIES = {
+#     "Performing Artists": [
+#         "Singer",
+#         "Guitar",
+#         "Electric Guitar",
+#         "Bass Guitar",
+#         "Drummer",
+#         "Alto Saxophone",
+#         "Choir",
+#         "Clarinet",
+#         "Conductor",
+#         "Double-bass",
+#         "Flautist",
+#         "Harpist",
+#         "Pianist",
+#         "Piano"
+#         "Saxophone",
+#         "Trombone",
+#         "Trumpet",
+#         "Violinist",
+#         "Vocals",
+#         "Ensemble",
+#         "Performer",
+#     ],
+#     "Composition and Lyrics": ["Composer", "Lyricist", "Arranger", "Songwriter"],
+#     "Production and Engineering": [
+#         "Producer",
+#         "Recording Engineer",
+#         "Mixing Engineer",
+#         "Mastering Engineer",
+#     ],
+# }
 
 ##########
 ## Work ##
