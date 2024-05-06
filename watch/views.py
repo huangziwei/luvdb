@@ -6,7 +6,7 @@ from typing import Any
 from dal import autocomplete
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
@@ -573,8 +573,16 @@ class WatchListView(TemplateView):
         return context
 
 
-class WatchListAllView(LoginRequiredMixin, TemplateView):
+class WatchListAllView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = "watch/watch_list_all.html"
+
+    def test_func(self):
+        # Only allow superusers
+        return self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        # If not allowed, raise a 404 error
+        raise Http404
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

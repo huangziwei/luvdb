@@ -3,12 +3,12 @@ from typing import Any
 
 from dal import autocomplete
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
 from django.forms import inlineformset_factory
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -1481,9 +1481,17 @@ class ReadListView(ListView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class ReadListAllView(LoginRequiredMixin, ListView):
+class ReadListAllView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = "read/read_list_all.html"
     context_object_name = "objects"
+
+    def test_func(self):
+        # Only allow admin users
+        return self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        # If not allowed, raise a 404 error
+        raise Http404
 
     def get_queryset(self):
         return {

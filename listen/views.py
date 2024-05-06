@@ -8,14 +8,14 @@ import requests
 from dal import autocomplete
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import transaction
 from django.db.models import Count, F, Max, OuterRef, Q, Subquery
 from django.db.models.functions import Length
 from django.forms import inlineformset_factory
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -538,7 +538,7 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
             creators = Creator.objects.filter(name__icontains=self.q)
 
             # get the author role
-            singer_role = Role.objects.filter(name="Singer").first()
+            singer_role = Role.objects.filter(name__in=["Singer", "Performer"]).first()
 
             # get all the instances which are associated with these authors
             qs = qs.filter(
@@ -554,7 +554,7 @@ class TrackAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_result_label(self, item):
         # Get the role objects for 'Singer' and 'Composer'
-        singer_role = Role.objects.filter(name="Singer").first()
+        singer_role = Role.objects.filter(name__in=["Singer", "Performer"]).first()
         composer_role = Role.objects.filter(name="Composer").first()
         performer_role = Role.objects.filter(name="Performer").first()
 
@@ -1384,9 +1384,17 @@ class ListenListView(ListView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class ListenListAllView(LoginRequiredMixin, ListView):
+class ListenListAllView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = "listen/listen_list_all.html"
     context_object_name = "objects"
+
+    def test_func(self):
+        # Only allow superusers
+        return self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        # If not allowed, raise a 404 error
+        raise Http404
 
     def get_queryset(self):
         releases = Release.objects.all().order_by("-created_at")
