@@ -165,7 +165,7 @@ class CreatorDetailView(DetailView):
 
         context["books"] = books
 
-        work_roles = ["Author", "Illustrator"]
+        work_roles = ["Author", "Illustrator", "Ghostwriter"]
 
         context["lit_works_all"] = (
             LitWork.objects.filter(
