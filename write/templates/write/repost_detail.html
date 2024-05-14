@@ -281,11 +281,12 @@
                                 {% if repost.original_activity.content_object.progress %}
                                     {% if object.content_type.model == "release" %}
                                         <span class="badge text-bg-warning me-1">
-                                            Loop: {{ repost.original_activity.content_object.progress }}
-                                            {% if repost.original_activity.content_object.progress_type == "TT" %}
-                                                Times
-                                            {% else %}
-                                                Minutes
+                                            {% if repost.original_activity.content_object.progress_type == "LT" %}
+                                                {{ repost.original_activity.content_object.progress }} Times
+                                            {% elif repost.original_activity.content_object.progress_type == "TT" %}
+                                                {{ repost.original_activity.content_object.progress }} Minutes
+                                            {% elif repost.original_activity.content_object.progress_type == "TR" %}
+                                                Track {{ repost.original_activity.content_object.progress }}
                                             {% endif %}
                                         </span>
                                     {% elif repost.original_activity.content_object.content_type.model == "podcast" %}

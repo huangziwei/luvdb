@@ -195,9 +195,9 @@
             {% if activity.content_object.progress %}
                 <span class="badge text-bg-warning me-1">
                     {% if activity.content_object.progress_type == "PG" %}
-                        On page {{ activity.content_object.progress }}
+                        Page {{ activity.content_object.progress }}
                     {% elif activity.content_object.progress_type == "PC" %}
-                        At {{ activity.content_object.progress }}%
+                        {{ activity.content_object.progress }}%
                     {% elif activity.content_object.progress_type == "CH" %}
                         CH {{ activity.content_object.progress }}
                     {% endif %}
@@ -531,11 +531,12 @@
             {% if activity.content_object.progress %}
                 {% if activity.content_object.content_type.model == "release" %}
                     <span class="badge text-bg-warning me-1">
-                        Loop: {{ activity.content_object.progress }}
                         {% if activity.content_object.progress_type == "LT" %}
-                            Times
+                            {{ activity.content_object.progress }} Times
                         {% elif activity.content_object.progress_type == "TT" %}
-                            Minutes
+                            {{ activity.content_object.progress }} Minutes
+                        {% elif activity.content_object.progress_type == "TR" %}
+                            Track {{ activity.content_object.progress }}
                         {% endif %}
                     </span>
                 {% elif activity.content_object.content_type.model == "podcast" %}

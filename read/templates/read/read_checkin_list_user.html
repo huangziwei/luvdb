@@ -123,11 +123,11 @@
                                                 {% if checkin.progress %}
                                                     <span class="badge text-bg-warning me-1">
                                                         {% if checkin.progress_type == "PG" %}
-                                                            On page {{ checkin.progress }}
+                                                            Page {{ checkin.progress }}
                                                         {% elif checkin.progress_type == "PC" %}
                                                             {{ checkin.progress }}%
                                                         {% elif checkin.progress_type == "CH" %}
-                                                            Ch {{ checkin.progress }}
+                                                            CH {{ checkin.progress }}
                                                         {% endif %}
                                                     </span>
                                                 {% endif %}

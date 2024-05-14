@@ -104,16 +104,19 @@
                                     {% if item.progress %}
                                         <span class="badge text-bg-warning me-1">
                                             {% if item.progress_type == "PG" %}
-                                                On page {{ item.progress }}
+                                                Page {{ item.progress }}
                                             {% elif item.progress_type == "PC" %}
-                                                At {{ item.progress }}%
+                                                {{ item.progress }}%
+                                            {% elif item.progress_type == "CH" %}
+                                                CH {{ item.progress }}
                                             {% elif item.progress_type == "LT" %}
-                                                Loops: {{ item.progress }} Times
+                                                {{ item.progress }} Times
                                             {% elif item.progress_type == "TT" %}
                                                 {{ item.progress }} Minutes
+                                            {% elif item.progress_type == "TR" %}
+                                                Track {{ item.progress }}
                                             {% elif item.progress_type == "EP" %}
-                                                {{ item.progress }}
-
+                                                EP {{ item.progress }}
                                             {% endif %}
                                         </span>
                                     {% endif %}
