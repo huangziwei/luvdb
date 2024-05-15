@@ -131,7 +131,7 @@
                         {% for release in releases %}
                             <li>
                                 <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a>
-                                ({{ release.release_type }}, {{ release.release_date }})
+                                ({{ release.recording_type }} {{ release.release_type }}, {{ release.release_date }})
                             </li>
                         {% endfor %}
                     </ul>

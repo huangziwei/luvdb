@@ -72,7 +72,7 @@
                                     <li>
                                         <a href="{% url 'listen:release_detail' item.id %}">{{ item.title }}</a>
                                         {% if item.release_date %}
-                                            ({% if item.release_type %}{{ item.release_type }}, {% endif %}{{ item.release_date }})
+                                            ({% if item.release_type or item.recording_type %}{{ item.recording_type }} {{ item.release_type }}, {% endif %}{{ item.release_date }})
                                         {% endif %}
                                     </li>
                                 </ul>
