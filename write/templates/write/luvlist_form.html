@@ -1,4 +1,5 @@
 {% load crispy_forms_tags %}
+{% load util_filters %}
 <form method="post">
     {% csrf_token %}
         {{ form.title|as_crispy_field }}
@@ -38,7 +39,7 @@
                         {% if page_obj.number == page_num %}
                             <span class="current ms-1 me-1">{{ range }}</span>
                         {% else %}
-                            <a href="?page={{ page_num }}" class="ms-1 me-1">{{ range }}</a>
+                            <a href="?page={{ page_num }}" class="ms-1 me-1">{{ range | parse_range }}</a>
                         {% endif %}
                     {% endfor %}
         
