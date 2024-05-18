@@ -4,8 +4,8 @@ from .base import *
 
 DEBUG = True
 
-STATIC_URL = "/static/luvdb/"
-STATIC_ROOT = BASE_DIR / "static/luvdb"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "static/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "/media/"

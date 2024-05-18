@@ -94,10 +94,6 @@ def main(file_path):
 
     for entry in postprocessed_data:
         fields = entry.get("fields", {})
-        if "cover" in fields:
-            fields["cover"] = None
-        if "poster" in fields:
-            fields["poster"] = None
         if "created_by" in fields:
             fields["created_by"] = 1
         if "updated_by" in fields:

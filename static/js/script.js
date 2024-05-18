@@ -392,14 +392,14 @@ document.addEventListener("DOMContentLoaded", function () {
             bgLightElements.forEach((el) => el.classList.add("bg-dark-highlight"));
             faIcons.forEach((el) => el.setAttribute("fill", "#ccc")); // Dark mode color for FontAwesome icons
             stickyNoteElements.forEach((el) => el.classList.add("bg-dark"));
-            pygmentsCss.href = "/static/luvdb/css/pygments-dark.css"; // Dark mode Pygments style
+            pygmentsCss.href = "/static/css/pygments-dark.css"; // Dark mode Pygments style
         } else {
             htmlElement.removeAttribute("data-bs-theme");
             bgLightElements.forEach((el) => el.classList.remove("bg-dark-highlight"));
             metaThemeColor.setAttribute("content", "#ECEEEE");
             faIcons.forEach((el) => el.setAttribute("fill", "#6C757D")); // Original color for FontAwesome icons
             stickyNoteElements.forEach((el) => el.classList.remove("bg-dark"));
-            pygmentsCss.href = "/static/luvdb/css/pygments-light.css"; // Light mode Pygments style
+            pygmentsCss.href = "/static/css/pygments-light.css"; // Light mode Pygments style
         }
     }
 

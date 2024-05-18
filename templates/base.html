@@ -58,7 +58,7 @@
             function setTheme(theme) {
                 document.documentElement.setAttribute('data-bs-theme', theme);
                 metaThemeColor.setAttribute("content", theme === 'dark' ? "#2B3035" : "#ECEEEE");
-                pygmentsCss.setAttribute("href", `/static/luvdb/css/pygments-${theme}.css`);
+                pygmentsCss.setAttribute("href", `/static/css/pygments-${theme}.css`);
             }
         
             function getSystemPreferredTheme() {
