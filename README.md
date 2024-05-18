@@ -52,6 +52,14 @@ You can also explore LʌvDB at [luvdb.com](https://luvdb.com). This instance is 
 
 ## Testing Locally
 
+First, clone this repository:
+
+```bash
+git clone https://github.com/huangziwei/luvdb
+```
+
+Then, download the [latest datadump](https://mega.nz/folder/qQlEEabL#0_rtInyPCpnCXYkqY4xWCg), unzip it, and replace the media and static folders with the one in the datadump folder, and place the `datadump_anonymized.json` in the repo folder. After than, run the following commands:
+
 ```bash
 # Creating a virtual environment
 python -m venv .venv
@@ -71,11 +79,11 @@ DJANGO_SETTINGS_MODULE=config.settings.development python manage.py migrate
 
 # Load datadump with an anonymous superuser
 DJANGO_SETTINGS_MODULE=config.settings.development python manage.py loaddata datadump_anonymized.json
-# or create your own superuser and start with zero
+# and/or create your own superuser
 # DJANGO_SETTINGS_MODULE=config.settings.development python manage.py createsuperuser
 
 # Starting server
 DJANGO_SETTINGS_MODULE=config.settings.development python manage.py runserver
 ```
 
-The anonymized data dump will only be updated infrequently (note that cover and poster images are not included). You can log in using the username "anonymous" and the password "anonymous". If you prefer to use your own data, you can create a superuser and begin adding data manually.
+The anonymized data dump will only be updated infrequently. There's a default superuser "anonymous" and its password is also "anonymous", but you can also create a new superuser as you like.
