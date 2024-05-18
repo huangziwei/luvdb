@@ -55,21 +55,25 @@
             <link rel="stylesheet" href="{% static 'css/citation.css' %}" defer>
         {% endif %}
         <script>
+            const pygmentsCssLight = "{% static 'css/pygments-light.css' %}";
+            const pygmentsCssDark = "{% static 'css/pygments-dark.css' %}";
+        </script>
+        <script>
             function setTheme(theme) {
                 document.documentElement.setAttribute('data-bs-theme', theme);
                 metaThemeColor.setAttribute("content", theme === 'dark' ? "#2B3035" : "#ECEEEE");
-                pygmentsCss.setAttribute("href", `/static/css/pygments-${theme}.css`);
+                pygmentsCss.setAttribute("href", theme === 'dark' ? pygmentsCssDark : pygmentsCssLight);
             }
-        
+    
             function getSystemPreferredTheme() {
                 return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             }
-        
+    
             const metaThemeColor = document.querySelector("meta[name='theme-color']");
             const pygmentsCss = document.getElementById('pygments-css');
             const savedTheme = localStorage.getItem('theme') || getSystemPreferredTheme();
             setTheme(savedTheme);
-        </script>          
+        </script>      
     </head>
     <body class="d-flex flex-column h-100">
         <header class='mb-3'>
