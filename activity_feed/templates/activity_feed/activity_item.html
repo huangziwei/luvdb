@@ -704,7 +704,7 @@
             {% endif %}
         </div>
     </div>
-    <!--Play-->
+<!--Play-->
 {% elif activity.activity_type == 'play-check-in' %}
     <!--Play-Check-in-->
     <div class="activity-item mb-3 h-entry"
@@ -723,7 +723,7 @@
             </div>
             {% if activity.content_object.progress %}
                 <span class="badge text-bg-warning me-1">
-                    At {{ activity.content_object.progress }}
+                    {{ activity.content_object.progress }}
                     {% if activity.content_object.progress_type == "TT" %}
                         {# djlint:off #}
                         Hour{% if checkin.progress != 1 %}s{% endif %}

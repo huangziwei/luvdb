@@ -62,13 +62,11 @@
                                 <span class="badge {{ checkin.status|get_status_class }} me-1">{{ checkin.get_status_display }}</span>
                                 {% if checkin.progress %}
                                     <span class="badge text-bg-warning me-2">
-                                        Played Time: {{ checkin.progress }}
+                                        {{ checkin.progress }}
                                         {% if checkin.progress_type == "TT" %}
                                             {# djlint:off #}
                                             Hour{% if checkin.progress != 1 %}s{% endif %}
                                             {# djlint:on #}
-                                        {% else %}
-                                            %
                                         {% endif %}
                                     </span>
                                 {% endif %}

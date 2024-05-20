@@ -90,7 +90,7 @@
                                 <span class="badge {{ original_activity.content_object.status|get_status_class }} me-1">{{ original_activity.content_object.get_status_display }}</span>
                                 {% if original_activity.content_object.progress %}
                                     <span class="badge text-bg-warning me-1">
-                                        Played Time: {{ original_activity.content_object.progress }}
+                                        {{ original_activity.content_object.progress }}
                                         {% if original_activity.content_object.progress_type == "TT" %}
                                             {# djlint:off #}
                                             Hour{% if checkin.progress != 1 %}s{% endif %}
