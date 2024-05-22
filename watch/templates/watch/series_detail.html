@@ -433,7 +433,7 @@
                                  aria-labelledby="season{{ forloop.counter }}-tab">
                                 {% for episode in episodes %}
                                     <div class="mt-3">
-                                        S{{ episode.season|stringformat:"02d" }}E{{ episode.episode|stringformat:"02d" }}
+                                        E{{ episode.episode|stringformat:"02d" }}
                                         <a href="{% url 'watch:episode_detail' episode.series.id episode.season_episode_format %}"
                                             class='fs-6'>{{ episode.title }}</a>
                                         <span>({{ episode.release_date }})</span>
