@@ -4,7 +4,7 @@ from dal import autocomplete
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.db.models import Count, Min, Q
+from django.db.models import Count, F, Min, Q
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -394,13 +394,17 @@ class CreatorDetailView(DetailView):
             .annotate(
                 annotated_earliest_release_date=Min(
                     "region_release_dates__release_date"
-                )
+                ),
+                character_name=F("moviecasts__character_name"),
             )
             .order_by("annotated_earliest_release_date")
         )
         context["series_as_cast"] = (
             Series.objects.filter(episodes__episodecasts__creator=creator)
-            .annotate(episode_count=Count("episodes"))
+            .annotate(
+                episode_count=Count("episodes"),
+                character_name=F("episodes__episodecasts__character_name"),
+            )
             .distinct()
             .order_by("release_date")
         )

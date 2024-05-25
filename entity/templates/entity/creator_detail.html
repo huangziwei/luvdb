@@ -170,7 +170,7 @@
                                     <ul>
                                         {% for movie in movies_as_cast %}
                                             <li>
-                                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date }})
+                                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{movie.character_name}}, {{ movie.earliest_release_date }})
                                             </li>
                                         {% endfor %}
                                     </ul>
@@ -182,7 +182,7 @@
                                     <ul>
                                         {% for serie in series_as_cast %}
                                             <li>
-                                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{ serie.release_date }}) <span class="text-muted">({{ serie.episode_count }} episodes)</span>
+                                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({{serie.character_name}}, {{ serie.release_date }}) <span class="text-muted">({{ serie.episode_count }} episodes)</span>
                                             </li>
                                         {% endfor %}
                                     </ul>
