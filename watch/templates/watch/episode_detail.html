@@ -96,8 +96,7 @@
                                     {% for episodecast in episodecasts %}
                                         <li>
                                             <a href="{% url 'entity:creator_detail' episodecast.creator.id %}">{{ episodecast.creator.name }}</a>
-                                            as
-                                            {{ episodecast.character_name }}
+                                            {% if episodecast.character_name %} as {{ episodecast.character_name }}{% endif %}
                                         </li>
                                     {% empty %}
                                         <li>No cast for this episode yet.</li>

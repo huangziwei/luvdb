@@ -25,8 +25,7 @@
             {% for moviecast in moviecasts %}
                 <li>
                     <a href="{% url 'entity:creator_detail' moviecast.creator.id %}">{{ moviecast.creator.name }}</a>
-                    as
-                    {{ moviecast.character_name }}
+                    {% if moviecast.character_name %} as {{ moviecast.character_name }}{% endif %}
                 </li>
             {% empty %}
                 <li>No cast for this movie yet.</li>
