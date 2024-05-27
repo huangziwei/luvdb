@@ -41,6 +41,15 @@
                         {{ object.publication_date }}
                     </div>
                 {% endif %}
+                {% if object.based_on_instances.count != 0 %}
+                    <div>
+                        <span class="text-muted">Based on:</span>
+                        {% for instance in object.based_on_instances.all %}
+                            <a href="{% url 'read:instance_detail' instance.id %}">{{ instance.title }}</a> ({{ instance.publication_date | extract_year }})
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
                 {% if related_locations_with_parents %}
                 <div class="mb-1">
                     {# djlint:off #}

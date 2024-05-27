@@ -331,6 +331,11 @@ class Instance(auto_prefetch.Model):
     wikipedia = models.URLField(max_length=200, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
+    # based on / for marking the source of translation
+    based_on_instances = models.ManyToManyField(
+        "self", blank=True, symmetrical=False, related_name="related_instances"
+    )
+
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

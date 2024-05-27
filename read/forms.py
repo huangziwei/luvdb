@@ -212,6 +212,9 @@ class InstanceForm(forms.ModelForm):
             ),
             "language": autocomplete.ListSelect2(url="read:language-autocomplete"),
             "publication_date": forms.TextInput(),
+            "based_on_instances": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:instance-autocomplete")
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -575,9 +578,9 @@ class BookInSeriesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(BookInSeriesForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.pk and self.instance.book:
-            self.fields[
-                "book_url"
-            ].initial = f"{settings.ROOT_URL}/read/book/{self.instance.book.pk}"
+            self.fields["book_url"].initial = (
+                f"{settings.ROOT_URL}/read/book/{self.instance.book.pk}"
+            )
         self.fields["book_url"].required = False
         self.fields["book_url"].label = "URL"
         self.fields["order"].required = False

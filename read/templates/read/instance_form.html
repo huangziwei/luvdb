@@ -36,6 +36,24 @@
            class="text-secondary"
            target="_blank">Add a new work?</a>
     </div>
+    <div class="bg-light p-3 mb-3">
+        <strong>Cross-reference</strong>
+        <div class="accordion mt-3 mb-3">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <strong>Based on (for translation)</strong>
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p class="text-muted">The original text that this translation is based on.</p>
+                        {{ form.based_on_instances|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     {{ form.notes | as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
