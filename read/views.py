@@ -604,6 +604,7 @@ class BookDetailView(DetailView):
             "Story By",
             "Novelization By",
             "Ghost Writer",
+            "Annotator",
         ]
         main_roles = {}
         other_roles = {}
