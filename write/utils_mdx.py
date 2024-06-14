@@ -4,6 +4,7 @@ from itertools import groupby
 from operator import attrgetter
 
 import markdown
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from markdown.inlinepatterns import InlineProcessor
@@ -586,3 +587,28 @@ class MentionExtension(markdown.Extension):
         MENTION_PATTERN = r"(?<![:/])@([\w]+(?:\.[\w]+)*)"
         mentionPattern = MentionPattern(MENTION_PATTERN, md)
         md.inlinePatterns.register(mentionPattern, "mention", 175)
+
+
+class ImagePattern(InlineProcessor):
+
+    def handleMatch(self, m, data):
+        from write.models import Photo
+
+        image_id = m.group(1)
+        try:
+            photo = Photo.objects.get(photo_id=image_id)
+            url = photo.photo.url
+        except Photo.DoesNotExist:
+            url = f"{settings.MEDIA_URL}photos/default.jpg"  # Fallback URL if the image does not exist
+
+        img = etree.Element("img")
+        img.set("src", url)
+        return img, m.start(0), m.end(0)
+
+
+class ImageExtension(markdown.Extension):
+    def extendMarkdown(self, md):
+        # Pattern for matching the image syntax `![](luvbild_xxxxxxx...)`
+        IMAGE_PATTERN = r"!\[\]\((luvbild_[\w\d]+)\)"
+        imagePattern = ImagePattern(IMAGE_PATTERN, md)
+        md.inlinePatterns.register(imagePattern, "image", 175)

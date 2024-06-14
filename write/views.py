@@ -54,6 +54,7 @@ from .forms import (
     ContentInListFormSet,
     LuvListForm,
     PhotoForm,
+    PhotoNotesForm,
     PhotoUploadForm,
     PinForm,
     PostForm,
@@ -1634,7 +1635,18 @@ class PhotoDetailView(DetailView):
         context["photo_index"] = photo_index + 1
         context["photo_count"] = len(album_photos)
 
+        if not photo.notes:
+            context["notes_form"] = PhotoNotesForm(instance=photo)
+
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = PhotoNotesForm(request.POST, instance=self.object)
+        if form.is_valid():
+            form.save()
+            return redirect(self.request.path)
+        return self.get(request, *args, **kwargs)
 
 
 class PhotoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -1649,8 +1661,8 @@ class PhotoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy(
-            "album_detail",
-            kwargs={"pk": self.object.album.pk, "username": self.object.user.username},
+            "write:photo_detail",
+            kwargs={"pk": self.object.pk, "username": self.object.user.username},
         )
 
 

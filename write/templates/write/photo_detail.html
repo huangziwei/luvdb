@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load markdownify %}
+{% load linkify %}
 {% block content %}
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1>{{ photo.album.name }}</h1>
-            <p>{{ photo.album.notes }}</p>
+            <div class="fs-1">{{ photo.album.name }}</div>
+            <p class="text-muted">{{ photo.album.notes }}</p>
             <span class="d-flex">
                 <p class='me-2'>
                     by
@@ -23,10 +24,6 @@
                     </time>
                     </a>
                 </p>
-                {% if photo.user == request.user %}
-                    <a href="{% url "write:photo_update" photo.user.username photo.id %}" class="me-2">Edit</a>
-                    <a href="{% url "write:photo_delete" photo.user.username photo.id %}" class="me-2">Delete</a>
-                {% endif %}
             </span>
         </div>
     </div>
@@ -51,16 +48,46 @@
                     {{ photo_index }} / {{ photo_count }}
                 </div>
             </div>
-            <div class="card mb-4">
-                <img src="{{ photo.photo.url }}" class="card-img-top img-fluid" alt="{{ photo.photo_id }}">
+            <img src="{{ photo.photo.url }}" class="card-img-top img-fluid mb-2" alt="{{ photo.photo_id }}">
+            <div class="d-flex justify-content-between mb-1">
+                <a class="text-decoration-none" data-bs-toggle="collapse" href="#shareMarkdown" role="button" aria-expanded="false" aria-controls="shareMarkdown" onclick="navigator.clipboard.writeText('![]({{ photo.photo_id }})')">
+                    Share on LʌvDB
+                </a>
+                {% if photo.user == request.user %}
+                <div class="d-flex justify-content-end">
+                    {% if photo.notes %}
+                    <a href="{% url "write:photo_update" photo.user.username photo.id %}" class="me-2">Edit</a>
+                    {% endif %}
+                    <a href="{% url "write:photo_delete" photo.user.username photo.id %}">Delete</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="collapse mb-2" id="shareMarkdown">
+                <div>Copied to clipboard! Paste it in any LuvDB text field to render the image:</div>
+                <div class="border p-2 mt-2 text-muted text-center position-relative">
+                    <code id="markdown-code">![]({{ photo.photo_id }})</code>
+                </div>
+            </div>
+            <div class="mb-2">
                 {% if photo.notes %}
-                    <div class="card-text">
-                        {{ photo.notes|markdownify }}
+                    <div class="card-body">
+                        <div class="card-text">
+                            {{ photo.notes|markdownify|linkify_tags:object.user }}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                {{ notes_form.notes }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}

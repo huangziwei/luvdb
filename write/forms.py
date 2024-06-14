@@ -334,3 +334,14 @@ class PhotoForm(forms.ModelForm):
     class Meta:
         model = Photo
         fields = ["photo", "notes"]
+
+
+class PhotoNotesForm(forms.ModelForm):
+    class Meta:
+        model = Photo
+        fields = ["notes"]
+        widgets = {
+            "notes": forms.Textarea(
+                attrs={"class": "form-control", "placeholder": "Write something..."}
+            ),
+        }

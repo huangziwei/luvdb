@@ -18,7 +18,7 @@ import pymdownx.superfences as superfences
 from environs import Env
 from pymdownx.slugs import slugify
 
-from write.utils_mdx import MentionExtension, media_card
+from write.utils_mdx import ImageExtension, MentionExtension, media_card
 
 from ..s3_storage_backends import MediaStorage
 
@@ -309,6 +309,7 @@ MARKDOWNIFY = {
             "toc",
             "tables",
             MentionExtension(),
+            ImageExtension(),
         ],
         "MARKDOWN_EXTENSION_CONFIGS": {
             "pymdownx.superfences": {
