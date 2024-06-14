@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load util_filters %}
+{% load linkify %}
+{% load markdownify %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% if is_blocked %}
+                <div class="bg-black p-5 ps-3">
+                    <p class="text-white">You are blocked by {{ user.display_name|default:user.username }} and cannot view this page.</p>
+                </div>
+            {% else %}
+
+                <div class="col-12 col-md-7 left-column">
+                    <div class="d-flex mb-3">
+                        <span class="me-3">
+                            <a href="{% url 'write:say_list' user.username %}">Says</a>
+                        </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:post_list' user.username %}">Posts</a>
+                        </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:pin_list' user.username %}">Pins</a>
+                        </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:album_list' user.username %}">Albums</a>
+                        </span>
+                        <span class="me-3">
+                            <a href="{% url 'write:luvlist_list' user.username %}">Lists</a>
+                        </span>
+                        {% if user == request.user %}
+                            <span class="me-3">
+                                <a href="{% url 'accounts:liked' user.username %}">Liked</a>
+                            </span>
+                            <span class="me-3">
+                                <a href="{% url 'write:replied' user.username %}">Replied</a>
+                            </span>
+                        {% endif %}
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="fs-5">
+                            <a href="{% url 'accounts:detail' user.username %}">{{ user.display_name | default:user.username }}</a>'s Albums
+                        </div>
+                        {% if user == request.user %}
+                            <a class="btn btn-sm btn-primary"
+                            href="{% url 'write:album_create' user.username %}">New</a>
+                        {% endif %}
+                    </div>
+                    {% for album in albums %}
+                        <!--LuvList-->
+                        <div class="mb-3 h-entry">
+                            <div>
+                                <a href="{% url 'write:album_detail' user.username album.id %}">{{ album.name }}</a>
+                            </div>
+                            <span class="d-flex mt-2">
+                                <p style='margin-right: 0.5em'>
+                                    <a href="{% url 'write:album_detail' user.username album.id %}"
+                                            class="link-secondary">{{ album.updated_at |default:album.created_at |date:"Y.m.d H:i" }}</a>
+                                </p>
+                                {% if album.user == request.user %}
+                                    <p style='margin: 0 0.5em'>
+                                        <a href="{% url 'write:album_update' user.username album.id %}">Edit</a>
+                                    </p>
+                                    <p style='margin: 0 0.5em'>
+                                        <a href="{% url 'write:album_delete' user.username album.id %}">Delete</a>
+                                    </p>
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% empty %}
+                        <p>No Album found.</p>
+                    {% endfor %}
+
+                    {% if page_obj.paginator.num_pages > 1 %}
+                        <hr>                                      
+                        <div class="pagination mb-3 mb-md-1">
+                            <span class="step-links">
+                                {% for i in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == i %}
+                                        <span class="current">{{ i }}</span>
+                                    {% else %}
+                                        <a href="?page={{ i }}">{{ i }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+        {% endif %}
+        </div>
+    </div>
+{% endblock %}

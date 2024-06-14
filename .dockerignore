@@ -12,3 +12,5 @@ cache/*
 *.csv
 *.json
 embedding.py
+media/covers/*
+media/posters/*

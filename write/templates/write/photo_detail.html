@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load markdownify %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>{{ photo.album.name }}</h1>
+            <p>{{ photo.album.notes }}</p>
+            <span class="d-flex">
+                <p class='me-2'>
+                    by
+                    <a href="{% url 'accounts:detail' album.user.username %}"
+                        class="p-author h-card">
+                        {{ album.user.display_name|default:album.user.username }}
+                    </a>
+                </p>
+                <p class='me-2 text-secondary'>
+                    <a href="{% url 'write:album_detail' object.user.username photo.album.id %}"
+                    class="text-muted dt-published">
+                    <time class="dt-published" datetime="{{album.updated_at}}">
+                            {{ album.updated_at|date:"Y.m.d H:i" }}
+                    </time>
+                    </a>
+                </p>
+                {% if photo.user == request.user %}
+                    <a href="{% url "write:photo_update" photo.user.username photo.id %}" class="me-2">Edit</a>
+                    <a href="{% url "write:photo_delete" photo.user.username photo.id %}" class="me-2">Delete</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    <div class="row justify-content-start">
+        <div class="col-12 col-md-8">
+            <div class="d-flex justify-content-between mb-2">
+                <a href="{% url 'write:album_detail' photo.user.username photo.album.id %}">« Back</a>
+                <div>
+                    {% if previous_photo %}
+                    <a href="{% url 'write:photo_detail' previous_photo.user.username previous_photo.id %}">&laquo; Previous</a>
+                    {% else %}
+                    <span class="text-muted">&laquo; Previous</span>
+                    {% endif %}
+                    |
+                    {% if next_photo %}
+                    <a href="{% url 'write:photo_detail' next_photo.user.username next_photo.id %}">Next &raquo;</a>
+                    {% else %}
+                    <span class="text-muted">Next &raquo;</span>
+                    {% endif %}
+                </div>
+                <div>
+                    {{ photo_index }} / {{ photo_count }}
+                </div>
+            </div>
+            <div class="card mb-4">
+                <img src="{{ photo.photo.url }}" class="card-img-top img-fluid" alt="{{ photo.photo_id }}">
+                {% if photo.notes %}
+                    <div class="card-text">
+                        {{ photo.notes|markdownify }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

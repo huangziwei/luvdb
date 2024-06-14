@@ -9,7 +9,17 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse, reverse_lazy
 
-from .models import Comment, ContentInList, LuvList, Pin, Post, Project, Repost, Say
+from .models import (
+    Album,
+    Comment,
+    ContentInList,
+    LuvList,
+    Photo,
+    Pin,
+    Post,
+    Repost,
+    Say,
+)
 
 User = get_user_model()
 
@@ -306,3 +316,21 @@ ContentInListFormSet = forms.inlineformset_factory(
         "order": forms.NumberInput(attrs={"required": False}),
     },
 )
+
+
+class AlbumForm(forms.ModelForm):
+    class Meta:
+        model = Album
+        fields = ["name", "notes"]
+
+
+class PhotoUploadForm(forms.ModelForm):
+    class Meta:
+        model = Photo
+        fields = ["photo"]
+
+
+class PhotoForm(forms.ModelForm):
+    class Meta:
+        model = Photo
+        fields = ["photo", "notes"]

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Update Album{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7 left-column">
+                <h3>Update Album</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

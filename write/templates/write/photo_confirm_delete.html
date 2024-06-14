@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-7 left-column h-entry">
+            <h1>Delete This Photo</h1>
+            <p>
+                Are you sure you want to delete photo? 
+            </p>
+            <p>
+                This action cannot be undone. 
+            </p>
+            <form method="POST">
+                {% csrf_token %}
+                <button type="buttun" class='btn btn-danger'>Yes, delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

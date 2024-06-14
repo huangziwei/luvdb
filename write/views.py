@@ -35,6 +35,7 @@ from django.views.generic import (
     ListView,
     UpdateView,
 )
+from django.views.generic.edit import FormMixin
 from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Activity, Block
@@ -48,18 +49,23 @@ from write.utils_formatting import check_required_js
 from write.utils_mastodon import create_mastodon_post
 
 from .forms import (
+    AlbumForm,
     CommentForm,
     ContentInListFormSet,
     LuvListForm,
+    PhotoForm,
+    PhotoUploadForm,
     PinForm,
     PostForm,
     RepostForm,
     SayForm,
 )
 from .models import (
+    Album,
     Comment,
     ContentInList,
     LuvList,
+    Photo,
     Pin,
     Post,
     Project,
@@ -1501,3 +1507,163 @@ def surprise_manifest(request, luvlist_id, username=None):
         "background_color": "#ffffff",
     }
     return HttpResponse(json.dumps(data), content_type="application/json")
+
+
+# Album and Photo
+class AlbumDetailView(FormMixin, DetailView):
+    model = Album
+    template_name = "write/album_detail.html"
+    context_object_name = "album"
+    form_class = PhotoUploadForm
+    paginate_by = 9  # Number of photos per page
+
+    def get_success_url(self):
+        return self.request.path
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        photo = form.save(commit=False)
+        photo.album = self.get_object()
+        photo.user = self.request.user
+        photo.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        album = self.get_object()
+        photos = album.photos.all()
+        paginator = Paginator(photos, self.paginate_by)
+        page_number = self.request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        context["page_obj"] = page_obj
+        return context
+
+
+class AlbumCreateView(CreateView):
+    model = Album
+    form_class = AlbumForm
+    template_name = "write/album_create.html"
+    paginate_by = 9
+
+    def form_valid(self, form):
+        form.instance.user = (
+            self.request.user
+        )  # Set the user to the current logged in user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            "write:album_detail",
+            kwargs={"pk": self.object.id, "username": self.object.user.username},
+        )
+
+
+class AlbumUpdateView(UpdateView):
+    model = Album
+    form_class = AlbumForm
+    template_name = "write/album_update.html"
+
+    def get_queryset(self):
+        # Ensure that only the owner can update their album
+        return self.model.objects.filter(user=self.request.user)
+
+    def get_success_url(self):
+        return reverse(
+            "write:album_detail",
+            kwargs={"pk": self.object.id, "username": self.object.user.username},
+        )
+
+
+class AlbumDeleteView(DeleteView):
+    model = Album
+    template_name = "write/album_confirm_delete.html"
+    success_url = reverse_lazy("write:album_list")
+
+    def get_queryset(self):
+        # Ensure that only the owner can delete their album
+        return self.model.objects.filter(user=self.request.user)
+
+    def get_success_url(self):
+        return reverse(
+            "write:album_list", kwargs={"username": self.request.user.username}
+        )
+
+
+class AlbumListView(LoginRequiredMixin, ListView):
+    model = Album
+    template_name = "write/album_list.html"
+    context_object_name = "albums"
+
+    def get_queryset(self):
+        return Album.objects.filter(user=self.request.user).order_by("-created_at")
+
+
+class PhotoDetailView(DetailView):
+    model = Photo
+    template_name = "write/photo_detail.html"
+    context_object_name = "photo"
+
+    def get_queryset(self):
+        return Photo.objects.filter(album__user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["album"] = self.object.album
+
+        photo = self.get_object()
+        album_photos = list(photo.album.photos.all())
+        photo_index = album_photos.index(photo)
+
+        if photo_index > 0:
+            context["previous_photo"] = album_photos[photo_index - 1]
+        else:
+            context["previous_photo"] = None
+
+        if photo_index < len(album_photos) - 1:
+            context["next_photo"] = album_photos[photo_index + 1]
+        else:
+            context["next_photo"] = None
+
+        context["photo_index"] = photo_index + 1
+        context["photo_count"] = len(album_photos)
+
+        return context
+
+
+class PhotoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Photo
+    form_class = PhotoForm
+    template_name = "write/photo_update.html"
+    context_object_name = "photo"
+
+    def test_func(self):
+        photo = self.get_object()
+        return self.request.user == photo.user
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "album_detail",
+            kwargs={"pk": self.object.album.pk, "username": self.object.user.username},
+        )
+
+
+class PhotoDeleteView(LoginRequiredMixin, DeleteView):
+    model = Photo
+    template_name = "write/photo_confirm_delete.html"
+
+    def get_queryset(self):
+        # Ensure that only the owner can delete their photo
+        return self.model.objects.filter(user=self.request.user)
+
+    def get_success_url(self):
+        return reverse(
+            "write:album_detail",
+            kwargs={"pk": self.object.album.id, "username": self.object.user.username},
+        )

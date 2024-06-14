@@ -22,6 +22,9 @@
                             <a href="{% url 'write:pin_list' user.username %}">Pins</a>
                         </span>
                         <span class="me-3">
+                            <a href="{% url 'write:album_list' user.username %}">Albums</a>
+                        </span>
+                        <span class="me-3">
                             <a href="{% url 'write:luvlist_list' user.username %}">Lists</a>
                         </span>
                         {% if user == request.user %}

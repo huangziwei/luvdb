@@ -45,6 +45,11 @@ from .feeds import (
     UserSayFeed,
 )
 from .views import (
+    AlbumCreateView,
+    AlbumDeleteView,
+    AlbumDetailView,
+    AlbumListView,
+    AlbumUpdateView,
     CommentCreateView,
     CommentDeleteView,
     CommentListView,
@@ -54,6 +59,9 @@ from .views import (
     LuvListDetailView,
     LuvListUpdateView,
     LuvListUserListView,
+    PhotoDeleteView,
+    PhotoDetailView,
+    PhotoUpdateView,
     PinCreateView,
     PinDeleteView,
     PinDetailView,
@@ -446,5 +454,41 @@ urlpatterns = [
         VisitCheckInListView.as_view(),
         kwargs={"model_name": "location"},
         name="visit_checkin_list",
+    ),
+    # album
+    path("@<str:username>/albums/", AlbumListView.as_view(), name="album_list"),
+    path(
+        "@<str:username>/album/create/", AlbumCreateView.as_view(), name="album_create"
+    ),
+    path(
+        "@<str:username>/album/<int:pk>/",
+        AlbumDetailView.as_view(),
+        name="album_detail",
+    ),
+    path(
+        "@<str:username>/album/<int:pk>/update/",
+        AlbumUpdateView.as_view(),
+        name="album_update",
+    ),
+    path(
+        "@<str:username>/album/<int:pk>/delete/",
+        AlbumDeleteView.as_view(),
+        name="album_delete",
+    ),
+    # photo
+    path(
+        "@<str:username>/photo/<int:pk>/",
+        PhotoDetailView.as_view(),
+        name="photo_detail",
+    ),
+    path(
+        "@<str:username>/photo/<int:pk>/update/",
+        PhotoUpdateView.as_view(),
+        name="photo_update",
+    ),
+    path(
+        "@<str:username>/photo/<int:pk>/delete/",
+        PhotoDeleteView.as_view(),
+        name="photo_delete",
     ),
 ]

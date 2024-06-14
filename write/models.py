@@ -1,7 +1,9 @@
 import json
+import os
 import random
 import re
 import string
+from io import BytesIO
 from urllib.parse import urlparse
 
 import auto_prefetch
@@ -11,7 +13,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
+from django.core.files.base import ContentFile
 from django.db import models, transaction
 from django.db.models import Q
 from django.db.models.signals import m2m_changed, post_delete, pre_delete
@@ -19,6 +22,7 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
+from PIL import Image
 
 from activity_feed.models import Activity, Block
 from discover.models import Vote
@@ -775,3 +779,131 @@ class Randomizer(auto_prefetch.Model):
         self.randomized_order = None  # Clear the existing order
         self.last_generated_datetime = None  # Clear the last generated datetime
         self.generate_item()  # Regenerate the order
+
+
+# Album and Photo
+class Album(auto_prefetch.Model):
+    name = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="albums")
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    def model_name(self):
+        return "Album"
+
+
+def validate_file_size(value):
+    filesize = value.size
+    if filesize > 10 * 1024 * 1024:  # 10MB
+        raise ValidationError("The maximum file size that can be uploaded is 10MB")
+    return value
+
+
+def user_directory_path(instance, filename):
+    if filename is None:
+        filename = instance.photo.name
+    _, extension = os.path.splitext(filename)
+    directory_name = f"{instance.user.username}/{instance.album.name}"
+    filename = f"{instance.photo_id}{extension}"
+    return os.path.join("photos", directory_name, filename)
+
+
+class Photo(auto_prefetch.Model):
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, related_name="photos")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="photos")
+    photo = models.ImageField(
+        upload_to=user_directory_path, validators=[validate_file_size]
+    )
+    photo_id = models.CharField(max_length=255, unique=True, default="")
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.album.name} Photo"
+
+    def model_name(self):
+        return "Photo"
+
+    def save(self, *args, **kwargs):
+        if not self.photo_id:
+            self.photo_id = self.generate_photo_id()
+        if not self.user:
+            self.user = self.album.user  # Ensure the user is set from the album
+        # Ensure upload path is set only when the instance is first created
+        if not self.photo.name:
+            filename = self.photo.name if self.photo.name else "default.webp"
+            ext = filename.split(".")[-1]
+            self.photo.name = f"{self.photo_id}.{ext}"
+
+        super().save(*args, **kwargs)
+        self.transform_image()
+
+    def generate_photo_id(self, length=12, prefix="luvbild_"):
+        # Generate a unique ID with the specified prefix followed by a random string
+        random_string = "".join(
+            random.choices(string.ascii_lowercase + string.digits, k=length)
+        )
+        return prefix + random_string
+
+    def transform_image(self):
+        # Transform image to ensure it's saved in .webp format and is smaller than 300KB
+        img = Image.open(self.photo)
+        temp_thumb = BytesIO()
+        img.save(temp_thumb, format="webp")
+        size_kb = temp_thumb.tell() / 1024
+
+        if size_kb > 300:
+            # Resize loop to progressively reduce quality and size
+            quality = 95
+            while True:
+                temp_thumb = BytesIO()
+                img.save(temp_thumb, format="webp", quality=quality)
+                size_kb = temp_thumb.tell() / 1024
+                if size_kb < 500:
+                    break
+                quality -= 10
+
+        # Replace the image file with the resized image in .webp format
+        temp_thumb.seek(0)
+        webp_filename = f"{self.photo_id}.webp"
+        self.photo.delete(save=False)
+        self.photo.save(webp_filename, ContentFile(temp_thumb.read()), save=False)
+        temp_thumb.close()
+
+        # Delete the original image file if it exists and is not the same as the new one
+        original_file_path = self.photo.path
+        if os.path.exists(original_file_path) and original_file_path != self.photo.path:
+            os.remove(original_file_path)
+
+        super().save()
+
+    def delete(self, *args, **kwargs):
+        # Ensure the file is deleted from the storage system
+        storage, path = self.photo.storage, self.photo.path
+        super().delete(*args, **kwargs)
+        storage.delete(path)
+
+
+@receiver(post_delete, sender=Photo)
+def delete_photo_file(sender, instance, **kwargs):
+    if instance.photo:
+        instance.photo.delete(save=False)
+
+
+@receiver(pre_delete, sender=Album)
+def delete_album_photos(sender, instance, **kwargs):
+    # Ensure all photos are deleted when an album is deleted
+    photos = instance.photos.all()
+    for photo in photos:
+        photo.delete()
+    # Check if the album folder is empty and delete it if it is
+    album_path = os.path.join(
+        settings.MEDIA_ROOT, "photos", instance.user.username, instance.name
+    )
+    if os.path.exists(album_path) and not os.listdir(album_path):
+        os.rmdir(album_path)

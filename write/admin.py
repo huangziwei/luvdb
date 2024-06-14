@@ -1,9 +1,11 @@
 from django.contrib import admin
 
 from .models import (
+    Album,
     Comment,
     ContentInList,
     LuvList,
+    Photo,
     Pin,
     Post,
     Project,
@@ -67,3 +69,26 @@ admin.site.register(Post, PostAdmin)
 admin.site.register(Say, SayAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Randomizer, RandomizerAdmin)
+
+
+class PhotoInline(admin.TabularInline):
+    model = Photo
+    extra = 1  # Number of empty forms to display
+    fields = ("photo", "photo_id", "notes", "created_at", "updated_at")
+    readonly_fields = ("photo_id", "created_at", "updated_at")
+
+
+class AlbumAdmin(admin.ModelAdmin):
+    inlines = [PhotoInline]
+    list_display = ("name", "user", "created_at", "updated_at")
+    search_fields = ("name", "user__username")
+
+
+class PhotoAdmin(admin.ModelAdmin):
+    list_display = ("photo_id", "album", "user", "created_at", "updated_at")
+    search_fields = ("album__name", "user__username", "photo_id")
+    readonly_fields = ("photo_id", "created_at", "updated_at")
+
+
+admin.site.register(Album, AlbumAdmin)
+admin.site.register(Photo, PhotoAdmin)
