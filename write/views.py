@@ -1597,22 +1597,25 @@ class AlbumDeleteView(DeleteView):
         )
 
 
-class AlbumListView(LoginRequiredMixin, ListView):
+class AlbumListView(ListView):
     model = Album
     template_name = "write/album_list.html"
     context_object_name = "albums"
 
     def get_queryset(self):
-        return Album.objects.filter(user=self.request.user).order_by("-created_at")
+        self.user = get_object_or_404(User, username=self.kwargs["username"])
+        return Album.objects.filter(user=self.user).order_by("-created_at")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = self.user
+        return context
 
 
 class PhotoDetailView(DetailView):
     model = Photo
     template_name = "write/photo_detail.html"
     context_object_name = "photo"
-
-    def get_queryset(self):
-        return Photo.objects.filter(album__user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

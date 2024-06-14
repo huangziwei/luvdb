@@ -76,6 +76,7 @@
                         </div>
                     </div>
                 {% else %}
+                    {% if request.user == photo.user %}
                     <div class="card-body">
                         <form method="post">
                             {% csrf_token %}
@@ -85,8 +86,10 @@
                             <button type="submit" class="btn btn-primary">Save</button>
                         </form>
                     </div>
+                    {% endif %}
                 {% endif %}
             </div>
+
         </div>
     </div>
 </div>
