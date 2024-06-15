@@ -49,25 +49,6 @@
                 </div>
             </div>
             <img src="{{ photo.photo.url }}" class="card-img-top img-fluid mb-2" alt="{{ photo.photo_id }}">
-            <div class="d-flex justify-content-between mb-1">
-                <a class="text-decoration-none" data-bs-toggle="collapse" href="#shareMarkdown" role="button" aria-expanded="false" aria-controls="shareMarkdown" onclick="navigator.clipboard.writeText('![]({{ photo.photo_id }})')">
-                    Share on LʌvDB
-                </a>
-                {% if photo.user == request.user %}
-                <div class="d-flex justify-content-end">
-                    {% if photo.notes %}
-                    <a href="{% url "write:photo_update" photo.user.username photo.id %}" class="me-2">Edit</a>
-                    {% endif %}
-                    <a href="{% url "write:photo_delete" photo.user.username photo.id %}">Delete</a>
-                </div>
-                {% endif %}
-            </div>
-            <div class="collapse mb-2" id="shareMarkdown">
-                <div>Copied to clipboard! Paste it in any LʌvDB text field to render the image:</div>
-                <div class="border p-2 mt-2 text-muted text-center position-relative">
-                    <code id="markdown-code">![]({{ photo.photo_id }})</code>
-                </div>
-            </div>
             <div class="mb-2">
                 {% if photo.notes %}
                     <div class="card-body">
@@ -89,6 +70,35 @@
                     {% endif %}
                 {% endif %}
             </div>
+            <div class="d-flex justify-content-between mb-1">
+                <a class="text-decoration-none" data-bs-toggle="collapse" href="#shareMarkdown" role="button" aria-expanded="false" aria-controls="shareMarkdown" onclick="navigator.clipboard.writeText('![]({{ photo.photo_id }})')">
+                    Share on LʌvDB
+                </a>
+                {% if photo.user == request.user %}
+                    <div class="d-flex justify-content-end">
+                        {% if photo.album.cover_photo == photo %}
+                        <div class="me-3 text-muted">This is the album cover</div>
+                        
+                        {% else %}
+                        <a href="#" class="me-3" onclick="document.getElementById('set-cover-form').submit(); return false;">Set as album cover</a>
+                        {% endif %}
+                        {% if photo.notes %}
+                        <a href="{% url "write:photo_update" photo.user.username photo.id %}" class="me-3">Edit</a>
+                        {% endif %}
+                        <a href="{% url "write:photo_delete" photo.user.username photo.id %}">Delete</a>
+                    </div>
+                    <form id="set-cover-form" method="post" action="{% url 'write:set_album_cover' photo.user.username photo.id %}" style="display:none;">
+                        {% csrf_token %}
+                    </form>
+                {% endif %}
+            </div>
+            <div class="collapse mb-2" id="shareMarkdown">
+                <div>Copied to clipboard! Paste it in any LʌvDB text field to render the image:</div>
+                <div class="border p-2 mt-2 text-muted text-center position-relative">
+                    <code id="markdown-code">![]({{ photo.photo_id }})</code>
+                </div>
+            </div>
+
 
             <div class="row">
                 <hr>

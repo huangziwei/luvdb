@@ -85,6 +85,7 @@ from .views import (
     SayDetailView,
     SayListView,
     SayUpdateView,
+    SetAlbumCoverView,
     TagListView,
     TagUserListView,
     surprise_manifest,
@@ -490,5 +491,10 @@ urlpatterns = [
         "@<str:username>/photo/<int:pk>/delete/",
         PhotoDeleteView.as_view(),
         name="photo_delete",
+    ),
+    path(
+        "@<str:username>/photo/<int:pk>/set_cover/",
+        SetAlbumCoverView.as_view(),
+        name="set_album_cover",
     ),
 ]

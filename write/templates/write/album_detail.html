@@ -32,18 +32,23 @@
 
         <div class="row">
             {% for photo in page_obj.object_list %}
-            <div class="col-12 col-md-4 mb-4 position-relative photo-container">
-                <div class="card">
-                    <a href="{% url 'write:photo_detail' photo.user.username photo.id %}">
-                        <img src="{{ photo.photo.url }}" class="card-img-top" />
-                    </a>
-                    {% if request.user == album.user %}
-                    <button class="btn btn-secondary position-absolute top-0 end-0 delete-photo-btn" data-photo-id="{{ photo.id }}" data-username="{{ photo.user.username }}">                    
-                        &times;
-                    </button>
-                    {% endif %}
+                <div class="col-12 col-md-4 mb-4 position-relative photo-container">
+                    <div class="card card-no-radius">
+                        <a href="{% url 'write:photo_detail' photo.user.username photo.id %}">
+                            <img src="{{ photo.photo.url }}" class="card-img-top card-no-radius" />
+                        </a>
+                        {% if request.user == album.user %}
+                            {% comment %} 
+                            <button class="btn btn-secondary btn-sm position-absolute top-0 end-0 delete-photo-btn" data-photo-id="{{ photo.id }}" data-username="{{ photo.user.username }}">                    
+                                &times;
+                            </button> 
+                            {% endcomment %}
+                            <button class="btn btn-secondary btn-sm position-absolute top-0 end-0 set-cover-btn" data-photo-id="{{ photo.id }}" data-username="{{ photo.user.username }}">                    
+                                &#9733; <!-- Star icon -->
+                            </button>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
             {% endfor %}
         </div>
 
@@ -191,14 +196,48 @@
 
             xhr.send(formData);
         }
+        document.querySelectorAll('.set-cover-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const photoId = this.getAttribute('data-photo-id');
+                const username = this.getAttribute('data-username');
+                if (confirm('Are you sure you want to set this photo as the album cover?')) {
+                    setAlbumCover(username, photoId);
+                }
+            });
+        });
+
+        function setAlbumCover(username, photoId) {
+            const formData = new FormData();
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', `/@${username}/photo/${photoId}/set_cover/`, true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    location.reload();
+                } else {
+                    alert('An error occurred while setting the album cover.');
+                }
+            };
+
+            xhr.send(formData);
+        }
     </script>
     <style>
-        .photo-container .delete-photo-btn {
+        .photo-container .delete-photo-btn,
+        .photo-container .set-cover-btn{
             display: none;
         }
     
-        .photo-container:hover .delete-photo-btn {
+        .photo-container:hover .delete-photo-btn,
+        .photo-container:hover .set-cover-btn{
             display: inline-block;
+        }
+
+        .card-no-radius {
+            border-radius: 0 !important;
         }
     </style>
 </div>

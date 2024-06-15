@@ -26,6 +26,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.generic import (
@@ -1601,6 +1602,7 @@ class AlbumListView(ListView):
     model = Album
     template_name = "write/album_list.html"
     context_object_name = "albums"
+    paginate_by = 9
 
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs["username"])
@@ -1645,10 +1647,18 @@ class PhotoDetailView(ShareDetailView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        if "set_cover" in request.POST:
+            print("Setting cover photo...")
+            album = self.object.album
+            album.cover_photo = self.object
+            album.save()
+            return redirect(self.request.path)
+
         form = PhotoNotesForm(request.POST, instance=self.object)
         if form.is_valid():
             form.save()
             return redirect(self.request.path)
+
         return self.get(request, *args, **kwargs)
 
 
@@ -1682,3 +1692,12 @@ class PhotoDeleteView(LoginRequiredMixin, DeleteView):
             "write:album_detail",
             kwargs={"pk": self.object.album.id, "username": self.object.user.username},
         )
+
+
+class SetAlbumCoverView(View):
+    def post(self, request, username, pk):
+        photo = get_object_or_404(Photo, pk=pk, user__username=username)
+        album = photo.album
+        album.cover_photo = photo
+        album.save()
+        return redirect(photo.get_absolute_url())

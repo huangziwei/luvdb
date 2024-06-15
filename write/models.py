@@ -794,6 +794,14 @@ class Album(auto_prefetch.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     votes = GenericRelation(Vote)
 
+    cover_photo = models.OneToOneField(
+        "Photo",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="album_cover",
+    )
+
     def __str__(self):
         return self.name
 
@@ -839,7 +847,7 @@ class Photo(auto_prefetch.Model):
     votes = GenericRelation(Vote)
 
     def __str__(self):
-        return f"{self.album.name} Photo"
+        return f"{self.album.name} > {self.photo_id}"
 
     def model_name(self):
         return "Photo"
