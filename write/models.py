@@ -876,6 +876,11 @@ class Photo(auto_prefetch.Model):
     def transform_image(self):
         # Transform image to ensure it's saved in .webp format and is smaller than 300KB
         img = Image.open(self.photo)
+
+        # Ensure the image is in RGB mode
+        if img.mode != "RGB":
+            img = img.convert("RGB")
+
         temp_thumb = BytesIO()
         img.save(temp_thumb, format="webp")
         size_kb = temp_thumb.tell() / 1024
@@ -885,9 +890,13 @@ class Photo(auto_prefetch.Model):
             quality = 95
             while True:
                 temp_thumb = BytesIO()
-                img.save(temp_thumb, format="webp", quality=quality)
+                try:
+                    img.save(temp_thumb, format="webp", quality=quality)
+                except ValueError as e:
+                    print(f"Error saving image with quality {quality}: {e}")
+                    break  # Exit loop if an error occurs
                 size_kb = temp_thumb.tell() / 1024
-                if size_kb <= 400:
+                if size_kb <= 500 or quality <= 10:
                     break
                 quality -= 10
 
