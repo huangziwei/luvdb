@@ -146,7 +146,7 @@
         function uploadFiles(files) {
             for (let i = 0; i < files.length; i++) {
                 if (files[i].size > 400 * 1024) { // 400KB in bytes
-                    alert(`The file "${files[i].name}" is too large. Please select a file smaller than 300KB.`);
+                    alert(`The file "${files[i].name}" is too large. Please select a file smaller than 400KB.`);
                     continue; // Skip this file
                 }
                 const formData = new FormData();

@@ -891,6 +891,7 @@ class Photo(auto_prefetch.Model):
                     break
                 quality -= 10
 
+        original_name = self.photo.name
         # Replace the image file with the resized image in .webp format
         temp_thumb.seek(0)
         webp_filename = f"{self.photo_id}.webp"
@@ -899,17 +900,18 @@ class Photo(auto_prefetch.Model):
         temp_thumb.close()
 
         # Delete the original image file if it exists and is not the same as the new one
-        original_file_path = self.photo.path
-        if os.path.exists(original_file_path) and original_file_path != self.photo.path:
-            os.remove(original_file_path)
+        storage, path = self.photo.storage, self.photo.name
+        if storage.exists(original_name) and original_name != path:
+            storage.delete(original_name)
 
         super().save()
 
     def delete(self, *args, **kwargs):
         # Ensure the file is deleted from the storage system
-        storage, path = self.photo.storage, self.photo.path
+        storage = self.photo.storage
+        name = self.photo.name
         super().delete(*args, **kwargs)
-        storage.delete(path)
+        storage.delete(name)
 
     def get_absolute_url(self):
         return reverse(
