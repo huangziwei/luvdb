@@ -22,10 +22,10 @@
                 <div class="bg-light mt-2 p-3">{{ repost.content| linkify_tags |  markdownify }}</div>
             {% endif %}
         </div>
-    {% empty %}
-        <p>No reposts yet.</p>
     {% endfor %}
     <hr>
+{% else %}
+    <p>No reposts yet.</p>
 {% endif %}
 {% if user.is_authenticated %}
     {% if object.get_activity_id is not None and not object.is_direct_mention %}

@@ -889,22 +889,6 @@ class Photo(auto_prefetch.Model):
 
         temp_thumb = BytesIO()
         img.save(temp_thumb, format="webp")
-        # size_kb = temp_thumb.tell() / 1024
-
-        # if size_kb > 500:
-        #     # Resize loop to progressively reduce quality and size
-        #     quality = 95
-        #     while True:
-        #         temp_thumb = BytesIO()
-        #         try:
-        #             img.save(temp_thumb, format="webp", quality=quality)
-        #         except ValueError as e:
-        #             print(f"Error saving image with quality {quality}: {e}")
-        #             break  # Exit loop if an error occurs
-        #         size_kb = temp_thumb.tell() / 1024
-        #         if size_kb <= 500 or quality <= 10:
-        #             break
-        #         quality -= 10
 
         original_name = self.photo.name
         # Replace the image file with the resized image in .webp format

@@ -321,7 +321,7 @@ ContentInListFormSet = forms.inlineformset_factory(
 class AlbumForm(forms.ModelForm):
     class Meta:
         model = Album
-        fields = ["name", "notes"]
+        fields = ["name", "notes", "comments_enabled"]
 
 
 class PhotoUploadForm(forms.ModelForm):
@@ -333,7 +333,7 @@ class PhotoUploadForm(forms.ModelForm):
 class PhotoForm(forms.ModelForm):
     class Meta:
         model = Photo
-        fields = ["photo", "notes"]
+        fields = ["photo", "notes", "comments_enabled"]
 
 
 class PhotoNotesForm(forms.ModelForm):

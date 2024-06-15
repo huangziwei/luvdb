@@ -47,10 +47,10 @@
                 </div>
             </div>
         </div>
-    {% empty %}
-        <p>No comments yet.</p>
     {% endfor %}
     <hr>
+{% else %}
+    <p>No replies yet.</p>
 {% endif %}
 {% if user.is_authenticated %}
     {% if object.comments_enabled %}

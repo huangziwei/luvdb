@@ -70,27 +70,23 @@
                     {% endif %}
                 {% endif %}
             </div>
+            {% if photo.user == request.user %}
             <div class="d-flex justify-content-between mb-1">
                 <a class="text-decoration-none" data-bs-toggle="collapse" href="#shareMarkdown" role="button" aria-expanded="false" aria-controls="shareMarkdown" onclick="navigator.clipboard.writeText('![]({{ photo.photo_id }})')">
                     Share on LʌvDB
                 </a>
-                {% if photo.user == request.user %}
-                    <div class="d-flex justify-content-end">
-                        {% if photo.album.cover_photo == photo %}
+                <div class="d-flex justify-content-end">
+                    {% if photo.album.cover_photo == photo %}
                         <div class="me-3 text-muted">This is the album cover</div>
-                        
-                        {% else %}
+                    {% else %}
                         <a href="#" class="me-3" onclick="document.getElementById('set-cover-form').submit(); return false;">Set as album cover</a>
-                        {% endif %}
-                        {% if photo.notes %}
-                        <a href="{% url "write:photo_update" photo.user.username photo.id %}" class="me-3">Edit</a>
-                        {% endif %}
-                        <a href="{% url "write:photo_delete" photo.user.username photo.id %}">Delete</a>
-                    </div>
-                    <form id="set-cover-form" method="post" action="{% url 'write:set_album_cover' photo.user.username photo.id %}" style="display:none;">
-                        {% csrf_token %}
-                    </form>
-                {% endif %}
+                    {% endif %}
+                    <a href="{% url "write:photo_update" photo.user.username photo.id %}" class="me-3">Edit</a>
+                    <a href="{% url "write:photo_delete" photo.user.username photo.id %}">Delete</a>
+                </div>
+                <form id="set-cover-form" method="post" action="{% url 'write:set_album_cover' photo.user.username photo.id %}" style="display:none;">
+                    {% csrf_token %}
+                </form>
             </div>
             <div class="collapse mb-2" id="shareMarkdown">
                 <div>Copied to clipboard! Paste it in any LʌvDB text field to render the image:</div>
@@ -98,11 +94,11 @@
                     <code id="markdown-code">![]({{ photo.photo_id }})</code>
                 </div>
             </div>
+            {% endif %}
 
-
-            <div class="row">
+            <div class="row mt-4">
                 <hr>
-                <div class="fs-4 fw-bold">Replies</div>
+                <div class="fs-4 fw-bold mb-2">Replies</div>
                 <div id="comments-section">
                     {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='photo' %}
                 </div>
