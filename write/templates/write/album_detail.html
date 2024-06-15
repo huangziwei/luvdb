@@ -43,7 +43,7 @@
                                 &times;
                             </button> 
                             {% endcomment %}
-                            <button class="btn btn-secondary btn-sm position-absolute top-0 end-0 set-cover-btn" data-photo-id="{{ photo.id }}" data-username="{{ photo.user.username }}">                    
+                            <button class="btn btn-secondary btn-sm position-absolute top-0 end-0 set-cover-btn" data-photo-id="{{ photo.id }}" data-username="{{ photo.user.username }}" title="Set as album cover">                    
                                 &#9733; <!-- Star icon -->
                             </button>
                         {% endif %}
@@ -94,8 +94,8 @@
 
         {% if request.user == album.user %}
             <div class="mb-3">
-                <div class="fs-4 fw-bold">Upload Photo</div>
-                <div id="upload-area" class="border border-secondary border-4 p-4 text-center" style="cursor: pointer;">
+                <div class="fs-4 fw-bold mb-2">Upload Photo</div>
+                <div id="upload-area" class="border border-secondary p-5 text-center" style="cursor: pointer; border: 4px dashed !important;">
                     Click or Drag & Drop photos here
                     <input type="file" id="photo-upload" name="photo" accept="image/*" multiple style="display: none" />
                 </div>
@@ -145,6 +145,10 @@
 
         function uploadFiles(files) {
             for (let i = 0; i < files.length; i++) {
+                if (files[i].size > 400 * 1024) { // 400KB in bytes
+                    alert(`The file "${files[i].name}" is too large. Please select a file smaller than 300KB.`);
+                    continue; // Skip this file
+                }
                 const formData = new FormData();
                 formData.append("photo", files[i]);
                 formData.append("notes", ""); // Add any additional form fields as needed
