@@ -590,25 +590,28 @@ class MentionExtension(markdown.Extension):
 
 
 class ImagePattern(InlineProcessor):
-
     def handleMatch(self, m, data):
         from write.models import Photo
 
-        image_id = m.group(1)
+        caption = m.group(1)
+        image_id = m.group(2)
         try:
             photo = Photo.objects.get(photo_id=image_id)
             url = photo.photo.url
         except Photo.DoesNotExist:
             url = f"{settings.MEDIA_URL}photos/default.jpg"  # Fallback URL if the image does not exist
 
+        # Create the img element
         img = etree.Element("img")
         img.set("src", url)
+        img.set("alt", caption)  # Set the caption as the alt text
+
         return img, m.start(0), m.end(0)
 
 
 class ImageExtension(markdown.Extension):
     def extendMarkdown(self, md):
         # Pattern for matching the image syntax `![](luvbild_xxxxxxx...)`
-        IMAGE_PATTERN = r"!\[\]\((luvbild_[\w\d]+)\)"
+        IMAGE_PATTERN = r"!\[([^\]]*)\]\((luvbild_[\w\d]+)\)"
         imagePattern = ImagePattern(IMAGE_PATTERN, md)
         md.inlinePatterns.register(imagePattern, "image", 175)
