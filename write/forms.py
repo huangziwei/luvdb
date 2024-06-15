@@ -342,6 +342,9 @@ class PhotoNotesForm(forms.ModelForm):
         fields = ["notes"]
         widgets = {
             "notes": forms.Textarea(
-                attrs={"class": "form-control", "placeholder": "Write something..."}
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Write something about this photo?",
+                }
             ),
         }

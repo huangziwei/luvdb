@@ -789,11 +789,21 @@ class Album(auto_prefetch.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    comments = GenericRelation(Comment)
+    comments_enabled = models.BooleanField(default=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+    votes = GenericRelation(Vote)
+
     def __str__(self):
         return self.name
 
     def model_name(self):
         return "Album"
+
+    def get_absolute_url(self):
+        return reverse(
+            "write:album_detail", kwargs={"pk": self.pk, "username": self.user.username}
+        )
 
 
 def validate_file_size(value):
@@ -822,6 +832,11 @@ class Photo(auto_prefetch.Model):
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    comments = GenericRelation(Comment)
+    comments_enabled = models.BooleanField(default=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+    votes = GenericRelation(Vote)
 
     def __str__(self):
         return f"{self.album.name} Photo"
@@ -887,6 +902,11 @@ class Photo(auto_prefetch.Model):
         storage, path = self.photo.storage, self.photo.path
         super().delete(*args, **kwargs)
         storage.delete(path)
+
+    def get_absolute_url(self):
+        return reverse(
+            "write:photo_detail", kwargs={"pk": self.pk, "username": self.user.username}
+        )
 
 
 @receiver(post_delete, sender=Photo)

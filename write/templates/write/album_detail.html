@@ -1,98 +1,111 @@
 {% extends "base.html" %} 
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1>{{ album.name }}</h1>
-            <p>{{ album.notes }}</p>
-            <span class="d-flex">
-                <p class='me-2'>
-                    by
-                    <a href="{% url 'accounts:detail' album.user.username %}"
-                        class="p-author h-card">
-                        {{ album.user.display_name|default:album.user.username }}
-                    </a>
-                </p>
-                <p class='me-2 text-secondary'>
-                    <a href="{% url 'write:album_list' object.user.username %}"
-                    class="text-muted dt-published">
-                    <time class="dt-published" datetime="{{album.updated_at}}">
-                            {{ album.updated_at|date:"Y.m.d H:i" }}
-                    </time>
-                    </a>
-                </p>
-                {% if album.user == request.user %}
-                    <a href="{% url "write:album_update" album.user.username album.id %}" class="me-2">Edit</a>
-                    <a href="{% url "write:album_delete" album.user.username album.id %}" class="me-2">Delete</a>
-                {% endif %}
-            </span>
-        </div>
-    </div>
-
-    <div class="row">
-        {% for photo in page_obj.object_list %}
-        <div class="col-12 col-md-4 mb-4 position-relative photo-container">
-            <div class="card">
-                <a href="{% url 'write:photo_detail' photo.user.username photo.id %}">
-                    <img src="{{ photo.photo.url }}" class="card-img-top" />
-                </a>
-                {% if request.user == album.user %}
-                <button class="btn btn-secondary position-absolute top-0 end-0 delete-photo-btn" data-photo-id="{{ photo.id }}" data-username="{{ photo.user.username }}">                    
-                    &times;
-                </button>
-                {% endif %}
+<div class="container">
+    <div class="col-12 col-md-8 left-column h-entry">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <div class="fs-2 fw-bold">{{ album.name }}</div>
+                <div class="text-muted mb-1">{{ album.notes }}</div>
+                <span class="d-flex">
+                    <p class='me-2'>
+                        by
+                        <a href="{% url 'accounts:detail' album.user.username %}"
+                            class="p-author h-card">
+                            {{ album.user.display_name|default:album.user.username }}
+                        </a>
+                    </p>
+                    <p class='me-2 text-secondary'>
+                        <a href="{% url 'write:album_list' object.user.username %}"
+                        class="text-muted dt-published">
+                        <time class="dt-published" datetime="{{album.updated_at}}">
+                                {{ album.updated_at|date:"Y.m.d H:i" }}
+                        </time>
+                        </a>
+                    </p>
+                    {% if album.user == request.user %}
+                        <a href="{% url "write:album_update" album.user.username album.id %}" class="me-2">Edit</a>
+                        <a href="{% url "write:album_delete" album.user.username album.id %}" class="me-2">Delete</a>
+                    {% endif %}
+                </span>
             </div>
         </div>
-        {% endfor %}
+
+        <div class="row">
+            {% for photo in page_obj.object_list %}
+            <div class="col-12 col-md-4 mb-4 position-relative photo-container">
+                <div class="card">
+                    <a href="{% url 'write:photo_detail' photo.user.username photo.id %}">
+                        <img src="{{ photo.photo.url }}" class="card-img-top" />
+                    </a>
+                    {% if request.user == album.user %}
+                    <button class="btn btn-secondary position-absolute top-0 end-0 delete-photo-btn" data-photo-id="{{ photo.id }}" data-username="{{ photo.user.username }}">                    
+                        &times;
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="First">
+                            <span aria-hidden="true">&laquo; first</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">previous</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">next</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                            <span aria-hidden="true">last &raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+
+        <hr />
+
+        {% if request.user == album.user %}
+            <div class="mb-3">
+                <div class="fs-4 fw-bold">Upload Photo</div>
+                <div id="upload-area" class="border border-secondary border-4 p-4 text-center" style="cursor: pointer;">
+                    Click or Drag & Drop photos here
+                    <input type="file" id="photo-upload" name="photo" accept="image/*" multiple style="display: none" />
+                </div>
+            </div>
+        {% endif %}
+
+        <hr>
+
+        <div class="row">
+            <div class="fs-4 fw-bold">Replies</div>
+            <div id="comments-section">
+                {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='album' %}
+            </div>
+        </div>
     </div>
-
-    <div class="d-flex justify-content-center">
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page=1" aria-label="First">
-                        <span aria-hidden="true">&laquo; first</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                        <span aria-hidden="true">previous</span>
-                    </a>
-                </li>
-                {% endif %}
-
-                <li class="page-item disabled">
-                    <span class="page-link">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                    </span>
-                </li>
-
-                {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                        <span aria-hidden="true">next</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
-                        <span aria-hidden="true">last &raquo;</span>
-                    </a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
-    </div>
-
-    <hr />
-
-    {% if request.user == album.user %}
-    <h4>Upload Photo</h4>
-    <div id="upload-area" class="border border-dashed p-4 text-center" style="cursor: pointer;">
-        Click or Drag & Drop photos here
-        <input type="file" id="photo-upload" name="photo" accept="image/*" multiple style="display: none" />
-    </div>
-    {% endif %}
 
     <script>
         const uploadArea = document.getElementById("upload-area");

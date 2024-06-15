@@ -3,11 +3,11 @@
 {% load linkify %}
 {% block content %}
 
-<div class="container mt-4">
+<div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <div class="fs-1">{{ photo.album.name }}</div>
-            <p class="text-muted">{{ photo.album.notes }}</p>
+            <div class="fs-2 fw-bold">{{ photo.album.name }}</div>
+            <div class="text-muted mb-1">{{ photo.album.notes }}</div>
             <span class="d-flex">
                 <p class='me-2'>
                     by
@@ -63,7 +63,7 @@
                 {% endif %}
             </div>
             <div class="collapse mb-2" id="shareMarkdown">
-                <div>Copied to clipboard! Paste it in any LuvDB text field to render the image:</div>
+                <div>Copied to clipboard! Paste it in any LʌvDB text field to render the image:</div>
                 <div class="border p-2 mt-2 text-muted text-center position-relative">
                     <code id="markdown-code">![]({{ photo.photo_id }})</code>
                 </div>
@@ -90,6 +90,13 @@
                 {% endif %}
             </div>
 
+            <div class="row">
+                <hr>
+                <div class="fs-4 fw-bold">Replies</div>
+                <div id="comments-section">
+                    {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='photo' %}
+                </div>
+            </div>
         </div>
     </div>
 </div>

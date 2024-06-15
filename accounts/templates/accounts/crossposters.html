@@ -7,9 +7,9 @@
         <div class="col-md-12">
             <h1>Manage Your Crossposters</h1>
             <p class="text-muted">
-                Here, you can link your LuvDB feed to Mastodon and BlueSky, 
+                Here, you can link your LʌvDB feed to Mastodon and BlueSky, 
                 allowing for seamless crossposting of your content. Connect your Mastodon account using your developer tokens 
-                and your BlueSky account using your BlueSky app passwords to start sharing your LuvDB activities across platforms.
+                and your BlueSky account using your BlueSky app passwords to start sharing your LʌvDB activities across platforms.
                 You can only link <b>one account per platform</b>, but you can unlink and change them at any time.
             </p>
             <hr>
@@ -24,7 +24,7 @@
                         <p class="card-text">@{{ mastodon_account.mastodon_handle }}</p>
                         <p class="text-muted">
                           Your activities are currently being synced to your linked Mastodon account, 
-                          with links back to LuvDB. Unlinking will stop this synchronization.
+                          with links back to LʌvDB. Unlinking will stop this synchronization.
                         </p>
                         <form method="post" class="d-inline">
                             {% csrf_token %}
@@ -39,7 +39,7 @@
                     <div class="card-body">
                         <p class="text-muted">
                           By linking your Mastodon account, all your activities will be automatically synced 
-                          to Mastodon with links back to your LuvDB activities. 
+                          to Mastodon with links back to your LʌvDB activities. 
                         </p>
                         <form method="post">
                             {% csrf_token %}
@@ -62,7 +62,7 @@
                         <p class="card-text">@{{ bluesky_account.bluesky_handle }}</p>
                         <p class="text-muted">
                           Your activities are currently being synced to your linked BlueSky account, 
-                          with links back to LuvDB. Unlinking will stop this synchronization.
+                          with links back to LʌvDB. Unlinking will stop this synchronization.
                         </p>
                         <form method="post" class="d-inline">
                             {% csrf_token %}
@@ -77,7 +77,7 @@
                     <div class="card-body">
                         <p class="text-muted">
                           By linking your BlueSky account, all your activities will be automatically synced 
-                          to BlueSky with links back to your LuvDB activities. 
+                          to BlueSky with links back to your LʌvDB activities. 
                         </p>
                         <form method="post">
                             {% csrf_token %}

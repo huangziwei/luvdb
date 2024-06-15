@@ -1511,7 +1511,7 @@ def surprise_manifest(request, luvlist_id, username=None):
 
 
 # Album and Photo
-class AlbumDetailView(FormMixin, DetailView):
+class AlbumDetailView(FormMixin, ShareDetailView):
     model = Album
     template_name = "write/album_detail.html"
     context_object_name = "album"
@@ -1612,7 +1612,7 @@ class AlbumListView(ListView):
         return context
 
 
-class PhotoDetailView(DetailView):
+class PhotoDetailView(ShareDetailView):
     model = Photo
     template_name = "write/photo_detail.html"
     context_object_name = "photo"
