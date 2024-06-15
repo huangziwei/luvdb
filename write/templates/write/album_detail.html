@@ -104,8 +104,6 @@
             </div>
         {% endif %}
 
-
-        {% if comments %}
         <hr>
         <div class="row">
             <div class="fs-4 fw-bold">Replies</div>
@@ -113,7 +111,6 @@
                 {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='album' %}
             </div>
         </div>
-        {% endif %}
     </div>
 
     <script>
