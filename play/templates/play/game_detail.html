@@ -389,7 +389,7 @@
                 <hr>
             </div>
             <!--right columns-->
-            <div class="d-flex flex-column col-sm-4">
+            <div class="d-flex flex-column col-12 col-md-4">
                 <!--Related works / Edit -->
                 {% if user.is_authenticated and not object.locked %}
                     <div class="bg-light p-3 mb-3 order-2 order-sm-1">
@@ -399,7 +399,7 @@
                 {% endif %}
                 
                 {% if dlcs or user.is_authenticated %}
-                <div class="bg-light p-3 mb-3 order-2 order-sm-1">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     {% if dlcs %}
                         <div class="fs-5 fw-semibold">DLCs</div>
                         {% for dlc in dlcs %}
@@ -423,7 +423,7 @@
                 {% endif %}
 
                 {% if object.wikipedia %}
-                    <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                    <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                         <div class="fs-5 fw-semibold">Links</div>
                         <div>
                             <a href="{{ object.wikipedia }}">Wikipedia</a>
@@ -431,7 +431,7 @@
                     </div>
                 {% endif %}
                 <!--stats-->
-                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="fs-5 fw-semibold">Statistics</div>
                     <div>
                         <span class="text-muted">To Play:</span> <a href="{% url 'play:play_checkin_all_list' object.id %}?status=to_play">{{ to_play_count }}</a>
