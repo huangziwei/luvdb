@@ -584,9 +584,9 @@ document.addEventListener("DOMContentLoaded", function () {
         photoUploadSection.classList.remove("show-upload-area");
     });
 
-    // Toggle the photo upload section when clicking the image icon button
+    // Open the file input dialog when clicking the image icon button
     imageIconButton.addEventListener("click", function () {
-        photoUploadSection.classList.toggle("show-upload-area");
+        photoUpload.click();
     });
 
     // Hide the upload area when clicking outside of it
