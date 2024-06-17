@@ -514,3 +514,72 @@ document.addEventListener("DOMContentLoaded", function () {
         parentDiv.replaceChild(imgTag, currentLink);
     }
 });
+
+////////////////////
+/// Image upload ///
+////////////////////
+
+document.addEventListener("DOMContentLoaded", function () {
+    const uploadArea = document.getElementById("upload-area");
+    const photoUpload = document.getElementById("photo-upload");
+
+    uploadArea.addEventListener("click", function () {
+        photoUpload.click();
+    });
+
+    photoUpload.addEventListener("change", function () {
+        uploadFiles(this.files);
+    });
+
+    uploadArea.addEventListener("dragover", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.classList.add("border-primary");
+    });
+
+    uploadArea.addEventListener("dragleave", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.classList.remove("border-primary");
+    });
+
+    uploadArea.addEventListener("drop", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.classList.remove("border-primary");
+        uploadFiles(event.dataTransfer.files);
+    });
+
+    function uploadFiles(files) {
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append("photos", files[i]);
+        }
+        formData.append("csrfmiddlewaretoken", getCsrfToken());
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/upload_photos/", true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                if (response.photo_ids) {
+                    insertMarkdown(response.photo_ids);
+                }
+            } else {
+                alert("An error occurred while uploading the photos.");
+            }
+        };
+        xhr.send(formData);
+    }
+
+    function insertMarkdown(photo_ids) {
+        const textarea = document.querySelector('textarea[name="content"]');
+        const currentContent = textarea.value;
+        const markdown = photo_ids.map((id) => `![](${id})`).join("\n");
+        textarea.value = currentContent + "\n" + markdown;
+    }
+
+    function getCsrfToken() {
+        return document.querySelector("[name=csrfmiddlewaretoken]").value;
+    }
+});

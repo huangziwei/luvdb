@@ -62,6 +62,7 @@ from .views import (
     PhotoDeleteView,
     PhotoDetailView,
     PhotoUpdateView,
+    PhotoUploadView,
     PinCreateView,
     PinDeleteView,
     PinDetailView,
@@ -496,5 +497,10 @@ urlpatterns = [
         "@<str:username>/photo/<int:pk>/set_cover/",
         SetAlbumCoverView.as_view(),
         name="set_album_cover",
+    ),
+    path(
+        "upload_photos/",
+        PhotoUploadView.as_view(),
+        name="upload_photos",
     ),
 ]

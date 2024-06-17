@@ -1701,3 +1701,24 @@ class SetAlbumCoverView(View):
         album.cover_photo = photo
         album.save()
         return redirect(photo.get_absolute_url())
+
+
+class PhotoUploadView(View):
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            album, created = Album.objects.get_or_create(
+                user=request.user,
+                name="Images Uploaded",
+                defaults={"notes": "Automatically created album for uploaded images"},
+            )
+            uploaded_photos = []
+            for file in request.FILES.getlist("photos"):
+                photo = Photo(
+                    album=album,
+                    user=request.user,
+                    photo=file,
+                )
+                photo.save()
+                uploaded_photos.append(photo.photo_id)
+            return JsonResponse({"photo_ids": uploaded_photos})
+        return JsonResponse({"error": "Unauthorized"}, status=401)

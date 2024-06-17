@@ -14,3 +14,4 @@ cache/*
 embedding.py
 media/covers/*
 media/posters/*
+media/photos/*
