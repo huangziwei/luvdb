@@ -1274,6 +1274,11 @@ class WatchCheckInDetailView(DetailView):
     template_name = "watch/watch_checkin_detail.html"
     context_object_name = "checkin"  # This name will be used in your template
 
+    def get(self, request, *args, **kwargs):
+        if not request.GET.get("reply") and not request.GET.get("repost"):
+            return HttpResponseRedirect(f"{request.path}?reply=true")
+        return super().get(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         checkin = self.get_object()
         if "crosspost_mastodon" in request.POST and hasattr(

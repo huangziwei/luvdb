@@ -543,19 +543,19 @@ document.addEventListener("DOMContentLoaded", function () {
         uploadArea.addEventListener("dragover", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            this.classList.add("border-primary");
+            photoUploadSection.classList.add("border-primary");
         });
 
         uploadArea.addEventListener("dragleave", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            this.classList.remove("border-primary");
+            photoUploadSection.classList.remove("border-primary");
         });
 
         uploadArea.addEventListener("drop", function (event) {
             event.preventDefault();
             event.stopPropagation();
-            this.classList.remove("border-primary");
+            photoUploadSection.classList.remove("border-primary");
             uploadFiles(event.dataTransfer.files);
         });
     }

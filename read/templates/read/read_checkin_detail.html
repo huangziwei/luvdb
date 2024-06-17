@@ -209,11 +209,15 @@
                     {% endif %}      
                 </div>
                 <hr>
-                <div id="comments-section">
-                    {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='readcheckin' %}
+                <div id="comments-section" style="display: none;">
+                    {% if request.GET.reply == "true" %}
+                        {% include 'write/comment_in_details.html' with comments=comments object=object comment_form=comment_form object_type='readcheckin' %}
+                    {% endif %}
                 </div>
                 <div id="reposts-section" style="display: none;">
-                    {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts %}
+                    {% if request.GET.repost == "true" %}
+                        {% include 'write/repost_in_details.html' with object=object repost_form=repost_form reposts=object.reposts %}
+                    {% endif %}
                 </div>
             </div>
         </div>
