@@ -331,9 +331,17 @@ class PhotoUploadForm(forms.ModelForm):
 
 
 class PhotoForm(forms.ModelForm):
+    album = forms.ModelChoiceField(queryset=Album.objects.none())
+
     class Meta:
         model = Photo
-        fields = ["photo", "notes", "comments_enabled"]
+        fields = ["photo", "notes", "album", "comments_enabled"]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        super(PhotoForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields["album"].queryset = Album.objects.filter(user=user)
 
 
 class PhotoNotesForm(forms.ModelForm):

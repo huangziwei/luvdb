@@ -1668,6 +1668,11 @@ class PhotoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = "write/photo_update.html"
     context_object_name = "photo"
 
+    def get_form_kwargs(self):
+        kwargs = super(PhotoUpdateView, self).get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
     def test_func(self):
         photo = self.get_object()
         return self.request.user == photo.user
