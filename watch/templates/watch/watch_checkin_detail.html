@@ -11,7 +11,9 @@
     {% else %}
         <meta property="og:description" content="Check out {{ object.user.display_name | default:object.user.username }}'s Check-in to &quot;{{ object.content_object.title }}&quot; on luvdb.com">
     {% endif %}
-    <meta property="og:image" content="{{ object.content_object.poster.url }}">
+    {% if object.content_object.poster %}
+        <meta property="og:image" content="{{ object.content_object.poster.url }}">
+    {% endif %}
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:type" content="book">
 {% endblock meta %}

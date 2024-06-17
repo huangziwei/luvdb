@@ -528,74 +528,80 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let dragCounter = 0;
 
-    // Trigger the file input click when clicking the upload area
-    uploadArea.addEventListener("click", function () {
-        photoUpload.click();
-    });
+    if (uploadArea && photoUpload) {
+        // Trigger the file input click when clicking the upload area
+        uploadArea.addEventListener("click", function () {
+            photoUpload.click();
+        });
 
-    // Handle file selection from the file input
-    photoUpload.addEventListener("change", function () {
-        uploadFiles(this.files);
-    });
+        // Handle file selection from the file input
+        photoUpload.addEventListener("change", function () {
+            uploadFiles(this.files);
+        });
 
-    // Handle drag and drop over the upload area
-    uploadArea.addEventListener("dragover", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.classList.add("border-primary");
-    });
+        // Handle drag and drop over the upload area
+        uploadArea.addEventListener("dragover", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.classList.add("border-primary");
+        });
 
-    uploadArea.addEventListener("dragleave", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.classList.remove("border-primary");
-    });
+        uploadArea.addEventListener("dragleave", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.classList.remove("border-primary");
+        });
 
-    uploadArea.addEventListener("drop", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.classList.remove("border-primary");
-        uploadFiles(event.dataTransfer.files);
-    });
+        uploadArea.addEventListener("drop", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.classList.remove("border-primary");
+            uploadFiles(event.dataTransfer.files);
+        });
+    }
 
     // Handle drag events on the document to track drag count accurately
-    document.addEventListener("dragenter", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        dragCounter++;
-        if (dragCounter === 1) {
-            photoUploadSection.classList.add("show-upload-area");
-        }
-    });
+    if (photoUploadSection) {
+        document.addEventListener("dragenter", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            dragCounter++;
+            if (dragCounter === 1) {
+                photoUploadSection.classList.add("show-upload-area");
+            }
+        });
 
-    document.addEventListener("dragleave", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        dragCounter--;
-        if (dragCounter === 0) {
+        document.addEventListener("dragleave", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            dragCounter--;
+            if (dragCounter === 0) {
+                photoUploadSection.classList.remove("show-upload-area");
+            }
+        });
+
+        document.addEventListener("drop", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            dragCounter = 0;
             photoUploadSection.classList.remove("show-upload-area");
-        }
-    });
+        });
 
-    document.addEventListener("drop", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        dragCounter = 0;
-        photoUploadSection.classList.remove("show-upload-area");
-    });
+        // Hide the upload area when clicking outside of it
+        document.addEventListener("click", function (event) {
+            if (!photoUploadSection.contains(event.target) && !imageIconButton.contains(event.target)) {
+                photoUploadSection.classList.remove("show-upload-area");
+                dragCounter = 0; // Reset the drag counter
+            }
+        });
+    }
 
     // Open the file input dialog when clicking the image icon button
-    imageIconButton.addEventListener("click", function () {
-        photoUpload.click();
-    });
-
-    // Hide the upload area when clicking outside of it
-    document.addEventListener("click", function (event) {
-        if (!photoUploadSection.contains(event.target) && !imageIconButton.contains(event.target)) {
-            photoUploadSection.classList.remove("show-upload-area");
-            dragCounter = 0; // Reset the drag counter
-        }
-    });
+    if (imageIconButton) {
+        imageIconButton.addEventListener("click", function () {
+            photoUpload.click();
+        });
+    }
 
     function uploadFiles(files) {
         const formData = new FormData();
@@ -623,9 +629,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function insertMarkdown(photo_ids) {
         const textarea = document.querySelector('textarea[name="content"]');
-        const currentContent = textarea.value;
-        const markdown = photo_ids.map((id) => `![](${id})`).join("\n");
-        textarea.value = currentContent + "\n" + markdown;
+        if (textarea) {
+            const currentContent = textarea.value;
+            const markdown = photo_ids.map((id) => `![](${id})`).join("\n");
+            textarea.value = currentContent + "\n" + markdown;
+        }
     }
 
     function getCsrfToken() {
