@@ -762,3 +762,23 @@ em {
 .textarea-wrapper #photoUploadSection.show-upload-area {
     display: flex;
 }
+
+.notification {
+    background-color: #4caf50; /* Green */
+    color: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeout {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}

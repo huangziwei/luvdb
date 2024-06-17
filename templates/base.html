@@ -82,6 +82,7 @@
         <main class="flex-shrink-0 mb-3 ms-2 me-2">
             {% block content %}
             {% endblock content %}
+            <div id="notification-container" style="position: fixed; bottom: 10px; right: 10px; z-index: 1000;"></div>
         </main>
         {% include "action_buttons.html" %}
         {% include "footer.html" %}

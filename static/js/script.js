@@ -617,6 +617,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 const response = JSON.parse(xhr.responseText);
                 if (response.photo_ids) {
                     insertMarkdown(response.photo_ids);
+                    response.photo_ids.forEach((photo_id) => {
+                        showNotification(`Image ${photo_id} uploaded successfully`);
+                    });
                 }
                 photoUploadSection.classList.remove("show-upload-area"); // Hide the upload area after upload
                 dragCounter = 0; // Reset the drag counter
@@ -638,5 +641,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getCsrfToken() {
         return document.querySelector("[name=csrfmiddlewaretoken]").value;
+    }
+
+    function showNotification(message) {
+        const notificationContainer = document.getElementById("notification-container");
+        const notification = document.createElement("div");
+        notification.className = "notification";
+        notification.textContent = message;
+        notificationContainer.appendChild(notification);
+
+        setTimeout(() => {
+            notificationContainer.removeChild(notification);
+        }, 3000); // Show each notification for 3 seconds
     }
 });
