@@ -522,15 +522,23 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
     const uploadArea = document.getElementById("upload-area");
     const photoUpload = document.getElementById("photo-upload");
+    const textInput = document.getElementById("text-input");
+    const photoUploadSection = document.getElementById("photoUploadSection");
+    const imageIconButton = document.getElementById("image-upload-button");
 
+    let dragCounter = 0;
+
+    // Trigger the file input click when clicking the upload area
     uploadArea.addEventListener("click", function () {
         photoUpload.click();
     });
 
+    // Handle file selection from the file input
     photoUpload.addEventListener("change", function () {
         uploadFiles(this.files);
     });
 
+    // Handle drag and drop over the upload area
     uploadArea.addEventListener("dragover", function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -550,6 +558,45 @@ document.addEventListener("DOMContentLoaded", function () {
         uploadFiles(event.dataTransfer.files);
     });
 
+    // Handle drag events on the document to track drag count accurately
+    document.addEventListener("dragenter", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        dragCounter++;
+        if (dragCounter === 1) {
+            photoUploadSection.classList.add("show-upload-area");
+        }
+    });
+
+    document.addEventListener("dragleave", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        dragCounter--;
+        if (dragCounter === 0) {
+            photoUploadSection.classList.remove("show-upload-area");
+        }
+    });
+
+    document.addEventListener("drop", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        dragCounter = 0;
+        photoUploadSection.classList.remove("show-upload-area");
+    });
+
+    // Toggle the photo upload section when clicking the image icon button
+    imageIconButton.addEventListener("click", function () {
+        photoUploadSection.classList.toggle("show-upload-area");
+    });
+
+    // Hide the upload area when clicking outside of it
+    document.addEventListener("click", function (event) {
+        if (!photoUploadSection.contains(event.target) && !imageIconButton.contains(event.target)) {
+            photoUploadSection.classList.remove("show-upload-area");
+            dragCounter = 0; // Reset the drag counter
+        }
+    });
+
     function uploadFiles(files) {
         const formData = new FormData();
         for (let i = 0; i < files.length; i++) {
@@ -565,6 +612,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (response.photo_ids) {
                     insertMarkdown(response.photo_ids);
                 }
+                photoUploadSection.classList.remove("show-upload-area"); // Hide the upload area after upload
+                dragCounter = 0; // Reset the drag counter
             } else {
                 alert("An error occurred while uploading the photos.");
             }
