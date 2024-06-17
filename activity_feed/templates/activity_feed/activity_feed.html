@@ -57,7 +57,9 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div class="mb-1">{{ say_form.comments_enabled|as_crispy_field }}</div>
+                            <div class="d-flex">
+                                <div class="mb-1">{{ say_form.comments_enabled|as_crispy_field }}</div>
+                            </div>
                         </span>
                     </form>                                                          
                 {% elif feed_type == "personal" %}

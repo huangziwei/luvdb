@@ -2,12 +2,45 @@ document.addEventListener("DOMContentLoaded", function () {
     // Event delegation for toggle buttons
     document.body.addEventListener("click", function (event) {
         if (event.target.classList.contains("toggle-button")) {
-            toggleSections(event.target);
+            updateURLAndReload(event.target);
         }
     });
 
     // Initial setup based on URL parameters
     setupInitialView();
+
+    // Function to update the URL and reload the page
+    function updateURLAndReload(button) {
+        const sectionType = button.id.replace("show-", "");
+        const url = new URL(window.location.href);
+
+        // Remove other section parameters
+        if (sectionType === "comments") {
+            url.searchParams.delete("repost");
+            url.searchParams.set("reply", "true");
+        } else if (sectionType === "reposts") {
+            url.searchParams.delete("reply");
+            url.searchParams.set("repost", "true");
+        }
+
+        window.location.href = url.toString();
+    }
+
+    // Function to setup initial view based on URL parameters
+    function setupInitialView() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("repost") && urlParams.get("repost") === "true") {
+            var repostButton = document.getElementById("show-reposts");
+            if (repostButton) {
+                toggleSections(repostButton);
+            }
+        } else if (urlParams.has("reply") && urlParams.get("reply") === "true") {
+            var commentsButton = document.getElementById("show-comments");
+            if (commentsButton) {
+                toggleSections(commentsButton);
+            }
+        }
+    }
 
     // Function to toggle sections
     function toggleSections(button) {
@@ -28,22 +61,6 @@ document.addEventListener("DOMContentLoaded", function () {
             section.style.display = "block";
             button.classList.remove("btn-secondary");
             button.classList.add("btn-primary");
-        }
-    }
-
-    // Function to setup initial view based on URL parameters
-    function setupInitialView() {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has("repost") && urlParams.get("repost") === "true") {
-            var repostButton = document.getElementById("show-reposts");
-            if (repostButton) {
-                toggleSections(repostButton);
-            }
-        } else if (urlParams.has("reply") && urlParams.get("reply") === "true") {
-            var commentsButton = document.getElementById("show-comments");
-            if (commentsButton) {
-                toggleSections(commentsButton);
-            }
         }
     }
 
