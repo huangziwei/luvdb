@@ -20,7 +20,7 @@
         </div>
     {% endif %}
     <div class="bg-light p-3">
-        {% if activity.content_object.original_activity %}
+        {% if activity.content_object.original_activity and activity.content_object.original_activity.visibility == "PU" %}
             <!-- Display the reposted activity -->
             <!--Read Check In-->
             {% if activity.content_object.original_activity.activity_type == "read-check-in" %}
@@ -710,7 +710,11 @@
                     </div>
             {% endif %}
         {% else %}
+            {% if activity.content_object.original_activity.visibility != "PU" %}
+                <p>The original content has been set to non-public.</p>
+            {% else %}
                 <p>The original content has been deleted.</p>
+            {% endif %}
         {% endif %}
     </div>
     <div class="d-flex mt-2">

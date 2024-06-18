@@ -34,10 +34,12 @@
                         class="text-decoration-none">Reply</a>
                     </p>
                 {% endif %}
+                {% if activity.content_object.visibility == "PU" %}
                 <p class="ms-2 me-2">
                     <a href="{% url 'write:say_detail' activity.user.username activity.content_object.id %}?repost=true"
                     class="text-decoration-none">Repost</a>
                 </p>
+                {% endif %}
                 {% if activity.user == request.user %}
                     <p class="ms-2 me-2">
                         <a href="{% url 'write:say_update' activity.user.username activity.content_object.id %}"

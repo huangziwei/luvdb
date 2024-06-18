@@ -360,7 +360,7 @@ class SayListView(ListView):
                     | Q(visibility=VisibilityChoices.MENTIONED, visible_to=request_user)
                     | Q(
                         visibility=VisibilityChoices.FOLLOWERS,
-                        user__followers__follower=request_user,
+                        visible_to=request_user,
                     )
                     | Q(visibility=VisibilityChoices.PRIVATE, user=request_user)
                 )
