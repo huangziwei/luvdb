@@ -360,9 +360,10 @@ class SayListView(ListView):
                     | Q(visibility=VisibilityChoices.MENTIONED, visible_to=request_user)
                     | Q(
                         visibility=VisibilityChoices.FOLLOWERS,
-                        visible_to=request_user,
+                        user__followers__follower=request_user,
                     )
                     | Q(visibility=VisibilityChoices.PRIVATE, user=request_user)
+                    | Q(user=request_user)  # Ensure the user sees all their own says
                 )
                 .order_by("-timestamp")
             ).distinct()
