@@ -782,3 +782,7 @@ em {
     from { opacity: 1; }
     to { opacity: 0; }
 }
+
+.no-caret::after {
+    display: none;
+}
