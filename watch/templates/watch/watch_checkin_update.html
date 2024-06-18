@@ -22,7 +22,8 @@
                                 <input type="file" id="photo-upload" name="photo" accept="image/*" multiple style="display: none" />
                             </div>
                         </div>
-                    </div>                    
+                    </div>         
+                    {{ form.visibility }}           
                     {{ form.comments_enabled|as_crispy_field }}
                     {{ form.share_to_feed|as_crispy_field }}
                     <button class="btn btn-primary" type="submit">Update</button>

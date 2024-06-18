@@ -1627,6 +1627,7 @@ class ReadCheckInUpdateView(LoginRequiredMixin, UpdateView):
                 "content_type": content_type.id,
                 "object_id": self.object.id,
                 "user": self.request.user.id,
+                "visibility": self.object.visibility,
             }
         )
         return context

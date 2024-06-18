@@ -527,6 +527,7 @@ class ReadCheckInForm(forms.ModelForm):
             "content_type": forms.HiddenInput(),
             "object_id": forms.HiddenInput(),
             "user": forms.HiddenInput(),  # user is now included
+            "visibility": forms.HiddenInput(),
             "content": forms.Textarea(
                 attrs={
                     "rows": 3,
@@ -534,9 +535,9 @@ class ReadCheckInForm(forms.ModelForm):
                     "id": "text-input",
                 }
             ),
-            "visibility": forms.Select(
-                choices=VisibilityChoices.choices, attrs={"class": "visibility-select"}
-            ),
+            # "visibility": forms.Select(
+            #     choices=VisibilityChoices.choices, attrs={"class": "visibility-select"}
+            # ),
         }
 
     def __init__(self, *args, **kwargs):

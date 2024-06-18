@@ -23,7 +23,11 @@ from play.models import Work as GameWork
 from read.models import Work as LitWork
 from visit.models import Location
 from visit.utils import get_location_hierarchy_ids
-from write.models import create_mentions_notifications, handle_tags
+from write.models import (
+    create_mentions_notifications,
+    find_mentioned_users,
+    handle_tags,
+)
 
 
 # helpers
@@ -745,6 +749,17 @@ class WatchCheckIn(auto_prefetch.Model):
     reposts = GenericRelation("write.Repost")
     votes = GenericRelation("discover.Vote")
 
+    visibility = models.CharField(
+        max_length=2,
+        choices=Activity.VISIBILITY_CHOICES,
+        default=Activity.VISIBILITY_PUBLIC,
+    )
+
+    visible_to = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="visible_watch_checkins", blank=True
+    )
+    activities = GenericRelation(Activity, related_query_name="watch_checkin_activity")
+
     def get_absolute_url(self):
         return reverse(
             "write:watch_checkin_detail",
@@ -774,6 +789,23 @@ class WatchCheckIn(auto_prefetch.Model):
         is_new = self.pk is None
         was_updated = False
         super().save(*args, **kwargs)
+
+        visible_to_users = set()
+
+        if self.visibility == Activity.VISIBILITY_MENTIONED:
+            visible_to_users.update(find_mentioned_users(self.content))
+        elif self.visibility == Activity.VISIBILITY_FOLLOWERS:
+            visible_to_users.update(
+                self.user.followers.values_list("follower_id", flat=True)
+            )
+        elif self.visibility == Activity.VISIBILITY_PRIVATE:
+            visible_to_users.add(self.user.id)
+
+        # Always include self.user
+        visible_to_users.add(self.user.id)
+
+        self.visible_to.set(visible_to_users)
+
         # Attempt to fetch an existing Activity object for this check-in
         try:
             activity = Activity.objects.get(
@@ -794,6 +826,7 @@ class WatchCheckIn(auto_prefetch.Model):
                     activity = Activity.objects.get(
                         content_type__model="watchcheckin", object_id=self.id
                     )
+                    activity.visibility = self.visibility
                     activity.save()  # This will trigger the update logic in Activity model
                 except Activity.DoesNotExist:
                     pass  # Handle the case where the Activity object does not exist
@@ -803,10 +836,13 @@ class WatchCheckIn(auto_prefetch.Model):
                     user=self.user,
                     activity_type="watch-check-in",
                     content_object=self,
+                    visibility=self.visibility,
                 )
+
         elif activity is not None:
             # Optionally, remove the Activity if share_to_feed is False
             activity.delete()
+
         # Handle tags
         handle_tags(self, self.content)
         create_mentions_notifications(self.user, self.content, self)

@@ -628,11 +628,13 @@ class WatchCheckInForm(forms.ModelForm):
             "content",
             "comments_enabled",
             "share_to_feed",
+            "visibility",
         ]
         widgets = {
             "content_type": forms.HiddenInput(),
             "object_id": forms.HiddenInput(),
             "user": forms.HiddenInput(),  # user is now included
+            "visibility": forms.HiddenInput(),
             "content": forms.Textarea(
                 attrs={
                     "rows": 3,
