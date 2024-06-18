@@ -272,12 +272,24 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
         following_users = user.following.all().values_list("followed", flat=True)
-        return (
-            super()
-            .get_queryset()
-            .filter(user__in=list(following_users) + [user.id])
-            .order_by("-timestamp")
+        blocked_users = user.blocking.values_list("blocked", flat=True)
+
+        visible_activities = (
+            Activity.objects.filter(
+                Q(visibility=Activity.VISIBILITY_PUBLIC)
+                | Q(
+                    visibility=Activity.VISIBILITY_MENTIONED,
+                    say_activity__visible_to=user,
+                )
+                | Q(visibility=Activity.VISIBILITY_FOLLOWERS, user__in=following_users)
+                | Q(visibility=Activity.VISIBILITY_PRIVATE, user=user)
+                | Q(user=user)  # Ensure the user sees their own activities
+            )
+            .exclude(user__in=blocked_users)
+            .distinct()
         )
+
+        return visible_activities.order_by("-timestamp")
 
 
 class ActivityFeedDeleteView(LoginRequiredMixin, DeleteView):

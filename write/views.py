@@ -75,6 +75,7 @@ from .models import (
     Repost,
     Say,
     Tag,
+    VisibilityChoices,
 )
 
 User = get_user_model()
@@ -348,22 +349,36 @@ class SayListView(ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
+
+        user = self.request.user
+
         if self.request.user.is_authenticated:
             say_queryset = (
                 Say.objects.filter(user=self.user)
-                .filter(Q(visible_to=self.request.user) | Q(is_direct_mention=False))
+                .filter(
+                    Q(visibility=VisibilityChoices.PUBLIC)
+                    | Q(visibility=VisibilityChoices.MENTIONED, visible_to=user)
+                    | Q(
+                        visibility=VisibilityChoices.FOLLOWERS,
+                        user__followers__follower=user,
+                    )
+                    | Q(visibility=VisibilityChoices.PRIVATE, user=user)
+                )
                 .order_by("-timestamp")
-            )
+            ).distinct()
 
-            repost_queryset = Repost.objects.filter(user=self.user).order_by(
-                "-timestamp"
+            repost_queryset = (
+                Repost.objects.filter(user=self.user).order_by("-timestamp").distinct()
             )
         else:
-            say_queryset = Say.objects.filter(is_direct_mention=False).order_by(
-                "-timestamp"
+            say_queryset = (
+                Say.objects.filter(user=self.user, visibility=VisibilityChoices.PUBLIC)
+                .order_by("-timestamp")
+                .distinct()
             )
-            repost_queryset = Repost.objects.filter(user=self.user).order_by(
-                "-timestamp"
+
+            repost_queryset = (
+                Repost.objects.filter(user=self.user).order_by("-timestamp").distinct()
             )
 
         # Merge and sort both querysets by the timestamp.
@@ -431,7 +446,7 @@ class SayDetailView(ShareDetailView):
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
-        if obj.is_direct_mention and self.request.user not in obj.visible_to.all():
+        if obj.visibility != "PU" and self.request.user not in obj.visible_to.all():
             raise Http404("You do not have permission to view this.")
         return obj
 

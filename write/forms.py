@@ -19,6 +19,7 @@ from .models import (
     Post,
     Repost,
     Say,
+    VisibilityChoices,
 )
 
 User = get_user_model()
@@ -67,13 +68,16 @@ class PostForm(forms.ModelForm):
 class SayForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = Say
-        fields = ["content", "comments_enabled"]
+        fields = ["content", "comments_enabled", "visibility"]
         widgets = {
             "content": forms.Textarea(
                 attrs={
                     "placeholder": "What's on your mind?",
                     "id": "text-input",
                 },
+            ),
+            "visibility": forms.Select(
+                choices=VisibilityChoices.choices, attrs={"class": "visibility-select"}
             ),
         }
 

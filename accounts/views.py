@@ -237,12 +237,41 @@ class AccountDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.object
+        current_user = self.request.user
+
+        if current_user.is_authenticated:
+            following_users = current_user.following.all().values_list(
+                "followed", flat=True
+            )
+            blocked_users = current_user.blocking.values_list("blocked", flat=True)
+
+            recent_activities = (
+                Activity.objects.filter(
+                    Q(user=user),
+                    Q(visibility=Activity.VISIBILITY_PUBLIC)
+                    | Q(
+                        visibility=Activity.VISIBILITY_MENTIONED,
+                        say_activity__visible_to=current_user,
+                    )
+                    | Q(
+                        visibility=Activity.VISIBILITY_FOLLOWERS,
+                        user__in=following_users,
+                    )
+                    | Q(visibility=Activity.VISIBILITY_PRIVATE, user=current_user)
+                    | Q(user=current_user),  # Ensure the user sees their own activities
+                )
+                .exclude(user__in=blocked_users)
+                .distinct()
+                .order_by("-timestamp")[:3]
+            )
+        else:
+            recent_activities = Activity.objects.filter(
+                user=user, visibility=Activity.VISIBILITY_PUBLIC
+            ).order_by("-timestamp")[:3]
 
         context.update(
             {
-                "recent_activities": Activity.objects.filter(user=user).order_by(
-                    "-timestamp"
-                )[:3],
+                "recent_activities": recent_activities,
                 "recent_following": Follow.objects.filter(follower=user).order_by(
                     "-timestamp"
                 )[:6],
@@ -423,12 +452,39 @@ class PersonalActivityFeedView(ListView):
         return context
 
     def get_queryset(self):
-        # Get the username from the URL
-        username = self.kwargs["username"]
         # Get the User object for this username
-        user = User.objects.get(username=username)
-        # Return only the activities for this user
-        return super().get_queryset().filter(user=user).order_by("-timestamp")
+        user = self.user
+        current_user = self.request.user
+
+        if current_user.is_authenticated:
+            following_users = current_user.following.all().values_list(
+                "followed", flat=True
+            )
+            blocked_users = current_user.blocking.values_list("blocked", flat=True)
+
+            visible_activities = (
+                Activity.objects.filter(
+                    Q(visibility=Activity.VISIBILITY_PUBLIC)
+                    | Q(
+                        visibility=Activity.VISIBILITY_MENTIONED,
+                        say_activity__visible_to=current_user,
+                    )
+                    | Q(
+                        visibility=Activity.VISIBILITY_FOLLOWERS,
+                        user__in=following_users,
+                    )
+                    | Q(visibility=Activity.VISIBILITY_PRIVATE, user=current_user)
+                    | Q(user=current_user)  # Ensure the user sees their own activities
+                )
+                .exclude(user__in=blocked_users)
+                .distinct()
+            )
+        else:
+            visible_activities = Activity.objects.filter(
+                Q(user=user), Q(visibility=Activity.VISIBILITY_PUBLIC)
+            ).order_by("-timestamp")
+
+        return visible_activities.filter(user=user).order_by("-timestamp")
 
 
 class FollowingListView(UserPassesTestMixin, ListView):

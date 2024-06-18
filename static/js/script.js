@@ -646,7 +646,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function showNotification(message) {
         const notificationContainer = document.getElementById("notification-container");
         const notification = document.createElement("div");
-        notification.className = "notification";
+        notification.className = "notification-popup";
         notification.textContent = message;
         notificationContainer.appendChild(notification);
 

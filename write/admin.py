@@ -28,7 +28,7 @@ class PostAdmin(admin.ModelAdmin):
 
 
 class SayAdmin(admin.ModelAdmin):
-    list_display = ("user", "content", "timestamp", "updated_at")
+    list_display = ("user", "content", "timestamp", "updated_at", "visibility")
 
 
 class PinAdmin(admin.ModelAdmin):

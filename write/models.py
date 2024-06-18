@@ -45,6 +45,13 @@ def find_mentioned_users(content):
     return User.objects.filter(username__in=usernames)
 
 
+class VisibilityChoices(models.TextChoices):
+    PUBLIC = "PU", "Public"
+    MENTIONED = "ME", "Mentioned People Only"
+    FOLLOWERS = "FO", "Followers Only"
+    PRIVATE = "PR", "Private"
+
+
 class Tag(auto_prefetch.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -392,7 +399,15 @@ class Say(auto_prefetch.Model):
 
     # private say / direct mention
     is_direct_mention = models.BooleanField(default=False)
+
+    visibility = models.CharField(
+        max_length=2,
+        choices=VisibilityChoices.choices,
+        default=VisibilityChoices.PUBLIC,
+    )
+
     visible_to = models.ManyToManyField(User, related_name="visible_says", blank=True)
+    activities = GenericRelation(Activity, related_query_name="say_activity")
 
     def get_absolute_url(self):
         return reverse(
@@ -423,22 +438,31 @@ class Say(auto_prefetch.Model):
             # Check if updated
             was_updated = self.updated_at > self.timestamp
 
-        if self.content.startswith("@"):
-            self.is_direct_mention = True
-            mentioned_users = find_mentioned_users(self.content)
-
         # Call the parent class's save method to actually save the object
         super().save(*args, **kwargs)
 
-        if self.is_direct_mention:
-            self.visible_to.set(mentioned_users)
-            self.visible_to.add(self.user)
+        visible_to_users = set()
+
+        if self.visibility == Activity.VISIBILITY_MENTIONED:
+            visible_to_users.update(find_mentioned_users(self.content))
+        elif self.visibility == Activity.VISIBILITY_FOLLOWERS:
+            visible_to_users.update(
+                self.user.followers.values_list("follower_id", flat=True)
+            )
+        elif self.visibility == Activity.VISIBILITY_PRIVATE:
+            visible_to_users.add(self.user.id)
+
+        # Always include self.user
+        visible_to_users.add(self.user.id)
+
+        self.visible_to.set(visible_to_users)
 
         if is_new:
             Activity.objects.create(
                 user=self.user,
                 activity_type="say",
                 content_object=self,
+                visibility=self.visibility,
             )
 
         if was_updated:
@@ -447,6 +471,7 @@ class Say(auto_prefetch.Model):
                 activity = Activity.objects.get(
                     content_type__model="say", object_id=self.id
                 )
+                activity.visibility = self.visibility
                 activity.save()  # This will trigger the update logic in Activity model
             except Activity.DoesNotExist:
                 pass  # Handle the case where the Activity object does not exist
