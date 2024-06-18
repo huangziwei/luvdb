@@ -281,6 +281,10 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
                     visibility=Activity.VISIBILITY_MENTIONED,
                     say_activity__visible_to=user,
                 )
+                | Q(
+                    visibility=Activity.VISIBILITY_MENTIONED,
+                    read_checkin_activity__visible_to=user,
+                )
                 | Q(visibility=Activity.VISIBILITY_FOLLOWERS, user__in=following_users)
                 | Q(visibility=Activity.VISIBILITY_PRIVATE, user=user)
                 | Q(user=user)  # Ensure the user sees their own activities

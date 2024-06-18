@@ -9,6 +9,7 @@ from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
 from entity.models import Role
+from write.models import VisibilityChoices
 
 from .models import (
     Book,
@@ -520,6 +521,7 @@ class ReadCheckInForm(forms.ModelForm):
             "content",
             "comments_enabled",
             "share_to_feed",
+            "visibility",
         ]
         widgets = {
             "content_type": forms.HiddenInput(),
@@ -531,6 +533,9 @@ class ReadCheckInForm(forms.ModelForm):
                     "placeholder": "Check in...",
                     "id": "text-input",
                 }
+            ),
+            "visibility": forms.Select(
+                choices=VisibilityChoices.choices, attrs={"class": "visibility-select"}
             ),
         }
 

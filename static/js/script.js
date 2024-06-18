@@ -655,3 +655,28 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 3000); // Show each notification for 3 seconds
     }
 });
+
+///////////////////////////
+/// Visibility Settings ///
+///////////////////////////
+document.addEventListener("DOMContentLoaded", function () {
+    const visibilityDropdownMenu = document.getElementById("visibility-dropdown-menu");
+    const visibilityInput = document.getElementById("visibility-input");
+    const visibilityButtonLabel = document.getElementById("visibility-button-label");
+
+    visibilityDropdownMenu.querySelectorAll(".dropdown-item").forEach((item) => {
+        item.addEventListener("click", function (event) {
+            event.preventDefault();
+            const selectedValue = this.getAttribute("data-value");
+            const selectedSVG = this.querySelector("svg").outerHTML;
+
+            visibilityInput.value = selectedValue;
+            visibilityButtonLabel.innerHTML = selectedSVG;
+
+            visibilityDropdownMenu
+                .querySelectorAll(".dropdown-item")
+                .forEach((i) => i.classList.remove("active"));
+            this.classList.add("active");
+        });
+    });
+});

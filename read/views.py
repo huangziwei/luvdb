@@ -635,6 +635,7 @@ class BookDetailView(DetailView):
                 "content_type": content_type.id,
                 "object_id": self.object.id,
                 "user": self.request.user.id,
+                "visibility": "PU",
             }
         )
 
@@ -1527,6 +1528,12 @@ class ReadCheckInDetailView(DetailView):
     template_name = "read/read_checkin_detail.html"
     context_object_name = "checkin"  # This name will be used in your template
 
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.visibility != "PU" and self.request.user not in obj.visible_to.all():
+            raise Http404("You do not have permission to view this.")
+        return obj
+
     def get(self, request, *args, **kwargs):
         if not request.GET.get("reply") and not request.GET.get("repost"):
             return HttpResponseRedirect(f"{request.path}?reply=true")
@@ -1623,7 +1630,7 @@ class ReadCheckInUpdateView(LoginRequiredMixin, UpdateView):
             }
         )
         return context
-    
+
 
 class ReadCheckInDeleteView(LoginRequiredMixin, DeleteView):
     model = ReadCheckIn
