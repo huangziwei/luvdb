@@ -350,19 +350,19 @@ class SayListView(ListView):
 
     def get_queryset(self):
 
-        user = self.request.user
+        request_user = self.request.user
 
-        if self.request.user.is_authenticated:
+        if request_user.is_authenticated:
             say_queryset = (
                 Say.objects.filter(user=self.user)
                 .filter(
                     Q(visibility=VisibilityChoices.PUBLIC)
-                    | Q(visibility=VisibilityChoices.MENTIONED, visible_to=user)
+                    | Q(visibility=VisibilityChoices.MENTIONED, visible_to=request_user)
                     | Q(
                         visibility=VisibilityChoices.FOLLOWERS,
-                        user__followers__follower=user,
+                        user__followers__follower=request_user,
                     )
-                    | Q(visibility=VisibilityChoices.PRIVATE, user=user)
+                    | Q(visibility=VisibilityChoices.PRIVATE, user=request_user)
                 )
                 .order_by("-timestamp")
             ).distinct()
@@ -1540,6 +1540,12 @@ class AlbumDetailView(FormMixin, DetailView):
     form_class = PhotoUploadForm
     paginate_by = 9  # Number of photos per page
 
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.visibility != "PU" and self.request.user not in obj.visible_to.all():
+            raise Http404("You do not have permission to view this.")
+        return obj
+
     def get_success_url(self):
         return self.request.path
 
@@ -1664,10 +1670,35 @@ class AlbumListView(ListView):
         # Otherwise, proceed as normal
         return super().dispatch(request, *args, **kwargs)
 
-
     def get_queryset(self):
-        self.user = get_object_or_404(User, username=self.kwargs["username"])
-        return Album.objects.filter(user=self.user).order_by("-created_at")
+
+        request_user = self.request.user
+
+        if request_user.is_authenticated:
+            albums = (
+                Album.objects.filter(user=self.user)
+                .filter(
+                    Q(visibility=VisibilityChoices.PUBLIC)
+                    | Q(visibility=VisibilityChoices.MENTIONED, visible_to=request_user)
+                    | Q(
+                        visibility=VisibilityChoices.FOLLOWERS,
+                        user__followers__follower=request_user,
+                    )
+                    | Q(visibility=VisibilityChoices.PRIVATE, user=request_user)
+                )
+                .order_by("-updated_at")
+            ).distinct()
+
+        else:
+            albums = (
+                Album.objects.filter(
+                    user=self.user, visibility=VisibilityChoices.PUBLIC
+                )
+                .order_by("-updated_at")
+                .distinct()
+            )
+
+        return albums
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1775,7 +1806,10 @@ class PhotoUploadView(View):
             album, created = Album.objects.get_or_create(
                 user=request.user,
                 name="Images Uploaded",
-                defaults={"notes": "Automatically created album for uploaded images"},
+                defaults={
+                    "notes": "Automatically created album for uploaded images",
+                    "visibility": "PR",
+                },
             )
             uploaded_photos = []
             for file in request.FILES.getlist("photos"):

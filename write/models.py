@@ -207,6 +207,8 @@ class Repost(auto_prefetch.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
+    visibility = "PU"  # reposts are always public
+
     def get_absolute_url(self):
         return reverse(
             "write:repost_detail",
@@ -397,9 +399,10 @@ class Say(auto_prefetch.Model):
     reposts = GenericRelation(Repost)
     votes = GenericRelation(Vote)
 
-    # private say / direct mention
+    # private say / direct mention (deprecated)
     is_direct_mention = models.BooleanField(default=False)
 
+    # new visibility options
     visibility = models.CharField(
         max_length=2,
         choices=VisibilityChoices.choices,
@@ -443,13 +446,13 @@ class Say(auto_prefetch.Model):
 
         visible_to_users = set()
 
-        if self.visibility == Activity.VISIBILITY_MENTIONED:
+        if self.visibility == VisibilityChoices.MENTIONED:
             visible_to_users.update(find_mentioned_users(self.content))
-        elif self.visibility == Activity.VISIBILITY_FOLLOWERS:
+        elif self.visibility == VisibilityChoices.FOLLOWERS:
             visible_to_users.update(
                 self.user.followers.values_list("follower_id", flat=True)
             )
-        elif self.visibility == Activity.VISIBILITY_PRIVATE:
+        elif self.visibility == VisibilityChoices.PRIVATE:
             visible_to_users.add(self.user.id)
 
         # Always include self.user
@@ -827,6 +830,15 @@ class Album(auto_prefetch.Model):
         related_name="album_cover",
     )
 
+    # new visibility options
+    visibility = models.CharField(
+        max_length=2,
+        choices=VisibilityChoices.choices,
+        default=VisibilityChoices.PUBLIC,
+    )
+
+    visible_to = models.ManyToManyField(User, related_name="visible_albums", blank=True)
+
     def __str__(self):
         return self.name
 
@@ -837,6 +849,25 @@ class Album(auto_prefetch.Model):
         return reverse(
             "write:album_detail", kwargs={"pk": self.pk, "username": self.user.username}
         )
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        visible_to_users = set()
+
+        if self.visibility == VisibilityChoices.MENTIONED:
+            visible_to_users.update(find_mentioned_users(self.content))
+        elif self.visibility == VisibilityChoices.FOLLOWERS:
+            visible_to_users.update(
+                self.user.followers.values_list("follower_id", flat=True)
+            )
+        elif self.visibility == VisibilityChoices.PRIVATE:
+            visible_to_users.add(self.user.id)
+
+        # Always include self.user
+        visible_to_users.add(self.user.id)
+
+        self.visible_to.set(visible_to_users)
 
 
 def validate_file_size(value):

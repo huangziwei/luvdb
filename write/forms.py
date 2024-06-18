@@ -76,9 +76,6 @@ class SayForm(forms.ModelForm):
                     "id": "text-input",
                 },
             ),
-            "visibility": forms.Select(
-                choices=VisibilityChoices.choices, attrs={"class": "visibility-select"}
-            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -325,7 +322,11 @@ ContentInListFormSet = forms.inlineformset_factory(
 class AlbumForm(forms.ModelForm):
     class Meta:
         model = Album
-        fields = ["name", "notes", "comments_enabled"]
+        fields = ["name", "notes", "visibility", "comments_enabled"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["comments_enabled"].label = "Enable replies"
 
 
 class PhotoUploadForm(forms.ModelForm):
