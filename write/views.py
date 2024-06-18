@@ -1518,7 +1518,7 @@ def surprise_manifest(request, luvlist_id, username=None):
 
 
 # Album and Photo
-class AlbumDetailView(FormMixin, ShareDetailView):
+class AlbumDetailView(FormMixin, DetailView):
     model = Album
     template_name = "write/album_detail.html"
     context_object_name = "album"
@@ -1551,6 +1551,32 @@ class AlbumDetailView(FormMixin, ShareDetailView):
         page_number = self.request.GET.get("page")
         page_obj = paginator.get_page(page_number)
         context["page_obj"] = page_obj
+
+        context["comments"] = (
+            Comment.objects.filter(
+                content_type=ContentType.objects.get_for_model(self.object),
+                object_id=self.object.id,
+            )
+            .order_by("timestamp")
+            .order_by("timestamp")
+        )
+
+        context["comment_form"] = CommentForm()
+        context["app_label"] = "Album"
+        context["object_type"] = self.object._meta.model_name.lower()
+        context["is_blocked"] = (
+            Block.objects.filter(
+                blocker=self.object.user, blocked=self.request.user
+            ).exists()
+            if self.request.user.is_authenticated
+            else False
+        )
+
+        # Add the flags to the context
+        include_mathjax, include_mermaid = check_required_js([self.object])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
         return context
 
 

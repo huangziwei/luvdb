@@ -38,11 +38,6 @@
                             <img src="{{ photo.photo.url }}" class="card-img-top card-no-radius" />
                         </a>
                         {% if request.user == album.user %}
-                            {% comment %} 
-                            <button class="btn btn-secondary btn-sm position-absolute top-0 end-0 delete-photo-btn" data-photo-id="{{ photo.id }}" data-username="{{ photo.user.username }}">                    
-                                &times;
-                            </button> 
-                            {% endcomment %}
                             <button class="btn btn-secondary btn-sm position-absolute top-0 end-0 set-cover-btn" data-photo-id="{{ photo.id }}" data-username="{{ photo.user.username }}" title="Set as album cover">                    
                                 &#9733; <!-- Star icon -->
                             </button>

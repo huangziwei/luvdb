@@ -1612,6 +1612,18 @@ class ReadCheckInUpdateView(LoginRequiredMixin, UpdateView):
             kwargs={"pk": self.object.pk, "username": self.object.user.username},
         )
 
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        content_type = ContentType.objects.get_for_model(Book)
+        context["checkin_form"] = ReadCheckInForm(
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": self.request.user.id,
+            }
+        )
+        return context
+    
 
 class ReadCheckInDeleteView(LoginRequiredMixin, DeleteView):
     model = ReadCheckIn
