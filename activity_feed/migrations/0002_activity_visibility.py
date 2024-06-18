@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                     ("MF", "Mutual Friends"),
                     ("PR", "Private"),
                 ],
-                default="VISIBILITY_PUBLIC",
+                default="PU",
                 max_length=2,
             ),
         ),

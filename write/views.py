@@ -1651,6 +1651,20 @@ class AlbumListView(ListView):
     context_object_name = "albums"
     paginate_by = 9
 
+    def dispatch(self, request, *args, **kwargs):
+        # Get the User object
+        self.user = get_object_or_404(
+            get_user_model(), username=self.kwargs["username"]
+        )
+
+        # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
+        if not self.user.is_public and not request.user.is_authenticated:
+            return redirect("{}?next={}".format(reverse("login"), request.path))
+
+        # Otherwise, proceed as normal
+        return super().dispatch(request, *args, **kwargs)
+
+
     def get_queryset(self):
         self.user = get_object_or_404(User, username=self.kwargs["username"])
         return Album.objects.filter(user=self.user).order_by("-created_at")
