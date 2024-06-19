@@ -237,13 +237,13 @@ class AccountDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.object
-        current_user = self.request.user
+        request_user = self.request.user
 
-        if current_user.is_authenticated:
-            following_users = current_user.following.all().values_list(
+        if request_user.is_authenticated:
+            following_users = request_user.following.all().values_list(
                 "followed", flat=True
             )
-            blocked_users = current_user.blocking.values_list("blocked", flat=True)
+            blocked_users = request_user.blocking.values_list("blocked", flat=True)
 
             recent_activities = (
                 Activity.objects.filter(
@@ -251,14 +251,14 @@ class AccountDetailView(DetailView):
                     Q(visibility=Activity.VISIBILITY_PUBLIC)
                     | Q(
                         visibility=Activity.VISIBILITY_MENTIONED,
-                        say_activity__visible_to=current_user,
+                        say_activity__visible_to=request_user,
                     )
                     | Q(
                         visibility=Activity.VISIBILITY_FOLLOWERS,
                         user__in=following_users,
                     )
-                    | Q(visibility=Activity.VISIBILITY_PRIVATE, user=current_user)
-                    | Q(user=current_user),  # Ensure the user sees their own activities
+                    | Q(visibility=Activity.VISIBILITY_PRIVATE, user=request_user)
+                    | Q(user=request_user),  # Ensure the user sees their own activities
                 )
                 .exclude(user__in=blocked_users)
                 .distinct()

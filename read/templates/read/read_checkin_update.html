@@ -23,7 +23,7 @@
                             </div>
                         </div>
                     </div> 
-                    {{ form.visibility }}
+                    {{ form.visibility|as_crispy_field }}
                     {{ form.comments_enabled|as_crispy_field }}
                     {{ form.share_to_feed|as_crispy_field }}
                     <button class="btn btn-primary" type="submit">Update</button>

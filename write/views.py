@@ -183,18 +183,10 @@ class PostListView(ListView):
         if self.request.user.is_authenticated:
             if not self.user == self.request.user:
                 queryset = queryset.filter(
-                    Q(visibility=VisibilityChoices.PUBLIC)
-                    | Q(
-                        visibility=VisibilityChoices.FOLLOWERS,
-                        user__followers__follower=self.request.user,
-                    )
-                    | Q(
-                        visibility=VisibilityChoices.MENTIONED,
-                        visible_to=self.request.user,
-                    )
+                    Q(visibility="PU") | Q(visible_to=self.request.user)
                 )
         else:
-            queryset = queryset.filter(visibility=VisibilityChoices.PUBLIC)
+            queryset = queryset.filter(visibility="PU")
 
         return queryset
 
@@ -226,7 +218,7 @@ class PostListView(ListView):
         for project in (
             Project.objects.filter(post__user=self.user).distinct().order_by("name")
         ):
-            if project.visibility == Project.PUBLIC or self.user == self.request.user:
+            if project.visibility == "PU" or self.user == self.request.user:
                 post_count = Post.objects.filter(
                     user=self.user, projects=project
                 ).count()
@@ -265,24 +257,7 @@ class PostDetailView(ShareDetailView):
         )
 
         # Check post visibility
-        if (
-            post.visibility == VisibilityChoices.PRIVATE
-            and not request.user == post.user
-        ):
-            return HttpResponseForbidden(
-                "You do not have permission to access this post."
-            )
-        elif (
-            post.visibility == VisibilityChoices.FOLLOWERS
-            and not request.user in post.visible_to.all()
-        ):
-            return HttpResponseForbidden(
-                "You do not have permission to access this post."
-            )
-        elif (
-            post.visibility == VisibilityChoices.MENTIONED
-            and not request.user in post.visible_to.all()
-        ):
+        if post.visibility != "PU" and not request.user in post.visible_to.all():
             return HttpResponseForbidden(
                 "You do not have permission to access this post."
             )
@@ -322,10 +297,10 @@ class PostDetailView(ShareDetailView):
         # Filter projects based on visibility
         if self.request.user.is_authenticated:
             projects = self.object.projects.filter(
-                Q(visibility=Project.PUBLIC) | Q(visible_to=self.request.user)
+                Q(visibility="PU") | Q(visible_to=self.request.user)
             )
         else:
-            projects = self.object.projects.filter(visibility=Project.PUBLIC)
+            projects = self.object.projects.filter(visibility="PU")
 
         context["projects"] = projects
 
@@ -427,16 +402,7 @@ class SayListView(ListView):
         if request_user.is_authenticated:
             say_queryset = (
                 Say.objects.filter(user=self.user)
-                .filter(
-                    Q(visibility=VisibilityChoices.PUBLIC)
-                    | Q(visibility=VisibilityChoices.MENTIONED, visible_to=request_user)
-                    | Q(
-                        visibility=VisibilityChoices.FOLLOWERS,
-                        user__followers__follower=request_user,
-                    )
-                    | Q(visibility=VisibilityChoices.PRIVATE, user=request_user)
-                    | Q(user=request_user)  # Ensure the user sees all their own says
-                )
+                .filter(Q(visibility="PU") | Q(visible_to=request_user))
                 .order_by("-timestamp")
             ).distinct()
 
@@ -445,7 +411,7 @@ class SayListView(ListView):
             )
         else:
             say_queryset = (
-                Say.objects.filter(user=self.user, visibility=VisibilityChoices.PUBLIC)
+                Say.objects.filter(user=self.user, visibility="PU")
                 .order_by("-timestamp")
                 .distinct()
             )
@@ -646,15 +612,7 @@ class PinListView(ListView):
         if self.request.user.is_authenticated:
             if not self.user == self.request.user:
                 queryset = queryset.filter(
-                    Q(visibility=VisibilityChoices.PUBLIC)
-                    | Q(
-                        visibility=VisibilityChoices.FOLLOWERS,
-                        user__followers__follower=self.request.user,
-                    )
-                    | Q(
-                        visibility=VisibilityChoices.MENTIONED,
-                        visible_to=self.request.user,
-                    )
+                    Q(visibility="PU") | Q(visible_to=self.request.user)
                 )
         else:
             queryset = queryset.filter(visibility=VisibilityChoices.PUBLIC)
@@ -734,21 +692,7 @@ class PinDetailView(ShareDetailView):
         pin = self.get_object()
 
         # Check pin visibility
-        if pin.visibility == VisibilityChoices.PRIVATE and not request.user == pin.user:
-            return HttpResponseForbidden(
-                "You do not have permission to access this pin."
-            )
-        elif (
-            pin.visibility == VisibilityChoices.FOLLOWERS
-            and not request.user in pin.visible_to.all()
-        ):
-            return HttpResponseForbidden(
-                "You do not have permission to access this pin."
-            )
-        elif (
-            pin.visibility == VisibilityChoices.MENTIONED
-            and not request.user in pin.visible_to.all()
-        ):
+        if pin.visibility != "PU" and not request.user in pin.visible_to.all():
             return HttpResponseForbidden(
                 "You do not have permission to access this pin."
             )
@@ -1518,22 +1462,12 @@ class LuvListUserListView(ListView):
         if request_user.is_authenticated:
             luvlists = (
                 LuvList.objects.filter(user=self.user)
-                .filter(
-                    Q(visibility=VisibilityChoices.PUBLIC)
-                    | Q(visibility=VisibilityChoices.MENTIONED, visible_to=request_user)
-                    | Q(
-                        visibility=VisibilityChoices.FOLLOWERS,
-                        user__followers__follower=request_user,
-                    )
-                    | Q(visibility=VisibilityChoices.PRIVATE, user=request_user)
-                )
+                .filter(Q(visibility="PU") | Q(visible_to=request_user))
                 .order_by("-updated_at")
             ).distinct()
         else:
             luvlists = (
-                LuvList.objects.filter(
-                    user=self.user, visibility=VisibilityChoices.PUBLIC
-                )
+                LuvList.objects.filter(user=self.user, visibility="PU")
                 .order_by("-updated_at")
                 .distinct()
             )
@@ -1835,23 +1769,13 @@ class AlbumListView(ListView):
         if request_user.is_authenticated:
             albums = (
                 Album.objects.filter(user=self.user)
-                .filter(
-                    Q(visibility=VisibilityChoices.PUBLIC)
-                    | Q(visibility=VisibilityChoices.MENTIONED, visible_to=request_user)
-                    | Q(
-                        visibility=VisibilityChoices.FOLLOWERS,
-                        user__followers__follower=request_user,
-                    )
-                    | Q(visibility=VisibilityChoices.PRIVATE, user=request_user)
-                )
+                .filter(Q(visibility="PU") | Q(visible_to=request_user))
                 .order_by("-updated_at")
             ).distinct()
 
         else:
             albums = (
-                Album.objects.filter(
-                    user=self.user, visibility=VisibilityChoices.PUBLIC
-                )
+                Album.objects.filter(user=self.user, visibility="PU")
                 .order_by("-updated_at")
                 .distinct()
             )
@@ -1861,7 +1785,24 @@ class AlbumListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["user"] = self.user
+
+        albums = context["albums"]
+        for album in albums:
+            album.photo_count = self.get_visible_photos_count(album)
+            
         return context
+
+    def get_visible_photos_count(self, album):
+        request_user = self.request.user
+
+        if request_user.is_authenticated:
+            visible_photos = album.photos.filter(
+                Q(visibility="PU") | Q(visible_to=request_user)
+            )
+        else:
+            visible_photos = album.photos.filter(visibility="PU")
+
+        return visible_photos.count()
 
 
 class PhotoDetailView(ShareDetailView):
@@ -1880,7 +1821,11 @@ class PhotoDetailView(ShareDetailView):
         context["album"] = self.object.album
 
         photo = self.get_object()
-        album_photos = list(photo.album.photos.all())
+        album_photos = list(
+            photo.album.photos.filter(
+                Q(visibility=VisibilityChoices.PUBLIC) | Q(visible_to=self.request.user)
+            )
+        )
         photo_index = album_photos.index(photo)
 
         if photo_index > 0:

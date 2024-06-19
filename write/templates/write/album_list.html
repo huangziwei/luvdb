@@ -80,8 +80,7 @@
                                         <div class="d-flex align-items-center">
                                             <div class="fs-6 text-muted me-1">{{ album.updated_at |default:album.created_at |date:"Y.m.d H:i" }}  </div>
                                         </div>
-                                        <div class="fs-6 text-muted">{{ album.photos.count }} photos</div>
-                                    </div>
+                                        <div class="fs-6 text-muted">{{ album.photo_count|default:0 }} photo{% if album.photo_count != 1 %}s{% endif %}</div>                                    </div>
                                     {% if album.user == request.user %}
                                     <div class="d-flex">
                                         <a href="{% url 'write:album_update' user.username album.id %}" class="me-3">Edit</a>
