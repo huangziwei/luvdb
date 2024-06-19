@@ -159,14 +159,14 @@ class MovieDetailView(DetailView):
         # Fetch the latest check-in from each user.
         latest_checkin_subquery = (
             get_visible_checkins(
-                self.request.user, content_type, self.object.id, WatchCheckIn
+                self.request.user, WatchCheckIn, content_type, self.object.id
             )
             .filter(user=OuterRef("user"))
             .order_by("-timestamp")
         )
         checkins = (
             get_visible_checkins(
-                self.request.user, content_type, self.object.id, WatchCheckIn
+                self.request.user, WatchCheckIn, content_type, self.object.id
             )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
@@ -179,7 +179,7 @@ class MovieDetailView(DetailView):
         # Get the count of check-ins for each user for this series
         user_checkin_counts = (
             get_visible_checkins(
-                self.request.user, content_type, self.object.id, WatchCheckIn
+                self.request.user, WatchCheckIn, content_type, self.object.id
             )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
@@ -201,9 +201,9 @@ class MovieDetailView(DetailView):
         latest_checkin_status_subquery = (
             get_visible_checkins(
                 self.request.user,
+                WatchCheckIn,
                 content_type,
                 self.object.id,
-                WatchCheckIn,
                 checkin_user=OuterRef("user"),
             )
             .order_by("-timestamp")
@@ -677,14 +677,20 @@ class SeriesDetailView(DetailView):
         # Fetch the latest check-in from each user.
         latest_checkin_subquery = (
             get_visible_checkins(
-                self.request.user, content_type, self.object.id, WatchCheckIn
+                self.request.user,
+                WatchCheckIn,
+                content_type,
+                self.object.id,
             )
             .filter(user=OuterRef("user"))
             .order_by("-timestamp")
         )
         checkins = (
             get_visible_checkins(
-                self.request.user, content_type, self.object.id, WatchCheckIn
+                self.request.user,
+                WatchCheckIn,
+                content_type,
+                self.object.id,
             )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
@@ -697,7 +703,10 @@ class SeriesDetailView(DetailView):
         # Get the count of check-ins for each user for this series
         user_checkin_counts = (
             get_visible_checkins(
-                self.request.user, content_type, self.object.id, WatchCheckIn
+                self.request.user,
+                WatchCheckIn,
+                content_type,
+                self.object.id,
             )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
@@ -719,9 +728,9 @@ class SeriesDetailView(DetailView):
         latest_checkin_status_subquery = (
             get_visible_checkins(
                 self.request.user,
+                WatchCheckIn,
                 content_type,
                 self.object.id,
-                WatchCheckIn,
                 checkin_user=OuterRef("user"),
             )
             .order_by("-timestamp")
@@ -1418,6 +1427,13 @@ class GenericCheckInListView(ListView):
                 user=profile_user, content_type=content_type, object_id=object_id
             )
 
+            if self.request.user.is_authenticated:
+                checkins = checkins.filter(
+                    Q(visibility="PU") | Q(visible_to=self.request.user)
+                )
+            else:
+                checkins = checkins.filter(visibility="PU")
+
         if status:
             if status == "watched_rewatched":
                 checkins = checkins.filter(Q(status="watched") | Q(status="rewatched"))
@@ -1512,12 +1528,18 @@ class GenericCheckInAllListView(ListView):
         content_type = ContentType.objects.get_for_model(model)
         object_id = self.kwargs["object_id"]  # Get object id from url param
 
-        latest_checkin_subquery = WatchCheckIn.objects.filter(
-            content_type=content_type, object_id=object_id, user=OuterRef("user")
-        ).order_by("-timestamp")
+        latest_checkin_subquery = (
+            get_visible_checkins(
+                self.request.user, WatchCheckIn, content_type, object_id
+            )
+            .filter(user=OuterRef("user"))
+            .order_by("-timestamp")
+        )
 
         checkins = (
-            WatchCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            get_visible_checkins(
+                self.request.user, WatchCheckIn, content_type, object_id
+            )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
@@ -1543,7 +1565,10 @@ class GenericCheckInAllListView(ListView):
 
         # Adding count of check-ins for each movie or series
         user_checkin_counts = (
-            WatchCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            # WatchCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            get_visible_checkins(
+                self.request.user, WatchCheckIn, content_type, object_id
+            )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
         )
@@ -1617,10 +1642,12 @@ class GenericCheckInUserListView(ListView):
     def get_queryset(self):
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
 
-        latest_checkin_subquery = WatchCheckIn.objects.filter(
-            user=profile_user,
-            content_type=OuterRef("content_type"),
-            object_id=OuterRef("object_id"),
+        latest_checkin_subquery = get_visible_checkins(
+            self.request.user,
+            WatchCheckIn,
+            OuterRef("content_type"),
+            OuterRef("object_id"),
+            checkin_user=profile_user,
         ).order_by("-timestamp")
 
         checkins = (
@@ -1630,6 +1657,13 @@ class GenericCheckInUserListView(ListView):
             )
             .filter(timestamp=F("latest_checkin"))
         )
+
+        if self.request.user.is_authenticated:
+            checkins = checkins.filter(
+                Q(visibility="PU") | Q(visible_to=self.request.user)
+            )
+        else:
+            checkins = checkins.filter(visibility="PU")
 
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
         if order == "timestamp":
@@ -1647,6 +1681,29 @@ class GenericCheckInUserListView(ListView):
                 )
             else:
                 checkins = checkins.filter(status=status)
+
+        # Adding count of check-ins for each book or issue
+        user_checkin_counts = (
+            get_visible_checkins(
+                self.request.user,
+                WatchCheckIn,
+                checkin_user=profile_user,
+            )
+            .values("content_type", "object_id")
+            .annotate(total_checkins=Count("id") - 1)
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            (item["content_type"], item["object_id"]): item["total_checkins"]
+            for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with total_checkins for each content-object
+        for checkin in checkins:
+            checkin.checkin_count = user_checkin_count_dict.get(
+                (checkin.content_type_id, checkin.object_id), 0
+            )
 
         return checkins
 

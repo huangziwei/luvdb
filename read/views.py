@@ -1078,10 +1078,10 @@ class IssueDetailView(DetailView):
             .filter(timestamp=F("latest_checkin"))
         ).order_by("-timestamp")[:5]
 
-        # Get the count of check-ins for each user for this series
+        # Get the count of check-ins for each user for this issue
         user_checkin_counts = (
-            ReadCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, ReadCheckIn, content_type, self.object.id
             )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
@@ -1101,10 +1101,12 @@ class IssueDetailView(DetailView):
 
         # Issue check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
-            ReadCheckIn.objects.filter(
-                content_type=content_type.id,
-                object_id=self.object.id,
-                user=OuterRef("user"),
+            get_visible_checkins(
+                self.request.user,
+                ReadCheckIn,
+                content_type,
+                self.object.id,
+                checkin_user=OuterRef("user"),
             )
             .order_by("-timestamp")
             .values("status")[:1]
@@ -1841,14 +1843,6 @@ class GenericCheckInAllListView(ListView):
             .filter(timestamp=F("latest_checkin"))
         )
 
-        # Filter check-ins based on visibility
-        if self.request.user.is_authenticated:
-            checkins = checkins.filter(
-                Q(visibility="PU") | Q(visible_to=self.request.user)
-            )
-        else:
-            checkins = checkins.filter(visibility="PU")
-
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
         if order == "timestamp":
             checkins = checkins.order_by("timestamp")
@@ -1867,7 +1861,9 @@ class GenericCheckInAllListView(ListView):
                 checkins = checkins.filter(status=status)
 
         user_checkin_counts = (
-            ReadCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            get_visible_checkins(
+                self.request.user, ReadCheckIn, content_type, object_id
+            )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
         )
@@ -1995,8 +1991,6 @@ class GenericCheckInUserListView(ListView):
             (item["content_type"], item["object_id"]): item["total_checkins"]
             for item in user_checkin_counts
         }
-
-        print(user_checkin_count_dict)
 
         # Annotate the checkins queryset with total_checkins for each content-object
         for checkin in checkins:
