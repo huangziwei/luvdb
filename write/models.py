@@ -361,6 +361,16 @@ class Post(auto_prefetch.Model):
     )
     share_to_feed = models.BooleanField(default=False)
 
+    # visibility options
+    visibility = models.CharField(
+        max_length=2,
+        choices=VisibilityChoices.choices,
+        default=VisibilityChoices.PUBLIC,
+    )
+
+    visible_to = models.ManyToManyField(User, related_name="visible_posts", blank=True)
+    activities = GenericRelation(Activity, related_query_name="post_activity")
+
     def get_absolute_url(self):
         return reverse(
             "write:post_detail_slug",
@@ -384,7 +394,26 @@ class Post(auto_prefetch.Model):
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
+        was_updated = False
+
+        # Call the parent class's save method to actually save the object
         super().save(*args, **kwargs)
+
+        visible_to_users = set()
+
+        if self.visibility == VisibilityChoices.MENTIONED:
+            visible_to_users.update(find_mentioned_users(self.content))
+        elif self.visibility == VisibilityChoices.FOLLOWERS:
+            visible_to_users.update(
+                self.user.followers.values_list("follower_id", flat=True)
+            )
+        elif self.visibility == VisibilityChoices.PRIVATE:
+            visible_to_users.add(self.user.id)
+
+        # Always include self.user
+        visible_to_users.add(self.user.id)
+
+        self.visible_to.set(visible_to_users)
 
         # Attempt to fetch an existing Activity object for this check-in
         try:
@@ -395,11 +424,26 @@ class Post(auto_prefetch.Model):
             activity = None
 
         if self.share_to_feed:
+            if not is_new:
+                # Check if updated
+                was_updated = self.updated_at > self.timestamp
+
+            if was_updated:
+                try:
+                    activity = Activity.objects.get(
+                        content_type__model="post", object_id=self.id
+                    )
+                    activity.visibility = self.visibility
+                    activity.save()  # This will trigger the update logic in Activity model
+                except Activity.DoesNotExist:
+                    pass
+
             if is_new or activity is None:
                 Activity.objects.create(
                     user=self.user,
                     activity_type="post",
                     content_object=self,
+                    visibility=self.visibility,
                 )
         elif activity is not None:
             # Optionally, remove the Activity if share_to_feed is False

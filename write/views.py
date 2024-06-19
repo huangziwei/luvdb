@@ -184,6 +184,19 @@ class PostListView(ListView):
         else:
             queryset = queryset.filter(projects__isnull=True).order_by("-timestamp")
 
+        # Filter posts based on their visibility
+        if not self.user == self.request.user:
+            queryset = queryset.filter(
+                Q(visibility=VisibilityChoices.PUBLIC)
+                | Q(
+                    visibility=VisibilityChoices.FOLLOWERS,
+                    user__followers__follower=self.request.user,
+                )
+                | Q(
+                    visibility=VisibilityChoices.MENTIONED, visible_to=self.request.user
+                )
+            )
+
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -245,6 +258,37 @@ class PostListView(ListView):
 class PostDetailView(ShareDetailView):
     model = Post
     template_name = "write/post_detail.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Get the Post object
+        post = get_object_or_404(
+            Post, slug=self.kwargs["slug"], user__username=self.kwargs["username"]
+        )
+
+        # Check post visibility
+        if (
+            post.visibility == VisibilityChoices.PRIVATE
+            and not request.user == post.user
+        ):
+            return HttpResponseForbidden(
+                "You do not have permission to access this post."
+            )
+        elif (
+            post.visibility == VisibilityChoices.FOLLOWERS
+            and not request.user in post.visible_to.all()
+        ):
+            return HttpResponseForbidden(
+                "You do not have permission to access this post."
+            )
+        elif (
+            post.visibility == VisibilityChoices.MENTIONED
+            and not request.user in post.visible_to.all()
+        ):
+            return HttpResponseForbidden(
+                "You do not have permission to access this post."
+            )
+
+        return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         luvpost = self.get_object()

@@ -28,7 +28,14 @@ User = get_user_model()
 class PostForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = Post
-        fields = ["title", "content", "comments_enabled", "projects", "share_to_feed"]
+        fields = [
+            "title",
+            "content",
+            "visibility",
+            "comments_enabled",
+            "projects",
+            "share_to_feed",
+        ]
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Post title..."}),
             "content": forms.Textarea(

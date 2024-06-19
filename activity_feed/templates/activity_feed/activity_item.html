@@ -23,7 +23,7 @@
                 {{ activity.content_object.content|linkify_tags|markdownify}}
             </div>
             <div class="d-flex mt-2 align-items-start">
-                <p class="me-2 align-items-end">
+                <p class="me-1 align-items-end">
                     <a href="{% url 'write:say_detail' activity.user.username activity.content_object.id %}"
                         class="text-decoration-none text-secondary u-url dt-published">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
                 </p>
@@ -73,11 +73,12 @@
                 {{ activity.content_object.content | linkify_tags |  truncatechars:300 | markdownify }}
             </div>
         </div>
-        <div class="d-flex mt-2">
-            <p class="me-2">
+        <div class="d-flex mt-2 align-items-start">
+            <p class="me-1">
                 <a href="{% url 'write:post_detail_slug' activity.user.username activity.content_object.slug %}"
                    class="text-decoration-none text-secondary u-url dt-published">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
             </p>
+            {% include "activity_feed/visibility_icons.html" %}
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
                     <a href="{% url 'write:post_detail_slug' activity.user.username activity.content_object.slug %}?reply=true"
