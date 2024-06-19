@@ -1,11 +1,13 @@
 {% extends "base.html" %} 
+{% load markdownify %}
+{% load linkify %}
 {% block content %}
 <div class="container">
     <div class="col-12 col-md-8 left-column h-entry">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <div class="fs-2 fw-bold">{{ album.name }}</div>
-                <div class="text-muted mb-1">{{ album.notes }}</div>
+                <div class="text-muted mb-1">{{ album.notes|markdownify|linkify_tags:album.user }}</div>
                 <span class="d-flex">
                     <p class='me-2'>
                         by
