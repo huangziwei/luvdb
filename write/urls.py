@@ -118,7 +118,7 @@ urlpatterns = [
         "@<str:username>/pin/copy/<int:pk>/", PinCreateView.as_view(), name="pin_copy"
     ),
     path(
-        "@<str:username>/pin/<slug:project>/",
+        "@<str:username>/pins/<slug:project>/",
         PinListView.as_view(),
         name="pin_list_project",
     ),

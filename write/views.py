@@ -223,7 +223,11 @@ class PostListView(ListView):
                     user=self.user, projects=project
                 ).count()
                 projects_with_counts.append(
-                    {"project": project, "post_count": post_count}
+                    {
+                        "project": project,
+                        "post_count": post_count,
+                        "visibility": project.visibility,
+                    }
                 )
 
         context["all_projects"] = projects_with_counts
@@ -674,7 +678,11 @@ class PinListView(ListView):
                     user=self.user, projects=project
                 ).count()
                 projects_with_counts.append(
-                    {"project": project, "post_count": post_count}
+                    {
+                        "project": project,
+                        "post_count": post_count,
+                        "visibility": project.visibility,
+                    }
                 )
 
         context["all_projects"] = projects_with_counts
@@ -1789,7 +1797,7 @@ class AlbumListView(ListView):
         albums = context["albums"]
         for album in albums:
             album.photo_count = self.get_visible_photos_count(album)
-            
+
         return context
 
     def get_visible_photos_count(self, album):
