@@ -145,6 +145,15 @@ class PostListView(ListView):
         if not self.user.is_public and not request.user.is_authenticated:
             return redirect("{}?next={}".format(reverse("login"), request.path))
 
+        if "project" in self.kwargs:
+            project = get_object_or_404(
+                Project, slug=self.kwargs["project"], user=self.user
+            )
+            if project.visibility == Project.PRIVATE and not request.user == self.user:
+                return HttpResponseForbidden(
+                    "You do not have permission to access this project."
+                )
+
         # Otherwise, proceed as normal
         return super().dispatch(request, *args, **kwargs)
 
@@ -550,6 +559,15 @@ class PinListView(ListView):
         if not self.user.is_public and not request.user.is_authenticated:
             return redirect("{}?next={}".format(reverse("login"), request.path))
 
+        if "project" in self.kwargs:
+            project = get_object_or_404(
+                Project, slug=self.kwargs["project"], user=self.user
+            )
+            if project.visibility == Project.PRIVATE and not request.user == self.user:
+                return HttpResponseForbidden(
+                    "You do not have permission to access this project."
+                )
+
         # Otherwise, proceed as normal
         return super().dispatch(request, *args, **kwargs)
 
@@ -634,8 +652,12 @@ class PinListView(ListView):
             Project.objects.filter(pin__user=self.user).distinct().order_by("name")
         ):
             if project.visibility == Project.PUBLIC or self.user == self.request.user:
-                post_count = Pin.objects.filter(user=self.user, projects=project).count()
-                projects_with_counts.append({"project": project, "post_count": post_count})
+                post_count = Pin.objects.filter(
+                    user=self.user, projects=project
+                ).count()
+                projects_with_counts.append(
+                    {"project": project, "post_count": post_count}
+                )
 
         context["all_projects"] = projects_with_counts
 
