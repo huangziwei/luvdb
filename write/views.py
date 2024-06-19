@@ -157,6 +157,12 @@ class PostListView(ListView):
                 slug=self.kwargs["project"], post__user=self.user
             ).first()
             if project:
+                if (
+                    project.visibility == Project.PRIVATE
+                    and not self.user == self.request.user
+                ):
+                    # Return no posts if the project is private and the current user doesn't own it
+                    return Post.objects.none()
                 queryset = queryset.filter(projects=project)
                 if project.order == Project.NEWEST_FIRST:
                     queryset = queryset.order_by("-timestamp")
@@ -199,8 +205,13 @@ class PostListView(ListView):
         for project in (
             Project.objects.filter(post__user=self.user).distinct().order_by("name")
         ):
-            post_count = Post.objects.filter(user=self.user, projects=project).count()
-            projects_with_counts.append({"project": project, "post_count": post_count})
+            if project.visibility == Project.PUBLIC or self.user == self.request.user:
+                post_count = Post.objects.filter(
+                    user=self.user, projects=project
+                ).count()
+                projects_with_counts.append(
+                    {"project": project, "post_count": post_count}
+                )
 
         context["all_projects"] = projects_with_counts
 
@@ -255,7 +266,16 @@ class PostDetailView(ShareDetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["projects"] = self.object.projects.all()
+
+        # Filter projects based on visibility
+        if self.request.user.is_authenticated:
+            projects = self.object.projects.filter(
+                Q(visibility=Project.PUBLIC) | Q(visible_to=self.request.user)
+            )
+        else:
+            projects = self.object.projects.filter(visibility=Project.PUBLIC)
+
+        context["projects"] = projects
 
         # New code to order posts within projects
         projects_with_ordered_posts = []
@@ -325,7 +345,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
     template_name = "write/project_update.html"
-    fields = ["name", "order"]
+    fields = ["name", "order", "visibility"]
     slug_url_kwarg = "project"
 
 
@@ -543,6 +563,12 @@ class PinListView(ListView):
                 slug=self.kwargs["project"], pin__user=self.user
             ).first()
             if project:
+                if (
+                    project.visibility == Project.PRIVATE
+                    and not self.user == self.request.user
+                ):
+                    # Return no pins if the project is private and the current user doesn't own it
+                    return Pin.objects.none()
                 queryset = queryset.filter(projects=project)
                 if project.order == Project.NEWEST_FIRST:
                     queryset = queryset.order_by("-timestamp")
@@ -594,7 +620,6 @@ class PinListView(ListView):
         )
 
         current_project_slug = self.kwargs.get("project", None)
-        current_project_obj = Project.objects.filter(slug=current_project_slug).first()
 
         if current_project:
             context["current_project"] = {
@@ -608,8 +633,9 @@ class PinListView(ListView):
         for project in (
             Project.objects.filter(pin__user=self.user).distinct().order_by("name")
         ):
-            post_count = Pin.objects.filter(user=self.user, projects=project).count()
-            projects_with_counts.append({"project": project, "post_count": post_count})
+            if project.visibility == Project.PUBLIC or self.user == self.request.user:
+                post_count = Pin.objects.filter(user=self.user, projects=project).count()
+                projects_with_counts.append({"project": project, "post_count": post_count})
 
         context["all_projects"] = projects_with_counts
 
@@ -1483,7 +1509,7 @@ class ProjectAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
     def create_object(self, text):
-        return Project.objects.create(name=text)
+        return Project.objects.create(name=text, user=self.request.user)
 
     def has_add_permission(self, request):
         return True  # or customize this if you require special logic

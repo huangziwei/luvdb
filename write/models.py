@@ -84,6 +84,22 @@ class Project(auto_prefetch.Model):
         default=NEWEST_FIRST,
     )
 
+    # new visibility options
+    PUBLIC = "PU"
+    PRIVATE = "PR"
+    VISIBILITY_CHOICES = [
+        (PUBLIC, "Public"),
+        (PRIVATE, "Private"),
+    ]
+    visibility = models.CharField(
+        max_length=2,
+        choices=VISIBILITY_CHOICES,
+        default=PUBLIC,
+    )
+    visible_to = models.ManyToManyField(
+        User, related_name="visible_projects", blank=True
+    )
+
     def __str__(self):
         return self.name
 
@@ -100,6 +116,12 @@ class Project(auto_prefetch.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+        visible_to_users = set()
+        if self.visibility == "PR":
+            visible_to_users.add(self.user.id)
+
+        self.visible_to.set(visible_to_users)
 
 
 class Comment(auto_prefetch.Model):
