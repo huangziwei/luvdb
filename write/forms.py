@@ -229,6 +229,7 @@ class LuvListForm(forms.ModelForm):
             "order_preference",
             "allow_collaboration",
             "items_per_page",
+            "visibility",
         ]
         help_texts = {
             "items_per_page": "How many items to show per page. Leave blank to show all.",

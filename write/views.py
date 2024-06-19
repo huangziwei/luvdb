@@ -1518,7 +1518,32 @@ class LuvListUserListView(ListView):
         self.user = get_object_or_404(
             get_user_model(), username=self.kwargs["username"]
         )
-        return LuvList.objects.filter(user=self.user).order_by("-updated_at")
+        request_user = self.request.user
+
+        if request_user.is_authenticated:
+            luvlists = (
+                LuvList.objects.filter(user=self.user)
+                .filter(
+                    Q(visibility=VisibilityChoices.PUBLIC)
+                    | Q(visibility=VisibilityChoices.MENTIONED, visible_to=request_user)
+                    | Q(
+                        visibility=VisibilityChoices.FOLLOWERS,
+                        user__followers__follower=request_user,
+                    )
+                    | Q(visibility=VisibilityChoices.PRIVATE, user=request_user)
+                )
+                .order_by("-updated_at")
+            ).distinct()
+        else:
+            luvlists = (
+                LuvList.objects.filter(
+                    user=self.user, visibility=VisibilityChoices.PUBLIC
+                )
+                .order_by("-updated_at")
+                .distinct()
+            )
+
+        return luvlists
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

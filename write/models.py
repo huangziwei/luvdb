@@ -795,6 +795,17 @@ class LuvList(auto_prefetch.Model):
     votes = GenericRelation(Vote)
     tags = models.ManyToManyField(Tag, blank=True)
 
+    # new visibility options
+    visibility = models.CharField(
+        max_length=2,
+        choices=VisibilityChoices.choices,
+        default=VisibilityChoices.PUBLIC,
+    )
+
+    visible_to = models.ManyToManyField(
+        User, related_name="visible_luvlists", blank=True
+    )
+
     def __str__(self):
         return self.title
 
@@ -817,6 +828,23 @@ class LuvList(auto_prefetch.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+
+        visible_to_users = set()
+
+        if self.visibility == VisibilityChoices.MENTIONED:
+            visible_to_users.update(find_mentioned_users(self.notes))
+        elif self.visibility == VisibilityChoices.FOLLOWERS:
+            visible_to_users.update(
+                self.user.followers.values_list("follower_id", flat=True)
+            )
+        elif self.visibility == VisibilityChoices.PRIVATE:
+            visible_to_users.add(self.user.id)
+
+        # Always include self.user
+        visible_to_users.add(self.user.id)
+
+        self.visible_to.set(visible_to_users)
+
         handle_tags(self, self.notes)
 
 
@@ -967,7 +995,7 @@ class Album(auto_prefetch.Model):
         visible_to_users = set()
 
         if self.visibility == VisibilityChoices.MENTIONED:
-            visible_to_users.update(find_mentioned_users(self.content))
+            visible_to_users.update(find_mentioned_users(self.notes))
         elif self.visibility == VisibilityChoices.FOLLOWERS:
             visible_to_users.update(
                 self.user.followers.values_list("follower_id", flat=True)
@@ -979,6 +1007,7 @@ class Album(auto_prefetch.Model):
         visible_to_users.add(self.user.id)
 
         self.visible_to.set(visible_to_users)
+        handle_tags(self, self.notes)
 
 
 def validate_file_size(value):
