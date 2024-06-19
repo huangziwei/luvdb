@@ -1732,7 +1732,13 @@ class AlbumDetailView(FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         album = self.get_object()
-        photos = album.photos.all()
+        # Filter photos based on visibility
+        if self.request.user.is_authenticated:
+            photos = album.photos.filter(
+                Q(visibility=VisibilityChoices.PUBLIC) | Q(visible_to=self.request.user)
+            )
+        else:
+            photos = album.photos.filter(visibility=VisibilityChoices.PUBLIC)
         paginator = Paginator(photos, self.paginate_by)
         page_number = self.request.GET.get("page")
         page_obj = paginator.get_page(page_number)
@@ -1875,6 +1881,12 @@ class PhotoDetailView(ShareDetailView):
     model = Photo
     template_name = "write/photo_detail.html"
     context_object_name = "photo"
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.visibility != "PU" and self.request.user not in obj.visible_to.all():
+            raise Http404("You do not have permission to view this.")
+        return obj
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

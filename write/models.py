@@ -1042,6 +1042,15 @@ class Photo(auto_prefetch.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     votes = GenericRelation(Vote)
 
+    # new visibility options
+    visibility = models.CharField(
+        max_length=2,
+        choices=VisibilityChoices.choices,
+        default=VisibilityChoices.PUBLIC,
+    )
+
+    visible_to = models.ManyToManyField(User, related_name="visible_photos", blank=True)
+
     def __str__(self):
         return f"{self.album.name} > {self.photo_id}"
 
@@ -1061,6 +1070,23 @@ class Photo(auto_prefetch.Model):
 
         super().save(*args, **kwargs)
         self.transform_image()
+
+        visible_to_users = set()
+
+        if self.visibility == VisibilityChoices.MENTIONED:
+            visible_to_users.update(find_mentioned_users(self.notes))
+        elif self.visibility == VisibilityChoices.FOLLOWERS:
+            visible_to_users.update(
+                self.user.followers.values_list("follower_id", flat=True)
+            )
+        elif self.visibility == VisibilityChoices.PRIVATE:
+            visible_to_users.add(self.user.id)
+
+        # Always include self.user
+        visible_to_users.add(self.user.id)
+
+        self.visible_to.set(visible_to_users)
+        handle_tags(self, self.notes)
 
     def generate_photo_id(self, length=12, prefix="luvbild_"):
         # Generate a unique ID with the specified prefix followed by a random string

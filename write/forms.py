@@ -349,13 +349,14 @@ class PhotoForm(forms.ModelForm):
 
     class Meta:
         model = Photo
-        fields = ["photo", "notes", "album", "comments_enabled"]
+        fields = ["photo", "notes", "album", "visibility", "comments_enabled"]
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
         super(PhotoForm, self).__init__(*args, **kwargs)
         if user:
             self.fields["album"].queryset = Album.objects.filter(user=user)
+        self.fields["comments_enabled"].label = "Enable replies"
 
 
 class PhotoNotesForm(forms.ModelForm):

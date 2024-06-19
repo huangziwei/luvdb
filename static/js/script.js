@@ -664,19 +664,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const visibilityInput = document.getElementById("visibility-input");
     const visibilityButtonLabel = document.getElementById("visibility-button-label");
 
-    visibilityDropdownMenu.querySelectorAll(".dropdown-item").forEach((item) => {
-        item.addEventListener("click", function (event) {
-            event.preventDefault();
-            const selectedValue = this.getAttribute("data-value");
-            const selectedSVG = this.querySelector("svg").outerHTML;
+    if (visibilityDropdownMenu && visibilityInput && visibilityButtonLabel) {
+        visibilityDropdownMenu.querySelectorAll(".dropdown-item").forEach((item) => {
+            item.addEventListener("click", function (event) {
+                event.preventDefault();
+                const selectedValue = this.getAttribute("data-value");
+                const selectedSVG = this.querySelector("svg").outerHTML;
 
-            visibilityInput.value = selectedValue;
-            visibilityButtonLabel.innerHTML = selectedSVG;
+                visibilityInput.value = selectedValue;
+                visibilityButtonLabel.innerHTML = selectedSVG;
 
-            visibilityDropdownMenu
-                .querySelectorAll(".dropdown-item")
-                .forEach((i) => i.classList.remove("active"));
-            this.classList.add("active");
+                visibilityDropdownMenu
+                    .querySelectorAll(".dropdown-item")
+                    .forEach((i) => i.classList.remove("active"));
+                this.classList.add("active");
+            });
         });
-    });
+    }
 });
