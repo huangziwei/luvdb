@@ -202,23 +202,28 @@ class CustomPasswordChangeView(PasswordChangeView):
 
 
 def get_latest_checkins(user, request_user, checkin_model):
-    checkins = checkin_model.objects.filter(
-        user=user,
-        timestamp=Subquery(
-            checkin_model.objects.filter(
-                content_type=OuterRef("content_type"),
-                object_id=OuterRef("object_id"),
-                user=user,
-            )
-            .order_by("-timestamp")
-            .values("timestamp")[:1]
-        ),
+    # Subquery to get the latest timestamp of visible check-ins
+    visibility_filter = (
+        Q(visibility="PU") | Q(visible_to=request_user)
+        if request_user.is_authenticated
+        else Q(visibility="PU")
     )
 
-    if request_user.is_authenticated:
-        checkins = checkins.filter(Q(visibility="PU") | Q(visible_to=request_user))
-    else:
-        checkins = checkins.filter(visibility="PU")
+    latest_timestamp_subquery = (
+        checkin_model.objects.filter(
+            content_type=OuterRef("content_type"),
+            object_id=OuterRef("object_id"),
+            user=user,
+        )
+        .filter(visibility_filter)
+        .order_by("-timestamp")
+        .values("timestamp")[:1]
+    )
+
+    # Filter check-ins by the latest timestamp and visibility
+    checkins = checkin_model.objects.filter(
+        user=user, timestamp=Subquery(latest_timestamp_subquery)
+    ).filter(visibility_filter)
 
     return checkins
 

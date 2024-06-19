@@ -32,7 +32,7 @@ from visit.models import Location
 from visit.utils import get_locations_with_parents, get_parent_locations
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
-from write.utils import get_visible_comments
+from write.utils import get_visible_checkins, get_visible_comments
 from write.utils_bluesky import create_bluesky_post
 from write.utils_formatting import check_required_js
 from write.utils_mastodon import create_mastodon_post
@@ -152,18 +152,21 @@ class MovieDetailView(DetailView):
                 "content_type": content_type.id,
                 "object_id": self.object.id,
                 "user": self.request.user.id,
+                "visibility": "PU",
             }
         )
 
         # Fetch the latest check-in from each user.
-        latest_checkin_subquery = WatchCheckIn.objects.filter(
-            content_type=content_type.id,
-            object_id=self.object.id,
-            user=OuterRef("user"),
-        ).order_by("-timestamp")
+        latest_checkin_subquery = (
+            get_visible_checkins(
+                self.request.user, content_type, self.object.id, WatchCheckIn
+            )
+            .filter(user=OuterRef("user"))
+            .order_by("-timestamp")
+        )
         checkins = (
-            WatchCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, content_type, self.object.id, WatchCheckIn
             )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
@@ -175,8 +178,8 @@ class MovieDetailView(DetailView):
 
         # Get the count of check-ins for each user for this series
         user_checkin_counts = (
-            WatchCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, content_type, self.object.id, WatchCheckIn
             )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
@@ -196,10 +199,12 @@ class MovieDetailView(DetailView):
 
         # Watch check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
-            WatchCheckIn.objects.filter(
-                content_type=content_type.id,
-                object_id=self.object.id,
-                user=OuterRef("user"),
+            get_visible_checkins(
+                self.request.user,
+                content_type,
+                self.object.id,
+                WatchCheckIn,
+                checkin_user=OuterRef("user"),
             )
             .order_by("-timestamp")
             .values("status")[:1]
@@ -665,18 +670,21 @@ class SeriesDetailView(DetailView):
                 "content_type": content_type.id,
                 "object_id": self.object.id,
                 "user": self.request.user.id,
+                "visibility": "PU",
             }
         )
 
         # Fetch the latest check-in from each user.
-        latest_checkin_subquery = WatchCheckIn.objects.filter(
-            content_type=content_type.id,
-            object_id=self.object.id,
-            user=OuterRef("user"),
-        ).order_by("-timestamp")
+        latest_checkin_subquery = (
+            get_visible_checkins(
+                self.request.user, content_type, self.object.id, WatchCheckIn
+            )
+            .filter(user=OuterRef("user"))
+            .order_by("-timestamp")
+        )
         checkins = (
-            WatchCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, content_type, self.object.id, WatchCheckIn
             )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
@@ -688,8 +696,8 @@ class SeriesDetailView(DetailView):
 
         # Get the count of check-ins for each user for this series
         user_checkin_counts = (
-            WatchCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, content_type, self.object.id, WatchCheckIn
             )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
@@ -709,10 +717,12 @@ class SeriesDetailView(DetailView):
 
         # Watch check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
-            WatchCheckIn.objects.filter(
-                content_type=content_type.id,
-                object_id=self.object.id,
-                user=OuterRef("user"),
+            get_visible_checkins(
+                self.request.user,
+                content_type,
+                self.object.id,
+                WatchCheckIn,
+                checkin_user=OuterRef("user"),
             )
             .order_by("-timestamp")
             .values("status")[:1]
@@ -1275,6 +1285,12 @@ class WatchCheckInDetailView(DetailView):
     template_name = "watch/watch_checkin_detail.html"
     context_object_name = "checkin"  # This name will be used in your template
 
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.visibility != "PU" and self.request.user not in obj.visible_to.all():
+            raise Http404("You do not have permission to view this.")
+        return obj
+
     def get(self, request, *args, **kwargs):
         if not request.GET.get("reply") and not request.GET.get("repost"):
             return HttpResponseRedirect(f"{request.path}?reply=true")
@@ -1322,7 +1338,7 @@ class WatchCheckInDetailView(DetailView):
         ).count()
         context["checkin_count"] = checkin_count - 1
 
-        # Determine if the user has upvoted this ReadCheckIn object
+        # Determine if the user has upvoted this WatchCheckIn object
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
         context["can_crosspost_mastodon"] = (
             self.request.user.is_authenticated

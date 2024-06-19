@@ -643,7 +643,7 @@ class BookDetailView(DetailView):
         # Fetch the latest check-in from each user.
         latest_checkin_subquery = (
             get_visible_checkins(
-                self.request.user, content_type, self.object.id, ReadCheckIn
+                self.request.user, ReadCheckIn, content_type, self.object.id
             )
             .filter(user=OuterRef("user"))
             .order_by("-timestamp")
@@ -651,19 +651,21 @@ class BookDetailView(DetailView):
 
         checkins = (
             get_visible_checkins(
-                self.request.user, content_type, self.object.id, ReadCheckIn
+                self.request.user, ReadCheckIn, content_type, self.object.id
             )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
             .filter(timestamp=F("latest_checkin"))
+            .order_by("-timestamp")
         )
         context["checkins"] = context["page_obj"] = checkins
 
         user_checkin_counts = (
             get_visible_checkins(
-                self.request.user, content_type, self.object.id, ReadCheckIn
+                self.request.user, ReadCheckIn, content_type, self.object.id
             )
+            .filter(Q(visibility="PU") | Q(user=self.request.user))
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
         )
@@ -684,9 +686,9 @@ class BookDetailView(DetailView):
         latest_checkin_status_subquery = (
             get_visible_checkins(
                 self.request.user,
+                ReadCheckIn,
                 content_type,
                 self.object.id,
-                ReadCheckIn,
                 checkin_user=OuterRef("user"),
             )
             .order_by("-timestamp")
@@ -1061,14 +1063,14 @@ class IssueDetailView(DetailView):
         # Fetch the latest check-in from each user.
         latest_checkin_subquery = (
             get_visible_checkins(
-                self.request.user, content_type, self.object.id, ReadCheckIn
+                self.request.user, ReadCheckIn, content_type, self.object.id
             )
             .filter(user=OuterRef("user"))
             .order_by("-timestamp")
         )
         checkins = (
             get_visible_checkins(
-                self.request.user, content_type, self.object.id, ReadCheckIn
+                self.request.user, ReadCheckIn, content_type, self.object.id
             )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
@@ -1602,10 +1604,12 @@ class ReadCheckInDetailView(DetailView):
         context["app_label"] = self.object._meta.app_label
         context["object_type"] = self.object._meta.model_name.lower()
 
-        checkin_count = ReadCheckIn.objects.filter(
-            user=self.object.user,
+        checkin_count = get_visible_checkins(
+            request_user=self.request.user,
             content_type=ContentType.objects.get_for_model(self.object.content_object),
             object_id=self.object.content_object.id,
+            CheckInModel=ReadCheckIn,
+            checkin_user=self.object.user,
         ).count()
         context["checkin_count"] = checkin_count - 1
 
@@ -1821,7 +1825,7 @@ class GenericCheckInAllListView(ListView):
 
         latest_checkin_subquery = (
             get_visible_checkins(
-                self.request.user, content_type, object_id, ReadCheckIn
+                self.request.user, ReadCheckIn, content_type, object_id
             )
             .filter(user=OuterRef("user"))
             .order_by("-timestamp")
@@ -1829,7 +1833,7 @@ class GenericCheckInAllListView(ListView):
 
         checkins = (
             get_visible_checkins(
-                self.request.user, content_type, object_id, ReadCheckIn
+                self.request.user, ReadCheckIn, content_type, object_id
             )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
@@ -1936,11 +1940,11 @@ class GenericCheckInUserListView(ListView):
 
         latest_checkin_subquery = get_visible_checkins(
             self.request.user,
+            ReadCheckIn,
             OuterRef("content_type"),
             OuterRef("object_id"),
-            ReadCheckIn,
             checkin_user=profile_user,
-        )
+        ).order_by("-timestamp")
 
         checkins = (
             ReadCheckIn.objects.filter(user=profile_user)
@@ -1976,7 +1980,12 @@ class GenericCheckInUserListView(ListView):
 
         # Adding count of check-ins for each book or issue
         user_checkin_counts = (
-            ReadCheckIn.objects.filter(user=profile_user)
+            # ReadCheckIn.objects.filter(user=profile_user)
+            get_visible_checkins(
+                self.request.user,
+                ReadCheckIn,
+                checkin_user=profile_user,
+            )
             .values("content_type", "object_id")
             .annotate(total_checkins=Count("id") - 1)
         )
@@ -1986,6 +1995,8 @@ class GenericCheckInUserListView(ListView):
             (item["content_type"], item["object_id"]): item["total_checkins"]
             for item in user_checkin_counts
         }
+
+        print(user_checkin_count_dict)
 
         # Annotate the checkins queryset with total_checkins for each content-object
         for checkin in checkins:

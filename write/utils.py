@@ -33,14 +33,20 @@ def get_visible_comments(user, content_object):
 
 
 def get_visible_checkins(
-    request_user, content_type, object_id, CheckInModel, checkin_user=None
+    request_user, CheckInModel, content_type=None, object_id=None, checkin_user=None
 ):
+
     if checkin_user:
-        checkins = CheckInModel.objects.filter(
-            content_type=content_type,
-            object_id=object_id,
-            user=checkin_user,
-        )
+        if content_type is None or object_id is None:
+            checkins = CheckInModel.objects.filter(
+                user=checkin_user,
+            )
+        else:
+            checkins = CheckInModel.objects.filter(
+                content_type=content_type,
+                object_id=object_id,
+                user=checkin_user,
+            )
     else:
         checkins = CheckInModel.objects.filter(
             content_type=content_type,
@@ -52,4 +58,4 @@ def get_visible_checkins(
     else:
         checkins = checkins.filter(visibility="PU")
 
-    return checkins.order_by("-timestamp")
+    return checkins
