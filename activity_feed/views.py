@@ -283,6 +283,14 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
                 )
                 | Q(
                     visibility=Activity.VISIBILITY_MENTIONED,
+                    post_activity__visible_to=user,
+                )
+                | Q(
+                    visibility=Activity.VISIBILITY_MENTIONED,
+                    pin_activity__visible_to=user,
+                )
+                | Q(
+                    visibility=Activity.VISIBILITY_MENTIONED,
                     read_checkin_activity__visible_to=user,
                 )
                 | Q(visibility=Activity.VISIBILITY_FOLLOWERS, user__in=following_users)

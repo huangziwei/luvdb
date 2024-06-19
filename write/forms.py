@@ -105,6 +105,7 @@ class PinForm(forms.ModelForm):
             "url",
             "content",
             "projects",
+            "visibility",
             "comments_enabled",
             "share_to_feed",
         ]

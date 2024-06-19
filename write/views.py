@@ -643,6 +643,19 @@ class PinListView(ListView):
         else:
             queryset = queryset.filter(projects__isnull=True).order_by("-timestamp")
 
+        # Filter posts based on their visibility
+        if not self.user == self.request.user:
+            queryset = queryset.filter(
+                Q(visibility=VisibilityChoices.PUBLIC)
+                | Q(
+                    visibility=VisibilityChoices.FOLLOWERS,
+                    user__followers__follower=self.request.user,
+                )
+                | Q(
+                    visibility=VisibilityChoices.MENTIONED, visible_to=self.request.user
+                )
+            )
+
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -712,6 +725,32 @@ class PinListView(ListView):
 class PinDetailView(ShareDetailView):
     model = Pin
     template_name = "write/pin_detail.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Get the Post object
+        pin = self.get_object()
+
+        # Check pin visibility
+        if pin.visibility == VisibilityChoices.PRIVATE and not request.user == pin.user:
+            return HttpResponseForbidden(
+                "You do not have permission to access this pin."
+            )
+        elif (
+            pin.visibility == VisibilityChoices.FOLLOWERS
+            and not request.user in pin.visible_to.all()
+        ):
+            return HttpResponseForbidden(
+                "You do not have permission to access this pin."
+            )
+        elif (
+            pin.visibility == VisibilityChoices.MENTIONED
+            and not request.user in pin.visible_to.all()
+        ):
+            return HttpResponseForbidden(
+                "You do not have permission to access this pin."
+            )
+
+        return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         pin = self.get_object()

@@ -565,6 +565,16 @@ class Pin(auto_prefetch.Model):
     share_to_feed = models.BooleanField(default=False)
     projects = models.ManyToManyField(Project, blank=True)
 
+    # visibility options
+    visibility = models.CharField(
+        max_length=2,
+        choices=VisibilityChoices.choices,
+        default=VisibilityChoices.PUBLIC,
+    )
+
+    visible_to = models.ManyToManyField(User, related_name="visible_pins", blank=True)
+    activities = GenericRelation(Activity, related_query_name="pin_activity")
+
     def get_absolute_url(self):
         return reverse(
             "write:pin_detail", kwargs={"pk": self.id, "username": self.user.username}
@@ -587,7 +597,25 @@ class Pin(auto_prefetch.Model):
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
+        was_updated = False
         super().save(*args, **kwargs)
+
+        visible_to_users = set()
+
+        if self.visibility == VisibilityChoices.MENTIONED:
+            visible_to_users.update(find_mentioned_users(self.content))
+        elif self.visibility == VisibilityChoices.FOLLOWERS:
+            visible_to_users.update(
+                self.user.followers.values_list("follower_id", flat=True)
+            )
+        elif self.visibility == VisibilityChoices.PRIVATE:
+            visible_to_users.add(self.user.id)
+
+        # Always include self.user
+        visible_to_users.add(self.user.id)
+
+        self.visible_to.set(visible_to_users)
+
         # Attempt to fetch an existing Activity object for this check-in
         try:
             activity = Activity.objects.get(
@@ -597,11 +625,26 @@ class Pin(auto_prefetch.Model):
             activity = None
 
         if self.share_to_feed:
+            if not is_new:
+                # Check if updated
+                was_updated = self.updated_at > self.timestamp
+
+            if was_updated:
+                try:
+                    activity = Activity.objects.get(
+                        content_type__model="pin", object_id=self.id
+                    )
+                    activity.visibility = self.visibility
+                    activity.save()  # This will trigger the update logic in Activity model
+                except Activity.DoesNotExist:
+                    pass
+
             if is_new or activity is None:
                 Activity.objects.create(
                     user=self.user,
                     activity_type="pin",
                     content_object=self,
+                    visibility=self.visibility,
                 )
 
         elif activity is not None:
@@ -622,6 +665,7 @@ class Pin(auto_prefetch.Model):
 @receiver(post_delete, sender="listen.ListenCheckIn")
 @receiver(post_delete, sender="watch.WatchCheckIn")
 @receiver(post_delete, sender="play.PlayCheckIn")
+@receiver(post_delete, sender="visit.VisitCheckIn")
 @receiver(post_delete, sender="activity_feed.Follow")
 def delete_activity(sender, instance, **kwargs):
     content_type = ContentType.objects.get_for_model(instance)
@@ -641,6 +685,7 @@ def delete_activity(sender, instance, **kwargs):
 @receiver(pre_delete, sender="listen.ListenCheckIn")
 @receiver(pre_delete, sender="watch.WatchCheckIn")
 @receiver(pre_delete, sender="play.PlayCheckIn")
+@receiver(pre_delete, sender="visit.VisitCheckIn")
 def notify_comment_users(sender, instance, **kwargs):
     # Get all the comments on the object being deleted
     comments = instance.comments.all()
