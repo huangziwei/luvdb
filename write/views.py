@@ -185,17 +185,21 @@ class PostListView(ListView):
             queryset = queryset.filter(projects__isnull=True).order_by("-timestamp")
 
         # Filter posts based on their visibility
-        if not self.user == self.request.user:
-            queryset = queryset.filter(
-                Q(visibility=VisibilityChoices.PUBLIC)
-                | Q(
-                    visibility=VisibilityChoices.FOLLOWERS,
-                    user__followers__follower=self.request.user,
+        if self.request.user.is_authenticated:
+            if not self.user == self.request.user:
+                queryset = queryset.filter(
+                    Q(visibility=VisibilityChoices.PUBLIC)
+                    | Q(
+                        visibility=VisibilityChoices.FOLLOWERS,
+                        user__followers__follower=self.request.user,
+                    )
+                    | Q(
+                        visibility=VisibilityChoices.MENTIONED,
+                        visible_to=self.request.user,
+                    )
                 )
-                | Q(
-                    visibility=VisibilityChoices.MENTIONED, visible_to=self.request.user
-                )
-            )
+        else:
+            queryset = queryset.filter(visibility=VisibilityChoices.PUBLIC)
 
         return queryset
 
@@ -644,17 +648,21 @@ class PinListView(ListView):
             queryset = queryset.filter(projects__isnull=True).order_by("-timestamp")
 
         # Filter posts based on their visibility
-        if not self.user == self.request.user:
-            queryset = queryset.filter(
-                Q(visibility=VisibilityChoices.PUBLIC)
-                | Q(
-                    visibility=VisibilityChoices.FOLLOWERS,
-                    user__followers__follower=self.request.user,
+        if self.request.user.is_authenticated:
+            if not self.user == self.request.user:
+                queryset = queryset.filter(
+                    Q(visibility=VisibilityChoices.PUBLIC)
+                    | Q(
+                        visibility=VisibilityChoices.FOLLOWERS,
+                        user__followers__follower=self.request.user,
+                    )
+                    | Q(
+                        visibility=VisibilityChoices.MENTIONED,
+                        visible_to=self.request.user,
+                    )
                 )
-                | Q(
-                    visibility=VisibilityChoices.MENTIONED, visible_to=self.request.user
-                )
-            )
+        else:
+            queryset = queryset.filter(visibility=VisibilityChoices.PUBLIC)
 
         return queryset
 
