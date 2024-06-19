@@ -137,6 +137,21 @@ class Comment(auto_prefetch.Model):
 
     anchor = models.CharField(max_length=4, blank=True, editable=True)
 
+    PUBLIC = "PU"
+    MENTIONED = "ME"
+    VISIBILITY_CHOICES = [
+        (PUBLIC, "Public"),
+        (MENTIONED, "Mentioned People Only"),
+    ]
+    visibility = models.CharField(
+        max_length=2,
+        choices=VISIBILITY_CHOICES,
+        default=PUBLIC,
+    )
+    visible_to = models.ManyToManyField(
+        User, related_name="visible_comments", blank=True
+    )
+
     def __str__(self):
         return f"Comment by {self.user} on {self.content_object}"
 
@@ -152,6 +167,16 @@ class Comment(auto_prefetch.Model):
 
         is_new = self.pk is None
         super().save(*args, **kwargs)
+
+        visible_to_users = set()
+
+        if self.visibility == VisibilityChoices.MENTIONED:
+            visible_to_users.update(find_mentioned_users(self.content))
+
+        # Always include comment poster and content owner
+        visible_to_users.add(self.user.id)
+        visible_to_users.add(self.content_object.user.id)
+        self.visible_to.set(visible_to_users)
 
         is_blocked = Block.objects.filter(
             blocker=self.content_object.user, blocked=self.user
