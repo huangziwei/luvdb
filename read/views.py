@@ -665,7 +665,6 @@ class BookDetailView(DetailView):
             get_visible_checkins(
                 self.request.user, ReadCheckIn, content_type, self.object.id
             )
-            .filter(Q(visibility="PU") | Q(user=self.request.user))
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
         )
