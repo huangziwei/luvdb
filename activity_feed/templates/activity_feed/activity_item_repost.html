@@ -717,8 +717,8 @@
             {% endif %}
         {% endif %}
     </div>
-    <div class="d-flex mt-2">
-        <p class="me-2">
+    <div class="d-flex mt-2 align-items-start">
+        <p class="me-1">
             {% if activity.content_object.content %}
                 <a href="{% url 'write:repost_detail' activity.user.username activity.content_object.id %}"
                     class="text-decoration-none text-secondary u-url dt-published">{{ activity.timestamp |date:"Y.m.d H:i" }}</a>
@@ -726,6 +726,7 @@
                 <span class="text-decoration-none text-secondary">{{ activity.timestamp |date:"Y.m.d H:i" }}</span>
             {% endif %}
         </p>
+        {% include "activity_feed/visibility_icons.html" %}
         {% if activity.content_object.content %}
             <p class="ms-2 me-2">
                 <a href="{% url 'write:repost_detail' activity.user.username activity.content_object.id %}"
