@@ -201,8 +201,8 @@ class CustomPasswordChangeView(PasswordChangeView):
         return reverse_lazy("activity_feed:activity_feed")
 
 
-def get_latest_checkins(user, checkin_model):
-    return checkin_model.objects.filter(
+def get_latest_checkins(user, request_user, checkin_model):
+    checkins = checkin_model.objects.filter(
         user=user,
         timestamp=Subquery(
             checkin_model.objects.filter(
@@ -214,6 +214,13 @@ def get_latest_checkins(user, checkin_model):
             .values("timestamp")[:1]
         ),
     )
+
+    if request_user.is_authenticated:
+        checkins = checkins.filter(Q(visibility="PU") | Q(visible_to=request_user))
+    else:
+        checkins = checkins.filter(visibility="PU")
+
+    return checkins
 
 
 @method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
@@ -279,19 +286,21 @@ class AccountDetailView(DetailView):
         )
 
         latest_read_checkins = get_latest_checkins(
-            user=self.object, checkin_model=ReadCheckIn
+            user=self.object, request_user=self.request.user, checkin_model=ReadCheckIn
         )
         latest_listen_checkins = get_latest_checkins(
-            user=self.object, checkin_model=ListenCheckIn
+            user=self.object,
+            request_user=self.request.user,
+            checkin_model=ListenCheckIn,
         )
         latest_watch_checkins = get_latest_checkins(
-            user=self.object, checkin_model=WatchCheckIn
+            user=self.object, request_user=self.request.user, checkin_model=WatchCheckIn
         )
         latest_play_checkins = get_latest_checkins(
-            user=self.object, checkin_model=PlayCheckIn
+            user=self.object, request_user=self.request.user, checkin_model=PlayCheckIn
         )
         latest_visit_checkins = get_latest_checkins(
-            user=self.object, checkin_model=VisitCheckIn
+            user=self.object, request_user=self.request.user, checkin_model=VisitCheckIn
         )
 
         visiting = latest_visit_checkins.filter(
@@ -442,7 +451,7 @@ class PersonalActivityFeedView(ListView):
         context["include_mermaid"] = include_mermaid
 
         latest_visit_checkins = get_latest_checkins(
-            user=user, checkin_model=VisitCheckIn
+            user=user, request_user=self.request.user, checkin_model=VisitCheckIn
         )
         living_in = latest_visit_checkins.filter(status__in=["living-here"]).order_by(
             "-timestamp"

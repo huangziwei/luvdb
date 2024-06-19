@@ -423,6 +423,17 @@ class ListenCheckIn(auto_prefetch.Model):
     reposts = GenericRelation("write.Repost")
     votes = GenericRelation("discover.Vote")
 
+    visibility = models.CharField(
+        max_length=2,
+        choices=Activity.VISIBILITY_CHOICES,
+        default=Activity.VISIBILITY_PUBLIC,
+    )
+
+    visible_to = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="visible_listen_checkins", blank=True
+    )
+    activities = GenericRelation(Activity, related_query_name="listen_checkin_activity")
+
     def get_absolute_url(self):
         return reverse(
             "write:listen_checkin_detail",
@@ -452,6 +463,23 @@ class ListenCheckIn(auto_prefetch.Model):
         is_new = self.pk is None
         was_updated = False
         super().save(*args, **kwargs)
+
+        visible_to_users = set()
+
+        if self.visibility == Activity.VISIBILITY_MENTIONED:
+            visible_to_users.update(find_mentioned_users(self.content))
+        elif self.visibility == Activity.VISIBILITY_FOLLOWERS:
+            visible_to_users.update(
+                self.user.followers.values_list("follower_id", flat=True)
+            )
+        elif self.visibility == Activity.VISIBILITY_PRIVATE:
+            visible_to_users.add(self.user.id)
+
+        # Always include self.user
+        visible_to_users.add(self.user.id)
+
+        self.visible_to.set(visible_to_users)
+
         # Attempt to fetch an existing Activity object for this check-in
         try:
             activity = Activity.objects.get(
