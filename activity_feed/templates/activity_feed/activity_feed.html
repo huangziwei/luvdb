@@ -10,18 +10,15 @@
         <div class="row">
             <div class="col-12 col-md-7 left-column">
                 {% if feed_type == "public" %}
-                    {% if not has_passkeys %}
-                    {% comment %} {% if request.session.is_first_login and not has_passkeys %} {% endcomment %}
-                        <div class="alert alert-warning p-3 mb-3 d-block d-md-none" role="alert">
+                    {% if request.session.is_first_login and not has_passkeys %} 
+                        <div class="alert alert-warning d-flex justify-content-between align-items-center p-4 mb-4 d-block d-sm-none passkey-alert-small" role="alert">
                             <div>
                                 <strong>Welcome to LʌvDB!</strong>
                                 <p class="mb-1">
-                                    <a href="{% url 'accounts:passkeys' user.username %}" class="alert-link">Add Passkeys</a> for passwordless login. Convenient & secure!
+                                    <a href="{% url 'accounts:passkeys' user.username %}" class="alert-link">Add Passkeys</a> for passwordless login.
                                 </p>
-                                <small class="mb-0">
-                                    (This note will disappear next time you log in or adding a passkey.)
-                                </small>
                             </div>
+                            <button type="button" class="btn-close ms-auto" aria-label="Close" onclick="closePasskeyAlert(this, 'passkey-alert-small')"></button>
                         </div>
                     {% endif %}
                     <span style="display: flex;">
@@ -141,19 +138,18 @@
             
             {% if feed_type == "public" %}
                 <div class="col-12 col-md-5 right-column">
-                    {% if not has_passkeys %}
-                        <div class="alert alert-warning d-flex align-items-center p-4 mb-4 d-none d-sm-block" role="alert" id="welcomePasskeysDivBig">
-                            <div>
-                                <strong>Welcome to LʌvDB!</strong>
-                                <p class="mb-1">
-                                    <a href="{% url 'accounts:passkeys' user.username %}" class="alert-link">Add Passkeys</a> for passwordless login. Convenient & secure!
-                                </p>
-                                <small class="mb-0">
-                                    (This note will disappear next time you log in or adding a passkey.)
-                                </small>
-                            </div>
+                    {% if request.session.is_first_login and not has_passkeys %} 
+                    <div class="alert alert-warning d-flex justify-content-between align-items-start p-4 mb-4 d-none d-sm-block passkey-alert-big" role="alert" style="display: flex !important">
+                        <div class="flex-grow-1">
+                            <strong>Welcome to LʌvDB!</strong>
+                            <p class="mb-1">
+                                <a href="{% url 'accounts:passkeys' user.username %}" class="alert-link">Add Passkeys</a> for passwordless login.
+                            </p>
                         </div>
-                    {% endif %}           
+                        <button type="button" class="btn-close" aria-label="Close" onclick="closePasskeyAlert(this, 'passkey-alert-big')"></button>
+                    </div>
+                
+                    {% endif %}                
                     <div class='bg-light p-3 mb-3'>
                         <div class="fs-5">
                             On This Day (<input 
@@ -175,12 +171,12 @@
                             {% if books_published_today %}
                                 <div class="card mt-2">
                                     <div class="card-header"
-                                         id="booksHeading"
-                                         data-bs-toggle="collapse"
-                                         data-bs-target="#booksCollapse"
-                                         role="button"
-                                         aria-expanded="false"
-                                         aria-controls="booksCollapse">
+                                        id="booksHeading"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#booksCollapse"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls="booksCollapse">
                                         <b>Books</b>
                                     </div>
                                     <div id="booksCollapse" class="collapse" aria-labelledby="booksHeading">
@@ -549,6 +545,23 @@
                 }
             });
         });
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (localStorage.getItem('passkeyAlertBigClosed') === 'true') {
+                var bigAlert = document.querySelector('.passkey-alert-big');
+                if (bigAlert) {
+                    bigAlert.style.setProperty('display', 'none', 'important');
+                }
+            }
+    
+            if (localStorage.getItem('passkeyAlertSmallClosed') === 'true') {
+                var smallAlert = document.querySelector('.passkey-alert-small');
+                if (smallAlert) {
+                    smallAlert.style.setProperty('display', 'none', 'important');
+                }
+            }
+        });
     </script>
     <script>
         // JavaScript code for a simple calendar
@@ -556,6 +569,18 @@
             const selectedDate = document.getElementById("datePicker").value;
             if (selectedDate) {
                 window.location.href = `/calendar/${selectedDate}/`;
+            }
+        }       
+        
+        function closePasskeyAlert(button, alertClass) {
+            var alertDiv = button.closest('.' + alertClass);
+            if (alertDiv) {
+                alertDiv.style.setProperty('display', 'none', 'important');
+                if (alertClass === 'passkey-alert-big') {
+                    localStorage.setItem('passkeyAlertBigClosed', 'true');
+                } else if (alertClass === 'passkey-alert-small') {
+                    localStorage.setItem('passkeyAlertSmallClosed', 'true');
+                }
             }
         }
     </script>  

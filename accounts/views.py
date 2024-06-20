@@ -1498,9 +1498,7 @@ def generate_qr_code(request, username, invite_code):
     I1 = ImageDraw.Draw(new_img)
 
     # Load fonts
-    font_path = os.path.join(
-        settings.BASE_DIR, "static", "luvdb", "fonts", "NotoSans.ttf"
-    )
+    font_path = os.path.join(settings.BASE_DIR, "static", "fonts", "NotoSans.ttf")
     font = ImageFont.truetype(font_path, 105)
 
     # Add logo text at the bottom
