@@ -41,10 +41,11 @@ from entity.views import HistoryViewMixin, get_contributors
 from scrape.wikipedia import scrape_release
 from write.forms import CommentForm, RepostForm
 from write.models import Comment, ContentInList
+from write.utils import get_visible_checkins, get_visible_comments
 from write.utils_bluesky import create_bluesky_post
 from write.utils_formatting import check_required_js
 from write.utils_mastodon import create_mastodon_post
-from write.utils import get_visible_comments
+
 from .forms import (
     AudiobookForm,
     AudiobookInstanceFormSet,
@@ -872,14 +873,16 @@ class ReleaseDetailView(DetailView):
         )
 
         # Fetch the latest check-in from each user.
-        latest_checkin_subquery = ListenCheckIn.objects.filter(
-            content_type=content_type.id,
-            object_id=self.object.id,
-            user=OuterRef("user"),
-        ).order_by("-timestamp")
+        latest_checkin_subquery = (
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, self.object.id
+            )
+            .filter(user=OuterRef("user"))
+            .order_by("-timestamp")
+        )
         checkins = (
-            ListenCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, self.object.id
             )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
@@ -891,8 +894,8 @@ class ReleaseDetailView(DetailView):
 
         # Get the count of check-ins for each user for this series
         user_checkin_counts = (
-            ListenCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, self.object.id
             )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
@@ -912,10 +915,12 @@ class ReleaseDetailView(DetailView):
 
         # Release check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
-            ListenCheckIn.objects.filter(
-                content_type=content_type.id,
-                object_id=self.object.id,
-                user=OuterRef("user"),
+            get_visible_checkins(
+                self.request.user,
+                ListenCheckIn,
+                content_type,
+                self.object.id,
+                checkin_user=OuterRef("user"),
             )
             .order_by("-timestamp")
             .values("status")[:1]
@@ -991,26 +996,6 @@ class ReleaseDetailView(DetailView):
         context["include_mermaid"] = include_mermaid
 
         context["genres"] = self.object.get_genres()
-
-        # labels_with_modified_names = []
-        # release_date = (
-        #     parse_date(release.release_date) if release.release_date else None
-        # )
-
-        # for label in release.label.all():
-        #     label_name = label.name  # Default to current name
-
-        #     if release_date:
-        #         past_names = CompanyPastName.objects.filter(company=label)
-        #         for past_name in past_names:
-        #             start_date = parse_date(past_name.start_date or "0001.01.01")
-        #             end_date = parse_date(past_name.end_date or "9999.12.31")
-
-        #             if start_date <= release_date <= end_date:
-        #                 label_name = past_name.name
-        #                 break
-
-        #     labels_with_modified_names.append({"label": label, "name": label_name})
 
         context["labels"] = get_company_name(release.label.all(), release.release_date)
 
@@ -1490,10 +1475,12 @@ class GenericCheckInUserListView(ListView):
     def get_queryset(self):
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
 
-        latest_checkin_subquery = ListenCheckIn.objects.filter(
-            user=profile_user,
-            content_type=OuterRef("content_type"),
-            object_id=OuterRef("object_id"),
+        latest_checkin_subquery = get_visible_checkins(
+            self.request.user,
+            ListenCheckIn,
+            OuterRef("content_type"),
+            OuterRef("object_id"),
+            checkin_user=profile_user,
         ).order_by("-timestamp")
 
         checkins = (
@@ -1503,6 +1490,13 @@ class GenericCheckInUserListView(ListView):
             )
             .filter(timestamp=F("latest_checkin"))
         )
+
+        if self.request.user.is_authenticated:
+            checkins = checkins.filter(
+                Q(visibility="PU") | Q(visible_to=self.request.user)
+            )
+        else:
+            checkins = checkins.filter(visibility="PU")
 
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
         if order == "timestamp":
@@ -1777,15 +1771,17 @@ class PodcastDetailView(DetailView):
             }
         )
 
-        latest_checkin_subquery = ListenCheckIn.objects.filter(
-            content_type=content_type.id,
-            object_id=self.object.id,
-            user=OuterRef("user"),
-        ).order_by("-timestamp")
+        latest_checkin_subquery = (
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, self.object.id
+            )
+            .filter(user=OuterRef("user"))
+            .order_by("-timestamp")
+        )
 
         checkins = (
-            ListenCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, self.object.id
             )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
@@ -1797,8 +1793,8 @@ class PodcastDetailView(DetailView):
 
         # Get the count of check-ins for each user for this series
         user_checkin_counts = (
-            ListenCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, self.object.id
             )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
@@ -1826,8 +1822,12 @@ class PodcastDetailView(DetailView):
             .values("status")[:1]
         )
         latest_checkins = (
-            ListenCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user,
+                ListenCheckIn,
+                content_type,
+                self.object.id,
+                checkin_user=OuterRef("user"),
             )
             .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
             .values("user", "latest_checkin_status")
@@ -2086,12 +2086,18 @@ class GenericCheckInAllListView(ListView):
         content_type = ContentType.objects.get_for_model(model)
         object_id = self.kwargs["object_id"]  # Get object id from url param
 
-        latest_checkin_subquery = ListenCheckIn.objects.filter(
-            content_type=content_type, object_id=object_id, user=OuterRef("user")
-        ).order_by("-timestamp")
+        latest_checkin_subquery = (
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, object_id
+            )
+            .filter(user=OuterRef("user"))
+            .order_by("-timestamp")
+        )
 
         checkins = (
-            ListenCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, object_id
+            )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
@@ -2118,7 +2124,9 @@ class GenericCheckInAllListView(ListView):
                 checkins = checkins.filter(status=status)
 
         user_checkin_counts = (
-            ListenCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, object_id
+            )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
         )
@@ -2379,14 +2387,16 @@ class AudiobookDetailView(DetailView):
         )
 
         # Fetch the latest check-in from each user.
-        latest_checkin_subquery = ListenCheckIn.objects.filter(
-            content_type=content_type.id,
-            object_id=self.object.id,
-            user=OuterRef("user"),
-        ).order_by("-timestamp")
+        latest_checkin_subquery = (
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, self.object.id
+            )
+            .filter(user=OuterRef("user"))
+            .order_by("-timestamp")
+        )
         checkins = (
-            ListenCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, self.object.id
             )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
@@ -2398,8 +2408,8 @@ class AudiobookDetailView(DetailView):
 
         # Get the count of check-ins for each user for this series
         user_checkin_counts = (
-            ListenCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, ListenCheckIn, content_type, self.object.id
             )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
@@ -2419,10 +2429,12 @@ class AudiobookDetailView(DetailView):
 
         # Release check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
-            ListenCheckIn.objects.filter(
-                content_type=content_type.id,
-                object_id=self.object.id,
-                user=OuterRef("user"),
+            get_visible_checkins(
+                self.request.user,
+                ListenCheckIn,
+                content_type,
+                self.object.id,
+                checkin_user=OuterRef("user"),
             )
             .order_by("-timestamp")
             .values("status")[:1]

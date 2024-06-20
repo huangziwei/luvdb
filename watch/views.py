@@ -1565,7 +1565,6 @@ class GenericCheckInAllListView(ListView):
 
         # Adding count of check-ins for each movie or series
         user_checkin_counts = (
-            # WatchCheckIn.objects.filter(content_type=content_type, object_id=object_id)
             get_visible_checkins(
                 self.request.user, WatchCheckIn, content_type, object_id
             )

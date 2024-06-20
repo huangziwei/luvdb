@@ -41,7 +41,7 @@ from scrape.wikipedia import scrape_location
 from watch.models import Episode, Movie, Series
 from write.forms import CommentForm, RepostForm
 from write.models import Comment
-from write.utils import get_visible_comments
+from write.utils import get_visible_checkins, get_visible_comments
 from write.utils_bluesky import create_bluesky_post
 from write.utils_formatting import check_required_js
 from write.utils_mastodon import create_mastodon_post
@@ -230,14 +230,16 @@ class LocationDetailView(DetailView):
         )
 
         # Fetch the latest check-in from each user.
-        latest_checkin_subquery = VisitCheckIn.objects.filter(
-            content_type=content_type.id,
-            object_id=self.object.id,
-            user=OuterRef("user"),
-        ).order_by("-timestamp")
+        latest_checkin_subquery = (
+            get_visible_checkins(
+                self.request.user, VisitCheckIn, content_type, self.object.id
+            )
+            .filter(user=OuterRef("user"))
+            .order_by("-timestamp")
+        )
         checkins = (
-            VisitCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, VisitCheckIn, content_type, self.object.id
             )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
@@ -249,8 +251,8 @@ class LocationDetailView(DetailView):
 
         # Get the count of check-ins for each user for this series
         user_checkin_counts = (
-            VisitCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
+            get_visible_checkins(
+                self.request.user, VisitCheckIn, content_type, self.object.id
             )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
@@ -270,10 +272,12 @@ class LocationDetailView(DetailView):
 
         # Watch check-in status counts, considering only latest check-in per user
         latest_checkin_status_subquery = (
-            VisitCheckIn.objects.filter(
-                content_type=content_type.id,
-                object_id=self.object.id,
-                user=OuterRef("user"),
+            get_visible_checkins(
+                self.request.user,
+                VisitCheckIn,
+                content_type,
+                self.object.id,
+                checkin_user=OuterRef("user"),
             )
             .order_by("-timestamp")
             .values("status")[:1]
@@ -650,12 +654,18 @@ class VisitCheckInAllListView(ListView):
         # Fetch the latest check-in from each user.
         content_type = ContentType.objects.get_for_model(Location)
         object_id = self.kwargs["object_id"]
-        latest_checkin_subquery = VisitCheckIn.objects.filter(
-            content_type=content_type, object_id=object_id, user=OuterRef("user")
-        ).order_by("-timestamp")
+        latest_checkin_subquery = (
+            get_visible_checkins(
+                self.request.user, VisitCheckIn, content_type, object_id
+            )
+            .filter(user=OuterRef("user"))
+            .order_by("-timestamp")
+        )
 
         checkins = (
-            VisitCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            get_visible_checkins(
+                self.request.user, VisitCheckIn, content_type, object_id
+            )
             .annotate(
                 latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
             )
@@ -681,11 +691,12 @@ class VisitCheckInAllListView(ListView):
 
         # Get the count of check-ins for each user for this game
         user_checkin_counts = (
-            VisitCheckIn.objects.filter(content_type=content_type, object_id=object_id)
+            get_visible_checkins(
+                self.request.user, VisitCheckIn, content_type, object_id
+            )
             .values("user__username")
             .annotate(total_checkins=Count("id") - 1)
         )
-
         # Convert to a dictionary for easier lookup
         user_checkin_count_dict = {
             item["user__username"]: item["total_checkins"]
@@ -729,10 +740,12 @@ class VisitCheckInUserListView(ListView):
     def get_queryset(self):
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
 
-        latest_checkin_subquery = VisitCheckIn.objects.filter(
-            user=profile_user,
-            content_type=OuterRef("content_type"),
-            object_id=OuterRef("object_id"),
+        latest_checkin_subquery = get_visible_checkins(
+            self.request.user,
+            VisitCheckIn,
+            OuterRef("content_type"),
+            OuterRef("object_id"),
+            checkin_user=profile_user,
         ).order_by("-timestamp")
 
         checkins = (
@@ -742,6 +755,13 @@ class VisitCheckInUserListView(ListView):
             )
             .filter(timestamp=F("latest_checkin"))
         )
+
+        if self.request.user.is_authenticated:
+            checkins = checkins.filter(
+                Q(visibility="PU") | Q(visible_to=self.request.user)
+            )
+        else:
+            checkins = checkins.filter(visibility="PU")
 
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
         if order == "timestamp":
