@@ -44,6 +44,7 @@ from discover.utils import user_has_upvoted
 from listen.models import ListenCheckIn
 from play.models import PlayCheckIn
 from read.models import ReadCheckIn
+from visit.models import VisitCheckIn
 from watch.models import WatchCheckIn
 from write.utils import get_visible_comments
 from write.utils_bluesky import create_bluesky_post
@@ -857,18 +858,38 @@ class TagListView(ListView):
     template_name = "write/tag_list.html"
     paginate_by = 25
 
+    def get_visible_queryset(self, queryset):
+        request_user = self.request.user
+        if request_user.is_authenticated:
+            return queryset.filter(
+                Q(visibility="PU") | Q(visible_to=request_user) | Q(user=request_user)
+            )
+        else:
+            return queryset.filter(visibility="PU")
+
     def get_queryset(self):
         tag = self.kwargs["tag"]
 
         # Initialize querysets
-        posts = Post.objects.filter(tags__name=tag)
-        says = Say.objects.filter(tags__name=tag)
-        pins = Pin.objects.filter(tags__name=tag)
-        luvlists = LuvList.objects.filter(tags__name=tag)
-        read_checkins = ReadCheckIn.objects.filter(tags__name=tag)
-        watch_checkins = WatchCheckIn.objects.filter(tags__name=tag)
-        listen_checkins = ListenCheckIn.objects.filter(tags__name=tag)
-        play_checkins = PlayCheckIn.objects.filter(tags__name=tag)
+        posts = self.get_visible_queryset(Post.objects.filter(tags__name=tag))
+        says = self.get_visible_queryset(Say.objects.filter(tags__name=tag))
+        pins = self.get_visible_queryset(Pin.objects.filter(tags__name=tag))
+        luvlists = self.get_visible_queryset(LuvList.objects.filter(tags__name=tag))
+        read_checkins = self.get_visible_queryset(
+            ReadCheckIn.objects.filter(tags__name=tag)
+        )
+        watch_checkins = self.get_visible_queryset(
+            WatchCheckIn.objects.filter(tags__name=tag)
+        )
+        listen_checkins = self.get_visible_queryset(
+            ListenCheckIn.objects.filter(tags__name=tag)
+        )
+        play_checkins = self.get_visible_queryset(
+            PlayCheckIn.objects.filter(tags__name=tag)
+        )
+        visit_checkins = self.get_visible_queryset(
+            VisitCheckIn.objects.filter(tags__name=tag)
+        )
         reposts = Repost.objects.filter(tags__name=tag)
 
         # Combine all querysets into a single list and sort by timestamp
@@ -882,6 +903,7 @@ class TagListView(ListView):
                 watch_checkins,
                 listen_checkins,
                 play_checkins,
+                visit_checkins,
                 reposts,
             )
         )
@@ -915,6 +937,7 @@ class TagListView(ListView):
             WatchCheckIn,
             ListenCheckIn,
             PlayCheckIn,
+            VisitCheckIn,
             Repost,
         ]
         tag_counts = {}
@@ -944,6 +967,15 @@ class TagUserListView(ListView):
     template_name = "write/tag_user_list.html"
     paginate_by = 25
 
+    def get_visible_queryset(self, queryset):
+        request_user = self.request.user
+        if request_user.is_authenticated:
+            return queryset.filter(
+                Q(visibility="PU") | Q(visible_to=request_user) | Q(user=request_user)
+            )
+        else:
+            return queryset.filter(visibility="PU")
+
     def dispatch(self, request, *args, **kwargs):
         # Get the User object
         self.user = get_object_or_404(
@@ -962,15 +994,29 @@ class TagUserListView(ListView):
         username = self.kwargs["username"]
         user = User.objects.get(username=username)
 
-        posts = Post.objects.filter(tags__name=tag, user=user)
-        says = Say.objects.filter(tags__name=tag, user=user)
-        pins = Pin.objects.filter(tags__name=tag, user=user)
-        luvlists = LuvList.objects.filter(tags__name=tag, user=user)
-        reposts = Repost.objects.filter(tags__name=tag, user=user)
-        read_checkins = ReadCheckIn.objects.filter(tags__name=tag, user=user)
-        watch_checkins = WatchCheckIn.objects.filter(tags__name=tag, user=user)
-        listen_checkins = ListenCheckIn.objects.filter(tags__name=tag, user=user)
-        play_checkins = PlayCheckIn.objects.filter(tags__name=tag, user=user)
+        posts = self.get_visible_queryset(
+            Post.objects.filter(tags__name=tag, user=user)
+        )
+        says = self.get_visible_queryset(Say.objects.filter(tags__name=tag, user=user))
+        pins = self.get_visible_queryset(Pin.objects.filter(tags__name=tag, user=user))
+        luvlists = self.get_visible_queryset(
+            LuvList.objects.filter(tags__name=tag, user=user)
+        )
+        read_checkins = self.get_visible_queryset(
+            ReadCheckIn.objects.filter(tags__name=tag, user=user)
+        )
+        watch_checkins = self.get_visible_queryset(
+            WatchCheckIn.objects.filter(tags__name=tag, user=user)
+        )
+        listen_checkins = self.get_visible_queryset(
+            ListenCheckIn.objects.filter(tags__name=tag, user=user)
+        )
+        play_checkins = self.get_visible_queryset(
+            PlayCheckIn.objects.filter(tags__name=tag, user=user)
+        )
+        visit_checkins = self.get_visible_queryset(
+            VisitCheckIn.objects.filter(tags__name=tag, user=user)
+        )
         reposts = Repost.objects.filter(tags__name=tag, user=user)
 
         # Combine all querysets into a single list and sort by timestamp
@@ -984,6 +1030,7 @@ class TagUserListView(ListView):
                 watch_checkins,
                 listen_checkins,
                 play_checkins,
+                visit_checkins,
                 reposts,
             )
         )
@@ -1014,6 +1061,7 @@ class TagUserListView(ListView):
             WatchCheckIn,
             ListenCheckIn,
             PlayCheckIn,
+            VisitCheckIn,
             Repost,
         ]
         tag_counts = {}
