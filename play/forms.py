@@ -384,6 +384,7 @@ class PlayCheckInForm(forms.ModelForm):
             "content",
             "comments_enabled",
             "share_to_feed",
+            "visibility",
         ]
         widgets = {
             "content_type": forms.HiddenInput(),

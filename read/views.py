@@ -1975,7 +1975,6 @@ class GenericCheckInUserListView(ListView):
 
         # Adding count of check-ins for each book or issue
         user_checkin_counts = (
-            # ReadCheckIn.objects.filter(user=profile_user)
             get_visible_checkins(
                 self.request.user,
                 ReadCheckIn,
