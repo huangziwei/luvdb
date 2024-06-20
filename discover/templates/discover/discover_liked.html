@@ -137,7 +137,7 @@
                                     <span class="d-flex">
                                         <p class="me-2 text-muted">
                                             {% if activity.model_name == "Say" %}
-                                            <a href="{% url 'write:say_detail' activity.id %}" class="text-muted">
+                                            <a href="{% url 'write:say_detail' activity.user.username activity.id %}" class="text-muted">
                                                 {{ activity.timestamp|timesince }} ago / Liked {{activity.vote_timestamp|timesince}} ago
                                             </a>
                                             {% else %}
