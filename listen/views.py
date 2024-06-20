@@ -1819,21 +1819,19 @@ class PodcastDetailView(DetailView):
             )
 
         latest_checkin_status_subquery = (
-            ListenCheckIn.objects.filter(
-                content_type=content_type.id,
-                object_id=self.object.id,
-                user=OuterRef("user"),
-            )
-            .order_by("-timestamp")
-            .values("status")[:1]
-        )
-        latest_checkins = (
             get_visible_checkins(
                 self.request.user,
                 ListenCheckIn,
                 content_type,
                 self.object.id,
                 checkin_user=OuterRef("user"),
+            )
+            .order_by("-timestamp")
+            .values("status")[:1]
+        )
+        latest_checkins = (
+            ListenCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
             )
             .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
             .values("user", "latest_checkin_status")
