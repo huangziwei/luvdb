@@ -38,7 +38,7 @@
                                 <span class="text-muted">Previously </span>
                                 {% for identity in historical_identities %}
                                     <a href="{% url 'visit:location_detail' identity.id %}">{{ identity.name }}</a>
-                                    ({{identity.historical_period}})
+                                    {% if identity.historical_period %}({{identity.historical_period}}){% endif %}
                                     {% if not forloop.last %} / {% endif %}
                                 {% endfor %}
                             </div>
