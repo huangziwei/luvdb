@@ -122,15 +122,17 @@
                 </div> 
             </div>
             <div class="col-12 col-md-5 right-column">
-                {% if projects_with_ordered_posts %}
+                {% if project.visibility != "PU" and projects_with_ordered_posts %}
                     <div class="mt-2 mb-3">
                         {% for project, posts in projects_with_ordered_posts %}
-                            <h4>All posts in "{{ project.name }}"</h4>
-                            <div class="project">
-                                {% for post in posts %}
-                                    <div class="mb-1"><a href="{% url 'write:post_detail_slug' post.user.username post.slug %}">{{ post.title }}</a></div>
-                                {% endfor %}
-                            </div>
+                            {% if project.visibility == "PU" %}
+                                <h4>All posts in "{{ project.name }}"</h4>
+                                <div class="project">
+                                    {% for post in posts %}
+                                        <div class="mb-1"><a href="{% url 'write:post_detail_slug' post.user.username post.slug %}">{{ post.title }}</a></div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         {% endfor %}
                     </div>
                 {% endif %}
