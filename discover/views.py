@@ -133,9 +133,11 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
                     self.annotate_vote_count(Say, time_condition).filter(
                         vote_count__gt=-1,
                         is_direct_mention=False,
+                        visibility="PU",
                     ),
                     self.annotate_vote_count(Repost, time_condition).filter(
-                        vote_count__gt=-1
+                        vote_count__gt=-1,
+                        visibility="PU",
                     ),
                 )
             )
@@ -150,14 +152,14 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
                 if not hasattr(model, "title") and hasattr(model, "content"):
                     context[model_name] = (
                         self.annotate_vote_count(model, time_condition)
-                        .filter(vote_count__gt=-1)
+                        .filter(vote_count__gt=-1, visibility="PU")
                         .exclude(content="")
                         .order_by("-vote_count", "-timestamp")
                     )[:10]
                 else:
                     context[model_name] = (
                         self.annotate_vote_count(model, time_condition)
-                        .filter(vote_count__gt=-1)
+                        .filter(vote_count__gt=-1, visibility="PU")
                         .order_by("-vote_count", "-timestamp")
                     )[:10]
 
@@ -166,7 +168,7 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
             says_and_reposts = list(
                 chain(
                     self.annotate_vote_count(Say, time_condition).filter(
-                        is_direct_mention=False,
+                        visibility="PU",
                     ),
                     self.annotate_vote_count(Repost, time_condition),
                 )
@@ -182,7 +184,7 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
                 if not hasattr(model, "title") and hasattr(model, "content"):
                     context[model_name] = (
                         self.annotate_vote_count(model, time_condition)
-                        .filter(vote_count__gt=-1)
+                        .filter(vote_count__gt=-1, visibility="PU")
                         .exclude(content="")
                         .order_by("-vote_count", "-timestamp")
                     )[:10]
@@ -196,7 +198,7 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
         elif order_by == "newest":
             says_and_reposts = list(
                 chain(
-                    Say.objects.all()
+                    Say.objects.filter(visibility="PU")
                     .order_by("-timestamp")
                     .filter(
                         is_direct_mention=False,
@@ -210,18 +212,18 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
             for model, model_name in models_list:
                 if not hasattr(model, "title") and hasattr(model, "content"):
                     context[model_name] = (
-                        model.objects.all()
+                        model.objects.filter(visibility="PU")
                         .exclude(content="")
                         .order_by("-timestamp")[:10]
                     )
                 else:
-                    context[model_name] = model.objects.all().order_by("-timestamp")[
-                        :10
-                    ]
+                    context[model_name] = model.objects.filter(
+                        visibility="PU"
+                    ).order_by("-timestamp")[:10]
 
         elif order_by == "random":
             say_ids = list(
-                Say.objects.filter(is_direct_mention=False).values_list("id", flat=True)
+                Say.objects.filter(visibility="PU").values_list("id", flat=True)
             )
             repost_ids = list(Repost.objects.values_list("id", flat=True))
             combined_ids = say_ids + repost_ids
@@ -246,10 +248,16 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
             for model, model_name in models_list:
                 if not hasattr(model, "title") and hasattr(model, "content"):
                     model_ids = list(
-                        model.objects.exclude(content="").values_list("id", flat=True)
+                        model.objects.filter(visibility="PU")
+                        .exclude(content="")
+                        .values_list("id", flat=True)
                     )
                 else:
-                    model_ids = list(model.objects.values_list("id", flat=True))
+                    model_ids = list(
+                        model.objects.filter(visibility="PU").values_list(
+                            "id", flat=True
+                        )
+                    )
 
                 if len(model_ids) > 10:
                     model_ids = sample(model_ids, 10)
@@ -291,29 +299,37 @@ class DiscoverPostListView(LoginRequiredMixin, ListView):
                         )
                     )
                 )
-                .filter(vote_count__gt=-1)
+                .filter(vote_count__gt=-1, visibility="PU")
                 .order_by("-vote_count", "-timestamp")
             )
 
         elif order_by == "all_time":
-            posts = Post.objects.annotate(
-                vote_count=Sum(
-                    Case(
-                        When(
-                            votes__value__isnull=False,
-                            then=F("votes__value"),
-                        ),
-                        default=Value(0),
-                        output_field=IntegerField(),
+            posts = (
+                Post.objects.annotate(
+                    vote_count=Sum(
+                        Case(
+                            When(
+                                votes__value__isnull=False,
+                                then=F("votes__value"),
+                            ),
+                            default=Value(0),
+                            output_field=IntegerField(),
+                        )
                     )
                 )
-            ).order_by("-vote_count", "-timestamp")
+                .filter(visibility="PU")
+                .order_by("-vote_count", "-timestamp")
+            )
 
         elif order_by == "newest":
-            posts = Post.objects.all().order_by("-timestamp")[:10]
+            posts = (
+                Post.objects.all().filter(visibility="PU").order_by("-timestamp")[:10]
+            )
 
         elif order_by == "random":
-            post_ids = list(Post.objects.values_list("id", flat=True))
+            post_ids = list(
+                Post.objects.filter(visibility="PU").values_list("id", flat=True)
+            )
 
             if len(post_ids) > 10:
                 post_ids = sample(post_ids, 10)
@@ -351,38 +367,48 @@ class DiscoverPinListView(LoginRequiredMixin, ListView):
         pins = None
         if order_by == "trending":
             seven_days_ago = timezone.now() - timedelta(days=7)
-            pins = Pin.objects.annotate(
-                vote_count=Sum(
-                    Case(
-                        When(
-                            votes__timestamp__gte=seven_days_ago,
-                            then=F("votes__value"),
-                        ),
-                        default=Value(0),
-                        output_field=IntegerField(),
+            pins = (
+                Pin.objects.annotate(
+                    vote_count=Sum(
+                        Case(
+                            When(
+                                votes__timestamp__gte=seven_days_ago,
+                                then=F("votes__value"),
+                            ),
+                            default=Value(0),
+                            output_field=IntegerField(),
+                        )
                     )
                 )
-            ).order_by("-vote_count", "-timestamp")
+                .filter(visibility="PU")
+                .order_by("-vote_count", "-timestamp")
+            )
 
         elif order_by == "all_time":
-            pins = Pin.objects.annotate(
-                vote_count=Sum(
-                    Case(
-                        When(
-                            votes__value__isnull=False,
-                            then=F("votes__value"),
-                        ),
-                        default=Value(0),
-                        output_field=IntegerField(),
+            pins = (
+                Pin.objects.annotate(
+                    vote_count=Sum(
+                        Case(
+                            When(
+                                votes__value__isnull=False,
+                                then=F("votes__value"),
+                            ),
+                            default=Value(0),
+                            output_field=IntegerField(),
+                        )
                     )
                 )
-            ).order_by("-vote_count", "-timestamp")
+                .filter(visibility="PU")
+                .order_by("-vote_count", "-timestamp")
+            )
 
         elif order_by == "newest":
-            pins = Pin.objects.all().order_by("-timestamp")
+            pins = Pin.objects.filter(visibility="PU").order_by("-timestamp")
 
         elif order_by == "random":
-            pin_ids = list(Pin.objects.values_list("id", flat=True))
+            pin_ids = list(
+                Pin.objects.filter(visibility="PU").values_list("id", flat=True)
+            )
             pin_ids = sample(pin_ids, len(pin_ids))
             pins = Pin.objects.filter(id__in=pin_ids).order_by("?")
 
@@ -417,38 +443,48 @@ class DiscoverLuvListListView(LoginRequiredMixin, ListView):
         lists = None
         if order_by == "trending":
             seven_days_ago = timezone.now() - timedelta(days=7)
-            lists = LuvList.objects.annotate(
-                vote_count=Sum(
-                    Case(
-                        When(
-                            votes__timestamp__gte=seven_days_ago,
-                            then=F("votes__value"),
-                        ),
-                        default=Value(0),
-                        output_field=IntegerField(),
+            lists = (
+                LuvList.objects.annotate(
+                    vote_count=Sum(
+                        Case(
+                            When(
+                                votes__timestamp__gte=seven_days_ago,
+                                then=F("votes__value"),
+                            ),
+                            default=Value(0),
+                            output_field=IntegerField(),
+                        )
                     )
                 )
-            ).order_by("-vote_count", "-timestamp")
+                .filter(visibility="PU")
+                .order_by("-vote_count", "-timestamp")
+            )
 
         elif order_by == "all_time":
-            lists = LuvList.objects.annotate(
-                vote_count=Sum(
-                    Case(
-                        When(
-                            votes__value__isnull=False,
-                            then=F("votes__value"),
-                        ),
-                        default=Value(0),
-                        output_field=IntegerField(),
+            lists = (
+                LuvList.objects.annotate(
+                    vote_count=Sum(
+                        Case(
+                            When(
+                                votes__value__isnull=False,
+                                then=F("votes__value"),
+                            ),
+                            default=Value(0),
+                            output_field=IntegerField(),
+                        )
                     )
                 )
-            ).order_by("-vote_count", "-timestamp")
+                .filter(visibility="PU")
+                .order_by("-vote_count", "-timestamp")
+            )
 
         elif order_by == "newest":
-            lists = LuvList.objects.all().order_by("-timestamp")
+            lists = LuvList.objects.filter(visibility="PU").order_by("-timestamp")
 
         elif order_by == "random":
-            list_ids = list(LuvList.objects.values_list("id", flat=True))
+            list_ids = list(
+                LuvList.objects.filter(visibility="PU").values_list("id", flat=True)
+            )
 
             if len(list_ids) > 10:
                 list_ids = sample(list_ids, 10)

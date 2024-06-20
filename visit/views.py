@@ -18,7 +18,7 @@ from django.db.models import (
     Value,
     When,
 )
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -454,6 +454,12 @@ class VisitCheckInDetailView(DetailView):
     model = VisitCheckIn
     template_name = "visit/visit_checkin_detail.html"
     context_object_name = "checkin"  # This name will be used in your template
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.visibility != "PU" and self.request.user not in obj.visible_to.all():
+            raise Http404("You do not have permission to view this.")
+        return obj
 
     def get(self, request, *args, **kwargs):
         if not request.GET.get("reply") and not request.GET.get("repost"):

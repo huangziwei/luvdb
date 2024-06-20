@@ -1211,6 +1211,12 @@ class ListenCheckInDetailView(DetailView):
     template_name = "listen/listen_checkin_detail.html"
     context_object_name = "checkin"  # This name will be used in your template
 
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.visibility != "PU" and self.request.user not in obj.visible_to.all():
+            raise Http404("You do not have permission to view this.")
+        return obj
+
     def get(self, request, *args, **kwargs):
         if not request.GET.get("reply") and not request.GET.get("repost"):
             return HttpResponseRedirect(f"{request.path}?reply=true")
@@ -1947,6 +1953,10 @@ class PodcastDetailView(DetailView):
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class GenericCheckInListView(ListView):
+    """
+    All check-ins from a given user for a release, a podcast or an audiobook.
+    """
+
     model = ListenCheckIn
     template_name = "listen/listen_checkin_list.html"
     context_object_name = "checkins"
@@ -1977,6 +1987,13 @@ class GenericCheckInListView(ListView):
             checkins = ListenCheckIn.objects.filter(
                 user=profile_user, content_type=content_type, object_id=object_id
             )
+
+            if self.request.user.is_authenticated:
+                checkins = checkins.filter(
+                    Q(visibility="PU") | Q(visible_to=self.request.user)
+                )
+            else:
+                checkins = checkins.filter(visibility="PU")
 
         if status:
             if status == "listened_relistened":
