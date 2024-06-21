@@ -700,24 +700,24 @@ def filter_write(query, search_terms, request_user):
         post_query = Post.objects.filter(
             user__is_public=True,
         )
-        say_query = Say.objects.filter(user__is_public=True, visiblity="PU")
-        pin_query = Pin.objects.filter(user__is_public=True, visiblity="PU")
-        repost_query = Repost.objects.filter(user__is_public=True, visiblity="PU")
-        luvlist_query = LuvList.objects.filter(user__is_public=True, visiblity="PU")
+        say_query = Say.objects.filter(user__is_public=True, visibility="PU")
+        pin_query = Pin.objects.filter(user__is_public=True, visibility="PU")
+        repost_query = Repost.objects.filter(user__is_public=True)
+        luvlist_query = LuvList.objects.filter(user__is_public=True, visibility="PU")
         read_checkin_query = ReadCheckIn.objects.filter(
-            user__is_public=True, visiblity="PU"
+            user__is_public=True, visibility="PU"
         )
         watch_checkin_query = WatchCheckIn.objects.filter(
-            user__is_public=True, visiblity="PU"
+            user__is_public=True, visibility="PU"
         )
         listen_checkin_query = ListenCheckIn.objects.filter(
-            user__is_public=True, visiblity="PU"
+            user__is_public=True, visibility="PU"
         )
         play_checkin_query = PlayCheckIn.objects.filter(
-            user__is_public=True, visiblity="PU"
+            user__is_public=True, visibility="PU"
         )
         visit_checkin_query = VisitCheckIn.objects.filter(
-            user__is_public=True, visiblity="PU"
+            user__is_public=True, visibility="PU"
         )
     return (
         filter_content(post_query, search_terms, ["title", "content"]),
