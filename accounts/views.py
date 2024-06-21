@@ -664,32 +664,61 @@ def filter_self(user, search_terms):
         filter_content(
             PlayCheckIn.objects.filter(user=user), search_terms, ["content"]
         ),
+        filter_content(
+            VisitCheckIn.objects.filter(user=user), search_terms, ["content"]
+        ),
     )
 
 
-def filter_write(query, search_terms, is_user_authenticated):
+def filter_write(query, search_terms, request_user):
     # Apply the is_public filter for non-authenticated users
-    if is_user_authenticated:
-        post_query = Post.objects.all()
-        say_query = Say.objects.all()
-        pin_query = Pin.objects.all()
-        repost_query = Repost.objects.all()
-        luvlist_query = LuvList.objects.all()
-        read_checkin_query = ReadCheckIn.objects.all()
-        watch_checkin_query = WatchCheckIn.objects.all()
-        listen_checkin_query = ListenCheckIn.objects.all()
-        play_checkin_query = PlayCheckIn.objects.all()
-    else:
-        post_query = Post.objects.filter(user__is_public=True)
-        say_query = Say.objects.filter(user__is_public=True)
-        pin_query = Pin.objects.filter(user__is_public=True)
-        repost_query = Repost.objects.filter(user__is_public=True)
-        luvlist_query = LuvList.objects.filter(user__is_public=True)
-        read_checkin_query = ReadCheckIn.objects.filter(user__is_public=True)
-        watch_checkin_query = WatchCheckIn.objects.filter(user__is_public=True)
-        listen_checkin_query = ListenCheckIn.objects.filter(user__is_public=True)
-        play_checkin_query = PlayCheckIn.objects.filter(user__is_public=True)
 
+    if request_user.is_authenticated:
+        post_query = Post.objects.filter(user__is_public=True, visible_to=request_user)
+        say_query = Say.objects.filter(user__is_public=True, visible_to=request_user)
+        pin_query = Pin.objects.filter(user__is_public=True, visible_to=request_user)
+        repost_query = Repost.objects.filter(user__is_public=True)
+        luvlist_query = LuvList.objects.filter(
+            user__is_public=True, visible_to=request_user
+        )
+        read_checkin_query = ReadCheckIn.objects.filter(
+            user__is_public=True, visible_to=request_user
+        )
+        watch_checkin_query = WatchCheckIn.objects.filter(
+            user__is_public=True, visible_to=request_user
+        )
+        listen_checkin_query = ListenCheckIn.objects.filter(
+            user__is_public=True, visible_to=request_user
+        )
+        play_checkin_query = PlayCheckIn.objects.filter(
+            user__is_public=True, visible_to=request_user
+        )
+        visit_checkin_query = VisitCheckIn.objects.filter(
+            user__is_public=True, visible_to=request_user
+        )
+    else:
+        post_query = Post.objects.filter(
+            user__is_public=True,
+        )
+        say_query = Say.objects.filter(user__is_public=True, visiblity="PU")
+        pin_query = Pin.objects.filter(user__is_public=True, visiblity="PU")
+        repost_query = Repost.objects.filter(user__is_public=True, visiblity="PU")
+        luvlist_query = LuvList.objects.filter(user__is_public=True, visiblity="PU")
+        read_checkin_query = ReadCheckIn.objects.filter(
+            user__is_public=True, visiblity="PU"
+        )
+        watch_checkin_query = WatchCheckIn.objects.filter(
+            user__is_public=True, visiblity="PU"
+        )
+        listen_checkin_query = ListenCheckIn.objects.filter(
+            user__is_public=True, visiblity="PU"
+        )
+        play_checkin_query = PlayCheckIn.objects.filter(
+            user__is_public=True, visiblity="PU"
+        )
+        visit_checkin_query = VisitCheckIn.objects.filter(
+            user__is_public=True, visiblity="PU"
+        )
     return (
         filter_content(post_query, search_terms, ["title", "content"]),
         filter_content(say_query, search_terms, ["content"]),
@@ -700,6 +729,7 @@ def filter_write(query, search_terms, is_user_authenticated):
         filter_content(watch_checkin_query, search_terms, ["content"]),
         filter_content(listen_checkin_query, search_terms, ["content"]),
         filter_content(play_checkin_query, search_terms, ["content"]),
+        filter_content(visit_checkin_query, search_terms, ["content"]),
     )
 
 
@@ -974,7 +1004,7 @@ def parse_query(query):
 
 
 def search_view(request):
-    is_user_authenticated = request.user.is_authenticated
+    request_user = request.user
 
     last_search_time = request.session.get("last_search_time")
 
@@ -1002,6 +1032,7 @@ def search_view(request):
     watch_checkin_results = []
     listen_checkin_results = []
     play_checkin_results = []
+    visit_checkin_results = []
 
     # read
     litwork_results = []
@@ -1029,19 +1060,6 @@ def search_view(request):
     if query:
         if model in ["all", "user"]:
             user_results = filter_users(query, search_terms)
-
-        if model in ["all", "write"]:
-            (
-                post_results,
-                say_results,
-                pin_results,
-                repost_results,
-                luvlist_results,
-                read_checkin_results,
-                watch_checkin_results,
-                listen_checkin_results,
-                play_checkin_results,
-            ) = filter_write(query, search_terms, is_user_authenticated)
 
         if model in ["all", "read"]:
             (
@@ -1073,6 +1091,20 @@ def search_view(request):
         if model in ["all", "visit"]:
             location_results = filter_location(query, search_terms)
 
+        if model == "write":
+            (
+                post_results,
+                say_results,
+                pin_results,
+                repost_results,
+                luvlist_results,
+                read_checkin_results,
+                watch_checkin_results,
+                listen_checkin_results,
+                play_checkin_results,
+                visit_checkin_results,
+            ) = filter_write(query, search_terms, request_user)
+
         if model == "self":
             (
                 post_results,
@@ -1084,6 +1116,7 @@ def search_view(request):
                 watch_checkin_results,
                 listen_checkin_results,
                 play_checkin_results,
+                visit_checkin_results,
             ) = filter_self(request.user, search_terms)
 
     execution_time = time.time() - start_time
@@ -1108,6 +1141,7 @@ def search_view(request):
             "watch_checkin_results": watch_checkin_results,
             "listen_checkin_results": listen_checkin_results,
             "play_checkin_results": play_checkin_results,
+            "visit_checkin_results": visit_checkin_results,
             # read
             "litwork_results": litwork_results,
             "litinstance_results": litinstance_results,

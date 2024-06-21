@@ -308,6 +308,36 @@
                 </div>
                 {% endif %}
 
+                <!--Visit-->
+                {% if location_results or visit_checkin_results %}
+                <div class="row">
+                    <h3 class="mb-3">Visit</h3>
+                    {% if location_results %}
+                        <div class="fs-4">Locations</div>
+                        {% for location in location_results %}
+                            <p>
+                                <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a>
+                                {% if location.historical %}
+                                    {% if location.historical_period %}({{location.historical_period}}){% endif %}
+                                {% endif %}
+                            </p>
+                        {% endfor %}
+                        <hr>
+                    {% endif %}
+                    {% if visit_checkin_results %}
+                    <div class="col-12 col-md-4 mb-3">
+                        <div class="fs-4">Check-ins</div>
+                        {% for checkin in visit_checkin_results %}
+                            <p>
+                                <a href="{% url 'write:visit_checkin_detail' checkin.user.username checkin.id %}">{{ checkin.content|truncatechars:30 }}</a>
+                                ({{ checkin.user.display_name | default:checkin.user.username }}, {{ checkin.timestamp|daysince }} days ago)
+                            </p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
                 <!--Write-->
                 {% if post_results or say_results or pin_results or repost_results %}
                 <div class="row">
@@ -371,23 +401,6 @@
                     <hr>
                 </div>
                 {% endif %}
-
-                <!--Visit-->
-                {% if location_results %}
-                <div class="row">
-                    <div class="fs-4">Locations</div>
-                    {% for location in location_results %}
-                        <p>
-                            <a href="{% url 'visit:location_detail' location.id %}">{{ location.name }}</a>
-                            {% if location.historical %}
-                                {% if location.historical_period %}({{location.historical_period}}){% endif %}
-                            {% endif %}
-                        </p>
-                    {% endfor %}
-                    <hr>
-                </div>
-                {% endif %}
-                
             </div>
         </div>
     </div>
