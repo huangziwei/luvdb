@@ -868,7 +868,7 @@ class PlayCheckInListView(ListView):
         # Call the base implementation first to get the context
         context = super().get_context_data(**kwargs)
         order = self.request.GET.get("order", "-timestamp")  # Default is '-timestamp'
-        status = self.request.GET.get("status")  # Get status from query params
+        status = self.request.GET.get("status", "")  # Get status from query params
         profile_user = get_object_or_404(User, username=self.kwargs["username"])
         context["profile_user"] = profile_user
         context["order"] = order
