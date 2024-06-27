@@ -4,6 +4,10 @@ from .views import (
     BookAutoComplete,
     BookCreateView,
     BookDetailView,
+    BookGroupCreateView,
+    BookGroupDetailView,
+    BookGroupHistoryView,
+    BookGroupUpdateView,
     BookHistoryView,
     BookSeriesCreateView,
     BookSeriesDetailView,
@@ -165,4 +169,25 @@ urlpatterns = [
     # genre
     path("genre/<slug:slug>/", GenreDetailView.as_view(), name="genre_detail"),
     path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),
+    # book group
+    path(
+        "bookgroup/create/",
+        BookGroupCreateView.as_view(),
+        name="bookgroup_create",
+    ),
+    path(
+        "bookgroup/<int:pk>/",
+        BookGroupDetailView.as_view(),
+        name="bookgroup_detail",
+    ),
+    path(
+        "bookgroup/<int:pk>/update/",
+        BookGroupUpdateView.as_view(),
+        name="bookgroup_update",
+    ),
+    path(
+        "bookgroup/<int:pk>/history/",
+        BookGroupHistoryView.as_view(),
+        name="bookgroup_history",
+    ),
 ]

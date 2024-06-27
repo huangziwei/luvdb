@@ -133,8 +133,13 @@
                                                         {% if item.model_name == "Instance" %}
                                                             <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
                                                         {% elif item.model_name == "Book" %}
-                                                            <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> 
-                                                            ({% if item.format %}{{ item.format }}, {% endif %}{{ item.publication_date }})
+                                                            {% if item.book_group.exists %}
+                                                                <a href="{% url 'read:bookgroup_detail' item.book_group.first.pk %}">{{ item.book_group.first.title }}</a>
+                                                                ({{ item.publication_date }})
+                                                            {% else %}
+                                                                <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> 
+                                                                ({% if item.format %}{{ item.format }}, {% endif %}{{ item.publication_date }})
+                                                            {% endif %}
                                                         {% endif %}
                                                     </li>
                                                     {% endfor %}

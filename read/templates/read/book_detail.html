@@ -108,6 +108,7 @@
                                             {% endfor %}
                                         </div>
                                     {% endif %}
+                                    <!--Editions: For Books with one instance, handled by the 3-level BIBFRAME model-->
                                     {% if object.bookinstance_set.count == 1 %}
                                         <div class="mb-1" >
                                             <span class="text-muted">Other Editions:</span>
@@ -116,7 +117,16 @@
                                             </a>
                                         </div>
                                     {% endif %}
-                                    
+                                    <!--Editions: For Books with more than one instances, handled by BookGroup-->
+                                    {% if object.bookingroup_set.all %}
+                                        <p>
+                                            <span class="text-muted">Other Editions:</span>
+                                            {% for bookingroup in object.bookingroup_set.all %}
+                                                <a href="{% url 'read:bookgroup_detail' bookingroup.group.id %}">View All</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
                                     <div class="my-3">
                                         <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
                                             {% if object.notes %}

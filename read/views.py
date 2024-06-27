@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
+from django.db.models.functions import Length
 from django.forms import inlineformset_factory
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -40,6 +41,9 @@ from write.utils_mastodon import create_mastodon_post
 
 from .forms import (
     BookForm,
+    BookGroupForm,
+    BookInGroupForm,
+    BookInGroupFormSet,
     BookInSeriesFormSet,
     BookInstance,
     BookInstanceFormSet,
@@ -61,6 +65,8 @@ from .forms import (
 )
 from .models import (
     Book,
+    BookGroup,
+    BookInGroup,
     BookInSeries,
     BookSeries,
     Creator,
@@ -2216,6 +2222,129 @@ class BookHistoryView(HistoryViewMixin, DetailView):
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class BookSeriesHistoryView(HistoryViewMixin, DetailView):
     model = BookSeries
+    template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+##############
+# Book Group #
+##############
+
+
+class BookGroupCreateView(LoginRequiredMixin, CreateView):
+    model = BookGroup
+    form_class = BookGroupForm
+    template_name = "read/bookgroup_create.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["books"] = BookInGroupFormSet(self.request.POST)
+        else:
+            data["books"] = BookInGroupFormSet(queryset=BookInGroup.objects.none())
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        books = context["books"]
+
+        print("Formset data before validation:", books.data)  # Debugging print
+
+        if books.is_valid():
+            print("Formset cleaned_data:", books.cleaned_data)  # Debugging print
+            with transaction.atomic():
+                form.instance.created_by = self.request.user
+                self.object = form.save()
+                books.instance = self.object
+                books.save()
+        else:
+            print("Formset errors:", books.errors)  # Debugging print
+            return self.form_invalid(
+                form
+            )  # If there are formset errors, re-render the form.
+        return super().form_valid(form)
+
+
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
+class BookGroupDetailView(DetailView):
+    model = BookGroup
+    template_name = "read/bookgroup_detail.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+
+        # Get contributors
+        context["contributors"] = get_contributors(self.object)
+
+        # Custom sorting logic for book by date completeness
+        # First, fetch all related book
+        books = self.object.bookingroup_set.all()
+
+        # Then, sort them by their 'publication_date' field length and value
+        books = books.annotate(
+            date_length=Length("book__publication_date"),
+            padded_date=F("book__publication_date"),
+        ).order_by("-date_length", "padded_date")
+
+        # Update the context with the sorted book
+        context["sorted_books"] = books
+        if books:
+            context["oldest_book"] = books.first()
+
+        return context
+
+
+class BookGroupUpdateView(LoginRequiredMixin, UpdateView):
+    model = BookGroup
+    form_class = BookGroupForm
+    template_name = "read/bookgroup_update.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the object is locked for editing.
+        obj = self.get_object()
+        if obj.locked:
+            return HttpResponseForbidden("This entry is locked and cannot be edited.")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["books"] = BookInGroupFormSet(self.request.POST, instance=self.object)
+        else:
+            data["books"] = BookInGroupFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        books = context["books"]
+
+        print(
+            "Formset data before validation for updating:", books.data
+        )  # Debugging print
+
+        if books.is_valid():
+            print(
+                "Formset cleaned_data for updating:", books.cleaned_data
+            )  # Debugging print
+            self.object = form.save()
+            books.instance = self.object
+            books.save()
+        else:
+            print("Formset errors:", books.errors)  # Print out the formset errors.
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("read:bookgroup_detail", kwargs={"pk": self.object.pk})
+
+
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
+class BookGroupHistoryView(HistoryViewMixin, DetailView):
+    model = BookGroup
     template_name = "entity/history.html"
 
     def get_context_data(self, **kwargs):

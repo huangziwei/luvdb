@@ -13,6 +13,8 @@ from write.models import VisibilityChoices
 
 from .models import (
     Book,
+    BookGroup,
+    BookInGroup,
     BookInSeries,
     BookInstance,
     BookRole,
@@ -590,4 +592,59 @@ class BookInSeriesForm(forms.ModelForm):
 
 BookInSeriesFormSet = forms.inlineformset_factory(
     BookSeries, BookInSeries, form=BookInSeriesForm, extra=2, can_delete=True
+)
+
+
+#################
+# Book Group #
+#################
+
+
+class BookGroupForm(forms.ModelForm):
+    class Meta(auto_prefetch.Model.Meta):
+        model = BookGroup
+        fields = ["title"]
+
+
+class BookInGroupForm(forms.ModelForm):
+    book_url = forms.URLField()
+
+    class Meta(auto_prefetch.Model.Meta):
+        model = BookInGroup
+        fields = ["book_url"]
+        exclude = ["book_group"]
+
+    def clean_book_url(self):
+        book_url = self.cleaned_data.get("book_url")
+        if not book_url:  # if the field is empty, just return it
+            return book_url
+        book_id = re.findall(r"book/(\d+)", book_url)
+        if not book_id:
+            raise forms.ValidationError("Invalid Book URL")
+        try:
+            book = Book.objects.get(pk=book_id[0])
+        except Book.DoesNotExist:
+            raise forms.ValidationError("Release does not exist")
+        self.instance.book = book  # save the book instance directly
+        return book_url
+
+    def clean(self):
+        cleaned_data = super().clean()
+        book_url = cleaned_data.get("book_url")
+        if not book_url:  # if the book_url field is empty
+            self.cleaned_data["DELETE"] = True  # mark the form for deletion
+        return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super(BookInGroupForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk and self.instance.book:
+            self.fields["book_url"].initial = (
+                f"{settings.ROOT_URL}/read/book/{self.instance.book.pk}"
+            )
+        self.fields["book_url"].required = False
+        self.fields["book_url"].label = "URL"
+
+
+BookInGroupFormSet = forms.inlineformset_factory(
+    BookGroup, BookInGroup, form=BookInGroupForm, extra=2, can_delete=True
 )

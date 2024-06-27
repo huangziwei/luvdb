@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class='col-12 col-md-7 left-column'>
+                <h2>New Book Group</h2>
+                {% include "read/bookgroup_form.html" %}
+            </div>
+            <div class="col-12 col-md-5 right-column">
+                <div class="bg-light p-3">
+                    <div class="fs-4">Guide</div>
+                    <p>
+                        You are creating a <strong>Book Group</strong>.
+                    </p>
+                    <p>
+                        A <strong>Book Group</strong> is an alternative way to manage book editions. For books with only one instance (most long-form books, such as novels, non-fictions, etc.), the 3-level BIBFRAME model will handle the book edition very well. But for multi-instances books, such as short story collection, we can't rely on the instances included in a book, because different editions of the same book might include different instances, or include them in different orders. In those cases, we need to group different editions with Book Group.
+                    </p>
+                    {% comment %} <div class="fs-4">Examples</div>
+                    <ul>
+                        <li>
+                            This 2007 <a href="https://luvdb.com/read/book/162/">paperback</a> edition of <em>The Annotated Prided and Prejudice</em> is a reprint of the 2003 <a href="https://luvdb.com/read/book/161/">hardcover</a> edition, both are Books of <a href="https://luvdb.com/read/instance/53/">the same Instance</a>.
+                        </li>
+                        <li>
+                            <a href="https://luvdb.com/read/book/63/"><em>All But Impossible</em></a> is a short story collection by <a href="https://luvdb.com/entity/creator/157/">Edward D. Hoch</a>, which links to 15 Instances of short stories.
+                        </li>
+                    </ul> {% endcomment %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

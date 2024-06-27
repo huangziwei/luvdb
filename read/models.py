@@ -967,3 +967,45 @@ class BookInSeries(auto_prefetch.Model):
 
     def __str__(self):
         return f"{self.series.title}: {self.book.title}"
+
+
+class BookGroup(auto_prefetch.Model):
+    # admin
+    locked = models.BooleanField(default=False)
+
+    # book group meta
+    title = models.CharField(max_length=100)
+    books = models.ManyToManyField(
+        Book, through="BookInGroup", related_name="book_group"
+    )
+
+    created_by = auto_prefetch.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="bookgroup_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = auto_prefetch.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="bookgroup_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    history = HistoricalRecords(inherit=True)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("read:bookgroup_detail", args=[str(self.id)])
+
+
+class BookInGroup(auto_prefetch.Model):
+    book = auto_prefetch.ForeignKey(Book, on_delete=models.CASCADE)
+    group = auto_prefetch.ForeignKey(BookGroup, on_delete=models.CASCADE)
+
+    class Meta(auto_prefetch.Model.Meta):
+        ordering = ["book__publication_date"]
+
+    def __str__(self):
+        return f"{self.group.title}: {self.book.title}"

@@ -106,43 +106,44 @@ class CreatorDetailView(DetailView):
         creator = self.object
 
         # read
+        # Helper function to sort and group books
         def get_books_by_role(role, creator):
-            # Dictionary to hold final items, grouped by language
-            final_dict = defaultdict(list)
-            # Set to keep track of instance IDs that have already been processed
-            processed_instances = set()
+            from collections import defaultdict
 
-            # Step 1: Get books related to the role and creator
+            final_dict = defaultdict(list)
+            processed_instances = set()
+            processed_groups = set()
+
             books = Book.objects.filter(
                 bookrole__role__name=role, bookrole__creator=creator
             ).distinct()
 
             for book in books:
-                # Determine book's language, defaulting to 'Unknown' if not set
                 book_language = book.language or "Unknown"
-
-                # Check for instances
                 instances = LitInstance.objects.filter(books=book)
 
-                # Handle the book or instance accordingly
                 if not instances.exists() or instances.count() > 1:
-                    final_dict[book_language].append(book)
+                    if not book.book_group.exists():
+                        final_dict[book_language].append(book)
+                    else:
+                        group = book.book_group.first()
+                        if group.id not in processed_groups:
+                            processed_groups.add(group.id)
+                            first_published_book = group.books.order_by(
+                                "publication_date"
+                            ).first()
+                            final_dict[book_language].append(first_published_book)
                 else:
                     instance = instances.first()
-                    # Check if this instance has already been processed
                     if instance.id not in processed_instances:
-                        # If not, add it to the dictionary and mark it as processed
                         processed_instances.add(instance.id)
                         final_dict[instance.language or "Unknown"].append(instance)
-                    # If the instance has been processed, continue without adding it again
 
-            # Sort each list in the dictionary by publication date
             for language in final_dict:
                 final_dict[language].sort(
                     key=lambda x: getattr(x, "publication_date", None)
                 )
 
-            # Convert the dictionary to a list of tuples and sort by the number of books in descending order
             sorted_final_list = sorted(
                 final_dict.items(), key=lambda x: len(x[1]), reverse=True
             )

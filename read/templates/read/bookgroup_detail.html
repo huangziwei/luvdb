@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+{% load markdownify %}
+{% load linkify %}
+{% load crispy_forms_tags %}
+{% load util_filters %}
+{% block title %}{{ object.title }}{% endblock title %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class='col-12 col-md-8'>
+                <h2>{{ object.title }}</h2>
+                <!-- Metadata from the oldest book in the group -->
+                {% if oldest_book %}
+                    <div class="mt-3 mb-3">
+                        {% regroup oldest_book.book.bookrole_set.all by role as roles_list %}
+                        {% for role in roles_list %}
+                            <div>
+                                <span class="text-muted">{{ role.grouper }}{% if role.list|length > 1 %}s{% endif %}</span>:
+                                {% for book_role in role.list %}
+                                    {% if not forloop.first %}, {% endif %}
+                                    <a href="{% url 'entity:creator_detail' book_role.creator.id %}">
+                                        {{ book_role.alt_name | default:book_role.creator.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        {% if oldest_book.book.publisher %}
+                            <div>
+                                <span class="text-muted">Publisher</span>: 
+                                <a href="{% url 'entity:company_detail' oldest_book.book.publisher.id %}">
+                                    {{ oldest_book.book.publisher.name }}
+                                </a>
+                            </div>
+                        {% endif %}
+                        {% if oldest_book.book.publication_date %}
+                            <div><span class="text-muted">First Publication Date</span>: {{ oldest_book.book.publication_date }}</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <div class='mt-3'>
+                    {% for book_in_group in sorted_books %}
+                        <!--Book Group Item-->
+                        <div class="bg-light p-3 mb-3">
+                            <div class="bg-white p-3 d-flex">
+                                <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
+                                    {% if user.pure_text_mode %}
+                                        <div class="cover-placeholder bg-light">{{ book_in_group.book.title }}</div>
+                                    {% else %}
+                                        {% if book_in_group.book.cover %}
+                                            {% if book_in_group.book.cover_sens %}
+                                                <img src="{{ book_in_group.book.cover.url }}"
+                                                    alt="{{ book_in_group.book.title }} cover"
+                                                    class="img-fluid blur cover-border"
+                                                    onclick="this.classList.toggle('blur')"
+                                                    loading="lazy">
+                                            {% else %}
+                                                <img src="{{ book_in_group.book.cover.url }}"
+                                                    alt="{{ book_in_group.book.title }} cover"
+                                                    class="img-fluid cover-border"
+                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'read-cover-placeholder\'>{{ book_in_group.book.title }}</div>';"
+                                                    loading="lazy">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="read-cover-placeholder bg-light">{{ book_in_group.book.title }}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <a href="{% url 'read:book_detail' book_in_group.book.pk %}"
+                                       class="text-decoration-none ">
+                                        <div class="fs-5">{{ book_in_group.book.title }}</div>
+                                    </a>
+                                    {% if book_in_group.book.subtitle %}<div class="mb-2 text-muted">{{ book_in_group.book.subtitle }}</div>{% endif %}
+                                    {% regroup book_in_group.book.bookrole_set.all by role as roles_list %}
+                                    {% for role in roles_list %}
+                                        <div>
+                                            <span class="text-muted">{{ role.grouper }}{% if role.list|length > 1 %}s{% endif %}</span>:
+                                            {% for book_role in role.list %}
+                                                {% if not forloop.first %}, {% endif %}
+                                                <a href="{% url 'entity:creator_detail' book_role.creator.id %}">
+                                                    {{ book_role.alt_name | default:book_role.creator.name }}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                    {% if book_in_group.book.publisher %}
+                                        <div>
+                                            <span class="text-muted">Publisher</span>: 
+                                            <a href="{% url 'entity:company_detail' book_in_group.book.publisher.id %}">
+                                                {{ book_in_group.book.publisher.name }}
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                    {% if book_in_group.book.format %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Format:</span> {{ book_in_group.book.format }}
+                                        </div>
+                                    {% endif %}
+                                    {% if book_in_group.book.isbn_10 %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">ISBN-10:</span> {{ book_in_group.book.isbn_10 }}
+                                        </div>
+                                    {% endif %}
+                                    {% if book_in_group.book.isbn_13 %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">ISBN-13:</span> {{ book_in_group.book.isbn_13 }}
+                                        </div>
+                                    {% endif %}
+                                    {% if book_in_group.book.eisbn_13 %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">E-ISBN-13:</span> {{ book_in_group.book.eisbn_13 }}
+                                        </div>
+                                    {% endif %}
+                                    {% if book_in_group.book.asin %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">ASIN:</span> {{ book_in_group.book.asin }}
+                                        </div>
+                                    {% endif %}
+                                    {% if book_in_group.book.publication_date %}
+                                        <div>
+                                            <span class="text-muted">Date</span>: {{ book_in_group.book.publication_date }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="bg-light p-3 mb-3">
+                            <div class="bg-white p-3">
+                                <div class="flex-grow-1">
+                                    <p>No books in this group yet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="col-12 col-md-4">
+                {% if user.is_authenticated %}
+                    <div class="bg-light p-3 mb-3">
+                        <a href="{% url 'read:bookgroup_update' object.id %}"
+                           class='fs-6 text-secondary'>Edit Book Group</a>
+                    </div>
+                {% endif %}
+                <div class="bg-light p-3 mb-3 order-1 order-sm-3">
+                    <div class="d-flex justify-content-start align-items-center flex-wrap">
+                        <div class="me-1 fs-5">Contributors</div>
+                        <div>(<a href="{% url 'read:bookgroup_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>
+                    </div>
+                    <div>
+                        {% for contributor in contributors %}
+                            <span>
+                                <a href="{% url 'accounts:detail' contributor.username %}">
+                                    {% if contributor == contributors.0 %}
+                                        <b>         
+                                            {{ contributor.display_name|default:contributor.username }}
+                                        </b>
+                                    {% else %}
+                                        {{ contributor.display_name|default:contributor.username }}
+                                    {% endif %}
+                                </a>
+                            </span>
+                            {% if not forloop.last %} / {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
