@@ -193,20 +193,20 @@
                                     </div>
                                 </div>
                             {% endif %}
-                            {% if movies_released_today or series_released_today %}
+                            {% if movies_released_today %}
                                 <div class="card mt-2">
                                     <div class="card-header"
-                                        id="moviesSeriesHeading"
+                                        id="moviesHeading"
                                         data-bs-toggle="collapse"
-                                        data-bs-target="#moviesSeriesCollapse"
+                                        data-bs-target="#moviesCollapse"
                                         role="button"
                                         aria-expanded="false"
-                                        aria-controls="moviesSeriesCollapse">
-                                        <b>Movies / Series</b>
+                                        aria-controls="moviesCollapse">
+                                        <b>Movies</b>
                                     </div>
-                                    <div id="moviesSeriesCollapse"
+                                    <div id="moviesCollapse"
                                         class="collapse"
-                                        aria-labelledby="moviesSeriesHeading">
+                                        aria-labelledby="moviesHeading">
                                         <ul class="list-group list-group-flush">
                                             {% for movie in movies_released_today %}
                                                 <li class="list-group-item">
@@ -216,6 +216,25 @@
                                                     {# djlint:on #}
                                                 </li>
                                             {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if series_released_today %}
+                                <div class="card mt-2">
+                                    <div class="card-header"
+                                        id="seriesHeading"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#seriesCollapse"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls="seriesCollapse">
+                                        <b>Series</b>
+                                    </div>
+                                    <div id="seriesCollapse"
+                                        class="collapse"
+                                        aria-labelledby="seriesHeading">
+                                        <ul class="list-group list-group-flush">
                                             {% for serie in series_released_today %}
                                                 <li class="list-group-item">
                                                     <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a>
@@ -301,7 +320,7 @@
                                                     <li class="list-group-item">
                                                         {# djlint:off #}
                                                         <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                                        ({{ creator.birth_date|extract_year }}{% if creator.death_date %}-{{ creator.death_date|extract_year }}{% else %} - {% endif %}, {{ creator.since }} years ago)
+                                                        ({{ creator.birth_date|extract_year }}{% if creator.death_date %}-{{ creator.death_date|extract_year }}{% else %}-{% endif %}, {{ creator.since }} years ago)
                                                         {# djlint:on #}
                                                     </li>
                                                 {% endfor %}
@@ -314,7 +333,7 @@
                                                     <li class="list-group-item">
                                                         {# djlint:off #}
                                                         <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                                                        ({{ creator.birth_date|extract_year }}{% if creator.death_date %}-{{ creator.death_date|extract_year }}{% else %} - {% endif %}, {{ creator.since }} years ago)
+                                                        ({{ creator.birth_date|extract_year }}{% if creator.death_date %}-{{ creator.death_date|extract_year }}{% else %}-{% endif %}, {{ creator.since }} years ago)
                                                         {# djlint:on #}
                                                     </li>
                                                 {% endfor %}
