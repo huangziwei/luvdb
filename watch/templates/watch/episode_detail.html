@@ -130,12 +130,12 @@
                                 </a>
                                 {% if checkin.comments_enabled %}
                                     <span class="ms-2 me-2">
-                                        <a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}"
+                                        <a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}?reply=true&focus=true"
                                         class="text-decoration-none">Reply</a>
                                     </span>
                                 {% endif %}
                                 {% if checkin.get_activity_id %}
-                                    <span class="ms-2 me-2"><a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}?repost=true"
+                                    <span class="ms-2 me-2"><a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}?repost=true&focus=true"
                                         class="text-decoration-none">Repost</a></span>
                                 {% endif %}
                                 {% if checkin.user == request.user %}

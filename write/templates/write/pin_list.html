@@ -83,12 +83,12 @@
                                 </p>
                                 {% if pin.comments_enabled %}
                                     <p style='margin: 0 0.5em'>
-                                        <a href="{% url 'write:pin_detail' pin.user.username pin.id %}">Reply</a>
+                                        <a href="{% url 'write:pin_detail' pin.user.username pin.id %}?reply=true&focus=true">Reply</a>
                                     </p>
                                 {% endif %}
                                 {% if pin.get_activity_id is not None %}
                                     <p style='margin: 0 0.5em'>
-                                        <a href="{% url 'write:pin_detail' pin.user.username pin.id %}?repost=true">Repost</a>
+                                        <a href="{% url 'write:pin_detail' pin.user.username pin.id %}?repost=true&focus=true">Repost</a>
                                     </p>
                                 {% endif %}
                                 {% if pin.user != request.user %}

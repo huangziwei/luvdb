@@ -302,12 +302,12 @@
                                         </div>
                                         {% if checkin.comments_enabled %}
                                             <div class="ms-2 me-2">
-                                                <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}"
+                                                <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}?reply=true&focus=true"
                                                     class="text-decoration-none">Reply</a>
                                             </div>
                                         {% endif %}
                                         <div class="ms-2 me-2">
-                                            <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}?repost=true"
+                                            <a href="{% url 'write:listen_checkin_detail' checkin.user.username checkin.id %}?repost=true&focus=true"
                                                 class="text-decoration-none">Repost</a>
                                         </div>
                                         {% if checkin.user == request.user %}

@@ -74,12 +74,12 @@
                                     <div class="d-flex align-items-center ms-3">
                                         {% if activity.comments_enabled %}
                                             <div class="me-2">
-                                                <a href="{% url 'write:say_detail' activity.user.username activity.id %}">Reply</a>
+                                                <a href="{% url 'write:say_detail' activity.user.username activity.id %}?reply=true&focus=true">Reply</a>
                                             </div>
                                         {% endif %}
                                         {% if activity.get_activity_id is not None %}
                                             <div class="me-2">
-                                                <a href="{% url 'write:say_detail' activity.user.username activity.id %}?repost=true">Repost</a>
+                                                <a href="{% url 'write:say_detail' activity.user.username activity.id %}?repost=true&focus=true">Repost</a>
                                             </div>
                                         {% endif %}
                                         {% if user == request.user %}
@@ -107,12 +107,12 @@
                                     <div class="d-flex align-items-center ms-3">
                                         {% if activity.comments_enabled %}
                                             <div class="me-2">
-                                                <a href="{% url 'write:repost_detail' activity.user.username activity.id %}">Reply</a>
+                                                <a href="{% url 'write:repost_detail' activity.user.username activity.id %}?reply=true&focus=true">Reply</a>
                                             </div>
                                         {% endif %}
                                         {% if activity.get_activity_id is not None %}
                                             <div class="me-2">
-                                                <a href="{% url 'write:repost_detail' activity.user.username activity.id %}?repost=true">Repost</a>
+                                                <a href="{% url 'write:repost_detail' activity.user.username activity.id %}?repost=true&focus=true">Repost</a>
                                             </div>
                                         {% endif %}
                                         {% if user == request.user %}
