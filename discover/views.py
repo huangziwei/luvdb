@@ -156,6 +156,13 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
                         .exclude(content="")
                         .order_by("-vote_count", "-timestamp")
                     )[:10]
+                elif model_name == "posts" or model_name == "pins":
+                    context[model_name] = (
+                        self.annotate_vote_count(model, time_condition)
+                        .filter(vote_count__gt=-1, visibility="PU")
+                        .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
+                        .order_by("-vote_count", "-timestamp")
+                    )[:10]
                 else:
                     context[model_name] = (
                         self.annotate_vote_count(model, time_condition)
@@ -188,6 +195,13 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
                         .exclude(content="")
                         .order_by("-vote_count", "-timestamp")
                     )[:10]
+                elif model_name == "posts" or model_name == "pins":
+                    context[model_name] = (
+                        self.annotate_vote_count(model, time_condition)
+                        .filter(vote_count__gt=-1, visibility="PU")
+                        .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
+                        .order_by("-vote_count", "-timestamp")
+                    )[:10]
                 else:
                     context[model_name] = (
                         self.annotate_vote_count(model, time_condition)
@@ -214,6 +228,12 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
                     context[model_name] = (
                         model.objects.filter(visibility="PU")
                         .exclude(content="")
+                        .order_by("-timestamp")[:10]
+                    )
+                elif model_name == "posts" or model_name == "pins":
+                    context[model_name] = (
+                        model.objects.filter(visibility="PU")
+                        .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
                         .order_by("-timestamp")[:10]
                     )
                 else:
@@ -252,6 +272,12 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
                         .exclude(content="")
                         .values_list("id", flat=True)
                     )
+                elif model_name == "posts" or model_name == "pins":
+                    model_ids = list(
+                        model.objects.filter(visibility="PU")
+                        .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
+                        .values_list("id", flat=True)
+                    )
                 else:
                     model_ids = list(
                         model.objects.filter(visibility="PU").values_list(
@@ -277,7 +303,9 @@ class DiscoverPostListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return Post.objects.all()  # Default queryset
+        return Post.objects.filter(visibility="PU").filter(
+            Q(projects__isnull=True) | Q(projects__visibility="PU")
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -300,6 +328,7 @@ class DiscoverPostListView(LoginRequiredMixin, ListView):
                     )
                 )
                 .filter(vote_count__gt=-1, visibility="PU")
+                .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
                 .order_by("-vote_count", "-timestamp")
             )
 
@@ -318,17 +347,23 @@ class DiscoverPostListView(LoginRequiredMixin, ListView):
                     )
                 )
                 .filter(visibility="PU")
+                .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
                 .order_by("-vote_count", "-timestamp")
             )
 
         elif order_by == "newest":
             posts = (
-                Post.objects.all().filter(visibility="PU").order_by("-timestamp")[:10]
+                Post.objects.all()
+                .filter(visibility="PU")
+                .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
+                .order_by("-timestamp")[:10]
             )
 
         elif order_by == "random":
             post_ids = list(
-                Post.objects.filter(visibility="PU").values_list("id", flat=True)
+                Post.objects.filter(visibility="PU")
+                .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
+                .values_list("id", flat=True)
             )
 
             if len(post_ids) > 10:
@@ -358,7 +393,9 @@ class DiscoverPinListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return Pin.objects.all()  # Default queryset
+        return Pin.objects.filter(visibility="PU").filter(
+            Q(projects__isnull=True) | Q(projects__visibility="PU")
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -381,6 +418,7 @@ class DiscoverPinListView(LoginRequiredMixin, ListView):
                     )
                 )
                 .filter(visibility="PU")
+                .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
                 .order_by("-vote_count", "-timestamp")
             )
 
@@ -399,15 +437,22 @@ class DiscoverPinListView(LoginRequiredMixin, ListView):
                     )
                 )
                 .filter(visibility="PU")
+                .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
                 .order_by("-vote_count", "-timestamp")
             )
 
         elif order_by == "newest":
-            pins = Pin.objects.filter(visibility="PU").order_by("-timestamp")
+            pins = (
+                Pin.objects.filter(visibility="PU")
+                .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
+                .order_by("-timestamp")
+            )
 
         elif order_by == "random":
             pin_ids = list(
-                Pin.objects.filter(visibility="PU").values_list("id", flat=True)
+                Pin.objects.filter(visibility="PU")
+                .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
+                .values_list("id", flat=True)
             )
             pin_ids = sample(pin_ids, len(pin_ids))
             pins = Pin.objects.filter(id__in=pin_ids).order_by("?")
@@ -434,7 +479,7 @@ class DiscoverLuvListListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return LuvList.objects.all()  # Default queryset
+        return LuvList.objects.filter(visibility="PU")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

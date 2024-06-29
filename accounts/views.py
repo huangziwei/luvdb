@@ -674,9 +674,13 @@ def filter_write(query, search_terms, request_user):
     # Apply the is_public filter for non-authenticated users
 
     if request_user.is_authenticated:
-        post_query = Post.objects.filter(user__is_public=True, visible_to=request_user)
+        post_query = Post.objects.filter(
+            user__is_public=True, visible_to=request_user
+        ).filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
         say_query = Say.objects.filter(user__is_public=True, visible_to=request_user)
-        pin_query = Pin.objects.filter(user__is_public=True, visible_to=request_user)
+        pin_query = Pin.objects.filter(
+            user__is_public=True, visible_to=request_user
+        ).filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
         repost_query = Repost.objects.filter(user__is_public=True)
         luvlist_query = LuvList.objects.filter(
             user__is_public=True, visible_to=request_user
@@ -699,9 +703,11 @@ def filter_write(query, search_terms, request_user):
     else:
         post_query = Post.objects.filter(
             user__is_public=True,
-        )
+        ).filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
         say_query = Say.objects.filter(user__is_public=True, visibility="PU")
-        pin_query = Pin.objects.filter(user__is_public=True, visibility="PU")
+        pin_query = Pin.objects.filter(user__is_public=True, visibility="PU").filter(
+            Q(projects__isnull=True) | Q(projects__visibility="PU")
+        )
         repost_query = Repost.objects.filter(user__is_public=True)
         luvlist_query = LuvList.objects.filter(user__is_public=True, visibility="PU")
         read_checkin_query = ReadCheckIn.objects.filter(
