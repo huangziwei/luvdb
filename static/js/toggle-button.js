@@ -71,15 +71,14 @@ document.addEventListener("DOMContentLoaded", function () {
 function focusTextInput() {
     const urlParams = new URLSearchParams(window.location.search);
     var intervalId = setInterval(function () {
-        if (urlParams.has("reply") && urlParams.get("reply") === "true") {
+        if (urlParams.get("focus") === "true") {
             var replyInput = document.querySelector("#comments-section #text-input");
+            var repostInput = document.querySelector("#reposts-section #text-input");
+
             if (replyInput && replyInput.offsetParent !== null) {
                 replyInput.focus();
                 clearInterval(intervalId);
-            }
-        } else if (urlParams.has("repost") && urlParams.get("repost") === "true") {
-            var repostInput = document.querySelector("#reposts-section #text-input");
-            if (repostInput && repostInput.offsetParent !== null) {
+            } else if (repostInput && repostInput.offsetParent !== null) {
                 repostInput.focus();
                 clearInterval(intervalId);
             }

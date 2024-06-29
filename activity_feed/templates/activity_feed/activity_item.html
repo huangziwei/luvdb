@@ -30,13 +30,13 @@
                 {% include "activity_feed/visibility_icons.html" %}
                 {% if activity.content_object.comments_enabled %}
                     <p class="ms-2 me-2">
-                        <a href="{% url 'write:say_detail' activity.user.username activity.content_object.id %}?reply=true"
+                        <a href="{% url 'write:say_detail' activity.user.username activity.content_object.id %}?reply=true&focus=true"
                         class="text-decoration-none">Reply</a>
                     </p>
                 {% endif %}
                 {% if activity.content_object.visibility == "PU" %}
                 <p class="ms-2 me-2">
-                    <a href="{% url 'write:say_detail' activity.user.username activity.content_object.id %}?repost=true"
+                    <a href="{% url 'write:say_detail' activity.user.username activity.content_object.id %}?repost=true&focus=true"
                     class="text-decoration-none">Repost</a>
                 </p>
                 {% endif %}
@@ -81,12 +81,12 @@
             {% include "activity_feed/visibility_icons.html" %}
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
-                    <a href="{% url 'write:post_detail_slug' activity.user.username activity.content_object.slug %}?reply=true"
+                    <a href="{% url 'write:post_detail_slug' activity.user.username activity.content_object.slug %}?reply=true&focus=true"
                        class="text-decoration-none">Reply</a>
                 </p>
             {% endif %}
             <p class="ms-2 me-2">
-                <a href="{% url 'write:post_detail_slug' activity.user.username activity.content_object.slug %}?repost=true"
+                <a href="{% url 'write:post_detail_slug' activity.user.username activity.content_object.slug %}?repost=true&focus=true"
                    class="text-decoration-none">Repost</a>
             </p>
             {% if activity.user == request.user %}
@@ -132,12 +132,12 @@
             {% include "activity_feed/visibility_icons.html" %}
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
-                    <a href="{% url 'write:pin_detail' activity.user.username activity.content_object.id %}"
+                    <a href="{% url 'write:pin_detail' activity.user.username activity.content_object.id %}?reply=true&focus=true"
                        class="text-decoration-none">Reply</a>
                 </p>
             {% endif %}
             <p class="ms-2 me-2">
-                <a href="{% url 'write:pin_detail' activity.user.username activity.content_object.id %}?repost=true"
+                <a href="{% url 'write:pin_detail' activity.user.username activity.content_object.id %}?repost=true&focus=true"
                    class="text-decoration-none">Repost</a>
             </p>
             {% if activity.user != request.user %}
@@ -315,12 +315,12 @@
             </p>
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
-                    <a href="{% url 'write:read_checkin_detail' activity.user.username activity.content_object.id %}"
+                    <a href="{% url 'write:read_checkin_detail' activity.user.username activity.content_object.id %}?reply=true&focus=true"
                        class="text-decoration-none">Reply</a>
                 </p>
             {% endif %}
             <p class="ms-2 me-2">
-                <a href="{% url 'write:read_checkin_detail' activity.user.username activity.content_object.id %}?repost=true"
+                <a href="{% url 'write:read_checkin_detail' activity.user.username activity.content_object.id %}?repost=true&focus=true"
                    class="text-decoration-none">Repost</a>
             </p>
             {% if activity.user == request.user %}
@@ -501,12 +501,12 @@
             {% include "activity_feed/visibility_icons.html" %}
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
-                    <a href="{% url 'write:watch_checkin_detail' activity.user.username activity.content_object.id %}"
+                    <a href="{% url 'write:watch_checkin_detail' activity.user.username activity.content_object.id %}?reply=true&focus=true"
                        class="text-decoration-none">Reply</a>
                 </p>
             {% endif %}
             <p class="ms-2 me-2">
-                <a href="{% url 'write:watch_checkin_detail' activity.user.username activity.content_object.id %}?repost=true"
+                <a href="{% url 'write:watch_checkin_detail' activity.user.username activity.content_object.id %}?repost=true&focus=true"
                    class="text-decoration-none">Repost</a>
             </p>
             {% if activity.user == request.user %}
@@ -694,12 +694,12 @@
             {% include "activity_feed/visibility_icons.html" %}
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
-                    <a href="{% url 'write:listen_checkin_detail' activity.user.username activity.content_object.id %}"
+                    <a href="{% url 'write:listen_checkin_detail' activity.user.username activity.content_object.id %}?reply=true&focus=true"
                        class="text-decoration-none">Reply</a>
                 </p>
             {% endif %}
             <p class="ms-2 me-2">
-                <a href="{% url 'write:listen_checkin_detail' activity.user.username activity.content_object.id %}?repost=true"
+                <a href="{% url 'write:listen_checkin_detail' activity.user.username activity.content_object.id %}?repost=true&focus=true"
                    class="text-decoration-none">Repost</a>
             </p>
             {% if activity.user == request.user %}
@@ -875,12 +875,12 @@
             {% include "activity_feed/visibility_icons.html" %}
             {% if activity.content_object.comments_enabled %}
                 <p class="ms-2 me-2">
-                    <a href="{% url 'write:play_checkin_detail' activity.user.username activity.content_object.id %}"
+                    <a href="{% url 'write:play_checkin_detail' activity.user.username activity.content_object.id %}?reply=true&focus=true"
                        class="text-decoration-none">Reply</a>
                 </p>
             {% endif %}
             <p class="ms-2 me-2">
-                <a href="{% url 'write:play_checkin_detail' activity.user.username activity.content_object.id %}?repost=true"
+                <a href="{% url 'write:play_checkin_detail' activity.user.username activity.content_object.id %}?repost=true&focus=true"
                    class="text-decoration-none">Repost</a>
             </p>
             {% if activity.user == request.user %}
@@ -982,12 +982,12 @@
         {% include "activity_feed/visibility_icons.html" %}
         {% if activity.content_object.comments_enabled %}
             <p class="ms-2 me-2">
-                <a href="{% url 'write:visit_checkin_detail' activity.user.username activity.content_object.id %}"
+                <a href="{% url 'write:visit_checkin_detail' activity.user.username activity.content_object.id %}?reply=true&focus=true"
                    class="text-decoration-none">Reply</a>
             </p>
         {% endif %}
         <p class="ms-2 me-2">
-            <a href="{% url 'write:visit_checkin_detail' activity.user.username activity.content_object.id %}?repost=true"
+            <a href="{% url 'write:visit_checkin_detail' activity.user.username activity.content_object.id %}?repost=true&focus=true"
                class="text-decoration-none">Repost</a>
         </p>
         {% if activity.user == request.user %}
