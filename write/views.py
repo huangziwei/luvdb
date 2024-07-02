@@ -54,6 +54,7 @@ from write.utils_mastodon import create_mastodon_post
 from .forms import (
     AlbumForm,
     CommentForm,
+    ContentInListForm,
     ContentInListFormSet,
     LuvListForm,
     PhotoForm,
@@ -1490,6 +1491,26 @@ class LuvListDeleteView(LoginRequiredMixin, DeleteView):
             "write:luvlist_list", args=[str(self.request.user.username)]
         )
 
+class LuvListContentUpdateView(LoginRequiredMixin, UpdateView):
+    model = ContentInList
+    form_class = ContentInListForm
+    template_name = "write/luvlist_content_update.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['luv_list'] = self.object.luv_list  # Add luv_list to context for template access
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Ensure the user has permission to edit this ContentInList
+        return queryset.filter(luv_list__user=self.request.user)
+
+    def get_success_url(self):
+        return reverse(
+            "write:luvlist_detail",
+            kwargs={"pk": self.object.luv_list.id, "username": self.object.luv_list.user.username},
+        )
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class LuvListUserListView(ListView):

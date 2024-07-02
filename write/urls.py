@@ -54,6 +54,7 @@ from .views import (
     CommentDeleteView,
     CommentListView,
     CommentUpdateView,
+    LuvListContentUpdateView,
     LuvListCreateView,
     LuvListDeleteView,
     LuvListDetailView,
@@ -297,6 +298,11 @@ urlpatterns = [
         "list/<int:luvlist_id>/manifest/",
         surprise_manifest,
         name="surprise_manifest_collab",
+    ),
+    path(
+        "list_content/<int:pk>/edit/",
+        LuvListContentUpdateView.as_view(),
+        name="list_content_update",
     ),
     # move check-ins from individual apps/urls.py to write/urls.py
     ## Read
