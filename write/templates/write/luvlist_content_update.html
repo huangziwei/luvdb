@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-
 <div class="container">
     <div class="row">
         <div class='col-12 col-md-8'>
@@ -9,9 +8,11 @@
             <form method="post">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <button type="submit" class="btn btn-primary">Save</button>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary mr-2">Save</button>
+                    <a class="btn btn-outline-secondary" href="{% url 'write:luvlist_detail' pk=luv_list.pk username=luv_list.user.username %}">Back to list without saving</a>
+                </div>
             </form>
-            <a class="btn btn-outline-secondary" href="{% url 'write:luvlist_detail' pk=luv_list.pk username=luv_list.user.username %}">Back to list without saving</a>
         </div>
     </div>
 </div>
