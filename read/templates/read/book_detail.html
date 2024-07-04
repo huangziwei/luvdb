@@ -144,7 +144,7 @@
                                                 <button class="nav-link text-muted" id="based-on-tab" data-bs-toggle="tab" data-bs-target="#based-on" type="button" role="tab" aria-controls="based-on" aria-selected="false">Based on</button>
                                             </li>
                                             {% endif %}
-                                            {% if related_publications or related_games or related_movies or related_series  %}
+                                            {% if related_publications or related_games or related_movies or related_series %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted" id="related-tab" data-bs-toggle="tab" data-bs-target="#related" type="button" role="tab" aria-controls="related" aria-selected="true">Adaptations</button>
                                             </li>
@@ -250,10 +250,10 @@
                                                     {% endfor %}
                                                 </div>                                            
                                                 {% endif %}
-                                                {% if related_related_movies %}
+                                                {% if related_movies %}
                                                 <div class="mb-1">
-                                                    <div class="text-muted">Related Movie{% if object.related_movies.count > 1 %}s{% endif %}</div>
-                                                    {% for movie in object.related_movies.all %}
+                                                    <div class="text-muted">Related Movie{% if related_movies.count > 1 %}s{% endif %}</div>
+                                                    {% for movie in related_movies %}
                                                         <a href="{% url 'watch:movie_detail' movie.id %}">{{movie.title}}</a> ({{movie.earliest_release_date|extract_year}})
                                                         {% if not forloop.last %} / {% endif %}
                                                     {% endfor %}
