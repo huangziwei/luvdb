@@ -783,6 +783,7 @@ class BookDetailView(DetailView):
         unique_based_on_games_set = set()
         unique_based_on_movies_set = set()
         unique_based_on_series_set = set()
+        unique_mentioned_publications_set = set()
         for instance in book.instances.all():
             locations_with_parents = get_locations_with_parents(
                 instance.work.related_locations
@@ -811,6 +812,10 @@ class BookDetailView(DetailView):
             )
             unique_based_on_series_set.update(
                 instance.work.based_on_series.values_list("pk", flat=True)
+            )
+
+            unique_mentioned_publications_set.update(
+                instance.work.mentioned_litworks.values_list("pk", flat=True)
             )
             # Process each location with its parents
             for location, parents in locations_with_parents:
@@ -852,6 +857,9 @@ class BookDetailView(DetailView):
         ]
         context["based_on_series"] = [
             Series.objects.get(pk=pk) for pk in unique_based_on_series_set
+        ]
+        context["mentioned_litworks"] = [
+            Work.objects.get(pk=pk) for pk in unique_mentioned_publications_set
         ]
 
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)

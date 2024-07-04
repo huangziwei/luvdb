@@ -149,6 +149,11 @@
                                                 <button class="nav-link text-muted" id="related-tab" data-bs-toggle="tab" data-bs-target="#related" type="button" role="tab" aria-controls="related" aria-selected="true">Adaptations</button>
                                             </li>
                                             {% endif %}
+                                            {% if mentioned_litworks %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="mentioned-tab" data-bs-toggle="tab" data-bs-target="#mentioned" type="button" role="tab" aria-controls="mentioned" aria-selected="true">Mentioned</button>
+                                            </li>                                            
+                                            {% endif %}
                                             {% if mentioned_by_movies %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted" id="mentioned-by-tab" data-bs-toggle="tab" data-bs-target="#mentioned-by" type="button" role="tab" aria-controls="mentioned-by" aria-selected="true">Mentioned By</button>
@@ -342,14 +347,14 @@
                                                     </ul>
                                                 </div>
                                             {% endif %}
-                                            {% if mentioned_litworks.exists or mentioned_litinstances.exists or mentioned_books.exists %}
-                                                <div class="tab-pane mt-1" id="mentions" role="tabpanel" aria-labelledby="mentions-tab">
+                                            {% if mentioned_litworks or mentioned_litinstances or mentioned_books %}
+                                                <div class="tab-pane mt-1" id="mentioned" role="tabpanel" aria-labelledby="mentioned-tab">
                                                     <div class="mb-1">
                                                         <div class='mb-0'>
-                                                        {% if mentioned_litworks.exists %}
+                                                        {% if mentioned_litworks %}
                                                             <div> 
                                                                 <div class="text-muted text-muted">Publication{% if mentioned_litworks.count > 1 %}s{% endif %}</div>
-                                                                {% for litwork in mentioned_litworks.all %}
+                                                                {% for litwork in mentioned_litworks %}
                                                                     <a href="{% url "read:work_detail" litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
                                                                     {% if not forloop.last %} / {% endif %}
                                                                 {% endfor %}
