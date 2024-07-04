@@ -213,6 +213,7 @@ class WorkDetailView(DetailView):
 
         context["grouped_instances"] = language_grouped_instances
 
+        # adaptations
         adaptation_movies = (
             Movie.objects.filter(based_on_litworks=self.object)
             .annotate(release_date=Min("region_release_dates__release_date"))
@@ -231,6 +232,13 @@ class WorkDetailView(DetailView):
         context["adaptation_series"] = adaptation_series
         context["adaptation_games"] = adaptation_games
         context["adaptation_publications"] = adaptation_publications
+
+        # mentions
+        mentioned_litworks = work.mentioned_litworks.order_by("publication_date")
+        mentioned_series = work.mentioned_series.order_by("release_date")
+
+        context["mentioned_litworks"] = mentioned_litworks
+        context["mentioned_series"] = mentioned_series
 
         grouped_roles = {}
         for role in work.workrole_set.all():
@@ -784,6 +792,7 @@ class BookDetailView(DetailView):
         unique_based_on_movies_set = set()
         unique_based_on_series_set = set()
         unique_mentioned_publications_set = set()
+        unique_mentioned_series_set = set()
         for instance in book.instances.all():
             locations_with_parents = get_locations_with_parents(
                 instance.work.related_locations
@@ -795,6 +804,10 @@ class BookDetailView(DetailView):
             unique_based_on_publications_set.update(
                 instance.work.based_on_litworks.values_list("pk", flat=True)
             )
+            unique_mentioned_publications_set.update(
+                instance.work.mentioned_litworks.values_list("pk", flat=True)
+            )
+
             unique_related_games_set.update(
                 instance.work.games.values_list("pk", flat=True)
             )
@@ -813,10 +826,10 @@ class BookDetailView(DetailView):
             unique_based_on_series_set.update(
                 instance.work.based_on_series.values_list("pk", flat=True)
             )
-
-            unique_mentioned_publications_set.update(
-                instance.work.mentioned_litworks.values_list("pk", flat=True)
+            unique_mentioned_series_set.update(
+                instance.work.mentioned_series.values_list("pk", flat=True)
             )
+
             # Process each location with its parents
             for location, parents in locations_with_parents:
                 # Convert location and its parents to their unique identifiers
@@ -860,6 +873,9 @@ class BookDetailView(DetailView):
         ]
         context["mentioned_litworks"] = [
             Work.objects.get(pk=pk) for pk in unique_mentioned_publications_set
+        ]
+        context["mentioned_series"] = [
+            Series.objects.get(pk=pk) for pk in unique_mentioned_series_set
         ]
 
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)

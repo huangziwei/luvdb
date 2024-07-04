@@ -347,7 +347,7 @@
                                                     </ul>
                                                 </div>
                                             {% endif %}
-                                            {% if mentioned_litworks or mentioned_litinstances or mentioned_books %}
+                                            {% if mentioned_litworks or mentioned_litinstances or mentioned_books or mentioned_series %}
                                                 <div class="tab-pane mt-1" id="mentioned" role="tabpanel" aria-labelledby="mentioned-tab">
                                                     <div class="mb-1">
                                                         <div class='mb-0'>
@@ -360,20 +360,29 @@
                                                                 {% endfor %}
                                                             </div>
                                                         {% endif %}
-                                                        {% if mentioned_litinstances.exists %}
+                                                        {% if mentioned_litinstances %}
                                                             <div>
                                                                 <div class="text-muted text-muted">Instance{% if mentioned_litinstances.count > 1 %}s{% endif %}</div>
-                                                                {% for litinstance in mentioned_litinstances.all %}
+                                                                {% for litinstance in mentioned_litinstances %}
                                                                     <a href="{% url "read:instance_detail" litinstance.id %}">{{ litinstance.title }}</a> ({{ litinstance.publication_date|extract_year }})
                                                                     {% if not forloop.last %} / {% endif %}
                                                                 {% endfor %}
                                                             </div>
                                                         {% endif %}
-                                                        {% if mentioned_books.exists %}
+                                                        {% if mentioned_books %}
                                                             <div>
                                                                 <div class="text-muted">Book{% if mentioned_books.count > 1 %}s{% endif %}</div>
-                                                                {% for book in mentioned_books.all %}
+                                                                {% for book in mentioned_books %}
                                                                     <a href="{% url "read:book_detail" book.id %}">{{ book.title }}</a> ({{ book.publication_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if mentioned_series %}
+                                                            <div>
+                                                                <div class="text-muted">Series{% if mentioned_series.count > 1 %}s{% endif %}</div>
+                                                                {% for series in mentioned_series %}
+                                                                    <a href="{% url "watch:series_detail" series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
                                                                     {% if not forloop.last %} / {% endif %}
                                                                 {% endfor %}
                                                             </div>
