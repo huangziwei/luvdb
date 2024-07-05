@@ -38,21 +38,3 @@ docs {
 language, lastBuildDate, ttl, guid, category, pubDate {
     display: none;
 }
-
-/* sub tabs*/
-.sub-tabs .nav-tabs {
-    border-bottom: none;
-}
-
-.sub-tabs .nav-link {
-    border-bottom-left-radius: var(--bs-nav-tabs-border-radius);
-    border-bottom-right-radius: var(--bs-nav-tabs-border-radius);
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
-    border-top: 0;
-}
-
-.sub-tabs .nav-link.active {
-    border-color: var(--bs-border-color) var(--bs-border-color) transparent;
-    border-bottom: 1px solid var(--bs-border-color);
-}
