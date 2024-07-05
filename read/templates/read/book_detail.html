@@ -348,86 +348,108 @@
                                                 </div>
                                             {% endif %}
                                             {% if mentioned_litworks or mentioned_litinstances or mentioned_books or mentioned_movies or mentioned_series or mentioned_musicworks or mentioned_tracks or mentioned_releases %}
-                                                <div class="tab-pane mt-1" id="mentioned" role="tabpanel" aria-labelledby="mentioned-tab">
-                                                    <div class="mb-1">
-                                                        <div class='mb-0'>
-                                                        {% if mentioned_litworks %}
-                                                            <div class="mb-2"> 
-                                                                <div class="text-muted text-muted">Publication{% if mentioned_litworks.count > 1 %}s{% endif %}</div>
-                                                                {% for litwork in mentioned_litworks %}
-                                                                    <a href="{% url "read:work_detail" litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
-                                                                    {% if not forloop.last %} / {% endif %}
-                                                                {% endfor %}
-                                                            </div>
+                                                <div class="tab-pane mb-1 scrollable-tabs sub-tabs" id="mentioned" role="tabpanel" aria-labelledby="mentioned-tab">
+                                                    <ul class="nav nav-tabs " id="mentionedSubTab" role="tablist">
+                                                        {% if mentioned_litworks or mentioned_litinstances or mentioned_books %}
+                                                            <li class="nav-item" role="presentation">
+                                                                <button class="nav-link text-muted active" id="mentioned-publications-tab" data-bs-toggle="tab" data-bs-target="#mentioned-publications" type="button" role="tab" aria-controls="mentioned-publications" aria-selected="true">Publications</button>
+                                                            </li>
                                                         {% endif %}
-                                                        {% if mentioned_litinstances %}
-                                                            <div class="mb-2">
-                                                                <div class="text-muted text-muted">Instance{% if mentioned_litinstances.count > 1 %}s{% endif %}</div>
-                                                                {% for litinstance in mentioned_litinstances %}
-                                                                    <a href="{% url "read:instance_detail" litinstance.id %}">{{ litinstance.title }}</a> ({{ litinstance.publication_date|extract_year }})
-                                                                    {% if not forloop.last %} / {% endif %}
-                                                                {% endfor %}
-                                                            </div>
+                                                        {% if mentioned_movies or mentioned_series %}
+                                                            <li class="nav-item" role="presentation">
+                                                                <button class="nav-link text-muted" id="mentioned-movies-series-tab" data-bs-toggle="tab" data-bs-target="#mentioned-movies-series" type="button" role="tab" aria-controls="mentioned-movies-series" aria-selected="false">Movies & Series</button>
+                                                            </li>
                                                         {% endif %}
-                                                        {% if mentioned_books %}
-                                                            <div class="mb-2">
-                                                                <div class="text-muted">Book{% if mentioned_books.count > 1 %}s{% endif %}</div>
-                                                                {% for book in mentioned_books %}
-                                                                    <a href="{% url "read:book_detail" book.id %}">{{ book.title }}</a> ({{ book.publication_date|extract_year }})
-                                                                    {% if not forloop.last %} / {% endif %}
-                                                                {% endfor %}
-                                                            </div>
+                                                        {% if mentioned_musicworks or mentioned_tracks or mentioned_releases %}
+                                                            <li class="nav-item" role="presentation">
+                                                                <button class="nav-link text-muted" id="mentioned-music-tab" data-bs-toggle="tab" data-bs-target="#mentioned-music" type="button" role="tab" aria-controls="mentioned-music" aria-selected="false">Music</button>
+                                                            </li>
                                                         {% endif %}
-                                                        {% if mentioned_movies %}
-                                                            <div class="mb-2">
-                                                                <div class="text-muted">Movie{% if mentioned_movies.count > 1 %}s{% endif %}</div>
-                                                                {% for movie in mentioned_movies %}
-                                                                    <a href="{% url "watch:movie_detail" movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date|extract_year }})
-                                                                    {% if not forloop.last %} / {% endif %}
-                                                                {% endfor %}
-                                                            </div>
-                                                        {% endif %}
-                                                        {% if mentioned_series %}
-                                                            <div class="mb-2">
-                                                                <div class="text-muted">Series</div>
-                                                                {% for series in mentioned_series %}
-                                                                    <a href="{% url "watch:series_detail" series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
-                                                                    {% if not forloop.last %} / {% endif %}
-                                                                {% endfor %}
-                                                            </div>
-                                                        {% endif %}
-                                                        {% if mentioned_musicworks %}
-                                                            <div class="mb-2">
-                                                                <div class="text-muted">Music</div>
-                                                                {% for musicwork in mentioned_musicworks %}
-                                                                    <a href="{% url "listen:work_detail" musicwork.id %}">{{ musicwork.title }}</a> ({{ musicwork.release_date|extract_year }})
-                                                                    {% if not forloop.last %} / {% endif %}
-                                                                {% endfor %}
-                                                            </div>
-                                                        {% endif %}
-                                                        {% if mentioned_tracks %}
-                                                            <div class="mb-2">
-                                                                <div class="text-muted">Track{% if mentioned_tracks.count > 1 %}s{% endif %}</div>
-                                                                {% for track in mentioned_tracks %}
-                                                                    <a href="{% url "listen:track_detail" track.id %}">{{ track.title }}</a> ({{ track.release_date|extract_year }})
-                                                                    {% if not forloop.last %} / {% endif %}
-                                                                {% endfor %}
-                                                            </div>
-                                                        {% endif %}
-                                                        {% if mentioned_releases %}
-                                                            <div class="mb-2">
-                                                                <div class="text-muted">Release{% if mentioned_releases.count > 1 %}s{% endif %}</div>
-                                                                {% for release in mentioned_releases %}
-                                                                    <a href="{% url "listen:release_detail" release.id %}">{{ release.title }}</a> ({{ release.release_date|extract_year }})
-                                                                    {% if not forloop.last %} / {% endif %}
-                                                                {% endfor %}
-                                                            </div>
-                                                        {% endif %}
+                                                    </ul>
+                                                    <div class="tab-content" id="mentionedSubTabContent">
+                                                        <div class="tab-pane fade show active" id="mentioned-publications" role="tabpanel" aria-labelledby="mentioned-publications-tab">
+                                                            {% if mentioned_litworks %}
+                                                                <div class="mb-2"> 
+                                                                    <div class="text-muted">Works</div>
+                                                                    {% for litwork in mentioned_litworks %}
+                                                                        <a href="{% url 'read:work_detail' litwork.id %}">{{ litwork.title }}</a> ({{ litwork.publication_date|extract_year }})
+                                                                        {% if not forloop.last %} / {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if mentioned_litinstances %}
+                                                                <div class="mb-2">
+                                                                    <div class="text-muted">Instances</div>
+                                                                    {% for litinstance in mentioned_litinstances %}
+                                                                        <a href="{% url 'read:instance_detail' litinstance.id %}">{{ litinstance.title }}</a> ({{ litinstance.publication_date|extract_year }})
+                                                                        {% if not forloop.last %} / {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if mentioned_books %}
+                                                                <div class="mb-2">
+                                                                    <div class="text-muted">Books</div>
+                                                                    {% for book in mentioned_books %}
+                                                                        <a href="{% url 'read:book_detail' book.id %}">{{ book.title }}</a> ({{ book.publication_date|extract_year }})
+                                                                        {% if not forloop.last %} / {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="tab-pane fade" id="mentioned-movies-series" role="tabpanel" aria-labelledby="mentioned-movies-series-tab">
+                                                            {% if mentioned_movies %}
+                                                                <div class="mb-2">
+                                                                    <div class="text-muted">Movies</div>
+                                                                    {% for movie in mentioned_movies %}
+                                                                        <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date|extract_year }})
+                                                                        {% if not forloop.last %} / {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if mentioned_series %}
+                                                                <div class="mb-2">
+                                                                    <div class="text-muted">Series</div>
+                                                                    {% for series in mentioned_series %}
+                                                                        <a href="{% url 'watch:series_detail' series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
+                                                                        {% if not forloop.last %} / {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="tab-pane fade" id="mentioned-music" role="tabpanel" aria-labelledby="mentioned-music-tab">
+                                                            {% if mentioned_musicworks %}
+                                                                <div class="mb-2">
+                                                                    <div class="text-muted">Works</div>
+                                                                    {% for musicwork in mentioned_musicworks %}
+                                                                        <a href="{% url 'listen:work_detail' musicwork.id %}">{{ musicwork.title }}</a> ({{ musicwork.release_date|extract_year }})
+                                                                        {% if not forloop.last %} / {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if mentioned_tracks %}
+                                                                <div class="mb-2">
+                                                                    <div class="text-muted">Tracks</div>
+                                                                    {% for track in mentioned_tracks %}
+                                                                        <a href="{% url 'listen:track_detail' track.id %}">{{ track.title }}</a> ({{ track.release_date|extract_year }})
+                                                                        {% if not forloop.last %} / {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if mentioned_releases %}
+                                                                <div class="mb-2">
+                                                                    <div class="text-muted">Releases</div>
+                                                                    {% for release in mentioned_releases %}
+                                                                        <a href="{% url 'listen:release_detail' release.id %}">{{ release.title }}</a> ({{ release.release_date|extract_year }})
+                                                                        {% if not forloop.last %} / {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
                                                         </div>
                                                     </div>
                                                 </div>
                                             {% endif %}
-
+                                        
+                                            
                                             {% if mentioned_by_movies.exists %}
                                                 <div class="tab-pane mt-1" id="mentioned-by" role="tabpanel" aria-labelledby="mentioned-by-tab">
                                                     <div class="mb-1">
@@ -573,4 +595,25 @@
         </div>
     </div>
     {% include 'mathjax+mermaid.html' %}
+
+    <style>
+        /* Remove the bottom border from sub-tabs */
+        .sub-tabs .nav-tabs {
+            border-bottom: none;
+        }
+        
+        /* Style sub-tab links to appear upside down */
+        .sub-tabs .nav-link {
+            border-bottom-left-radius: var(--bs-nav-tabs-border-radius);
+            border-bottom-right-radius: var(--bs-nav-tabs-border-radius);
+            border-top-right-radius: 0;
+            border-top-left-radius: 0;
+            border-top: 0;
+        }
+
+        .sub-tabs .nav-link.active {
+            border-color: var(--bs-border-color) var(--bs-border-color) transparent;
+            border-bottom: 1px solid var(--bs-border-color);
+        }
+    </style>
 {% endblock content %}
