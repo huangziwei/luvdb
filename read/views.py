@@ -883,30 +883,39 @@ class BookDetailView(DetailView):
             [Work.objects.get(pk=pk) for pk in unique_related_publications_set],
             key=lambda work: work.publication_date,
         )
-        context["related_games"] = [
-            GameWork.objects.get(pk=pk) for pk in unique_related_games_set
-        ]
+        context["related_games"] = sorted(
+            [GameWork.objects.get(pk=pk) for pk in unique_related_games_set],
+            key=lambda work: work.first_release_date,
+        )
         context["related_movies"] = sorted(
             [Movie.objects.get(pk=pk) for pk in unique_related_movies_set],
             key=lambda movie: movie.region_release_dates.order_by("release_date")
             .first()
             .release_date,
         )
-        context["related_series"] = [
-            Series.objects.get(pk=pk) for pk in unique_related_series_set
-        ]
-        context["based_on_publications"] = [
-            Work.objects.get(pk=pk) for pk in unique_based_on_publications_set
-        ]
-        context["based_on_games"] = [
-            GameWork.objects.get(pk=pk) for pk in unique_based_on_games_set
-        ]
-        context["based_on_movies"] = [
-            Movie.objects.get(pk=pk) for pk in unique_based_on_movies_set
-        ]
-        context["based_on_series"] = [
-            Series.objects.get(pk=pk) for pk in unique_based_on_series_set
-        ]
+        context["related_series"] = sorted(
+            [Series.objects.get(pk=pk) for pk in unique_related_series_set],
+            key=lambda series: series.release_date,
+        )
+        context["based_on_publications"] = sorted(
+            [Work.objects.get(pk=pk) for pk in unique_based_on_publications_set],
+            key=lambda work: work.publication_date,
+        )
+
+        context["based_on_games"] = sorted(
+            [GameWork.objects.get(pk=pk) for pk in unique_based_on_games_set],
+            key=lambda work: work.first_release_date,
+        )
+        context["based_on_movies"] = sorted(
+            [Movie.objects.get(pk=pk) for pk in unique_based_on_movies_set],
+            key=lambda movie: movie.region_release_dates.order_by("release_date")
+            .first()
+            .release_date,
+        )
+        context["based_on_series"] = sorted(
+            [Series.objects.get(pk=pk) for pk in unique_based_on_series_set],
+            key=lambda series: series.release_date,
+        )
         context["mentioned_litworks"] = sorted(
             [Work.objects.get(pk=pk) for pk in unique_mentioned_publications_set],
             key=lambda work: work.publication_date,
