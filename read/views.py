@@ -243,6 +243,8 @@ class WorkDetailView(DetailView):
         context["mentioned_musicworks"] = work.mentioned_musicalworks.order_by(
             "release_date"
         )
+        context["mentioned_tracks"] = work.mentioned_tracks.order_by("release_date")
+        context["mentioned_releases"] = work.mentioned_releases.order_by("release_date")
 
         grouped_roles = {}
         for role in work.workrole_set.all():
