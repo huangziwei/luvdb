@@ -215,7 +215,7 @@
                 {% endif %}
 
                 <!--Mentioned--> <!--WIP-->
-                {% if mentioned_litworks or mentioned_series %}
+                {% if mentioned_litworks or mentioned_movies or mentioned_series or mentioned_musicworks %}
                     <h3 class="mt-2">Mentioned</h3>
                     {% if mentioned_litworks %}
                         <div class="col-12 col-md-6">
@@ -256,6 +256,19 @@
                             </ul>
                         </div>  
                     {% endif %}
+                    {% if mentioned_musicworks %}
+                        <div class="col-12 col-md-6">
+                            <div class="fs-5">Series</div>
+                            <ul>
+                                {% for mention in mentioned_musicworks %}
+                                    <li>
+                                        <a href="{% url 'listen:work_detail' mention.id %}">{{ mention.title }}</a>
+                                        {% if mention.release_date %}({{ mention.release_date }}){% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>  
+                    {% endif %}                    
                 {% endif %}
 
                 <!--Mentioned in-->

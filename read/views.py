@@ -28,6 +28,8 @@ from activity_feed.models import Block
 from discover.utils import user_has_upvoted
 from entity.models import LanguageField
 from entity.views import HistoryViewMixin, get_contributors
+from listen.models import Release, Track
+from listen.models import Work as MusicWork
 from play.models import Work as GameWork
 from visit.models import Location
 from visit.utils import get_locations_with_parents
@@ -234,11 +236,13 @@ class WorkDetailView(DetailView):
         context["adaptation_publications"] = adaptation_publications
 
         # mentions
-        mentioned_litworks = work.mentioned_litworks.order_by("publication_date")
-        mentioned_series = work.mentioned_series.order_by("release_date")
-
-        context["mentioned_litworks"] = mentioned_litworks
-        context["mentioned_series"] = mentioned_series
+        context["mentioned_litworks"] = work.mentioned_litworks.order_by(
+            "publication_date"
+        )
+        context["mentioned_series"] = work.mentioned_series.order_by("release_date")
+        context["mentioned_musicworks"] = work.mentioned_musicalworks.order_by(
+            "release_date"
+        )
 
         grouped_roles = {}
         for role in work.workrole_set.all():
@@ -794,11 +798,15 @@ class BookDetailView(DetailView):
         unique_mentioned_publications_set = set()
         unique_mentioned_movies_set = set()
         unique_mentioned_series_set = set()
+        unique_mentioned_musicworks_set = set()
+        unique_mentioned_tracks_set = set()
+        unique_mentioned_releases_set = set()
         for instance in book.instances.all():
+            # visit
             locations_with_parents = get_locations_with_parents(
                 instance.work.related_locations
             )
-
+            # read
             unique_related_publications_set.update(
                 instance.work.related_publications.values_list("pk", flat=True)
             )
@@ -808,13 +816,14 @@ class BookDetailView(DetailView):
             unique_mentioned_publications_set.update(
                 instance.work.mentioned_litworks.values_list("pk", flat=True)
             )
-
+            # play
             unique_related_games_set.update(
                 instance.work.games.values_list("pk", flat=True)
             )
             unique_based_on_games_set.update(
                 instance.work.based_on_games.values_list("pk", flat=True)
             )
+            # watch
             unique_related_movies_set.update(
                 instance.work.movies.values_list("pk", flat=True)
             )
@@ -832,6 +841,16 @@ class BookDetailView(DetailView):
             )
             unique_mentioned_series_set.update(
                 instance.work.mentioned_series.values_list("pk", flat=True)
+            )
+            # listen
+            unique_mentioned_musicworks_set.update(
+                instance.work.mentioned_musicalworks.values_list("pk", flat=True)
+            )
+            unique_mentioned_tracks_set.update(
+                instance.work.mentioned_tracks.values_list("pk", flat=True)
+            )
+            unique_mentioned_releases_set.update(
+                instance.work.mentioned_releases.values_list("pk", flat=True)
             )
 
             # Process each location with its parents
@@ -892,6 +911,18 @@ class BookDetailView(DetailView):
             key=lambda movie: movie.region_release_dates.order_by("release_date")
             .first()
             .release_date,
+        )
+        context["mentioned_musicworks"] = sorted(
+            [MusicWork.objects.get(pk=pk) for pk in unique_mentioned_musicworks_set],
+            key=lambda work: work.release_date,
+        )
+        context["mentioned_tracks"] = sorted(
+            [Track.objects.get(pk=pk) for pk in unique_mentioned_tracks_set],
+            key=lambda track: track.release_date,
+        )
+        context["mentioned_releases"] = sorted(
+            [Release.objects.get(pk=pk) for pk in unique_mentioned_releases_set],
+            key=lambda release: release.release_date,
         )
 
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
