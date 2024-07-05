@@ -192,7 +192,7 @@
                                                 {% endif %}
                                                 {% if object.games.exists %}
                                                 <div class="mb-1">
-                                                    <div class="text-muted">Related Game{% if object.games.count > 1 %}s{% endif %}</div>
+                                                    <div class="text-muted">Game{% if object.games.count > 1 %}s{% endif %}</div>
                                                     {% for game in object.games.all %}
                                                         <a href="{% url 'play:work_detail' game.id %}">{{game.title}}</a> ({{game.first_release_date|extract_year}})
                                                         {% if not forloop.last %} / {% endif %}
@@ -201,7 +201,7 @@
                                                 {% endif %}
                                                 {% if object.related_movies.exists %}
                                                 <div class="mb-1">
-                                                    <div class="text-muted">Related Movie{% if object.related_movies.count > 1 %}s{% endif %}</div>
+                                                    <div class="text-muted">Movie{% if object.related_movies.count > 1 %}s{% endif %}</div>
                                                     {% for movie in object.related_movies.all %}
                                                         <a href="{% url 'watch:movie_detail' movie.id %}">{{movie.title}}</a> ({{movie.earliest_release_date|extract_year}})
                                                         {% if not forloop.last %} / {% endif %}
@@ -210,7 +210,7 @@
                                                 {% endif %}
                                                 {% if object.series.exists %}
                                                 <div class="mb-1">
-                                                    <div class="text-muted">Related Series</div>
+                                                    <div class="text-muted">Series</div>
                                                     {% for series in object.series.all %}
                                                         <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
                                                         {% if not forloop.last %} / {% endif %}

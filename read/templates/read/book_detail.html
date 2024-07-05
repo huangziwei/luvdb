@@ -248,7 +248,7 @@
                                                 {% endif %}
                                                 {% if related_games %}
                                                 <div class="mb-1">
-                                                    <div class="text-muted">Related Game{% if related_games.count > 1 %}s{% endif %}</div>
+                                                    <div class="text-muted">Game{% if related_games.count > 1 %}s{% endif %}</div>
                                                     {% for game in related_games %}
                                                         <a href="{% url 'play:work_detail' game.id %}">{{game.title}}</a> ({{game.first_release_date|extract_year}})
                                                         {% if not forloop.last %} / {% endif %}
@@ -257,7 +257,7 @@
                                                 {% endif %}
                                                 {% if related_movies %}
                                                 <div class="mb-1">
-                                                    <div class="text-muted">Related Movie{% if related_movies.count > 1 %}s{% endif %}</div>
+                                                    <div class="text-muted">Movie{% if related_movies.count > 1 %}s{% endif %}</div>
                                                     {% for movie in related_movies %}
                                                         <a href="{% url 'watch:movie_detail' movie.id %}">{{movie.title}}</a> ({{movie.earliest_release_date|extract_year}})
                                                         {% if not forloop.last %} / {% endif %}
@@ -266,7 +266,7 @@
                                                 {% endif %}
                                                 {% if related_series %}
                                                 <div class="mb-1">
-                                                    <div class="text-muted">Related Series</div>
+                                                    <div class="text-muted">Series</div>
                                                     {% for series in related_series %}
                                                         <a href="{% url 'watch:series_detail' series.id %}">{{series.title}}</a> ({{series.release_date|extract_year}})
                                                         {% if not forloop.last %} / {% endif %}
@@ -595,25 +595,4 @@
         </div>
     </div>
     {% include 'mathjax+mermaid.html' %}
-
-    <style>
-        /* Remove the bottom border from sub-tabs */
-        .sub-tabs .nav-tabs {
-            border-bottom: none;
-        }
-        
-        /* Style sub-tab links to appear upside down */
-        .sub-tabs .nav-link {
-            border-bottom-left-radius: var(--bs-nav-tabs-border-radius);
-            border-bottom-right-radius: var(--bs-nav-tabs-border-radius);
-            border-top-right-radius: 0;
-            border-top-left-radius: 0;
-            border-top: 0;
-        }
-
-        .sub-tabs .nav-link.active {
-            border-color: var(--bs-border-color) var(--bs-border-color) transparent;
-            border-bottom: 1px solid var(--bs-border-color);
-        }
-    </style>
 {% endblock content %}
