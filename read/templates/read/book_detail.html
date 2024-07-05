@@ -347,7 +347,7 @@
                                                     </ul>
                                                 </div>
                                             {% endif %}
-                                            {% if mentioned_litworks or mentioned_litinstances or mentioned_books or mentioned_series %}
+                                            {% if mentioned_litworks or mentioned_litinstances or mentioned_books or mentioned_movies or mentioned_series %}
                                                 <div class="tab-pane mt-1" id="mentioned" role="tabpanel" aria-labelledby="mentioned-tab">
                                                     <div class="mb-1">
                                                         <div class='mb-0'>
@@ -378,9 +378,18 @@
                                                                 {% endfor %}
                                                             </div>
                                                         {% endif %}
+                                                        {% if mentioned_movies %}
+                                                            <div>
+                                                                <div class="text-muted">Movie{% if mentioned_movies.count > 1 %}s{% endif %}</div>
+                                                                {% for movie in mentioned_movies %}
+                                                                    <a href="{% url "watch:movie_detail" movie.id %}">{{ movie.title }}</a> ({{ movie.earliest_release_date|extract_year }})
+                                                                    {% if not forloop.last %} / {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
                                                         {% if mentioned_series %}
                                                             <div>
-                                                                <div class="text-muted">Series{% if mentioned_series.count > 1 %}s{% endif %}</div>
+                                                                <div class="text-muted">Series</div>
                                                                 {% for series in mentioned_series %}
                                                                     <a href="{% url "watch:series_detail" series.id %}">{{ series.title }}</a> ({{ series.release_date|extract_year }})
                                                                     {% if not forloop.last %} / {% endif %}

@@ -230,7 +230,19 @@
                             </ul>
                         </div>
                     {% endif %}
-
+                    {% if mentioned_movies %}
+                        <div class="col-12 col-md-6">
+                            <div class="fs-5">Movie{% if mentioned_movies.count!=1 %}s{% endif %}</div>
+                            <ul>
+                                {% for mention in mentioned_movies %}
+                                    <li>
+                                        <a href="{% url 'watch:movies_detail' mention.id %}">{{ mention.title }}</a>
+                                        {% if mention.region_release_date.exist %}({{ mention.earliest_release_date }}){% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>  
+                    {% endif %}
                     {% if mentioned_series %}
                         <div class="col-12 col-md-6">
                             <div class="fs-5">Series</div>

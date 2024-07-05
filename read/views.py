@@ -792,6 +792,7 @@ class BookDetailView(DetailView):
         unique_based_on_movies_set = set()
         unique_based_on_series_set = set()
         unique_mentioned_publications_set = set()
+        unique_mentioned_movies_set = set()
         unique_mentioned_series_set = set()
         for instance in book.instances.all():
             locations_with_parents = get_locations_with_parents(
@@ -820,6 +821,9 @@ class BookDetailView(DetailView):
             unique_based_on_movies_set.update(
                 instance.work.based_on_movies.values_list("pk", flat=True)
             )
+            unique_mentioned_movies_set.update(
+                instance.work.mentioned_movies.values_list("pk", flat=True)
+            )
             unique_related_series_set.update(
                 instance.work.series.values_list("pk", flat=True)
             )
@@ -847,15 +851,19 @@ class BookDetailView(DetailView):
             )
             for location_id, parent_ids in unique_locations_with_parents_set
         ]
-        context["related_publications"] = [
-            Work.objects.get(pk=pk) for pk in unique_related_publications_set
-        ]
+        context["related_publications"] = sorted(
+            [Work.objects.get(pk=pk) for pk in unique_related_publications_set],
+            key=lambda work: work.publication_date,
+        )
         context["related_games"] = [
             GameWork.objects.get(pk=pk) for pk in unique_related_games_set
         ]
-        context["related_movies"] = [
-            Movie.objects.get(pk=pk) for pk in unique_related_movies_set
-        ]
+        context["related_movies"] = sorted(
+            [Movie.objects.get(pk=pk) for pk in unique_related_movies_set],
+            key=lambda movie: movie.region_release_dates.order_by("release_date")
+            .first()
+            .release_date,
+        )
         context["related_series"] = [
             Series.objects.get(pk=pk) for pk in unique_related_series_set
         ]
@@ -871,12 +879,20 @@ class BookDetailView(DetailView):
         context["based_on_series"] = [
             Series.objects.get(pk=pk) for pk in unique_based_on_series_set
         ]
-        context["mentioned_litworks"] = [
-            Work.objects.get(pk=pk) for pk in unique_mentioned_publications_set
-        ]
-        context["mentioned_series"] = [
-            Series.objects.get(pk=pk) for pk in unique_mentioned_series_set
-        ]
+        context["mentioned_litworks"] = sorted(
+            [Work.objects.get(pk=pk) for pk in unique_mentioned_publications_set],
+            key=lambda work: work.publication_date,
+        )
+        context["mentioned_series"] = sorted(
+            [Series.objects.get(pk=pk) for pk in unique_mentioned_series_set],
+            key=lambda series: series.release_date,
+        )
+        context["mentioned_movies"] = sorted(
+            [Movie.objects.get(pk=pk) for pk in unique_mentioned_movies_set],
+            key=lambda movie: movie.region_release_dates.order_by("release_date")
+            .first()
+            .release_date,
+        )
 
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
         # can vote only if user checked in "read" or "reread"
