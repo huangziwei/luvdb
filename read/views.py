@@ -239,6 +239,9 @@ class WorkDetailView(DetailView):
         context["mentioned_litworks"] = work.mentioned_litworks.order_by(
             "publication_date"
         )
+        context["mentioned_instances"] = work.mentioned_litinstances.order_by(
+            "publication_date"
+        )
         context["mentioned_series"] = work.mentioned_series.order_by("release_date")
         context["mentioned_musicworks"] = work.mentioned_musicalworks.order_by(
             "release_date"
@@ -798,6 +801,7 @@ class BookDetailView(DetailView):
         unique_based_on_movies_set = set()
         unique_based_on_series_set = set()
         unique_mentioned_publications_set = set()
+        unique_mentioned_instances_set = set()
         unique_mentioned_movies_set = set()
         unique_mentioned_series_set = set()
         unique_mentioned_musicworks_set = set()
@@ -817,6 +821,9 @@ class BookDetailView(DetailView):
             )
             unique_mentioned_publications_set.update(
                 instance.work.mentioned_litworks.values_list("pk", flat=True)
+            )
+            unique_mentioned_instances_set.update(
+                instance.work.mentioned_litinstances.values_list("pk", flat=True)
             )
             # play
             unique_related_games_set.update(
@@ -903,6 +910,10 @@ class BookDetailView(DetailView):
         context["mentioned_litworks"] = sorted(
             [Work.objects.get(pk=pk) for pk in unique_mentioned_publications_set],
             key=lambda work: work.publication_date,
+        )
+        context["mentioned_litinstances"] = sorted(
+            [Instance.objects.get(pk=pk) for pk in unique_mentioned_instances_set],
+            key=lambda instance: instance.publication_date,
         )
         context["mentioned_series"] = sorted(
             [Series.objects.get(pk=pk) for pk in unique_mentioned_series_set],
