@@ -249,8 +249,8 @@
                             <ul>
                                 {% for mention in mentioned_movies %}
                                     <li>
-                                        <a href="{% url 'watch:movies_detail' mention.id %}">{{ mention.title }}</a>
-                                        {% if mention.region_release_date.exist %}({{ mention.earliest_release_date }}){% endif %}
+                                        <a href="{% url 'watch:movie_detail' mention.id %}">{{ mention.title }}</a>
+                                        {% if mention.earliest_release_date %}({{ mention.earliest_release_date }}){% endif %}
                                     </li>
                                 {% endfor %}
                             </ul>

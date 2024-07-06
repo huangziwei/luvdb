@@ -242,11 +242,9 @@ class WorkDetailView(DetailView):
         context["mentioned_instances"] = work.mentioned_litinstances.order_by(
             "publication_date"
         )
-        context["mentioned_movies"] = (
-            work.mentioned_movies
-            .annotate(annotated_earliest_release_date=Min("region_release_dates__release_date"))
-            .order_by("region_release_dates__release_date")
-        )
+        context["mentioned_movies"] = work.mentioned_movies.annotate(
+            annotated_earliest_release_date=Min("region_release_dates__release_date")
+        ).order_by("annotated_earliest_release_date")
         context["mentioned_series"] = work.mentioned_series.order_by("release_date")
         context["mentioned_musicworks"] = work.mentioned_musicalworks.order_by(
             "release_date"
