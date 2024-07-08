@@ -27,6 +27,7 @@ from django_ratelimit.decorators import ratelimit
 from activity_feed.models import Block
 from discover.utils import user_has_upvoted
 from entity.models import LanguageField
+from entity.utils import get_company_name
 from entity.views import HistoryViewMixin, get_contributors
 from listen.models import Release, Track
 from listen.models import Work as MusicWork
@@ -961,6 +962,7 @@ class BookDetailView(DetailView):
                 status__in=["finished_reading", "reread"],
             ).exists()
         )
+        context["publisher"] = get_company_name([book.publisher], book.publication_date)
 
         # mentions by other media
         context["mentioned_by_movies"] = (
@@ -1707,10 +1709,16 @@ class ReadCheckInDetailView(DetailView):
         context["app_label"] = self.object._meta.app_label
         context["object_type"] = self.object._meta.model_name.lower()
 
+        content_object = self.object.content_object
+
+        context["publisher"] = get_company_name(
+            [content_object.publisher], content_object.publication_date
+        )
+
         checkin_count = get_visible_checkins(
             request_user=self.request.user,
-            content_type=ContentType.objects.get_for_model(self.object.content_object),
-            object_id=self.object.content_object.id,
+            content_type=ContentType.objects.get_for_model(content_object),
+            object_id=content_object.id,
             CheckInModel=ReadCheckIn,
             checkin_user=self.object.user,
         ).count()
@@ -1881,6 +1889,9 @@ class GenericCheckInListView(ListView):
                         (book_role.creator, alt_name_or_creator_name)
                     )
                 context["roles"] = roles
+                context["publisher"] = get_company_name(
+                    [book.publisher], book.publication_date
+                )
 
         context["model_name"] = self.kwargs.get("model_name", "book")
 
@@ -2006,6 +2017,9 @@ class GenericCheckInAllListView(ListView):
                         (book_role.creator, alt_name_or_creator_name)
                     )
                 context["roles"] = roles
+                context["publisher"] = get_company_name(
+                    [book.publisher], book.publication_date
+                )
 
         context["order"] = self.request.GET.get(
             "order", "-timestamp"
@@ -2096,6 +2110,10 @@ class GenericCheckInUserListView(ListView):
         for checkin in checkins:
             checkin.checkin_count = user_checkin_count_dict.get(
                 (checkin.content_type_id, checkin.object_id), 0
+            )
+            checkin.publisher = get_company_name(
+                [checkin.content_object.publisher],
+                checkin.content_object.publication_date,
             )
 
         return checkins

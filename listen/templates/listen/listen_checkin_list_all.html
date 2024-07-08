@@ -113,10 +113,10 @@
                                         {% endfor %}
                                     </div>
                                 {% endfor %}
-                                {% if object.label %}
+                                {% if labels %}
                                     <div class="mb-1">
                                         <span class="text-muted">Label:</span>
-                                        {% for label in object.label.all %}
+                                        {% for label in labels %}
                                             <a href="{% url 'entity:company_detail' label.id %}">
                                                 {{ label.name }}
                                                 {% if not forloop.last %}/{% endif %}

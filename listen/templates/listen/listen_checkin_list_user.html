@@ -235,12 +235,12 @@
                                                 </div>
                                             {% endfor %}
 
-                                            {% if checkin.content_object.label %}
+                                            {% if checkin.labels %}
                                                 <div>
                                                     {# djlint:off #}
-                                                    Label{% if checkin.content_object.label.list|length > 1 %}s{% endif %}:
+                                                    Label{% if checkin.labels.list|length > 1 %}s{% endif %}:
                                                     {# djlint:on #}
-                                                    {% for label in checkin.content_object.label.all %}
+                                                    {% for label in checkin.labels %}
                                                         {% if not forloop.first %},{% endif %}
                                                         <a href="{% url 'entity:company_detail' label.id %}">{{ label.name }}</a>
                                                     {% endfor %}

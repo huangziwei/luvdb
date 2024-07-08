@@ -108,11 +108,10 @@
                                     </div>
                                 {% endfor %}
                             {% endif %}
-                            {% if object.content_object.publisher %}
+                            {% if publisher.0.id %}
                             <div>
                                 <span class="text-muted">Publisher:</span> 
-                                <a href="{% url 'entity:company_detail' object.content_object.publisher.id %}">{{ object.content_object.publisher }}</a>
-                                
+                                <a href="{% url 'entity:company_detail' publisher.0.id %}">{{ publisher.0.name }}</a>
                             </div>
                             {% endif %}
                             {% if object.content_object.get_genres %}

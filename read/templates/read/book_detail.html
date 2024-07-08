@@ -82,11 +82,11 @@
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
-                                    {% if object.publisher %}
+                                    {% if publisher.0.id %}
                                         <div class="mb-1" >
                                             <span class="text-muted">Publisher:</span>
-                                            <a href="{% url 'entity:company_detail' object.publisher.id %}">
-                                                {{ object.publisher.name }}
+                                            <a href="{% url 'entity:company_detail' publisher.0.id %}">
+                                                {{ publisher.0.name }}
                                             </a>
                                         </div>
                                     {% endif %}

@@ -1532,6 +1532,11 @@ class GenericCheckInUserListView(ListView):
             checkin.checkin_count = user_checkin_count_dict.get(
                 (checkin.content_type_id, checkin.object_id), 0
             )
+            if checkin.content_type.model == "release":
+                checkin.labels = get_company_name(
+                    checkin.content_object.label.all(),
+                    checkin.content_object.release_date,
+                )
 
         return checkins
 
@@ -2046,6 +2051,10 @@ class GenericCheckInListView(ListView):
                     (release_role.creator, alt_name_or_creator_name)
                 )
             context["roles"] = roles
+            context["labels"] = get_company_name(
+                release.label.all(), release.release_date
+            )
+
         elif context["model_name"] == "audiobook":
             audiobook = model.objects.get(pk=object_id)  # Get the object details
             roles = {}
@@ -2185,6 +2194,9 @@ class GenericCheckInAllListView(ListView):
                     (release_role.creator, alt_name_or_creator_name)
                 )
             context["roles"] = roles
+            context["labels"] = get_company_name(
+                release.label.all(), release.release_date
+            )
         elif context["model_name"] == "audiobook":
             audiobook = model.objects.get(pk=object_id)  # Get the object details
             roles = {}
