@@ -201,9 +201,9 @@
                                                             </div>
                                                         {% endfor %}
                                                     {% endif %}
-                                                    {% if checkin.publisher.0.id %}
+                                                    {% if checkin.publisher.id %}
                                                         <div>
-                                                            Publisher: <a href="{% url 'entity:company_detail' checkin.publisher.0.id %}">{{checkin.publisher.0.name}}</a>
+                                                            Publisher: <a href="{% url 'entity:company_detail' checkin.publisher.id %}">{{checkin.publisher.name}}</a>
                                                         </div>
                                                     {% endif %}
                                                     {% if checkin.content_object.publication_date %}

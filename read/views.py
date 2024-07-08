@@ -962,7 +962,9 @@ class BookDetailView(DetailView):
                 status__in=["finished_reading", "reread"],
             ).exists()
         )
-        context["publisher"] = get_company_name([book.publisher], book.publication_date)
+        context["publisher"] = get_company_name(
+            [book.publisher], book.publication_date
+        )[0]
 
         # mentions by other media
         context["mentioned_by_movies"] = (
@@ -1713,7 +1715,7 @@ class ReadCheckInDetailView(DetailView):
 
         context["publisher"] = get_company_name(
             [content_object.publisher], content_object.publication_date
-        )
+        )[0]
 
         checkin_count = get_visible_checkins(
             request_user=self.request.user,
@@ -1891,7 +1893,7 @@ class GenericCheckInListView(ListView):
                 context["roles"] = roles
                 context["publisher"] = get_company_name(
                     [book.publisher], book.publication_date
-                )
+                )[0]
 
         context["model_name"] = self.kwargs.get("model_name", "book")
 
@@ -2019,7 +2021,7 @@ class GenericCheckInAllListView(ListView):
                 context["roles"] = roles
                 context["publisher"] = get_company_name(
                     [book.publisher], book.publication_date
-                )
+                )[0]
 
         context["order"] = self.request.GET.get(
             "order", "-timestamp"
@@ -2114,7 +2116,7 @@ class GenericCheckInUserListView(ListView):
             checkin.publisher = get_company_name(
                 [checkin.content_object.publisher],
                 checkin.content_object.publication_date,
-            )
+            )[0]
 
         return checkins
 
@@ -2404,6 +2406,12 @@ class BookGroupDetailView(DetailView):
             date_length=Length("book__publication_date"),
             padded_date=F("book__publication_date"),
         ).order_by("-date_length", "padded_date")
+
+        for book_in_group in books:
+            print(book_in_group.book.publisher)
+            book_in_group.publisher = get_company_name(
+                [book_in_group.book.publisher], book_in_group.book.publication_date
+            )[0]
 
         # Update the context with the sorted book
         context["sorted_books"] = books

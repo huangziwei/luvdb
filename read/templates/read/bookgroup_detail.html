@@ -25,11 +25,11 @@
                                 {% endfor %}
                             </div>
                         {% endfor %}
-                        {% if oldest_book.book.publisher %}
+                        {% if oldest_book.publisher.id %}
                             <div>
                                 <span class="text-muted">Publisher</span>: 
-                                <a href="{% url 'entity:company_detail' oldest_book.book.publisher.id %}">
-                                    {{ oldest_book.book.publisher.name }}
+                                <a href="{% url 'entity:company_detail' oldest_book.publisher.id %}">
+                                    {{ oldest_book.publisher.name }}
                                 </a>
                             </div>
                         {% endif %}
@@ -85,11 +85,11 @@
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
-                                    {% if book_in_group.book.publisher %}
+                                    {% if book_in_group.publisher.id %}
                                         <div>
                                             <span class="text-muted">Publisher</span>: 
-                                            <a href="{% url 'entity:company_detail' book_in_group.book.publisher.id %}">
-                                                {{ book_in_group.book.publisher.name }}
+                                            <a href="{% url 'entity:company_detail' book_in_group.publisher.id %}">
+                                                {{ book_in_group.publisher.name }}
                                             </a>
                                         </div>
                                     {% endif %}
