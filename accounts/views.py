@@ -677,28 +677,32 @@ def filter_write(query, search_terms, request_user):
         post_query = Post.objects.filter(
             user__is_public=True, visible_to=request_user
         ).filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
-        say_query = Say.objects.filter(user__is_public=True, visible_to=request_user)
-        pin_query = Pin.objects.filter(
-            user__is_public=True, visible_to=request_user
-        ).filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
+        say_query = Say.objects.filter(user__is_public=True).filter(
+            Q(visibility="PU") | Q(visible_to=request_user)
+        )
+        pin_query = (
+            Pin.objects.filter(user__is_public=True)
+            .filter(Q(visibility="PU") | Q(visible_to=request_user))
+            .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
+        )
         repost_query = Repost.objects.filter(user__is_public=True)
-        luvlist_query = LuvList.objects.filter(
-            user__is_public=True, visible_to=request_user
+        luvlist_query = LuvList.objects.filter(user__is_public=True).filter(
+            Q(visibility="PU") | Q(visible_to=request_user)
         )
-        read_checkin_query = ReadCheckIn.objects.filter(
-            user__is_public=True, visible_to=request_user
+        read_checkin_query = ReadCheckIn.objects.filter(user__is_public=True).filter(
+            Q(visibility="PU") | Q(visible_to=request_user)
         )
-        watch_checkin_query = WatchCheckIn.objects.filter(
-            user__is_public=True, visible_to=request_user
+        watch_checkin_query = WatchCheckIn.objects.filter(user__is_public=True).filter(
+            Q(visibility="PU") | Q(visible_to=request_user)
         )
         listen_checkin_query = ListenCheckIn.objects.filter(
-            user__is_public=True, visible_to=request_user
+            user__is_public=True
+        ).filter(Q(visibility="PU") | Q(visible_to=request_user))
+        play_checkin_query = PlayCheckIn.objects.filter(user__is_public=True).filter(
+            Q(visibility="PU") | Q(visible_to=request_user)
         )
-        play_checkin_query = PlayCheckIn.objects.filter(
-            user__is_public=True, visible_to=request_user
-        )
-        visit_checkin_query = VisitCheckIn.objects.filter(
-            user__is_public=True, visible_to=request_user
+        visit_checkin_query = VisitCheckIn.objects.filter(user__is_public=True).filter(
+            Q(visibility="PU") | Q(visible_to=request_user)
         )
     else:
         post_query = Post.objects.filter(
@@ -1097,7 +1101,7 @@ def search_view(request):
         if model in ["all", "visit"]:
             location_results = filter_location(query, search_terms)
 
-        if model == "write":
+        if model in ["all", "write"]:
             (
                 post_results,
                 say_results,
