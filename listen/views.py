@@ -1891,7 +1891,6 @@ class PodcastDetailView(DetailView):
             )
             if latest_user_checkin is not None:
                 context["latest_user_status"] = latest_user_checkin.status
-                print(latest_user_checkin.status)
             else:
                 context["latest_user_status"] = "to_listen"
         else:

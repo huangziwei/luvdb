@@ -1926,7 +1926,6 @@ class PhotoDetailView(ShareDetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         if "set_cover" in request.POST:
-            print("Setting cover photo...")
             album = self.object.album
             album.cover_photo = self.object
             album.save()

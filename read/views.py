@@ -2408,7 +2408,6 @@ class BookGroupDetailView(DetailView):
         ).order_by("-date_length", "padded_date")
 
         for book_in_group in books:
-            print(book_in_group.book.publisher)
             book_in_group.publisher = get_company_name(
                 [book_in_group.book.publisher], book_in_group.book.publication_date
             )[0]
