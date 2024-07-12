@@ -99,14 +99,24 @@
                                             {% endfor %}
                                         </div>
                                     {% endif %}
+                                    {% if release_in_group.release.release_length %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Length:</span> {{ release_in_group.release.release_length }}
+                                        </div>
+                                    {% endif %}
+                                    {% if release_in_group.release.release_type or release_in_group.release.release_format or release_in_group.release.recording_type %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Format:</span> {{ release_in_group.release.release_format }} {{release_in_group.release.recording_type}} {{release_in_group.release.release_type}} 
+                                        </div>
+                                    {% endif %}
+                                    {% if release_in_group.release.catalog_number %}
+                                        <div><span class="text-muted">Catalog Number</span>: {{ release_in_group.release.catalog_number }}</div>
+                                    {% endif %}
                                     {% if release_in_group.release.release_date %}
                                         <div>
                                             <span class="text-muted">Date</span>: {{ release_in_group.release.release_date }}
                                             {% if release_in_group.release.release_region  %}({{release_in_group.release.release_region}}){% endif %}
                                         </div>
-                                    {% endif %}
-                                    {% if release_in_group.release.catalog_number %}
-                                        <div><span class="text-muted">Catalog Number</span>: {{ release_in_group.release.catalog_number }}</div>
                                     {% endif %}
                                 </div>
                             </div>
