@@ -239,6 +239,17 @@
                                 </div>
                             {% endfor %}
                         {% endif %}
+                        {% if activity.content_object.original_activity.content_object.content_object.stars.exists %}
+                        <div>
+                            {# djlint:off #}
+                            <span class="text-muted">Stars:</span>
+                            {# djlint:on #}
+                            {% for star in activity.content_object.original_activity.content_object.content_object.stars.all %}
+                                {% if not forloop.first %}/{% endif %}
+                                <a href="{% url 'entity:creator_detail' star.id %}">{{ star.name }}</a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
                         {% if activity.content_object.original_activity.content_object.content_object.studios.exists %}
                         <div>
                             {# djlint:off #}
@@ -250,6 +261,22 @@
                             {% endfor %}
                         </div>
                         {% endif %}
+                        {% if activity.content_object.original_activity.content_object.content_object.genres %}
+                        <div>
+                            <span class="text-muted">Genres:</span>
+                            {% for genre in activity.content_object.original_activity.content_object.content_object.genres.all %}
+                                {% if not forloop.first %}/{% endif %}
+                                <a href="{% url 'watch:genre_detail' genre.name %}">{{ genre.name }}</a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div>
+                            {% if activity.content_object.original_activity.content_object.content_type.model == 'movie' %}
+                                <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' activity.content_object.original_activity.content_object.content_object.id %}">View All</a>
+                            {% elif activity.content_object.original_activity.content_object.content_type.model == 'series' %}
+                                <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:series_cast_detail' activity.content_object.original_activity.content_object.content_object.id %}">View All</a>
+                            {% endif %}
+                        </div>
                         {% if activity.content_object.original_activity.content_object.content_object.release_date %}
                         <div>
                             <span class="text-muted">Date:</span>

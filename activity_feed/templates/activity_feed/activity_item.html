@@ -439,6 +439,17 @@
                         </div>
                     {% endfor %}
                 {% endif %}
+                {% if activity.content_object.content_object.stars.exists %}
+                <div>
+                    {# djlint:off #}
+                    <span class="text-muted">Stars:</span>
+                    {# djlint:on #}
+                    {% for star in activity.content_object.content_object.stars.all %}
+                        {% if not forloop.first %}/{% endif %}
+                        <a href="{% url 'entity:creator_detail' star.id %}">{{ star.name }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}                
                 {% if activity.content_object.content_object.studios.exists %}
                 <div>
                     {# djlint:off #}
@@ -447,17 +458,6 @@
                     {% for studio in activity.content_object.content_object.studios.all %}
                         {% if not forloop.first %}/{% endif %}
                         <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                {% if activity.content_object.content_object.distributors.exists %}
-                <div>
-                    {# djlint:off #}
-                    <span class="text-muted">Distributor{% if activity.content_object.content_object.distributors.count > 1 %}s{% endif %}:</span>
-                    {# djlint:on #}
-                    {% for distributor in activity.content_object.content_object.distributors.all %}
-                        {% if not forloop.first %}/{% endif %}
-                        <a href="{% url 'entity:company_detail' distributor.id %}">{{ distributor.name }}</a>
                     {% endfor %}
                 </div>
                 {% endif %}

@@ -110,6 +110,17 @@
                                     </div>
                                 {% endfor %}
                             {% endif %}
+                            {% if object.content_object.stars.exists %}
+                            <div>
+                                {# djlint:off #}
+                                <span class="text-muted">Stars:</span>
+                                {# djlint:on #}
+                                {% for star in object.content_object.stars.all %}
+                                    {% if not forloop.first %}/{% endif %}
+                                    <a href="{% url 'entity:company_detail' star.id %}">{{ star.name }}</a>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
                             {% if object.content_object.studios.exists %}
                             <div>
                                 {# djlint:off #}
@@ -117,21 +128,26 @@
                                 {# djlint:on #}
                                 {% for studio in object.content_object.studios.all %}
                                     {% if not forloop.first %}/{% endif %}
-                                    <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
+                                    <a href="{% url 'entity:creator_detail' studio.id %}">{{ studio.name }}</a>
                                 {% endfor %}
                             </div>
                             {% endif %}
-                            {% if object.content_object.distributors.exists %}
+                            {% if object.content_object.genres %}
                             <div>
-                                {# djlint:off #}
-                                <span class="text-muted">Distributor{% if object.content_object.distributors.count > 1 %}s{% endif %}:</span>
-                                {# djlint:on #}
-                                {% for distributor in object.content_object.distributors.all %}
+                                <span class="text-muted">Genres:</span>
+                                {% for genre in object.content_object.genres.all %}
                                     {% if not forloop.first %}/{% endif %}
-                                    <a href="{% url 'entity:company_detail' distributor.id %}">{{ distributor.name }}</a>
+                                    <a href="{% url 'watch:genre_detail' genre.name %}">{{ genre.name }}</a>
                                 {% endfor %}
                             </div>
                             {% endif %}
+                            <div>
+                                {% if object.content_type.model == 'movie' %}
+                                    <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.content_object.id %}">View All</a>
+                                {% elif object.content_type.model == 'series' %}
+                                    <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:series_cast_detail' object.content_object.id %}">View All</a>
+                                {% endif %}
+                            </div>
                             {% if object.content_object.release_date %}
                             <div>
                                 <span class="text-muted">Date:</span>{{ object.content_object.release_date }}

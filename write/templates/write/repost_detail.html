@@ -219,6 +219,17 @@
                                             </div>
                                         {% endfor %}
                                     {% endif %}
+                                    {% if repost.original_activity.content_object.content_object.stars.exists %}
+                                    <div>
+                                        {# djlint:off #}
+                                        Stars:
+                                        {# djlint:on #}
+                                        {% for star in repost.original_activity.content_object.content_object.stars.all %}
+                                            {% if not forloop.first %}/{% endif %}
+                                            <a href="{% url 'entity:creator_detail' star.id %}">{{ star.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
                                     {% if repost.original_activity.content_object.content_object.studios.exists %}
                                     <div>
                                         {# djlint:off #}
@@ -230,23 +241,22 @@
                                         {% endfor %}
                                     </div>
                                     {% endif %}
-                                    {% if repost.original_activity.content_object.content_object.distributors.exists %}
+                                    {% if repost.original_activity.content_object.content_object.genres %}
                                     <div>
-                                        {# djlint:off #}
-                                        Distributor{% if repost.original_activity.content_object.content_object.distributors.count > 1 %}s{% endif %}:
-                                        {# djlint:on #}
-                                        {% for distributor in repost.original_activity.content_object.content_object.distributors.all %}
+                                        Genres:
+                                        {% for genre in repost.original_activity.content_object.content_object.genres.all %}
                                             {% if not forloop.first %}/{% endif %}
-                                            <a href="{% url 'entity:company_detail' distributor.id %}">{{ distributor.name }}</a>
+                                            <a href="{% url 'watch:genre_detail' genre.name %}">{{ genre.name }}</a>
                                         {% endfor %}
                                     </div>
                                     {% endif %}
-                                    {% if activity.content_object.original_activity.content_object.content_object.release_date %}
                                     <div>
-                                        <span class="text-muted">Date:</span>
-                                        {{ activity.content_object.original_activity.content_object.content_object.release_date }}
+                                        {% if repost.original_activity.content_object.content_type.model == 'movie' %}
+                                            <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' repost.original_activity.content_object.content_object.id %}">View All</a>
+                                        {% elif repost.original_activity.content_object.content_type.model == 'series' %}
+                                            <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:series_cast_detail' repost.original_activity.content_object.content_object.id %}">View All</a>
+                                        {% endif %}
                                     </div>
-                                    {% endif %}
                                     {% if repost.original_activity.content_object.content_object.release_date %}
                                     <div>
                                         Date: {{ repost.original_activity.content_object.content_object.release_date }}
