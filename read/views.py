@@ -31,7 +31,7 @@ from entity.utils import get_company_name
 from entity.views import HistoryViewMixin, get_contributors
 from listen.models import Release, Track
 from listen.models import Work as MusicWork
-from play.models import Work as GameWork
+from play.models import Work as PlayWork
 from visit.models import Location
 from visit.utils import get_locations_with_parents
 from watch.models import Movie, Series
@@ -225,7 +225,7 @@ class WorkDetailView(DetailView):
         adaptation_series = Series.objects.filter(
             based_on_litworks=self.object
         ).order_by("release_date")
-        adaptation_games = GameWork.objects.filter(
+        adaptation_games = PlayWork.objects.filter(
             based_on_litworks=self.object
         ).order_by("first_release_date")
         adaptation_publications = Work.objects.filter(
@@ -888,7 +888,7 @@ class BookDetailView(DetailView):
             key=lambda work: work.publication_date,
         )
         context["related_games"] = sorted(
-            [GameWork.objects.get(pk=pk) for pk in unique_related_games_set],
+            [PlayWork.objects.get(pk=pk) for pk in unique_related_games_set],
             key=lambda work: work.first_release_date,
         )
         context["related_movies"] = sorted(
@@ -907,7 +907,7 @@ class BookDetailView(DetailView):
         )
 
         context["based_on_games"] = sorted(
-            [GameWork.objects.get(pk=pk) for pk in unique_based_on_games_set],
+            [PlayWork.objects.get(pk=pk) for pk in unique_based_on_games_set],
             key=lambda work: work.first_release_date,
         )
         context["based_on_movies"] = sorted(

@@ -608,8 +608,8 @@
                                         <ul>
                                             {% for item in games_by_role %}
                                                 <li>
-                                                    {% if item.model_name == "GameWork" %}
-                                                        <!-- This is a GameWork -->
+                                                    {% if item.model_name == "PlayWork" %}
+                                                        <!-- This is a PlayWork -->
                                                         <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
                                                     {% else %}
                                                         <!-- This is a Game -->

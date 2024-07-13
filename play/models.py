@@ -191,7 +191,7 @@ class Work(auto_prefetch.Model):  # Renamed from Book
         return reverse("play:work_detail", kwargs={"pk": self.pk})
 
     def model_name(self):
-        return "GameWork"
+        return "PlayWork"
 
     def save(self, *args, **kwargs):
         is_new_instance = not self.pk

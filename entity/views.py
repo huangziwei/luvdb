@@ -16,12 +16,12 @@ from django_ratelimit.decorators import ratelimit
 
 from listen.models import Audiobook, Release, ReleaseRole, Track, TrackRole
 from listen.models import Work as ListenWork
-from listen.models import WorkRole
+from listen.models import WorkRole as ListenWorkRole
 from play.models import Game, GameRole
-from play.models import Work as GameWork
+from play.models import Work as PlayWork
 from read.models import Book, BookRole
-from read.models import Instance as LitInstance
-from read.models import Work as LitWork
+from read.models import Instance as ReadInstance
+from read.models import Work as ReadWork
 from scrape.wikipedia import scrape_company, scrape_creator
 from visit.models import Location
 from watch.models import Episode, EpisodeRole, Movie, MovieRole, Series, SeriesRole
@@ -120,7 +120,7 @@ class CreatorDetailView(DetailView):
 
             for book in books:
                 book_language = book.language or "Unknown"
-                instances = LitInstance.objects.filter(books=book)
+                instances = ReadInstance.objects.filter(books=book)
 
                 if not instances.exists() or instances.count() > 1:
                     if not book.book_group.exists():
@@ -169,18 +169,18 @@ class CreatorDetailView(DetailView):
         work_roles = ["Author", "Illustrator", "Ghostwriter"]
 
         context["lit_works_all"] = (
-            LitWork.objects.filter(
+            ReadWork.objects.filter(
                 workrole__role__name__in=work_roles, workrole__creator=creator
             )
             .distinct()
             .order_by("publication_date")
         )
 
-        work_types = LitWork.WORK_TYPES
+        work_types = ReadWork.WORK_TYPES
         lit_works = {}
         for work_type in work_types:
             lit_works[f"{work_type[1]}".replace(" ", "-").lower()] = (
-                LitWork.objects.filter(
+                ReadWork.objects.filter(
                     workrole__role__name__in=work_roles,
                     workrole__creator=creator,
                     work_type=work_type[0],
@@ -192,7 +192,9 @@ class CreatorDetailView(DetailView):
 
         context["litworks_count"] = creator.read_works.distinct().count()
         context["litinstances_count"] = (
-            LitInstance.objects.filter(instancerole__creator=creator).distinct().count()
+            ReadInstance.objects.filter(instancerole__creator=creator)
+            .distinct()
+            .count()
         )
         context["books_count"] = (
             Book.objects.filter(bookrole__creator=creator).distinct().count()
@@ -349,7 +351,7 @@ class CreatorDetailView(DetailView):
         context["tracks"] = tracks
 
         work_roles = (
-            WorkRole.objects.filter(
+            ListenWorkRole.objects.filter(
                 role__name__in=["Lyricist", "Composer", "Songwriter"],
             )
             .values_list("role__name", flat=True)
@@ -525,8 +527,8 @@ class CreatorDetailView(DetailView):
             # Create a dictionary to hold game works
             work_dict = {}
 
-            # Try to find any GameWork that matches the role and creator
-            game_works = GameWork.objects.filter(
+            # Try to find any PlayWork that matches the role and creator
+            game_works = PlayWork.objects.filter(
                 workrole__role__name=role, workrole__creator=creator
             ).distinct()
 
@@ -586,7 +588,7 @@ class CreatorDetailView(DetailView):
         )
 
         context["gameworks_count"] = (
-            GameWork.objects.filter(workrole__creator=creator).distinct().count()
+            PlayWork.objects.filter(workrole__creator=creator).distinct().count()
         )
         context["games_count"] = (
             Game.objects.filter(

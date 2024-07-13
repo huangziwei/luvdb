@@ -62,13 +62,13 @@ from accounts.models import BlacklistedDomain, CustomUser
 from activity_feed.models import Activity, Block, Follow
 from entity.models import Company, Creator
 from listen.models import Audiobook, ListenCheckIn, Podcast, Release, Track
-from listen.models import Work as MusicWork
+from listen.models import Work as ListenWork
 from play.models import Game, PlayCheckIn
-from play.models import Work as GameWork
+from play.models import Work as PlayWork
 from read.models import Book, BookSeries
 from read.models import Instance as LitInstance
 from read.models import Issue, Periodical, ReadCheckIn
-from read.models import Work as LitWork
+from read.models import Work as ReadWork
 from visit.models import Location, VisitCheckIn
 from watch.models import Episode, Movie, Series, WatchCheckIn
 from write.models import Comment, ContentInList, LuvList, Pin, Post, Repost, Say, Tag
@@ -759,7 +759,7 @@ def filter_users(query, search_terms):
 
 
 def filter_read(query, search_terms):
-    litwork_results = LitWork.objects.all()
+    litwork_results = ReadWork.objects.all()
     litinstance_results = LitInstance.objects.all()
     book_results = Book.objects.all()
     periodical_results = Periodical.objects.all()
@@ -826,7 +826,7 @@ def filter_read(query, search_terms):
 
 
 def filter_listen(query, search_terms):
-    musicwork_results = MusicWork.objects.all()
+    musicwork_results = ListenWork.objects.all()
     track_results = Track.objects.all()
     release_results = Release.objects.all()
     podcast_results = Podcast.objects.all()
@@ -891,7 +891,7 @@ def filter_listen(query, search_terms):
 
 
 def filter_play(query, search_terms):
-    gamework_results = GameWork.objects.all()
+    gamework_results = PlayWork.objects.all()
     game_results = Game.objects.all()
 
     for term in search_terms:
@@ -1936,7 +1936,7 @@ class YearInReviewView(DetailView):
 
         # contributions
         ## Read
-        contributed_litworks = LitWork.objects.filter(
+        contributed_litworks = ReadWork.objects.filter(
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
         contributed_litinstances = LitInstance.objects.filter(
@@ -1963,7 +1963,7 @@ class YearInReviewView(DetailView):
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
         ## listen
-        contributed_musicworks = MusicWork.objects.filter(
+        contributed_musicworks = ListenWork.objects.filter(
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
         contributed_tracks = Track.objects.filter(
@@ -1976,7 +1976,7 @@ class YearInReviewView(DetailView):
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
         ## play
-        contributed_gameworks = GameWork.objects.filter(
+        contributed_gameworks = PlayWork.objects.filter(
             created_by=user, created_at__range=(start_date, end_date)
         ).count()
         contributed_games = Game.objects.filter(

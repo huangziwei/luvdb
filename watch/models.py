@@ -19,8 +19,6 @@ from simple_history.models import HistoricalRecords
 from activity_feed.models import Activity
 from discover.utils import user_has_upvoted
 from entity.models import Company, Creator, LanguageField, Role
-from play.models import Work as GameWork
-from read.models import Work as LitWork
 from visit.models import Location
 from visit.utils import get_location_hierarchy_ids
 from write.models import (
@@ -76,9 +74,11 @@ class Movie(auto_prefetch.Model):
     # cross-media references
     ## based on
     based_on_litworks = models.ManyToManyField(
-        LitWork, blank=True, related_name="movies"
+        "read.Work", blank=True, related_name="movies"
     )
-    based_on_games = models.ManyToManyField(GameWork, blank=True, related_name="movies")
+    based_on_games = models.ManyToManyField(
+        "play.Work", blank=True, related_name="movies"
+    )
     based_on_movies = models.ManyToManyField(
         "self", blank=True, symmetrical=False, related_name="related_movies"
     )
@@ -163,11 +163,11 @@ class Movie(auto_prefetch.Model):
     official_website = models.URLField(blank=True, null=True)
 
     filming_locations = models.ManyToManyField(
-        Location, related_name="movies_filmed_here", blank=True
+        "visit.Location", related_name="movies_filmed_here", blank=True
     )
     filming_locations_hierarchy = models.TextField(blank=True, null=True)
     setting_locations = models.ManyToManyField(
-        Location, related_name="movies_set_here", blank=True
+        "visit.Location", related_name="movies_set_here", blank=True
     )
     setting_locations_hierarchy = models.TextField(blank=True, null=True)
 
@@ -384,9 +384,11 @@ class Series(auto_prefetch.Model):
     # Cross-references
     ## Base on
     based_on_litworks = models.ManyToManyField(
-        LitWork, blank=True, related_name="series"
+        "read.Work", blank=True, related_name="series"
     )
-    based_on_games = models.ManyToManyField(GameWork, blank=True, related_name="series")
+    based_on_games = models.ManyToManyField(
+        "play.Work", blank=True, related_name="series"
+    )
     based_on_series = models.ManyToManyField(
         "self", blank=True, symmetrical=False, related_name="related_series"
     )
@@ -524,11 +526,11 @@ class Episode(auto_prefetch.Model):
     )
 
     filming_locations = models.ManyToManyField(
-        Location, related_name="episodes_filmed_here", blank=True
+        "visit.Location", related_name="episodes_filmed_here", blank=True
     )
     filming_locations_hierarchy = models.TextField(blank=True, null=True)
     setting_locations = models.ManyToManyField(
-        Location, related_name="episodes_set_here", blank=True
+        "visit.Location", related_name="episodes_set_here", blank=True
     )
     setting_locations_hierarchy = models.TextField(blank=True, null=True)
 

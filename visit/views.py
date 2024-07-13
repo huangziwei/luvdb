@@ -35,8 +35,8 @@ from activity_feed.models import Block
 from discover.utils import user_has_upvoted
 from entity.models import Company, Creator
 from entity.views import HistoryViewMixin, get_contributors
-from play.models import Work as GameWork
-from read.models import Work as Publicaiton
+from play.models import Work as PlayWork
+from read.models import Work as ReadWork
 from scrape.wikipedia import scrape_location
 from watch.models import Episode, Movie, Series
 from write.forms import CommentForm, RepostForm
@@ -211,11 +211,11 @@ class LocationDetailView(DetailView):
             id__in=series_ids_set
         ).order_by("title")
 
-        context["publications_set_here"] = Publicaiton.objects.filter(
+        context["publications_set_here"] = ReadWork.objects.filter(
             related_locations_hierarchy__regex=regex_pattern
         ).order_by("publication_date")
 
-        context["games_set_here"] = GameWork.objects.filter(
+        context["games_set_here"] = PlayWork.objects.filter(
             setting_locations_hierarchy__regex=regex_pattern
         ).order_by("first_release_date")
 
