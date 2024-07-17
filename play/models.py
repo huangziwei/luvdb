@@ -242,9 +242,7 @@ class Game(auto_prefetch.Model):
     title = models.CharField(max_length=100)
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
-    work = auto_prefetch.ForeignKey(
-        Work, on_delete=models.CASCADE, null=True, blank=True, related_name="games"
-    )
+    works = models.ManyToManyField(Work, through="GameWork", related_name="games")
 
     developers = models.ManyToManyField(Company, related_name="developed_games")
     publishers = models.ManyToManyField(Company, related_name="published_games")
@@ -361,6 +359,22 @@ class Game(auto_prefetch.Model):
 
     def get_votes(self):
         return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
+
+
+class GameWork(auto_prefetch.Model):
+    game = auto_prefetch.ForeignKey(Game, on_delete=models.CASCADE)
+    work = auto_prefetch.ForeignKey(
+        Work, on_delete=models.CASCADE, null=True, blank=True
+    )
+    order = models.PositiveIntegerField(
+        null=True, blank=True, default=1
+    )  # Ordering of the works in a game
+
+    class Meta(auto_prefetch.Model.Meta):
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.game} - {self.work} - {self.order}"
 
 
 class GameReleaseDate(auto_prefetch.Model):

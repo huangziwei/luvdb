@@ -47,6 +47,8 @@ from .forms import (
     GameRoleForm,
     GameRoleFormSet,
     GameSeriesForm,
+    GameWork,
+    GameWorkFormSet,
     PlayCheckInForm,
     WorkForm,
     WorkRoleFormSet,
@@ -218,13 +220,15 @@ class GameCreateView(LoginRequiredMixin, CreateView):
             data["regionreleasedates"] = GameReleaseDateFormSet(
                 self.request.POST, instance=self.object
             )
+            data["gameworks"] = GameWorkFormSet(self.request.POST, instance=self.object)
         else:
             data["gamecasts"] = GameCastFormSet(instance=self.object)
             data["regionreleasedates"] = GameReleaseDateFormSet(instance=self.object)
+            data["gameworks"] = GameWorkFormSet(instance=self.object)
 
             if work_id:
-                work = get_object_or_404(Work, id=work_id)
-                work_roles = work.workrole_set.all()
+                source_work = get_object_or_404(Work, id=work_id)
+                work_roles = source_work.workrole_set.all()
 
                 initial_roles = [
                     {
@@ -268,6 +272,13 @@ class GameCreateView(LoginRequiredMixin, CreateView):
                     instance=self.object,
                     initial=initial_roles,
                     queryset=GameRole.objects.none(),
+                )
+
+                initial_works = [{"instance": source_work}]
+                data["bookinstances"] = GameWorkFormSet(
+                    instance=self.object,
+                    initial=initial_works,
+                    queryset=GameWork.objects.none(),
                 )
             else:
                 data["gameroles"] = GameRoleFormSet(instance=self.object)
@@ -461,10 +472,10 @@ class GameDetailView(DetailView):
 
         context["dlcs"] = game.dlc.all().order_by("release_date")
 
-        if self.object.work:
-            context["setting_locations_with_parents"] = get_locations_with_parents(
-                self.object.work.setting_locations
-            )
+        # if self.object.work:
+        #     context["setting_locations_with_parents"] = get_locations_with_parents(
+        #         self.object.work.setting_locations
+        #     )
 
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)
         context["can_vote"] = (
@@ -535,19 +546,27 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
             data["regionreleasedates"] = GameReleaseDateFormSet(
                 self.request.POST, instance=self.object
             )
+            data["gameworks"] = GameWorkFormSet(self.request.POST, instance=self.object)
+
         else:
             data["gameroles"] = GameRoleFormSet(instance=self.object)
             data["gamecasts"] = GameCastFormSet(instance=self.object)
             data["regionreleasedates"] = GameReleaseDateFormSet(instance=self.object)
+            data["gameworks"] = GameWorkFormSet(instance=self.object)
+
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
+        gamework = context["gameworks"]
         gamerole = context["gameroles"]
         gamecast = context["gamecasts"]
         regionreleasedates = context["regionreleasedates"]
 
         # Manually check validity of each form in the formset.
+        if not all(gamework_form.is_valid() for gamework_form in gamework):
+            return self.form_invalid(form)
+
         if not all(gamerole_form.is_valid() for gamerole_form in gamerole):
             return self.form_invalid(form)
 
@@ -563,6 +582,9 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
         with transaction.atomic():
             form.instance.updated_by = self.request.user
             self.object = form.save()
+            if gamework.is_valid():
+                gamework.instance = self.object
+                gamework.save()
             if gamerole.is_valid():
                 gamerole.instance = self.object
                 gamerole.save()

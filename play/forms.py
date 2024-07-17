@@ -18,6 +18,7 @@ from .models import (
     GameReleaseDate,
     GameRole,
     GameSeries,
+    GameWork,
     PlayCheckIn,
     Work,
     WorkRole,
@@ -173,7 +174,7 @@ WorkRoleFormSet = inlineformset_factory(
 class GameForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = Game
-        exclude = ["created_by", "updated_by", "creators", "casts", "locked"]
+        exclude = ["created_by", "updated_by", "creators", "casts", "works", "locked"]
         fields = "__all__"
         widgets = {
             "work": autocomplete.ModelSelect2(
@@ -585,5 +586,39 @@ DLCCastFormSet = inlineformset_factory(
     help_texts={
         "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
         "role": "<a href='/entity/role/create/'>Add a new role</a>.",
+    },
+)
+
+
+class GameWorkForm(forms.ModelForm):
+    class Meta(auto_prefetch.Model.Meta):
+        model = GameWork
+        fields = ["work", "order"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        work = cleaned_data.get("work")
+        if self.instance and not work:  # if the work field is empty
+            self.instance.delete()  # delete the GameWork work
+        return cleaned_data
+
+
+GameWorkFormSet = inlineformset_factory(
+    Game,
+    GameWork,
+    form=GameWorkForm,
+    extra=1,
+    can_delete=True,
+    widgets={
+        "work": autocomplete.ModelSelect2(
+            url=reverse_lazy("play:work-autocomplete"),
+            attrs={
+                "data-create-url": reverse_lazy("play:work_create"),
+                "data-placeholder": "Type to search",
+            },
+        ),
+    },
+    help_texts={
+        "work": "<a href='/play/work/create/'>Add a new instance</a>.",
     },
 )

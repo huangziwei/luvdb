@@ -8,7 +8,7 @@
     {{ form.cover|as_crispy_field }}
     {{ form.rating|as_crispy_field }}
     {{ form.wikipedia|as_crispy_field }}
-    {{ form.work|as_crispy_field }}
+    {% comment %} {{ form.work|as_crispy_field }} {% endcomment %}
     {{ form.platforms|as_crispy_field }}
     {{ regionreleasedates.management_form|crispy }}
     <div id="region-release-date-formset" class="bg-light p-3 mb-3">
@@ -71,11 +71,29 @@
         </div>
         <button type="button" id="add-game-cast-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
-
     <div class="bg-light p-3 mb-3">
         <strong>Companies related to this Game</strong>
         {{ form.developers|as_crispy_field }}
         {{ form.publishers|as_crispy_field }}
+    </div>
+    {{ gameworks.management_form|crispy }}
+    <div id="game-work-formset" class="bg-light p-3 mb-3">
+        <strong>Works related to this Game</strong>
+        <div id="gameworks">
+            {% for form in gameworks %}
+                <div class="form-wrapper">
+                    <div class="row">
+                        {{ form.id }}
+                        <div class="col-md-10">
+                            {{ form.work | as_crispy_field }}
+                        </div>
+                        <div class="col-md-2">{{ form.order | as_crispy_field }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <!-- Button to add new formsets -->
+        <button type="button" id="add-game-work-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
     </div>
 
     <div class="bg-light p-3 mb-3">
@@ -119,5 +137,6 @@
     initFormset('add-region-release-date-formset', 'region_release_dates');
     initFormset('add-game-role-formset', 'gameroles');
     initFormset('add-game-cast-formset', 'gamecasts');
+    initFormset("add-game-work-formset", "gameworks");
 </script>
 {{ form.media }}
