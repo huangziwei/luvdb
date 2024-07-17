@@ -619,6 +619,6 @@ GameWorkFormSet = inlineformset_factory(
         ),
     },
     help_texts={
-        "work": "<a href='/play/work/create/'>Add a new instance</a>.",
+        "work": "<a href='/play/work/create/'>Add a new work</a>.",
     },
 )
