@@ -131,14 +131,19 @@
                                     {% endif %}
                                     <div class="my-3">
                                         <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
-                                            {% if other_roles.exists or object.release_format or object.length or object.release_date %}
+                                            {% if object.release_format or object.length or object.release_date %}
                                             <li class="nav-item" role="presentation">
-                                                <button class="nav-link text-muted active" id="more-tab" data-bs-toggle="tab" data-bs-target="#more" type="button" role="tab" aria-controls="release-lists" aria-selected="false">More</button>
+                                                <button class="nav-link text-muted active" id="more-tab" data-bs-toggle="tab" data-bs-target="#more" type="button" role="tab" aria-controls="release-lists" aria-selected="true">More</button>
                                             </li>
                                             {% endif %}
+                                            {% if other_roles %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted" id="credits-tab" data-bs-toggle="tab" data-bs-target="#credits" type="button" role="tab" aria-controls="release-lists" aria-selected="false">Credits</button>
+                                            </li>
+                                            {% endif %}                                            
                                             {% if object.notes %}
                                             <li class="nav-item" role="presentation">
-                                                <button class="nav-link text-muted" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab" aria-controls="notes" aria-selected="true">Notes</button>
+                                                <button class="nav-link text-muted" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab" aria-controls="notes" aria-selected="false">Notes</button>
                                             </li>
                                             {% endif %}
                                             {% if lists_containing_release.exists %}
@@ -149,15 +154,6 @@
                                         </ul>
                                         <div class="tab-content" id="myTabContent">
                                             <div class="tab-pane mt-1 show active" id="more" role="tabpanel" aria-labelledby="more-tab">
-                                                {% for role_name, creator_altname_tuples in other_roles.items %}
-                                                    <div class="mb-1">
-                                                        <span class="text-muted">{{ role_name }}:</span>
-                                                        {% for creator, alt_name in creator_altname_tuples %}
-                                                            <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
-                                                            {% if not forloop.last %}/{% endif %}
-                                                        {% endfor %}
-                                                    </div>
-                                                {% endfor %}
                                                 {% if object.release_length %}
                                                     <div class="mb-1">
                                                         <span class="text-muted">Length:</span> {{ object.release_length }}
@@ -179,6 +175,19 @@
                                                     </div>
                                                 {% endif %}
                                             </div>
+                                            {% if other_roles %}
+                                            <div class="tab-pane mt-1" id="credits" role="tabpanel" aria-labelledby="credits-tab">
+                                                {% for role_name, creator_altname_tuples in other_roles.items %}
+                                                    <div class="mb-1">
+                                                        <span class="text-muted">{{ role_name }}:</span>
+                                                        {% for creator, alt_name in creator_altname_tuples %}
+                                                            <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
+                                                            {% if not forloop.last %}/{% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
                                             {% if object.notes %}
                                             <small class="tab-pane mt-1" id="notes" role="tabpanel" aria-labelledby="notes-tab">
                                                 {{ object.notes|markdownify }}
