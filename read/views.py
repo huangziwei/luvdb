@@ -99,6 +99,7 @@ class WorkCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data["is_create_view"] = True
         if self.request.POST:
             data["workroles"] = WorkRoleFormSet(self.request.POST, instance=self.object)
         else:
@@ -136,6 +137,7 @@ class WorkCreateView(LoginRequiredMixin, CreateView):
             subtitle=work.subtitle,
             publication_date=work.publication_date,
             language=work.language,
+            wikipedia=work.wikipedia,
             work=work,
             created_by=self.request.user,
             updated_by=self.request.user,
