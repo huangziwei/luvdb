@@ -88,7 +88,10 @@
                         {% if activity.content_object.original_activity.content_object.content_type.model == 'book' %}
                             <a href=" {% url 'read:book_detail' activity.content_object.original_activity.content_object.content_object.id %} "
                                class="text-decoration-none ">
-                                <div class="fs-5">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
+                                <div class="fs-5">
+                                    {{ activity.content_object.original_activity.content_object.content_object.title }}
+                                    <span class="text-muted">({{ activity.content_object.original_activity.content_object.content_object.publication_date|extract_year }})</span>
+                                </div>
                             </a>
                             {% if activity.content_object.original_activity.content_object.content_object.subtitle %}
                                 <div class="text-muted mb-2 fs-6">{{ activity.content_object.original_activity.content_object.content_object.subtitle }}</div>
@@ -200,12 +203,22 @@
                         {% if activity.content_object.original_activity.content_object.content_type.model == 'movie' %}
                             <a href=" {% url 'watch:movie_detail' activity.content_object.original_activity.content_object.content_object.id %} "
                                class="text-decoration-none ">
-                                <div class="fs-5">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
+                                <div class="fs-5">
+                                    {{ activity.content_object.original_activity.content_object.content_object.title }}
+                                    <span class="text-muted">
+                                        {% with earliest_region_release_date=activity.content_object.original_activity.content_object.content_object.region_release_dates.all|first %}
+                                           ({{ earliest_region_release_date.release_date|extract_year }})
+                                        {% endwith %}
+                                    </span>
+                                </div>
                             </a>
                         {% elif activity.content_object.original_activity.content_object.content_type.model == 'series' %}
                             <a href=" {% url 'watch:series_detail' activity.content_object.original_activity.content_object.content_object.id %} "
                                class="text-decoration-none ">
-                                <div class="fs-5">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
+                                <div class="fs-5">
+                                    {{ activity.content_object.original_activity.content_object.content_object.title }}
+                                    <span class="text-muted">({{ activity.content_object.original_activity.content_object.content_object.release_date|extract_year }})</span>
+                                </div>
                             </a>
                         {% endif %}
                         {% if activity.content_object.original_activity.content_object.content_type.model == 'movie' %}
@@ -364,7 +377,14 @@
                     <div class="flex-grow-1 ms-3">
                         <a href="{% url 'play:game_detail' activity.content_object.original_activity.content_object.content_object.id %}"
                            class="text-decoration-none ">
-                            <div class="fs-5">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
+                            <div class="fs-5">
+                                {{ activity.content_object.original_activity.content_object.content_object.title }}
+                                <span class="text-muted">
+                                    {% with earliest_region_release_date=activity.content_object.original_activity.content_object.content_object.region_release_dates.all|first %}
+                                       ({{ earliest_region_release_date.release_date|extract_year }})
+                                    {% endwith %}
+                                </span>
+                            </div>
                         </a>
                         {% if activity.content_object.original_activity.content_object.content_object.subtitle and activity.content_object.original_activity.content_object.content_object.other_titles %}
                             <div class="text-muted mb-2 fs-6">
@@ -540,7 +560,10 @@
                         {% if activity.content_object.original_activity.content_object.content_object.model_name == "Release" %}
                             <a href="{% url 'listen:release_detail' activity.content_object.original_activity.content_object.content_object.id %}"
                             class="text-decoration-none ">
-                                <div class="fs-5">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
+                                <div class="fs-5">
+                                    {{ activity.content_object.original_activity.content_object.content_object.title }}
+                                    <span class="text-muted">({{ activity.content_object.original_activity.content_object.content_object.release_date|extract_year }})</span>
+                                </div>
                             </a>
                         {% elif activity.content_object.original_activity.content_object.content_object.model_name == "Podcast" %}
                             <a href="{% url 'listen:podcast_detail' activity.content_object.content_object.id %}"
@@ -551,7 +574,10 @@
                         {% elif activity.content_object.original_activity.content_object.content_object.model_name == "Audiobook" %}
                             <a href="{% url 'listen:audiobook_detail' activity.content_object.original_activity.content_object.content_object.id %}"
                             class="text-decoration-none ">
-                                <div class="fs-5">{{ activity.content_object.original_activity.content_object.content_object.title }}</div>
+                                <div class="fs-5">
+                                    {{ activity.content_object.original_activity.content_object.content_object.title }}
+                                    <span class="text-muted">({{ activity.content_object.original_activity.content_object.content_object.release_date|extract_year }})</span>
+                                </div>
                             </a>
                         {% endif %}
                         {% regroup activity.content_object.original_activity.content_object.content_object.releaserole_set.all by role as roles_list %}

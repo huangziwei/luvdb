@@ -4,6 +4,7 @@
 {% load linkify %}
 {% load crispy_forms_tags %}
 {% load parse_activity_type %}
+{% load util_filters %}
 {% block meta %}
     <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Check-in to &quot;{{ object.content_object.title }}&quot;">
     {% if object.notes %}
@@ -80,7 +81,10 @@
                             {% if object.content_type.model == 'book' %}
                                 <a href="{% url 'read:book_detail' object.content_object.id %}"
                                    class="text-decoration-none ">
-                                    <div class="fs-5">{{ object.content_object.title }}</div>
+                                    <div class="fs-5">
+                                        {{ object.content_object.title }}
+                                        <span class="text-muted">({{ object.content_object.publication_date|extract_year }})</span>
+                                    </div>
                                 </a>
                                 {% if object.content_object.subtitle %}
                                     <div class="text-muted mb-2 fs-6">{{ object.content_object.subtitle }}</div>

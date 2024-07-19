@@ -4,6 +4,7 @@
 {% load linkify %}
 {% load crispy_forms_tags %}
 {% load parse_activity_type %}
+{% load util_filters %}
 {% block meta %}
     <meta property="og:title" content="{{ object.user.display_name | default:object.user.username }}'s Check-in to &quot;{{ object.content_object.title }}&quot;">
     {% if object.notes %}
@@ -71,7 +72,14 @@
                         <div class="flex-grow-1 ms-3">
                             <a href="{% url 'play:game_detail' object.content_object.id %}"
                                class="text-decoration-none ">
-                                <div class="fs-5">{{ object.content_object.title }}</div>
+                                <div class="fs-5">
+                                    {{ object.content_object.title }}
+                                    <span class="text-muted">
+                                        {% with earliest_region_release_date=object.content_object.region_release_dates.all|first %}
+                                           ({{ earliest_region_release_date.release_date|extract_year }})
+                                        {% endwith %}
+                                    </span>
+                                </div>
                             </a>
                             {% regroup object.content_object.gameroles.all by role as roles_list %}
                             {% for role in roles_list %}

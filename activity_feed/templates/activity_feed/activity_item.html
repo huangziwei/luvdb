@@ -218,7 +218,9 @@
             <div class="mt-1 mb-3 mb-md-0 flex-shrink-0 checkin-cover">
                 <div class="position-relative">
                     {% if user.pure_text_mode %}
-                        <div class="cover-placeholder bg-light">{{ activity.content_object.content_object.title }}</div>
+                        <div class="cover-placeholder bg-light">
+                            {{ activity.content_object.content_object.title }}
+                        </div>
                     {% else %}
                         {% if activity.content_object.content_object.cover %}
                             {% if activity.content_object.content_object.cover_sens %}
@@ -236,7 +238,9 @@
                                     loading="lazy">
                             {% endif %}
                         {% else %}
-                            <div class="cover-placeholder">{{ activity.content_object.content_object.title }}</div>
+                            <div class="cover-placeholder">
+                                {{ activity.content_object.content_object.title }}
+                            </div>
                         {% endif %}
                     {% endif %}
                     {% if activity.content_object.has_voted %}
@@ -252,7 +256,10 @@
                 {% if activity.content_object.content_type.model == 'book' %}
                     <a href=" {% url 'read:book_detail' activity.content_object.content_object.id %} "
                        class="text-decoration-none h-cite p-name">
-                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
+                        <div class="fs-5">
+                            {{ activity.content_object.content_object.title }}
+                            <span class="text-muted">({{ activity.content_object.content_object.publication_date|extract_year }})</span>
+                        </div>
                     </a>
                     {% if activity.content_object.content_object.subtitle %}
                         <div class="text-muted mb-2 fs-6">{{ activity.content_object.content_object.subtitle }}</div>
@@ -400,12 +407,22 @@
                 {% if activity.content_object.content_type.model == 'movie' %}
                     <a href=" {% url 'watch:movie_detail' activity.content_object.content_object.id %} "
                        class="text-decoration-none h-cite p-name">
-                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
+                        <div class="fs-5">
+                            {{ activity.content_object.content_object.title }}
+                            <span class="text-muted">
+                                {% with earliest_region_release_date=activity.content_object.content_object.region_release_dates.all|first %}
+                                   ({{ earliest_region_release_date.release_date|extract_year }})
+                                {% endwith %}
+                            </span>
+                        </div>
                     </a>
                 {% elif activity.content_object.content_type.model == 'series' %}
                     <a href=" {% url 'watch:series_detail' activity.content_object.content_object.id %} "
                        class="text-decoration-none h-cite p-name">
-                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
+                        <div class="fs-5">
+                            {{ activity.content_object.content_object.title }}
+                            <span class="text-muted">({{ activity.content_object.content_object.release_date|extract_year }})</span>
+                        </div>
                     </a>
                 {% endif %}
                 {% if activity.content_object.content_type.model == 'movie' %}
@@ -601,18 +618,26 @@
                 {% if activity.content_object.content_type.model == "release" %}
                     <a href="{% url 'listen:release_detail' activity.content_object.content_object.id %}"
                        class="text-decoration-none h-cite p-name">
-                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
+                        <div class="fs-5">
+                            {{ activity.content_object.content_object.title }}
+                            <span class="text-muted">({{ activity.content_object.content_object.release_date|extract_year }})</span>
+                        </div>
                     </a>
                 {% elif activity.content_object.content_type.model == "podcast" %}
                     <a href="{% url 'listen:podcast_detail' activity.content_object.content_object.id %}"
                        class="text-decoration-none h-cite p-name">
-                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
+                        <div class="fs-5">
+                            {{ activity.content_object.content_object.title }}
+                        </div>
                     </a>
                     <div class="text-muted">{{ activity.content_object.content_object.description|truncatechars:600 }}</div>
                 {% elif activity.content_object.content_type.model == "audiobook" %}
                     <a href="{% url 'listen:audiobook_detail' activity.content_object.content_object.id %}"
                        class="text-decoration-none h-cite p-name">
-                        <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
+                        <div class="fs-5">
+                            {{ activity.content_object.content_object.title }}
+                            <span class="text-muted">({{ activity.content_object.content_object.release_date|extract_year }})</span>
+                        </div>
                     </a>
                 {% endif %}
                 {% regroup activity.content_object.content_object.releaserole_set.all by role as roles_list %}
@@ -782,7 +807,14 @@
             <div class="flex-grow-1 ms-3">
                 <a href="{% url 'play:game_detail' activity.content_object.content_object.id %}"
                    class="text-decoration-none h-cite p-name">
-                    <div class="fs-5">{{ activity.content_object.content_object.title }}</div>
+                    <div class="fs-5">
+                        {{ activity.content_object.content_object.title }}
+                        <span class="text-muted">
+                            {% with earliest_region_release_date=activity.content_object.content_object.region_release_dates.all|first %}
+                               ({{ earliest_region_release_date.release_date|extract_year }})
+                            {% endwith %}
+                        </span>
+                    </div>
                 </a>
                 {% if activity.content_object.content_object.subtitle and activity.content_object.content_object.other_titles %}
                     <div class="text-muted mb-2 fs-6">
