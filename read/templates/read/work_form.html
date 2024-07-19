@@ -102,7 +102,10 @@
     </div>
 
     {{ form.notes|as_crispy_field }}
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <div class="mt-3">
+        <button type="submit" name="submit_type" value="create_work" class="btn btn-primary">Create Work</button>
+        <button type="submit" name="submit_type" value="create_work_and_instance" class="btn btn-secondary">Create Work and Instance</button>
+    </div>
 </form>
 {% if form.errors %}
 <div class="alert alert-danger mt-5">

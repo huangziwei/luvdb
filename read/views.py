@@ -113,6 +113,8 @@ class WorkCreateView(LoginRequiredMixin, CreateView):
         if not all(workrole_form.is_valid() for workrole_form in workroles):
             return self.form_invalid(form)
 
+        submit_type = self.request.POST.get("submit_type")
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -122,7 +124,32 @@ class WorkCreateView(LoginRequiredMixin, CreateView):
                 workroles.save()
             else:
                 print(workroles.errors)  # print out formset errors
+
+            if submit_type == "create_work_and_instance":
+                self.create_instance(self.object)
+
         return super().form_valid(form)
+
+    def create_instance(self, work):
+        instance = Instance(
+            title=work.title,
+            subtitle=work.subtitle,
+            publication_date=work.publication_date,
+            language=work.language,
+            work=work,
+            created_by=self.request.user,
+            updated_by=self.request.user,
+        )
+        instance.save()
+
+        # Copy the roles from WorkRole to InstanceRole
+        for work_role in work.workrole_set.all():
+            InstanceRole.objects.create(
+                instance=instance,
+                creator=work_role.creator,
+                role=work_role.role,
+                alt_name=work_role.alt_name,
+            )
 
 
 class WorkUpdateView(LoginRequiredMixin, UpdateView):
