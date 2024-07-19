@@ -6,8 +6,20 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
-from django.db.models.functions import Length
+from django.db.models import (
+    Case,
+    Count,
+    F,
+    IntegerField,
+    Max,
+    Min,
+    OuterRef,
+    Q,
+    Subquery,
+    Value,
+    When,
+)
+from django.db.models.functions import Cast, Concat, Length, Substr
 from django.forms import inlineformset_factory
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -2398,8 +2410,6 @@ class BookGroupCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         books = context["books"]
 
-        print("Formset data before validation:", books.data)  # Debugging print
-
         if books.is_valid():
             print("Formset cleaned_data:", books.cleaned_data)  # Debugging print
             with transaction.atomic():
@@ -2430,11 +2440,45 @@ class BookGroupDetailView(DetailView):
         # First, fetch all related book
         books = self.object.bookingroup_set.all()
 
-        # Then, sort them by their 'publication_date' field length and value
+        # Annotate year, month, and day from the publication_date
         books = books.annotate(
-            date_length=Length("book__publication_date"),
-            padded_date=F("book__publication_date"),
-        ).order_by("-date_length", "padded_date")
+            year=Case(
+                When(
+                    book__publication_date__regex=r"^\d{1,4}(-\d{2}(-\d{2})?)?$",
+                    then=Cast(Substr("book__publication_date", 1, 4), IntegerField()),
+                ),
+                When(
+                    book__publication_date__regex=r"^-\d{1,4}(-\d{2}(-\d{2})?)?$",
+                    then=Cast(
+                        Concat(Value("-"), Substr("book__publication_date", 2, 3)),
+                        IntegerField(),
+                    ),
+                ),
+                default=Value(None, output_field=IntegerField()),
+            ),
+            month=Case(
+                When(
+                    book__publication_date__regex=r"^\d{1,4}\.\d{2}(-\d{2})?$",
+                    then=Cast(Substr("book__publication_date", 6, 2), IntegerField()),
+                ),
+                When(
+                    book__publication_date__regex=r"^-\d{1,4}\.\d{2}(-\d{2})?$",
+                    then=Cast(Substr("book__publication_date", 7, 2), IntegerField()),
+                ),
+                default=Value(0, output_field=IntegerField()),
+            ),
+            day=Case(
+                When(
+                    book__publication_date__regex=r"^\d{1,4}\.\d{2}\.\d{2}$",
+                    then=Cast(Substr("book__publication_date", 9, 2), IntegerField()),
+                ),
+                When(
+                    book__publication_date__regex=r"^-\d{1,4}\.\d{2}\.\d{2}$",
+                    then=Cast(Substr("book__publication_date", 10, 2), IntegerField()),
+                ),
+                default=Value(0, output_field=IntegerField()),
+            ),
+        ).order_by("year", "month", "day")
 
         for book_in_group in books:
             book_in_group.publisher = get_company_name(
