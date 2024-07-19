@@ -2440,45 +2440,29 @@ class BookGroupDetailView(DetailView):
         # First, fetch all related book
         books = self.object.bookingroup_set.all()
 
-        # Annotate year, month, and day from the publication_date
         books = books.annotate(
             year=Case(
                 When(
-                    book__publication_date__regex=r"^\d{1,4}(-\d{2}(-\d{2})?)?$",
+                    book__publication_date__regex=r"^-?\d{1,4}(\.\d{2}(\.\d{2})?)?$",
                     then=Cast(Substr("book__publication_date", 1, 4), IntegerField()),
                 ),
-                When(
-                    book__publication_date__regex=r"^-\d{1,4}(-\d{2}(-\d{2})?)?$",
-                    then=Cast(
-                        Concat(Value("-"), Substr("book__publication_date", 2, 3)),
-                        IntegerField(),
-                    ),
-                ),
-                default=Value(None, output_field=IntegerField()),
+                default=Value(0, output_field=IntegerField()),
             ),
             month=Case(
                 When(
-                    book__publication_date__regex=r"^\d{1,4}\.\d{2}(-\d{2})?$",
+                    book__publication_date__regex=r"^-?\d{1,4}\.\d{2}(\.\d{2})?$",
                     then=Cast(Substr("book__publication_date", 6, 2), IntegerField()),
-                ),
-                When(
-                    book__publication_date__regex=r"^-\d{1,4}\.\d{2}(-\d{2})?$",
-                    then=Cast(Substr("book__publication_date", 7, 2), IntegerField()),
                 ),
                 default=Value(0, output_field=IntegerField()),
             ),
             day=Case(
                 When(
-                    book__publication_date__regex=r"^\d{1,4}\.\d{2}\.\d{2}$",
+                    book__publication_date__regex=r"^-?\d{1,4}\.\d{2}\.\d{2}$",
                     then=Cast(Substr("book__publication_date", 9, 2), IntegerField()),
-                ),
-                When(
-                    book__publication_date__regex=r"^-\d{1,4}\.\d{2}\.\d{2}$",
-                    then=Cast(Substr("book__publication_date", 10, 2), IntegerField()),
                 ),
                 default=Value(0, output_field=IntegerField()),
             ),
-        ).order_by("year", "month", "day")
+        )
 
         for book_in_group in books:
             book_in_group.publisher = get_company_name(
