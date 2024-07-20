@@ -534,7 +534,7 @@ class CreatorDetailView(DetailView):
 
             # Add works to the work_dict and remove any corresponding games from game_dict
             for work in game_works:
-                related_games = Game.objects.filter(work=work)
+                related_games = Game.objects.filter(works=work)
                 for game in related_games:
                     if game.id in game_dict:
                         del game_dict[game.id]
