@@ -306,6 +306,11 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+                {% if activity.content_object.content_object.format %}
+                    <div>
+                        <span class="text-muted">Format:</span> {{ activity.content_object.content_object.format }}
+                    </div>
+                {% endif %}
                 {% if activity.content_object.content_object.publication_date %}
                 <div>
                     <span class="text-muted">Date:</span>
