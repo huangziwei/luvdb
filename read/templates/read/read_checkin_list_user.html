@@ -2,6 +2,7 @@
 {% load linkify %}
 {% load markdownify %}
 {% load parse_activity_type %}
+{% load util_filters %}
 {% block content %}
     <div class="container">
         <div class="row">
@@ -176,8 +177,14 @@
                                                     {% if checkin.content_type.model == 'book' %}
                                                         <a href=" {% url 'read:book_detail' checkin.content_object.id %} "
                                                         class="text-decoration-none ">
-                                                            <div class="fs-5">{{ checkin.content_object.title }}</div>
+                                                            <div class="fs-5">
+                                                                {{ checkin.content_object.title }}
+                                                                <span class="text-muted">({{ checkin.content_object.publication_date|extract_year }})</span>
+                                                            </div>
                                                         </a>
+                                                        {% if checkin.content_object.subtitle %}
+                                                            <div class="text-muted mb-2 fs-6">{{ checkin.content_object.subtitle }}</div>
+                                                        {% endif %}
                                                     {% elif checkin.content_type.model == 'issue' %}
                                                         <div class="fs-5">{{ checkin.content_object.periodical.title }}</div>
                                                         <a href=" {% url 'read:issue_detail' checkin.content_object.periodical.id checkin.content_object.id %} "
@@ -190,7 +197,7 @@
                                                         {% for role in roles_list %}
                                                             <div>
                                                                 {# djlint:off #}
-                                                                {{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:
+                                                                <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                                                 {# djlint:on #}
                                                                 {% for book_role in role.list %}
                                                                     {% if not forloop.first %}/{% endif %}
@@ -201,14 +208,31 @@
                                                             </div>
                                                         {% endfor %}
                                                     {% endif %}
+                                                    {% if checkin.content_object.get_genres %}
+                                                    <div>
+                                                        <span class="text-muted">Genres:</span>
+                                                        {% for genre in checkin.content_object.get_genres %}
+                                                            {% if not forloop.first %}/{% endif %}
+                                                            <a href="{% url 'read:genre_detail' genre.slug %}">{{ genre.name }}</a>
+                                                        {% endfor %}
+                                                    </div>
+                                                    {% endif %}
                                                     {% if checkin.publisher.id %}
                                                         <div>
-                                                            Publisher: <a href="{% url 'entity:company_detail' checkin.publisher.id %}">{{checkin.publisher.name}}</a>
+                                                            <span class="text-muted">Publisher:</span>
+                                                            <a href="{% url 'entity:company_detail' checkin.publisher.id %}">{{checkin.publisher.name}}</a>
                                                         </div>
+                                                    {% endif %}
+                                                    {% if checkin.content_object.format %}
+                                                    <div>
+                                                        <span class="text-muted">Format:</span>
+                                                        {{ checkin.content_object.format }}
+                                                    </div>
                                                     {% endif %}
                                                     {% if checkin.content_object.publication_date %}
                                                         <div>
-                                                            Date: {{ checkin.content_object.publication_date }}
+                                                            <span class="text-muted">Date:</span>
+                                                            {{ checkin.content_object.publication_date }}
                                                         </div>
                                                     {% endif %}
                                                 </div>
