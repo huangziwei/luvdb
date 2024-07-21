@@ -40,25 +40,27 @@
     </div>
     <div class="row justify-content-start">
         <div class="col-12 col-md-8">
-            <div class="d-flex justify-content-between mb-2">
-                <a href="{% url 'write:album_detail' photo.user.username photo.album.id %}">« Back</a>
-                <div>
-                    {% if previous_photo %}
-                    <a href="{% url 'write:photo_detail' previous_photo.user.username previous_photo.id %}">&laquo; Previous</a>
-                    {% else %}
-                    <span class="text-muted">&laquo; Previous</span>
-                    {% endif %}
-                    |
-                    {% if next_photo %}
-                    <a href="{% url 'write:photo_detail' next_photo.user.username next_photo.id %}">Next &raquo;</a>
-                    {% else %}
-                    <span class="text-muted">Next &raquo;</span>
-                    {% endif %}
+            {% if request.user.is_authenticated %}
+                <div class="d-flex justify-content-between mb-2">
+                    <a href="{% url 'write:album_detail' photo.user.username photo.album.id %}">« Back</a>
+                    <div>
+                        {% if previous_photo %}
+                        <a href="{% url 'write:photo_detail' previous_photo.user.username previous_photo.id %}">&laquo; Previous</a>
+                        {% else %}
+                        <span class="text-muted">&laquo; Previous</span>
+                        {% endif %}
+                        |
+                        {% if next_photo %}
+                        <a href="{% url 'write:photo_detail' next_photo.user.username next_photo.id %}">Next &raquo;</a>
+                        {% else %}
+                        <span class="text-muted">Next &raquo;</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {{ photo_index }} / {{ photo_count }}
+                    </div>
                 </div>
-                <div>
-                    {{ photo_index }} / {{ photo_count }}
-                </div>
-            </div>
+            {% endif %}
             <img src="{{ photo.photo.url }}" class="card-img-top img-fluid mb-2" alt="{{ photo.photo_id }}">
             <div class="mb-2">
                 {% if photo.notes %}
@@ -102,7 +104,8 @@
                             <svg xmlns="http://www.w3.org/2000/svg"  width="16" height="16" viewBox="0 0 448 512" class="mb-1" fill="currentColor" style="opacity: 0.5;"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
                         {% endif %}
                     </div>
-                </div>  
+                </div>
+                {% if photo.user == request.user %}
                 <div>
                     {% if photo.album.cover_photo == photo %}
                         <div class="text-muted">This is the album cover</div>
@@ -113,7 +116,7 @@
                         {% csrf_token %}
                     </form>
                 </div>
-                
+                {% endif %}  
             </div>
             {% if photo.user == request.user %}
             <div class="d-flex justify-content-between mb-1">

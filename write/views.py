@@ -1491,6 +1491,7 @@ class LuvListDeleteView(LoginRequiredMixin, DeleteView):
             "write:luvlist_list", args=[str(self.request.user.username)]
         )
 
+
 class LuvListContentUpdateView(LoginRequiredMixin, UpdateView):
     model = ContentInList
     form_class = ContentInListForm
@@ -1498,7 +1499,9 @@ class LuvListContentUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['luv_list'] = self.object.luv_list  # Add luv_list to context for template access
+        context["luv_list"] = (
+            self.object.luv_list
+        )  # Add luv_list to context for template access
         return context
 
     def get_queryset(self):
@@ -1509,8 +1512,12 @@ class LuvListContentUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse(
             "write:luvlist_detail",
-            kwargs={"pk": self.object.luv_list.id, "username": self.object.luv_list.user.username},
+            kwargs={
+                "pk": self.object.luv_list.id,
+                "username": self.object.luv_list.user.username,
+            },
         )
+
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class LuvListUserListView(ListView):
@@ -1889,7 +1896,10 @@ class PhotoDetailView(ShareDetailView):
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
-        if obj.visibility != "PU" and self.request.user not in obj.visible_to.all():
+        if obj.visibility != "PU" and (
+            self.request.user.is_anonymous
+            or self.request.user not in obj.visible_to.all()
+        ):
             raise Http404("You do not have permission to view this.")
         return obj
 
@@ -1898,11 +1908,17 @@ class PhotoDetailView(ShareDetailView):
         context["album"] = self.object.album
 
         photo = self.get_object()
-        album_photos = list(
-            photo.album.photos.filter(
-                Q(visibility=VisibilityChoices.PUBLIC) | Q(visible_to=self.request.user)
+        if self.request.user.is_authenticated:
+            album_photos = list(
+                photo.album.photos.filter(
+                    Q(visibility=VisibilityChoices.PUBLIC)
+                    | Q(visible_to=self.request.user)
+                )
             )
-        )
+        else:
+            album_photos = list(
+                photo.album.photos.filter(visibility=VisibilityChoices.PUBLIC)
+            )
         photo_index = album_photos.index(photo)
 
         if photo_index > 0:
