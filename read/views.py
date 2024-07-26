@@ -61,6 +61,7 @@ from .forms import (
     BookInGroupFormSet,
     BookInSeriesFormSet,
     BookInstance,
+    BookInstanceForm,
     BookInstanceFormSet,
     BookRole,
     BookRoleForm,
@@ -546,6 +547,7 @@ class BookCreateView(LoginRequiredMixin, CreateView):
     def get_initial(self):
         initial = super().get_initial()
         instance_id = self.kwargs.get("instance_id")
+        origin_book_id = self.kwargs.get("origin_book_id")
 
         if instance_id:
             source_instance = get_object_or_404(Instance, id=instance_id)
@@ -559,11 +561,36 @@ class BookCreateView(LoginRequiredMixin, CreateView):
                 }
             )
 
+        if origin_book_id:
+            origin_book = get_object_or_404(Book, id=origin_book_id)
+
+            initial.update(
+                {
+                    "title": origin_book.title,
+                    "subtitle": origin_book.subtitle,
+                    "publication_date": origin_book.publication_date,
+                    "publisher": origin_book.publisher,
+                    "language": origin_book.language,
+                    "wikipedia": origin_book.wikipedia,
+                    "format": origin_book.format,
+                    "length": origin_book.length,
+                    "price": origin_book.price,
+                    "isbn_10": origin_book.isbn_10,
+                    "isbn_13": origin_book.isbn_13,
+                    "eisbn_13": origin_book.eisbn_13,
+                    "asin": origin_book.asin,
+                    "wikipedia": origin_book.wikipedia,
+                    "internet_archive_url": origin_book.internet_archive_url,
+                    "notes": origin_book.notes,
+                }
+            )
+
         return initial
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         instance_id = self.kwargs.get("instance_id")
+        origin_book_id = self.kwargs.get("origin_book_id")
 
         if self.request.POST:
             data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
@@ -576,7 +603,6 @@ class BookCreateView(LoginRequiredMixin, CreateView):
 
             if instance_id:
                 source_instance = get_object_or_404(Instance, id=instance_id)
-                # Prefill bookroles from InstanceRoles
                 instance_roles = source_instance.instancerole_set.all()
                 initial_roles = [
                     {
@@ -602,9 +628,7 @@ class BookCreateView(LoginRequiredMixin, CreateView):
                         ),
                         "role": autocomplete.ModelSelect2(
                             url=reverse_lazy("entity:role-autocomplete"),
-                            forward=[
-                                "domain"
-                            ],  # forward the domain field to the RoleAutocomplete view
+                            forward=["domain"],
                             attrs={
                                 "data-create-url": reverse_lazy("entity:role_create")
                             },
@@ -620,9 +644,72 @@ class BookCreateView(LoginRequiredMixin, CreateView):
                     instance=self.object, initial=initial_roles
                 )
 
-                # Prefill bookinstances with the source instance
                 initial_instances = [{"instance": source_instance}]
                 data["bookinstances"] = BookInstanceFormSet(
+                    instance=self.object,
+                    initial=initial_instances,
+                    queryset=BookInstance.objects.none(),
+                )
+
+            if origin_book_id:
+                origin_book = get_object_or_404(Book, id=origin_book_id)
+                book_roles = origin_book.bookrole_set.all()
+                initial_roles = [
+                    {
+                        "creator": role.creator.id,
+                        "role": role.role.id,
+                        "alt_name": role.alt_name,
+                    }
+                    for role in book_roles
+                ]
+
+                BookRoleFormSet_prefilled = inlineformset_factory(
+                    Book,
+                    BookRole,
+                    form=BookRoleForm,
+                    extra=len(initial_roles),
+                    can_delete=True,
+                    widgets={
+                        "creator": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:creator-autocomplete"),
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:creator_create")
+                            },
+                        ),
+                        "role": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:role-autocomplete"),
+                            forward=["domain"],
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:role_create")
+                            },
+                        ),
+                    },
+                    help_texts={
+                        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+                        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
+                    },
+                )
+
+                data["bookroles"] = BookRoleFormSet_prefilled(
+                    instance=self.object, initial=initial_roles
+                )
+
+                initial_instances = [
+                    {
+                        "instance": instance.instance.id,
+                        "order": instance.order,
+                    }
+                    for instance in origin_book.bookinstance_set.all()
+                ]
+
+                BookInstanceFormSet_prefilled = inlineformset_factory(
+                    Book,
+                    BookInstance,
+                    form=BookInstanceForm,
+                    extra=len(initial_instances),
+                    can_delete=True,
+                )
+                data["bookinstances"] = BookInstanceFormSet_prefilled(
                     instance=self.object,
                     initial=initial_instances,
                     queryset=BookInstance.objects.none(),
@@ -635,7 +722,6 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         bookroles = context["bookroles"]
         bookinstances = context["bookinstances"]
 
-        # Manually check validity of each form in the formset.
         if not all(bookrole_form.is_valid() for bookrole_form in bookroles):
             return self.form_invalid(form)
 

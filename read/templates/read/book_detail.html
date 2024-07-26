@@ -493,8 +493,8 @@
                 {% if user.is_authenticated and not object.locked %}
                     <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         <a href="{% url 'read:book_update' object.id %}"
-                           class='fs-6 text-secondary'>Edit Book</a>
-                    </div>
+                            class='fs-6 text-secondary'>Edit Book</a>
+                    </div>                 
                 {% endif %}
                 {% if object.bookinstance_set.count > 1 %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
@@ -590,6 +590,10 @@
                             {% if not forloop.last %} / {% endif %}
                         {% endfor %}
                     </div>
+                </div>
+                <div class="text-end order-2 order-sm-3 mt-0">
+                    <a href="{% url 'read:book_create_with_other_book' origin_book_id=object.id %}"
+                        class='fs-6 text-secondary'>Reuse data for a new book</a>
                 </div>
             </div>
         </div>

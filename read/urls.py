@@ -97,9 +97,14 @@ urlpatterns = [
     # book
     path("book/create/", BookCreateView.as_view(), name="book_create"),
     path(
-        "book/create/<int:instance_id>/",
+        "book/create/from_instance/<int:instance_id>/",
         BookCreateView.as_view(),
         name="book_create_with_instance",
+    ),
+    path(
+        "book/create/from_book/<int:origin_book_id>/",
+        BookCreateView.as_view(),
+        name="book_create_with_other_book",
     ),
     path("book/<int:pk>/", BookDetailView.as_view(), name="book_detail"),
     path("book/<int:pk>/update/", BookUpdateView.as_view(), name="book_update"),
