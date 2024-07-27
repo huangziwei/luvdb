@@ -591,10 +591,12 @@
                         {% endfor %}
                     </div>
                 </div>
+                {% if user.is_authenticated %}
                 <div class="text-end order-2 order-sm-3 mt-0">
                     <a href="{% url 'read:book_create_with_other_book' origin_book_id=object.id %}"
                         class='fs-6 text-secondary'>Reuse data for a new book</a>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
