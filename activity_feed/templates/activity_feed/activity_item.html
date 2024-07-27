@@ -647,17 +647,19 @@
                 {% endif %}
                 {% regroup activity.content_object.content_object.releaserole_set.all by role as roles_list %}
                 {% for role in roles_list %}
-                    <div>
-                        {# djlint:off #}
-                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
-                        {# djlint:on #}
-                        {% for release_role in role.list %}
-                            {% if not forloop.first %}/{% endif %}
-                            <a href="{% url 'entity:creator_detail' release_role.creator.id %}">
-                                {{ release_role.alt_name | default:release_role.creator.name }}
-                            </a>
-                        {% endfor %}
-                    </div>
+                    {% if role.grouper.category == "Performing Artists" %}
+                        <div>
+                            {# djlint:off #}
+                            <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                            {# djlint:on #}
+                            {% for release_role in role.list %}
+                                {% if not forloop.first %}/{% endif %}
+                                <a href="{% url 'entity:creator_detail' release_role.creator.id %}">
+                                    {{ release_role.alt_name | default:release_role.creator.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 {% endfor %}
                 {% regroup activity.content_object.content_object.audiobookrole_set.all by role as roles_list %}
                 {% for role in roles_list %}
