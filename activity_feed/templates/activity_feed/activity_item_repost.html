@@ -596,6 +596,7 @@
                         {% endif %}
                         {% regroup activity.content_object.original_activity.content_object.content_object.releaserole_set.all by role as roles_list %}
                         {% for role in roles_list %}
+                            {% if role.grouper.category == "Performing Artists" %}
                             <div>
                                 <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                 {% for release_role in role.list %}
@@ -605,6 +606,7 @@
                                     </a>
                                 {% endfor %}
                             </div>
+                            {% endif %}
                         {% endfor %}
                         {% regroup activity.content_object.original_activity.content_object.content_object.audiobookrole_set.all by role as roles_list %}
                         {% for role in roles_list %}
@@ -653,6 +655,11 @@
                                 <a href="{% url 'listen:genre_detail' genre.slug %}">{{ genre.name }}</a>
                             {% endfor %}
                         </div>
+                        {% endif %}
+                        {% if activity.content_object.original_activity.content_object.content_object.release_type or activity.content_object.original_activity.content_object.content_object.release_format or activity.content_object.original_activity.content_object.content_object.recording_type %}
+                            <div>
+                                <span class="text-muted">Format:</span> {{ activity.content_object.original_activity.content_object.content_object.release_format }} {{activity.content_object.original_activity.content_object.content_object.recording_type}} {{activity.content_object.original_activity.content_object.content_object.release_type}} 
+                            </div>
                         {% endif %}
                         {% if activity.content_object.original_activity.content_object.content_object.release_date %}
                         <div>

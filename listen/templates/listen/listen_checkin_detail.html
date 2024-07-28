@@ -107,6 +107,7 @@
 
                             {% regroup object.content_object.releaserole_set.all by role as roles_list %}
                             {% for role in roles_list %}
+                                {% if role.grouper.category == "Performing Artists" %}
                                 <div>
                                     {# djlint:off #}
                                     <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
@@ -118,6 +119,7 @@
                                         </a>
                                     {% endfor %}
                                 </div>
+                                {% endif %}
                             {% endfor %}
                             {% regroup object.content_object.audiobookrole_set.all by role as roles_list %}
                             {% for role in roles_list %}
@@ -150,6 +152,20 @@
                                         <a href="{% url 'entity:company_detail' object.content_object.publisher.id %}">
                                             {{ object.content_object.publisher.name }}
                                         </a>
+                                </div>
+                            {% endif %}
+                            {% if object.content_object.get_genres %}
+                            <div>
+                                <span class="text-muted">Genres:</span>
+                                {% for genre in object.content_object.get_genres %}
+                                    {% if not forloop.first %}/{% endif %}
+                                    <a href="{% url 'listen:genre_detail' genre.slug %}">{{ genre.name }}</a>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% if object.content_object.release_type or object.content_object.release_format or object.content_object.recording_type %}
+                                <div>
+                                    <span class="text-muted">Format:</span> {{ object.content_object.release_format }} {{object.content_object.recording_type}} {{object.content_object.release_type}} 
                                 </div>
                             {% endif %}
                             {% if object.content_object.release_date %}

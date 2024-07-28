@@ -709,6 +709,11 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+                {% if activity.content_object.content_object.release_type or activity.content_object.content_object.release_format or activity.content_object.content_object.recording_type %}
+                    <div>
+                        <span class="text-muted">Format:</span> {{ activity.content_object.content_object.release_format }} {{activity.content_object.content_object.recording_type}} {{activity.content_object.content_object.release_type}} 
+                    </div>
+                {% endif %}
                 {% if activity.content_object.content_object.release_date %}
                 <div>
                     <span class="text-muted">Date:</span>
