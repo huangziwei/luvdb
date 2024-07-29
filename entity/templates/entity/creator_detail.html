@@ -239,9 +239,9 @@
                     </div>
                 {% endif %}
                 <!--Listen-->
-                {% if LPs_as_performer or EPs_as_performer or singles_as_performer or releases or tracks or works %}
+                {% if boxset_releases_as_performer or LPs_as_performer or EPs_as_performer or singles_as_performer or releases or tracks or works %}
                     <h3 class="mt-2">Discography</h3>
-                    {% if LPs_as_performer or EPs_as_performer or singles_as_performer %}
+                    {% if LPs_as_performer or EPs_as_performer or singles_as_performer or boxset_releases_as_performer%}
                         <div class="row">
                             <div class="col-12" role="tablist">
                                 <div class="btn-group">
