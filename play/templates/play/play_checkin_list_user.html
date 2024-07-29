@@ -197,7 +197,7 @@
                                                         <span class="text-muted">Platform{% if checkin.content_object.platforms.list|length > 1 %}s{% endif %}:</span>
                                                         {# djlint:on #}
                                                         {% for platform in checkin.content_object.platforms.all %}
-                                                            {% if not forloop.first %},{% endif %}
+                                                            {% if not forloop.first %} / {% endif %}
                                                             <a href="{% url 'play:platform_detail' platform.id %}">{{ platform.name }}</a>
                                                         {% endfor %}
                                                     {% endif %}
