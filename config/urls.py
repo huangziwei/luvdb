@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 
 from django.conf import settings
@@ -110,10 +111,19 @@ def site_manifest(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
+def robots_txt(request):
+    file_path = os.path.join(settings.BASE_DIR, "robots.txt")
+    with open(file_path, "r") as file:
+        content = file.read()
+    return HttpResponse(content, content_type="text/plain")
+
+
 urlpatterns = [
     # admin
     path("admin/login/", custom_admin_login, name="custom_admin_login"),
     path("admin/", admin.site.urls),
+    # robots.txt
+    path("robots.txt", robots_txt),
     # accounts
     path("signup/", SignUpView.as_view(), name="signup"),
     path(
