@@ -2218,6 +2218,14 @@ class GenericCheckInUserListView(ListView):
             else:
                 checkins = checkins.filter(status=status)
 
+        # Filtering by year
+        year = self.request.GET.get("year", "")
+        month = self.request.GET.get("month", "")
+        if year:
+            checkins = checkins.filter(timestamp__year=year)
+        if month:
+            checkins = checkins.filter(timestamp__month=month)
+
         # Adding count of check-ins for each book or issue
         user_checkin_counts = (
             get_visible_checkins(
@@ -2256,6 +2264,37 @@ class GenericCheckInUserListView(ListView):
         context["order"] = self.request.GET.get("order", "-timestamp")
         context["layout"] = self.request.GET.get("layout", "list")
         context["status"] = self.request.GET.get("status", "")
+        context["year"] = self.request.GET.get("year", "")
+
+        # Extracting the list of years and months
+        checkin_queryset = ReadCheckIn.objects.filter(user=profile_user).distinct()
+
+        # Apply the status filter if it's set
+        status = context["status"]
+        if status:
+            if status == "read_reread":
+                checkin_queryset = checkin_queryset.filter(
+                    Q(status="finished_reading") | Q(status="rereading")
+                )
+            elif status == "reading_rereading":
+                checkin_queryset = checkin_queryset.filter(
+                    Q(status="reading") | Q(status="rereading")
+                )
+            else:
+                checkin_queryset = checkin_queryset.filter(status=status)
+
+        years = checkin_queryset.dates("timestamp", "year")
+
+        # Create a dictionary to store months for each year
+        months_by_year = {}
+        for year in years:
+            months = checkin_queryset.filter(timestamp__year=year.year).dates(
+                "timestamp", "month"
+            )
+            months_by_year[year.year] = [month.month for month in months]
+
+        context["years"] = [year.year for year in years]
+        context["months_by_year"] = months_by_year
 
         include_mathjax, include_mermaid = check_required_js(context["page_obj"])
         context["include_mathjax"] = include_mathjax

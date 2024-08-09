@@ -11,7 +11,7 @@
                     <p class="text-white">You are blocked by {{ profile_user.display_name|default:profile_user.username }} and cannot view this page.</p>
                 </div>
             {% else %}
-                <div class="col-12 col-md-8">
+                <div class="col-12 col-md-8 left-column">
                     <div class="col-sm-12">
                         <div class="fs-4">
                             All Read Check-Ins from
@@ -19,36 +19,36 @@
                         </div>
                         <div class='mb-3'>
                             {% if order == 'timestamp' %}
-                                <a href="?page={{ i }}&layout={{layout}}&order=-timestamp&status={{ status }}"
+                                <a href="?page={{ i }}&layout={{layout}}&order=-timestamp&status={{ status }}&year={{year}}"
                                     class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
                             {% else %}
-                                <a href="?page={{ i }}&layout={{layout}}&order=timestamp&status={{ status }}"
+                                <a href="?page={{ i }}&layout={{layout}}&order=timestamp&status={{ status }}&year={{year}}"
                                     class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
                             {% endif %}
                         
                             {% if layout == 'grid' %}
-                                <a href="?page={{ i }}&layout=list&order={{ order }}&status={{ status }}"
+                                <a href="?page={{ i }}&layout=list&order={{ order }}&status={{ status }}&year={{year}}"
                                     class="btn btn-sm btn-outline-secondary mb-1">List</a>
                             {% else %}
-                                <a href="?page={{ i }}&layout=grid&order={{ order }}&status={{ status }}"
+                                <a href="?page={{ i }}&layout=grid&order={{ order }}&status={{ status }}&year={{year}}"
                                     class="btn btn-sm btn-outline-secondary mb-1">Grid</a>
                             {% endif %}
                         
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status="
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=&year="
                                 class="btn btn-sm btn-outline-secondary mb-1">All</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=to_read"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=to_read&year={{year}}"
                                 class="btn btn-sm btn-info mb-1">To Read</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=reading_rereading"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=reading_rereading&year={{ year }}"
                                 class="btn btn-sm btn-primary mb-1">(Re)Reading</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=read_reread"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=read_reread&year={{ year }}"
                                 class="btn btn-sm btn-success mb-1">(Re)Read</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=paused"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=paused&year={{ year }}"
                                 class="btn btn-sm btn-warning mb-1">Paused</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=abandoned"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=abandoned&year={{ year }}"
                                 class="btn btn-sm btn-danger mb-1">Abandoned</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=sampled"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=sampled&year={{ year }}"
                                 class="btn btn-sm btn-primary mb-1">Sampled</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=afterthought"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=afterthought&year={{ year }}"
                                 class="btn btn-sm btn-success mb-1">Afterthought</a>
                         </div>
                     </div>
@@ -311,6 +311,39 @@
                         <p>This user's check-ins are private.</p>
                     {% endif %}
                 </div>
+                <div class="col-12 col-md-4 right-column">
+                    <div class="bg-light p-3 mb-3">
+                        <div class="fs-5 fw-semibold">Filter by time</div>
+                        
+                        <!-- Filter by Year and Month -->
+                        <div class="mt-1">
+                            <!-- Display years and their months -->
+                            <ul class="list-unstyled">
+                                {% with months_by_year.items as sorted_months_by_year %}
+                                    {% for year, months in sorted_months_by_year reversed %}
+                                        <li class="mb-1">
+                                            <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}" 
+                                               class="text-decoration-none text-muted fw-bold d-block mb-2">
+                                                {{ year }}
+                                            </a>
+                                            <!-- Display months under the selected year horizontally -->
+                                            <div class="d-flex flex-wrap gap-2">
+                                                {% for month in months %}
+                                                    <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}" 
+                                                       class="btn btn-outline-secondary btn-sm {% if month|stringformat:"i" == request.GET.month|stringformat:"i" %}btn-primary{% else %}btn-light{% endif %}"
+                                                       style="font-family: 'Courier New', Courier, monospace;font-weight: bold;">
+                                                        {{ month|stringformat:"02d" }}
+                                                    </a>
+                                                {% endfor %}
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                {% endwith %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
             {% endif %}
         </div>
     </div>

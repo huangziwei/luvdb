@@ -18,3 +18,7 @@ CSRF_COOKIE_SECURE = False
 ROOT_URL = "http://localhost:8000"
 WEBAUTHN_RP_ID = "localhost"
 WEBAUTHN_RP_NAME = "luvdb"
+
+DATABASES = {
+    "default": env.dj_db_url("sqlite:///db.sqlite3", default="sqlite:///db.sqlite3"),
+}
