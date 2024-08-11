@@ -311,10 +311,9 @@
                         <p>This user's check-ins are private.</p>
                     {% endif %}
                 </div>
-                <div class="col-12 col-md-4 right-column">
-                    <div class="bg-light p-3 mb-3">
-                        <div class="fs-5 fw-semibold">Filter by time</div>
-                        
+                <div class="col-12 col-md-4 mt-1 right-column">
+                    <div class="bg-light p-3 mb-3"> 
+                        <div class="fs-5 fw-semibold">Filter by time</div>    
                         <!-- Filter by Year and Month -->
                         <div class="mt-1">
                             <!-- Display years and their months -->
@@ -329,8 +328,9 @@
                                             <!-- Display months under the selected year horizontally -->
                                             <div class="d-flex flex-wrap gap-2">
                                                 {% for month in months %}
+                                                    {% comment %} {{ month|stringformat:"02d" }} {% endcomment %}
                                                     <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}" 
-                                                       class="btn btn-outline-secondary btn-sm {% if month|stringformat:"i" == request.GET.month|stringformat:"i" %}btn-primary{% else %}btn-light{% endif %}"
+                                                       class="btn btn-outline-secondary btn-sm {% if year|stringformat:"d" == request.GET.year and month|stringformat:"d" == request.GET.month %} active {% endif %}"
                                                        style="font-family: 'Courier New', Courier, monospace;font-weight: bold;">
                                                         {{ month|stringformat:"02d" }}
                                                     </a>
