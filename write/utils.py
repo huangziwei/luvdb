@@ -1,3 +1,6 @@
+import re
+import unicodedata
+
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 
@@ -59,3 +62,11 @@ def get_visible_checkins(
         checkins = checkins.filter(visibility="PU")
 
     return checkins
+
+
+def custom_slugify(value, allow_unicode=False):
+    if allow_unicode:
+        value = unicodedata.normalize("NFKC", value)
+        value = re.sub(r"[^\w\s-]", "", value, flags=re.U).strip().lower()
+        return re.sub(r"[-\s]+", "-", value, flags=re.U)
+    return slugify(value)

@@ -3,6 +3,7 @@ import os
 import random
 import re
 import string
+import unicodedata
 from io import BytesIO
 from urllib.parse import urlparse
 
@@ -45,6 +46,14 @@ def find_mentioned_users(content):
     return User.objects.filter(username__in=usernames)
 
 
+def custom_slugify(value, allow_unicode=True):
+    if allow_unicode:
+        value = unicodedata.normalize("NFKC", value)
+        value = re.sub(r"[^\w\s-]", "", value, flags=re.U).strip().lower()
+        return re.sub(r"[-\s]+", "-", value, flags=re.U)
+    return slugify(value)
+
+
 class VisibilityChoices(models.TextChoices):
     PUBLIC = "PU", "Public"
     MENTIONED = "ME", "Mentioned People Only"
@@ -64,7 +73,13 @@ class Tag(auto_prefetch.Model):
 
 class Project(auto_prefetch.Model):
     name = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50, editable=False, blank=True)
+    slug = AutoSlugField(
+        populate_from="name",
+        unique=True,
+        allow_unicode=True,
+        null=True,
+        slugify=custom_slugify,
+    )
     user = auto_prefetch.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
     )
@@ -113,8 +128,6 @@ class Project(auto_prefetch.Model):
         return "Project"
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
         visible_to_users = set()
@@ -382,7 +395,11 @@ class Post(auto_prefetch.Model):
     reposts = GenericRelation(Repost)
     votes = GenericRelation(Vote)
     slug = AutoSlugField(
-        populate_from="title", unique=True, allow_unicode=True, null=True
+        populate_from="title",
+        unique=True,
+        allow_unicode=True,
+        null=True,
+        slugify=custom_slugify,
     )
     share_to_feed = models.BooleanField(default=False)
 

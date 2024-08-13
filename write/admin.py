@@ -20,6 +20,7 @@ class ProjectAdmin(admin.ModelAdmin):
         "user",
         "name",
         "order",
+        "slug",
     )
 
 

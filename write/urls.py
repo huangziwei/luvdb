@@ -123,39 +123,36 @@ urlpatterns = [
         PinListView.as_view(),
         name="pin_list_project",
     ),
-    # post
+    # Post list
     path("@<str:username>/posts/", PostListView.as_view(), name="post_list"),
     path("@<str:username>/posts/rss/", UserPostFeed(), name="user_post_feed"),
-    path(
-        "@<str:username>/posts/<slug:project>/",
+    # Post list filtered by project
+    re_path(
+        r"^@(?P<username>[^/]+)/posts/(?P<project>[\w-]+)/$",
         PostListView.as_view(),
         name="post_list_project",
     ),
-    path(
-        "@<str:username>/posts/<slug:project>/update",
+    re_path(
+        r"^@(?P<username>[^/]+)/posts/(?P<project>[\w-]+)/update$",
         ProjectUpdateView.as_view(),
         name="project_update",
     ),
-    path(
-        "@<str:username>/posts/<slug:project>/rss/",
+    re_path(
+        r"^@(?P<username>[^/]+)/posts/(?P<project>[\w-]+)/rss/$",
         UserPostProjectFeed(),
         name="user_post_project_feed",
     ),
+    # Project autocomplete
     path(
         "project-autocomplete/<str:form_type>/",
         ProjectAutocomplete.as_view(),
         name="project-autocomplete",
     ),
+    # Post creation
     path("@<str:username>/post/create/", PostCreateView.as_view(), name="post_create"),
+    # Post detail, update, delete by ID
     path(
-        "@<str:username>/post/<int:pk>/",
-        PostDetailView.as_view(),
-        name="post_detail",
-    ),
-    path(
-        "@<str:username>/post/<slug:slug>/",
-        PostDetailView.as_view(),
-        name="post_detail_slug",
+        "@<str:username>/post/<int:pk>/", PostDetailView.as_view(), name="post_detail"
     ),
     path(
         "@<str:username>/post/<int:pk>/update/",
@@ -163,17 +160,23 @@ urlpatterns = [
         name="post_update",
     ),
     path(
-        "@<str:username>/post/<slug:slug>/update/",
-        PostUpdateView.as_view(),
-        name="post_update_slug",
-    ),
-    path(
         "@<str:username>/post/<int:pk>/delete/",
         PostDeleteView.as_view(),
         name="post_delete",
     ),
-    path(
-        "@<str:username>/post/<slug:slug>/delete/",
+    # Post detail, update, delete by slug
+    re_path(
+        r"^@(?P<username>[^/]+)/post/(?P<slug>[\w-]+)/$",
+        PostDetailView.as_view(),
+        name="post_detail_slug",
+    ),
+    re_path(
+        r"^@(?P<username>[^/]+)/post/(?P<slug>[\w-]+)/update/$",
+        PostUpdateView.as_view(),
+        name="post_update_slug",
+    ),
+    re_path(
+        r"^@(?P<username>[^/]+)/post/(?P<slug>[\w-]+)/delete/$",
         PostDeleteView.as_view(),
         name="post_delete_slug",
     ),
