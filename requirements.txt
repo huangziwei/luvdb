@@ -1,4 +1,4 @@
-django==5.0.8
+django==5.0.1
 django-admin-csvexport
 django-crispy-forms
 django-markdownify
@@ -17,7 +17,7 @@ psycopg[binary]
 gunicorn
 djangorestframework
 Pillow
-django-storages[boto3]==1.14.4
+django-storages[boto3]==1.14.2
 boto3 
 python-dotenv
 Pygments

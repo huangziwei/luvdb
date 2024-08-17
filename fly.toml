@@ -42,3 +42,7 @@ console_command = "/code/manage.py shell"
     handlers = ["http"]
     port = 80
     force_https = true 
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
