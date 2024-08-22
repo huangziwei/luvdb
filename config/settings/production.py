@@ -17,11 +17,20 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static/"),
 ]
 STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+# STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 MEDIA_URL = "https://%s/media/" % (AWS_S3_CUSTOM_DOMAIN)
-DEFAULT_FILE_STORAGE = "config.s3_storage_backends.MediaStorage"
+# DEFAULT_FILE_STORAGE = "config.s3_storage_backends.MediaStorage"
+
+STORAGES = {
+    "default": {
+        "BACKEND": "config.s3_storage_backends.MediaStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+}
 
 CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = ["https://luvdb.fly.dev/", "https://luvdb.com"]
