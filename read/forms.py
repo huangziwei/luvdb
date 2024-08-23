@@ -84,7 +84,7 @@ class WorkForm(forms.ModelForm):
                 url=reverse_lazy("play:work-autocomplete")
             ),
             "mentioned_games": autocomplete.ModelSelect2Multiple(
-                url=reverse_lazy("play:work-autocomplete")
+                url=reverse_lazy("play:game-autocomplete")
             ),
             "mentioned_movies": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("watch:movie-autocomplete")
@@ -218,8 +218,53 @@ class InstanceForm(forms.ModelForm):
             "based_on_instances": autocomplete.ModelSelect2Multiple(
                 url=reverse_lazy("read:instance-autocomplete")
             ),
+            "mentioned_litworks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:work-autocomplete")
+            ),
+            "mentioned_litinstances": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:instance-autocomplete")
+            ),
+            "mentioned_books": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:book-autocomplete")
+            ),
+            "mentioned_gameworks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("play:work-autocomplete")
+            ),
+            "mentioned_games": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("play:game-autocomplete")
+            ),
+            "mentioned_movies": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:movie-autocomplete")
+            ),
+            "mentioned_series": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:series-autocomplete")
+            ),
+            "mentioned_locations": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("visit:location-autocomplete")
+            ),
+            "mentioned_musicalworks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:work-autocomplete")
+            ),
+            "mentioned_tracks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:track-autocomplete")
+            ),
+            "mentioned_releases": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:release-autocomplete")
+            ),
         }
-
+        labels = {
+            "mentioned_litworks": "Works",
+            "mentioned_litinstances": "Instances",
+            "mentioned_books": "Books",
+            "mentioned_gameworks": "Works",
+            "mentioned_games": "Games",
+            "mentioned_movies": "Movies",
+            "mentioned_series": "Series",
+            "mentioned_musicalworks": "Works",
+            "mentioned_tracks": "Tracks",
+            "mentioned_releases": "Releases",
+            "mentioned_locations": "Locations",
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

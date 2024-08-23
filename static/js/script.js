@@ -682,3 +682,20 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Find the first tab that should be active
+    const defaultTabs = document.querySelectorAll(".default-tab");
+    for (let i = 0; i < defaultTabs.length; i++) {
+        const tab = defaultTabs[i];
+        const paneId = tab.getAttribute("data-bs-target");
+        const pane = document.querySelector(paneId);
+
+        // If the pane has content (not empty), make this tab active
+        if (pane && pane.innerHTML.trim() !== "") {
+            tab.classList.add("active");
+            pane.classList.add("show", "active");
+            break; // Stop after the first found tab with content
+        }
+    }
+});

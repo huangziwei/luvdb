@@ -149,7 +149,7 @@
                                                 <button class="nav-link text-muted" id="related-tab" data-bs-toggle="tab" data-bs-target="#related" type="button" role="tab" aria-controls="related" aria-selected="true">Adaptations</button>
                                             </li>
                                             {% endif %}
-                                            {% if mentioned_litworks %}
+                                            {% if mentioned_litworks or mentioned_litinstances or mentioned_books or mentioned_movies or mentioned_series or mentioned_musicworks or mentioned_tracks or mentioned_releases or mentioned_gameworks or mentioned_games %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted" id="mentioned-tab" data-bs-toggle="tab" data-bs-target="#mentioned" type="button" role="tab" aria-controls="mentioned" aria-selected="true">Mentions</button>
                                             </li>                                            
@@ -347,27 +347,32 @@
                                                     </ul>
                                                 </div>
                                             {% endif %}
-                                            {% if mentioned_litworks or mentioned_litinstances or mentioned_books or mentioned_movies or mentioned_series or mentioned_musicworks or mentioned_tracks or mentioned_releases %}
+                                            {% if mentioned_litworks or mentioned_litinstances or mentioned_books or mentioned_movies or mentioned_series or mentioned_musicworks or mentioned_tracks or mentioned_releases or mentioned_gameworks or mentioned_games %}
                                                 <div class="tab-pane mb-1 scrollable-tabs sub-tabs" id="mentioned" role="tabpanel" aria-labelledby="mentioned-tab">
                                                     <ul class="nav nav-tabs mb-1" id="mentionedSubTab" role="tablist">
                                                         {% if mentioned_litworks or mentioned_litinstances or mentioned_books %}
                                                             <li class="nav-item" role="presentation">
-                                                                <button class="nav-link text-muted active" id="mentioned-publications-tab" data-bs-toggle="tab" data-bs-target="#mentioned-publications" type="button" role="tab" aria-controls="mentioned-publications" aria-selected="true">Publications</button>
+                                                                <button class="nav-link text-muted default-tab" id="mentioned-publications-tab" data-bs-toggle="tab" data-bs-target="#mentioned-publications" type="button" role="tab" aria-controls="mentioned-publications" aria-selected="true">Publications</button>
                                                             </li>
                                                         {% endif %}
                                                         {% if mentioned_movies or mentioned_series %}
                                                             <li class="nav-item" role="presentation">
-                                                                <button class="nav-link text-muted" id="mentioned-movies-series-tab" data-bs-toggle="tab" data-bs-target="#mentioned-movies-series" type="button" role="tab" aria-controls="mentioned-movies-series" aria-selected="false">Movies & Series</button>
+                                                                <button class="nav-link text-muted default-tab" id="mentioned-movies-series-tab" data-bs-toggle="tab" data-bs-target="#mentioned-movies-series" type="button" role="tab" aria-controls="mentioned-movies-series" aria-selected="false">Movies & Series</button>
                                                             </li>
                                                         {% endif %}
                                                         {% if mentioned_musicworks or mentioned_tracks or mentioned_releases %}
                                                             <li class="nav-item" role="presentation">
-                                                                <button class="nav-link text-muted" id="mentioned-music-tab" data-bs-toggle="tab" data-bs-target="#mentioned-music" type="button" role="tab" aria-controls="mentioned-music" aria-selected="false">Music</button>
+                                                                <button class="nav-link text-muted default-tab" id="mentioned-music-tab" data-bs-toggle="tab" data-bs-target="#mentioned-music" type="button" role="tab" aria-controls="mentioned-music" aria-selected="false">Music</button>
                                                             </li>
+                                                        {% endif %}
+                                                        {% if mentioned_gameworks or mentioned_games %}
+                                                            <li class="nav-item" role="presentation">
+                                                                <button class="nav-link text-muted default-tab" id="mentioned-game-tab" data-bs-toggle="tab" data-bs-target="#mentioned-games" type="button" role="tab" aria-controls="mentioned-game" aria-selected="false">Game</button>
+                                                            </li>                                                        
                                                         {% endif %}
                                                     </ul>
                                                     <div class="tab-content" id="mentionedSubTabContent">
-                                                        <div class="tab-pane fade show active" id="mentioned-publications" role="tabpanel" aria-labelledby="mentioned-publications-tab">
+                                                        <div class="tab-pane fade" id="mentioned-publications" role="tabpanel" aria-labelledby="mentioned-publications-tab">
                                                             {% if mentioned_litworks %}
                                                                 <div class="mb-2"> 
                                                                     <div class="text-muted">Works</div>
@@ -440,6 +445,26 @@
                                                                     <div class="text-muted">Releases</div>
                                                                     {% for release in mentioned_releases %}
                                                                         <a href="{% url 'listen:release_detail' release.id %}">{{ release.title }}</a> ({{ release.release_date|extract_year }})
+                                                                        {% if not forloop.last %} / {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="tab-pane fade" id="mentioned-games" role="tabpanel" aria-labelledby="mentioned-gams-tab">
+                                                            {% if mentioned_gameworks %}
+                                                                <div class="mb-2">
+                                                                    <div class="text-muted">Works</div>
+                                                                    {% for gamework in mentioned_gameworks %}
+                                                                        <a href="{% url 'play:work_detail' gamework.id %}">{{ gamework.title }}</a> ({{ gamework.first_release_date|extract_year }})
+                                                                        {% if not forloop.last %} / {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if mentioned_games %}
+                                                                <div class="mb-2">
+                                                                    <div class="text-muted">Game Releases</div>
+                                                                    {% for release in mentioned_games %}
+                                                                        <a href="{% url 'play:game_detail' release.id %}">{{ release.title }}</a> ({{ release.earliest_release_date|extract_year }})
                                                                         {% if not forloop.last %} / {% endif %}
                                                                     {% endfor %}
                                                                 </div>

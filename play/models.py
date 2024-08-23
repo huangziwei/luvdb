@@ -185,7 +185,8 @@ class Work(auto_prefetch.Model):  # Renamed from Book
     history = HistoricalRecords(inherit=True)
 
     def __str__(self):
-        return self.title
+        release_date_str = self.first_release_date.split(".")[0]
+        return f"{self.title} ({release_date_str})"
 
     def get_absolute_url(self):
         return reverse("play:work_detail", kwargs={"pk": self.pk})
@@ -298,7 +299,15 @@ class Game(auto_prefetch.Model):
     history = HistoricalRecords(inherit=True)
 
     def __str__(self):
-        return self.title
+        earliest_release_date = self.region_release_dates.order_by(
+            "release_date"
+        ).first()
+        release_date_str = (
+            earliest_release_date.release_date.split(".")[0]
+            if earliest_release_date
+            else "No Date"
+        )
+        return f"{self.title} ({release_date_str})"
 
     def save(self, *args, **kwargs):
         # To hold a flag indicating if the cover is new or updated

@@ -340,6 +340,50 @@ class Instance(auto_prefetch.Model):
         "self", blank=True, symmetrical=False, related_name="related_instances"
     )
 
+    # mentions
+    mentioned_litworks = models.ManyToManyField(
+        "read.Work", blank=True, related_name="mentioned_in_publication_instances"
+    )
+    mentioned_litinstances = models.ManyToManyField(
+        "self",
+        blank=True,
+        symmetrical=False,
+        related_name="mentioned_in_publication_instances",
+    )
+    mentioned_books = models.ManyToManyField(
+        "read.Book", blank=True, related_name="mentioned_in_publication_instances"
+    )
+    mentioned_periodicals = models.ManyToManyField(
+        "read.Periodical", blank=True, related_name="mentioned_in_publication_instances"
+    )
+    mentioned_issues = models.ManyToManyField(
+        "read.Issue", blank=True, related_name="mentioned_in_publication_instances"
+    )
+    mentioned_gameworks = models.ManyToManyField(
+        "play.Work", blank=True, related_name="mentioned_in_publication_instances"
+    )
+    mentioned_games = models.ManyToManyField(
+        "play.Game", blank=True, related_name="mentioned_in_publication_instances"
+    )
+    mentioned_movies = models.ManyToManyField(
+        "watch.Movie", blank=True, related_name="mentioned_in_publication_instances"
+    )
+    mentioned_series = models.ManyToManyField(
+        "watch.Series", blank=True, related_name="mentioned_in_publication_instances"
+    )
+    mentioned_musicalworks = models.ManyToManyField(
+        "listen.Work", blank=True, related_name="mentioned_in_publication_instances"
+    )
+    mentioned_tracks = models.ManyToManyField(
+        "listen.Track", blank=True, related_name="mentioned_in_publication_instances"
+    )
+    mentioned_releases = models.ManyToManyField(
+        "listen.Release", blank=True, related_name="mentioned_in_publication_instances"
+    )
+    mentioned_locations = models.ManyToManyField(
+        "visit.Location", blank=True, related_name="mentioned_in_publication_instances"
+    )
+
     # entry meta data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -739,6 +739,35 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         return mark_safe(label)
 
 
+class GameAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Game.objects.none()
+
+        qs = Game.objects.all()
+
+        if self.q:
+            qs = qs.filter(
+                Q(title__icontains=self.q) | Q(other_titles__icontains=self.q)
+            )
+            return qs
+
+        return Game.objects.none()
+
+    def get_result_label(self, item):
+        # Fetch the earliest release date for the movie
+        earliest_release_date = item.region_release_dates.order_by(
+            "release_date"
+        ).first()
+        # Format the label as {title} (release_date)
+        release_date_str = (
+            earliest_release_date.release_date[:4]
+            if earliest_release_date
+            else "No Date"
+        )
+        return f"{item.title} ({release_date_str})"
+
+
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
 class PlayCheckInDetailView(DetailView):
     model = PlayCheckIn

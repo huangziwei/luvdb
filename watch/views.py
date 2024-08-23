@@ -1956,6 +1956,17 @@ class MovieAutocomplete(autocomplete.Select2QuerySetView):
 
         return qs.order_by("title")
 
+    def get_result_label(self, item):
+        # Fetch the earliest release date for the movie
+        earliest_release_date = item.region_release_dates.order_by(
+            "release_date"
+        ).first()
+        # Format the label as {title} (release_date)
+        release_date_str = (
+            earliest_release_date.release_date if earliest_release_date else "No Date"
+        )
+        return f"{item.title} ({release_date_str})"
+
 
 class SeriesAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):

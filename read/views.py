@@ -43,6 +43,7 @@ from entity.utils import get_company_name
 from entity.views import HistoryViewMixin, get_contributors
 from listen.models import Release, Track
 from listen.models import Work as MusicWork
+from play.models import Game
 from play.models import Work as PlayWork
 from visit.models import Location
 from visit.utils import get_locations_with_parents
@@ -938,11 +939,38 @@ class BookDetailView(DetailView):
         unique_mentioned_musicworks_set = set()
         unique_mentioned_tracks_set = set()
         unique_mentioned_releases_set = set()
+        unique_mentioned_gameworks_set = set()
+        unique_mentioned_games_set = set()
+
+        # Check if any instance has mentions
+        instances_have_mentions = any(
+            instance.mentioned_litworks.exists()
+            or instance.mentioned_litinstances.exists()
+            or instance.mentioned_movies.exists()
+            or instance.mentioned_series.exists()
+            or instance.mentioned_musicalworks.exists()
+            or instance.mentioned_tracks.exists()
+            or instance.mentioned_releases.exists()
+            or instance.mentioned_gameworks.exists()
+            or instance.mentioned_games.exists()
+            for instance in book.instances.all()
+        )
+
         for instance in book.instances.all():
+
             # visit
             locations_with_parents = get_locations_with_parents(
                 instance.work.related_locations
             )
+            # Process each location with its parents
+            for location, parents in locations_with_parents:
+                # Convert location and its parents to their unique identifiers
+                location_id = location.pk  # Assuming pk is the primary key
+                parent_ids = tuple(parent.pk for parent in parents)
+
+                # Add the tuple of identifiers to the set
+                unique_locations_with_parents_set.add((location_id, parent_ids))
+
             # read
             unique_related_publications_set.update(
                 instance.work.related_publications.values_list("pk", flat=True)
@@ -950,12 +978,7 @@ class BookDetailView(DetailView):
             unique_based_on_publications_set.update(
                 instance.work.based_on_litworks.values_list("pk", flat=True)
             )
-            unique_mentioned_publications_set.update(
-                instance.work.mentioned_litworks.values_list("pk", flat=True)
-            )
-            unique_mentioned_instances_set.update(
-                instance.work.mentioned_litinstances.values_list("pk", flat=True)
-            )
+
             # play
             unique_related_games_set.update(
                 instance.work.games.values_list("pk", flat=True)
@@ -970,37 +993,75 @@ class BookDetailView(DetailView):
             unique_based_on_movies_set.update(
                 instance.work.based_on_movies.values_list("pk", flat=True)
             )
-            unique_mentioned_movies_set.update(
-                instance.work.mentioned_movies.values_list("pk", flat=True)
-            )
             unique_related_series_set.update(
                 instance.work.series.values_list("pk", flat=True)
             )
             unique_based_on_series_set.update(
                 instance.work.based_on_series.values_list("pk", flat=True)
             )
-            unique_mentioned_series_set.update(
-                instance.work.mentioned_series.values_list("pk", flat=True)
-            )
-            # listen
-            unique_mentioned_musicworks_set.update(
-                instance.work.mentioned_musicalworks.values_list("pk", flat=True)
-            )
-            unique_mentioned_tracks_set.update(
-                instance.work.mentioned_tracks.values_list("pk", flat=True)
-            )
-            unique_mentioned_releases_set.update(
-                instance.work.mentioned_releases.values_list("pk", flat=True)
-            )
 
-            # Process each location with its parents
-            for location, parents in locations_with_parents:
-                # Convert location and its parents to their unique identifiers
-                location_id = location.pk  # Assuming pk is the primary key
-                parent_ids = tuple(parent.pk for parent in parents)
+            if instances_have_mentions:
+                # If any instance has mentions, only use mentions from instances
+                unique_mentioned_publications_set.update(
+                    instance.mentioned_litworks.values_list("pk", flat=True)
+                )
+                unique_mentioned_instances_set.update(
+                    instance.mentioned_litinstances.values_list("pk", flat=True)
+                )
+                unique_mentioned_movies_set.update(
+                    instance.mentioned_movies.values_list("pk", flat=True)
+                )
+                unique_mentioned_series_set.update(
+                    instance.mentioned_series.values_list("pk", flat=True)
+                )
+                unique_mentioned_musicworks_set.update(
+                    instance.mentioned_musicalworks.values_list("pk", flat=True)
+                )
+                unique_mentioned_tracks_set.update(
+                    instance.mentioned_tracks.values_list("pk", flat=True)
+                )
+                unique_mentioned_releases_set.update(
+                    instance.mentioned_releases.values_list("pk", flat=True)
+                )
+                unique_mentioned_gameworks_set.update(
+                    instance.mentioned_gameworks.values_list("pk", flat=True)
+                )
+                unique_mentioned_games_set.update(
+                    instance.mentioned_games.values_list("pk", flat=True)
+                )
 
-                # Add the tuple of identifiers to the set
-                unique_locations_with_parents_set.add((location_id, parent_ids))
+                print(unique_mentioned_publications_set)
+            else:
+                if instance.work:
+                    unique_mentioned_publications_set.update(
+                        instance.work.mentioned_litworks.values_list("pk", flat=True)
+                    )
+                    unique_mentioned_instances_set.update(
+                        instance.work.mentioned_litinstances.values_list(
+                            "pk", flat=True
+                        )
+                    )
+                    unique_mentioned_series_set.update(
+                        instance.work.mentioned_series.values_list("pk", flat=True)
+                    )
+                    # listen
+                    unique_mentioned_musicworks_set.update(
+                        instance.work.mentioned_musicalworks.values_list(
+                            "pk", flat=True
+                        )
+                    )
+                    unique_mentioned_tracks_set.update(
+                        instance.work.mentioned_tracks.values_list("pk", flat=True)
+                    )
+                    unique_mentioned_releases_set.update(
+                        instance.work.mentioned_releases.values_list("pk", flat=True)
+                    )
+                    unique_mentioned_gameworks_set.update(
+                        instance.work.mentioned_gameworks.values_list("pk", flat=True)
+                    )
+                    unique_based_on_games_set.update(
+                        instance.work.based_on_games.values_list("pk", flat=True)
+                    )
 
         # Convert back to the original Location objects
         context["related_locations_with_parents"] = [
@@ -1076,6 +1137,16 @@ class BookDetailView(DetailView):
         context["mentioned_releases"] = sorted(
             [Release.objects.get(pk=pk) for pk in unique_mentioned_releases_set],
             key=lambda release: release.release_date,
+        )
+        context["mentioned_gameworks"] = sorted(
+            [PlayWork.objects.get(pk=pk) for pk in unique_mentioned_gameworks_set],
+            key=lambda work: work.first_release_date,
+        )
+        context["mentioned_games"] = sorted(
+            [Game.objects.get(pk=pk) for pk in unique_mentioned_games_set],
+            key=lambda game: game.region_release_dates.order_by("release_date")
+            .first()
+            .release_date,
         )
 
         context["has_voted"] = user_has_upvoted(self.request.user, self.object)

@@ -5,6 +5,7 @@ from .views import (
     DLCDetailView,
     DLCHistoryView,
     DLCUpdateView,
+    GameAutocomplete,
     GameCastDetailView,
     GameCreateView,
     GameDetailView,
@@ -91,6 +92,7 @@ urlpatterns = [
         name="platform-autocomplete",
     ),
     path("work-autocomplete/", WorkAutocomplete.as_view(), name="work-autocomplete"),
+    path("game-autocomplete/", GameAutocomplete.as_view(), name="game-autocomplete"),
     path("genre-autocomplete/", GenreAutocomplete.as_view(), name="genre-autocomplete"),
     # checkin
     path(
