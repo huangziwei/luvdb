@@ -36,6 +36,12 @@
                            <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
                            <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 0 %}({{ checkin.total_checkins }} more){% endif %}</span>
                         </a>
+                    {% elif model_name == "season" %}
+                        <a href="{% url 'write:season_checkin_list' checkin.user.username checkin.content_object.series.id checkin.content_object.season_number %}"
+                           class="text-decoration-none text-secondary">
+                           <span class="d-inline-block" style="white-space: nowrap;">{{ checkin.timestamp|date:"Y.m.d" }}</span>
+                           <span class="d-inline-block" style="white-space: nowrap;">{% if checkin.total_checkins > 0 %}({{ checkin.total_checkins }} more){% endif %}</span>
+                        </a>                    
                     {% endif %}
                 </span>
                 <span class="me-2">

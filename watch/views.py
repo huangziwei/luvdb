@@ -48,6 +48,8 @@ from .forms import (
     MovieForm,
     MovieReleaseDateFormSet,
     MovieRoleFormSet,
+    SeasonForm,
+    SeasonRoleFormSet,
     SeriesForm,
     SeriesRoleFormSet,
     WatchCheckInForm,
@@ -59,6 +61,7 @@ from .models import (
     EpisodeRole,
     Genre,
     Movie,
+    Season,
     Series,
     WatchCheckIn,
 )
@@ -514,6 +517,7 @@ class WatchListView(TemplateView):
 
         movie_content_type = ContentType.objects.get_for_model(Movie)
         series_content_type = ContentType.objects.get_for_model(Series)
+        seasoN_content_type = ContentType.objects.get_for_model(Season)
         recent_date = timezone.now() - timedelta(days=7)  # Set your cutoff here
 
         trending_movies = (
@@ -562,6 +566,7 @@ class WatchListView(TemplateView):
 
         context["movies"] = Movie.objects.all().order_by("-created_at")[:12]
         context["series"] = Series.objects.all().order_by("-created_at")[:12]
+        context["seasons"] = Season.objects.all().order_by("-created_at")[:12]
         context["trending_movies"] = trending_movies
         context["trending_series"] = trending_series
 
@@ -1063,6 +1068,350 @@ class SeriesCastDetailView(DetailView):
         return context
 
 
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
+class SeasonDetailView(DetailView):
+    model = Season
+    template_name = "watch/season_detail.html"
+
+    def get_object(self):
+        series_id = self.kwargs.get("series_id")
+        season_number = self.kwargs.get("season_number")
+        return get_object_or_404(
+            Season, series_id=series_id, season_number=season_number
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        content_type = ContentType.objects.get_for_model(Season)
+        content_in_collections = ContentInCollection.objects.filter(
+            content_type=content_type, object_id=self.object.id
+        )
+        collections = [
+            content_in_collection.collection
+            for content_in_collection in content_in_collections
+        ]
+        context["collections"] = collections
+
+        context["checkin_form"] = WatchCheckInForm(
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": self.request.user.id,
+                "visibility": "PU",
+            }
+        )
+
+        # Fetch the latest check-in from each user.
+        latest_checkin_subquery = (
+            get_visible_checkins(
+                self.request.user,
+                WatchCheckIn,
+                content_type,
+                self.object.id,
+            )
+            .filter(user=OuterRef("user"))
+            .order_by("-timestamp")
+        )
+        checkins = (
+            get_visible_checkins(
+                self.request.user,
+                WatchCheckIn,
+                content_type,
+                self.object.id,
+            )
+            .annotate(
+                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
+            )
+            .filter(timestamp=F("latest_checkin"))
+        ).order_by("-timestamp")[:5]
+
+        context["checkins"] = checkins
+
+        # Get the count of check-ins for each user for this series
+        user_checkin_counts = (
+            get_visible_checkins(
+                self.request.user,
+                WatchCheckIn,
+                content_type,
+                self.object.id,
+            )
+            .values("user__username")
+            .annotate(total_checkins=Count("id") - 1)
+        )
+
+        # Convert to a dictionary for easier lookup
+        user_checkin_count_dict = {
+            item["user__username"]: item["total_checkins"]
+            for item in user_checkin_counts
+        }
+
+        # Annotate the checkins queryset with total_checkins for each user
+        for checkin in context["checkins"]:
+            checkin.total_checkins = user_checkin_count_dict.get(
+                checkin.user.username, 0
+            )
+
+        # Watch check-in status counts, considering only latest check-in per user
+        latest_checkin_status_subquery = (
+            get_visible_checkins(
+                self.request.user,
+                WatchCheckIn,
+                content_type,
+                self.object.id,
+                checkin_user=OuterRef("user"),
+            )
+            .order_by("-timestamp")
+            .values("status")[:1]
+        )
+        latest_checkins = (
+            WatchCheckIn.objects.filter(
+                content_type=content_type.id, object_id=self.object.id
+            )
+            .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
+            .values("user", "latest_checkin_status")
+            .distinct()
+        )
+
+        to_watch_count = sum(
+            1 for item in latest_checkins if item["latest_checkin_status"] == "to_watch"
+        )
+        watching_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["watching", "rewatching"]
+        )
+        watched_count = sum(
+            1
+            for item in latest_checkins
+            if item["latest_checkin_status"] in ["watched", "rewatched"]
+        )
+
+        # Add status counts to context
+        context.update(
+            {
+                "to_watch_count": to_watch_count,
+                "watching_count": watching_count,
+                "watched_count": watched_count,
+                "checkins": checkins,
+            }
+        )
+
+        context["model_name"] = "season"
+        season = get_object_or_404(
+            Season,
+            series_id=self.kwargs["series_id"],
+            season_number=self.kwargs["season_number"],
+        )
+
+        # episodes = season.episodes.all().order_by("season", "episode")
+        # context["episodes"] = episodes
+        # seasons = defaultdict(list)
+        # for episode in episodes:
+        #     seasons[episode.season].append(episode)
+        # context["seasons"] = dict(seasons)
+        # context["latest_season"] = max(seasons.keys()) if seasons else 0
+
+        # Get the ContentType for the Issue model
+        season_content_type = ContentType.objects.get_for_model(Season)
+        print(season_content_type)
+        # Query ContentInList instances that have the series as their content_object
+        lists_containing_season = ContentInList.objects.filter(
+            content_type=season_content_type, object_id=self.object.id
+        ).order_by("luv_list__title")
+
+        context["lists_containing_season"] = lists_containing_season
+
+        # Fetch the latest check-in from the current user for this book
+        if self.request.user.is_authenticated:
+            latest_user_checkin = (
+                WatchCheckIn.objects.filter(
+                    content_type=content_type.id,
+                    object_id=self.object.id,
+                    user=self.request.user,
+                )
+                .order_by("-timestamp")
+                .first()
+            )
+            if latest_user_checkin is not None:
+                context["latest_user_status"] = latest_user_checkin.status
+            else:
+                context["latest_user_status"] = "to_watch"
+        else:
+            context["latest_user_status"] = "to_watch"
+
+        # contributors
+        context["contributors"] = get_contributors(self.object)
+
+        include_mathjax, include_mermaid = check_required_js(context["checkins"])
+        context["include_mathjax"] = include_mathjax
+        context["include_mermaid"] = include_mermaid
+
+        unique_filming_locations_with_parents_set = set()
+        unique_setting_locations_with_parents_set = set()
+        # for episode in season.episodes.all().order_by("season", "episode"):
+        #     filming_locations_with_parents = get_locations_with_parents(
+        #         episode.filming_locations
+        #     )
+        #     setting_locations_with_parents = get_locations_with_parents(
+        #         episode.setting_locations
+        #     )
+
+        #     # Process each location with its parents
+        #     for location, parents in filming_locations_with_parents:
+        #         # Convert location and its parents to their unique identifiers
+        #         location_id = location.pk  # Assuming pk is the primary key
+        #         parent_ids = tuple(parent.pk for parent in parents)
+
+        #         # Add the tuple of identifiers to the set
+        #         unique_filming_locations_with_parents_set.add((location_id, parent_ids))
+
+        #     for location, parents in setting_locations_with_parents:
+        #         # Convert location and its parents to their unique identifiers
+        #         location_id = location.pk  # Assuming pk is the primary key
+        #         parent_ids = tuple(parent.pk for parent in parents)
+
+        #         # Add the tuple of identifiers to the set
+        #         unique_setting_locations_with_parents_set.add((location_id, parent_ids))
+
+        # Convert back to the original Location objects
+        context["filming_locations_with_parents"] = [
+            (
+                Location.objects.get(pk=location_id),
+                [Location.objects.get(pk=parent_id) for parent_id in parent_ids],
+            )
+            for location_id, parent_ids in unique_filming_locations_with_parents_set
+        ]
+        context["setting_locations_with_parents"] = [
+            (
+                Location.objects.get(pk=location_id),
+                [Location.objects.get(pk=parent_id) for parent_id in parent_ids],
+            )
+            for location_id, parent_ids in unique_setting_locations_with_parents_set
+        ]
+
+        main_role_names = [
+            "Director",
+            "Screenwriter",
+            "Story By",
+            "Created By",
+            "Showrunner",
+        ]
+        secondary_role_names = [
+            "Exec. Producer",
+            "Producer",
+            "Editor",
+            "Music By",
+            "Cinematographer",
+            "Character Designer",
+        ]
+
+        main_roles = {}
+        secondary_roles = {}
+
+        for season_role in season.seasonroles.all():
+            role_name = season_role.role.name
+            alt_name_or_creator_name = season_role.alt_name or season_role.creator.name
+
+            if role_name in main_role_names:
+                if role_name not in main_roles:
+                    main_roles[role_name] = []
+                main_roles[role_name].append(
+                    (season_role.creator, alt_name_or_creator_name)
+                )
+            elif role_name in secondary_role_names:
+                if role_name not in secondary_roles:
+                    secondary_roles[role_name] = []
+                secondary_roles[role_name].append(
+                    (season_role.creator, alt_name_or_creator_name)
+                )
+
+            print(season, season_role)
+
+        context["main_roles"] = main_roles
+        context["secondary_roles"] = secondary_roles
+
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["can_vote"] = (
+            self.request.user.is_authenticated
+            and WatchCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Series),
+                object_id=self.object.id,
+                user=self.request.user,
+                status__in=["watched", "rewatched"],
+            ).exists()
+        )
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        content_type = ContentType.objects.get_for_model(Series)
+        form = WatchCheckInForm(
+            data=request.POST,
+            initial={
+                "content_type": content_type.id,
+                "object_id": self.object.id,
+                "user": request.user.id,
+                "comments_enabled": True,
+            },
+        )
+        if form.is_valid():
+            series_check_in = form.save(commit=False)
+            series_check_in.user = request.user  # Set the user manually here
+            series_check_in.save()
+        else:
+            print(form.errors)
+
+        return redirect(self.object.get_absolute_url())
+
+
+class SeasonUpdateView(LoginRequiredMixin, UpdateView):
+    model = Season
+    form_class = SeasonForm
+    template_name = "watch/season_update.html"
+
+    def get_object(self, queryset=None):
+        series_id = self.kwargs.get("series_id")
+        season_number = self.kwargs.get("season_number")
+        return get_object_or_404(
+            Season, series__id=series_id, season_number=season_number
+        )
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "watch:season_detail",
+            kwargs={"series_id": self.series.id, "season_number": self.season_number},
+        )
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data["seasonroles"] = SeasonRoleFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["seasonroles"] = SeasonRoleFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        seasonrole = context["seasonroles"]
+
+        # Manually check validity of each form in the formset.
+        if not all(seasonrole_form.is_valid() for seasonrole_form in seasonrole):
+            return self.form_invalid(form)
+
+        with transaction.atomic():
+            form.instance.updated_by = self.request.user
+            self.object = form.save()
+            if seasonrole.is_valid():
+                seasonrole.instance = self.object
+                seasonrole.save()
+
+        return super().form_valid(form)
+
+
 class EpisodeCreateView(LoginRequiredMixin, CreateView):
     model = Episode
     form_class = EpisodeForm
@@ -1408,6 +1757,8 @@ class GenericCheckInListView(ListView):
             return Movie
         elif self.kwargs["model_name"] == "series":
             return Series
+        elif self.kwargs["model_name"] == "season":
+            return Season
         else:
             return None
 
@@ -1421,8 +1772,16 @@ class GenericCheckInListView(ListView):
         if model is None:
             checkins = WatchCheckIn.objects.none()
         else:
+            if model.__name__ == "Season":
+                series_id = self.kwargs.get("series_id")
+                season_number = self.kwargs.get("season_number")
+                object_id = get_object_or_404(
+                    Season, series_id=series_id, season_number=season_number
+                ).id
+            else:
+                object_id = self.kwargs["object_id"]  # Get object id from url param
+
             content_type = ContentType.objects.get_for_model(model)
-            object_id = self.kwargs["object_id"]  # Get object id from url param
             checkins = WatchCheckIn.objects.filter(
                 user=profile_user, content_type=content_type, object_id=object_id
             )
@@ -1462,7 +1821,15 @@ class GenericCheckInListView(ListView):
             context["object"] = None
         else:
             content_type = ContentType.objects.get_for_model(model)
-            object_id = self.kwargs["object_id"]  # Get object id from url param
+            if model.__name__ == "Season":
+                series_id = self.kwargs.get("series_id")
+                season_number = self.kwargs.get("season_number")
+                object_id = get_object_or_404(
+                    Season, series_id=series_id, season_number=season_number
+                ).id
+            else:
+                object_id = self.kwargs["object_id"]  # Get object id from url param
+
             context["checkins"] = (
                 self.get_queryset()
             )  # Use the queryset method to handle status filter
@@ -1489,6 +1856,16 @@ class GenericCheckInListView(ListView):
                 roles[series_role.role.name].append((series_role.creator, d))
             context["roles"] = roles
             context["object"] = series
+        elif self.kwargs["model_name"] == "season":
+            season = model.objects.get(pk=object_id)
+            roles = {}
+            for season_role in season.seasonroles.all():
+                if season_role.role.name not in roles:
+                    roles[season_role.role.name] = []
+                d = season_role.alt_name or season_role.creator.name
+                roles[season_role.role.name].append((season_role.creator, d))
+            context["roles"] = roles
+            context["object"] = season
 
         include_mathjax, include_mermaid = check_required_js(context["checkins"])
         context["include_mathjax"] = include_mathjax
@@ -1517,6 +1894,8 @@ class GenericCheckInAllListView(ListView):
             return Movie
         elif self.kwargs["model_name"] == "series":
             return Series
+        elif self.kwargs["model_name"] == "season":
+            return Season
         else:
             return None
 
@@ -1526,7 +1905,14 @@ class GenericCheckInAllListView(ListView):
             return WatchCheckIn.objects.none()
 
         content_type = ContentType.objects.get_for_model(model)
-        object_id = self.kwargs["object_id"]  # Get object id from url param
+        if self.kwargs["model_name"] == "season":
+            series_id = self.kwargs.get("series_id")
+            season_number = self.kwargs.get("season_number")
+            object_id = get_object_or_404(
+                Season, series_id=series_id, season_number=season_number
+            ).id
+        else:
+            object_id = self.kwargs["object_id"]  # Get object id from url param
 
         latest_checkin_subquery = (
             get_visible_checkins(
@@ -1591,9 +1977,16 @@ class GenericCheckInAllListView(ListView):
 
         model = self.get_model()
         if model is not None:
-            context["object"] = model.objects.get(
-                pk=self.kwargs["object_id"]
-            )  # Get the object details
+            if model.__name__ == "Season":
+                series_id = self.kwargs.get("series_id")
+                season_number = self.kwargs.get("season_number")
+                context["object"] = get_object_or_404(
+                    Season, series_id=series_id, season_number=season_number
+                )
+            else:
+                context["object"] = model.objects.get(
+                    pk=self.kwargs["object_id"]
+                )  # Get the object details
 
         context["order"] = self.request.GET.get(
             "order", "-timestamp"
@@ -1619,6 +2012,18 @@ class GenericCheckInAllListView(ListView):
                     roles[series_role.role.name] = []
                 d = series_role.alt_name or series_role.creator.name
                 roles[series_role.role.name].append((series_role.creator, d))
+
+        elif context["model_name"] == "season":
+            series_id = self.kwargs.get("series_id")
+            season_number = self.kwargs.get("season_number")
+            season = model.objects.get(series_id=series_id, season_number=season_number)
+            roles = {}
+            for season_role in season.seasonroles.all():
+                if season_role.role.name not in roles:
+                    roles[season_role.role.name] = []
+                d = season_role.alt_name or season_role.creator.name
+                roles[season_role.role.name].append((season_role.creator, d))
+
         context["roles"] = roles
 
         include_mathjax, include_mermaid = check_required_js(context["page_obj"])

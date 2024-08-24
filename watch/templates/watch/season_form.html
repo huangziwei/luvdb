@@ -1,0 +1,107 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.title|as_crispy_field }}
+    {{ form.other_titles|as_crispy_field }}
+    <div class="form-wrapper row">
+        <div class="col-6 mb-1">{{ form.season_label|as_crispy_field }}</div>
+        <div class="col-6 mb-1">{{ form.season_number|as_crispy_field }}</div>
+    </div>
+    {{ form.poster|as_crispy_field }}
+    {{ form.poster_sens|as_crispy_field}}
+    {{ form.release_date|as_crispy_field }}
+    {{ form.genres|as_crispy_field }}
+    {{ form.status|as_crispy_field }}
+    {{ seasonroles.management_form|crispy }}
+    <div id="series-role-formset" class="bg-light p-3 mb-3">
+        <strong>Creators related to this Season</strong>
+        <p class='text-muted'>E.g. Directors, Writers, Designers, etc.</p>
+        <div id="seasonroles">
+            {% for form in seasonroles %}
+                <div class="form-wrapper row">
+                    {{ form.id }}
+                    {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
+                    <div class="col-md-4 mb-3">
+                        {{ form.creator | as_crispy_field }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.role | as_crispy_field }}
+                        {{ form.domain | as_crispy_field }}
+                    </div>
+                    <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-season-role-formset" class="btn btn-secondary">Add More</button>
+    </div>
+    <div id="movie-cast-formset" class="bg-light p-3 mb-3">
+        <strong>Casts related to this Movie</strong>
+        <p class='text-muted'>E.g. Actors, Actresses, Charactor Voices, etc.</p>
+        {{ form.stars|as_crispy_field }}
+    </div>
+    <div class="bg-light p-3 mb-3">
+        <strong>Companies related to this Movie</strong>
+        {{ form.studios|as_crispy_field }}
+        {{ form.distributors|as_crispy_field }}
+    </div>
+    <div class="bg-light p-3 mb-3">
+        <strong>Cross-reference</strong>
+        <div class="accordion mb-3 mt-3">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <strong>Based on</strong>
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p class="text-muted">The original sources that the series is based on.</p>
+                        {{ form.based_on_litworks|as_crispy_field }}
+                        {{ form.based_on_games|as_crispy_field }}
+                        {{ form.based_on_movies|as_crispy_field }}
+                        {{ form.based_on_series|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <strong>Soundtracks</strong>
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        {{ form.soundtracks|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div class="bg-light p-3 mb-3">
+        <strong>Links</strong>
+        {{ form.imdb|as_crispy_field }}
+        {{ form.wikipedia|as_crispy_field }}
+        {{ form.official_website|as_crispy_field }}
+    </div>
+    {{ form.notes|as_crispy_field }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% if form.errors %}
+    <div class="alert alert-danger mt-5">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}<li>{{ field }}: {{ error }}</li>{% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+<script type="text/javascript"
+    src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript"
+    src="{% static 'js/FormsetHandler.js' %}"></script>
+<script>
+    initFormset('add-season-role-formset', 'seasonroles');
+</script>
+{{ form.media }}

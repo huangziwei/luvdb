@@ -429,6 +429,14 @@
                             <span class="text-muted">({{ activity.content_object.content_object.release_date|extract_year }})</span>
                         </div>
                     </a>
+                    {% elif activity.content_object.content_type.model == 'season' %}
+                    <a href=" {% url 'watch:season_detail' activity.content_object.content_object.series.id activity.content_object.content_object.season_number %} "
+                       class="text-decoration-none h-cite p-name">
+                        <div class="fs-5">
+                            {{ activity.content_object.content_object.title }}
+                            <span class="text-muted">({{ activity.content_object.content_object.release_date|extract_year }})</span>
+                        </div>
+                    </a>                
                 {% endif %}
                 {% if activity.content_object.content_type.model == 'movie' %}
                     {% regroup activity.content_object.content_object.movieroles.all by role as roles_list %}
@@ -456,6 +464,21 @@
                                 {% if not forloop.first %}/{% endif %}
                                 <a href="{% url 'entity:creator_detail' series_role.creator.id %}">
                                     {{ series_role.alt_name | default:series_role.creator.name }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% elif activity.content_object.content_type.model == 'season' %}
+                    {% regroup activity.content_object.content_object.seasonroles.all by role as roles_list %}
+                    {% for role in roles_list %}
+                        <div>
+                            {# djlint:off #}
+                            <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                            {# djlint:on #}
+                            {% for season_role in role.list %}
+                                {% if not forloop.first %}/{% endif %}
+                                <a href="{% url 'entity:creator_detail' season_role.creator.id %}">
+                                    {{ season_role.alt_name | default:season_role.creator.name }}
                                 </a>
                             {% endfor %}
                         </div>

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Update Season{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7 left-column">
+                <h3>Update this Season entry</h3>
+                {% include "watch/season_form.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

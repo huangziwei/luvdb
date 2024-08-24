@@ -11,6 +11,8 @@ from .models import (
     MovieCast,
     MovieReleaseDate,
     MovieRole,
+    Season,
+    SeasonRole,
     Series,
     SeriesRole,
     WatchCheckIn,
@@ -89,9 +91,22 @@ class StudioAdmin(admin.ModelAdmin):
     search_fields = ["name"]
 
 
+class SeasonRoleInline(admin.TabularInline):
+    model = SeasonRole
+    extra = 1
+
+
+class SeasonAdmin(admin.ModelAdmin):
+    inlines = (SeasonRoleInline,)
+    list_display = ("series", "title", "season_number")
+    search_fields = ["title", "series__title"]
+    list_filter = ["series"]
+
+
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Movie, MovieAdmin)
 admin.site.register(Series, SeriesAdmin)
+admin.site.register(Season, SeasonAdmin)
 admin.site.register(Episode, EpisodeAdmin)
 admin.site.register(Collection, CollectionAdmin)
 

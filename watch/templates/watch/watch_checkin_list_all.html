@@ -16,6 +16,8 @@
                                 <a href="{% url 'watch:movie_detail' object.id %}">{{ object.title }}</a>
                             {% elif  model_name == "series" %}
                                 <a href="{% url 'watch:series_detail' object.id %}">{{ object.title }}</a>
+                            {% elif model_name == "season" %}
+                                <a href="{% url 'watch:season_detail' object.series.id object.season_number %}">{{ object.title }}</a>
                             {% endif %}
                         </div>
                         <span class='d-flex mb-2'>

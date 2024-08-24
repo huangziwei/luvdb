@@ -67,7 +67,7 @@
                                 {% endif %}
                             {% endif %}
                         </div>
-                        <div class="flex-grow-1 ms-3">
+                        <div class="flex-grow-1 ms-3">                            
                             {% if object.content_type.model == 'movie' %}
                                 <a href="{% url 'watch:movie_detail' object.content_object.id %}"
                                    class="text-decoration-none ">
@@ -81,8 +81,16 @@
                                     </div>
                                 </a>
                             {% elif object.content_type.model == 'series' %}
-                                <div class="fs-4">{{ object.content_object.series.title }}</div>
                                 <a href="{% url 'watch:series_detail' object.content_object.id %}"
+                                   class="text-decoration-none ">
+                                    <div class="fs-5">
+                                        {{ object.content_object.title }}
+                                        <span class="text-muted">({{ object.content_object.release_date|extract_year }})</span>
+                                    </div>
+                                </a>
+                            {% elif object.content_type.model == 'season' %}
+                               
+                                <a href="{% url 'watch:season_detail' object.content_object.series.id object.content_object.season_number %}"
                                    class="text-decoration-none ">
                                     <div class="fs-5">
                                         {{ object.content_object.title }}
@@ -116,6 +124,21 @@
                                             {% if not forloop.first %}/{% endif %}
                                             <a href="{% url 'entity:creator_detail' series_role.creator.id %}">
                                                 {{ series_role.alt_name | default:series_role.creator.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            {% elif object.content_type.model == 'season' %}
+                                {% regroup object.content_object.seasonroles.all by role as roles_list %}
+                                {% for role in roles_list %}
+                                    <div>
+                                        {# djlint:off #}
+                                        <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
+                                        {# djlint:on #}
+                                        {% for season_role in role.list %}
+                                            {% if not forloop.first %}/{% endif %}
+                                            <a href="{% url 'entity:creator_detail' season_role.creator.id %}">
+                                                {{ season_role.alt_name | default:season_role.creator.name }}
                                             </a>
                                         {% endfor %}
                                     </div>
@@ -157,6 +180,8 @@
                                     <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' object.content_object.id %}">View All</a>
                                 {% elif object.content_type.model == 'series' %}
                                     <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:series_cast_detail' object.content_object.id %}">View All</a>
+                                {% comment %} {% elif object.content_type.model == 'season' %} {% endcomment %}
+                                    {% comment %} <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:series_cast_detail' object.content_object.id %}">View All</a>                           {% endcomment %}
                                 {% endif %}
                             </div>
                             {% if object.content_object.release_date %}
@@ -186,8 +211,17 @@
                                     {{ object.timestamp|date:"Y.m.d H:i" }}
                                 {% endif %}
                             </a>
-                        {% else %}
+                        {% elif object.content_type.model == "series" %}
                             <a href="{% url 'write:series_checkin_list' object.user.username object.content_object.id %}"
+                                class="text-muted dt-published">
+                                {% if checkin_count > 0 %}
+                                    {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)
+                                {% else %}
+                                    {{ object.timestamp|date:"Y.m.d H:i" }}
+                                {% endif %}
+                            </a>
+                        {% elif object.content_type.model == "season" %}
+                            <a href="{% url 'write:season_checkin_list' object.user.username object.content_object.series.id object.content_object.season_number %}"
                                 class="text-muted dt-published">
                                 {% if checkin_count > 0 %}
                                     {{ object.timestamp|date:"Y.m.d H:i" }} ({{checkin_count}} more)

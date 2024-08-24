@@ -413,6 +413,12 @@ urlpatterns = [
         kwargs={"model_name": "series"},
         name="series_checkin_list",
     ),
+    path(
+        "@<str:username>/watch/series/<int:series_id>/S<int:season_number>/checkins/",
+        view=WatchCheckInListView.as_view(),
+        kwargs={"model_name": "season"},
+        name="season_checkin_list",
+    ),
     # Play
     path(
         "@<str:username>/play/checkin/<int:pk>/",

@@ -19,6 +19,8 @@ from .views import (
     MovieDetailView,
     MovieHistoryView,
     MovieUpdateView,
+    SeasonDetailView,
+    SeasonUpdateView,
     SeriesAutocomplete,
     SeriesCastDetailView,
     SeriesCreateView,
@@ -51,6 +53,16 @@ urlpatterns = [
         SeriesDetailView.as_view(),
         kwargs={"model_name": "series"},
         name="series_detail",
+    ),
+    path(
+        "series/<int:series_id>/S<int:season_number>/",
+        SeasonDetailView.as_view(),
+        name="season_detail",
+    ),
+    path(
+        "series/<int:series_id>/S<int:season_number>/update/",
+        SeasonUpdateView.as_view(),
+        name="season_update",
     ),
     path("series/<int:pk>/update/", SeriesUpdateView.as_view(), name="series_update"),
     path(
@@ -103,6 +115,18 @@ urlpatterns = [
         view=GenericCheckInListView.as_view(),
         kwargs={"model_name": "series"},
         name="series_checkin_list",
+    ),
+    path(
+        "series/<int:series_id>/S<int:season_number>/checkins/",
+        view=GenericCheckInAllListView.as_view(),
+        kwargs={"model_name": "season"},
+        name="season_checkin_all_list",
+    ),
+    path(
+        "series/<int:series_id>/S<int:season_number>/checkins/@<str:username>/",
+        view=GenericCheckInListView.as_view(),
+        kwargs={"model_name": "season"},
+        name="season_checkin_list",
     ),
     # cast
     path(

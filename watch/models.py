@@ -466,6 +466,39 @@ class Series(auto_prefetch.Model):
             self.poster.close()
 
         super().save(*args, **kwargs)
+        if not self.seasons.exists():
+            # Automatically create the first season if no seasons exist
+            first_season = Season.objects.create(
+                series=self,
+                title=f"{self.title} Season 1",
+                season_number=1,
+                season_label="Season",
+                subtitle=self.subtitle,
+                other_titles=self.other_titles,
+                release_date=self.release_date,
+                notes=self.notes,
+                website=self.website,
+                poster=self.poster,
+                poster_sens=self.poster_sens,
+                duration=self.duration,
+                languages=self.languages,
+                status=self.status,
+                imdb=self.imdb,
+                wikipedia=self.wikipedia,
+                official_website=self.official_website,
+                created_by=self.created_by,
+                updated_by=self.updated_by,
+            )
+
+            # Copy ManyToMany fields
+            first_season.studios.set(self.studios.all())
+            first_season.distributors.set(self.distributors.all())
+            first_season.stars.set(self.stars.all())
+            first_season.creators.set(self.creators.all())
+            first_season.genres.set(self.genres.all())
+
+            # Save the season to commit the ManyToMany fields
+            first_season.save()
 
     def get_absolute_url(self):
         return reverse("watch:series_detail", args=[str(self.id)])
@@ -496,6 +529,132 @@ class SeriesRole(auto_prefetch.Model):
 
     def __str__(self):
         return f"{self.series} - {self.creator} - {self.role}"
+
+
+class Season(auto_prefetch.Model):
+    series = auto_prefetch.ForeignKey(
+        Series, on_delete=models.CASCADE, related_name="seasons"
+    )
+
+    # Season meta data
+    season_number = models.IntegerField(
+        blank=True, null=True
+    )  # To store the numeric season (e.g., 1, 2, 3)
+    season_label = models.CharField(
+        max_length=100, blank=True, null=True
+    )  # For non-numeric labels like "OVA", "Special"
+    title = models.CharField(max_length=100)
+    subtitle = models.CharField(max_length=100, blank=True, null=True)
+    other_titles = models.TextField(blank=True, null=True)
+    studios = models.ManyToManyField(Company, related_name="seasons")
+    distributors = models.ManyToManyField(Company, related_name="seasons_distributed")
+    stars = models.ManyToManyField(Creator, related_name="seasons_starred", blank=True)
+    creators = models.ManyToManyField(
+        Creator, through="SeasonRole", related_name="seasons"
+    )
+    release_date = models.CharField(max_length=10, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+    website = models.CharField(max_length=100, blank=True, null=True)
+    poster = models.ImageField(upload_to=rename_movie_poster, null=True, blank=True)
+    poster_sens = models.BooleanField(default=False, null=True, blank=True)
+    duration = models.CharField(max_length=10, blank=True, null=True)
+    languages = LanguageField(blank=True, null=True)
+    genres = models.ManyToManyField(Genre, related_name="seasons", blank=True)
+
+    STATUS_CHOICES = (
+        ("continuing", "Continuing"),
+        ("season-ended", "Season Ended"),
+        ("ended", "Series Ended"),
+        ("canceled", "Canceled"),
+        ("hiatus", "On Hiatus"),
+        ("renewed", "Renewed"),
+        ("limbo", "In Limbo"),
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="ended",
+        blank=True,
+        null=True,
+    )
+
+    # Cross-references
+    ## Base on
+    based_on_litworks = models.ManyToManyField(
+        "read.Work", blank=True, related_name="seasons"
+    )
+    based_on_games = models.ManyToManyField(
+        "play.Work", blank=True, related_name="seasons"
+    )
+    based_on_series = models.ManyToManyField(
+        "self", blank=True, symmetrical=False, related_name="season"
+    )
+    based_on_movies = models.ManyToManyField(Movie, blank=True, related_name="season")
+    ## Soundtracks
+    soundtracks = models.ManyToManyField(
+        "listen.Release", blank=True, related_name="season_with_soundtrack"
+    )  # official soundtracks (OST) release
+
+    imdb = models.URLField(blank=True, null=True)
+    wikipedia = models.URLField(blank=True, null=True)
+    official_website = models.URLField(blank=True, null=True)
+
+    watchcheckin = GenericRelation("WatchCheckIn")
+    votes = GenericRelation("discover.Vote")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = auto_prefetch.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="watch_seasons_created",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    updated_by = auto_prefetch.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="watch_seasons_updated",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    history = HistoricalRecords(inherit=True)
+
+    def __str__(self):
+        return f"{self.series.title} - {self.title}"
+
+    def save(self, *args, **kwargs):
+        # handle poster resizing, etc., similar to the Series model
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("watch:season_detail", args=[self.series.id, self.season_number])
+
+    def get_votes(self):
+        return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
+
+    def model_name(self):
+        return "Season"
+
+
+class SeasonRole(auto_prefetch.Model):
+    """
+    A Role of a Creator in a Season
+    """
+
+    season = auto_prefetch.ForeignKey(
+        Season, on_delete=models.CASCADE, related_name="seasonroles"
+    )
+    creator = auto_prefetch.ForeignKey(
+        Creator, on_delete=models.CASCADE, null=True, blank=True
+    )
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
+    alt_name = models.CharField(max_length=100, blank=True, null=True)
+    history = HistoricalRecords(inherit=True)
+
+    def __str__(self):
+        return f"{self.season} - {self.creator} - {self.role}"
 
 
 class Episode(auto_prefetch.Model):

@@ -73,6 +73,13 @@
                            name="progress"
                            placeholder="S00E00">
                 {% endif %}
+                {% if model_name == "season" %}
+                    <input type="text"
+                        class="form-control"
+                        id="progressInput"
+                        name="progress"
+                        placeholder="E00">                
+                {% endif %}
                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
                         type="button"
                         data-bs-toggle="dropdown"
@@ -246,8 +253,8 @@
         setStatus(event, default_status);
         if (model_name == "movie") {
             setProgressType(event, 'TM');
-        } else if (model_name == "series") {
+        } else {
             setProgressType(event, 'EP');
-        }
+        } 
     });
 </script>

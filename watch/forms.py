@@ -18,6 +18,8 @@ from .models import (
     MovieCast,
     MovieReleaseDate,
     MovieRole,
+    Season,
+    SeasonRole,
     Series,
     SeriesRole,
     WatchCheckIn,
@@ -384,6 +386,119 @@ SeriesRoleFormSet = inlineformset_factory(
     Series,
     SeriesRole,
     form=SeriesRoleForm,
+    extra=1,
+    can_delete=True,
+    widgets={
+        "creator": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:creator-autocomplete"),
+            attrs={"data-create-url": reverse_lazy("entity:creator_create")},
+        ),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:role-autocomplete"),
+            forward=["domain"],
+            attrs={"data-create-url": reverse_lazy("entity:role_create")},
+        ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
+    },
+)
+
+
+class SeasonForm(forms.ModelForm):
+    class Meta(auto_prefetch.Model.Meta):
+        model = Season
+        exclude = ["created_by", "updated_by", "creators", "locked"]
+        fields = "__all__"
+        widgets = {
+            "studios": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("entity:company-autocomplete")
+            ),
+            "distributors": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("entity:company-autocomplete")
+            ),
+            "based_on_litworks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("read:work-autocomplete")
+            ),
+            "based_on_games": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("play:work-autocomplete")
+            ),
+            "based_on_movies": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:movie-autocomplete")
+            ),
+            "based_on_series": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:series-autocomplete")
+            ),
+            "soundtracks": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("listen:release-autocomplete")
+            ),
+            "genres": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("watch:genre-autocomplete")
+            ),
+            "other_titles": forms.TextInput(),
+            "stars": autocomplete.ModelSelect2Multiple(
+                url=reverse_lazy("entity:creator-autocomplete")
+            ),
+        }
+        help_texts = {
+            "other_titles": "e.g. translated titles in different languages, separated by slashes (`/`).",
+            "studios": "Production companies. <a href='/entity/company/create/'>Add a new company</a>.",
+            "distributors": "Distribution companies. <a href='/entity/company/create/'>Add a new company</a>.",
+            "based_on": "The original work that the movie is based on. <a href='/read/work/create/'>Add a new work</a>.",
+            "stars": "Main casts of the series. <a href='/entity/creator/create/'>Add a new creator</a>. For episode-specific casts, add them in the Episode form.",
+        }
+        labels = {
+            "based_on_litworks": "Publications (Work)",
+            "based_on_games": "Games (Work)",
+            "based_on_movies": "Movies",
+            "based_on_series": "Series",
+            "soundtracks": "Official Soundtracks (OST)",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(SeasonForm, self).__init__(*args, **kwargs)
+        self.fields["studios"].required = False
+        self.fields["distributors"].required = False
+        self.fields["genres"].required = False
+        self.fields["other_titles"].help_text = (
+            "e.g. translated titles in different languages, separated by slashes (`/`)."
+        )
+
+
+class SeasonRoleForm(forms.ModelForm):
+    domain = forms.CharField(initial="watch", widget=forms.HiddenInput())
+
+    class Meta(auto_prefetch.Model.Meta):
+        model = SeasonRole
+        fields = ("creator", "role", "domain", "alt_name")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        creator = cleaned_data.get("creator")
+        role = cleaned_data.get("role")
+
+        # if the creator field is filled but the role field is not
+        if creator and not role:
+            raise ValidationError("Role is required when Creator is filled.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.creator is None:  # if the creator field is empty
+            if commit and instance.pk:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
+
+
+SeasonRoleFormSet = inlineformset_factory(
+    Season,
+    SeasonRole,
+    form=SeasonRoleForm,
     extra=1,
     can_delete=True,
     widgets={
