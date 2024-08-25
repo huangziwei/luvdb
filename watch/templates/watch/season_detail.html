@@ -448,13 +448,13 @@
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5 fw-semibold">Statistics</div>
                     <div>
-                        <span class="text-muted">To Watch:</span> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=to_watch">{{ to_watch_count }}</a>
+                        <span class="text-muted">To Watch:</span> <a href="{% url 'watch:season_checkin_all_list' object.series.id object.season_number %}?status=to_watch">{{ to_watch_count }}</a>
                     </div>
                     <div>
-                        <span class="text-muted">Watching:</span> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watching_rewatching">{{ watching_count }}</a>
+                        <span class="text-muted">Watching:</span> <a href="{% url 'watch:season_checkin_all_list' object.series.id object.season_number %}?status=watching_rewatching">{{ watching_count }}</a>
                     </div>
                     <div>
-                        <span class="text-muted">Watched:</span> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a>
+                        <span class="text-muted">Watched:</span> <a href="{% url 'watch:season_checkin_all_list' object.series.id object.season_number %}?status=watched_rewatched">{{ watched_count }}</a>
                     </div>
                 </div>
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">

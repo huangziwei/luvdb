@@ -1375,7 +1375,10 @@ class SeasonUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy(
             "watch:season_detail",
-            kwargs={"series_id": self.series.id, "season_number": self.season_number},
+            kwargs={
+                "series_id": self.object.series.id,
+                "season_number": self.object.season_number,
+            },
         )
 
     def get_context_data(self, **kwargs):
@@ -2456,18 +2459,18 @@ class EpisodeHistoryView(HistoryViewMixin, DetailView):
     def get_object(self):
         # Get the series_id and season_episode string from the URL parameters
         series_id = self.kwargs.get("series_id")
-        season_episode = self.kwargs.get("season_episode")
-
-        # Use regex to extract season and episode numbers from the season_episode string
-        match = re.match(r"S(\d+)E(\d+)", season_episode)
-        if not match:
-            raise Http404("Invalid episode format")
-
-        season, episode = int(match.group(1)), int(match.group(2))
+        season_number = self.kwargs.get("season_number")
+        season_id = get_object_or_404(
+            Season, series_id=series_id, season_number=season_number
+        ).id
+        episode_number = self.kwargs.get("episode_number")
 
         # Fetch the Episode object based on series_id, season, and episode
         return get_object_or_404(
-            Episode, series_id=series_id, season=season, episode=episode
+            Episode,
+            series_id=series_id,
+            season_id=season_id,
+            episode=episode_number,
         )
 
 

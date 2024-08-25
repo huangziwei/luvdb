@@ -24,7 +24,7 @@
                 <!-- movie-card -->
                 <div class="movie-card justify-content-start">
                     <div class="d-flex flex-column flex-lg-row mt-2 col-12 col-md-11">
-                        <!--poster-box-->
+                        {% comment %} <!--poster-box-->
                         <div class="col-12 col-lg-auto mb-3 mb-lg-0">
                             <div class="watch-cover-box mt-1 position-relative">
                                 <div class="d-flex flex-column align-items-center">
@@ -70,9 +70,9 @@
                                 {% endif %}
                                 </div>
                             </div>
-                        </div>
+                        </div> {% endcomment %}
                         <!--series-meta-->
-                        <div class="col-12 col-lg-7 flex-grow-1 ms-lg-3">
+                        <div class="col-12 col-lg-7 flex-grow-1">
                             <div class="card-body">
                                 <div class="d-flex flex-wrap align-items-baseline">
                                     <h2>{{ object.title }}
@@ -370,8 +370,44 @@
                         </div>
                     </div>
                 </div>
-                <!--Series Check-In-->
+                <!--Seasons-->
                 <div class="mt-4">
+                    <h3> All Seasons</h3>
+                    <div class="row">
+                        {% for season in object.seasons.all %}
+                            <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
+                                <a href="{% url 'watch:season_detail' season.series.id season.season_number %}">
+                                    {% if user.pure_text_mode %}
+                                        <div class="cover-placeholder bg-light">{{ season.title }}</div>
+                                    {% else %}
+                                        {% if season.poster %}
+                                            {% if season.cover_sens %}
+                                                <img src="{{ season.poster.url }}"
+                                                        alt="{{ season.title }} cover"
+                                                        class="img-fluid blur cover-border"
+                                                        onclick="this.classList.toggle('blur')"
+                                                        loading="lazy">
+                                            {% else %}
+                                                <img src="{{ season.poster.url }}"
+                                                        alt="{{ season.title }}"
+                                                        class="img-fluid cover-border"
+                                                        onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ season.series.title }} Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>';"
+                                                        loading="lazy">
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="cover-placeholder bg-light">{{ season.title }}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                </a>
+                            </div>
+                        {% empty %}
+                            <p>No issues available.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!--Series Check-In-->
+                {% comment %} <div class="mt-4">
                     {% include "watch/watch_checkin_form.html" %}
                     <div class="d-flex justify-content-between mt-4 mb-1 col-12 col-md-11">
                         <div class="fs-4">Latest Check-Ins</div>
@@ -380,7 +416,7 @@
                            style="height:30px">All</a>
                     </div>
                     {% include "watch/watch_checkin_in_entry_detail.html" %}
-                </div>
+                </div> {% endcomment %}
                 <hr>
             </div>
             <!--right columns-->
@@ -392,6 +428,7 @@
                            class='fs-6 text-secondary'>Edit Series</a>
                     </div>
                 {% endif %}
+                {% comment %} 
                 <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5 fw-semibold">Episode List</div>
                     {% if episodes %}
@@ -449,7 +486,8 @@
                             <a href="{% url 'watch:episode_create' series.id %}" class='fs-6 text-secondary'>Add episode</a>
                         </div>
                     {% endif %}
-                </div>
+                </div> 
+                {% endcomment %}
                             
                 {% if object.wikipedia or object.imdb %}
                     <div class="bg-light p-3 mb-3 order-1 order-sm-2">
@@ -467,7 +505,7 @@
                     </div>
                 {% endif %}
                 <!--stats-->
-                <div class="bg-light p-3 mb-3 order-1 order-sm-2">
+                {% comment %} <div class="bg-light p-3 mb-3 order-1 order-sm-2">
                     <div class="fs-5 fw-semibold">Statistics</div>
                     <div>
                         <span class="text-muted">To Watch:</span> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=to_watch">{{ to_watch_count }}</a>
@@ -478,7 +516,8 @@
                     <div>
                         <span class="text-muted">Watched:</span> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a>
                     </div>
-                </div>
+                </div> 
+                {% endcomment %}
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5 fw-semibold">Contributors</div>
