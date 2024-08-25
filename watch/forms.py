@@ -464,6 +464,7 @@ class SeasonForm(forms.ModelForm):
         self.fields["other_titles"].help_text = (
             "e.g. translated titles in different languages, separated by slashes (`/`)."
         )
+        self.fields["series"].disabled = True
 
 
 class SeasonRoleForm(forms.ModelForm):

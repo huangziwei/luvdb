@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    {{ form.series|as_crispy_field }}
     {{ form.title|as_crispy_field }}
     {{ form.other_titles|as_crispy_field }}
     <div class="form-wrapper row">
@@ -35,8 +36,8 @@
         </div>
         <button type="button" id="add-season-role-formset" class="btn btn-secondary">Add More</button>
     </div>
-    <div id="movie-cast-formset" class="bg-light p-3 mb-3">
-        <strong>Casts related to this Movie</strong>
+    <div id="season-cast-formset" class="bg-light p-3 mb-3">
+        <strong>Casts related to this Season</strong>
         <p class='text-muted'>E.g. Actors, Actresses, Charactor Voices, etc.</p>
         {{ form.stars|as_crispy_field }}
     </div>

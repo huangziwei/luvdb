@@ -1,4 +1,5 @@
 from django.db import migrations
+from django.utils.timezone import now
 
 
 def copy_series_to_season(apps, schema_editor):
@@ -6,6 +7,8 @@ def copy_series_to_season(apps, schema_editor):
     Season = apps.get_model("watch", "Season")
     SeriesRole = apps.get_model("watch", "SeriesRole")
     SeasonRole = apps.get_model("watch", "SeasonRole")
+    HistoricalSeries = apps.get_model("watch", "HistoricalSeries")
+    HistoricalSeason = apps.get_model("watch", "HistoricalSeason")
 
     for series in Series.objects.all():
         season = Season.objects.create(
@@ -43,14 +46,43 @@ def copy_series_to_season(apps, schema_editor):
 
         # Copy SeriesRole to SeasonRole
         for series_role in SeriesRole.objects.filter(series=series):
-            SeasonRole.objects.create(
+            season_role = SeasonRole.objects.create(
                 season=season,
                 creator=series_role.creator,
                 role=series_role.role,
                 alt_name=series_role.alt_name,
             )
 
-        season.save()
+        # Copy HistoricalSeries to HistoricalSeason
+        for historical_series in HistoricalSeries.objects.filter(id=series.id):
+            HistoricalSeason.objects.create(
+                history_date=historical_series.history_date,
+                history_user=historical_series.history_user,
+                history_change_reason=historical_series.history_change_reason,
+                history_type=historical_series.history_type,
+                id=historical_series.id,  # Or generate a new ID if needed
+                series_id=series.id,  # Manually set the series_id
+                title=f"{historical_series.title} Season 1",
+                season_number=1,
+                season_label="Season",
+                subtitle=historical_series.subtitle,
+                other_titles=historical_series.other_titles,
+                release_date=historical_series.release_date,
+                notes=historical_series.notes,
+                website=historical_series.website,
+                poster=historical_series.poster,
+                poster_sens=historical_series.poster_sens,
+                duration=historical_series.duration,
+                languages=historical_series.languages,
+                status=historical_series.status,
+                imdb=historical_series.imdb,
+                wikipedia=historical_series.wikipedia,
+                official_website=historical_series.official_website,
+                created_by=historical_series.created_by,
+                updated_by=historical_series.updated_by,
+                created_at=historical_series.history_date,  # Use history_date for created_at
+                updated_at=historical_series.history_date,  # Use history_date for updated_at
+            )
 
 
 class Migration(migrations.Migration):

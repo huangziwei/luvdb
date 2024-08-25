@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery
+from django.forms.models import inlineformset_factory
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -49,6 +50,7 @@ from .forms import (
     MovieReleaseDateFormSet,
     MovieRoleFormSet,
     SeasonForm,
+    SeasonRole,
     SeasonRoleFormSet,
     SeriesForm,
     SeriesRoleFormSet,
@@ -1214,7 +1216,6 @@ class SeasonDetailView(DetailView):
 
         # Get the ContentType for the Issue model
         season_content_type = ContentType.objects.get_for_model(Season)
-        print(season_content_type)
         # Query ContentInList instances that have the series as their content_object
         lists_containing_season = ContentInList.objects.filter(
             content_type=season_content_type, object_id=self.object.id
@@ -1326,8 +1327,6 @@ class SeasonDetailView(DetailView):
                     (season_role.creator, alt_name_or_creator_name)
                 )
 
-            print(season, season_role)
-
         context["main_roles"] = main_roles
         context["secondary_roles"] = secondary_roles
 
@@ -1408,6 +1407,126 @@ class SeasonUpdateView(LoginRequiredMixin, UpdateView):
             if seasonrole.is_valid():
                 seasonrole.instance = self.object
                 seasonrole.save()
+
+        return super().form_valid(form)
+
+
+class SeasonCreateView(LoginRequiredMixin, CreateView):
+    model = Season
+    form_class = SeasonForm
+    template_name = "watch/season_create.html"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "watch:season_detail",
+            kwargs={
+                "series_id": self.object.series.id,
+                "season_number": self.object.season_number,
+            },
+        )
+
+    def get_initial(self):
+        initial = super().get_initial()
+        series_id = self.kwargs.get("series_id")
+        season_number = self.kwargs.get("season_number")
+
+        origin_season = get_object_or_404(
+            Season, series_id=series_id, season_number=season_number
+        )
+
+        initial.update(
+            {
+                "series": origin_season.series,
+                "title": f"{origin_season.series.title} Season {origin_season.season_number + 1}",
+                "season_number": origin_season.season_number + 1,
+                "season_label": origin_season.season_label,
+                "subtitle": origin_season.subtitle,
+                "other_titles": origin_season.other_titles,
+                "release_date": origin_season.release_date,
+                "notes": origin_season.notes,
+                "website": origin_season.website,
+                "poster": origin_season.poster,
+                "poster_sens": origin_season.poster_sens,
+                "duration": origin_season.duration,
+                "languages": origin_season.languages,
+                "status": origin_season.status,
+                "imdb": origin_season.imdb,
+                "wikipedia": origin_season.wikipedia,
+                "official_website": origin_season.official_website,
+            }
+        )
+
+        self.origin_season = origin_season
+
+        return initial
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        series_id = self.kwargs.get("series_id")
+        season_number = self.kwargs.get("season_number")
+        origin_season = get_object_or_404(
+            Season, series_id=series_id, season_number=season_number
+        )
+
+        if self.request.POST:
+            data["seasonroles"] = SeasonRoleFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            data["seasonroles"] = SeasonRoleFormSet(instance=self.object)
+            initial_roles = [
+                {
+                    "creator": role.creator.id,
+                    "role": role.role.id,
+                    "alt_name": role.alt_name,
+                }
+                for role in origin_season.seasonroles.all()
+            ]
+
+            SeasonRoleFormSet_prefilled = inlineformset_factory(
+                Season,
+                SeasonRole,
+                form=SeasonRoleFormSet.form,
+                extra=len(initial_roles),
+                can_delete=True,
+            )
+            data["seasonroles"] = SeasonRoleFormSet_prefilled(
+                instance=self.object, initial=initial_roles
+            )
+
+            # Prefill the form with M2M data from the original season
+            data["form"].fields["studios"].initial = origin_season.studios.all()
+            data["form"].fields[
+                "distributors"
+            ].initial = origin_season.distributors.all()
+            data["form"].fields["stars"].initial = origin_season.stars.all()
+            data["form"].fields["genres"].initial = origin_season.genres.all()
+            data["form"].fields[
+                "based_on_litworks"
+            ].initial = origin_season.based_on_litworks.all()
+            data["form"].fields[
+                "based_on_games"
+            ].initial = origin_season.based_on_games.all()
+            data["form"].fields[
+                "based_on_series"
+            ].initial = origin_season.based_on_series.all()
+            data["form"].fields[
+                "based_on_movies"
+            ].initial = origin_season.based_on_movies.all()
+            data["form"].fields["soundtracks"].initial = origin_season.soundtracks.all()
+
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        seasonroles = context["seasonroles"]
+
+        with transaction.atomic():
+            self.object = form.save()
+
+            if seasonroles.is_valid():
+                seasonroles.instance = self.object
+                seasonroles.save()
 
         return super().form_valid(form)
 
@@ -2295,6 +2414,25 @@ class MovieHistoryView(HistoryViewMixin, DetailView):
 class SeriesHistoryView(HistoryViewMixin, DetailView):
     model = Series
     template_name = "entity/history.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        object = self.get_object()
+        context["history_data"] = self.get_history_data(object)
+        return context
+
+
+@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
+class SeasonHistoryView(HistoryViewMixin, DetailView):
+    model = Season
+    template_name = "entity/history.html"
+
+    def get_object(self):
+        series_id = self.kwargs.get("series_id")
+        season_number = self.kwargs.get("season_number")
+        return get_object_or_404(
+            Season, series_id=series_id, season_number=season_number
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

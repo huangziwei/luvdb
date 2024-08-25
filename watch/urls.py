@@ -19,7 +19,9 @@ from .views import (
     MovieDetailView,
     MovieHistoryView,
     MovieUpdateView,
+    SeasonCreateView,
     SeasonDetailView,
+    SeasonHistoryView,
     SeasonUpdateView,
     SeriesAutocomplete,
     SeriesCastDetailView,
@@ -54,6 +56,16 @@ urlpatterns = [
         kwargs={"model_name": "series"},
         name="series_detail",
     ),
+    path("series/<int:pk>/update/", SeriesUpdateView.as_view(), name="series_update"),
+    path(
+        "series/<int:pk>/history/", SeriesHistoryView.as_view(), name="series_history"
+    ),
+    # season
+    path(
+        "series/<int:series_id>/create/from/S<int:season_number>/",
+        SeasonCreateView.as_view(),
+        name="season_create",
+    ),
     path(
         "series/<int:series_id>/S<int:season_number>/",
         SeasonDetailView.as_view(),
@@ -64,9 +76,10 @@ urlpatterns = [
         SeasonUpdateView.as_view(),
         name="season_update",
     ),
-    path("series/<int:pk>/update/", SeriesUpdateView.as_view(), name="series_update"),
     path(
-        "series/<int:pk>/history/", SeriesHistoryView.as_view(), name="series_history"
+        "series/<int:series_id>/S<int:season_number>/history/",
+        SeasonHistoryView.as_view(),
+        name="season_history",
     ),
     # episode
     path(

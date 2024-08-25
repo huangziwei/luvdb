@@ -113,7 +113,8 @@
                                     <div class="mb-1">
                                         <span class="text-muted">Seasons:</span>
                                         {% for season in object.series.seasons.all %}
-                                            <a href="{% url 'watch:season_detail' season.series.id season.season_number %}"> 
+                                            <a href="{% url 'watch:season_detail' season.series.id season.season_number %}" 
+                                               class="btn btn-sm {% if season.season_number == object.season_number %}active{% endif %}">
                                                 {{ season.season_number }}
                                             </a>
                                         {% endfor %}
@@ -398,7 +399,11 @@
                     <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         <a href="{% url 'watch:season_update' object.series.id object.season_number %}"
                            class='fs-6 text-secondary'>Edit Season</a>
+                        <br>
+                        <a href="{% url 'watch:season_create' object.series.id object.season_number %}"
+                           class='fs-6 text-secondary'>Add New Season</a>
                     </div>
+
                 {% endif %}
 
                 {% comment %} <div class="bg-light p-3 mb-3 order-1 order-sm-2">
@@ -491,7 +496,7 @@
                 <div class="bg-light p-3 mb-3 order-1 order-sm-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5 fw-semibold">Contributors</div>
-                        <div>(<a href="{% url 'watch:series_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>
+                        <div>(<a href="{% url 'watch:season_history' object.series.id object.season_number %}" class="fs-6 text-secondary">Changelog</a>)</div>
                     </div>
                     <div>
                         {% for contributor in contributors %}
