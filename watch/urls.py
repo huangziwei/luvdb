@@ -83,22 +83,22 @@ urlpatterns = [
     ),
     # episode
     path(
-        "series/<int:series_id>/episode/create/",
+        "series/<int:series_id>/S<int:season_number>/episode/create/",
         EpisodeCreateView.as_view(),
         name="episode_create",
     ),
-    re_path(
-        r"series/(?P<series_id>\d+)/(?P<season_episode>S\d+E\d+)/$",
+    path(
+        "series/<int:series_id>/S<int:season_number>/E<int:episode_number>/",
         EpisodeDetailView.as_view(),
         name="episode_detail",
     ),
-    re_path(
-        r"series/(?P<series_id>\d+)/(?P<season_episode>S\d+E\d+)/update/$",
+    path(
+        "series/<int:series_id>/S<int:season_number>/E<int:episode_number>/update/",
         EpisodeUpdateView.as_view(),
         name="episode_update",
     ),
-    re_path(
-        r"series/(?P<series_id>\d+)/(?P<season_episode>S\d+E\d+)/history/$",
+    path(
+        "series/<int:series_id>/S<int:season_number>/E<int:episode_number>/history/",
         EpisodeHistoryView.as_view(),
         name="episode_history",
     ),

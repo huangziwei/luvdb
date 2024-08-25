@@ -665,10 +665,12 @@ class Episode(auto_prefetch.Model):
     series = auto_prefetch.ForeignKey(
         Series, on_delete=models.CASCADE, related_name="episodes"
     )
+    season = auto_prefetch.ForeignKey(
+        Season, on_delete=models.CASCADE, related_name="episodes", null=True, blank=True
+    )
     title = models.CharField(max_length=255, blank=True, null=True)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     other_titles = models.TextField(blank=True, null=True)
-    season = models.IntegerField(blank=True, null=True)
     episode = models.IntegerField(blank=True, null=True)
     release_date = models.CharField(
         max_length=10, blank=True, null=True
@@ -788,7 +790,7 @@ class Episode(auto_prefetch.Model):
         return f"{self.series.title} - Season {self.season} - Episode {self.episode}"
 
     def season_episode_format(self):
-        return f"S{self.season:02}E{self.episode:02}"
+        return f"S{self.season.season_number:02}E{self.episode:02}"
 
     def get_absolute_url(self):
         return reverse(

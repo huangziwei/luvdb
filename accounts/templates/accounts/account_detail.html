@@ -375,8 +375,8 @@
                                                             {% endif %}
                                                         {% endif %}
                                                     </a>
-                                                {% elif item.content_type.model == 'series' %}
-                                                    <a href="{% url 'write:series_checkin_list' item.user.username item.content_object.id %}">
+                                                {% elif item.content_type.model == 'season' %}
+                                                    <a href="{% url 'write:season_checkin_list' item.user.username item.content_object.series.id item.content_object.season_number %}">
                                                         {% if user.pure_text_mode %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
                                                         {% else %}
@@ -444,8 +444,8 @@
                                                             {% endif %}
                                                         </div>
                                                     </a>
-                                                {% elif item.content_type.model == 'series' %}
-                                                    <a href="{% url 'write:series_checkin_list' item.user.username item.content_object.id %}">
+                                                {% elif item.content_type.model == 'season' %}
+                                                    <a href="{% url 'write:season_checkin_list' item.user.username item.content_object.series.id item.content_object.season_number %}">
                                                         <div class="position-relative">
                                                             {% if user.pure_text_mode %}
                                                                 <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
@@ -1100,8 +1100,8 @@
                                                             {% endif %}
                                                         {% endif %}
                                                     </a>
-                                                {% elif item.content_type.model == 'series' %}
-                                                    <a href="{% url 'write:series_checkin_list' item.user.username item.content_object.id %}">
+                                                {% elif item.content_type.model == 'season' %}
+                                                    <a href="{% url 'write:season_checkin_list' item.user.username item.content_object.series.id item.content_object.season_number %}">
                                                         {% if user.pure_text_mode %}
                                                             <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>
                                                         {% else %}
@@ -1169,8 +1169,8 @@
                                                             {% endif %}
                                                         </div>
                                                     </a>
-                                                {% elif item.content_type.model == 'series' %}
-                                                    <a href="{% url 'write:series_checkin_list' item.user.username item.content_object.id %}">
+                                                {% elif item.content_type.model == 'season' %}
+                                                    <a href="{% url 'write:season_checkin_list' item.user.username item.content_object.series.id item.content_object.season_number %}">
                                                         <div class="position-relative">
                                                             {% if user.pure_text_mode %}
                                                                 <div class="cover-placeholder bg-light">{{ item.content_object.title }}{% if item.content_object.subtitle %}: {{item.content_object.subtitle}}{% endif %}</div>

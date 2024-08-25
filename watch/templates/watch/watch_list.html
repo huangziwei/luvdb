@@ -114,40 +114,42 @@
                                 {% endfor %}
                             </div>
                         {% endif %}
-                        {% if series %}
-                            <div class="fs-4">Series</div>
-                            <div class="row ps-2 pe-2">
-                                {% for serie in series %}
-                                    <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
-                                        <a href="{% url 'watch:series_detail' serie.pk %}">
-                                            {% if user.pure_text_mode %}
-                                                <div class="cover-placeholder bg-light">{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>
-                                            {% else %}
-                                                {% if serie.poster %}
-                                                    {% if serie.poster_sens %}
-                                                        <img src="{{ serie.poster.url }}"
-                                                                alt="{{ serie.title }} poster"
-                                                                class="img-fluid blur cover-border"
-                                                                onclick="this.classList.toggle('blur')"
-                                                                loading="lazy">
-                                                    {% else %}
-                                                        <img src="{{ serie.poster.url }}"
-                                                                alt="{{ serie.title }}"
-                                                                class="img-fluid cover-border"
-                                                                onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>';"
-                                                                loading="lazy">
-                                                    {% endif %}
-                                                {% else %}
+                        {% comment %} 
+                            {% if series %}
+                                <div class="fs-4">Series</div>
+                                <div class="row ps-2 pe-2">
+                                    {% for serie in series %}
+                                        <div class="col-3 col-sm-3 col-md-2 col-lg-2 mb-4 p-1">
+                                            <a href="{% url 'watch:series_detail' serie.pk %}">
+                                                {% if user.pure_text_mode %}
                                                     <div class="cover-placeholder bg-light">{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>
+                                                {% else %}
+                                                    {% if serie.poster %}
+                                                        {% if serie.poster_sens %}
+                                                            <img src="{{ serie.poster.url }}"
+                                                                    alt="{{ serie.title }} poster"
+                                                                    class="img-fluid blur cover-border"
+                                                                    onclick="this.classList.toggle('blur')"
+                                                                    loading="lazy">
+                                                        {% else %}
+                                                            <img src="{{ serie.poster.url }}"
+                                                                    alt="{{ serie.title }}"
+                                                                    class="img-fluid cover-border"
+                                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder\'>{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>';"
+                                                                    loading="lazy">
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="cover-placeholder bg-light">{{ serie.title }}{% if serie.subtitle %}: {{serie.subtitle}}{% endif %}</div>
+                                                    {% endif %}
                                                 {% endif %}
-                                            {% endif %}
-                                        </a>
-                                    </div>
-                                {% empty %}
-                                    <p>No recent series to display.</p>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
+                                            </a>
+                                        </div>
+                                    {% empty %}
+                                        <p>No recent series to display.</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %} 
+                        {% endcomment %}
                         {% if seasons %}
                             <div class="fs-4">Series</div>
                             <div class="row ps-2 pe-2">

@@ -2,7 +2,6 @@
 {% load crispy_forms_tags %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.series|as_crispy_field }}
     {{ form.title|as_crispy_field }}
     {{ form.other_titles|as_crispy_field }}
     <div class="form-wrapper row">

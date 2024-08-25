@@ -523,7 +523,7 @@ SeasonRoleFormSet = inlineformset_factory(
 class EpisodeForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = Episode
-        exclude = ["created_by", "updated_by", "creators", "casts", "locked"]
+        exclude = ["created_by", "updated_by", "creators", "casts", "locked", "series"]
         fields = "__all__"
 
         widgets = {

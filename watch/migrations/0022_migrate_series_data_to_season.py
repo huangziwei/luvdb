@@ -1,5 +1,14 @@
+from django.contrib.contenttypes.models import ContentType
 from django.db import migrations
 from django.utils.timezone import now
+
+from watch.models import WatchCheckIn
+
+
+def create_content_type(apps, schema_editor):
+    # Ensure ContentType exists for Season and Series
+    ContentType.objects.get_or_create(app_label="watch", model="series")
+    ContentType.objects.get_or_create(app_label="watch", model="season")
 
 
 def copy_series_to_season(apps, schema_editor):
@@ -9,6 +18,13 @@ def copy_series_to_season(apps, schema_editor):
     SeasonRole = apps.get_model("watch", "SeasonRole")
     HistoricalSeries = apps.get_model("watch", "HistoricalSeries")
     HistoricalSeason = apps.get_model("watch", "HistoricalSeason")
+
+    WatchCheckIn = apps.get_model("watch", "WatchCheckIn")
+    ContentType = apps.get_model("contenttypes", "ContentType")
+
+    # Ensure ContentType exists
+    series_content_type = ContentType.objects.get(app_label="watch", model="series")
+    season_content_type = ContentType.objects.get(app_label="watch", model="season")
 
     for series in Series.objects.all():
         season = Season.objects.create(
@@ -84,6 +100,14 @@ def copy_series_to_season(apps, schema_editor):
                 updated_at=historical_series.history_date,  # Use history_date for updated_at
             )
 
+        # Migrate existing WatchCheckIn from Series to Season
+        WatchCheckIn.objects.filter(
+            content_type=series_content_type, object_id=series.id
+        ).update(
+            content_type=season_content_type,
+            object_id=season.id,
+        )
+
 
 class Migration(migrations.Migration):
 
@@ -92,5 +116,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(create_content_type),
         migrations.RunPython(copy_series_to_season),
     ]

@@ -1206,13 +1206,8 @@ class SeasonDetailView(DetailView):
             season_number=self.kwargs["season_number"],
         )
 
-        # episodes = season.episodes.all().order_by("season", "episode")
-        # context["episodes"] = episodes
-        # seasons = defaultdict(list)
-        # for episode in episodes:
-        #     seasons[episode.season].append(episode)
-        # context["seasons"] = dict(seasons)
-        # context["latest_season"] = max(seasons.keys()) if seasons else 0
+        episodes = season.episodes.all().order_by("episode")
+        context["episodes"] = episodes
 
         # Get the ContentType for the Issue model
         season_content_type = ContentType.objects.get_for_model(Season)
@@ -1539,12 +1534,15 @@ class EpisodeCreateView(LoginRequiredMixin, CreateView):
     def get_initial(self):
         initial = super().get_initial()
         series_id = self.kwargs.get("series_id")
-        initial["series"] = get_object_or_404(Series, pk=series_id)
+        season_number = self.kwargs.get("season_number")
+        initial["season"] = get_object_or_404(
+            Season, series_id=series_id, season_number=season_number
+        )
         return initial
 
     def get_form(self, form_class=None):
         form = super(EpisodeCreateView, self).get_form(form_class)
-        form.fields["series"].disabled = True
+        form.fields["season"].disabled = True
         return form
 
     def get_success_url(self):
@@ -1618,7 +1616,9 @@ class EpisodeDetailView(DetailView):
         series_id = episode.series.id
         # Add check-ins related to the current episode
         # Modify the check-ins query for season 1 episodes
-        season_episode_format = f"S{episode.season:02d}E{episode.episode:02d}"
+        season_episode_format = (
+            f"S{episode.season.season_number:02d}E{episode.episode:02d}"
+        )
         if episode.season == 1:
             season_episode_short_format = f"E{episode.episode:02d}"
             progress_formats = [season_episode_format, season_episode_short_format]
@@ -1649,18 +1649,18 @@ class EpisodeDetailView(DetailView):
     def get_object(self):
         # Get the series_id and season_episode string from the URL parameters
         series_id = self.kwargs.get("series_id")
-        season_episode = self.kwargs.get("season_episode")
-
-        # Use regex to extract season and episode numbers from the season_episode string
-        match = re.match(r"S(\d+)E(\d+)", season_episode)
-        if not match:
-            raise Http404("Invalid episode format")
-
-        season, episode = int(match.group(1)), int(match.group(2))
+        season_number = self.kwargs.get("season_number")
+        season_id = get_object_or_404(
+            Season, series_id=series_id, season_number=season_number
+        ).id
+        episode_number = self.kwargs.get("episode_number")
 
         # Fetch the Episode object based on series_id, season, and episode
         return get_object_or_404(
-            Episode, series_id=series_id, season=season, episode=episode
+            Episode,
+            series_id=series_id,
+            season_id=season_id,
+            episode=episode_number,
         )
 
 
@@ -1684,14 +1684,15 @@ class EpisodeUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_form(self, form_class=None):
         form = super(EpisodeUpdateView, self).get_form(form_class)
-        form.fields["series"].disabled = True
+        form.fields["season"].disabled = True
         return form
 
     def get_success_url(self):
         return reverse_lazy(
             "watch:episode_detail",
             kwargs={
-                "season_episode": self.object.season_episode_format(),
+                "season_number": self.object.season.season_number,
+                "episode_number": self.object.episode,
                 "series_id": self.object.series.pk,
             },
         )
@@ -1736,18 +1737,18 @@ class EpisodeUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self):
         # Get the series_id and season_episode string from the URL parameters
         series_id = self.kwargs.get("series_id")
-        season_episode = self.kwargs.get("season_episode")
-
-        # Use regex to extract season and episode numbers from the season_episode string
-        match = re.match(r"S(\d+)E(\d+)", season_episode)
-        if not match:
-            raise Http404("Invalid episode format")
-
-        season, episode = int(match.group(1)), int(match.group(2))
+        season_number = self.kwargs.get("season_number")
+        season_id = get_object_or_404(
+            Season, series_id=series_id, season_number=season_number
+        ).id
+        episode_number = self.kwargs.get("episode_number")
 
         # Fetch the Episode object based on series_id, season, and episode
         return get_object_or_404(
-            Episode, series_id=series_id, season=season, episode=episode
+            Episode,
+            series_id=series_id,
+            season_id=season_id,
+            episode=episode_number,
         )
 
 

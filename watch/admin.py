@@ -76,9 +76,9 @@ class SeriesAdmin(admin.ModelAdmin):
 
 class EpisodeAdmin(admin.ModelAdmin):
     inlines = (EpisodeRoleInline, EpisodeCastInline)
-    list_display = ("series", "title", "season", "episode", "release_date")
+    list_display = ("season", "title", "episode", "release_date")
     search_fields = ["title", "series__title"]
-    list_filter = ["release_date", "series"]
+    list_filter = ["release_date", "season"]
 
 
 class GenreAdmin(admin.ModelAdmin):

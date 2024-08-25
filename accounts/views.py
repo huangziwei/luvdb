@@ -70,7 +70,7 @@ from read.models import Instance as LitInstance
 from read.models import Issue, Periodical, ReadCheckIn
 from read.models import Work as ReadWork
 from visit.models import Location, VisitCheckIn
-from watch.models import Episode, Movie, Series, WatchCheckIn
+from watch.models import Episode, Movie, Season, Series, WatchCheckIn
 from write.models import Comment, ContentInList, LuvList, Pin, Post, Repost, Say, Tag
 from write.utils_formatting import check_required_js
 
@@ -933,7 +933,7 @@ def filter_play(query, search_terms):
 
 def filter_watch(query, search_terms):
     movie_results = Movie.objects.all()
-    series_results = Series.objects.all()
+    series_results = Season.objects.all()
 
     for term in search_terms:
         movie_results = (
@@ -955,9 +955,9 @@ def filter_watch(query, search_terms):
             series_results.filter(
                 Q(title__icontains=term)
                 | Q(other_titles__icontains=term)
-                | Q(seriesroles__creator__name__icontains=term)
-                | Q(seriesroles__creator__other_names__icontains=term)
-                | Q(seriesroles__alt_name__icontains=term)
+                | Q(seasonroles__creator__name__icontains=term)
+                | Q(seasonroles__creator__other_names__icontains=term)
+                | Q(seasonroles__alt_name__icontains=term)
                 | Q(episodes__episodecasts__creator__name__icontains=term)
                 | Q(episodes__episodecasts__creator__other_names__icontains=term)
                 | Q(episodes__episodecasts__character_name__icontains=term)
