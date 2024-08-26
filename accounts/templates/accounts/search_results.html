@@ -168,10 +168,10 @@
                     {% if series_results %}
                     <div class="col-12 col-md-4 mb-3">
                         <div class="fs-4">Series</div>
-                        {% for serie in series_results %}
+                        {% for season in series_results %}
                             <p>
-                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title|truncatechars:50 }}</a>
-                                ({{ serie.release_date|extract_year }})
+                                <a href="{% url 'watch:season_detail' season.series.id season.season_number %}">{{ season.title|truncatechars:50 }}</a>
+                                ({{ season.release_date|extract_year }})
                             </p>
                         {% endfor %}
                     </div>
