@@ -994,62 +994,66 @@ class SeriesCastDetailView(DetailView):
         # Find all seasons of the series
         seasons = Season.objects.filter(series=self.object)
 
-        # Find all episodes of the series
-        episodes = Episode.objects.filter(series=self.object)
-
-        # Extract all casts from those episodes
-        casts = EpisodeCast.objects.filter(episode__in=episodes).prefetch_related(
-            "creator", "role"
-        )
-
-        # Prepare data structure for the episode casts
+        # Prepare to aggregate cast and crew data across all seasons
         episodes_cast = defaultdict(list)
-        for cast in casts:
-            season_str = str(cast.episode.season.season_num).zfill(2)
-            episode_str = str(cast.episode.episode).zfill(2)
-            episode_num = f"S{season_str}E{episode_str}"
+        episodes_crew_by_role = defaultdict(lambda: defaultdict(list))
 
-            episodes_cast[cast.creator].append(
-                {
-                    "character_name": cast.character_name,
-                    "role": cast.role,
-                    "episode_title": cast.episode.title,
-                    "episode_id": cast.episode.id,
-                    "episode_num": episode_num,
-                    "release_date": cast.episode.release_date,
-                }
+        # Iterate over each season to gather data
+        for season in seasons:
+            # Find all episodes of the current season
+            episodes = Episode.objects.filter(season=season)
+
+            # Extract all casts from those episodes
+            casts = EpisodeCast.objects.filter(episode__in=episodes).prefetch_related(
+                "creator", "role"
             )
+
+            # Aggregate cast data
+            for cast in casts:
+                episode_num = cast.episode.episode
+                season_num = cast.episode.season.season_number
+                episodes_cast[cast.creator].append(
+                    {
+                        "character_name": cast.character_name,
+                        "role": cast.role,
+                        "episode_title": cast.episode.title,
+                        "episode_id": cast.episode.id,
+                        "episode_num": episode_num,
+                        "season_num": season_num,
+                        "release_date": cast.episode.release_date,
+                    }
+                )
+
+            # Extract all crews from those episodes
+            crews = EpisodeRole.objects.filter(episode__in=episodes).prefetch_related(
+                "creator", "role"
+            )
+
+            # Aggregate crew data grouped by roles then creators
+            for crew in crews:
+                episode_num = crew.episode.episode
+                season_num = crew.episode.season.season_number
+
+                episodes_crew_by_role[crew.role][crew.creator].append(
+                    {
+                        "episode_title": crew.episode.title,
+                        "episode_id": crew.episode.id,
+                        "episode_num": episode_num,
+                        "season_num": season_num,
+                        "release_date": crew.episode.release_date,
+                    }
+                )
 
         # Sort episodes for each cast member by release_date
         for creator, roles in episodes_cast.items():
             episodes_cast[creator] = sorted(roles, key=lambda x: x["release_date"])
+
         # Sort cast by number of episodes they've participated in
         episodes_cast = dict(
             sorted(episodes_cast.items(), key=lambda x: len(x[1]), reverse=True)
         )
 
-        # Extract all crews from those episodes
-        crews = EpisodeRole.objects.filter(episode__in=episodes).prefetch_related(
-            "creator", "role"
-        )
-
-        # Prepare data structure for the episode crews grouped by roles then creators
-        episodes_crew_by_role = defaultdict(lambda: defaultdict(list))
-        for crew in crews:
-            season_str = str(crew.episode.season).zfill(2)
-            episode_str = str(crew.episode.episode).zfill(2)
-            episode_num = f"S{season_str}E{episode_str}"
-
-            episodes_crew_by_role[crew.role][crew.creator].append(
-                {
-                    "episode_title": crew.episode.title,
-                    "episode_id": crew.episode.id,
-                    "episode_num": episode_num,
-                    "release_date": crew.episode.release_date,
-                }
-            )
-
-        # Convert inner defaultdicts to dict and sort episodes by release_date
+        # Sort and finalize crew data
         for role, crew_info in episodes_crew_by_role.items():
             for creator, episodes in crew_info.items():
                 crew_info[creator] = sorted(episodes, key=lambda x: x["release_date"])
@@ -1057,15 +1061,15 @@ class SeriesCastDetailView(DetailView):
                 sorted(crew_info.items(), key=lambda x: len(x[1]), reverse=True)
             )
 
+        context["episodes_cast"] = dict(episodes_cast)
         context["episodes_crew_by_role"] = dict(episodes_crew_by_role)
 
-        # Group series crew by their roles
+        # Group series crew by their roles (from series itself)
         series_crew_grouped = defaultdict(list)
         for seriesrole in self.object.seriesroles.all():
             series_crew_grouped[seriesrole.role].append(seriesrole)
 
         context["series_crew"] = dict(series_crew_grouped)
-        context["episodes_cast"] = dict(episodes_cast)
 
         # contributors
         context["contributors"] = get_contributors(self.object)
