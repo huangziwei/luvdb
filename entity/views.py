@@ -4,7 +4,8 @@ from dal import autocomplete
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.db.models import Count, F, Min, Q
+from django.db.models import Count, F, Max, Min, OuterRef, Q, Subquery, Value
+from django.db.models.functions import Concat
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -24,7 +25,15 @@ from read.models import Instance as ReadInstance
 from read.models import Work as ReadWork
 from scrape.wikipedia import scrape_company, scrape_creator
 from visit.models import Location
-from watch.models import Episode, EpisodeRole, Movie, MovieRole, Series, SeriesRole
+from watch.models import (
+    Episode,
+    EpisodeRole,
+    Movie,
+    MovieRole,
+    Season,
+    Series,
+    SeriesRole,
+)
 
 from .forms import (
     CompanyForm,
@@ -402,11 +411,29 @@ class CreatorDetailView(DetailView):
             )
             .order_by("annotated_earliest_release_date")
         )
+        # Subquery to get the earliest release date of a season
+        min_release_date_subquery = Subquery(
+            Season.objects.filter(series=OuterRef("pk"))
+            .values("series")
+            .annotate(min_date=Min("release_date"))
+            .values("min_date")[:1]
+        )
+
+        # Subquery to get the latest release date of a season
+        max_release_date_subquery = Subquery(
+            Season.objects.filter(series=OuterRef("pk"))
+            .values("series")
+            .annotate(max_date=Max("release_date"))
+            .values("max_date")[:1]
+        )
+
         context["series_as_cast"] = (
             Series.objects.filter(episodes__episodecasts__creator=creator)
             .annotate(
                 episode_count=Count("episodes"),
                 character_name=F("episodes__episodecasts__character_name"),
+                min_release_date=min_release_date_subquery,
+                max_release_date=max_release_date_subquery,
             )
             .distinct()
             .order_by("release_date")

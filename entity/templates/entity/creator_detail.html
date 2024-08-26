@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load markdownify %}
 {% load language_name %}
+{% load util_filters %}
 {% block title %}{{ object.name }}{% endblock %}
 {% block content %}
     <div class="container">
@@ -187,7 +188,11 @@
                                     <ul>
                                         {% for serie in series_as_cast %}
                                             <li>
-                                                <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({% if serie.character_name %}{{serie.character_name}}, {% endif %}{{ serie.release_date }}) <span class="text-muted">({{ serie.episode_count }} episodes)</span>
+                                                {% if serie.min_release_date == serie.max_release_date %}
+                                                    <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({% if serie.character_name %}{{serie.character_name}}, {% endif %}{{ serie.min_release_date|extract_year }}) <span class="text-muted">({{ serie.episode_count }} episodes)</span>
+                                                {% else %}
+                                                    <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({% if serie.character_name %}{{serie.character_name}}, {% endif %}{{ serie.min_release_date|extract_year }}-{{ serie.max_release_date|extract_year }}) <span class="text-muted">({{ serie.episode_count }} episodes)</span>
+                                                {% endif %}
                                             </li>
                                         {% endfor %}
                                     </ul>
