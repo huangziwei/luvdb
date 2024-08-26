@@ -137,7 +137,6 @@ class DiscoverListAllView(LoginRequiredMixin, ListView):
                     ),
                     self.annotate_vote_count(Repost, time_condition).filter(
                         vote_count__gt=-1,
-                        visibility="PU",
                     ),
                 )
             )
