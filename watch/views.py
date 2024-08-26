@@ -1435,6 +1435,10 @@ class SeasonDetailView(DetailView):
             ).exists()
         )
 
+        context["seasons"] = Season.objects.filter(series=self.object.series).order_by(
+            "season_number"
+        )
+
         return context
 
     def post(self, request, *args, **kwargs):

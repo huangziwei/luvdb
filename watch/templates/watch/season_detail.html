@@ -112,7 +112,7 @@
                                     {% endif %}
                                     <div class="mb-1">
                                         <span class="text-muted">Seasons:</span>
-                                        {% for season in object.series.seasons.all %}
+                                        {% for season in seasons %}
                                             <a href="{% url 'watch:season_detail' season.series.id season.season_number %}" 
                                                class="btn btn-sm {% if season.season_number == object.season_number %}active{% endif %}">
                                                 {{ season.season_number }}
