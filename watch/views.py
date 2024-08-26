@@ -42,8 +42,10 @@ from .forms import (
     CollectionForm,
     ContentInCollection,
     ContentInCollectionFormSet,
+    EpisodeCastForm,
     EpisodeCastFormSet,
     EpisodeForm,
+    EpisodeRoleForm,
     EpisodeRoleFormSet,
     MovieCastFormSet,
     MovieForm,
@@ -785,7 +787,6 @@ class SeriesDetailView(DetailView):
         for episode in episodes:
             seasons[episode.season].append(episode)
         context["seasons"] = dict(seasons)
-        context["latest_season"] = max(seasons.keys()) if seasons else 0
 
         # Get the ContentType for the Issue model
         series_content_type = ContentType.objects.get_for_model(Series)
@@ -1639,11 +1640,28 @@ class EpisodeCreateView(LoginRequiredMixin, CreateView):
         initial["season"] = get_object_or_404(
             Season, series_id=series_id, season_number=season_number
         )
+        initial["series"] = initial["season"].series
+
+        origin_episode_id = self.kwargs.get("origin_episode_id", None)
+        if origin_episode_id:
+            origin_episode = get_object_or_404(Episode, id=origin_episode_id)
+
+            initial.update(
+                {
+                    "title": origin_episode.title,
+                    "subtitle": origin_episode.subtitle,
+                    "episode": origin_episode.episode + 1,
+                    "wikipedia": origin_episode.wikipedia,
+                    "imdb": origin_episode.imdb,
+                }
+            )
+
         return initial
 
     def get_form(self, form_class=None):
         form = super(EpisodeCreateView, self).get_form(form_class)
         form.fields["season"].disabled = True
+        form.fields["series"].disabled = True
         return form
 
     def get_success_url(self):
@@ -1652,6 +1670,8 @@ class EpisodeCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        origin_episode_id = self.kwargs.get("origin_episode_id", None)
+
         if self.request.POST:
             data["episoderoles"] = EpisodeRoleFormSet(
                 self.request.POST, instance=self.object
@@ -1662,6 +1682,90 @@ class EpisodeCreateView(LoginRequiredMixin, CreateView):
         else:
             data["episoderoles"] = EpisodeRoleFormSet(instance=self.object)
             data["episodecasts"] = EpisodeCastFormSet(instance=self.object)
+
+            if origin_episode_id:
+                origin_episode = get_object_or_404(Episode, id=origin_episode_id)
+                episode_roles = origin_episode.episoderoles.all()
+                episode_casts = origin_episode.episodecasts.all()
+
+                initial_roles = [
+                    {
+                        "creator": role.creator.id,
+                        "role": role.role.id,
+                        "alt_name": role.alt_name,
+                    }
+                    for role in episode_roles
+                ]
+
+                EpisodeRoleFormSet_prefilled = inlineformset_factory(
+                    Episode,
+                    EpisodeRole,
+                    form=EpisodeRoleForm,
+                    extra=len(initial_roles),
+                    can_delete=True,
+                    widgets={
+                        "creator": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:creator-autocomplete"),
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:creator_create")
+                            },
+                        ),
+                        "role": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:role-autocomplete"),
+                            forward=["domain"],
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:role_create")
+                            },
+                        ),
+                    },
+                    help_texts={
+                        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+                        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
+                    },
+                )
+
+                initial_casts = [
+                    {
+                        "creator": role.creator.id,
+                        "role": role.role.id,
+                        "character_name": role.character_name,
+                    }
+                    for role in episode_casts
+                ]
+
+                EpisodeCastFormSet_prefilled = inlineformset_factory(
+                    Episode,
+                    EpisodeCast,
+                    form=EpisodeCastForm,
+                    extra=len(initial_casts),
+                    can_delete=True,
+                    widgets={
+                        "creator": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:creator-autocomplete"),
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:creator_create")
+                            },
+                        ),
+                        "role": autocomplete.ModelSelect2(
+                            url=reverse_lazy("entity:role-autocomplete"),
+                            forward=["domain"],
+                            attrs={
+                                "data-create-url": reverse_lazy("entity:role_create")
+                            },
+                        ),
+                    },
+                    help_texts={
+                        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+                        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
+                    },
+                )
+
+                data["episoderoles"] = EpisodeRoleFormSet_prefilled(
+                    instance=self.object, initial=initial_roles
+                )
+                data["episodecasts"] = EpisodeCastFormSet_prefilled(
+                    instance=self.object, initial=initial_casts
+                )
 
         return data
 
@@ -1731,13 +1835,12 @@ class EpisodeDetailView(DetailView):
             Q(object_id=series_id) & Q(progress__in=progress_formats)
         )
         context["episode_checkins"] = check_ins
-        episodes = episode.series.episodes.all().order_by("season", "episode")
+        episodes = episode.season.episodes.all().order_by("episode")
         context["episodes"] = episodes
         seasons = defaultdict(list)
         for episode in episodes:
             seasons[episode.season].append(episode)
         context["seasons"] = dict(seasons)
-        context["latest_season"] = max(seasons.keys()) if seasons else 0
 
         context["filming_locations_with_parents"] = get_locations_with_parents(
             episode.filming_locations

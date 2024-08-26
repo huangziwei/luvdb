@@ -426,6 +426,9 @@
                     <div class="bg-light p-3 mb-3 order-2 order-sm-1">
                         <a href="{% url 'watch:series_update' object.id %}"
                            class='fs-6 text-secondary'>Edit Series</a>
+                           <br>
+                        <a href="{% url 'watch:season_create' object.id "1" %}"
+                              class='fs-6 text-secondary'>Add New Season</a>
                     </div>
                 {% endif %}
                 {% comment %} 

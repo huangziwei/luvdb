@@ -89,6 +89,11 @@ urlpatterns = [
         name="episode_create",
     ),
     path(
+        "series/<int:series_id>/S<int:season_number>/episode/create/from_episode/<int:origin_episode_id>/",
+        EpisodeCreateView.as_view(),
+        name="episode_create_with_other_episode",
+    ),
+    path(
         "series/<int:series_id>/S<int:season_number>/E<int:episode_number>/",
         EpisodeDetailView.as_view(),
         name="episode_detail",
