@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <h3>
+            <a href="{% url 'watch:season_detail' season.series.id season.season_number %}">{{ season.title }}</a>
+            Crew and Cast
+        </h3>
+        <div class="fs-4">Main Crew</div>
+        <ul>
+            {% for role, roles_list in series_crew.items %}
+                <li>
+                    <span class="text-muted">{{ role.name }}:</span>
+                    {% for seriesrole in roles_list %}
+                        <a href="{% url 'entity:creator_detail' seriesrole.creator.id %}">{{ seriesrole.creator.name }}</a>
+                        {% if not forloop.last %}/{% endif %}
+                    {% endfor %}
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="fs-4">Episode Crew</div>
+        {% if episodes_crew_by_role|length == 0 %}
+            <p>There is no episode crew added yet.</p>
+        {% else %}
+            <ul>
+                {% for role, crew_info in episodes_crew_by_role.items %}
+                    <li>
+                        <span class="text-muted">{{ role.name }}:</span>
+                    </li>
+                    <ul>
+                        {% for creator, episodes in crew_info.items %}
+                            <li>
+                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                <a href="#"
+                                   class="text-muted"
+                                   data-bs-toggle="collapse"
+                                   data-bs-target="#episodeListCrew{{ forloop.parentloop.counter }}{{ forloop.counter }}">
+                                    ({{ episodes|length }} episodes)
+                                </a>
+                                <ul id="episodeListCrew{{ forloop.parentloop.counter }}{{ forloop.counter }}"
+                                    class="collapse">
+                                    {% for episode in episodes %}
+                                        <li>
+                                            S{{season.season_number|stringformat:"02d"}}E{{ episode.episode_num|stringformat:"02d" }} <a href="{% url 'watch:episode_detail' season.series.id season.season_number episode.episode_num %}">{{ episode.episode_title }}</a>
+                                            ({{ episode.release_date }})
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <div class="fs-4">Cast</div>
+        {% if episodes_cast|length == 0 %}
+            <p>There is no episode cast added yet.</p>
+        {% else %}
+            <ul>
+                {% for creator, roles in episodes_cast.items %}
+                    <li>
+                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                        as
+                        {% regroup roles by character_name as character_roles %}
+                        {% for character_role in character_roles %}
+                            {% if not forloop.first %}/{% endif %}
+                            {{ character_role.grouper }}
+                        {% endfor %}
+                        <a href="#"
+                           class="text-muted"
+                           data-bs-toggle="collapse"
+                           data-bs-target="#episodeList{{ forloop.counter }}">({{ roles|length }} episodes)</a>
+                    </li>
+                    <ul id="episodeList{{ forloop.counter }}" class="collapse">
+                        {% for role in roles %}
+                            <li>
+                                S{{season.season_number|stringformat:"02d"}}E{{ role.episode_num|stringformat:"02d" }} <a href="{% url 'watch:episode_detail' season.series.id season.season_number role.episode_num %}">{{ role.episode_title }}</a>
+                                ({{ role.release_date }})
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endblock %}

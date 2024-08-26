@@ -367,7 +367,7 @@
                                                     </div>
                                                 {% endif %} 
                                                 <div class="mt-2">
-                                                    <a href="{% url 'watch:series_cast_detail' object.id %}" class="text-muted">View Full Cast & Crew</a>
+                                                    <a href="{% url 'watch:season_cast_detail' object.series.id object.season_number %}" class="text-muted">View Full Cast & Crew</a>
                                                 </div>
                                             </div>
                                         </div>

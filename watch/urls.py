@@ -19,6 +19,7 @@ from .views import (
     MovieDetailView,
     MovieHistoryView,
     MovieUpdateView,
+    SeasonCastDetailView,
     SeasonCreateView,
     SeasonDetailView,
     SeasonHistoryView,
@@ -141,7 +142,7 @@ urlpatterns = [
         kwargs={"model_name": "season"},
         name="season_checkin_list",
     ),
-    # cast
+    # moive cast
     path(
         "movie/<int:pk>/cast/", MovieCastDetailView.as_view(), name="movie_cast_detail"
     ),
@@ -150,6 +151,12 @@ urlpatterns = [
         "series/<int:pk>/cast/",
         SeriesCastDetailView.as_view(),
         name="series_cast_detail",
+    ),
+    # season cast
+    path(
+        "series/<int:series_id>/S<int:season_number>/cast/",
+        SeasonCastDetailView.as_view(),
+        name="season_cast_detail",
     ),
     # genre
     path("genre/<slug:name>/", GenreDetailView.as_view(), name="genre_detail"),
