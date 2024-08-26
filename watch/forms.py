@@ -624,6 +624,22 @@ class EpisodeForm(forms.ModelForm):
         self.fields["setting_locations"].required = False
         self.fields["length"].help_text = "e.g. 45 mins, or 1:30:00"
 
+    def clean(self):
+        cleaned_data = super().clean()
+        series = cleaned_data.get("series")
+        season = cleaned_data.get("season")
+        episode = cleaned_data.get("episode")
+
+        if series and season and episode:
+            if Episode.objects.filter(
+                series=series, season=season, episode=episode
+            ).exists():
+                raise ValidationError(
+                    "An episode with this series, season, and episode number already exists."
+                )
+
+        return cleaned_data
+
 
 class EpisodeRoleForm(forms.ModelForm):
     domain = forms.CharField(initial="watch", widget=forms.HiddenInput())

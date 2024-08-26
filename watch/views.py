@@ -1701,7 +1701,7 @@ class EpisodeCreateView(LoginRequiredMixin, CreateView):
                     Episode,
                     EpisodeRole,
                     form=EpisodeRoleForm,
-                    extra=len(initial_roles),
+                    extra=1 if len(initial_roles) == 0 else len(initial_roles),
                     can_delete=True,
                     widgets={
                         "creator": autocomplete.ModelSelect2(
@@ -1737,7 +1737,7 @@ class EpisodeCreateView(LoginRequiredMixin, CreateView):
                     Episode,
                     EpisodeCast,
                     form=EpisodeCastForm,
-                    extra=len(initial_casts),
+                    extra=1 if len(initial_casts) == 0 else len(initial_casts),
                     can_delete=True,
                     widgets={
                         "creator": autocomplete.ModelSelect2(
