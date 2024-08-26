@@ -1666,7 +1666,14 @@ class EpisodeCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         series_id = self.kwargs.get("series_id")
-        return reverse("watch:series_detail", kwargs={"pk": series_id})
+        return reverse(
+            "watch:episode_detail",
+            kwargs={
+                "series_id": series_id,
+                "season_number": self.object.season.season_number,
+                "episode_number": self.object.episode,
+            },
+        )
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
