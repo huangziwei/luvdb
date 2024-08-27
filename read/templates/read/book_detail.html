@@ -626,4 +626,33 @@
         </div>
     </div>
     {% include 'mathjax+mermaid.html' %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Function to activate the first tab with content
+            function activateFirstTab(tabContainer) {
+                const defaultTabs = tabContainer.querySelectorAll(".default-tab");
+                for (let i = 0; i < defaultTabs.length; i++) {
+                    const tab = defaultTabs[i];
+                    const paneId = tab.getAttribute("data-bs-target");
+                    const pane = document.querySelector(paneId);
+        
+                    // If the pane has content (not empty), make this tab active
+                    if (pane && pane.innerHTML.trim() !== "") {
+                        tab.classList.add("active");
+                        pane.classList.add("show", "active");
+                        break; // Stop after the first found tab with content
+                    }
+                }
+            }
+        
+            // Activate tabs for the main container
+            activateFirstTab(document);
+        
+            // Activate sub-tabs within each tab-pane
+            const tabPanes = document.querySelectorAll(".tab-pane");
+            tabPanes.forEach(function (pane) {
+                activateFirstTab(pane);
+            });
+        });
+    </script>
 {% endblock content %}

@@ -72,7 +72,7 @@
                             <div class="col-12">
                                 <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link text-muted active" id="all-biblio-tab" data-bs-toggle="tab" data-bs-target="#all-biblio" type="button" role="tab" aria-controls="all" aria-selected="true">All</button>
+                                        <button class="nav-link text-muted default-tab" id="all-biblio-tab" data-bs-toggle="tab" data-bs-target="#all-biblio" type="button" role="tab" aria-controls="all" aria-selected="true">All</button>
                                     </li>
                                     {% for work_type, lit_work in lit_works.items %}
                                         {% if lit_work.exists %}
@@ -120,48 +120,89 @@
                     {% endif %}
                     {% if books or audiobook_as_narrator %}
                         <div class="row">
-                            <div class="fs-4">Books</div>
-                            {% for role, books_by_role in books.items %}
-                                {% if books_by_role %}
-                                    <div class="col-md-6">
-                                        <div class="fs-5 fw-bold">{{ role }}</div>
-                                        {% for lang, books in books_by_role.items %}
-                                            <div class="mb-3">
-                                                <span class="fw-bold">{{ lang|language_name }}</span>
-                                                <ul>
-                                                    {% for item in books %}
-                                                    <li>
-                                                        {% if item.model_name == "Instance" %}
-                                                            <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
-                                                        {% elif item.model_name == "Book" %}
-                                                            {% if item.book_group.exists %}
-                                                                <a href="{% url 'read:bookgroup_detail' item.book_group.first.pk %}">{{ item.book_group.first.title }}</a>
-                                                                ({{ item.publication_date }})
-                                                            {% else %}
-                                                                <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> 
-                                                                ({% if item.format %}{{ item.format }}, {% endif %}{{ item.publication_date }})
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                            {% if audiobook_as_narrator %}
-                                <div class="col-md-6">
-                                    <div class="fs-4">As Narrator</div>
-                                    {% for item in audiobook_as_narrator %}
-                                        <li>
-                                            <a href="{% url 'listen:audiobook_detail' item.pk %}">{{ item.title }}</a> ({{ item.release_date }})
-                                        </li>
+                            <div class="col-12">
+                                <div class="fs-4">Books</div>
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs scrollable-tabs" id="bookTab" role="tablist">
+                                    {% for role, books_by_role in books.items %}
+                                        {% if books_by_role %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}" type="button" role="tab" aria-controls="{{ role|slugify }}" aria-selected="true">
+                                                    {{ role }}
+                                                </button>
+                                            </li>
+                                        {% endif %}
                                     {% endfor %}
+                                    {% if audiobook_as_narrator %}
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link text-muted default-tab" id="narrator-tab" data-bs-toggle="tab" data-bs-target="#narrator" type="button" role="tab" aria-controls="narrator" aria-selected="true">
+                                                As Narrator
+                                            </button>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                    
+                                <!-- Tab panes -->
+                                <div class="tab-content" id="bookTabContent">
+                                    {% for role, books_by_role in books.items %}
+                                        {% if books_by_role %}
+                                            <div class="tab-pane scrollable-tabs" id="{{ role|slugify }}" role="tabpanel" aria-labelledby="{{ role|slugify }}-tab">
+                                                <!-- Sub-tabs for languages -->
+                                                <div class="sub-tabs">
+                                                    <ul class="nav nav-tabs" id="{{ role|slugify }}SubTab" role="tablist">
+                                                        {% for lang, books in books_by_role.items %}
+                                                            <li class="nav-item" role="presentation">
+                                                                <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-{{ lang|slugify }}-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-{{ lang|slugify }}-content" type="button" role="tab" aria-controls="{{ role|slugify }}-{{ lang|slugify }}-content" aria-selected="false">
+                                                                    {{ lang|language_name }}
+                                                                </button>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                    <!-- Sub-tab content for languages -->
+                                                    <div class="tab-content" id="{{ role|slugify }}SubTabContent">
+                                                        {% for lang, books in books_by_role.items %}
+                                                            <div class="tab-pane fade" id="{{ role|slugify }}-{{ lang|slugify }}-content" role="tabpanel" aria-labelledby="{{ role|slugify }}-{{ lang|slugify }}-tab">
+                                                                <ul class="mt-2">
+                                                                    {% for item in books %}
+                                                                        <li>
+                                                                            {% if item.model_name == "Instance" %}
+                                                                                <a href="{% url 'read:instance_detail' item.pk %}">{{ item.title }}</a> ({{ item.publication_date }})
+                                                                            {% elif item.model_name == "Book" %}
+                                                                                {% if item.book_group.exists %}
+                                                                                    <a href="{% url 'read:bookgroup_detail' item.book_group.first.pk %}">{{ item.book_group.first.title }}</a>
+                                                                                    ({{ item.publication_date }})
+                                                                                {% else %}
+                                                                                    <a href="{% url 'read:book_detail' item.pk %}">{{ item.title }}</a> 
+                                                                                    ({% if item.format %}{{ item.format }}, {% endif %}{{ item.publication_date }})
+                                                                                {% endif %}
+                                                                            {% endif %}
+                                                                        </li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                
+                                    {% if audiobook_as_narrator %}
+                                        <div class="tab-pane mt-1" id="narrator" role="tabpanel" aria-labelledby="narrator-tab">
+                                            <ul class="mt-2">
+                                                {% for item in audiobook_as_narrator %}
+                                                    <li>
+                                                        <a href="{% url 'listen:audiobook_detail' item.pk %}">{{ item.title }}</a> ({{ item.release_date }})
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
                                 </div>
-                            {% endif %}
+                            </div>
                         </div>
                     {% endif %}
+                
                 {% endif %}
                 <!--Watch-->
                 {% if movies_as_cast or series_as_cast or movies or series %}
@@ -202,50 +243,79 @@
 
                         {% if movies %}
                         <div class="row">
-                            <div class="fs-4">Movies</div>
-                            {% for role, role_movies in movies.items %}
-                                {% if role_movies %}
-                                    <div class="col-md-4">
-                                        <div class="fs-5">{{ role }}</div>
-                                        <ul>
-                                            {% for movie in role_movies %}
-                                                <li>
-                                                    <a href="{% url 'watch:movie_detail' movie.pk %}">{{ movie.title }}</a> ({{ movie.earliest_release_date }})
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>                        
+                            <div class="col-12">
+                                <div class="fs-4">Movies</div>
+                                <!-- Nav tabs for Movies -->
+                                <ul class="nav nav-tabs scrollable-tabs" id="movieTab" role="tablist">
+                                    {% for role, role_movies in movies.items %}
+                                        {% if role_movies %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-movie-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-movie" type="button" role="tab" aria-controls="{{ role|slugify }}-movie" aria-selected="true">
+                                                    {{ role }}
+                                                </button>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                        
+                                <!-- Tab panes for Movies -->
+                                <div class="tab-content" id="movieTabContent">
+                                    {% for role, role_movies in movies.items %}
+                                        {% if role_movies %}
+                                            <div class="tab-pane fade scrollable-tabs" id="{{ role|slugify }}-movie" role="tabpanel" aria-labelledby="{{ role|slugify }}-movie-tab">
+                                                <ul class="mt-2">
+                                                    {% for movie in role_movies %}
+                                                        <li>
+                                                            <a href="{% url 'watch:movie_detail' movie.pk %}">{{ movie.title }}</a> ({{ movie.earliest_release_date }})
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
                         {% endif %}
-
-
+                        
                         {% if series %}
                         <div class="row">
-                            <div class="fs-4">Series</div>
-                            {% for role, role_series in series.items %}
-                                {% if role_series %}
-                                    <div class="col-md-4">
-                                        <div class="fs-5">{{ role }}</div>
-                                        <ul>
-                                            {% for item in role_series %}
-                                                <li>
-                                                    {% if item.serie.min_release_date == item.serie.max_release_date %}
-                                                        <a href="{% url 'watch:series_detail' item.series.pk %}">{{ item.series.title }}</a> ({{ item.series.min_release_date|extract_year }})
-                                                        {% if item.episode_count %}<span class="text-muted">({{ item.episode_count }} episodes)</span>{% endif %}
-                                                    {% else %}
-                                                        <a href="{% url 'watch:series_detail' item.series.pk %}">{{ item.series.title }}</a> ({{ item.series.min_release_date|extract_year }}-{{item.series.max_release_date|extract_year}})
-                                                        {% if item.episode_count %}<span class="text-muted">({{ item.episode_count }} episodes)</span>{% endif %}
-                                                    {% endif %}
-                                                </li> 
-                                            {% endfor %} 
-                                        </ul>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>                        
+                            <div class="col-12">
+                                <div class="fs-4">Series</div>
+                                <!-- Nav tabs for Series -->
+                                <ul class="nav nav-tabs scrollable-tabs" id="seriesTab" role="tablist">
+                                    {% for role, role_series in series.items %}
+                                        {% if role_series %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-series-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-series" type="button" role="tab" aria-controls="{{ role|slugify }}-series" aria-selected="true">
+                                                    {{ role }}
+                                                </button>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                        
+                                <!-- Tab panes for Series -->
+                                <div class="tab-content" id="seriesTabContent">
+                                    {% for role, role_series in series.items %}
+                                        {% if role_series %}
+                                            <div class="tab-pane fade scrollable-tabs" id="{{ role|slugify }}-series" role="tabpanel" aria-labelledby="{{ role|slugify }}-series-tab">
+                                                <ul class="mt-2">
+                                                    {% for item in role_series %}
+                                                        <li>
+                                                            <a href="{% url 'watch:series_detail' item.series.pk %}">{{ item.series.title }}</a> ({{ item.series.release_date }})
+                                                            {% if item.episode_count %}<span class="text-muted">({{ item.episode_count }} episodes)</span>{% endif %}
+                                                        </li> 
+                                                    {% endfor %} 
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
                         {% endif %}
+                           
                     </div>
                 {% endif %}
                 <!--Listen-->
@@ -537,102 +607,168 @@
                                         </ul>
                                     </div>    
                                 </div>
-
                             </div>
-
-
                         </div>
                     {% endif %}
 
                     {% if releases %}
-                        <div class="row">
+                    <div class="row">
+                        <div class="col-12">
                             <div class="fs-4">Releases</div>
-                            {% for role, role_releases in releases.items %}
-                                {% if role_releases %}
-                                    <div class="col-md-4">
-                                        <div class="fs-5">{{ role }}</div>
-                                        <ul>
-                                            {% for release in role_releases %}
-                                                <li>
-                                                    <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a> ({{ release.release_date }})
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
+                            <!-- Nav tabs for Releases -->
+                            <ul class="nav nav-tabs scrollable-tabs" id="releaseTab" role="tablist">
+                                {% for role, role_releases in releases.items %}
+                                    {% if role_releases %}
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-release-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-release" type="button" role="tab" aria-controls="{{ role|slugify }}-release" aria-selected="true">
+                                                {{ role }}
+                                            </button>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                    
+                            <!-- Tab panes for Releases -->
+                            <div class="tab-content" id="releaseTabContent">
+                                {% for role, role_releases in releases.items %}
+                                    {% if role_releases %}
+                                        <div class="tab-pane fade scrollable-tabs" id="{{ role|slugify }}-release" role="tabpanel" aria-labelledby="{{ role|slugify }}-release-tab">
+                                            <ul class="mt-2">
+                                                {% for release in role_releases %}
+                                                    <li>
+                                                        <a href="{% url 'listen:release_detail' release.pk %}">{{ release.title }}</a> ({{ release.release_date }})
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
-                    {% endif %}       
+                    </div>
+                    {% endif %}
                     
                     {% if works %}
-                        <div class="row">
+                    <div class="row">
+                        <div class="col-12">
                             <div class="fs-4">Works</div>
-                            {% for role, role_works in works.items %}
-                                {% if role_works %}
-                                    <div class="col-md-4">
-                                        <div class="fs-5">{{ role }}</div>
-                                        <ul>
-                                            {% for work in role_works %}
-                                                <li>
-                                                    <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
+                            <!-- Nav tabs for Works -->
+                            <ul class="nav nav-tabs scrollable-tabs" id="workTab" role="tablist">
+                                {% for role, role_works in works.items %}
+                                    {% if role_works %}
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-work-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-work" type="button" role="tab" aria-controls="{{ role|slugify }}-work" aria-selected="true">
+                                                {{ role }}
+                                            </button>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                    
+                            <!-- Tab panes for Works -->
+                            <div class="tab-content" id="workTabContent">
+                                {% for role, role_works in works.items %}
+                                    {% if role_works %}
+                                        <div class="tab-pane fade scrollable-tabs" id="{{ role|slugify }}-work" role="tabpanel" aria-labelledby="{{ role|slugify }}-work-tab">
+                                            <ul class="mt-2">
+                                                {% for work in role_works %}
+                                                    <li>
+                                                        <a href="{% url 'listen:work_detail' work.pk %}">{{ work.title }}</a> ({{ work.release_date }})
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
+                    </div>
                     {% endif %}
-
+                    
                     {% if tracks %}
-                        <div class="row">
+                    <div class="row">
+                        <div class="col-12">
                             <div class="fs-4">Tracks</div>
-                            {% for role, role_tracks in tracks.items %}
-                                {% if role_tracks %}
-                                    <div class="col-md-4">
-                                        <div class="fs-5">{{ role }}</div>
-                                        <ul>
-                                            {% for track in role_tracks %}
-                                                <li>
-                                                    <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
+                            <!-- Nav tabs for Tracks -->
+                            <ul class="nav nav-tabs scrollable-tabs" id="trackTab" role="tablist">
+                                {% for role, role_tracks in tracks.items %}
+                                    {% if role_tracks %}
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-track-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-track" type="button" role="tab" aria-controls="{{ role|slugify }}-track" aria-selected="true">
+                                                {{ role }}
+                                            </button>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                    
+                            <!-- Tab panes for Tracks -->
+                            <div class="tab-content" id="trackTabContent">
+                                {% for role, role_tracks in tracks.items %}
+                                    {% if role_tracks %}
+                                        <div class="tab-pane fade scrollable-tabs" id="{{ role|slugify }}-track" role="tabpanel" aria-labelledby="{{ role|slugify }}-track-tab">
+                                            <ul class="mt-2">
+                                                {% for track in role_tracks %}
+                                                    <li>
+                                                        <a href="{% url 'listen:track_detail' track.pk %}">{{ track.title }}</a> ({{ track.release_date }})
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
-                    {% endif %}
+                    </div>
+                    {% endif %}                    
 
                 {% endif %}
                 <!--Play-->
                 {% if has_games or games_as_cast%}
                     <h3 class="mt-2">Gameography</h3>
                     <div class="row">
-
-                        {% for role, games_by_role in games.items %}
-                            {% if games_by_role %}
-                                <div class="col-md-6">
-                                    <div class="fs-5 fw-bold">{{ role }}</div>
-                                    <div class="mb-3">
-                                        <ul>
-                                            {% for item in games_by_role %}
-                                                <li>
-                                                    {% if item.model_name == "PlayWork" %}
-                                                        <!-- This is a PlayWork -->
-                                                        <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
-                                                    {% else %}
-                                                        <!-- This is a Game -->
-                                                        <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
-                                                    {% endif %}
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
+                        {% if has_games %}
+                        <div class="row">
+                            <div class="col-12">
+                                <!-- Nav tabs for Games -->
+                                <ul class="nav nav-tabs scrollable-tabs" id="gameTab" role="tablist">
+                                    {% for role, games_by_role in games.items %}
+                                        {% if games_by_role %}
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-game-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-game" type="button" role="tab" aria-controls="{{ role|slugify }}-game" aria-selected="true">
+                                                    {{ role }}
+                                                </button>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                        
+                                <!-- Tab panes for Games -->
+                                <div class="tab-content" id="gameTabContent">
+                                    {% for role, games_by_role in games.items %}
+                                        {% if games_by_role %}
+                                            <div class="tab-pane fade scrollable-tabs" id="{{ role|slugify }}-game" role="tabpanel" aria-labelledby="{{ role|slugify }}-game-tab">
+                                                <ul class="mt-2">
+                                                    {% for item in games_by_role %}
+                                                        <li>
+                                                            {% if item.model_name == "PlayWork" %}
+                                                                <!-- This is a PlayWork -->
+                                                                <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
+                                                            {% else %}
+                                                                <!-- This is a Game -->
+                                                                <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
+                                                            {% endif %}
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
-                            {% endif %}
-                        {% endfor %}
-
+                            </div>
+                        </div>
+                        {% endif %}
+                        
                         {% if games_as_cast %}
                         <div class="col-sm-6">
                             <div class="fs-4">As Cast</div>
@@ -779,4 +915,37 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Function to activate the first tab with content
+            function activateFirstTab(tabContainer) {
+                const defaultTabs = tabContainer.querySelectorAll(".default-tab");
+                for (let i = 0; i < defaultTabs.length; i++) {
+                    const tab = defaultTabs[i];
+                    const paneId = tab.getAttribute("data-bs-target");
+                    const pane = document.querySelector(paneId);
+        
+                    // If the pane has content (not empty), make this tab active
+                    if (pane && pane.innerHTML.trim() !== "") {
+                        tab.classList.add("active");
+                        pane.classList.add("show", "active");
+                        break; // Stop after the first found tab with content
+                    }
+                }
+            }
+        
+            // Activate tabs for each nav-tabs container
+            const tabContainers = document.querySelectorAll(".nav-tabs");
+            tabContainers.forEach(function (tabContainer) {
+                activateFirstTab(tabContainer);
+            });
+        
+            // Activate sub-tabs within each tab-pane
+            const tabPanes = document.querySelectorAll(".tab-pane");
+            tabPanes.forEach(function (pane) {
+                activateFirstTab(pane);
+            });
+        });   
+    </script>
 {% endblock %}
