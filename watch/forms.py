@@ -630,10 +630,16 @@ class EpisodeForm(forms.ModelForm):
         season = cleaned_data.get("season")
         episode = cleaned_data.get("episode")
 
+        # Check for duplicate only if this is a new instance or the episode number has changed
         if series and season and episode:
-            if Episode.objects.filter(
-                series=series, season=season, episode=episode
-            ).exists():
+            # Exclude the current instance if it's an update
+            episode_exists = (
+                Episode.objects.filter(series=series, season=season, episode=episode)
+                .exclude(pk=self.instance.pk)
+                .exists()
+            )
+
+            if episode_exists:
                 raise ValidationError(
                     "An episode with this series, season, and episode number already exists."
                 )
