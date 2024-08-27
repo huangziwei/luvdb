@@ -208,45 +208,19 @@
                 {% if movies_as_cast or series_as_cast or movies or series %}
                     <h3 class="mt-2">Filmography</h3>
                     <div class="row">
-                        <!--As cast-->
-                        {% if movies_as_cast.exists or series_as_cast.exists %}
-                            <div class="fs-4">As Cast</div>
-                            {% if movies_as_cast.exists %}
-                                <div class="col-md-6">
-                                    <div class="fs-5">Movies</div>
-                                    <ul>
-                                        {% for movie in movies_as_cast %}
-                                            <li>
-                                                <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({% if movie.character_name %}{{movie.character_name}}, {% endif %}{{ movie.earliest_release_date }})
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-                            {% if series_as_cast.exists %}
-                                <div class="col-md-6">
-                                    <div class="fs-5">Series</div>
-                                    <ul>
-                                        {% for serie in series_as_cast %}
-                                            <li>
-                                                {% if serie.min_release_date == serie.max_release_date %}
-                                                    <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({% if serie.character_name %}{{serie.character_name}}, {% endif %}{{ serie.min_release_date|extract_year }}) <span class="text-muted">({{ serie.episode_count }} episodes)</span>
-                                                {% else %}
-                                                    <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({% if serie.character_name %}{{serie.character_name}}, {% endif %}{{ serie.min_release_date|extract_year }}-{{ serie.max_release_date|extract_year }}) <span class="text-muted">({{ serie.episode_count }} episodes)</span>
-                                                {% endif %}
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-                        {% endif %}
-
-                        {% if movies %}
+                        {% if movies or movies_as_cast.exists %}
                         <div class="row">
                             <div class="col-12">
                                 <div class="fs-4">Movies</div>
                                 <!-- Nav tabs for Movies -->
                                 <ul class="nav nav-tabs scrollable-tabs" id="movieTab" role="tablist">
+                                    {% if movies_as_cast.exists %}
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link text-muted default-tab" id="as-cast-movie-tab" data-bs-toggle="tab" data-bs-target="#as-cast-movie" type="button" role="tab" aria-controls="as-cast-movie" aria-selected="true">
+                                                As Cast
+                                            </button>
+                                        </li>
+                                    {% endif %}
                                     {% for role, role_movies in movies.items %}
                                         {% if role_movies %}
                                             <li class="nav-item" role="presentation">
@@ -260,6 +234,17 @@
                         
                                 <!-- Tab panes for Movies -->
                                 <div class="tab-content" id="movieTabContent">
+                                    {% if movies_as_cast.exists %}
+                                        <div class="tab-pane fade scrollable-tabs" id="as-cast-movie" role="tabpanel" aria-labelledby="as-cast-movie-tab">
+                                            <ul class="mt-2">
+                                                {% for movie in movies_as_cast %}
+                                                    <li>
+                                                        <a href="{% url 'watch:movie_detail' movie.id %}">{{ movie.title }}</a> ({% if movie.character_name %}{{movie.character_name}}, {% endif %}{{ movie.earliest_release_date }})
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
                                     {% for role, role_movies in movies.items %}
                                         {% if role_movies %}
                                             <div class="tab-pane fade scrollable-tabs" id="{{ role|slugify }}-movie" role="tabpanel" aria-labelledby="{{ role|slugify }}-movie-tab">
@@ -278,12 +263,19 @@
                         </div>
                         {% endif %}
                         
-                        {% if series %}
+                        {% if series or series_as_cast.exists %}
                         <div class="row">
                             <div class="col-12">
                                 <div class="fs-4">Series</div>
                                 <!-- Nav tabs for Series -->
                                 <ul class="nav nav-tabs scrollable-tabs" id="seriesTab" role="tablist">
+                                    {% if series_as_cast.exists %}
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link text-muted default-tab" id="as-cast-series-tab" data-bs-toggle="tab" data-bs-target="#as-cast-series" type="button" role="tab" aria-controls="as-cast-series" aria-selected="true">
+                                                As Cast
+                                            </button>
+                                        </li>
+                                    {% endif %}
                                     {% for role, role_series in series.items %}
                                         {% if role_series %}
                                             <li class="nav-item" role="presentation">
@@ -297,6 +289,21 @@
                         
                                 <!-- Tab panes for Series -->
                                 <div class="tab-content" id="seriesTabContent">
+                                    {% if series_as_cast.exists %}
+                                        <div class="tab-pane fade scrollable-tabs" id="as-cast-series" role="tabpanel" aria-labelledby="as-cast-series-tab">
+                                            <ul class="mt-2">
+                                                {% for serie in series_as_cast %}
+                                                    <li>
+                                                        {% if serie.min_release_date == serie.max_release_date %}
+                                                            <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({% if serie.character_name %}{{serie.character_name}}, {% endif %}{{ serie.min_release_date|extract_year }}) <span class="text-muted">({{ serie.episode_count }} episodes)</span>
+                                                        {% else %}
+                                                            <a href="{% url 'watch:series_detail' serie.id %}">{{ serie.title }}</a> ({% if serie.character_name %}{{serie.character_name}}, {% endif %}{{ serie.min_release_date|extract_year }}-{{ serie.max_release_date|extract_year }}) <span class="text-muted">({{ serie.episode_count }} episodes)</span>
+                                                        {% endif %}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
                                     {% for role, role_series in series.items %}
                                         {% if role_series %}
                                             <div class="tab-pane fade scrollable-tabs" id="{{ role|slugify }}-series" role="tabpanel" aria-labelledby="{{ role|slugify }}-series-tab">
@@ -306,7 +313,7 @@
                                                             <a href="{% url 'watch:series_detail' item.series.pk %}">{{ item.series.title }}</a> ({{ item.series.release_date }})
                                                             {% if item.episode_count %}<span class="text-muted">({{ item.episode_count }} episodes)</span>{% endif %}
                                                         </li> 
-                                                    {% endfor %} 
+                                                    {% endfor %}
                                                 </ul>
                                             </div>
                                         {% endif %}
@@ -314,8 +321,7 @@
                                 </div>
                             </div>
                         </div>
-                        {% endif %}
-                           
+                        {% endif %}                         
                     </div>
                 {% endif %}
                 <!--Listen-->
@@ -724,65 +730,69 @@
 
                 {% endif %}
                 <!--Play-->
-                {% if has_games or games_as_cast%}
-                    <h3 class="mt-2">Gameography</h3>
+                {% if has_games or games_as_cast.exists %}
+                <h3 class="mt-2">Gameography</h3>
+                <div class="row">
                     <div class="row">
-                        {% if has_games %}
-                        <div class="row">
-                            <div class="col-12">
-                                <!-- Nav tabs for Games -->
-                                <ul class="nav nav-tabs scrollable-tabs" id="gameTab" role="tablist">
-                                    {% for role, games_by_role in games.items %}
-                                        {% if games_by_role %}
-                                            <li class="nav-item" role="presentation">
-                                                <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-game-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-game" type="button" role="tab" aria-controls="{{ role|slugify }}-game" aria-selected="true">
-                                                    {{ role }}
-                                                </button>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                        
-                                <!-- Tab panes for Games -->
-                                <div class="tab-content" id="gameTabContent">
-                                    {% for role, games_by_role in games.items %}
-                                        {% if games_by_role %}
-                                            <div class="tab-pane fade scrollable-tabs" id="{{ role|slugify }}-game" role="tabpanel" aria-labelledby="{{ role|slugify }}-game-tab">
-                                                <ul class="mt-2">
-                                                    {% for item in games_by_role %}
-                                                        <li>
-                                                            {% if item.model_name == "PlayWork" %}
-                                                                <!-- This is a PlayWork -->
-                                                                <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
-                                                            {% else %}
-                                                                <!-- This is a Game -->
-                                                                <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
-                                                            {% endif %}
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        {% if games_as_cast %}
-                        <div class="col-sm-6">
-                            <div class="fs-4">As Cast</div>
-                            <ul>
-                                {% for game in games_as_cast %}
-                                    <li>
-                                        <a href="{% url 'play:game_detail' game.pk %}">{{ game.title }}</a> ({{ game.earliest_release_date }})
+                        <div class="col-12">
+                            <!-- Nav tabs for Games -->
+                            <ul class="nav nav-tabs scrollable-tabs" id="gameTab" role="tablist">
+                                {% if games_as_cast %}
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link text-muted default-tab" id="as-cast-game-tab" data-bs-toggle="tab" data-bs-target="#as-cast-game" type="button" role="tab" aria-controls="as-cast-game" aria-selected="true">
+                                            As Cast
+                                        </button>
                                     </li>
+                                {% endif %}
+                                {% for role, games_by_role in games.items %}
+                                    {% if games_by_role %}
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-game-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-game" type="button" role="tab" aria-controls="{{ role|slugify }}-game" aria-selected="true">
+                                                {{ role }}
+                                            </button>
+                                        </li>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
+                    
+                            <!-- Tab panes for Games -->
+                            <div class="tab-content" id="gameTabContent">
+                                {% if games_as_cast %}
+                                    <div class="tab-pane fade scrollable-tabs" id="as-cast-game" role="tabpanel" aria-labelledby="as-cast-game-tab">
+                                        <ul class="mt-2">
+                                            {% for game in games_as_cast %}
+                                                <li>
+                                                    <a href="{% url 'play:game_detail' game.pk %}">{{ game.title }}</a> ({{ game.earliest_release_date }})
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                                {% for role, games_by_role in games.items %}
+                                    {% if games_by_role %}
+                                        <div class="tab-pane fade scrollable-tabs" id="{{ role|slugify }}-game" role="tabpanel" aria-labelledby="{{ role|slugify }}-game-tab">
+                                            <ul class="mt-2">
+                                                {% for item in games_by_role %}
+                                                    <li>
+                                                        {% if item.model_name == "PlayWork" %}
+                                                            <!-- This is a PlayWork -->
+                                                            <a href="{% url 'play:work_detail' item.pk %}">{{ item.title }}</a> ({{ item.first_release_date }})
+                                                        {% else %}
+                                                            <!-- This is a Game -->
+                                                            <a href="{% url 'play:game_detail' item.pk %}">{{ item.title }}</a> ({{ item.region_release_dates.first.release_date }})
+                                                        {% endif %}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
-                        {% endif %}
                     </div>
-                {% endif %}
+                </div>
+            {% endif %}
+            
             </div>
             <!--manage entry-->
             <div class="d-flex flex-column col-12 col-md-4 ">
@@ -915,37 +925,4 @@
             </div>
         </div>
     </div>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Function to activate the first tab with content
-            function activateFirstTab(tabContainer) {
-                const defaultTabs = tabContainer.querySelectorAll(".default-tab");
-                for (let i = 0; i < defaultTabs.length; i++) {
-                    const tab = defaultTabs[i];
-                    const paneId = tab.getAttribute("data-bs-target");
-                    const pane = document.querySelector(paneId);
-        
-                    // If the pane has content (not empty), make this tab active
-                    if (pane && pane.innerHTML.trim() !== "") {
-                        tab.classList.add("active");
-                        pane.classList.add("show", "active");
-                        break; // Stop after the first found tab with content
-                    }
-                }
-            }
-        
-            // Activate tabs for each nav-tabs container
-            const tabContainers = document.querySelectorAll(".nav-tabs");
-            tabContainers.forEach(function (tabContainer) {
-                activateFirstTab(tabContainer);
-            });
-        
-            // Activate sub-tabs within each tab-pane
-            const tabPanes = document.querySelectorAll(".tab-pane");
-            tabPanes.forEach(function (pane) {
-                activateFirstTab(pane);
-            });
-        });   
-    </script>
 {% endblock %}
