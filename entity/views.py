@@ -168,7 +168,7 @@ class CreatorDetailView(DetailView):
 
         for role in book_roles:
             # Using a display-friendly format for the role in the keys
-            formatted_role = f"As {role}"
+            formatted_role = f"{role}"
             books_by_role = get_books_by_role(role, creator)
             if books_by_role:
                 books[formatted_role] = books_by_role
@@ -328,7 +328,7 @@ class CreatorDetailView(DetailView):
 
             # Update context with releases filtered by role, excluding "Performer"
             if role_releases:
-                releases[f"As {role}"] = role_releases
+                releases[f"{role}"] = role_releases
 
         context["releases"] = releases
 
@@ -354,7 +354,7 @@ class CreatorDetailView(DetailView):
 
             # Dynamically update the context with tracks filtered by role
             if role_tracks:
-                tracks[f"As {role}"] = role_tracks
+                tracks[f"{role}"] = role_tracks
 
         # Update context
         context["tracks"] = tracks
@@ -376,7 +376,7 @@ class CreatorDetailView(DetailView):
 
             # Dynamically update the context with works filtered by role
             if role_works:
-                works[f"As {role}"] = role_works
+                works[f"{role}"] = role_works
 
         # Update context
         context["works"] = works
@@ -464,7 +464,7 @@ class CreatorDetailView(DetailView):
 
             # Dynamically update the context with works filtered by role
             if role_movies:
-                movies[f"As {role}"] = role_movies
+                movies[f"{role}"] = role_movies
 
         context["movies"] = movies
 
@@ -536,7 +536,7 @@ class CreatorDetailView(DetailView):
 
             # Only add to the context if there's at least one series for this role
             if combined_series_data:
-                series_info[f"As {role}"] = combined_series_data
+                series_info[f"{role}"] = combined_series_data
 
         context["series"] = series_info
 
@@ -611,7 +611,7 @@ class CreatorDetailView(DetailView):
 
         for role in game_roles:
             role_games = get_games_by_role(role, creator)
-            games[f"As {role}"] = role_games
+            games[f"{role}"] = role_games
             if (
                 role_games and not has_games
             ):  # Check if there are any games and update has_games accordingly
