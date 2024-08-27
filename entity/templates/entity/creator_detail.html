@@ -231,8 +231,13 @@
                                         <ul>
                                             {% for item in role_series %}
                                                 <li>
-                                                    <a href="{% url 'watch:series_detail' item.series.pk %}">{{ item.series.title }}</a> ({{ item.series.release_date }})
-                                                    {% if item.episode_count %}<span class="text-muted">({{ item.episode_count }} episodes)</span>{% endif %}
+                                                    {% if item.serie.min_release_date == item.serie.max_release_date %}
+                                                        <a href="{% url 'watch:series_detail' item.series.pk %}">{{ item.series.title }}</a> ({{ item.series.min_release_date|extract_year }})
+                                                        {% if item.episode_count %}<span class="text-muted">({{ item.episode_count }} episodes)</span>{% endif %}
+                                                    {% else %}
+                                                        <a href="{% url 'watch:series_detail' item.series.pk %}">{{ item.series.title }}</a> ({{ item.series.min_release_date|extract_year }}-{{item.series.max_release_date|extract_year}})
+                                                        {% if item.episode_count %}<span class="text-muted">({{ item.episode_count }} episodes)</span>{% endif %}
+                                                    {% endif %}
                                                 </li> 
                                             {% endfor %} 
                                         </ul>

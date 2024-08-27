@@ -484,15 +484,29 @@ class CreatorDetailView(DetailView):
             combined_series_data = []
 
             # Fetch series directly associated with the creator for a given role in SeriesRole
-            role_series_direct = Series.objects.filter(
-                seriesroles__role__name=role, seriesroles__creator=creator
-            ).distinct()
+            role_series_direct = (
+                Series.objects.filter(
+                    seriesroles__role__name=role, seriesroles__creator=creator
+                )
+                .annotate(
+                    min_release_date=min_release_date_subquery,
+                    max_release_date=max_release_date_subquery,
+                )
+                .distinct()
+            )
 
             # Include series based on episode roles in EpisodeRole
-            role_series_from_episodes = Series.objects.filter(
-                episodes__episoderoles__role__name=role,
-                episodes__episoderoles__creator=creator,
-            ).distinct()
+            role_series_from_episodes = (
+                Series.objects.filter(
+                    episodes__episoderoles__role__name=role,
+                    episodes__episoderoles__creator=creator,
+                )
+                .annotate(
+                    min_release_date=min_release_date_subquery,
+                    max_release_date=max_release_date_subquery,
+                )
+                .distinct()
+            )
 
             # Combine and de-duplicate series from both direct and episode-derived associations
             all_role_series = (
@@ -504,6 +518,8 @@ class CreatorDetailView(DetailView):
                 series_data = {
                     "series": series,
                     "episode_count": 0,
+                    "min_release_date": series.min_release_date,
+                    "max_release_date": series.max_release_date,
                 }
 
                 # Fetch episodes for this series and role, count them and get the earliest release date
