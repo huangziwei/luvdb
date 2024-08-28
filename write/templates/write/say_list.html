@@ -54,7 +54,7 @@
                         {% if not forloop.first %}
                             <hr class="mb-4">
                         {% endif %}
-                        <div class="activity-item mt-2 mb-4 h-entry">
+                        <div class="activity-item mt-2 mb-2 h-entry">
                             {% if activity.model_name == "Say" %}
                                 <div>
                                     {{ activity.content | linkify_tags |  markdownify }}
