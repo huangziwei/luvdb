@@ -306,12 +306,18 @@
                                     {% endif %}
                                     {% for role, role_series in series.items %}
                                         {% if role_series %}
+
                                             <div class="tab-pane fade scrollable-tabs" id="{{ role|slugify }}-series" role="tabpanel" aria-labelledby="{{ role|slugify }}-series-tab">
                                                 <ul class="mt-2">
                                                     {% for item in role_series %}
-                                                        <li>
-                                                            <a href="{% url 'watch:series_detail' item.series.pk %}">{{ item.series.title }}</a> ({{ item.series.release_date }})
-                                                            {% if item.episode_count %}<span class="text-muted">({{ item.episode_count }} episodes)</span>{% endif %}
+                                                        <li>    
+                                                            {% if item.min_release_date == item.max_release_date %}
+                                                                <a href="{% url 'watch:series_detail' item.series.pk %}">{{ item.series.title }}</a> ({{ item.min_release_date|extract_year }})
+                                                                {% if item.episode_count %}<span class="text-muted">({{ item.episode_count }} episodes)</span>{% endif %}
+                                                            {% else %}
+                                                                <a href="{% url 'watch:series_detail' item.series.pk %}">{{ item.series.title }}</a> ({{ item.min_release_date|extract_year }}-{{ item.max_release_date|extract_year }})
+                                                                {% if item.episode_count %}<span class="text-muted">({{ item.episode_count }} episodes)</span>{% endif %}
+                                                            {% endif %}
                                                         </li> 
                                                     {% endfor %}
                                                 </ul>

@@ -661,6 +661,20 @@ class SeriesDetailView(DetailView):
     model = Series
     template_name = "watch/series_detail.html"
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        seasons = self.object.seasons.all()
+
+        # Check if 'force_detail' is in the query parameters
+        force_detail = request.GET.get('detail', 'false').lower() == 'true'
+
+        # Redirect to the first season if there's only one season and 'force_detail' is not set
+        if seasons.count() == 1 and not force_detail:
+            season = seasons.first()
+            return redirect('watch:season_detail', series_id=self.object.id, season_number=season.season_number)
+        
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
