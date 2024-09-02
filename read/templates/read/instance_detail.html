@@ -84,7 +84,7 @@
                                     <a href="{% url 'read:book_detail' book.pk %}">{{ book.title }}</a>{% if book.subtitle %}: {{ book.subtitle }}{% endif %}
 
                                     {# djlint:off #}
-                                    ({% if book.publisher %}{{ book.publisher }}, {% endif %}{% if book.format %}{{ book.format }},{% endif %}{{ book.publication_date }})
+                                    ({% if book.publisher %}{{ book.publisher.name }}, {% endif %}{% if book.format %}{{ book.format }},{% endif %}{{ book.publication_date }})
                                     {# djlint:on #}
                                 </li>
                             {% endfor %}
@@ -120,7 +120,7 @@
                                     <a href="{% url 'listen:audiobook_detail' audiobook.pk %}">{{ audiobook.title }}</a>
                                     {% if audiobook.subtitle %}: {{ audiobook.subtitle }}{% endif %}
                                     {# djlint:off #}
-                                    ({% if audiobook.publisher %}{{ audiobook.publisher }}, {% endif %}{% if audiobook.format %}{{ audiobook.format }},{% endif %}{{ audiobook.release_date }})
+                                    ({% if audiobook.publisher %}{{ audiobook.publisher.name }}, {% endif %}{% if audiobook.format %}{{ audiobook.format }},{% endif %}{{ audiobook.release_date }})
                                     {# djlint:on #}
                                 </li>
                             {% endfor %}
