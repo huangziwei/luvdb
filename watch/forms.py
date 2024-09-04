@@ -245,7 +245,7 @@ class MovieCastForm(forms.ModelForm):
 
     class Meta(auto_prefetch.Model.Meta):
         model = MovieCast
-        fields = ("creator", "role", "domain", "character_name")
+        fields = ("creator", "role", "domain", "alt_name", "character_name")
 
     def clean(self):
         cleaned_data = super().clean()
@@ -705,7 +705,7 @@ class EpisodeCastForm(forms.ModelForm):
 
     class Meta(auto_prefetch.Model.Meta):
         model = EpisodeCast
-        fields = ("creator", "role", "domain", "character_name")
+        fields = ("creator", "role", "domain", "alt_name", "character_name")
 
     def clean(self):
         cleaned_data = super().clean()

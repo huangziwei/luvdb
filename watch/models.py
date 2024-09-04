@@ -331,6 +331,7 @@ class MovieCast(auto_prefetch.Model):
     role = auto_prefetch.ForeignKey(
         Role, on_delete=models.CASCADE, null=True, blank=True
     )
+    alt_name = models.CharField(max_length=100, blank=True, null=True)
     character_name = models.CharField(max_length=100, blank=True, null=True)
     history = HistoricalRecords(inherit=True)
 
@@ -863,6 +864,7 @@ class EpisodeCast(auto_prefetch.Model):
     role = auto_prefetch.ForeignKey(
         Role, on_delete=models.CASCADE, null=True, blank=True
     )
+    alt_name = models.CharField(max_length=100, blank=True, null=True)
     character_name = models.CharField(max_length=100, blank=True, null=True)
     history = HistoricalRecords(inherit=True)
 

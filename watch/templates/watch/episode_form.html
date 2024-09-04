@@ -43,15 +43,17 @@
             {% for form in episodecasts %}
                 <div class="form-wrapper row">
                     {{ form.id }}
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-6 mb-3">
                         {{ form.creator | as_crispy_field }}
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-6 mb-3">
                         {{ form.role | as_crispy_field }}
                         {{ form.domain | as_crispy_field }}
                     </div>
-                    <div class="col-md-4 mb-3">{{ form.character_name | as_crispy_field }}</div>
+                    <div class="col-md-6 mb-3">{{ form.alt_name | as_crispy_field }}</div>
+                    <div class="col-md-6 mb-3">{{ form.character_name | as_crispy_field }}</div>
                 </div>
+                <hr>
             {% endfor %}
         </div>
         <button type="button" id="add-episode-cast-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
