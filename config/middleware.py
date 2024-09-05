@@ -1,5 +1,6 @@
 import logging
 import re
+import time
 
 import pytz
 from django.conf import settings
@@ -61,14 +62,18 @@ class LogIPMiddleware:
 
         # Handle deprecated endpointsq
         if re.match(r"^/u/[^/]+/inbox/$", request.path):
-            logger.warning(
-                f"Deprecated endpoint accessed: {request.path} from IP: {ip_address}"
-            )
+
+            # Introduce a delay to slow down bots
             limited = is_ratelimited(
                 request, group="deprecated_inbox", key="ip", rate="1/d", increment=True
             )
             if limited:
+                logger.warning(f"Rate limited: {request.path} from IP: {ip_address}")
                 return HttpResponseGone("Too many requests.")
+            else:
+                logger.warning(
+                    f"Deprecated endpoint accessed: {request.path} from IP: {ip_address}"
+                )
             return HttpResponseGone("This endpoint is no longer available.")
 
         # Get additional information for logging
