@@ -18,3 +18,4 @@ cache/*
 *.csv
 embedding.py
 requests.log
+*.backup

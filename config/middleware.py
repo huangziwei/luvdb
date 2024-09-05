@@ -1,8 +1,14 @@
 import logging
+import re
 
 import pytz
 from django.conf import settings
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import (
+    HttpRequest,
+    HttpResponseForbidden,
+    HttpResponseGone,
+    HttpResponseRedirect,
+)
 from django.urls import Resolver404, resolve
 from django.utils import timezone
 
@@ -30,6 +36,10 @@ logger = logging.getLogger("config")
 class LogIPMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
+        self.blocked_ips = [
+            "101.47.17.141",  # BytePlus
+            "101.47.17.220",  # BytePlus
+        ]
 
     def __call__(self, request):
         # Get the IP address from X-Forwarded-For if behind a proxy, otherwise use REMOTE_ADDR
@@ -40,6 +50,20 @@ class LogIPMiddleware:
             ]  # Take the first IP in the list if there are multiple
         else:
             ip_address = request.META.get("REMOTE_ADDR")
+
+        # Block the request if the IP address is in the blocked list
+        if ip_address in self.blocked_ips:
+            logger.warning(
+                f"Blocked malicious IP: {ip_address} tried to access {request.path}"
+            )
+            return HttpResponseForbidden("Forbidden: Your IP is blocked.")
+
+        # Handle deprecated endpoints
+        if re.match(r"^/u/[^/]+/inbox/$", request.path):
+            logger.warning(
+                f"Deprecated endpoint accessed: {request.path} from IP: {ip_address}"
+            )
+            return HttpResponseGone("This endpoint is no longer available.")
 
         # Get additional information for logging
         method = request.method  # GET, POST, etc.
@@ -54,3 +78,16 @@ class LogIPMiddleware:
         )
 
         return response
+
+
+class DeprecatedEndpointMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # If the request is for the old /u/<username>/inbox/ endpoint, return 410 Gone
+        if re.match(r"^/u/[^/]+/inbox/$", request.path):
+            return HttpResponseGone("This endpoint is no longer available.")
+
+        # Otherwise, proceed with normal request processing
+        return self.get_response(request)

@@ -86,6 +86,7 @@ MIDDLEWARE = [
     "django.middleware.gzip.GZipMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "config.middleware.LogIPMiddleware",
+    "config.middleware.DeprecatedEndpointMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -379,12 +380,12 @@ LOGGING = {
     },
     "loggers": {
         "django": {
-            "handlers": ["file", "console"],
+            "handlers": ["console"],
             "level": "WARNING",  # Make sure it's WARNING or lower
             "propagate": True,
         },
         "config": {  # Logger used in middleware
-            "handlers": ["file", "console"],
+            "handlers": ["console"],
             "level": "WARNING",
             "propagate": True,
         },
