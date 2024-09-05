@@ -41,17 +41,16 @@ class LogIPMiddleware:
         else:
             ip_address = request.META.get("REMOTE_ADDR")
 
+        # Get additional information for logging
+        method = request.method  # GET, POST, etc.
+        path = request.get_full_path()  # The full URL path (including query parameters)
+
         # Process the request
         response = self.get_response(request)
 
-        # Log the IP address and the response status code
-        if response.status_code == 403:
-            logger.warning(f"403 Forbidden request from IP: {ip_address}")
-        elif response.status_code == 404:
-            logger.warning(f"404 Not Found request from IP: {ip_address}")
-        elif 300 <= response.status_code < 400:
-            logger.warning(
-                f"{response.status_code} Redirect request from IP: {ip_address}"
-            )
+        # Log the IP address, request method, path, and status code for all requests
+        logger.info(
+            f"IP: {ip_address} | Method: {method} | Path: {path} | Status: {response.status_code}"
+        )
 
         return response
