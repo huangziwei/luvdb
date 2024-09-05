@@ -24,7 +24,7 @@ class TimezoneMiddleware:
 
 
 # Create or get the logger
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("config")
 
 
 class LogIPMiddleware:
@@ -45,11 +45,11 @@ class LogIPMiddleware:
         method = request.method  # GET, POST, etc.
         path = request.get_full_path()  # The full URL path (including query parameters)
 
-        # Process the request
+        # Process the request and get the response
         response = self.get_response(request)
 
         # Log the IP address, request method, path, and status code for all requests
-        logger.info(
+        logger.warning(
             f"IP: {ip_address} | Method: {method} | Path: {path} | Status: {response.status_code}"
         )
 

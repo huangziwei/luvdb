@@ -379,12 +379,12 @@ LOGGING = {
     },
     "loggers": {
         "django": {
-            "handlers": ["file"],
-            "level": "WARNING",
+            "handlers": ["file", "console"],
+            "level": "WARNING",  # Make sure it's WARNING or lower
             "propagate": True,
         },
-        "config": {
-            "handlers": ["file"],
+        "config": {  # Logger used in middleware
+            "handlers": ["file", "console"],
             "level": "WARNING",
             "propagate": True,
         },
