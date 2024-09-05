@@ -11,6 +11,7 @@ from django.http import (
 )
 from django.urls import Resolver404, resolve
 from django.utils import timezone
+from django_ratelimit.core import is_ratelimited
 
 from accounts.models import CustomUser
 
@@ -58,11 +59,16 @@ class LogIPMiddleware:
             )
             return HttpResponseForbidden("Forbidden: Your IP is blocked.")
 
-        # Handle deprecated endpoints
+        # Handle deprecated endpointsq
         if re.match(r"^/u/[^/]+/inbox/$", request.path):
             logger.warning(
                 f"Deprecated endpoint accessed: {request.path} from IP: {ip_address}"
             )
+            limited = is_ratelimited(
+                request, group="deprecated_inbox", key="ip", rate="1/d", increment=True
+            )
+            if limited:
+                return HttpResponseGone("Too many requests.")
             return HttpResponseGone("This endpoint is no longer available.")
 
         # Get additional information for logging
@@ -78,16 +84,3 @@ class LogIPMiddleware:
         )
 
         return response
-
-
-class DeprecatedEndpointMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
-        # If the request is for the old /u/<username>/inbox/ endpoint, return 410 Gone
-        if re.match(r"^/u/[^/]+/inbox/$", request.path):
-            return HttpResponseGone("This endpoint is no longer available.")
-
-        # Otherwise, proceed with normal request processing
-        return self.get_response(request)
