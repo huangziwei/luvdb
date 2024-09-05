@@ -372,6 +372,10 @@ LOGGING = {
             "class": "logging.FileHandler",
             "filename": "requests.log",
         },
+        "console": {
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stdout",  # Log to stdout (captured by Fly.io)
+        },
     },
     "loggers": {
         "django": {
