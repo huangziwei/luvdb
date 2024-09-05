@@ -17,3 +17,4 @@ follow_activity.json
 cache/*
 *.csv
 embedding.py
+requests.log
