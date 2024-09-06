@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (
     BlacklistedDomain,
+    BlockedIP,
     CustomUser,
     InvitationCode,
     InvitationRequest,
@@ -34,3 +35,8 @@ admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(InvitationRequest, InvitationRequestAdmin)
 admin.site.register(WebAuthnCredential, WebAuthnCredentialAdmin)
 admin.site.register(BlacklistedDomain, BlacklistedDomainAdmin)
+
+
+@admin.register(BlockedIP)
+class BlockedIPAdmin(admin.ModelAdmin):
+    list_display = ("ip_address", "reason")

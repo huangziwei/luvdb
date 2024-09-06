@@ -14,7 +14,7 @@ from django.urls import Resolver404, resolve
 from django.utils import timezone
 from django_ratelimit.core import is_ratelimited
 
-from accounts.models import CustomUser
+from accounts.models import BlockedIP, CustomUser
 
 
 class TimezoneMiddleware:
@@ -38,11 +38,6 @@ logger = logging.getLogger("config")
 class LogIPMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        self.blocked_ips = [
-            "101.47.17.141",  # BytePlus
-            "101.47.17.220",  # BytePlus
-            "101.47.18.215",  # BytePlus
-        ]
 
     def __call__(self, request):
         # Get the IP address from X-Forwarded-For if behind a proxy, otherwise use REMOTE_ADDR
@@ -54,8 +49,8 @@ class LogIPMiddleware:
         else:
             ip_address = request.META.get("REMOTE_ADDR")
 
-        # Block the request if the IP address is in the blocked list
-        if ip_address in self.blocked_ips:
+        # Check if the IP is blocked by querying the BlockedIP model
+        if BlockedIP.objects.filter(ip_address=ip_address).exists():
             logger.warning(
                 f"Blocked malicious IP: {ip_address} tried to access {request.path}"
             )

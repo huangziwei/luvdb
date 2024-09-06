@@ -260,3 +260,11 @@ class BlacklistedDomain(models.Model):
 
     def __str__(self):
         return self.domain
+
+
+class BlockedIP(models.Model):
+    ip_address = models.GenericIPAddressField(unique=True)
+    reason = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.ip_address
