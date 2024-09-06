@@ -10,7 +10,6 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.files.base import ContentFile
 from django.db import models
 from django.db.models import Min
-from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.text import slugify
 from PIL import Image
@@ -467,39 +466,6 @@ class Series(auto_prefetch.Model):
             self.poster.close()
 
         super().save(*args, **kwargs)
-        if not self.seasons.exists():
-            # Automatically create the first season if no seasons exist
-            first_season = Season.objects.create(
-                series=self,
-                title=f"{self.title} Season 1",
-                season_number=1,
-                season_label="Season",
-                subtitle=self.subtitle,
-                other_titles=self.other_titles,
-                release_date=self.release_date,
-                notes=self.notes,
-                website=self.website,
-                poster=self.poster,
-                poster_sens=self.poster_sens,
-                duration=self.duration,
-                languages=self.languages,
-                status=self.status,
-                imdb=self.imdb,
-                wikipedia=self.wikipedia,
-                official_website=self.official_website,
-                created_by=self.created_by,
-                updated_by=self.updated_by,
-            )
-
-            # Copy ManyToMany fields
-            first_season.studios.set(self.studios.all())
-            first_season.distributors.set(self.distributors.all())
-            first_season.stars.set(self.stars.all())
-            first_season.creators.set(self.creators.all())
-            first_season.genres.set(self.genres.all())
-
-            # Save the season to commit the ManyToMany fields
-            first_season.save()
 
     def get_absolute_url(self):
         return reverse("watch:series_detail", args=[str(self.id)])

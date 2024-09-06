@@ -103,6 +103,12 @@ class SeasonAdmin(admin.ModelAdmin):
     list_filter = ["series"]
 
 
+class SeasonRoleAmdmin(admin.ModelAdmin):
+    list_display = ("season", "role", "creator")
+    list_filter = ["role", "creator"]
+
+
+admin.site.register(SeasonRole, SeasonRoleAmdmin)
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Movie, MovieAdmin)
 admin.site.register(Series, SeriesAdmin)

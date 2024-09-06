@@ -653,7 +653,48 @@ class SeriesCreateView(LoginRequiredMixin, CreateView):
             if seriesrole.is_valid():
                 seriesrole.instance = self.object
                 seriesrole.save()
+            self.create_season(self.object)
+
         return super().form_valid(form)
+
+    def create_season(self, series):
+        first_season = Season(
+            series=series,
+            title=f"{series.title} Season 1",
+            season_number=1,
+            season_label="Season",
+            subtitle=series.subtitle,
+            other_titles=series.other_titles,
+            release_date=series.release_date,
+            notes=series.notes,
+            website=series.website,
+            poster=series.poster,
+            poster_sens=series.poster_sens,
+            duration=series.duration,
+            languages=series.languages,
+            status=series.status,
+            imdb=series.imdb,
+            wikipedia=series.wikipedia,
+            official_website=series.official_website,
+            created_by=self.request.user,
+            updated_by=self.request.user,
+        )
+        first_season.save()
+
+        # Copy ManyToMany fields to the season
+        first_season.studios.set(series.studios.all())
+        first_season.distributors.set(series.distributors.all())
+        first_season.stars.set(series.stars.all())
+        first_season.genres.set(series.genres.all())
+
+        # Copy SeriesRole to SeasonRole
+        for series_role in series.seriesroles.all():
+            SeasonRole.objects.create(
+                season=first_season,
+                creator=series_role.creator,
+                role=series_role.role,
+                alt_name=series_role.alt_name,
+            )
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
@@ -666,13 +707,17 @@ class SeriesDetailView(DetailView):
         seasons = self.object.seasons.all()
 
         # Check if 'force_detail' is in the query parameters
-        force_detail = request.GET.get('detail', 'false').lower() == 'true'
+        force_detail = request.GET.get("detail", "false").lower() == "true"
 
         # Redirect to the first season if there's only one season and 'force_detail' is not set
         if seasons.count() == 1 and not force_detail:
             season = seasons.first()
-            return redirect('watch:season_detail', series_id=self.object.id, season_number=season.season_number)
-        
+            return redirect(
+                "watch:season_detail",
+                series_id=self.object.id,
+                season_number=season.season_number,
+            )
+
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

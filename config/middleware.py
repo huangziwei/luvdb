@@ -41,6 +41,7 @@ class LogIPMiddleware:
         self.blocked_ips = [
             "101.47.17.141",  # BytePlus
             "101.47.17.220",  # BytePlus
+            "101.47.18.215",  # BytePlus
         ]
 
     def __call__(self, request):
