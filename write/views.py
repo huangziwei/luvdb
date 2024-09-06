@@ -1644,7 +1644,7 @@ class RandomizerDetailView(DetailView):
         )  # Redirect to the same page to display the updated order
 
 
-class ProjectAutocomplete(autocomplete.Select2QuerySetView):
+class ProjectAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     create_field = "name"  # This is the field used to create the new Project object
 
     def get_queryset(self):

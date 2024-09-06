@@ -696,7 +696,7 @@ class PlatformUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class PlatformAutocomplete(autocomplete.Select2QuerySetView):
+class PlatformAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated:
@@ -712,7 +712,7 @@ class PlatformAutocomplete(autocomplete.Select2QuerySetView):
         return Platform.objects.none()
 
 
-class WorkAutocomplete(autocomplete.Select2QuerySetView):
+class WorkAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Work.objects.none()
@@ -739,7 +739,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         return mark_safe(label)
 
 
-class GameAutocomplete(autocomplete.Select2QuerySetView):
+class GameAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Game.objects.none()
@@ -1360,7 +1360,7 @@ class GenreDetailView(DetailView):
         return context
 
 
-class GenreAutocomplete(autocomplete.Select2QuerySetView):
+class GenreAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Genre.objects.none()

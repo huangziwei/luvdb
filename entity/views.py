@@ -726,7 +726,7 @@ class RoleDetailView(LoginRequiredMixin, DetailView):
     template_name = "entity/role_detail.html"
 
 
-class CreatorAutoComplete(autocomplete.Select2QuerySetView):
+class CreatorAutoComplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         qs = Creator.objects.all()
 
@@ -754,7 +754,7 @@ class CreatorAutoComplete(autocomplete.Select2QuerySetView):
         return mark_safe(label)
 
 
-class GroupAutoComplete(autocomplete.Select2QuerySetView):
+class GroupAutoComplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         qs = Creator.objects.exclude(creator_type="person")
 
@@ -778,7 +778,7 @@ class GroupAutoComplete(autocomplete.Select2QuerySetView):
         return mark_safe(label)
 
 
-class RoleAutocomplete(autocomplete.Select2QuerySetView):
+class RoleAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Role.objects.none()
@@ -1025,7 +1025,7 @@ class CompanyUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class CompanyAutocomplete(autocomplete.Select2QuerySetView):
+class CompanyAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated:

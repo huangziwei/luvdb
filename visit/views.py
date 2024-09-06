@@ -423,7 +423,7 @@ class LocationListView(ListView):
         return result
 
 
-class LocationAutoComplete(autocomplete.Select2QuerySetView):
+class LocationAutoComplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         qs = Location.objects.all()
 

@@ -1572,7 +1572,7 @@ class IssueUpdateView(LoginRequiredMixin, UpdateView):
 ################
 
 
-class WorkAutocomplete(autocomplete.Select2QuerySetView):
+class WorkAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Work.objects.none()
@@ -1622,7 +1622,7 @@ class WorkAutocomplete(autocomplete.Select2QuerySetView):
         return mark_safe(label)
 
 
-class InstanceAutocomplete(autocomplete.Select2QuerySetView):
+class InstanceAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Instance.objects.none()
@@ -1673,7 +1673,7 @@ class InstanceAutocomplete(autocomplete.Select2QuerySetView):
         return mark_safe(label)
 
 
-class BookAutoComplete(autocomplete.Select2QuerySetView):
+class BookAutoComplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Book.objects.none()
@@ -2494,7 +2494,7 @@ class GenreDetailView(DetailView):
         return context
 
 
-class GenreAutocomplete(autocomplete.Select2QuerySetView):
+class GenreAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Genre.objects.none()

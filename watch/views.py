@@ -2564,7 +2564,7 @@ class GenreDetailView(DetailView):
         return context
 
 
-class GenreAutocomplete(autocomplete.Select2QuerySetView):
+class GenreAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Genre.objects.none()
@@ -2762,7 +2762,7 @@ class CollectionHistoryView(HistoryViewMixin, DetailView):
 ################
 
 
-class MovieAutocomplete(autocomplete.Select2QuerySetView):
+class MovieAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Movie.objects.none()
@@ -2786,7 +2786,7 @@ class MovieAutocomplete(autocomplete.Select2QuerySetView):
         return f"{item.title} ({release_date_str})"
 
 
-class SeriesAutocomplete(autocomplete.Select2QuerySetView):
+class SeriesAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Series.objects.none()

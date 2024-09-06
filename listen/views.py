@@ -300,7 +300,7 @@ class WorkDetailView(DetailView):
         return context
 
 
-class WorkAutocomplete(autocomplete.Select2QuerySetView):
+class WorkAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Work.objects.none()
@@ -575,7 +575,7 @@ class TrackDetailView(DetailView):
         return context
 
 
-class TrackAutocomplete(autocomplete.Select2QuerySetView):
+class TrackAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Track.objects.none()
@@ -1093,7 +1093,7 @@ class ReleaseUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ReleaseAutocomplete(autocomplete.Select2QuerySetView):
+class ReleaseAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Release.objects.none()
@@ -1588,7 +1588,7 @@ class GenreDetailView(DetailView):
         return context
 
 
-class GenreAutocomplete(autocomplete.Select2QuerySetView):
+class GenreAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
             return Genre.objects.none()
