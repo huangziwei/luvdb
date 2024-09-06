@@ -58,6 +58,11 @@ class LogIPMiddleware:
 
         # Handle deprecated endpointsq
         if re.match(r"^/u/[^/]+/inbox/$", request.path):
+            # Add the IP to BlockedIP model if it tries to access this deprecated endpoint
+            BlockedIP.objects.get_or_create(
+                ip_address=ip_address,
+                defaults={"reason": "Attempted access to deprecated /inbox/ endpoint."},
+            )
 
             # Introduce a delay to slow down bots
             limited = is_ratelimited(
