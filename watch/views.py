@@ -2674,7 +2674,7 @@ class CollectionUpdateView(LoginRequiredMixin, UpdateView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class MovieHistoryView(HistoryViewMixin, DetailView):
+class MovieHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Movie
     template_name = "entity/history.html"
 
@@ -2686,7 +2686,7 @@ class MovieHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class SeriesHistoryView(HistoryViewMixin, DetailView):
+class SeriesHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Series
     template_name = "entity/history.html"
 
@@ -2698,7 +2698,7 @@ class SeriesHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class SeasonHistoryView(HistoryViewMixin, DetailView):
+class SeasonHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Season
     template_name = "entity/history.html"
 
@@ -2717,7 +2717,7 @@ class SeasonHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class EpisodeHistoryView(HistoryViewMixin, DetailView):
+class EpisodeHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Episode
     template_name = "entity/history.html"
 
@@ -2746,7 +2746,7 @@ class EpisodeHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class CollectionHistoryView(HistoryViewMixin, DetailView):
+class CollectionHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Collection
     template_name = "entity/history.html"
 

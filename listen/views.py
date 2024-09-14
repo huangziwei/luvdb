@@ -2626,7 +2626,7 @@ class AudiobookUpdateView(LoginRequiredMixin, UpdateView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class WorkHistoryView(HistoryViewMixin, DetailView):
+class WorkHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Work
     template_name = "entity/history.html"
 
@@ -2638,7 +2638,7 @@ class WorkHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class TrackHistoryView(HistoryViewMixin, DetailView):
+class TrackHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Track
     template_name = "entity/history.html"
 
@@ -2650,7 +2650,7 @@ class TrackHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class ReleaseHistoryView(HistoryViewMixin, DetailView):
+class ReleaseHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Release
     template_name = "entity/history.html"
 
@@ -2662,7 +2662,7 @@ class ReleaseHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class ReleaseGroupHistoryView(HistoryViewMixin, DetailView):
+class ReleaseGroupHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = ReleaseGroup
     template_name = "entity/history.html"
 
@@ -2674,7 +2674,7 @@ class ReleaseGroupHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class AudiobookHistoryView(HistoryViewMixin, DetailView):
+class AudiobookHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Audiobook
     template_name = "entity/history.html"
 

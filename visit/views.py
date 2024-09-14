@@ -438,7 +438,7 @@ class LocationAutoComplete(LoginRequiredMixin, autocomplete.Select2QuerySetView)
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class LocationHistoryView(HistoryViewMixin, DetailView):
+class LocationHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Location
     template_name = "entity/history.html"
 

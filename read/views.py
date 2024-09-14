@@ -480,6 +480,55 @@ class InstanceDetailView(DetailView):
     model = Instance
     template_name = "read/instance_detail.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        # Fetch the instance
+        instance = self.get_object()
+
+        # Check if 'detail=true' is in the query parameters
+        force_detail = request.GET.get("detail", "false").lower() == "true"
+
+        # Check for one book, one issue, or one audiobook associated with the instance
+        books = instance.books.all()
+        issues = instance.issues.all()
+        audiobooks = instance.audiobooks.all()
+
+        if (
+            books.count() == 1
+            and issues.count() == 0
+            and audiobooks.count() == 0
+            and not force_detail
+        ):
+            # Redirect to the single book detail page
+            return HttpResponseRedirect(
+                reverse("read:book_detail", args=[books.first().id])
+            )
+
+        if (
+            issues.count() == 1
+            and books.count() == 0
+            and audiobooks.count() == 0
+            and not force_detail
+        ):
+            # Redirect to the single issue detail page
+            issue = issues.first()
+            return HttpResponseRedirect(
+                reverse("read:issue_detail", args=[issue.periodical.id, issue.id])
+            )
+
+        if (
+            audiobooks.count() == 1
+            and books.count() == 0
+            and issues.count() == 0
+            and not force_detail
+        ):
+            # Redirect to the single audiobook detail page
+            return HttpResponseRedirect(
+                reverse("listen:audiobook_detail", args=[audiobooks.first().id])
+            )
+
+        # If no redirection is needed, continue to the normal view
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         instance = get_object_or_404(Instance, pk=self.kwargs.get("pk"))
@@ -2513,7 +2562,7 @@ class GenreAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class WorkHistoryView(HistoryViewMixin, DetailView):
+class WorkHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Work
     template_name = "entity/history.html"
 
@@ -2525,7 +2574,7 @@ class WorkHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class InstanceHistoryView(HistoryViewMixin, DetailView):
+class InstanceHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Instance
     template_name = "entity/history.html"
 
@@ -2537,7 +2586,7 @@ class InstanceHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class IssueHistoryView(HistoryViewMixin, DetailView):
+class IssueHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Issue
     template_name = "entity/history.html"
 
@@ -2549,7 +2598,7 @@ class IssueHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class PeriodicalHistoryView(HistoryViewMixin, DetailView):
+class PeriodicalHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Periodical
     template_name = "entity/history.html"
 
@@ -2561,7 +2610,7 @@ class PeriodicalHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class BookHistoryView(HistoryViewMixin, DetailView):
+class BookHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Book
     template_name = "entity/history.html"
 
@@ -2573,7 +2622,7 @@ class BookHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class BookSeriesHistoryView(HistoryViewMixin, DetailView):
+class BookSeriesHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = BookSeries
     template_name = "entity/history.html"
 
@@ -2717,7 +2766,7 @@ class BookGroupUpdateView(LoginRequiredMixin, UpdateView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class BookGroupHistoryView(HistoryViewMixin, DetailView):
+class BookGroupHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = BookGroup
     template_name = "entity/history.html"
 

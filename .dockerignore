@@ -4,13 +4,11 @@ fly.toml
 db.sqlite3*
 *.png
 .github/
-*.sql
 .privatekeys
 datadump_anonymized.json
 anonymize_datadump.py
 cache/*
 *.csv
-*.json
 embedding.py
 media/covers/*
 media/posters/*

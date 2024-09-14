@@ -1095,7 +1095,7 @@ class HistoryViewMixin:
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class CreatorHistoryView(HistoryViewMixin, DetailView):
+class CreatorHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Creator
     template_name = "entity/history.html"
 
@@ -1107,7 +1107,7 @@ class CreatorHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class CompanyHistoryView(HistoryViewMixin, DetailView):
+class CompanyHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Company
     template_name = "entity/history.html"
 

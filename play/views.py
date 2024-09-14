@@ -1379,7 +1379,7 @@ class GenreAutocomplete(LoginRequiredMixin, autocomplete.Select2QuerySetView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class WorkHistoryView(HistoryViewMixin, DetailView):
+class WorkHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Work
     template_name = "entity/history.html"
 
@@ -1391,7 +1391,7 @@ class WorkHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class GameHistoryView(HistoryViewMixin, DetailView):
+class GameHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Game
     template_name = "entity/history.html"
 
@@ -1403,7 +1403,7 @@ class GameHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class GameSeriesHistoryView(HistoryViewMixin, DetailView):
+class GameSeriesHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = GameSeries
     template_name = "entity/history.html"
 
@@ -1415,7 +1415,7 @@ class GameSeriesHistoryView(HistoryViewMixin, DetailView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class PlatformHistoryView(HistoryViewMixin, DetailView):
+class PlatformHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = Platform
     template_name = "entity/history.html"
 
@@ -1574,7 +1574,7 @@ class DLCUpdateView(LoginRequiredMixin, UpdateView):
 
 
 @method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
-class DLCHistoryView(HistoryViewMixin, DetailView):
+class DLCHistoryView(LoginRequiredMixin, HistoryViewMixin, DetailView):
     model = DLC
     template_name = "entity/history.html"
 

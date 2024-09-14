@@ -112,7 +112,7 @@
                             <ul>
                                 {% for instance_data in instances %}
                                     <li>
-                                        <a href="{% url "read:instance_detail" instance_data.instance.id %}">{{ instance_data.instance.title }}</a>{% if instance_data.instance.subtitle %}: {{ instance_data.instance.subtitle }}{% endif %}
+                                        <a href="{% url "read:instance_detail" instance_data.instance.id %}?detail=true">{{ instance_data.instance.title }}</a>{% if instance_data.instance.subtitle %}: {{ instance_data.instance.subtitle }}{% endif %}
                                         {# djlint:off #}
                                         ({% for role in instance_data.instance_roles.all %}{% if role.role.name == "Translator" %}<a href="{% url 'entity:creator_detail' role.creator.id %}">{{role.creator.name}}</a>{% if not forloop.last %} / {% else %}, {% endif %}{% endif %}{% endfor %}{% if instance_data.instance.edition %}{{ instance_data.instance.edition }}, {% endif %}{{ instance_data.instance.publication_date }})
                                         {# djlint:on #}

@@ -127,7 +127,7 @@
                             {% for issueinstance in object.issueinstance_set.all %}
                                 <div class="related-instance">
                                     <div>
-                                        <a href="{% url 'read:instance_detail' issueinstance.instance.id %}">
+                                        <a href="{% url 'read:work_detail' issueinstance.instance.work.id %}">
                                             {{ issueinstance.alt_title|default:issueinstance.instance.title }}
                                         </a>
                                     </div>
