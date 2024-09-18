@@ -10,11 +10,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count, Min, Q
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import DeleteView, ListView
+from django.views.generic import DeleteView, ListView, View
 
 from accounts.models import WebAuthnCredential
 from entity.models import Creator
@@ -274,6 +274,9 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         following_users = user.following.all().values_list("followed", flat=True)
         blocked_users = user.blocking.values_list("blocked", flat=True)
 
+        # Get filter from session
+        selected_filter = self.request.session.get("selected_filter", "all")
+
         visible_activities = (
             Activity.objects.filter(
                 Q(visibility=Activity.VISIBILITY_PUBLIC)
@@ -301,6 +304,26 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
             .distinct()
         )
 
+        # Apply filter based on session value
+        if selected_filter == "all":
+            pass
+        elif selected_filter == "say":
+            visible_activities = visible_activities.filter(activity_type="say")
+        elif selected_filter == "post":
+            visible_activities = visible_activities.filter(activity_type="post")
+        elif selected_filter == "pin":
+            visible_activities = visible_activities.filter(activity_type="pin")
+        elif selected_filter == "repost":
+            visible_activities = visible_activities.filter(activity_type="repost")
+        elif selected_filter == "check-in":
+            visible_activities = visible_activities.filter(
+                activity_type__endswith="check-in"
+            )
+        else:
+            visible_activities = visible_activities.filter(
+                activity_type__startswith=selected_filter
+            )
+
         return visible_activities.order_by("-timestamp")
 
 
@@ -310,6 +333,13 @@ class ActivityFeedDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy("activity_feed:activity_feed")
+
+
+class ActivityFilterView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        selected_filter = request.POST.get("filter", "all")
+        request.session["selected_filter"] = selected_filter
+        return JsonResponse({"status": "success"})
 
 
 @login_required

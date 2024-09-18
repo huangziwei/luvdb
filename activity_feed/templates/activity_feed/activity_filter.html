@@ -1,7 +1,8 @@
 {% load static %}
+<meta name="csrf-token" content="{{ csrf_token }}">
 <div class="js-dependent">
     <div class="activity-filter-buttons">
-        <button class="btn btn-outline-secondary btn-sm activity-filter selected"
+        <button class="btn btn-outline-secondary btn-sm activity-filter"
                 data-filter="all">All</button>
         <div class="btn-group">
             <button class="btn btn-outline-secondary btn-sm activity-filter" data-filter="check-in">Check-In</button>
@@ -9,17 +10,20 @@
                     data-bs-toggle="dropdown"></button>
             <div class="dropdown-menu dropdown-menu-fit-content">
                 <a class="dropdown-item activity-filter"
-                href="#"
-                data-filter="read-check-in">Read</a>
+                    href="#"
+                    data-filter="read-check-in">Read</a>
                 <a class="dropdown-item activity-filter"
-                href="#"
-                data-filter="watch-check-in">Watch</a>
+                    href="#"
+                    data-filter="watch-check-in">Watch</a>
                 <a class="dropdown-item activity-filter"
-                href="#"
-                data-filter="listen-check-in">Listen</a>
+                    href="#"
+                    data-filter="listen-check-in">Listen</a>
                 <a class="dropdown-item activity-filter"
-                href="#"
-                data-filter="play-check-in">Play</a>
+                    href="#"
+                    data-filter="play-check-in">Play</a>
+                <a class="dropdown-item activity-filter"
+                    href="#"
+                    data-filter="visit-check-in">Visit</a>
             </div>
         </div>
         <div class="btn-group">
@@ -42,4 +46,100 @@
         }
     </style>
 </noscript>
-<script type="text/javascript" src="{% static 'js/activity-filter.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var filterButtons = document.querySelectorAll('.activity-filter');
+    
+        // Check if there's a saved filter in localStorage or session
+        const savedFilter = localStorage.getItem('selectedFilter') || 'all';  // Default to 'all' if no saved filter
+    
+        // If a filter was saved previously, highlight the corresponding button
+        const savedButton = findButtonToHighlight(savedFilter);
+    
+        if (savedButton) {
+            // If the saved button is a dropdown item, swap it with the main button
+            if (savedButton.classList.contains('dropdown-item')) {
+                const parentBtnGroup = savedButton.closest('.btn-group');
+                const mainButton = parentBtnGroup.querySelector('.activity-filter:not(.dropdown-item)');
+                swapButtonAttributes(savedButton, mainButton);
+            }
+    
+            // Highlight the correct button (dropdown or main)
+            const parentBtnGroup = savedButton.closest('.btn-group');
+            const mainButton = parentBtnGroup ? parentBtnGroup.querySelector('.activity-filter:not(.dropdown-item)') : savedButton;
+            mainButton.classList.add('selected');
+        }
+    
+        // Set up event listeners for the filter buttons
+        filterButtons.forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+    
+                // Get the selected filter
+                const filter = this.getAttribute('data-filter');
+    
+                // Send selected filter to the server via AJAX
+                fetch('{% url "activity_feed:filter" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `filter=${filter}`
+                }).then(response => response.json()).then(data => {
+                    if (data.status === 'success') {
+                        // Save the selected filter in localStorage
+                        localStorage.setItem('selectedFilter', filter);
+    
+                        // If the clicked button is a dropdown item, swap it with the main button
+                        if (this.classList.contains('dropdown-item')) {
+                            const parentBtnGroup = this.closest('.btn-group');
+                            const mainButton = parentBtnGroup.querySelector('.activity-filter:not(.dropdown-item)');
+                            swapButtonAttributes(this, mainButton);
+                        }
+    
+                        // Remove 'selected' class from all buttons
+                        filterButtons.forEach(function(btn) {
+                            btn.classList.remove('selected');
+                        });
+    
+                        // Add the 'selected' class to the new main button
+                        const parentBtnGroup = this.closest('.btn-group');
+                        const mainButton = parentBtnGroup ? parentBtnGroup.querySelector('.activity-filter:not(.dropdown-item)') : this;
+                        mainButton.classList.add('selected');
+    
+                        // Reload the page to apply the new filter without query parameters
+                        location.reload();
+                    }
+                });
+            });
+        });
+    });
+    
+    // Function to find the button to highlight based on the saved filter
+    function findButtonToHighlight(savedFilter) {
+        const allButtons = document.querySelectorAll('.activity-filter');
+        let savedButton = null;
+    
+        allButtons.forEach(function(button) {
+            if (button.getAttribute('data-filter') === savedFilter) {
+                savedButton = button;
+            }
+        });
+    
+        return savedButton;
+    }
+    
+    // Function to swap the attributes of two buttons (used for dropdown items)
+    function swapButtonAttributes(button1, button2) {
+        const tempFilter = button1.getAttribute('data-filter');
+        const tempText = button1.textContent || button1.innerText;
+    
+        button1.setAttribute('data-filter', button2.getAttribute('data-filter'));
+        button1.textContent = button2.textContent || button2.innerText;
+    
+        button2.setAttribute('data-filter', tempFilter);
+        button2.textContent = tempText;
+    }
+    
+</script>

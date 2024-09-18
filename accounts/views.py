@@ -470,6 +470,9 @@ class PersonalActivityFeedView(ListView):
         user = self.user
         current_user = self.request.user
 
+        # Get filter from session
+        selected_filter = self.request.session.get("selected_filter", "all")
+
         if current_user.is_authenticated:
             following_users = current_user.following.all().values_list(
                 "followed", flat=True
@@ -497,6 +500,26 @@ class PersonalActivityFeedView(ListView):
             visible_activities = Activity.objects.filter(
                 Q(user=user), Q(visibility=Activity.VISIBILITY_PUBLIC)
             ).order_by("-timestamp")
+
+        # Apply filter based on session value
+        if selected_filter == "all":
+            pass
+        elif selected_filter == "say":
+            visible_activities = visible_activities.filter(activity_type="say")
+        elif selected_filter == "post":
+            visible_activities = visible_activities.filter(activity_type="post")
+        elif selected_filter == "pin":
+            visible_activities = visible_activities.filter(activity_type="pin")
+        elif selected_filter == "repost":
+            visible_activities = visible_activities.filter(activity_type="repost")
+        elif selected_filter == "check-in":
+            visible_activities = visible_activities.filter(
+                activity_type__endswith="check-in"
+            )
+        else:
+            visible_activities = visible_activities.filter(
+                activity_type__startswith=selected_filter
+            )
 
         return visible_activities.filter(user=user).order_by("-timestamp")
 

@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     ActivityFeedDeleteView,
     ActivityFeedView,
+    ActivityFilterView,
     CalendarActivityFeedView,
     block_view,
     follow,
@@ -13,6 +14,7 @@ from .views import (
 app_name = "activity_feed"
 urlpatterns = [
     path("", ActivityFeedView.as_view(), name="activity_feed"),
+    path("activity/filter/", ActivityFilterView.as_view(), name="filter"),
     path(
         "activity/<int:pk>/delete/",
         ActivityFeedDeleteView.as_view(),
