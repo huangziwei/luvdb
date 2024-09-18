@@ -109,12 +109,20 @@
                         mainButton.classList.add('selected');
     
                         // Reload the page to apply the new filter without query parameters
-                        location.reload();
+                        resetURLWithoutPagination();
                     }
                 });
             });
         });
     });
+
+    // Function to remove pagination or query parameters from the URL
+    function resetURLWithoutPagination() {
+        const url = new URL(window.location);
+        url.searchParams.delete('page');  // Remove the ?page= part
+        window.history.replaceState({}, document.title, url.pathname);  // Update the URL without reloading
+        location.reload();  // Reload the page to reset the pagination
+    }
     
     // Function to find the button to highlight based on the saved filter
     function findButtonToHighlight(savedFilter) {
