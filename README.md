@@ -8,7 +8,7 @@ LʌvDB is your self-hosted inner space. Primarily a media cataloging app, it cen
 
 ![activity_feed](.github/screenshots/activity_feed.png)
 
-A purely reverse chronological feed displays your activity on the site. You can send updates as a "Say" directly from the feed or link to the page to create a "Post," a "Pin" (bookmark), or a "List". The feed can be filtered by media type (Read, Watch, Listen, Play) of the Check-ins or by content type (Say, Post, Pin, List, and Follow).
+A purely reverse chronological feed displays your activity on the site. You can send updates as a "Say" directly from the feed or link to the page to create a "Post," a "Pin" (bookmark), or a "List". The feed can be filtered by various kind of Check-ins (Read, Watch, Listen, Play and Visit), or by content type (Say, Post, Pin and Repost).
 
 #### Profile page
 
