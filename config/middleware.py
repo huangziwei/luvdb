@@ -49,6 +49,10 @@ class LogIPMiddleware:
         else:
             ip_address = request.META.get("REMOTE_ADDR")
 
+        # Allow access to robots.txt for all IPs, even blocked ones
+        if request.path == "/robots.txt":
+            return self.get_response(request)
+
         # Check if the IP is blocked by querying the BlockedIP model
         if BlockedIP.objects.filter(ip_address=ip_address).exists():
             logger.warning(
