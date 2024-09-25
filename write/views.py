@@ -87,6 +87,18 @@ User = get_user_model()
 
 class ShareDetailView(DetailView):
 
+    def dispatch(self, request, *args, **kwargs):
+        user = self.get_object().user  # Assume `Say` has a ForeignKey to `CustomUser`
+
+        # Check privacy settings
+        if user.privacy_level == "logged_in_only" and not request.user.is_authenticated:
+            # If privacy level is 'logged_in_only' and user is not authenticated, redirect to login
+            return redirect("{}?next={}".format(reverse("login"), request.path))
+        # No restriction for 'limited' since detail views should be accessible to non-logged-in users
+
+        # Otherwise, proceed as normal
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         if not request.GET.get("reply") and not request.GET.get("repost"):
             return HttpResponseRedirect(f"{request.path}?reply=true")
@@ -139,7 +151,7 @@ class PostListView(ListView):
         )
 
         # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
-        if not self.user.is_public and not request.user.is_authenticated:
+        if self.user.privacy_level != "public" and not request.user.is_authenticated:
             return redirect("{}?next={}".format(reverse("login"), request.path))
 
         if "project" in self.kwargs:
@@ -395,7 +407,7 @@ class SayListView(ListView):
         )
 
         # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
-        if not self.user.is_public and not request.user.is_authenticated:
+        if self.user.privacy_level != "public" and not request.user.is_authenticated:
             return redirect("{}?next={}".format(reverse("login"), request.path))
 
         # Otherwise, proceed as normal
@@ -571,7 +583,7 @@ class PinListView(ListView):
         )
 
         # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
-        if not self.user.is_public and not request.user.is_authenticated:
+        if self.user.privacy_level != "public" and not request.user.is_authenticated:
             return redirect("{}?next={}".format(reverse("login"), request.path))
 
         if "project" in self.kwargs:
@@ -984,7 +996,7 @@ class TagUserListView(ListView):
         )
 
         # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
-        if not self.user.is_public and not request.user.is_authenticated:
+        if self.user.privacy_level != "public" and not request.user.is_authenticated:
             return redirect("{}?next={}".format(reverse("login"), request.path))
 
         # Otherwise, proceed as normal
@@ -1531,7 +1543,7 @@ class LuvListUserListView(ListView):
         )
 
         # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
-        if not self.user.is_public and not request.user.is_authenticated:
+        if self.user.privacy_level != "public" and not request.user.is_authenticated:
             return redirect("{}?next={}".format(reverse("login"), request.path))
 
         # Otherwise, proceed as normal
@@ -1718,6 +1730,18 @@ class AlbumDetailView(FormMixin, DetailView):
     form_class = PhotoUploadForm
     paginate_by = 9  # Number of photos per page
 
+    def dispatch(self, request, *args, **kwargs):
+        user = self.get_object().user  # Assume `Say` has a ForeignKey to `CustomUser`
+
+        # Check privacy settings
+        if user.privacy_level == "logged_in_only" and not request.user.is_authenticated:
+            # If privacy level is 'logged_in_only' and user is not authenticated, redirect to login
+            return redirect("{}?next={}".format(reverse("login"), request.path))
+        # No restriction for 'limited' since detail views should be accessible to non-logged-in users
+
+        # Otherwise, proceed as normal
+        return super().dispatch(request, *args, **kwargs)
+
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
         if obj.visibility != "PU" and self.request.user not in obj.visible_to.all():
@@ -1840,7 +1864,7 @@ class AlbumListView(ListView):
         )
 
         # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
-        if not self.user.is_public and not request.user.is_authenticated:
+        if self.user.privacy_level != "public" and not request.user.is_authenticated:
             return redirect("{}?next={}".format(reverse("login"), request.path))
 
         # Otherwise, proceed as normal

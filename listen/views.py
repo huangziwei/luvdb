@@ -1211,6 +1211,19 @@ class ListenCheckInDetailView(DetailView):
     template_name = "listen/listen_checkin_detail.html"
     context_object_name = "checkin"  # This name will be used in your template
 
+    def dispatch(self, request, *args, **kwargs):
+        user = self.get_object().user  # Assume `Say` has a ForeignKey to `CustomUser`
+
+        # Check privacy settings
+        if user.privacy_level == 'logged_in_only' and not request.user.is_authenticated:
+            # If privacy level is 'logged_in_only' and user is not authenticated, redirect to login
+            return redirect("{}?next={}".format(reverse("login"), request.path))
+        # No restriction for 'limited' since detail views should be accessible to non-logged-in users
+
+        # Otherwise, proceed as normal
+        return super().dispatch(request, *args, **kwargs)
+
+
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
         if obj.visibility != "PU" and self.request.user not in obj.visible_to.all():

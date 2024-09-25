@@ -100,6 +100,19 @@ class CustomUser(AbstractUser):
         "periodical",
     ]
 
+    PRIVACY_CHOICES = [
+        ("public", "Public"),  # All content is publicly accessible
+        (
+            "limited",
+            "Limited",
+        ),  # Profile and lists require login, but detail views are public
+        ("logged_in_only", "Logged-in Only"),  # All views require login
+    ]
+
+    privacy_level = models.CharField(
+        max_length=15, choices=PRIVACY_CHOICES, default="logged_in_only"
+    )
+
     def get_absolute_url(self):
         return reverse("accounts:detail", kwargs={"username": self.username})
 

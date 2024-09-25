@@ -437,7 +437,7 @@ class PersonalActivityFeedView(ListView):
         )
 
         # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
-        if not self.user.is_public and not request.user.is_authenticated:
+        if self.user.privacy_level != "public" and not request.user.is_authenticated:
             return redirect("{}?next={}".format(reverse("login"), request.path))
 
         # Otherwise, proceed as normal

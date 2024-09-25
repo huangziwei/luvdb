@@ -14,9 +14,11 @@
                 {{ form.bio|as_crispy_field }}
                 {{ form.timezone|as_crispy_field}}
                 <div class="fs-4 mt-2 mb-2">Privacy settings</div>
+                
+                {{ form.privacy_level|as_crispy_field }}
                 {{ form.enable_replies_by_default|as_crispy_field}}
                 {{ form.enable_share_to_feed_by_default|as_crispy_field}}
-                {{ form.is_public|as_crispy_field }}
+                
                 <div class="fs-4 mt-2 mb-2">Experimental features</div>
                 {{ form.pure_text_mode|as_crispy_field }}
                 <div class="control-group">
@@ -36,4 +38,34 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get the privacy level select element and help text div
+            var privacySelect = document.getElementById("id_privacy_level");
+            var privacyHelpText = document.getElementById("id_privacy_level_helptext");
+    
+            // Function to update the help text based on selected value
+            function updatePrivacyHelpText() {
+                var selectedValue = privacySelect.value;
+                var helpText = "Set your preferred privacy level. This will adjust the visibility of your profile and contents.";
+    
+                if (selectedValue === "public") {
+                    helpText = "Everyone can view my profile and content.";
+                } else if (selectedValue === "limited") {
+                    helpText = "Only logged-in users can view my profile, but specific pages can be viewed by the public if the link is shared.";
+                } else if (selectedValue === "logged_in_only") {
+                    helpText = "Only logged-in users can view my profile and content.";
+                }
+    
+                // Update the help text div content
+                privacyHelpText.textContent = helpText;
+            }
+    
+            // Initialize the help text when the page loads
+            updatePrivacyHelpText();
+    
+            // Add an event listener to update the help text when the selected option changes
+            privacySelect.addEventListener("change", updatePrivacyHelpText);
+        });
+    </script>
 {% endblock %}

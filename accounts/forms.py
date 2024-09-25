@@ -116,16 +116,15 @@ class CustomUserChangeForm(UserChangeForm):
             "display_name",
             "bio",
             "timezone",
+            "privacy_level",
             "enable_replies_by_default",
             "enable_share_to_feed_by_default",
-            "is_public",
             "pure_text_mode",
-            # "custom_domain",
         )
         help_texts = {
             "username": "Required. Letters, digits and ./+/-/_ only.",
             "display_name": "Display name can be in any language, and can contain emojis.",
-            "is_public": "When enabled, your profile becomes publicly accessible, including to non-logged-in users, and activates RSS feeds. Disabling it requires a login to access the profile and list views of Say, Post, Pin, List, and Check-ins. However, the detail views of all contents remain accessible via direct URLs even when this option is turned off.",
+            "privacy_level": "Set your preferred privacy level. This will adjust the visibility of your profile and contents.",
             "pure_text_mode": "Enable this option to disable displaying images of the site.",
             "timezone": "Set your preferred timezone. This will adjust the display of all timestamps to match your local date and time.",
             "enable_replies_by_default": "Enable this option to allow replies to your posts by default.",
@@ -134,13 +133,14 @@ class CustomUserChangeForm(UserChangeForm):
 
     def __init__(self, *args, **kwargs):
         super(CustomUserChangeForm, self).__init__(*args, **kwargs)
-        self.fields["is_public"].label = "Everyone can view my profile"
         self.fields["pure_text_mode"].label = "Don't display images"
         self.fields["timezone"].required = False
         self.fields["enable_replies_by_default"].label = "Allow replies by default"
         self.fields["enable_share_to_feed_by_default"].label = (
             "Share to feed by default"
         )
+        self.fields["privacy_level"].label = "Who can view my profile"
+        self.fields["privacy_level"].required = False
 
         del self.fields["password"]
 
