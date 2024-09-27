@@ -20,7 +20,7 @@ from django.db.models import (
 )
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import (
     CreateView,
@@ -459,14 +459,13 @@ class VisitCheckInDetailView(DetailView):
         user = self.get_object().user  # Assume `Say` has a ForeignKey to `CustomUser`
 
         # Check privacy settings
-        if user.privacy_level == 'logged_in_only' and not request.user.is_authenticated:
+        if user.privacy_level == "logged_in_only" and not request.user.is_authenticated:
             # If privacy level is 'logged_in_only' and user is not authenticated, redirect to login
             return redirect("{}?next={}".format(reverse("login"), request.path))
         # No restriction for 'limited' since detail views should be accessible to non-logged-in users
 
         # Otherwise, proceed as normal
         return super().dispatch(request, *args, **kwargs)
-
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
