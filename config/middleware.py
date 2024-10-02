@@ -84,13 +84,13 @@ class LogIPMiddleware:
         # Get additional information for logging
         method = request.method  # GET, POST, etc.
         path = request.get_full_path()  # The full URL path (including query parameters)
-
+        user_agent = request.META.get("HTTP_USER_AGENT", "")
         # Process the request and get the response
         response = self.get_response(request)
 
         # Log the IP address, request method, path, and status code for all requests
         logger.warning(
-            f"IP: {ip_address} | Method: {method} | Path: {path} | Status: {response.status_code}"
+            f"IP: {ip_address} | User-Agent: {user_agent} | Method: {method} | Path: {path} | Status: {response.status_code}"
         )
 
         return response
