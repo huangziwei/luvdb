@@ -49,8 +49,18 @@ class LogIPMiddleware:
         else:
             ip_address = request.META.get("REMOTE_ADDR")
 
+        # Get additional information for logging
+        method = request.method  # GET, POST, etc.
+        path = request.get_full_path()  # The full URL path (including query parameters)
+        user_agent = request.META.get("HTTP_USER_AGENT", "")
+        # Process the request and get the response
+        response = self.get_response(request)
+
         # Allow access to robots.txt for all IPs, even blocked ones
         if request.path == "/robots.txt":
+            logger.warning(
+                f"IP: {ip_address} | User-Agent: {user_agent} | Method: {method} | Path: {path} | Status: {response.status_code}"
+            )
             return self.get_response(request)
 
         # Check if the IP is blocked by querying the BlockedIP model
@@ -80,13 +90,6 @@ class LogIPMiddleware:
                     f"Deprecated endpoint accessed: {request.path} from IP: {ip_address}"
                 )
             return HttpResponseGone("This endpoint is no longer available.")
-
-        # Get additional information for logging
-        method = request.method  # GET, POST, etc.
-        path = request.get_full_path()  # The full URL path (including query parameters)
-        user_agent = request.META.get("HTTP_USER_AGENT", "")
-        # Process the request and get the response
-        response = self.get_response(request)
 
         # Log the IP address, request method, path, and status code for all requests
         logger.warning(
