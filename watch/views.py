@@ -733,119 +733,10 @@ class SeriesDetailView(DetailView):
         ]
         context["collections"] = collections
 
-        context["checkin_form"] = WatchCheckInForm(
-            initial={
-                "content_type": content_type.id,
-                "object_id": self.object.id,
-                "user": self.request.user.id,
-                "visibility": "PU",
-            }
-        )
-
-        # Fetch the latest check-in from each user.
-        latest_checkin_subquery = (
-            get_visible_checkins(
-                self.request.user,
-                WatchCheckIn,
-                content_type,
-                self.object.id,
-            )
-            .filter(user=OuterRef("user"))
-            .order_by("-timestamp")
-        )
-        checkins = (
-            get_visible_checkins(
-                self.request.user,
-                WatchCheckIn,
-                content_type,
-                self.object.id,
-            )
-            .annotate(
-                latest_checkin=Subquery(latest_checkin_subquery.values("timestamp")[:1])
-            )
-            .filter(timestamp=F("latest_checkin"))
-        ).order_by("-timestamp")[:5]
-
-        context["checkins"] = checkins
-
-        # Get the count of check-ins for each user for this series
-        user_checkin_counts = (
-            get_visible_checkins(
-                self.request.user,
-                WatchCheckIn,
-                content_type,
-                self.object.id,
-            )
-            .values("user__username")
-            .annotate(total_checkins=Count("id") - 1)
-        )
-
-        # Convert to a dictionary for easier lookup
-        user_checkin_count_dict = {
-            item["user__username"]: item["total_checkins"]
-            for item in user_checkin_counts
-        }
-
-        # Annotate the checkins queryset with total_checkins for each user
-        for checkin in context["checkins"]:
-            checkin.total_checkins = user_checkin_count_dict.get(
-                checkin.user.username, 0
-            )
-
-        # Watch check-in status counts, considering only latest check-in per user
-        latest_checkin_status_subquery = (
-            get_visible_checkins(
-                self.request.user,
-                WatchCheckIn,
-                content_type,
-                self.object.id,
-                checkin_user=OuterRef("user"),
-            )
-            .order_by("-timestamp")
-            .values("status")[:1]
-        )
-        latest_checkins = (
-            WatchCheckIn.objects.filter(
-                content_type=content_type.id, object_id=self.object.id
-            )
-            .annotate(latest_checkin_status=Subquery(latest_checkin_status_subquery))
-            .values("user", "latest_checkin_status")
-            .distinct()
-        )
-
-        to_watch_count = sum(
-            1 for item in latest_checkins if item["latest_checkin_status"] == "to_watch"
-        )
-        watching_count = sum(
-            1
-            for item in latest_checkins
-            if item["latest_checkin_status"] in ["watching", "rewatching"]
-        )
-        watched_count = sum(
-            1
-            for item in latest_checkins
-            if item["latest_checkin_status"] in ["watched", "rewatched"]
-        )
-
-        # Add status counts to context
-        context.update(
-            {
-                "to_watch_count": to_watch_count,
-                "watching_count": watching_count,
-                "watched_count": watched_count,
-                "checkins": checkins,
-            }
-        )
-
         context["model_name"] = "series"
         series = get_object_or_404(Series, pk=self.kwargs["pk"])
 
-        episodes = series.episodes.all().order_by("season", "episode")
-        context["episodes"] = episodes
-        seasons = defaultdict(list)
-        for episode in episodes:
-            seasons[episode.season].append(episode)
-        context["seasons"] = dict(seasons)
+        context["seasons"] = series.seasons.order_by("release_date")
 
         # Get the ContentType for the Issue model
         series_content_type = ContentType.objects.get_for_model(Series)
@@ -857,73 +748,8 @@ class SeriesDetailView(DetailView):
 
         context["lists_containing_series"] = lists_containing_series
 
-        # Fetch the latest check-in from the current user for this book
-        if self.request.user.is_authenticated:
-            latest_user_checkin = (
-                WatchCheckIn.objects.filter(
-                    content_type=content_type.id,
-                    object_id=self.object.id,
-                    user=self.request.user,
-                )
-                .order_by("-timestamp")
-                .first()
-            )
-            if latest_user_checkin is not None:
-                context["latest_user_status"] = latest_user_checkin.status
-            else:
-                context["latest_user_status"] = "to_watch"
-        else:
-            context["latest_user_status"] = "to_watch"
-
         # contributors
         context["contributors"] = get_contributors(self.object)
-
-        include_mathjax, include_mermaid = check_required_js(context["checkins"])
-        context["include_mathjax"] = include_mathjax
-        context["include_mermaid"] = include_mermaid
-
-        unique_filming_locations_with_parents_set = set()
-        unique_setting_locations_with_parents_set = set()
-        for episode in series.episodes.all().order_by("season", "episode"):
-            filming_locations_with_parents = get_locations_with_parents(
-                episode.filming_locations
-            )
-            setting_locations_with_parents = get_locations_with_parents(
-                episode.setting_locations
-            )
-
-            # Process each location with its parents
-            for location, parents in filming_locations_with_parents:
-                # Convert location and its parents to their unique identifiers
-                location_id = location.pk  # Assuming pk is the primary key
-                parent_ids = tuple(parent.pk for parent in parents)
-
-                # Add the tuple of identifiers to the set
-                unique_filming_locations_with_parents_set.add((location_id, parent_ids))
-
-            for location, parents in setting_locations_with_parents:
-                # Convert location and its parents to their unique identifiers
-                location_id = location.pk  # Assuming pk is the primary key
-                parent_ids = tuple(parent.pk for parent in parents)
-
-                # Add the tuple of identifiers to the set
-                unique_setting_locations_with_parents_set.add((location_id, parent_ids))
-
-        # Convert back to the original Location objects
-        context["filming_locations_with_parents"] = [
-            (
-                Location.objects.get(pk=location_id),
-                [Location.objects.get(pk=parent_id) for parent_id in parent_ids],
-            )
-            for location_id, parent_ids in unique_filming_locations_with_parents_set
-        ]
-        context["setting_locations_with_parents"] = [
-            (
-                Location.objects.get(pk=location_id),
-                [Location.objects.get(pk=parent_id) for parent_id in parent_ids],
-            )
-            for location_id, parent_ids in unique_setting_locations_with_parents_set
-        ]
 
         main_role_names = [
             "Director",
@@ -964,39 +790,7 @@ class SeriesDetailView(DetailView):
         context["main_roles"] = main_roles
         context["secondary_roles"] = secondary_roles
 
-        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
-        context["can_vote"] = (
-            self.request.user.is_authenticated
-            and WatchCheckIn.objects.filter(
-                content_type=ContentType.objects.get_for_model(Series),
-                object_id=self.object.id,
-                user=self.request.user,
-                status__in=["watched", "rewatched"],
-            ).exists()
-        )
-
         return context
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        content_type = ContentType.objects.get_for_model(Series)
-        form = WatchCheckInForm(
-            data=request.POST,
-            initial={
-                "content_type": content_type.id,
-                "object_id": self.object.id,
-                "user": request.user.id,
-                "comments_enabled": True,
-            },
-        )
-        if form.is_valid():
-            series_check_in = form.save(commit=False)
-            series_check_in.user = request.user  # Set the user manually here
-            series_check_in.save()
-        else:
-            print(form.errors)
-
-        return redirect(self.object.get_absolute_url())
 
 
 class SeriesUpdateView(LoginRequiredMixin, UpdateView):
@@ -2041,7 +1835,7 @@ class WatchCheckInDetailView(DetailView):
         user = self.get_object().user  # Assume `Say` has a ForeignKey to `CustomUser`
 
         # Check privacy settings
-        if user.privacy_level == 'logged_in_only' and not request.user.is_authenticated:
+        if user.privacy_level == "logged_in_only" and not request.user.is_authenticated:
             # If privacy level is 'logged_in_only' and user is not authenticated, redirect to login
             return redirect("{}?next={}".format(reverse("login"), request.path))
         # No restriction for 'limited' since detail views should be accessible to non-logged-in users

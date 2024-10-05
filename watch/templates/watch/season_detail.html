@@ -112,6 +112,12 @@
                                     {% endif %}
                                     <div class="mb-1">
                                         <span class="text-muted">Seasons:</span>
+                                        {% if seasons|length > 1 %}
+                                        <a href="{% url 'watch:series_detail' season.series.id %}?detail=true" 
+                                            class="btn btn-sm">
+                                            All
+                                        </a>          
+                                        {% endif %}                              
                                         {% for season in seasons %}
                                             <a href="{% url 'watch:season_detail' season.series.id season.season_number %}" 
                                                class="btn btn-sm {% if season.season_number == object.season_number %}active{% endif %}">

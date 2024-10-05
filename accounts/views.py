@@ -168,7 +168,7 @@ class CustomLoginView(LoginView):
 
         context["recent_books"] = Book.objects.order_by("-created_at")[:6]
         context["recent_movies"] = Movie.objects.order_by("-created_at")[:6]
-        context["recent_series"] = Series.objects.order_by("-created_at")[:6]
+        context["recent_series"] = Season.objects.order_by("-created_at")[:6]
         context["recent_music"] = Release.objects.order_by("-created_at")[:6]
         context["recent_games"] = Game.objects.order_by("-created_at")[:6]
 
