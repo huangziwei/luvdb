@@ -28,14 +28,20 @@
                 </div>
             </form>
 
-            <hr class="mt-5">
+            <hr class="mt-4">
 
-            <div class="alert alert-danger mt-5">
-                <h2>Delete My Account</h2>
-                <p>Your profile will become inaccessible, and all your data from the site will be replaced by text "REMOVED". Your username will be registerable. This action cannot be undone, you should <a
-                    href="{% url 'accounts:export_user_data' user.username %}">Export Your Data</a> before deleting your account.</p>
-                <a href="{% url 'accounts:deactivate_account' user.username %}" class="btn btn-sm btn-danger">Delete</a>
-            </div>
+            <div class="alert alert-danger mt-4">
+                <h2>
+                    <a class="text-danger" data-bs-toggle="collapse" href="#deleteAccountCollapse" role="button" aria-expanded="false" aria-controls="deleteAccountCollapse">
+                        Delete My Account
+                    </a>
+                </h2>
+                <div class="collapse" id="deleteAccountCollapse">
+                    <p>Your profile will become inaccessible, and all your data from the site will be replaced by text "REMOVED". Your username will be registerable. This action cannot be undone, you should <a
+                        href="{% url 'accounts:export_user_data' user.username %}">Export Your Data</a> before deleting your account.</p>
+                    <a href="{% url 'accounts:deactivate_account' user.username %}" class="btn btn-sm btn-danger">Delete</a>
+                </div>
+            </div>            
         </div>
     </div>
     <script>
