@@ -758,6 +758,16 @@ class BookCreateView(LoginRequiredMixin, CreateView):
                     form=BookInstanceForm,
                     extra=len(initial_instances),
                     can_delete=True,
+                    widgets={
+                        "instance": autocomplete.ModelSelect2(
+                            url=reverse_lazy("read:instance-autocomplete"),
+                            forward=["domain"],  # Assuming this is needed
+                            attrs={
+                                "data-create-url": reverse_lazy("read:instance_create"),
+                                "data-placeholder": "Type to search",
+                            },
+                        ),
+                    },
                 )
                 data["bookinstances"] = BookInstanceFormSet_prefilled(
                     instance=self.object,
@@ -1916,14 +1926,13 @@ class ReadCheckInDetailView(DetailView):
         user = self.get_object().user  # Assume `Say` has a ForeignKey to `CustomUser`
 
         # Check privacy settings
-        if user.privacy_level == 'logged_in_only' and not request.user.is_authenticated:
+        if user.privacy_level == "logged_in_only" and not request.user.is_authenticated:
             # If privacy level is 'logged_in_only' and user is not authenticated, redirect to login
             return redirect("{}?next={}".format(reverse("login"), request.path))
         # No restriction for 'limited' since detail views should be accessible to non-logged-in users
 
         # Otherwise, proceed as normal
         return super().dispatch(request, *args, **kwargs)
-
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
