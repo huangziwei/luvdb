@@ -1,6 +1,8 @@
 import re
 
 import auto_prefetch
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Div, Field, Layout
 from dal import autocomplete
 from django import forms
 from django.conf import settings
@@ -245,7 +247,15 @@ class MovieCastForm(forms.ModelForm):
 
     class Meta(auto_prefetch.Model.Meta):
         model = MovieCast
-        fields = ("creator", "role", "domain", "alt_name", "character_name")
+        fields = (
+            "creator",
+            "role",
+            "domain",
+            "alt_name",
+            "character_name",
+            "is_star",
+            "order",
+        )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -285,11 +295,13 @@ MovieCastFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+        "order": forms.NumberInput(attrs={"placeholder": "Order"}),
     },
     help_texts={
         "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
         "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
+    labels={"order": ""},
 )
 
 
@@ -705,7 +717,15 @@ class EpisodeCastForm(forms.ModelForm):
 
     class Meta(auto_prefetch.Model.Meta):
         model = EpisodeCast
-        fields = ("creator", "role", "domain", "alt_name", "character_name")
+        fields = (
+            "creator",
+            "role",
+            "domain",
+            "alt_name",
+            "character_name",
+            "is_star",
+            "order",
+        )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -745,11 +765,13 @@ EpisodeCastFormSet = inlineformset_factory(
             forward=["domain"],
             attrs={"data-create-url": reverse_lazy("entity:role_create")},
         ),
+        "order": forms.NumberInput(attrs={"placeholder": "Order"}),
     },
     help_texts={
         "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
         "role": "<a href='/entity/role/create/'>Add a new role</a>.",
     },
+    labels={"order": ""},
 )
 
 

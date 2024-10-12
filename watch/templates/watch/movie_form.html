@@ -51,7 +51,7 @@
     <div id="movie-cast-formset" class="bg-light p-3 mb-3">
         <strong>Casts related to this Movie</strong>
         <p class='text-muted'>E.g. Actors, Actresses, Charactor Voices, etc.</p>
-        {{ form.stars|as_crispy_field }}
+        {% comment %} {{ form.stars|as_crispy_field }} {% endcomment %}
         <div id="moviecasts">
             {% for form in moviecasts %}
                 <div class="form-wrapper row">
@@ -64,8 +64,14 @@
                         {{ form.role | as_crispy_field }}
                         {{ form.domain | as_crispy_field }}
                     </div>
-                    <div class="col-md-6 mb-2">{{ form.alt_name | as_crispy_field }}</div>
-                    <div class="col-md-6 mb-2">{{ form.character_name | as_crispy_field }}</div>
+                    <div class="col-md-2">
+                        <div class="d-flex flex-column">
+                            <div>{{ form.is_star | as_crispy_field }}</div>
+                            <div>{{ form.order | as_crispy_field }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 mb-2">{{ form.alt_name | as_crispy_field }}</div>
+                    <div class="col-md-5 mb-2">{{ form.character_name | as_crispy_field }}</div>
                 </div>
                 <hr>
             {% endfor %}
@@ -194,4 +200,35 @@
     initFormset('add-movie-role-formset', 'movieroles');
     initFormset('add-movie-cast-formset', 'moviecasts');
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Function to adjust margin classes
+        function adjustCastForms() {
+            // Select all the divs that match the pattern for "is_star"
+            document.querySelectorAll("[id^='div_id_moviecasts-'][id$='-is_star']").forEach(function (element) {
+                // Change the class from "mb-3" to "mb-2"
+                element.classList.remove("mb-3");
+                element.classList.add("mb-2");
+
+                // Get the parent div that has the extra "mb-3" class and remove it
+                const parentDiv = element.closest(".mb-3");
+                if (parentDiv) {
+                    parentDiv.classList.remove("mb-3");
+                }
+            });
+        }
+
+        // Run the adjustment on initial load
+        adjustCastForms();
+
+        // Attach an event listener to adjust new forms added dynamically
+        document.addEventListener("click", function (e) {
+            if (e.target && e.target.id === "add-movie-cast-formset") {
+                // Delay the adjustment slightly to ensure new forms are added to DOM
+                setTimeout(adjustCastForms, 100);
+            }
+        });
+    });
+</script>
+
 {{ form.media }}

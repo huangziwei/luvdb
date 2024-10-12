@@ -402,6 +402,8 @@ class MovieDetailView(DetailView):
             "name"
         )
 
+        context["stars"] = movie.moviecasts.filter(is_star=True).order_by("order")
+
         return context
 
     def post(self, request, *args, **kwargs):

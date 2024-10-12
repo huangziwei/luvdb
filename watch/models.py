@@ -332,6 +332,11 @@ class MovieCast(auto_prefetch.Model):
     )
     alt_name = models.CharField(max_length=100, blank=True, null=True)
     character_name = models.CharField(max_length=100, blank=True, null=True)
+    is_star = models.BooleanField(
+        default=False
+    )  # Indicates if the cast member is a star
+    order = models.PositiveIntegerField(blank=True, null=True)  # Order of the stars
+
     history = HistoricalRecords(inherit=True)
 
     def __str__(self):
@@ -832,6 +837,11 @@ class EpisodeCast(auto_prefetch.Model):
     )
     alt_name = models.CharField(max_length=100, blank=True, null=True)
     character_name = models.CharField(max_length=100, blank=True, null=True)
+    is_star = models.BooleanField(
+        default=False
+    )  # Indicates if the cast member is a star
+    order = models.PositiveIntegerField(blank=True, null=True)  # Order of the stars
+
     history = HistoricalRecords(inherit=True)
 
     def __str__(self):
