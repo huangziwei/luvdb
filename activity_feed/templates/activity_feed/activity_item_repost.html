@@ -226,8 +226,8 @@
                                     </span>
                                 </div>
                             </a>
-                        {% elif activity.content_object.original_activity.content_object.content_type.model == 'series' %}
-                            <a href=" {% url 'watch:series_detail' activity.content_object.original_activity.content_object.content_object.id %} "
+                        {% elif activity.content_object.original_activity.content_object.content_type.model == 'season' %}
+                            <a href=" {% url 'watch:season_detail' activity.content_object.original_activity.content_object.content_object.series.id activity.content_object.original_activity.content_object.content_object.season_number %} "
                                class="text-decoration-none ">
                                 <div class="fs-5">
                                     {{ activity.content_object.original_activity.content_object.content_object.title }}
@@ -250,33 +250,44 @@
                                     {% endfor %}
                                 </div>
                             {% endfor %}
-                        {% elif activity.content_object.original_activity.content_object.content_type.model == 'series' %}
-                            {% regroup activity.content_object.original_activity.content_object.content_object.seriesroles.all by role as roles_list %}
+                        {% elif activity.content_object.original_activity.content_object.content_type.model == 'season' %}
+                            {% regroup activity.content_object.original_activity.content_object.content_object.seasonroles.all by role as roles_list %}
                             {% for role in roles_list %}
                                 <div>
                                     {# djlint:off #}
                                     <span class="text-muted">{{ role.grouper.name }}{% if role.list|length > 1 %}s{% endif %}:</span>
                                     {# djlint:on #}
-                                    {% for series_role in role.list %}
+                                    {% for season_role in role.list %}
                                         {% if not forloop.first %}/{% endif %}
-                                        <a href="{% url 'entity:creator_detail' series_role.creator.id %}">
-                                            {{ series_role.alt_name | default:series_role.creator.name }}
+                                        <a href="{% url 'entity:creator_detail' season_role.creator.id %}">
+                                            {{ season_role.alt_name | default:season_role.creator.name }}
                                         </a>
                                     {% endfor %}
                                 </div>
                             {% endfor %}
                         {% endif %}
-                        {% if activity.content_object.original_activity.content_object.content_object.stars.exists %}
+                        {% if activity.content_object.original_activity.content_object.content_object.movie_stars %}
                         <div>
                             {# djlint:off #}
                             <span class="text-muted">Stars:</span>
                             {# djlint:on #}
-                            {% for star in activity.content_object.original_activity.content_object.content_object.stars.all %}
+                            {% for star in activity.content_object.original_activity.content_object.content_object.movie_stars %}
                                 {% if not forloop.first %}/{% endif %}
-                                <a href="{% url 'entity:creator_detail' star.id %}">{{ star.name }}</a>
+                                <a href="{% url 'entity:creator_detail' star.creator.id %}">{{ star.creator.name }}</a>
                             {% endfor %}
                         </div>
                         {% endif %}
+                        {% if activity.content_object.original_activity.content_object.content_object.season_stars %}
+                        <div>
+                            {# djlint:off #}
+                            <span class="text-muted">Stars:</span>
+                            {# djlint:on #}
+                            {% for creator in activity.content_object.original_activity.content_object.content_object.season_stars %}
+                                {% if not forloop.first %}/{% endif %}
+                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}                        
                         {% if activity.content_object.original_activity.content_object.content_object.studios.exists %}
                         <div>
                             {# djlint:off #}
@@ -300,8 +311,8 @@
                         <div>
                             {% if activity.content_object.original_activity.content_object.content_type.model == 'movie' %}
                                 <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:movie_cast_detail' activity.content_object.original_activity.content_object.content_object.id %}">View All</a>
-                            {% elif activity.content_object.original_activity.content_object.content_type.model == 'series' %}
-                                <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:series_cast_detail' activity.content_object.original_activity.content_object.content_object.id %}">View All</a>
+                            {% elif activity.content_object.original_activity.content_object.content_type.model == 'season' %}
+                                <span class="text-muted">Crew and Cast:</span> <a href="{% url 'watch:season_cast_detail' activity.content_object.original_activity.content_object.content_object.series.id activity.content_object.original_activity.content_object.content_object.season_number %}">View All</a>
                             {% endif %}
                         </div>
                         {% if activity.content_object.original_activity.content_object.content_object.release_date %}

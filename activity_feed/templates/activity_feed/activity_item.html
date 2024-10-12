@@ -484,14 +484,27 @@
                         </div>
                     {% endfor %}
                 {% endif %}
-                {% if activity.content_object.content_object.stars.exists %}
+                {% comment %} for movie stars{% endcomment %}
+                {% if activity.content_object.content_object.movie_stars %}
                 <div>
                     {# djlint:off #}
                     <span class="text-muted">Stars:</span>
                     {# djlint:on #}
-                    {% for star in activity.content_object.content_object.stars.all %}
+                    {% for star in activity.content_object.content_object.movie_stars %}
                         {% if not forloop.first %}/{% endif %}
-                        <a href="{% url 'entity:creator_detail' star.id %}">{{ star.name }}</a>
+                        <a href="{% url 'entity:creator_detail' star.creator.id %}">{{ star.creator.name }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% comment %} for series stars{% endcomment %}
+                {% if activity.content_object.content_object.season_stars %}
+                <div>
+                    {# djlint:off #}
+                    <span class="text-muted">Stars:</span>
+                    {# djlint:on #}
+                    {% for creator in activity.content_object.content_object.season_stars %}
+                        {% if not forloop.first %}/{% endif %}
+                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
                     {% endfor %}
                 </div>
                 {% endif %}                

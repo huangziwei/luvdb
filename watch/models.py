@@ -1,5 +1,6 @@
 import os
 import uuid
+from collections import Counter
 from io import BytesIO
 
 import auto_prefetch
@@ -261,6 +262,10 @@ class Movie(auto_prefetch.Model):
         return self.region_release_dates.aggregate(Min("release_date"))[
             "release_date__min"
         ]
+
+    @property
+    def movie_stars(self):
+        return self.moviecasts.filter(is_star=True).order_by("order")
 
     def get_votes(self):
         return self.votes.aggregate(models.Sum("value"))["value__sum"] or 0
@@ -606,6 +611,22 @@ class Season(auto_prefetch.Model):
 
     def model_name(self):
         return "Season"
+
+    @property
+    def season_stars(self):
+        # Initialize a Counter to track occurrences of each creator
+        star_counter = Counter()
+
+        # Iterate over all episodes related to this season
+        for episode in self.episodes.all():
+            # Filter stars in each episode and count occurrences
+            for star in episode.episodecasts.filter(is_star=True):
+                star_counter[star.creator] += 1
+
+        # Sort creators by their count in descending order
+        ranked_stars = [creator for creator, _ in star_counter.most_common()]
+
+        return ranked_stars
 
 
 class SeasonRole(auto_prefetch.Model):

@@ -90,10 +90,10 @@
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
-                                    {% if object.stars.exists %}
+                                    {% if object.season_stars %}
                                         <div class="mb-1">
                                             <span class="text-muted">Stars:</span>
-                                            {% for creator in object.stars.all %}
+                                            {% for creator in object.season_stars %}
                                                 <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
                                                 {% if not forloop.last %} / {% endif %}
                                             {% endfor %}
