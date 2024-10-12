@@ -36,13 +36,8 @@
         </div>
         <button type="button" id="add-season-role-formset" class="btn btn-secondary">Add More</button>
     </div>
-    <div id="season-cast-formset" class="bg-light p-3 mb-3">
-        <strong>Casts related to this Season</strong>
-        <p class='text-muted'>E.g. Actors, Actresses, Charactor Voices, etc.</p>
-        {{ form.stars|as_crispy_field }}
-    </div>
     <div class="bg-light p-3 mb-3">
-        <strong>Companies related to this Movie</strong>
+        <strong>Companies related to this Season</strong>
         {{ form.studios|as_crispy_field }}
         {{ form.distributors|as_crispy_field }}
     </div>
