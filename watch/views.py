@@ -964,6 +964,7 @@ class SeasonCastDetailView(DetailView):
 
             episodes_cast[cast.creator].append(
                 {
+                    "alt_name": cast.alt_name,
                     "character_name": cast.character_name,
                     "role": cast.role,
                     "episode_title": cast.episode.title,

@@ -1,6 +1,6 @@
 import os
 import uuid
-from collections import Counter
+from collections import defaultdict
 from io import BytesIO
 
 import auto_prefetch
@@ -614,17 +614,38 @@ class Season(auto_prefetch.Model):
 
     @property
     def season_stars(self):
-        # Initialize a Counter to track occurrences of each creator
-        star_counter = Counter()
+        # Use a defaultdict to store information for each creator
+        star_data = defaultdict(lambda: {"count": 0, "alt_names": set()})
 
         # Iterate over all episodes related to this season
         for episode in self.episodes.all():
-            # Filter stars in each episode and count occurrences
-            for star in episode.episodecasts.filter(is_star=True):
-                star_counter[star.creator] += 1
+            # Filter stars in each episode and gather information
+            for star_cast in episode.episodecasts.filter(is_star=True):
+                creator = star_cast.creator
+                alt_name = star_cast.alt_name
 
-        # Sort creators by their count in descending order
-        ranked_stars = [creator for creator, _ in star_counter.most_common()]
+                # Update the count and add the alt_name if provided
+                star_data[creator]["count"] += 1
+                if alt_name:
+                    star_data[creator]["alt_names"].add(alt_name)
+
+        # Create a list of tuples (creator, alt_name(s), count), ordered by count descending
+        ranked_stars = sorted(
+            [
+                (
+                    creator,
+                    (
+                        ", ".join(star_data[creator]["alt_names"])
+                        if star_data[creator]["alt_names"]
+                        else None
+                    ),
+                    star_data[creator]["count"],
+                )
+                for creator in star_data
+            ],
+            key=lambda x: x[2],
+            reverse=True,
+        )
 
         return ranked_stars
 

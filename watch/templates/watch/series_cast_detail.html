@@ -58,7 +58,13 @@
             <ul>
                 {% for creator, roles in episodes_cast.items %}
                     <li>
-                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                        <a href="{% url 'entity:creator_detail' creator.id %}">
+                            {% if creator.alt_name %}
+                                {{ creator.alt_name }}
+                            {% else %}
+                                {{ creator.name }}
+                            {% endif %}
+                        </a>
                         as
                         {% regroup roles by character_name as character_roles %}
                         {% for character_role in character_roles %}

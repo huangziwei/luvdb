@@ -57,19 +57,27 @@
         {% else %}
             <ul>
                 {% for creator, roles in episodes_cast.items %}
-                    <li>
-                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
-                        as
-                        {% regroup roles by character_name as character_roles %}
-                        {% for character_role in character_roles %}
-                            {% if not forloop.first %}/{% endif %}
-                            {{ character_role.grouper }}
-                        {% endfor %}
-                        <a href="#"
-                           class="text-muted"
-                           data-bs-toggle="collapse"
-                           data-bs-target="#episodeList{{ forloop.counter }}">({{ roles|length }} episodes)</a>
-                    </li>
+                    {% with first_role=roles.0 %}
+                        <li>
+                            <a href="{% url 'entity:creator_detail' creator.id %}">
+                                {% if first_role.alt_name %}
+                                    {{ first_role.alt_name }}
+                                {% else %}
+                                    {{ creator.name }}
+                                {% endif %}
+                            </a>
+                            as
+                            {% regroup roles by character_name as character_roles %}
+                            {% for character_role in character_roles %}
+                                {% if not forloop.first %}/{% endif %}
+                                {{ character_role.grouper }}
+                            {% endfor %}
+                            <a href="#"
+                            class="text-muted"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#episodeList{{ forloop.counter }}">({{ roles|length }} episodes)</a>
+                        </li>
+                    {% endwith %}
                     <ul id="episodeList{{ forloop.counter }}" class="collapse">
                         {% for role in roles %}
                             <li>

@@ -93,8 +93,14 @@
                                     {% if object.season_stars %}
                                         <div class="mb-1">
                                             <span class="text-muted">Stars:</span>
-                                            {% for creator in object.season_stars %}
-                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                                            {% for cast in object.season_stars %}
+                                                <a href="{% url 'entity:creator_detail' cast.0.id %}">
+                                                    {% if cast.1 %}
+                                                        {{ cast.1 }}
+                                                    {% else %}
+                                                        {{ cast.0.name }}
+                                                    {% endif %}
+                                                </a>
                                                 {% if not forloop.last %} / {% endif %}
                                             {% endfor %}
                                         </div>

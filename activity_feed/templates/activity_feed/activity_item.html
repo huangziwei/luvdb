@@ -502,9 +502,15 @@
                     {# djlint:off #}
                     <span class="text-muted">Stars:</span>
                     {# djlint:on #}
-                    {% for creator in activity.content_object.content_object.season_stars %}
+                    {% for cast in activity.content_object.content_object.season_stars %}
                         {% if not forloop.first %}/{% endif %}
-                        <a href="{% url 'entity:creator_detail' creator.id %}">{{ creator.name }}</a>
+                        <a href="{% url 'entity:creator_detail' cast.0.id %}">
+                            {% if cast.1 %}
+                                {{ cast.1 }}
+                            {% else %}
+                                {{ cast.0.name }}
+                            {% endif %}
+                        </a>
                     {% endfor %}
                 </div>
                 {% endif %}                
