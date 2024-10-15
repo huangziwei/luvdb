@@ -75,6 +75,8 @@ from .forms import (
     IssueForm,
     IssueInstance,
     IssueInstanceFormSet,
+    IssueRole,
+    IssueRoleFormSet,
     PeriodicalForm,
     ReadCheckInForm,
     WorkForm,
@@ -1377,21 +1379,31 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
+            data["issueroles"] = IssueRoleFormSet(
+                self.request.POST, instance=self.object
+            )
             data["issueinstances"] = IssueInstanceFormSet(
                 self.request.POST, instance=self.object
             )
         else:
+            data["issueroles"] = IssueRoleFormSet(instance=self.object)
             data["issueinstances"] = IssueInstanceFormSet(instance=self.object)
         return data
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         context = self.get_context_data()
+        issueroles = context["issueroles"]
         issueinstances = context["issueinstances"]
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
             self.object = form.save()
+
+            if issueroles.is_valid():
+                issueroles.instance = self.object
+                issueroles.save()
+
             if issueinstances.is_valid():
                 issueinstances.instance = self.object
                 issueinstances.save()
@@ -1551,6 +1563,41 @@ class IssueDetailView(DetailView):
             ).exists()
         )
 
+        issue = get_object_or_404(Issue, pk=self.kwargs["pk"])
+        main_role_names = [
+            "Author",
+            "Translator",
+            "Illustrator",
+            "Editor",
+            "Story By",
+            "Novelization By",
+            "Ghost Writer",
+            "Annotator",
+        ]
+        main_roles = {}
+        other_roles = {}
+
+        for issue_role in issue.issuerole_set.all():
+            role_name = issue_role.role.name
+            alt_name_or_creator_name = issue_role.alt_name or issue_role.creator.name
+
+            if role_name in main_role_names:
+                if role_name not in main_roles:
+                    main_roles[role_name] = []
+                main_roles[role_name].append(
+                    (issue_role.creator, alt_name_or_creator_name)
+                )
+            else:
+                if role_name not in other_roles:
+                    other_roles[role_name] = []
+                other_roles[role_name].append(
+                    (issue_role.creator, alt_name_or_creator_name)
+                )
+
+        context["main_roles"] = main_roles
+        context["other_roles"] = other_roles
+
+        context["authors"] = issue.get_authors()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -1603,10 +1650,14 @@ class IssueUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         if self.request.POST:
+            data["issueroles"] = IssueRoleFormSet(
+                self.request.POST, instance=self.object
+            )
             data["issueinstances"] = IssueInstanceFormSet(
                 self.request.POST, instance=self.object
             )
         else:
+            data["issueroles"] = IssueRoleFormSet(instance=self.object)
             data["issueinstances"] = IssueInstanceFormSet(instance=self.object)
 
         return data
@@ -1614,11 +1665,15 @@ class IssueUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         context = self.get_context_data()
+        issueroles = context["issueroles"]
         issueinstances = context["issueinstances"]
         with transaction.atomic():
-            form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
-            self.object = form.save()
+
+            if issueroles.is_valid():
+                issueroles.instance = self.object
+                issueroles.save()
+
             if issueinstances.is_valid():
                 issueinstances.instance = self.object
                 issueinstances.save()

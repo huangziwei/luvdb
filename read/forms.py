@@ -23,6 +23,7 @@ from .models import (
     InstanceRole,
     Issue,
     IssueInstance,
+    IssueRole,
     Periodical,
     ReadCheckIn,
     Work,
@@ -265,6 +266,7 @@ class InstanceForm(forms.ModelForm):
             "mentioned_releases": "Releases",
             "mentioned_locations": "Locations",
         }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -522,6 +524,72 @@ class IssueForm(forms.ModelForm):
                 url=reverse_lazy("entity:company-autocomplete")
             ),
         }
+
+
+class IssueRoleForm(forms.ModelForm):
+    domain = forms.CharField(initial="read", widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        super(IssueRoleForm, self).__init__(*args, **kwargs)
+        # Set default role to "Performer"
+        try:
+            default_role = Role.objects.get(name="Editor", domain="read")
+            self.fields["role"].initial = default_role
+        except ObjectDoesNotExist:
+            # If "Performer" role does not exist, the initial will be None as before
+            pass
+
+    class Meta(auto_prefetch.Model.Meta):
+        model = IssueRole
+        fields = ("creator", "role", "domain", "alt_name")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        creator = cleaned_data.get("creator")
+
+        # if the person field is filled but the role field is not
+        if creator and not cleaned_data.get("role"):
+            raise ValidationError("Role is required when Creator is filled.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.creator is None:
+            # Only delete the instance if it has been saved before (i.e., it has a non-None id)
+            if instance.pk and commit:
+                instance.delete()
+            return None
+        if commit:
+            instance.save()
+        return instance
+
+
+IssueRoleFormSet = inlineformset_factory(
+    Issue,
+    IssueRole,
+    form=IssueRoleForm,
+    extra=1,
+    can_delete=True,
+    widgets={
+        "creator": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:creator-autocomplete"),
+            attrs={
+                "data-create-url": reverse_lazy("entity:creator_create"),
+                "data-placeholder": "Type to search",
+            },
+        ),
+        "role": autocomplete.ModelSelect2(
+            url=reverse_lazy("entity:role-autocomplete"),
+            forward=["domain"],  # forward the domain field to the RoleAutocomplete view
+            attrs={"data-create-url": reverse_lazy("entity:role_create")},
+        ),
+    },
+    help_texts={
+        "creator": "<a href='/entity/creator/create/'>Add a new creator</a>.",
+        "role": "<a href='/entity/role/create/'>Add a new role</a>.",
+    },
+)
 
 
 class IssueInstanceForm(forms.ModelForm):

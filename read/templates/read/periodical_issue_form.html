@@ -10,6 +10,29 @@
     {{ form.publication_date|as_crispy_field }}
     {{ form.publisher|as_crispy_field }}
     {{ form.internet_archive_url|as_crispy_field }}
+    {{ issueroles.management_form|crispy }}
+    <div id="issue-role-formset" class="bg-light p-3 mb-3">
+        <strong>Creators related to this issue</strong>
+        <p class="text-muted">E.g. Authors, Editors, Illustrators, etc.</p>
+        <div id="issuerole_set">
+            {% for form in issueroles %}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }} {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                    <div class="col-md-4 mb-3">{{ form.creator | as_crispy_field }}</div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.role | as_crispy_field }} {{ form.domain | as_crispy_field }}
+                    </div>
+                    <div class="col-md-4 mb-3">{{ form.alt_name | as_crispy_field }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- Button to add new formsets -->
+        <button type="button" id="add-issue-role-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
+    </div>
     <!-- Form for Issue Instances (inlined formset) -->
     {{ issueinstances.management_form|crispy }}
     <div id="issue-instance-formset" class="bg-light p-3 mb-3">
@@ -46,6 +69,7 @@
 <script type="text/javascript"
     src="{% static 'js/FormsetHandler.js' %}"></script>
 <script>
+    initFormset('add-issue-role-formset', 'issuerole_set');
     initFormset('add-issue-instance-formset', 'issueinstance_set');
 </script>
 {{ form.media }}

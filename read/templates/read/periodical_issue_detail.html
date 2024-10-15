@@ -79,11 +79,45 @@
                                     <div class="text-muted fs-5">Vol. {{ issue.volume }} Nr. {{ issue.number }}</div>
                                 </span>
                                 <div class="issue-meta mt-3">
-                                    {% if issue.publication_date %}<p class='text-secondary'>Date: {{ issue.publication_date }}</p>{% endif %}
+                                    
+                                    {% if authors %}
+                                        <div class="mb-1">
+                                            <span class="text-muted">Authors:</span>
+                                            {% for author in authors %}
+                                                <!--author is a tuple (creator, alt_name)-->
+                                                <a href="{% url 'entity:creator_detail' author.0.id %}">
+                                                    {% if author.1 %} <!--alt name-->
+                                                        {{ author.1 }}
+                                                    {% else %}
+                                                        {{ author.0.name }}
+                                                    {% endif %}
+                                                </a>
+                                                {% if not forloop.last %} / {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    {% for role_name, creator_altname_tuples in main_roles.items %}
+                                        <div class="mb-1" >
+                                            <span class="text-muted">{{ role_name }}:</span>
+                                            {% for creator, alt_name in creator_altname_tuples %}
+                                                <a href="{% url 'entity:creator_detail' creator.id %}">{{ alt_name }}</a>
+                                                {% if not forloop.last %}/{% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}            
                                     {% if issue.publisher %}
-                                    <p class='text-secondary'>Publisher: 
-                                        <a href="{% url 'entity:company_detail' issue.publisher.id %}">{{ issue.publisher }}</a>
-                                    </p>
+                                        <div class="mb-1">
+                                            <span class='text-secondary'>Publisher: 
+                                                <a href="{% url 'entity:company_detail' issue.publisher.id %}">{{ issue.publisher }}</a>
+                                            </span>
+                                        </div>
+                                    {% endif %}
+                                    {% if issue.publication_date %}
+                                        <div class="mb-1">
+                                            <span class='text-secondary'>Publication Date: </span>
+                                            {{ issue.publication_date }}
+                                        </div>
                                     {% endif %}
                                 </div>
                             </div>

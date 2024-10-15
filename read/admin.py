@@ -11,6 +11,7 @@ from .models import (
     InstanceRole,
     Issue,
     IssueInstance,
+    IssueRole,
     Periodical,
     ReadCheckIn,
     Work,
@@ -87,11 +88,25 @@ class IssueInstanceInline(admin.TabularInline):
     autocomplete_fields = ["instance"]
 
 
+class IssueRoleInline(admin.TabularInline):
+    model = IssueRole
+    extra = 1
+    fields = ("creator", "role")
+    autocomplete_fields = ["creator"]
+
+
 class IssueAdmin(admin.ModelAdmin):
     list_display = ("title",)
     search_fields = ("title",)
 
-    inlines = [IssueInstanceInline]  # Changed to new inline
+    inlines = [IssueRoleInline, IssueInstanceInline]  # Changed to new inline
+
+
+class BookRoleInline(admin.TabularInline):
+    model = BookRole
+    fields = ("creator", "role", "alt_name")
+    extra = 1
+    autocomplete_fields = ["creator"]
 
 
 class WorkRoleAdmin(admin.ModelAdmin):

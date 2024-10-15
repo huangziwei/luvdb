@@ -862,6 +862,9 @@ class Issue(auto_prefetch.Model):
     cover = models.ImageField(upload_to=rename_book_cover, null=True, blank=True)
     internet_archive_url = models.URLField(max_length=200, blank=True, null=True)
 
+    creators = models.ManyToManyField(
+        Creator, through="IssueRole", related_name="issues"
+    )
     instances = models.ManyToManyField(
         Instance, through="IssueInstance", related_name="issues"
     )
@@ -951,6 +954,49 @@ class Issue(auto_prefetch.Model):
             self.title = f"Vol. {self.volume} Nr. {self.number}"
 
         super().save(*args, **kwargs)
+
+    def get_authors(self):
+        # First, check if there are any authors in the IssueRole
+        issue_roles_with_authors = self.issuerole_set.filter(
+            role__name__iexact="Author", creator__isnull=False
+        )
+        if issue_roles_with_authors.exists():
+            # Return authors from IssueRole if they exist
+            return [role.creator for role in issue_roles_with_authors]
+
+        # If no authors in IssueRole, get authors from InstanceRole via IssueInstance
+        instance_roles_with_authors = InstanceRole.objects.filter(
+            instance__in=self.instances.all(),
+            role__name__iexact="Author",
+            creator__isnull=False,
+        )
+        if instance_roles_with_authors.exists():
+            return [
+                (role.creator, role.alt_name) for role in instance_roles_with_authors
+            ]
+
+        # Return empty list if no authors found
+        return []
+
+
+class IssueRole(auto_prefetch.Model):
+    issue = auto_prefetch.ForeignKey(Issue, on_delete=models.CASCADE)
+    creator = auto_prefetch.ForeignKey(
+        Creator,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_query_name="issue_roles",
+    )
+    role = auto_prefetch.ForeignKey(
+        Role, on_delete=models.CASCADE, null=True, blank=True
+    )
+    alt_name = models.CharField(max_length=255, blank=True, null=True)
+
+    history = HistoricalRecords(inherit=True)
+
+    def __str__(self):
+        return f"{self.issue} - {self.alt_name or self.creator.name} - {self.role}"
 
 
 class IssueInstance(auto_prefetch.Model):
