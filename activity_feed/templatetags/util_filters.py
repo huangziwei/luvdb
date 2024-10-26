@@ -1,3 +1,4 @@
+import re
 from urllib.parse import urlparse
 
 from django import template
@@ -41,3 +42,14 @@ def parse_range(value):
         return value.split("-")[0]
     else:
         return value
+
+
+@register.filter
+def is_period(publication_date):
+    """
+    Determine if the publication_date represents a period (range) or a single date.
+    """
+    # Regex pattern to match a date range with various formats:
+    # e.g., YYYY-YYYY, YYYY.MM-YYYY.MM, YYYY.MM.DD-YYYY.MM.DD, including BCE dates
+    pattern = r"^-?\d{1,4}(\.\d{2})?(\.\d{2})?--?\d{1,4}(\.\d{2})?(\.\d{2})?$"
+    return bool(re.match(pattern, publication_date))

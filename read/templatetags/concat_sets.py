@@ -1,3 +1,4 @@
+import re
 from itertools import chain
 
 from django import template

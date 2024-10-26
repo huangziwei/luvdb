@@ -47,7 +47,7 @@ class WorkForm(forms.ModelForm):
         fields = "__all__"
         help_texts = {
             "title": "Enter the work's title in its original language. ",
-            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For works published before common era, use negative numbers, e.g. `-100`.",
+            "publication_date": "Recommended formats: `YYYY`, `YYYY.MM` or `YYYY.MM.DD`. For works published before common era, use negative numbers, e.g. `-100`. For serialized works, use `YYYY.MM.DD-YYYY.MM.DD`, or `YYYY.MM.DD-` if it is still going on.",
             "related_locations": "Locations that are important to the work, e.g. the setting of the story, etc. <a href='/visit/location/create/'>Add a new location</a>.",
             "notes": "Extra information about the work.",
         }
@@ -127,7 +127,7 @@ class WorkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["publication_date"].label = "First Publication Date"
+        self.fields["publication_date"].label = "First Publication Date (or Period)"
         self.fields["language"].label = "Original Language"
         self.fields["work_type"].label = "Type"
         self.fields["work_type"].help_text = "e.g. novel, short story, poem, etc."

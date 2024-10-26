@@ -33,7 +33,13 @@
                 {% endif %}
                 {% if object.publication_date %}
                     <div>
-                        <span class="text-muted">First publication date:</span>
+                        <span class="text-muted">
+                            {% if object.publication_date|is_period %}
+                                First Publication Period:
+                            {% else %}
+                                First Publication Date:
+                            {% endif %}
+                        </span>
                         {{ object.publication_date }}
                     </div>
                 {% endif %}
