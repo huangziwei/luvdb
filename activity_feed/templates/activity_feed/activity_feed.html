@@ -110,7 +110,7 @@
                     <div class="d-flex justify-content-between mb-3">
                         <h3>{{ feed_user.display_name | default:feed_user.username }}'s Feed</h3>
                         <div>
-                            {% if feed_user.is_public %}
+                            {% if feed_user.privacy_level != "logged_in_only" %}
                                 <a class="btn btn-sm btn-success" href="{% url 'accounts:user_activity_feed' feed_user.username %}">RSS</a>
                             {% endif %}
                          </div>

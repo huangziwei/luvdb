@@ -51,7 +51,7 @@
                             {% if user.username == request.user.username %}
                                 <a class="btn btn-sm btn-primary" href="{% url 'write:post_create' user.username %}">New</a>
                             {% endif %}
-                            {% if user.is_public %}
+                            {% if user.privacy_level == "public" %}
                                 {% if current_project %}
                                 <a class="btn btn-sm btn-success" href="{% url 'write:user_post_project_feed' user.username current_project.slug %}">RSS</a>
                                 {% else %}

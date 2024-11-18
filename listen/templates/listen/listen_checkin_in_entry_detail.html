@@ -6,7 +6,7 @@
 {% load parse_activity_type %}
 <div class="col-sm-11">
     {% for checkin in checkins %}
-        {% if checkin.user.is_public or request.user.is_authenticated %}
+        {% if checkin.user.privacy_level == "public" or request.user.is_authenticated %}
             <div class="d-flex justify-content-start align-items-center mb-2">
                 <span class='me-2'>
                     <a href="{% url 'accounts:detail' checkin.user.username %}">

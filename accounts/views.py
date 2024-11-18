@@ -241,7 +241,7 @@ class AccountDetailView(DetailView):
         # Get the User object
         user = get_object_or_404(User, username=self.kwargs["username"])
         # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
-        if not user.is_public and not request.user.is_authenticated:
+        if user.privacy_level == "logged_in_only" and not request.user.is_authenticated:
             return redirect("{}?next={}".format(reverse("login"), request.path))
         # Otherwise, proceed as normal
         return super().dispatch(request, *args, **kwargs)
@@ -698,59 +698,61 @@ def filter_write(query, search_terms, request_user):
 
     if request_user.is_authenticated:
         post_query = Post.objects.filter(
-            user__is_public=True, visible_to=request_user
+            user__privacy_level="public", visible_to=request_user
         ).filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
-        say_query = Say.objects.filter(user__is_public=True).filter(
+        say_query = Say.objects.filter(user__privacy_level="public").filter(
             Q(visibility="PU") | Q(visible_to=request_user)
         )
         pin_query = (
-            Pin.objects.filter(user__is_public=True)
+            Pin.objects.filter(user__privacy_level="public")
             .filter(Q(visibility="PU") | Q(visible_to=request_user))
             .filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
         )
-        repost_query = Repost.objects.filter(user__is_public=True)
-        luvlist_query = LuvList.objects.filter(user__is_public=True).filter(
+        repost_query = Repost.objects.filter(user__privacy_level="public")
+        luvlist_query = LuvList.objects.filter(user__privacy_level="public").filter(
             Q(visibility="PU") | Q(visible_to=request_user)
         )
-        read_checkin_query = ReadCheckIn.objects.filter(user__is_public=True).filter(
-            Q(visibility="PU") | Q(visible_to=request_user)
-        )
-        watch_checkin_query = WatchCheckIn.objects.filter(user__is_public=True).filter(
-            Q(visibility="PU") | Q(visible_to=request_user)
-        )
-        listen_checkin_query = ListenCheckIn.objects.filter(
-            user__is_public=True
+        read_checkin_query = ReadCheckIn.objects.filter(
+            user__privacy_level="public"
         ).filter(Q(visibility="PU") | Q(visible_to=request_user))
-        play_checkin_query = PlayCheckIn.objects.filter(user__is_public=True).filter(
-            Q(visibility="PU") | Q(visible_to=request_user)
-        )
-        visit_checkin_query = VisitCheckIn.objects.filter(user__is_public=True).filter(
-            Q(visibility="PU") | Q(visible_to=request_user)
-        )
+        watch_checkin_query = WatchCheckIn.objects.filter(
+            user__privacy_level="public"
+        ).filter(Q(visibility="PU") | Q(visible_to=request_user))
+        listen_checkin_query = ListenCheckIn.objects.filter(
+            user__privacy_level="public"
+        ).filter(Q(visibility="PU") | Q(visible_to=request_user))
+        play_checkin_query = PlayCheckIn.objects.filter(
+            user__privacy_level="public"
+        ).filter(Q(visibility="PU") | Q(visible_to=request_user))
+        visit_checkin_query = VisitCheckIn.objects.filter(
+            user__privacy_level="public"
+        ).filter(Q(visibility="PU") | Q(visible_to=request_user))
     else:
         post_query = Post.objects.filter(
-            user__is_public=True,
+            user__privacy_level="public",
         ).filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
-        say_query = Say.objects.filter(user__is_public=True, visibility="PU")
-        pin_query = Pin.objects.filter(user__is_public=True, visibility="PU").filter(
-            Q(projects__isnull=True) | Q(projects__visibility="PU")
+        say_query = Say.objects.filter(user__privacy_level="public", visibility="PU")
+        pin_query = Pin.objects.filter(
+            user__privacy_level="public", visibility="PU"
+        ).filter(Q(projects__isnull=True) | Q(projects__visibility="PU"))
+        repost_query = Repost.objects.filter(user__privacy_level="public")
+        luvlist_query = LuvList.objects.filter(
+            user__privacy_level="public", visibility="PU"
         )
-        repost_query = Repost.objects.filter(user__is_public=True)
-        luvlist_query = LuvList.objects.filter(user__is_public=True, visibility="PU")
         read_checkin_query = ReadCheckIn.objects.filter(
-            user__is_public=True, visibility="PU"
+            user__privacy_level="public", visibility="PU"
         )
         watch_checkin_query = WatchCheckIn.objects.filter(
-            user__is_public=True, visibility="PU"
+            user__privacy_level="public", visibility="PU"
         )
         listen_checkin_query = ListenCheckIn.objects.filter(
-            user__is_public=True, visibility="PU"
+            user__privacy_level="public", visibility="PU"
         )
         play_checkin_query = PlayCheckIn.objects.filter(
-            user__is_public=True, visibility="PU"
+            user__privacy_level="public", visibility="PU"
         )
         visit_checkin_query = VisitCheckIn.objects.filter(
-            user__is_public=True, visibility="PU"
+            user__privacy_level="public", visibility="PU"
         )
     return (
         filter_content(post_query, search_terms, ["title", "content"]),
@@ -1599,7 +1601,10 @@ class YearInReviewView(DetailView):
         )
 
         # If the user's profile isn't public and the current user isn't authenticated, raise a 404 error
-        if not profile_user.is_public and not request.user.is_authenticated:
+        if (
+            profile_user.privacy_level == "logged_in_only"
+            and not request.user.is_authenticated
+        ):
             return redirect("{}?next={}".format(reverse("login"), request.path))
 
         # Otherwise, proceed as normal

@@ -68,7 +68,7 @@
                 <div class="fs-3 mb-2">DLC Check-ins</div>
                 <div class="col-sm-11 mb-3">
                     {% for checkin in dlc_checkins %}
-                        {% if checkin.user.is_public or request.user.is_authenticated %}
+                        {% if checkin.user.privacy_level == "public" or request.user.is_authenticated %}
                             <div class="d-flex justify-content-start align-items-center mb-2">
                                 <span class='me-2'>
                                     <a href="{% url 'accounts:detail' checkin.user.username %}">

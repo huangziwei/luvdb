@@ -50,7 +50,7 @@
                             class="btn btn-sm btn-danger mb-1">Unsubscribed</a>
                     </div>
                 </div>
-                {% if profile_user.is_public  or request.user.is_authenticated %}
+                {% if profile_user.privacy_level == "public"  or request.user.is_authenticated %}
                     {% if layout == "grid" %}
                         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                         {% for checkin in page_obj %}

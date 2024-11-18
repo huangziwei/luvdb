@@ -39,7 +39,7 @@ class UserActivityFeed(Feed):
 
     def __call__(self, request, *args, **kwargs):
         user = self.get_object(request, *args, **kwargs)
-        if not user.is_public:
+        if user.privacy_level != "public":
             raise Http404("This feed is private.")
 
         response = super().__call__(request, *args, **kwargs)

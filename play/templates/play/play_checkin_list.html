@@ -54,7 +54,7 @@
                         class="btn btn-sm btn-danger mb-1">Abandoned</a>
                     </div>
                 </span>
-                {% if profile_user.is_public or request.user.is_authenticated %}
+                {% if profile_user.privacy_level == "public" or request.user.is_authenticated %}
                     {% for checkin in checkins %}
                         <div class="checkin mb-1 p-3 bg-light">
                             <p class="d-flex align-items-center">

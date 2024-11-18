@@ -924,7 +924,7 @@ class TagListView(ListView):
 
         # Filter out items from non-public profiles if the user is not logged in
         if not self.request.user.is_authenticated:
-            sorted_list = [item for item in sorted_list if item.user.is_public]
+            sorted_list = [item for item in sorted_list if item.user.privacy_level == "public"]
 
         # Add model names to each object
         for obj in sorted_list:

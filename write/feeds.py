@@ -21,7 +21,7 @@ User = get_user_model()
 class UserSayFeed(Feed):
     def __call__(self, request, *args, **kwargs):
         user = self.get_object(request, *args, **kwargs)
-        if not user.is_public:
+        if not user.privacy_level == "public":
             raise Http404("This feed is private.")
         return super().__call__(request, *args, **kwargs)
 
@@ -60,7 +60,7 @@ class UserSayFeed(Feed):
 class UserPostFeed(Feed):
     def __call__(self, request, *args, **kwargs):
         user = self.get_object(request, *args, **kwargs)
-        if not user.is_public:
+        if not user.privacy_level == "public":
             raise Http404("This feed is private.")
         return super().__call__(request, *args, **kwargs)
 
@@ -106,7 +106,7 @@ class UserPostProjectFeed(Feed):
 
     def is_feed_public(self, username):
         user = User.objects.get(username=username)
-        return user.is_public
+        return user.privacy_level == "public"
 
     def get_object(self, request, username, project):
         return username, project
@@ -149,7 +149,7 @@ class UserPostProjectFeed(Feed):
 class UserPinFeed(Feed):
     def __call__(self, request, *args, **kwargs):
         user = self.get_object(request, *args, **kwargs)
-        if not user.is_public:
+        if not user.privacy_level == "public":
             raise Http404("This feed is private.")
         return super().__call__(request, *args, **kwargs)
 
@@ -227,7 +227,9 @@ class TagListFeed(Feed):
         sorted_list = sorted(combined_list, key=lambda x: x.timestamp, reverse=True)
 
         # Filter out items from non-public profiles
-        sorted_list = [item for item in sorted_list if item.user.is_public]
+        sorted_list = [
+            item for item in sorted_list if item.user.privacy_level == "public"
+        ]
 
         return sorted_list[:25]
 
@@ -299,7 +301,7 @@ class TagUserListFeed(Feed):
     def __call__(self, request, *args, **kwargs):
         self.request = request  # Capture the request object
         user = self.get_object(request, *args, **kwargs)
-        if not user.is_public:
+        if not user.privacy_level == "public":
             raise Http404("This feed is private.")
         return super().__call__(request, *args, **kwargs)
 

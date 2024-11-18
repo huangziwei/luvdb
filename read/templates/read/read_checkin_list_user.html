@@ -52,7 +52,7 @@
                                 class="btn btn-sm btn-success mb-1">Afterthought</a>
                         </div>
                     </div>
-                    {% if profile_user.is_public or request.user.is_authenticated %}
+                    {% if profile_user.privacy_level == "public" or request.user.is_authenticated %}
 
                         {% if layout == "grid" %}
                             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
@@ -109,7 +109,7 @@
                             </div>
                         {% else %}
                             {% for checkin in page_obj %}
-                                {% if checkin.user.is_public or checkin.user == request.user or request.user.is_authenticated %}
+                                {% if checkin.user.privacy_level == "public" or checkin.user == request.user or request.user.is_authenticated %}
                                     <div class="col-sm-12 mt-4">
                                         <div class="activity-item mb-3 h-entry"
                                             data-activity-type="{{ checkin.activity_type }}">

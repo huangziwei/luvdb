@@ -14,7 +14,7 @@
                 {% else %}
                     {% if inviter %}
                         <div class="fs-4 mb-3">
-                            {% if inviter.is_public %}
+                            {% if inviter.privacy_level == "public" %}
                                 <a href="{% url 'accounts:detail' inviter.username%}">{{inviter.display_name|default:inviter.username}} </a>
                             {% else %}
                                 {{inviter.display_name|default:inviter.username}} 

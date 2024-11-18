@@ -45,7 +45,7 @@
                             {% if user.username == request.user.username %}
                                 <a class="btn btn-sm btn-primary" href="{% url 'write:say_create' user.username %}">New</a>
                             {% endif %}
-                            {% if user.is_public %}
+                            {% if user.privacy_level == "public" %}
                                 <a class="btn btn-sm btn-success" href="{% url 'write:user_say_feed' user.username %}">RSS</a>
                             {% endif %}
                         </div>

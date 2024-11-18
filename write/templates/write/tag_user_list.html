@@ -15,7 +15,7 @@
                             by <a href="{% url 'accounts:detail' user.username %}">{{ user.display_name | default:user.username }}</a>
                         {% endif %}
                     </h2>
-                    {% if user.is_public %}
+                    {% if user.privacy_level == "public" %}
                         <div>
                             <a class="btn btn-sm btn-success" href="{% url 'write:tag_user_list_feed' user tag %}">RSS</a>
                         </div>
