@@ -342,6 +342,19 @@
                             </ul>
                         </div>
                     </div>
+
+                    <div class="bg-light p-3 mb-3">
+                        <div class="fs-5 fw-semibold">Statistics</div>
+                        <ul class="list-unstyled">
+                            {% for display_name, count in status_stats.items %}
+                                <li>
+                                    <span class="fw-bold">{{ display_name }}</span>: {{ count }}
+                                </li>
+                            {% empty %}
+                                <li>No statistics available for the current filters.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
                 
             {% endif %}

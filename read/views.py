@@ -2236,7 +2236,7 @@ class GenericCheckInListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="10/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="50/m", block=True), name="dispatch")
 class GenericCheckInAllListView(ListView):
     """
     All latest check-ins from all users of a book or an issue.
@@ -2361,7 +2361,7 @@ class GenericCheckInAllListView(ListView):
         return context
 
 
-@method_decorator(ratelimit(key="ip", rate="12/m", block=True), name="dispatch")
+@method_decorator(ratelimit(key="ip", rate="50/m", block=True), name="dispatch")
 class GenericCheckInUserListView(ListView):
     """
     All latest check-ins from a given user of all books and issues.
@@ -2450,6 +2450,29 @@ class GenericCheckInUserListView(ListView):
                 checkin.content_object.publication_date,
             )[0]
 
+        # Statistics for books per status
+        status_order = ["finished_reading", "reread", "sampled", "reading", "rereading", "to_read", "paused", "abandoned"]
+        status_display_map = dict(ReadCheckIn.STATUS_CHOICES)
+
+        status_counts = (
+            checkins.values("status")
+            .annotate(
+                book_count=Count("object_id", distinct=True)  # Count unique books
+            )
+            .order_by("status")
+        )
+
+        # Convert status_counts into a dictionary for easier lookup
+        status_count_dict = {item["status"]: item["book_count"] for item in status_counts}
+
+        # Build a dictionary with display names as keys, ordered by status_order
+        self.status_stats = {
+            status_display_map[status]: status_count_dict.get(status, 0)
+            for status in status_order
+            if status_count_dict.get(status, 0) > 0  # Include only non-zero counts
+        }
+
+
         return checkins
 
     def get_context_data(self, **kwargs):
@@ -2492,6 +2515,8 @@ class GenericCheckInUserListView(ListView):
 
         context["years"] = [year.year for year in years]
         context["months_by_year"] = months_by_year
+
+        context["status_stats"] = self.status_stats
 
         include_mathjax, include_mermaid = check_required_js(context["page_obj"])
         context["include_mathjax"] = include_mathjax
