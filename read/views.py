@@ -2472,7 +2472,6 @@ class GenericCheckInUserListView(ListView):
             if status_count_dict.get(status, 0) > 0  # Include only non-zero counts
         }
 
-
         return checkins
 
     def get_context_data(self, **kwargs):

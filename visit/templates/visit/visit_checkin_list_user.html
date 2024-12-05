@@ -185,6 +185,52 @@
                         <p>This user's check-ins are private.</p>
                     {% endif %}
                 </div>
+            
+                <div class="col-12 col-md-4 mt-1 right-column">
+                    <div class="bg-light p-3 mb-3"> 
+                        <div class="fs-5 fw-semibold">Filter by time</div>    
+                        <!-- Filter by Year and Month -->
+                        <div class="mt-1">
+                            <!-- Display years and their months -->
+                            <ul class="list-unstyled">
+                                {% with months_by_year.items as sorted_months_by_year %}
+                                    {% for year, months in sorted_months_by_year reversed %}
+                                        <li class="mb-1">
+                                            <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}" 
+                                               class="text-decoration-none text-muted fw-bold d-block mb-2">
+                                                {{ year }}
+                                            </a>
+                                            <!-- Display months under the selected year horizontally -->
+                                            <div class="d-flex flex-wrap gap-2">
+                                                {% for month in months %}
+                                                    {% comment %} {{ month|stringformat:"02d" }} {% endcomment %}
+                                                    <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}" 
+                                                       class="btn btn-outline-secondary btn-sm {% if year|stringformat:"d" == request.GET.year and month|stringformat:"d" == request.GET.month %} active {% endif %}"
+                                                       style="font-family: 'Courier New', Courier, monospace;font-weight: bold;">
+                                                        {{ month|stringformat:"02d" }}
+                                                    </a>
+                                                {% endfor %}
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                {% endwith %}
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <div class="bg-light p-3 mb-3">
+                        <div class="fs-5 fw-semibold">Statistics</div>
+                        <ul class="list-unstyled mb-0">
+                            {% for display_name, count in status_stats.items %}
+                                <li>
+                                    <span class="fw-bold">{{ display_name }}</span>: {{ count }}
+                                </li>
+                            {% empty %}
+                                <li>No statistics available for the current filters.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
             {% endif %}
         </div>
     </div>

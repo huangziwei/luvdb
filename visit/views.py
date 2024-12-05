@@ -798,6 +798,16 @@ class VisitCheckInUserListView(ListView):
             else:
                 checkins = checkins.filter(status=status)
 
+
+        # Filtering by year
+        year = self.request.GET.get("year", "")
+        month = self.request.GET.get("month", "")
+        if year:
+            checkins = checkins.filter(timestamp__year=year)
+        if month:
+            checkins = checkins.filter(timestamp__month=month)
+
+
         # Count the check-ins for each game for this user
         user_checkin_counts = (
             VisitCheckIn.objects.filter(user=profile_user)
@@ -817,6 +827,29 @@ class VisitCheckInUserListView(ListView):
                 (checkin.content_type_id, checkin.object_id), 0
             )
 
+        # Statistics for books per status
+        status_order = ["visited", "revisited", "visiting", "revisitting", "to_visit", "paused", "abandoned"]
+        status_display_map = dict(VisitCheckIn.STATUS_CHOICES)
+
+        status_counts = (
+            checkins.values("status")
+            .annotate(
+                book_count=Count("object_id", distinct=True)  # Count unique books
+            )
+            .order_by("status")
+        )
+
+        # Convert status_counts into a dictionary for easier lookup
+        status_count_dict = {item["status"]: item["book_count"] for item in status_counts}
+
+        # Build a dictionary with display names as keys, ordered by status_order
+        self.status_stats = {
+            status_display_map[status]: status_count_dict.get(status, 0)
+            for status in status_order
+            if status_count_dict.get(status, 0) > 0  # Include only non-zero counts
+        }
+
+
         return checkins
 
     def get_context_data(self, **kwargs):
@@ -828,7 +861,37 @@ class VisitCheckInUserListView(ListView):
         context["order"] = self.request.GET.get("order", "-timestamp")
         context["layout"] = self.request.GET.get("layout", "list")
 
-        context["status"] = self.request.GET.get("status", "")
+        context["status"] = status = self.request.GET.get("status", "")
+        context["year"] = self.request.GET.get("year", "")
+        # Extracting the list of years and months
+        checkin_queryset = VisitCheckIn.objects.filter(user=profile_user).distinct()
+
+        # Apply the status filter if it's set
+        if status:
+            if status == "visited_revisited":
+                checkin_queryset = checkin_queryset.filter(
+                    Q(status="visited") | Q(status="revisited")
+                )
+            elif status == "visiting_revisiting":
+                checkin_queryset = checkin_queryset.filter(
+                    Q(status="visiting") | Q(status="revisiting")
+                )
+            else:
+                checkin_queryset = checkin_queryset.filter(status=status)
+
+        years = checkin_queryset.dates("timestamp", "year")
+        # Create a dictionary to store months for each year
+        months_by_year = {}
+        for year in years:
+            months = checkin_queryset.filter(timestamp__year=year.year).dates(
+                "timestamp", "month"
+            )
+            months_by_year[year.year] = [month.month for month in months]
+
+        context["years"] = [year.year for year in years]
+        context["months_by_year"] = months_by_year
+
+        context["status_stats"] = self.status_stats
 
         include_mathjax, include_mermaid = check_required_js(context["page_obj"])
         context["include_mathjax"] = include_mathjax
