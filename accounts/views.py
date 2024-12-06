@@ -1619,7 +1619,7 @@ class YearInReviewView(DetailView):
         # Check if the current year's stats are available
         is_data_available = (
             requested_year <= current_year
-            and timezone.now().date() > datetime.date(requested_year, 12, 25)
+            and timezone.now().date() > datetime.date(requested_year, 12, 1)
         )
 
         if is_data_available:

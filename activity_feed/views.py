@@ -48,7 +48,7 @@ class ActivityFeedView(LoginRequiredMixin, ListView):
         current_month_day = now.strftime(".%m.%d")
         current_month_day_dash = now.strftime("-%m-%d")
 
-        is_year_in_review_time = "-12-25" <= current_month_day_dash <= "-12-31"
+        is_year_in_review_time = "-12-01" <= current_month_day_dash <= "-12-31"
         context["is_year_in_review_time"] = is_year_in_review_time
 
         # Query for people born or died on this day
