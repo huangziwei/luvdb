@@ -33,7 +33,7 @@ pymdown-extensions
 django-ratelimit
 django-autoslug
 qrcode
-django-sslserver
+django-sslserver-v2
 webauthn
 cbor2
 pytz
