@@ -22,7 +22,7 @@ boto3
 python-dotenv
 Pygments
 pycountry
-langcodes[data]
+langcodes
 feedparser
 requests
 beautifulsoup4
