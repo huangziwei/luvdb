@@ -38,7 +38,7 @@ from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Block
 from discover.utils import user_has_upvoted
-from entity.models import LanguageField
+from entity.models import CoverImage, LanguageField
 from entity.utils import get_company_name
 from entity.views import HistoryViewMixin, get_contributors
 from listen.models import Release, Track
@@ -49,7 +49,7 @@ from visit.models import Location
 from visit.utils import get_locations_with_parents
 from watch.models import Movie, Series
 from write.forms import CommentForm, RepostForm
-from write.models import Comment, ContentInList
+from write.models import ContentInList
 from write.utils import get_visible_checkins, get_visible_comments
 from write.utils_bluesky import create_bluesky_post
 from write.utils_formatting import check_required_js
@@ -68,6 +68,7 @@ from .forms import (
     BookRoleForm,
     BookRoleFormSet,
     BookSeriesForm,
+    CoverImageFormSet,
     InstanceForm,
     InstanceRole,
     InstanceRoleForm,
@@ -88,6 +89,7 @@ from .models import (
     BookInGroup,
     BookInSeries,
     BookSeries,
+    CoverAlbum,
     Creator,
     Genre,
     Instance,
@@ -1231,6 +1233,20 @@ class BookDetailView(DetailView):
             .annotate(annotated_release_date=Min("region_release_dates__release_date"))
             .order_by("annotated_release_date")
         )
+
+        # additional images
+        # Get additional covers (excluding the primary one)
+        additional_covers = CoverImage.objects.filter(
+            cover_album__content_type=ContentType.objects.get_for_model(Book),
+            cover_album__object_id=book.id
+        ).exclude(image=book.cover)
+
+        # Combine cover field and additional covers
+        all_covers = [{"url": book.cover.url, "is_primary": True}] if book.cover else []
+        all_covers += [{"url": cover.image.url, "is_primary": False} for cover in additional_covers]
+
+        context["all_covers"] = all_covers
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -1270,20 +1286,35 @@ class BookUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        book = self.object
+        # Fetch or create CoverAlbum for this book
+        cover_album, created = CoverAlbum.objects.get_or_create(
+            content_type=ContentType.objects.get_for_model(Book), object_id=book.pk,
+        )
+
+        # Exclude primary cover from additional images
+        primary_cover_path = book.cover.name if book.cover else None
+        additional_covers_qs = cover_album.images.exclude(image=primary_cover_path)
+
         if self.request.POST:
-            data["bookroles"] = BookRoleFormSet(self.request.POST, instance=self.object)
+            data["bookroles"] = BookRoleFormSet(self.request.POST, instance=book)
             data["bookinstances"] = BookInstanceFormSet(
-                self.request.POST, instance=self.object
+                self.request.POST, instance=book
             )
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES, instance=cover_album, queryset=additional_covers_qs
+            ) 
         else:
-            data["bookroles"] = BookRoleFormSet(instance=self.object)
-            data["bookinstances"] = BookInstanceFormSet(instance=self.object)
+            data["bookroles"] = BookRoleFormSet(instance=book)
+            data["bookinstances"] = BookInstanceFormSet(instance=book)
+            data["coverimages"] = CoverImageFormSet(instance=cover_album, queryset=additional_covers_qs)
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         bookroles = context["bookroles"]
         bookinstances = context["bookinstances"]
+        coverimages = context["coverimages"]
 
         # Manually check validity of each form in the formset.
         if not all(bookrole_form.is_valid() for bookrole_form in bookroles):
@@ -1299,6 +1330,21 @@ class BookUpdateView(LoginRequiredMixin, UpdateView):
             if bookinstances.is_valid():
                 bookinstances.instance = self.object
                 bookinstances.save()
+
+            if coverimages.is_valid():
+                # ✅ Check each form for deletion
+                for cover_form in coverimages.forms:
+                    if cover_form.cleaned_data.get("DELETE"):
+                        cover_instance = cover_form.instance
+                        if cover_instance.image:
+                            cover_instance.image.delete(save=False)  # Remove file from storage
+                        cover_instance.delete()  # Delete from database
+
+                coverimages.instance = CoverAlbum.objects.get(
+                    content_type=ContentType.objects.get_for_model(Book),
+                    object_id=self.object.id
+                )
+                coverimages.save()
 
         return super().form_valid(form)
 

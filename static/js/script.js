@@ -496,23 +496,67 @@ window.addEventListener("load", (event) => {
 /////////////////////
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Find the anchor tag
+    /////////////////////
+    /// Cover Preview ///
+    /////////////////////
+
+    // Find the anchor tag inside the input field for the cover image
     var currentLink = document.querySelector(".input-group .form-control a");
     if (currentLink) {
-        // Get the href attribute from the anchor tag
-        var imageURL = currentLink.href;
+        var imageURL = currentLink.href; // Get the cover image URL
 
-        // Create a new image element
         var imgTag = document.createElement("img");
         imgTag.src = imageURL;
         imgTag.alt = "Cover Image";
         imgTag.style.maxWidth = "150px";
         imgTag.style.maxHeight = "150px";
 
-        // Replace the anchor tag with the new image element
         var parentDiv = currentLink.parentElement;
         parentDiv.replaceChild(imgTag, currentLink);
     }
+
+    //////////////////////////////
+    /// Additional Covers Preview ///
+    //////////////////////////////
+
+    // Find all file input fields for additional cover images
+    document.querySelectorAll(".coverimage-form input[type='file']").forEach(function (input) {
+        var previewContainer = document.createElement("div");
+        previewContainer.classList.add("image-preview");
+        input.parentElement.appendChild(previewContainer);
+
+        input.addEventListener("change", function (event) {
+            var file = event.target.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    previewContainer.innerHTML = ""; // Clear previous preview
+                    var imgTag = document.createElement("img");
+                    imgTag.src = e.target.result;
+                    imgTag.alt = "Additional Cover";
+                    imgTag.style.maxWidth = "150px";
+                    imgTag.style.maxHeight = "150px";
+                    previewContainer.appendChild(imgTag);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // If the additional image already exists (editing), display it
+        var existingImage = input.parentElement.querySelector("a");
+        if (existingImage) {
+            var existingURL = existingImage.href;
+
+            var imgTag = document.createElement("img");
+            imgTag.src = existingURL;
+            imgTag.alt = "Existing Additional Cover";
+            imgTag.style.maxWidth = "150px";
+            imgTag.style.maxHeight = "150px";
+
+            previewContainer.appendChild(imgTag);
+        }
+    });
 });
 
 ////////////////////

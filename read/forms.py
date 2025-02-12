@@ -8,8 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
-from entity.models import Role
-from write.models import VisibilityChoices
+from entity.models import CoverAlbum, CoverImage, Role
 
 from .models import (
     Book,
@@ -760,4 +759,19 @@ class BookInGroupForm(forms.ModelForm):
 
 BookInGroupFormSet = forms.inlineformset_factory(
     BookGroup, BookInGroup, form=BookInGroupForm, extra=2, can_delete=True
+)
+
+
+###############
+# Cover Album #
+###############
+
+class CoverImageForm(forms.ModelForm):
+    class Meta:
+        model = CoverImage
+        fields = ["image", "is_primary"]
+
+
+CoverImageFormSet = inlineformset_factory(
+    CoverAlbum, CoverImage, form=CoverImageForm, extra=1, can_delete=True
 )

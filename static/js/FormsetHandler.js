@@ -1,6 +1,6 @@
 function initFormset(formsetId, formsetContainerId) {
     let formIndex = $(`#${formsetContainerId} .form-wrapper`).length;
-    let originalForm = $(`#${formsetContainerId} .form-wrapper:first`).clone();
+    let originalForm = $(`#${formsetContainerId} .form-wrapper:last`).clone();
     let totalFormsId = `id_${formsetContainerId}-TOTAL_FORMS`;
     let totalForms = $(`#${totalFormsId}`); // Selects the specific TOTAL_FORMS input for this formset
 
@@ -13,6 +13,9 @@ function initFormset(formsetId, formsetContainerId) {
 
         newForm.find('input[type="text"], textarea').val("");
         newForm.find("select").prop("selectedIndex", 0);
+
+        newForm.find('input[type="file"]').val("");
+        newForm.find(".existing-cover img").remove();
 
         $(`#${formsetContainerId}`).append(newForm);
         totalForms.val(parseInt(totalForms.val()) + 1);
