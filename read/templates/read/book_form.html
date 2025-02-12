@@ -76,7 +76,7 @@
     {% if request.resolver_match.view_name == "read:book_update" %}
     <div id="cover-image-formset" class="bg-light p-3 mb-3">
         <strong>Additional Cover Images</strong>
-        <div id="coverimage_set">
+        <div id="images">
             {{ coverimages.management_form|crispy }}
             {% for form in coverimages %}
             <div class="form-wrapper">
@@ -113,5 +113,5 @@
 <script>
     initFormset('add-book-role-formset', 'bookrole_set');
     initFormset('add-book-instance-formset', 'bookinstance_set');
-    initFormset('add-cover-image-formset', 'coverimage_set');
+    initFormset('add-cover-image-formset', 'images');
 </script>

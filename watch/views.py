@@ -498,6 +498,18 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
         regionreleasedates = context["regionreleasedates"]
         coverimages = context["coverimages"]
 
+        print("DEBUG: Total forms in POST:", self.request.POST.get("images-TOTAL_FORMS"))  # Check form count
+        print("DEBUG: Total files received:", len(self.request.FILES))  # Check uploaded files count
+
+        uploaded_files = [f.name for f in self.request.FILES.getlist('images-0-image')]
+        print("DEBUG: Uploaded files:", uploaded_files)
+
+        for i, cover_form in enumerate(coverimages.forms):
+            print(f"DEBUG: Form {i} - is_valid: {cover_form.is_valid()}, Errors: {cover_form.errors}")
+            if cover_form.instance.image:
+                print(f"DEBUG: Form {i} - Image file: {cover_form.instance.image}")
+
+
         # Manually check validity of each form in the formset.
         if not all(movierole_form.is_valid() for movierole_form in movierole):
             return self.form_invalid(form)
@@ -568,7 +580,7 @@ class WatchListView(TemplateView):
 
         movie_content_type = ContentType.objects.get_for_model(Movie)
         series_content_type = ContentType.objects.get_for_model(Series)
-        seasoN_content_type = ContentType.objects.get_for_model(Season)
+        season_content_type = ContentType.objects.get_for_model(Season)
         recent_date = timezone.now() - timedelta(days=7)  # Set your cutoff here
 
         trending_movies = (
