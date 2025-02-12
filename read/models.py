@@ -577,10 +577,7 @@ class Book(auto_prefetch.Model):
                 # Otherwise, add the new cover and mark it as primary
                 CoverImage.objects.create(cover_album=cover_album, image=self.cover)
                 # cover_image.save()
-
-            # Ensure no other images in the CoverAlbum are marked as primary
-            cover_album.images.exclude(id=existing_cover.id if existing_cover else cover_image.id).update(is_primary=False)
-
+                
 
         # if new_or_updated_cover and self.cover:
         #     img = Image.open(self.cover.open(mode="rb"))

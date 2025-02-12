@@ -52,26 +52,6 @@
                                             {% endfor %}
                                         </div>
                         
-                                        <!-- Navigation Arrows (Now Smaller) -->
-                                        {% if all_covers|length > 1 %}
-                                        <button class="carousel-control-prev"
-                                                type="button"
-                                                data-bs-target="#coverCarousel"
-                                                data-bs-slide="prev"
-                                                style="width: auto; height: 40px; top: 50%; transform: translateY(-50%); left: 5px;">
-                                            <span class="carousel-control-prev-icon" style="width: 20px; height: 20px;" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Previous</span>
-                                        </button>
-                                        <button class="carousel-control-next"
-                                                type="button"
-                                                data-bs-target="#coverCarousel"
-                                                data-bs-slide="next"
-                                                style="width: auto; height: 40px; top: 50%; transform: translateY(-50%); right: 5px;">
-                                            <span class="carousel-control-next-icon" style="width: 20px; height: 20px;" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Next</span>
-                                        </button>
-                                        {% endif %}
-                        
                                         {% if can_vote %}
                                             <div class="position-absolute" style="bottom: 5px; left: 10px;">
                                                 <a href="{% url 'discover:vote' 'book' object.id 'up' %}" 

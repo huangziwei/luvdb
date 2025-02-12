@@ -324,19 +324,25 @@ def cover_upload_path(instance, filename):
     content_type = instance.cover_album.content_type.model  # Lowercase model name
     base_folder = "posters" if content_type in ["movie", "series"] else "covers"
 
-    # Use the same folder as the primary cover if it exists
-    if related_object.cover:
-        existing_cover_path = related_object.cover.name  # e.g., covers/負けヒロインが多すぎる-5-2023.03.17/9478d796-d6bc-459c-9f71-2d579d4196dd.webp
-        cover_dir = os.path.dirname(existing_cover_path)  # Extracts 'covers/負けヒロインが多すぎる-5-2023.03.17'
+    # Determine the primary image field (cover or poster)
+    primary_image_field = "poster" if content_type in ["movie", "series"] else "cover"
+
+
+    # Use the same folder as the primary cover/poster if it exists
+    existing_image_path = getattr(related_object, primary_image_field, None)
+    if existing_image_path:
+        existing_image_path = existing_image_path.name  # Get stored path
+        image_dir = os.path.dirname(existing_image_path)  # Extracts directory
     else:
-        # If no cover exists, generate a folder based on title (slugified)
-        cover_dir = f"{base_folder}/{slugify(related_object.title, allow_unicode=True)}"
+        # If no primary image exists, generate a folder based on title (slugified)
+        image_dir = f"{base_folder}/{slugify(related_object.title, allow_unicode=True)}"
 
     # Generate a new unique filename
     _, ext = os.path.splitext(filename)
     new_filename = f"{uuid.uuid4()}{ext}"
 
-    return f"{cover_dir}/{new_filename}"
+    return f"{image_dir}/{new_filename}"
+
 
 
 class CoverAlbum(models.Model):

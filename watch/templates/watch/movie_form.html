@@ -179,6 +179,28 @@
         {{ form.official_website|as_crispy_field }}
     </div>
 
+    {% if request.resolver_match.view_name == "watch:movie_update" %}
+    <div id="cover-image-formset" class="bg-light p-3 mb-3">
+        <strong>Additional Poster Images</strong>
+        <div id="coverimage_set">
+            {{ coverimages.management_form|crispy }}
+            {% for form in coverimages %}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    <div class="col-md-8">{{ form.image | as_crispy_field }}</div>
+                    <div class="col-md-2">
+                        {{ form.DELETE | as_crispy_field }}
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-cover-image-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
+    </div>
+    {% endif %}
+
     {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
@@ -199,6 +221,7 @@
     initFormset('add-region-release-date-formset', 'region_release_dates');
     initFormset('add-movie-role-formset', 'movieroles');
     initFormset('add-movie-cast-formset', 'moviecasts');
+    initFormset('add-cover-image-formset', 'coverimage_set');
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {

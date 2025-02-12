@@ -10,6 +10,8 @@ from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
+from entity.models import CoverAlbum, CoverImage
+
 from .models import (
     Collection,
     ContentInCollection,
@@ -868,4 +870,18 @@ ContentInCollectionFormSet = forms.inlineformset_factory(
     form=ContentInCollectionForm,
     extra=2,
     can_delete=True,
+)
+
+###############
+# Cover Album #
+###############
+
+class CoverImageForm(forms.ModelForm):
+    class Meta:
+        model = CoverImage
+        fields = ["image", "is_primary"]
+
+
+CoverImageFormSet = inlineformset_factory(
+    CoverAlbum, CoverImage, form=CoverImageForm, extra=1, can_delete=True
 )

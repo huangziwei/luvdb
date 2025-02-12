@@ -28,6 +28,7 @@ from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Block
 from discover.utils import user_has_upvoted
+from entity.models import CoverAlbum, CoverImage
 from entity.views import HistoryViewMixin, get_contributors
 from visit.models import Location
 from visit.utils import get_locations_with_parents, get_parent_locations
@@ -42,6 +43,7 @@ from .forms import (
     CollectionForm,
     ContentInCollection,
     ContentInCollectionFormSet,
+    CoverImageFormSet,
     EpisodeCastForm,
     EpisodeCastFormSet,
     EpisodeForm,
@@ -404,6 +406,19 @@ class MovieDetailView(DetailView):
 
         context["stars"] = movie.moviecasts.filter(is_star=True).order_by("order")
 
+        # additional images
+        # Get additional covers (excluding the primary one)
+        additional_covers = CoverImage.objects.filter(
+            cover_album__content_type=ContentType.objects.get_for_model(Movie),
+            cover_album__object_id=movie.id
+        ).exclude(image=movie.poster)
+
+        # Combine cover field and additional covers
+        all_covers = [{"url": movie.poster.url, "is_primary": True}] if movie.poster else []
+        all_covers += [{"url": cover.image.url, "is_primary": False} for cover in additional_covers]
+
+        context["all_covers"] = all_covers
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -445,6 +460,16 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        movie = self.object
+        # Fetch or create CoverAlbum for this movie
+        cover_album, created = CoverAlbum.objects.get_or_create(
+            content_type=ContentType.objects.get_for_model(Movie), object_id=movie.pk,
+        )
+
+        # Exclude primary cover from additional images
+        primary_cover_path = movie.poster.name if movie.poster else None
+        additional_covers_qs = cover_album.images.exclude(image=primary_cover_path)
+
         if self.request.POST:
             data["movieroles"] = MovieRoleFormSet(
                 self.request.POST, instance=self.object
@@ -455,10 +480,15 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
             data["regionreleasedates"] = MovieReleaseDateFormSet(
                 self.request.POST, instance=self.object
             )
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES, instance=cover_album, queryset=additional_covers_qs
+            ) 
         else:
             data["movieroles"] = MovieRoleFormSet(instance=self.object)
             data["moviecasts"] = MovieCastFormSet(instance=self.object)
             data["regionreleasedates"] = MovieReleaseDateFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet(instance=cover_album, queryset=additional_covers_qs)
+
         return data
 
     def form_valid(self, form):
@@ -466,6 +496,7 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
         movierole = context["movieroles"]
         moviecast = context["moviecasts"]
         regionreleasedates = context["regionreleasedates"]
+        coverimages = context["coverimages"]
 
         # Manually check validity of each form in the formset.
         if not all(movierole_form.is_valid() for movierole_form in movierole):
@@ -493,6 +524,20 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
             if regionreleasedates.is_valid():
                 regionreleasedates.instance = self.object
                 regionreleasedates.save()
+            if coverimages.is_valid():
+                # ✅ Check each form for deletion
+                for cover_form in coverimages.forms:
+                    if cover_form.cleaned_data.get("DELETE"):
+                        cover_instance = cover_form.instance
+                        if cover_instance.image:
+                            cover_instance.image.delete(save=False)  # Remove file from storage
+                        cover_instance.delete()  # Delete from database
+
+                coverimages.instance = CoverAlbum.objects.get(
+                    content_type=ContentType.objects.get_for_model(Movie),
+                    object_id=self.object.id
+                )
+                coverimages.save()
         return super().form_valid(form)
 
 

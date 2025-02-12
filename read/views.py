@@ -38,7 +38,7 @@ from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Block
 from discover.utils import user_has_upvoted
-from entity.models import CoverImage, LanguageField
+from entity.models import CoverAlbum, CoverImage, LanguageField
 from entity.utils import get_company_name
 from entity.views import HistoryViewMixin, get_contributors
 from listen.models import Release, Track
@@ -89,7 +89,6 @@ from .models import (
     BookInGroup,
     BookInSeries,
     BookSeries,
-    CoverAlbum,
     Creator,
     Genre,
     Instance,
