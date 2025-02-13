@@ -117,6 +117,27 @@
             </div>
         </div>
     </div>
+    {% if request.resolver_match.view_name == "play:game_update" %}
+    <div id="cover-image-formset" class="bg-light p-3 mb-3">
+        <strong>Additional Poster Images</strong>
+        <div id="images">
+            {{ coverimages.management_form|crispy }}
+            {% for form in coverimages %}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    <div class="col-md-8">{{ form.image | as_crispy_field }}</div>
+                    <div class="col-md-2">
+                        {{ form.DELETE | as_crispy_field }}
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-cover-image-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
+    </div>
+    {% endif %}
     {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
@@ -138,5 +159,6 @@
     initFormset('add-game-role-formset', 'gameroles');
     initFormset('add-game-cast-formset', 'gamecasts');
     initFormset("add-game-work-formset", "gameworks");
+    initFormset('add-cover-image-formset', 'images');
 </script>
 {{ form.media }}

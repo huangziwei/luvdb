@@ -751,3 +751,10 @@ document.addEventListener("DOMContentLoaded", function () {
         activateFirstTab(pane);
     });
 });
+
+//////////////////////////
+/// Change Entry Cover ///
+//////////////////////////
+function changeMainImage(imageUrl) {
+    document.getElementById("main-cover-image").src = imageUrl;
+}

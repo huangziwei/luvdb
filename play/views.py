@@ -27,6 +27,8 @@ from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Block
 from discover.utils import user_has_upvoted
+from entity.forms import CoverImageFormSet
+from entity.models import CoverAlbum, CoverImage
 from entity.views import HistoryViewMixin, get_contributors
 from visit.utils import get_locations_with_parents
 from write.forms import CommentForm, RepostForm
@@ -499,6 +501,19 @@ class GameDetailView(DetailView):
             "release_date"
         )
 
+        # additional images
+        # Get additional covers (excluding the primary one)
+        additional_covers = CoverImage.objects.filter(
+            cover_album__content_type=ContentType.objects.get_for_model(Game),
+            cover_album__object_id=game.id
+        ).exclude(image=game.cover)
+
+        # Combine cover field and additional covers
+        all_covers = [{"url": game.cover.url, "is_primary": True}] if game.cover else []
+        all_covers += [{"url": cover.image.url, "is_primary": False} for cover in additional_covers]
+
+        context["all_covers"] = all_covers
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -540,6 +555,17 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+
+        game = self.object
+        # Fetch or create CoverAlbum for this movie
+        cover_album, created = CoverAlbum.objects.get_or_create(
+            content_type=ContentType.objects.get_for_model(Game), object_id=game.pk,
+        )
+
+        # Exclude primary cover from additional images
+        primary_cover_path = game.cover.name if game.cover else None
+        additional_covers_qs = cover_album.images.exclude(image=primary_cover_path)
+
         if self.request.POST:
             data["gameroles"] = GameRoleFormSet(self.request.POST, instance=self.object)
             data["gamecasts"] = GameCastFormSet(self.request.POST, instance=self.object)
@@ -547,12 +573,15 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
                 self.request.POST, instance=self.object
             )
             data["gameworks"] = GameWorkFormSet(self.request.POST, instance=self.object)
-
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES, instance=cover_album, queryset=additional_covers_qs
+            ) 
         else:
             data["gameroles"] = GameRoleFormSet(instance=self.object)
             data["gamecasts"] = GameCastFormSet(instance=self.object)
             data["regionreleasedates"] = GameReleaseDateFormSet(instance=self.object)
             data["gameworks"] = GameWorkFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet(instance=cover_album, queryset=additional_covers_qs)
 
         return data
 
@@ -562,6 +591,7 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
         gamerole = context["gameroles"]
         gamecast = context["gamecasts"]
         regionreleasedates = context["regionreleasedates"]
+        coverimages = context["coverimages"]
 
         # Manually check validity of each form in the formset.
         if not all(gamework_form.is_valid() for gamework_form in gamework):
@@ -596,6 +626,20 @@ class GameUpdateView(LoginRequiredMixin, UpdateView):
                 regionreleasedates.save()
             else:
                 print(regionreleasedates.errors)
+            if coverimages.is_valid():
+                # ✅ Check each form for deletion
+                for cover_form in coverimages.forms:
+                    if cover_form.cleaned_data.get("DELETE"):
+                        cover_instance = cover_form.instance
+                        if cover_instance.image:
+                            cover_instance.image.delete(save=False)  # Remove file from storage
+                        cover_instance.delete()  # Delete from database
+
+                coverimages.instance = CoverAlbum.objects.get(
+                    content_type=ContentType.objects.get_for_model(Game),
+                    object_id=self.object.id
+                )
+                coverimages.save()
         return super().form_valid(form)
 
 
