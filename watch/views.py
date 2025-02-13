@@ -28,12 +28,13 @@ from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Block
 from discover.utils import user_has_upvoted
+from entity.forms import CoverImageFormSet
 from entity.models import CoverAlbum, CoverImage
 from entity.views import HistoryViewMixin, get_contributors
 from visit.models import Location
 from visit.utils import get_locations_with_parents, get_parent_locations
 from write.forms import CommentForm, RepostForm
-from write.models import Comment, ContentInList
+from write.models import ContentInList
 from write.utils import get_visible_checkins, get_visible_comments
 from write.utils_bluesky import create_bluesky_post
 from write.utils_formatting import check_required_js
@@ -43,7 +44,6 @@ from .forms import (
     CollectionForm,
     ContentInCollection,
     ContentInCollectionFormSet,
-    CoverImageFormSet,
     EpisodeCastForm,
     EpisodeCastFormSet,
     EpisodeForm,

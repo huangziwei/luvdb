@@ -91,7 +91,9 @@
                 defer
                 integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
                 crossorigin="anonymous"></script>
-        <script src="{% static 'js/script.js' %}" defer></script>
+        {% comment %} <script src="{% static 'js/script.js' %}" defer></script> {% endcomment %}
+        <script src="https://localhost:8000/static/js/script.js" defer></script>
+
         {% block extra_scripts %}{% endblock extra_scripts %}
     </body>
 </html>

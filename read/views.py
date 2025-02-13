@@ -38,6 +38,7 @@ from django_ratelimit.decorators import ratelimit
 
 from activity_feed.models import Block
 from discover.utils import user_has_upvoted
+from entity.forms import CoverImageFormSet
 from entity.models import CoverAlbum, CoverImage, LanguageField
 from entity.utils import get_company_name
 from entity.views import HistoryViewMixin, get_contributors
@@ -68,7 +69,6 @@ from .forms import (
     BookRoleForm,
     BookRoleFormSet,
     BookSeriesForm,
-    CoverImageFormSet,
     InstanceForm,
     InstanceRole,
     InstanceRoleForm,

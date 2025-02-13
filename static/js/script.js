@@ -496,65 +496,59 @@ window.addEventListener("load", (event) => {
 /////////////////////
 
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("Image preview script loaded."); // Debugging
+
     /////////////////////
     /// Cover Preview ///
     /////////////////////
+    function setupCoverPreview() {
+        var currentLink = document.querySelector(".input-group .form-control a");
+        if (currentLink) {
+            var imageURL = currentLink.href;
 
-    // Find the anchor tag inside the input field for the cover image
-    var currentLink = document.querySelector(".input-group .form-control a");
-    if (currentLink) {
-        var imageURL = currentLink.href; // Get the cover image URL
+            var imgTag = document.createElement("img");
+            imgTag.src = imageURL;
+            imgTag.alt = "Cover Image";
+            imgTag.style.maxWidth = "150px";
+            imgTag.style.maxHeight = "150px";
 
-        var imgTag = document.createElement("img");
-        imgTag.src = imageURL;
-        imgTag.alt = "Cover Image";
-        imgTag.style.maxWidth = "150px";
-        imgTag.style.maxHeight = "150px";
-
-        var parentDiv = currentLink.parentElement;
-        parentDiv.replaceChild(imgTag, currentLink);
+            var parentDiv = currentLink.parentElement;
+            parentDiv.replaceChild(imgTag, currentLink);
+        }
     }
 
     //////////////////////////////
     /// Additional Covers Preview ///
     //////////////////////////////
+    function setupAdditionalCoverPreview() {
+        document.querySelectorAll("#images .form-wrapper").forEach(function (formWrapper) {
+            var fileInput = formWrapper.querySelector("input[type='file']");
+            var existingLink = formWrapper.querySelector(".input-group .text-break a");
 
-    // Find all file input fields for additional cover images
-    document.querySelectorAll(".coverimage-form input[type='file']").forEach(function (input) {
-        var previewContainer = document.createElement("div");
-        previewContainer.classList.add("image-preview");
-        input.parentElement.appendChild(previewContainer);
+            // If an existing image is found, replace the <a> with an <img>
+            if (existingLink) {
+                var existingURL = existingLink.href;
 
-        input.addEventListener("change", function (event) {
-            var file = event.target.files[0];
+                var imgTag = document.createElement("img");
+                imgTag.src = existingURL;
+                imgTag.alt = "Existing Additional Cover";
+                imgTag.style.maxWidth = "150px";
+                imgTag.style.maxHeight = "150px";
 
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    previewContainer.innerHTML = ""; // Clear previous preview
-                    var imgTag = document.createElement("img");
-                    imgTag.src = e.target.result;
-                    imgTag.alt = "Additional Cover";
-                    imgTag.style.maxWidth = "150px";
-                    imgTag.style.maxHeight = "150px";
-                    previewContainer.appendChild(imgTag);
-                };
-                reader.readAsDataURL(file);
+                var parentDiv = existingLink.parentElement;
+                parentDiv.replaceChild(imgTag, existingLink);
             }
         });
+    }
 
-        // If the additional image already exists (editing), display it
-        var existingImage = input.parentElement.querySelector("a");
-        if (existingImage) {
-            var existingURL = existingImage.href;
+    // Run the functions
+    setupCoverPreview();
+    setupAdditionalCoverPreview();
 
-            var imgTag = document.createElement("img");
-            imgTag.src = existingURL;
-            imgTag.alt = "Existing Additional Cover";
-            imgTag.style.maxWidth = "150px";
-            imgTag.style.maxHeight = "150px";
-
-            previewContainer.appendChild(imgTag);
+    // Ensure dynamically added forms also get event listeners
+    document.addEventListener("click", function (e) {
+        if (e.target && e.target.id === "add-cover-image-formset") {
+            setTimeout(setupAdditionalCoverPreview, 100);
         }
     });
 });

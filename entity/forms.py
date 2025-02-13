@@ -1,9 +1,18 @@
 import auto_prefetch
 from dal import autocomplete
 from django import forms
+from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 
-from .models import Company, CompanyParent, CompanyPastName, Creator, MemberOf
+from .models import (
+    Company,
+    CompanyParent,
+    CompanyPastName,
+    CoverAlbum,
+    CoverImage,
+    Creator,
+    MemberOf,
+)
 
 
 class CreatorForm(forms.ModelForm):
@@ -199,4 +208,19 @@ CompanyPastNameFormSet = forms.inlineformset_factory(
     fields=("name", "start_date", "end_date"),
     extra=1,
     can_delete=True,
+)
+
+
+###############
+# Cover Album #
+###############
+
+class CoverImageForm(forms.ModelForm):
+    class Meta:
+        model = CoverImage
+        fields = ["image", "is_primary"]
+
+
+CoverImageFormSet = inlineformset_factory(
+    CoverAlbum, CoverImage, form=CoverImageForm, extra=1, can_delete=True
 )

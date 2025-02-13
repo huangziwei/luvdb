@@ -1,16 +1,12 @@
 import re
 
 import auto_prefetch
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Field, Layout
 from dal import autocomplete
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
-
-from entity.models import CoverAlbum, CoverImage
 
 from .models import (
     Collection,
@@ -870,18 +866,4 @@ ContentInCollectionFormSet = forms.inlineformset_factory(
     form=ContentInCollectionForm,
     extra=2,
     can_delete=True,
-)
-
-###############
-# Cover Album #
-###############
-
-class CoverImageForm(forms.ModelForm):
-    class Meta:
-        model = CoverImage
-        fields = ["image", "is_primary"]
-
-
-CoverImageFormSet = inlineformset_factory(
-    CoverAlbum, CoverImage, form=CoverImageForm, extra=1, can_delete=True
 )
