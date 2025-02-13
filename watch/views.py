@@ -1340,6 +1340,19 @@ class SeasonDetailView(DetailView):
             "season_number"
         )
 
+        # additional images
+        # Get additional covers (excluding the primary one)
+        additional_covers = CoverImage.objects.filter(
+            cover_album__content_type=ContentType.objects.get_for_model(Season),
+            cover_album__object_id=season.id
+        ).exclude(image=season.poster)
+
+        # Combine cover field and additional covers
+        all_covers = [{"url": season.poster.url, "is_primary": True}] if season.poster else []
+        all_covers += [{"url": cover.image.url, "is_primary": False} for cover in additional_covers]
+
+        context["all_covers"] = all_covers
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -1387,17 +1400,33 @@ class SeasonUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        season = self.object
+        # Fetch or create CoverAlbum for this season
+        cover_album, created = CoverAlbum.objects.get_or_create(
+            content_type=ContentType.objects.get_for_model(Season), object_id=season.pk,
+        )
+
+        # Exclude primary cover from additional images
+        primary_cover_path = season.poster.name if season.poster else None
+        additional_covers_qs = cover_album.images.exclude(image=primary_cover_path)
+
         if self.request.POST:
             data["seasonroles"] = SeasonRoleFormSet(
                 self.request.POST, instance=self.object
             )
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES, instance=cover_album, queryset=additional_covers_qs
+            ) 
         else:
             data["seasonroles"] = SeasonRoleFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet(instance=cover_album, queryset=additional_covers_qs)
+
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         seasonrole = context["seasonroles"]
+        coverimages = context["coverimages"]
 
         # Manually check validity of each form in the formset.
         if not all(seasonrole_form.is_valid() for seasonrole_form in seasonrole):
@@ -1409,6 +1438,20 @@ class SeasonUpdateView(LoginRequiredMixin, UpdateView):
             if seasonrole.is_valid():
                 seasonrole.instance = self.object
                 seasonrole.save()
+            if coverimages.is_valid():
+                # ✅ Check each form for deletion
+                for cover_form in coverimages.forms:
+                    if cover_form.cleaned_data.get("DELETE"):
+                        cover_instance = cover_form.instance
+                        if cover_instance.image:
+                            cover_instance.image.delete(save=False)  # Remove file from storage
+                        cover_instance.delete()  # Delete from database
+
+                coverimages.instance = CoverAlbum.objects.get(
+                    content_type=ContentType.objects.get_for_model(Season),
+                    object_id=self.object.id
+                )
+                coverimages.save()
 
         return super().form_valid(form)
 
