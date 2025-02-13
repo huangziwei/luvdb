@@ -35,7 +35,8 @@ from PIL import Image
 
 from activity_feed.models import Block
 from discover.utils import user_has_upvoted
-from entity.models import Creator, Role
+from entity.forms import CoverImageFormSet
+from entity.models import CoverAlbum, CoverImage, Creator, Role
 from entity.utils import get_company_name, parse_date
 from entity.views import HistoryViewMixin, get_contributors
 from scrape.wikipedia import scrape_release
@@ -1010,6 +1011,17 @@ class ReleaseDetailView(DetailView):
             ).exists()
         )
 
+        additional_covers = CoverImage.objects.filter(
+            cover_album__content_type=ContentType.objects.get_for_model(Release),
+            cover_album__object_id=release.id
+        ).exclude(image=release.cover)
+
+        # Combine cover field and additional covers
+        all_covers = [{"url": release.cover.url, "is_primary": True}] if release.cover else []
+        all_covers += [{"url": cover.image.url, "is_primary": False} for cover in additional_covers]
+
+        context["all_covers"] = all_covers
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -1050,6 +1062,18 @@ class ReleaseUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+
+        release = self.object
+        # Fetch or create CoverAlbum for this release
+        cover_album, created = CoverAlbum.objects.get_or_create(
+            content_type=ContentType.objects.get_for_model(Release), object_id=release.pk,
+        )
+
+        # Exclude primary cover from additional images
+        primary_cover_path = release.cover.name if release.cover else None
+        additional_covers_qs = cover_album.images.exclude(image=primary_cover_path)
+
+
         if self.request.POST:
             data["releaseroles"] = ReleaseRoleFormSet(
                 self.request.POST, instance=self.object
@@ -1057,15 +1081,21 @@ class ReleaseUpdateView(LoginRequiredMixin, UpdateView):
             data["releasetracks"] = ReleaseTrackFormSet(
                 self.request.POST, instance=self.object
             )
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES, instance=cover_album, queryset=additional_covers_qs
+            ) 
         else:
             data["releaseroles"] = ReleaseRoleFormSet(instance=self.object)
             data["releasetracks"] = ReleaseTrackFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet(instance=cover_album, queryset=additional_covers_qs)
+
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         releaseroles = context["releaseroles"]
         releasetracks = context["releasetracks"]
+        coverimages = context["coverimages"]
 
         # Manually check validity of each form in the formset.
         if not all(releaserole_form.is_valid() for releaserole_form in releaseroles):
@@ -1089,6 +1119,21 @@ class ReleaseUpdateView(LoginRequiredMixin, UpdateView):
                     if releasetracks.is_valid():
                         releasetracks.instance = self.object
                         releasetracks.save()
+
+                    if coverimages.is_valid():
+                        # ✅ Check each form for deletion
+                        for cover_form in coverimages.forms:
+                            if cover_form.cleaned_data.get("DELETE"):
+                                cover_instance = cover_form.instance
+                                if cover_instance.image:
+                                    cover_instance.image.delete(save=False)  # Remove file from storage
+                                cover_instance.delete()  # Delete from database
+
+                        coverimages.instance = CoverAlbum.objects.get(
+                            content_type=ContentType.objects.get_for_model(Release),
+                            object_id=self.object.id
+                        )
+                        coverimages.save()
 
         return super().form_valid(form)
 

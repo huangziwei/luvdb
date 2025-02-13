@@ -16,9 +16,13 @@ from simple_history.models import HistoricalRecords
 
 from activity_feed.models import Activity
 from discover.utils import user_has_upvoted
-from entity.models import Company, Creator, LanguageField, Role
+from entity.models import Company, CoverAlbum, CoverImage, Creator, LanguageField, Role
 from read.models import Instance, standardize_date
-from write.models import create_mentions_notifications, handle_tags
+from write.models import (
+    create_mentions_notifications,
+    find_mentioned_users,
+    handle_tags,
+)
 
 
 # helpers
@@ -195,6 +199,7 @@ class Release(auto_prefetch.Model):
 
     # Release cover
     cover = models.ImageField(upload_to=rename_release_cover, null=True, blank=True)
+    cover_album = GenericRelation(CoverAlbum, related_query_name="release")
     cover_sens = models.BooleanField(default=False, null=True, blank=True)
 
     # Release meta data
@@ -305,28 +310,24 @@ class Release(auto_prefetch.Model):
         super().save(*args, **kwargs)
 
         if new_or_updated_cover and self.cover:
-            img = Image.open(self.cover.open(mode="rb"))
+            # Ensure CoverAlbum exists for this book
+            cover_album, created = CoverAlbum.objects.get_or_create(
+                content_type=ContentType.objects.get_for_model(Release),
+                object_id=self.id,
+            )
 
-            if img.height > 500 or img.width > 500:
-                output_size = (500, 500)
-                img.thumbnail(output_size)
+            # Check if the new cover already exists in CoverAlbum
+            existing_cover = cover_album.images.filter(image=self.cover).first()
 
-            # Save the image to a BytesIO object
-            temp_file = BytesIO()
-            img.save(temp_file, format="WEBP")
-            temp_file.seek(0)
-
-            # Generate new name for the webp image
-            webp_name = os.path.splitext(self.cover.name)[0] + ".webp"
-
-            # remove the original image
-            self.cover.delete(save=False)
-
-            # Save the BytesIO object to the FileField
-            self.cover.save(webp_name, ContentFile(temp_file.read()), save=False)
-
-            img.close()
-            self.cover.close()
+            if existing_cover:
+                # If the cover already exists, mark it as primary
+                existing_cover.is_primary = True
+                existing_cover.save()
+            else:
+                # Otherwise, add the new cover and mark it as primary
+                CoverImage.objects.create(cover_album=cover_album, image=self.cover)
+                # cover_image.save()
+                
 
         super().save(*args, **kwargs)
 

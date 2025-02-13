@@ -67,6 +67,29 @@
         {{ form.wikipedia | as_crispy_field }}
         {{ form.internet_archive_url | as_crispy_field }}
     </div>
+
+    {% if request.resolver_match.view_name == "listen:release_update" %}
+    <div id="cover-image-formset" class="bg-light p-3 mb-3">
+        <strong>Additional Cover Images</strong>
+        <div id="images">
+            {{ coverimages.management_form|crispy }}
+            {% for form in coverimages %}
+            <div class="form-wrapper">
+                <div class="row">
+                    {{ form.id }}
+                    <div class="col-md-8">{{ form.image | as_crispy_field }}</div>
+                    <div class="col-md-2">
+                        {{ form.DELETE | as_crispy_field }}
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-cover-image-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
+    </div>
+    {% endif %}
+
     {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
@@ -85,4 +108,5 @@
 <script>
     initFormset('add-release-role-formset', 'releaserole_set');
     initFormset('add-release-track-formset', 'releasetrack_set');
+    initFormset('add-cover-image-formset', 'images');
 </script>
