@@ -35,9 +35,17 @@ def rename_book_cover(instance, filename):
         filename = "default.jpg"
     _, extension = os.path.splitext(filename)
     unique_id = uuid.uuid4()
-    directory_name = (
-        f"{slugify(instance.title, allow_unicode=True)}-{instance.publication_date}"
-    )
+
+    # Ensure we're working with the correct related object
+    if isinstance(instance, CoverImage):
+        related_object = instance.cover_album.content_object
+    else:
+        related_object = instance
+
+    if not hasattr(related_object, "title") or not hasattr(related_object, "publication_date"):
+        raise ValueError("rename_book_cover requires an object with a title and publication_date.")
+
+    directory_name = f"{slugify(related_object.title, allow_unicode=True)}-{related_object.publication_date}"
     new_name = f"{unique_id}{extension}"
     return os.path.join("covers", directory_name, new_name)
 

@@ -34,10 +34,19 @@ def rename_movie_poster(instance, filename):
         filename = "default.jpg"
     _, extension = os.path.splitext(filename)
     unique_id = uuid.uuid4()
-    directory_name = f"{slugify(instance.title, allow_unicode=True)}"
+
+    # Ensure we're working with the correct related object
+    if isinstance(instance, CoverImage):
+        related_object = instance.cover_album.content_object
+    else:
+        related_object = instance
+
+    if not hasattr(related_object, "title"):
+        raise ValueError("rename_movie_poster requires an object with a title.")
+
+    directory_name = f"{slugify(related_object.title, allow_unicode=True)}"
     new_name = f"{unique_id}{extension}"
     return os.path.join("posters", directory_name, new_name)
-
 
 class Genre(auto_prefetch.Model):
     name = models.CharField(max_length=100)

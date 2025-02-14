@@ -32,11 +32,20 @@ def rename_release_cover(instance, filename):
     _, extension = os.path.splitext(filename)
     unique_id = uuid.uuid4()
 
-    base_name = slugify(instance.title, allow_unicode=True)
+    # Ensure we're working with the correct related object
+    if isinstance(instance, CoverImage):
+        related_object = instance.cover_album.content_object
+    else:
+        related_object = instance
 
-    # Check if the instance has a release_date attribute and if it's not None
-    if hasattr(instance, "release_date") and instance.release_date:
-        directory_name = f"{base_name}-{instance.release_date}"
+    if not hasattr(related_object, "title"):
+        raise ValueError("rename_release_cover requires an object with a title.")
+
+    base_name = slugify(related_object.title, allow_unicode=True)
+
+    # Check if the instance has a release_date attribute
+    if hasattr(related_object, "release_date") and related_object.release_date:
+        directory_name = f"{base_name}-{related_object.release_date}"
     else:
         directory_name = base_name
 
