@@ -1331,7 +1331,6 @@ class BookUpdateView(LoginRequiredMixin, UpdateView):
                 bookinstances.save()
 
             if coverimages.is_valid():
-                # ✅ Check each form for deletion
                 for cover_form in coverimages.forms:
                     if cover_form.cleaned_data.get("DELETE"):
                         cover_instance = cover_form.instance
@@ -1643,6 +1642,20 @@ class IssueDetailView(DetailView):
         context["other_roles"] = other_roles
 
         context["authors"] = issue.get_authors()
+
+        # additional images
+        # Get additional covers (excluding the primary one)
+        additional_covers = CoverImage.objects.filter(
+            cover_album__content_type=ContentType.objects.get_for_model(Issue),
+            cover_album__object_id=issue.id
+        ).exclude(image=issue.cover)
+
+        # Combine cover field and additional covers
+        all_covers = [{"url": issue.cover.url, "is_primary": True}] if issue.cover else []
+        all_covers += [{"url": cover.image.url, "is_primary": False} for cover in additional_covers]
+
+        context["all_covers"] = all_covers
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -1694,6 +1707,15 @@ class IssueUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        issues = self.object
+        # Fetch or create CoverAlbum for this issues
+        cover_album, created = CoverAlbum.objects.get_or_create(
+            content_type=ContentType.objects.get_for_model(Issue), object_id=issues.pk,
+        )
+
+        # Exclude primary cover from additional images
+        primary_cover_path = issues.cover.name if issues.cover else None
+        additional_covers_qs = cover_album.images.exclude(image=primary_cover_path)
         if self.request.POST:
             data["issueroles"] = IssueRoleFormSet(
                 self.request.POST, instance=self.object
@@ -1701,9 +1723,13 @@ class IssueUpdateView(LoginRequiredMixin, UpdateView):
             data["issueinstances"] = IssueInstanceFormSet(
                 self.request.POST, instance=self.object
             )
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES, instance=cover_album, queryset=additional_covers_qs
+            ) 
         else:
             data["issueroles"] = IssueRoleFormSet(instance=self.object)
             data["issueinstances"] = IssueInstanceFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet(instance=cover_album, queryset=additional_covers_qs)
 
         return data
 
@@ -1712,6 +1738,8 @@ class IssueUpdateView(LoginRequiredMixin, UpdateView):
         context = self.get_context_data()
         issueroles = context["issueroles"]
         issueinstances = context["issueinstances"]
+        coverimages = context["coverimages"]
+
         with transaction.atomic():
             form.instance.updated_by = self.request.user
 
@@ -1722,6 +1750,20 @@ class IssueUpdateView(LoginRequiredMixin, UpdateView):
             if issueinstances.is_valid():
                 issueinstances.instance = self.object
                 issueinstances.save()
+    
+            if coverimages.is_valid():
+                for cover_form in coverimages.forms:
+                    if cover_form.cleaned_data.get("DELETE"):
+                        cover_instance = cover_form.instance
+                        if cover_instance.image:
+                            cover_instance.image.delete(save=False)  # Remove file from storage
+                        cover_instance.delete()  # Delete from database
+
+                coverimages.instance = CoverAlbum.objects.get(
+                    content_type=ContentType.objects.get_for_model(Issue),
+                    object_id=self.object.id
+                )
+                coverimages.save()
 
         return super().form_valid(form)
 
