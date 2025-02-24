@@ -74,7 +74,7 @@
                                     <!-- Horizontally Scrollable Thumbnails -->
                                     {% if all_covers|length > 1 %}
                                     <div class="d-flex mt-2"
-                                        style="max-width: 100%; overflow-x: auto; white-space: nowrap; padding-bottom: 5px; scrollbar-width: thin;">
+                                        style="max-width: 100%; overflow-x: auto; white-space: nowrap; scrollbar-width: thin;">
                                         {% for cover in all_covers %}
                                         <img src="{{ cover.url }}" class="thumbnail-preview img-thumbnail"
                                             style="width: auto; height: 30px; cursor: pointer; flex-shrink: 0; margin-right: 5px;"
@@ -154,7 +154,7 @@
                     </div>
                 </div>
                 <!--Book Check-In-->
-                <div class="mt-4">
+                <div class="mt-1">
                     {% include "listen/listen_checkin_form.html" %}
                     <div class="d-flex justify-content-between mt-4 mb-1 col-12 col-md-11">
                         <div class="fs-4">Latest Check-Ins</div>

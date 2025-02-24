@@ -26,7 +26,7 @@
                 <div class="book-card justify-content-start">
                     <div class="d-flex flex-column flex-lg-row mt-2 col-12 col-md-11">
                         <!--cover-box-->
-                        <div class="read-cover-box mt-1 position-relative">
+                        <div class="read-cover-box mt-1 mb-2 position-relative">
                             <div class="d-flex flex-column align-items-center">
                                 {% if user.pure_text_mode %}
                                     <div class="cover-placeholder bg-light w-100">{{ object.title }}</div>
@@ -75,7 +75,7 @@
                                     <!-- Horizontally Scrollable Thumbnails -->
                                     {% if all_covers|length > 1 %}
                                     <div class="d-flex mt-2"
-                                        style="max-width: 100%; overflow-x: auto; white-space: nowrap; padding-bottom: 5px; scrollbar-width: thin;">
+                                        style="max-width: 100%; overflow-x: auto; white-space: nowrap; scrollbar-width: thin;">
                                         {% for cover in all_covers %}
                                         <img src="{{ cover.url }}" class="thumbnail-preview img-thumbnail"
                                             style="width: auto; height: 30px; cursor: pointer; flex-shrink: 0; margin-right: 5px;"
@@ -524,7 +524,7 @@
                     </div>
                 </div>
                 <!--Book Check-In-->
-                <div class="mt-4">
+                <div class="mt-1">
                     {% include "read/read_checkin_form.html" %}
                     <div class="d-flex justify-content-between mt-4 mb-1 col-12 col-md-11">
                         <div class="fs-4">Latest Check-Ins</div>
