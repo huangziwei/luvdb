@@ -9,9 +9,35 @@
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form | crispy }}
+                    <div id="cover-image-formset" class="bg-light p-3 mb-3">
+                        <strong>Additional Cover Images</strong>
+                        <div id="images">
+                            {{ coverimages.management_form|crispy }}
+                            {% for form in coverimages %}
+                            <div class="form-wrapper">
+                                <div class="row">
+                                    {{ form.id }}
+                                    <div class="col-md-8">{{ form.image | as_crispy_field }}</div>
+                                    <div class="col-md-2">
+                                        {{ form.DELETE | as_crispy_field }}
+                                    </div>
+                                </div>
+                
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" id="add-cover-image-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
+                    </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+    <script src="{% static 'js/FormsetHandler.js' %}"></script>
+    <script>
+        initFormset('add-audiobook-role-formset', 'audiobookrole_set');
+        initFormset('add-audiobook-instance-formset', 'audiobookinstance_set');
+        initFormset('add-cover-image-formset', 'images');
+    </script>
 {% endblock %}

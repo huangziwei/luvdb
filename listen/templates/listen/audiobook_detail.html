@@ -25,49 +25,64 @@
                 <div class="book-card justify-content-start">
                     <div class="d-flex flex-column flex-lg-row mt-2">
                         <!--cover-box-->
-                        <div class="col-12 col-lg-auto mb-3 mb-lg-0">
-                            <div class="listen-cover-box mt-1 position-relative">
-                                <div class="d-flex flex-column align-items-center">
+                        <div class="read-cover-box mt-1 position-relative">
+                            <div class="d-flex flex-column align-items-center">
                                 {% if user.pure_text_mode %}
-                                    <div class="listen-cover-placeholder bg-light">{{ object.title }}</div>
+                                    <div class="cover-placeholder bg-light w-100">{{ object.title }}</div>
                                 {% else %}
-                                    {% if object.cover %}
-                                        {% if object.cover_sens %}
-                                            <img src="{{ object.cover.url }}"
-                                                    alt="{{ object.title }} cover"
-                                                    class="img-fluid blur cover-border"
-                                                    onclick="this.classList.toggle('blur')"
-                                                    loading="lazy">
-                                        {% else %}
-                                            <img src="{{ object.cover.url }}"
-                                                    alt="{{ object.title }}"
-                                                    class="img-fluid cover-border"
-                                                    onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'listen-cover-placeholder\'>{{ object.title }}</div>';"
-                                                    loading="lazy">
+                                    <div id="coverCarousel" class="read-cover-box carousel slide" data-bs-interval="false">
+                                        <div class="carousel-inner">
+                                            {% for cover in all_covers %}
+                                            <div class="carousel-item {% if cover.is_primary %}active{% endif %}">
+                                                {% if cover_sens and cover.is_primary %}
+                                                    <img src="{{ cover.url }}" alt="{{ object.title }} cover"
+                                                         class="img-fluid blur cover-border"
+                                                         onclick="this.classList.toggle('blur')"
+                                                         loading="lazy"
+                                                         id="main-cover-image">
+                                                {% else %}
+                                                    <img src="{{ cover.url }}" alt="{{ object.title }}"
+                                                         class="img-fluid cover-border"
+                                                         onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\'cover-placeholder w-100\'>{{ object.title }}</div>';"
+                                                         loading="lazy"
+                                                         id="main-cover-image">
+                                                {% endif %}
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                        
+                                        {% if can_vote %}
+                                            <div class="position-absolute" style="bottom: 5px; left: 10px;">
+                                                <a href="{% url 'discover:vote' 'book' object.id 'up' %}" 
+                                                   class="btn btn-sm"
+                                                   style="background: none; border: none; padding: 0;"
+                                                   title="Like this book">
+                                                    {% if has_voted %}
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                            <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                        </svg>
+                                                    {% else %}
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                                        </svg>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
                                         {% endif %}
-                                    {% else %}
-                                        <div class="listen-cover-placeholder bg-light">{{ object.title }}</div>
+                                    </div>
+                        
+                                    <!-- Horizontally Scrollable Thumbnails -->
+                                    {% if all_covers|length > 1 %}
+                                    <div class="d-flex mt-2"
+                                        style="max-width: 100%; overflow-x: auto; white-space: nowrap; padding-bottom: 5px; scrollbar-width: thin;">
+                                        {% for cover in all_covers %}
+                                        <img src="{{ cover.url }}" class="thumbnail-preview img-thumbnail"
+                                            style="width: auto; height: 30px; cursor: pointer; flex-shrink: 0; margin-right: 5px;"
+                                            onclick="changeMainImage('{{ cover.url }}')">
+                                        {% endfor %}
+                                    </div>
                                     {% endif %}
                                 {% endif %}
-                                {% if can_vote %}
-                                    <div class="position-absolute bottom-0 start-0 m-1">
-                                        <a href="{% url 'discover:vote' 'audiobook' object.id 'up' %}" 
-                                            class="btn btn-sm" 
-                                            style="background: none; border: none; padding: 0;"
-                                            title="Like this audiobook">
-                                            {% if has_voted %}
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                                                    <path stroke="currentColor" stroke-width="0.3" fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                                                </svg>
-                                            {% else %}
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                                </svg>
-                                            {% endif %}
-                                        </a>
-                                    </div>
-                                {% endif %}
-                                </div>
                             </div>
                         </div>
                         <!--book-meta-->
@@ -268,4 +283,9 @@
         </div>
     </div>
     {% include 'mathjax+mermaid.html' %}
+    <script>
+        function changeMainImage(imageUrl) {
+            document.getElementById("main-cover-image").src = imageUrl;
+        }
+    </script>
 {% endblock content %}
