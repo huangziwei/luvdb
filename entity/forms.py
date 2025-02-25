@@ -219,7 +219,10 @@ class CoverImageForm(forms.ModelForm):
     class Meta:
         model = CoverImage
         fields = ["image", "is_primary"]
-
+        labels = {
+            "image": "", 
+            "DELETE": "Clear",
+        }
 
 CoverImageFormSet = inlineformset_factory(
     CoverAlbum, CoverImage, form=CoverImageForm, extra=1, can_delete=True

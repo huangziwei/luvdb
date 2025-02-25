@@ -4,8 +4,46 @@
     {% csrf_token %}
     {{ form.title|as_crispy_field }}
     {{ form.other_titles|as_crispy_field }}
-    {{ form.poster|as_crispy_field }}
-    {{ form.poster_sens|as_crispy_field}}
+    <div class="row">
+        <div class="col-md-9">
+            {{ form.poster|as_crispy_field }}
+        </div>
+        <div class="col-md-3">
+            {{ form.poster_sens|as_crispy_field }}
+        </div>
+    </div>
+    
+    <div class="bg-light p-3 mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <strong>Additional Images</strong>
+            <button type="button" class="btn btn-link text-decoration-none d-flex align-items-center" 
+                    data-bs-toggle="collapse" data-bs-target="#cover-image-formset" 
+                    aria-expanded="false" aria-controls="cover-image-formset"
+                    onclick="toggleCollapseIcon(this)">
+                <span style="color:gray">Show/Hide</span>
+                <span class="ms-2 collapse-icon" style="color:gray">&#9660;</span>
+            </button>
+        </div>
+    
+        <div id="cover-image-formset" class="collapse">
+            <div id="images">
+                {{ coverimages.management_form|crispy }}
+                {% for form in coverimages %}
+                    <div class="form-wrapper">
+                        <div class="row">
+                            {{ form.id }}
+                            <div class="col-md-8">{{ form.image | as_crispy_field }}</div>
+                            <div class="col-md-2 d-flex align-items-start">
+                                {{ form.DELETE | as_crispy_field }}
+                            </div>
+                        </div>
+                        <hr class="mb-4">
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="add-cover-image-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
+        </div>
+    </div>
     {{ form.genres|as_crispy_field }}
     {{ regionreleasedates.management_form|crispy }}
     <div id="region-release-date-formset" class="bg-light p-3 mb-3">
@@ -178,29 +216,6 @@
         {{ form.wikipedia|as_crispy_field }}
         {{ form.official_website|as_crispy_field }}
     </div>
-
-    {% if request.resolver_match.view_name == "watch:movie_update" %}
-    <div id="cover-image-formset" class="bg-light p-3 mb-3">
-        <strong>Additional Poster Images</strong>
-        <div id="images">
-            {{ coverimages.management_form|crispy }}
-            {% for form in coverimages %}
-            <div class="form-wrapper">
-                <div class="row">
-                    {{ form.id }}
-                    <div class="col-md-8">{{ form.image | as_crispy_field }}</div>
-                    <div class="col-md-2">
-                        {{ form.DELETE | as_crispy_field }}
-                    </div>
-                </div>
-
-            </div>
-            {% endfor %}
-        </div>
-        <button type="button" id="add-cover-image-formset" class="btn btn-sm btn-secondary mt-2">Add More</button>
-    </div>
-    {% endif %}
-
     {{ form.notes|as_crispy_field }}
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

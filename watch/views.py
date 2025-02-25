@@ -85,6 +85,7 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        print(data)
         if self.request.POST:
             data["movieroles"] = MovieRoleFormSet(
                 self.request.POST, instance=self.object
@@ -95,10 +96,14 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
             data["regionreleasedates"] = MovieReleaseDateFormSet(
                 self.request.POST, instance=self.object
             )
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES,
+            )             
         else:
             data["movieroles"] = MovieRoleFormSet(instance=self.object)
             data["moviecasts"] = MovieCastFormSet(instance=self.object)
             data["regionreleasedates"] = MovieReleaseDateFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet()
 
         return data
 
@@ -107,6 +112,7 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
         movierole = context["movieroles"]
         moviecast = context["moviecasts"]
         regionreleasedates = context["regionreleasedates"]
+        coverimages = context["coverimages"]
 
         # Manually check validity of each form in the formset.
         if not all(movierole_form.is_valid() for movierole_form in movierole):
@@ -119,6 +125,9 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
             region_release_date_form.is_valid()
             for region_release_date_form in regionreleasedates
         ):
+            return self.form_invalid(form)
+
+        if not coverimages.is_valid():
             return self.form_invalid(form)
 
         with transaction.atomic():
@@ -134,6 +143,15 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
             if regionreleasedates.is_valid():
                 regionreleasedates.instance = self.object
                 regionreleasedates.save()
+            if coverimages.is_valid():
+                cover_album, created = CoverAlbum.objects.get_or_create(
+                    content_type=ContentType.objects.get_for_model(Movie),
+                    object_id=self.object.pk,
+                )
+                coverimages.instance = cover_album
+                coverimages.save()
+                
+            
         return super().form_valid(form)
 
 
@@ -1517,8 +1535,13 @@ class SeasonCreateView(LoginRequiredMixin, CreateView):
             data["seasonroles"] = SeasonRoleFormSet(
                 self.request.POST, instance=self.object
             )
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES,
+            )  
         else:
             data["seasonroles"] = SeasonRoleFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet()
+
             initial_roles = [
                 {
                     "creator": role.creator.id,
@@ -1559,12 +1582,12 @@ class SeasonCreateView(LoginRequiredMixin, CreateView):
                 "based_on_movies"
             ].initial = origin_season.based_on_movies.all()
             data["form"].fields["soundtracks"].initial = origin_season.soundtracks.all()
-
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         seasonroles = context["seasonroles"]
+        coverimages = context["coverimages"]
 
         with transaction.atomic():
             self.object = form.save()
@@ -1572,6 +1595,14 @@ class SeasonCreateView(LoginRequiredMixin, CreateView):
             if seasonroles.is_valid():
                 seasonroles.instance = self.object
                 seasonroles.save()
+
+            if coverimages.is_valid():
+                cover_album, created = CoverAlbum.objects.get_or_create(
+                    content_type=ContentType.objects.get_for_model(Season),
+                    object_id=self.object.pk,
+                )
+                coverimages.instance = cover_album
+                coverimages.save()
 
         return super().form_valid(form)
 

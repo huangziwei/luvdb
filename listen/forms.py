@@ -252,7 +252,7 @@ class ReleaseForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ReleaseForm, self).__init__(*args, **kwargs)
-        self.fields["cover_sens"].label = "Is the cover sensitive or explicit?"
+        self.fields["cover_sens"].label = "Is the cover sensitive?"
         self.fields["label"].required = False
         self.fields["label"].label = "Labels"
 
@@ -479,7 +479,7 @@ class AudiobookForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AudiobookForm, self).__init__(*args, **kwargs)
-        self.fields["cover_sens"].label = "Is the cover sensitive or explicit?"
+        self.fields["cover_sens"].label = "Is the cover sensitive?"
         self.fields["publisher"].required = False
 
 

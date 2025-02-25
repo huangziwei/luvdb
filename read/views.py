@@ -650,9 +650,13 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             data["bookinstances"] = BookInstanceFormSet(
                 self.request.POST, instance=self.object
             )
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES,
+            )
         else:
             data["bookroles"] = BookRoleFormSet(instance=self.object)
             data["bookinstances"] = BookInstanceFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet()
 
             if instance_id:
                 source_instance = get_object_or_404(Instance, id=instance_id)
@@ -784,8 +788,12 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         bookroles = context["bookroles"]
         bookinstances = context["bookinstances"]
+        coverimages = context["coverimages"]
 
         if not all(bookrole_form.is_valid() for bookrole_form in bookroles):
+            return self.form_invalid(form)
+
+        if not coverimages.is_valid():
             return self.form_invalid(form)
 
         with transaction.atomic():
@@ -801,6 +809,14 @@ class BookCreateView(LoginRequiredMixin, CreateView):
                 bookinstances.instance = self.object
                 bookinstances.save()
 
+            if coverimages.is_valid():
+                cover_album, created = CoverAlbum.objects.get_or_create(
+                    content_type=ContentType.objects.get_for_model(Book),
+                    object_id=self.object.pk,
+                )
+                coverimages.instance = cover_album
+                coverimages.save()
+                
         return super().form_valid(form)
 
 
@@ -1429,9 +1445,14 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
             data["issueinstances"] = IssueInstanceFormSet(
                 self.request.POST, instance=self.object
             )
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES,
+            )
         else:
             data["issueroles"] = IssueRoleFormSet(instance=self.object)
             data["issueinstances"] = IssueInstanceFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet()
+
         return data
 
     def form_valid(self, form):
@@ -1439,6 +1460,8 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         issueroles = context["issueroles"]
         issueinstances = context["issueinstances"]
+        coverimages = context["coverimages"]
+
         with transaction.atomic():
             form.instance.created_by = self.request.user
             form.instance.updated_by = self.request.user
@@ -1451,6 +1474,14 @@ class IssueCreateView(LoginRequiredMixin, CreateView):
             if issueinstances.is_valid():
                 issueinstances.instance = self.object
                 issueinstances.save()
+
+            if coverimages.is_valid():
+                cover_album, created = CoverAlbum.objects.get_or_create(
+                    content_type=ContentType.objects.get_for_model(Issue),
+                    object_id=self.object.pk,
+                )
+                coverimages.instance = cover_album
+                coverimages.save()
 
         return super().form_valid(form)
 
@@ -1671,9 +1702,9 @@ class IssueDetailView(DetailView):
             },
         )
         if form.is_valid():
-            book_check_in = form.save(commit=False)
-            book_check_in.user = request.user  # Set the user manually here
-            book_check_in.save()
+            issue_check_in = form.save(commit=False)
+            issue_check_in.user = request.user  # Set the user manually here
+            issue_check_in.save()
 
         return redirect(self.object.get_absolute_url())
 

@@ -4,8 +4,14 @@
     {% csrf_token %}
     {{ form.title|as_crispy_field }}
     {{ form.other_titles|as_crispy_field }}
-    {{ form.poster|as_crispy_field }}
-    {{ form.poster_sens|as_crispy_field}}
+    <div class="row">
+        <div class="col-md-9">
+            {{ form.poster|as_crispy_field }}
+        </div>
+        <div class="col-md-3">
+            {{ form.poster_sens|as_crispy_field }}
+        </div>
+    </div>
     {{ form.release_date|as_crispy_field }}
     {{ form.genres|as_crispy_field }}
     {{ form.status|as_crispy_field }}

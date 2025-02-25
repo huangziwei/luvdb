@@ -372,7 +372,7 @@ class BookForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(BookForm, self).__init__(*args, **kwargs)
-        self.fields["cover_sens"].label = "Is the cover sensitive or explicit?"
+        self.fields["cover_sens"].label = "Is the cover sensitive?"
         self.fields["publisher"].required = False
 
 

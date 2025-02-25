@@ -223,10 +223,14 @@ class GameCreateView(LoginRequiredMixin, CreateView):
                 self.request.POST, instance=self.object
             )
             data["gameworks"] = GameWorkFormSet(self.request.POST, instance=self.object)
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES,
+            )
         else:
             data["gamecasts"] = GameCastFormSet(instance=self.object)
             data["regionreleasedates"] = GameReleaseDateFormSet(instance=self.object)
             data["gameworks"] = GameWorkFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet()
 
             if work_id:
                 source_work = get_object_or_404(Work, id=work_id)
@@ -292,6 +296,7 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         gamerole = context["gameroles"]
         gamecast = context["gamecasts"]
         regionreleasedates = context["regionreleasedates"]
+        coverimages = context["coverimages"]
 
         # Manually check validity of each form in the formset.
         if not all(gamerole_form.is_valid() for gamerole_form in gamerole):
@@ -319,7 +324,13 @@ class GameCreateView(LoginRequiredMixin, CreateView):
             if regionreleasedates.is_valid():
                 regionreleasedates.instance = self.object
                 regionreleasedates.save()
-
+            if coverimages.is_valid():
+                cover_album, created = CoverAlbum.objects.get_or_create(
+                    content_type=ContentType.objects.get_for_model(Game),
+                    object_id=self.object.pk,
+                )
+                coverimages.instance = cover_album
+                coverimages.save()
         return super().form_valid(form)
 
 

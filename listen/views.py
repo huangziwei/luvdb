@@ -694,9 +694,13 @@ class ReleaseCreateView(LoginRequiredMixin, CreateView):
             data["releasetracks"] = ReleaseTrackFormSet(
                 self.request.POST, instance=self.object
             )
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES,
+            )
         else:
             data["releaseroles"] = ReleaseRoleFormSet(instance=self.object)
             data["releasetracks"] = ReleaseTrackFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet()
 
             if track_id:
                 track = get_object_or_404(Track, id=track_id)
@@ -783,6 +787,7 @@ class ReleaseCreateView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         releaseroles = context["releaseroles"]
         releasetracks = context["releasetracks"]
+        coverimages = context["coverimages"]
 
         # Manually check validity of each form in the formset.
         if not all(releaserole_form.is_valid() for releaserole_form in releaseroles):
@@ -798,6 +803,14 @@ class ReleaseCreateView(LoginRequiredMixin, CreateView):
             if releasetracks.is_valid():
                 releasetracks.instance = self.object
                 releasetracks.save()
+            if coverimages.is_valid():
+                cover_album, created = CoverAlbum.objects.get_or_create(
+                    content_type=ContentType.objects.get_for_model(Release),
+                    object_id=self.object.pk,
+                )
+                coverimages.instance = cover_album
+                coverimages.save()
+
         return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
@@ -2537,15 +2550,21 @@ class AudiobookCreateView(LoginRequiredMixin, CreateView):
             data["audiobookinstances"] = AudiobookInstanceFormSet(
                 self.request.POST, instance=self.object
             )
+            data["coverimages"] = CoverImageFormSet(
+                self.request.POST, self.request.FILES,
+            )
         else:
             data["audiobookroles"] = AudiobookRoleFormSet(instance=self.object)
             data["audiobookinstances"] = AudiobookInstanceFormSet(instance=self.object)
+            data["coverimages"] = CoverImageFormSet()
+
         return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         audiobookroles = context["audiobookroles"]
         audiobookinstances = context["audiobookinstances"]
+        coverimages = context["coverimages"]
 
         # Manually check validity of each form in the formset.
         if not all(
@@ -2563,6 +2582,15 @@ class AudiobookCreateView(LoginRequiredMixin, CreateView):
             if audiobookinstances.is_valid():
                 audiobookinstances.instance = self.object
                 audiobookinstances.save()
+
+            if coverimages.is_valid():
+                cover_album, created = CoverAlbum.objects.get_or_create(
+                    content_type=ContentType.objects.get_for_model(Audiobook),
+                    object_id=self.object.pk,
+                )
+                coverimages.instance = cover_album
+                coverimages.save()
+                
         return super().form_valid(form)
 
 

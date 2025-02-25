@@ -228,6 +228,7 @@ class GameForm(forms.ModelForm):
         self.fields["rating"].help_text = (
             "e.g. ESRB, PEGI, CERO, OFLC, USK, GRAC, VET, DJCTQ, IARC, ACB, GSRR"
         )
+        self.fields["cover_sens"].label = "Is the cover sensitive?"
 
 
 class GameReleaseDateForm(forms.ModelForm):

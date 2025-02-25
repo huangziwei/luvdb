@@ -149,6 +149,7 @@ class MovieForm(forms.ModelForm):
         self.fields["genres"].required = False
         self.fields["filming_locations"].required = False
         self.fields["setting_locations"].required = False
+        self.fields["poster_sens"].label = "Is the poster sensitive?"
 
 
 class MovieReleaseDateForm(forms.ModelForm):
@@ -361,6 +362,7 @@ class SeriesForm(forms.ModelForm):
         self.fields["other_titles"].help_text = (
             "e.g. translated titles in different languages, separated by slashes (`/`)."
         )
+        self.fields["poster_sens"].label = "Is the poster sensitive?"
 
 
 class SeriesRoleForm(forms.ModelForm):
@@ -475,6 +477,7 @@ class SeasonForm(forms.ModelForm):
             "e.g. translated titles in different languages, separated by slashes (`/`)."
         )
         self.fields["series"].disabled = True
+        self.fields["poster_sens"].label = "Is the poster sensitive?"
 
 
 class SeasonRoleForm(forms.ModelForm):
