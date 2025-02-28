@@ -271,6 +271,23 @@
                         </div>
                     </div>
                 {% endif %}
+                {% if user.is_authenticated %}
+                <div class="d-flex order-3 order-sm-4 mt-0 justify-content-start align-items-center">
+                    {% if can_vote %}
+                    <div class="text-start">
+                        <a href="{% url 'discover:vote' 'podcast' object.id 'up' %}" 
+                        class="btn btn-sm {% if has_voted %}btn-secondary text-white{% else %}btn-outline-secondary{% endif %}"
+                        title="Like this podcast">
+                            {% if has_voted %}
+                                Liked this podcast
+                            {% else %}
+                                Like this podcast
+                            {% endif %}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

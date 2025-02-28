@@ -507,21 +507,8 @@
                         {% endif %}
                     </div>
                 {% endif %}
-                <!--stats-->
-                {% comment %} <div class="bg-light p-3 mb-3 order-1 order-sm-2">
-                    <div class="fs-5 fw-semibold">Statistics</div>
-                    <div>
-                        <span class="text-muted">To Watch:</span> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=to_watch">{{ to_watch_count }}</a>
-                    </div>
-                    <div>
-                        <span class="text-muted">Watching:</span> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watching_rewatching">{{ watching_count }}</a>
-                    </div>
-                    <div>
-                        <span class="text-muted">Watched:</span> <a href="{% url 'watch:series_checkin_all_list' object.id %}?status=watched_rewatched">{{ watched_count }}</a>
-                    </div>
-                </div> 
-                {% endcomment %}
-                <div class="bg-light p-3 mb-3 order-1 order-sm-3">
+
+                <div class="bg-light p-3 mb-3 order-2 order-sm-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5 fw-semibold">Contributors</div>
                         <div>(<a href="{% url 'watch:series_history' object.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>

@@ -502,6 +502,27 @@
                         {% endfor %}
                     </div>
                 </div>
+                {% if user.is_authenticated %}
+                <div class="d-flex order-2 order-sm-3 mt-0 {% if can_vote %}justify-content-between{%else%}justify-content-end{% endif %} align-items-center">
+                    {% if can_vote %}
+                    <div class="text-start">
+                        <a href="{% url 'discover:vote' 'season' object.id 'up' %}" 
+                        class="btn btn-sm {% if has_voted %}btn-secondary text-white{% else %}btn-outline-secondary{% endif %}"
+                        title="Like this season">
+                            {% if has_voted %}
+                                Liked this season
+                            {% else %}
+                                Like this season
+                            {% endif %}
+                        </a>
+                    </div>
+                    {% endif %}
+                    <div class="text-end">
+                        <a href="{% url 'read:book_create_with_other_book' origin_book_id=object.id %}"
+                            class='fs-6 text-secondary'>Reuse data for a new book</a>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

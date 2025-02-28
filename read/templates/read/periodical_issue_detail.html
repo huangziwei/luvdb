@@ -243,7 +243,7 @@
                         </div>
                     </div>
                 {% endif %}
-                <div class="bg-light p-3 mt-3 order-2 order-sm-3">
+                <div class="bg-light p-3 mt-3 order-2 order-sm-3 mb-3">
                     <div class="d-flex justify-content-start align-items-center flex-wrap">
                         <div class="me-1 fs-5">Contributors</div>
                         <div>(<a href="{% url 'read:issue_history' issue.periodical.pk issue.pk %}" class="fs-6 text-secondary">Changelog</a>)</div>
@@ -265,6 +265,24 @@
                         {% endfor %}
                     </div>
                 </div>
+
+                {% if user.is_authenticated %}
+                <div class="d-flex order-3 order-sm-4 mt-0 justify-content-start align-items-center">
+                    {% if can_vote %}
+                    <div class="text-start">
+                        <a href="{% url 'discover:vote' 'issue' object.id 'up' %}" 
+                        class="btn btn-sm {% if has_voted %}btn-secondary text-white{% else %}btn-outline-secondary{% endif %}"
+                        title="Like this issue">
+                            {% if has_voted %}
+                                Liked this issue
+                            {% else %}
+                                Like this issue
+                            {% endif %}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

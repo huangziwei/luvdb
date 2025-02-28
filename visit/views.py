@@ -304,6 +304,7 @@ class LocationDetailView(DetailView):
             for item in latest_checkins
             if item["latest_checkin_status"] in ["visited", "revisited"]
         )
+        
 
         # Add status counts to context
         context.update(
@@ -313,6 +314,17 @@ class LocationDetailView(DetailView):
                 "visited_count": visited_count,
                 "checkins": checkins,
             }
+        )
+
+        context["has_voted"] = user_has_upvoted(self.request.user, self.object)
+        context["can_vote"] = (
+            self.request.user.is_authenticated
+            and VisitCheckIn.objects.filter(
+                content_type=ContentType.objects.get_for_model(Location),
+                object_id=self.object.id,
+                user=self.request.user,
+                status__in=["visited", "revisited"],
+            ).exists()
         )
 
         return context
