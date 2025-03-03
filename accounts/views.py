@@ -65,9 +65,8 @@ from listen.models import Audiobook, ListenCheckIn, Podcast, Release, Track
 from listen.models import Work as ListenWork
 from play.models import Game, PlayCheckIn
 from play.models import Work as PlayWork
-from read.models import Book, BookSeries
+from read.models import Book, BookSeries, Issue, Periodical, ReadCheckIn
 from read.models import Instance as LitInstance
-from read.models import Issue, Periodical, ReadCheckIn
 from read.models import Work as ReadWork
 from visit.models import Location, VisitCheckIn
 from watch.models import Episode, Movie, Season, Series, WatchCheckIn
@@ -290,23 +289,148 @@ class AccountDetailView(DetailView):
             }
         )
 
+        # filter read check-ins
+
         latest_read_checkins = get_latest_checkins(
             user=self.object, request_user=self.request.user, checkin_model=ReadCheckIn
         )
+
+        latest_read_checkins_book = latest_read_checkins.filter(
+            content_type=ContentType.objects.get_for_model(Book)
+        )
+        latest_read_checkins_issue = latest_read_checkins.filter(
+            content_type=ContentType.objects.get_for_model(Issue)
+        )
+
+        reading_books = latest_read_checkins_book.filter(status__in=["reading", "rereading"]).order_by("-timestamp")[:6]
+        read_books = latest_read_checkins_book.filter(status__in=["finished_reading", "reread", "afterthought"]).order_by("-timestamp")[:6]
+        reading_issues = latest_read_checkins_issue.filter(status__in=["reading", "rereading"]).order_by("-timestamp")[:6]
+        read_issues = latest_read_checkins_issue.filter(status__in=["finished_reading", "reread", "afterthought"]).order_by("-timestamp")[:6]
+
+        context["reading_books"] = reading_books
+        context["read_books"] = read_books
+        context["reading_issues"] = reading_issues
+        context["read_issues"] = read_issues
+        context["does_read_book_exist"] = read_books.exists() or reading_books.exists()
+        context["does_read_issue_exist"] = read_issues.exists() or reading_issues.exists()
+        context["does_read_exist"] = context["does_read_book_exist"] or context["does_read_issue_exist"]
+
+
+        # filter listen check-ins
+
         latest_listen_checkins = get_latest_checkins(
             user=self.object,
             request_user=self.request.user,
             checkin_model=ListenCheckIn,
         )
+
+        latest_listen_checkins_release = latest_listen_checkins.filter(
+            content_type=ContentType.objects.get_for_model(Release)
+        )
+        latest_listen_checkins_podcast = latest_listen_checkins.filter(
+            content_type=ContentType.objects.get_for_model(Podcast)
+        )
+        latest_listen_checkins_audiobook = latest_listen_checkins.filter(
+            content_type=ContentType.objects.get_for_model(Audiobook)
+        )
+
+        looping_release = latest_listen_checkins_release.filter(status="looping").order_by(
+            "-timestamp"
+        )[:6]
+        listened_release = latest_listen_checkins_release.filter(
+            status__in=["listened", "relistened"]
+        ).order_by("-timestamp")[:6]
+
+        listening_audiobook = latest_listen_checkins_audiobook.filter(
+            status__in=["listening", "relistening"]
+        ).order_by("-timestamp")[:6]
+        listened_audiobook = latest_listen_checkins_audiobook.filter(
+            status__in=["listened", "relistened"]
+        ).order_by("-timestamp")[:6]
+
+        subscribed = latest_listen_checkins_podcast.filter(status="subscribed").order_by(
+            "-timestamp"
+        )[:6]
+        sampled = latest_listen_checkins_podcast.filter(status="sampled").order_by(
+            "-timestamp"
+        )[:6]
+
+
+        context["looping_release"] = looping_release
+        context["listened_release"] = listened_release
+
+        context["listening_audiobook"] = listening_audiobook
+        context["listened_audiobook"] = listened_audiobook
+
+        context["subscribed_podcast"] = subscribed
+        context["sampled_podcast"] = sampled
+
+        does_listen_release_exist = looping_release.exists() or listened_release.exists()
+        does_listen_podcast_exist = subscribed.exists() or sampled.exists()
+        does_listen_audiobook_exist = listening_audiobook.exists() or listened_audiobook.exists()
+
+        # Determine which headers should be displayed
+        listen_section_headers = {
+            "release": does_listen_release_exist and (does_listen_podcast_exist or does_listen_audiobook_exist),
+            "podcast": does_listen_podcast_exist and (does_listen_release_exist or does_listen_audiobook_exist),
+            "audiobook": does_listen_audiobook_exist and (does_listen_release_exist or does_listen_podcast_exist),
+        }
+
+        context["does_listen_release_exist"] = does_listen_release_exist
+        context["does_listen_podcast_exist"] = does_listen_podcast_exist
+        context["does_listen_audiobook_exist"] = does_listen_audiobook_exist
+        context["does_listen_exist"] = does_listen_release_exist or does_listen_podcast_exist or does_listen_audiobook_exist
+        context["listen_section_headers"] = listen_section_headers
+
+        # filter watch check-ins
+
         latest_watch_checkins = get_latest_checkins(
             user=self.object, request_user=self.request.user, checkin_model=WatchCheckIn
         )
+
+        latest_watch_checkins_movies = latest_watch_checkins.filter(
+            content_type=ContentType.objects.get_for_model(Movie)
+        )
+        latest_watch_checkins_series = latest_watch_checkins.filter(
+            content_type=ContentType.objects.get_for_model(Season)
+        )
+
+        watching_movies = latest_watch_checkins_movies.filter(status__in=["watching", "rewatching"]).order_by("-timestamp")[:6]
+        watched_movies = latest_watch_checkins_movies.filter(status__in=["watched", "rewatched", "afterthought"]).order_by("-timestamp")[:6]
+        watching_series = latest_watch_checkins_series.filter(status__in=["watching", "rewatching"]).order_by("-timestamp")[:6]
+        watched_series = latest_watch_checkins_series.filter(status__in=["watched", "rewatched", "afterthought"]).order_by("-timestamp")[:6]
+
+        context["watching_movies"] = watching_movies
+        context["watching_series"] = watching_series
+        context["watched_movies"] = watched_movies
+        context["watched_series"] = watched_series
+        context["does_watch_movie_exist"] = watched_movies.exists() or watching_movies.exists()
+        context["does_watch_series_exist"] = watched_series.exists() or watching_series.exists()
+        context["does_watch_exist"] = context["does_watch_movie_exist"] or context["does_watch_series_exist"]
+
+
+        # filter play check-ins
+
         latest_play_checkins = get_latest_checkins(
             user=self.object, request_user=self.request.user, checkin_model=PlayCheckIn
         )
         latest_visit_checkins = get_latest_checkins(
             user=self.object, request_user=self.request.user, checkin_model=VisitCheckIn
         )
+
+        playing = latest_play_checkins.filter(
+            status__in=["playing", "replaying"]
+        ).order_by("-timestamp")[:6]
+        played = latest_play_checkins.filter(
+            status__in=["played", "replayed"]
+        ).order_by("-timestamp")[:6]
+
+        context["playing"] = playing
+        context["played"] = played
+        context["does_play_exist"] = played.exists() or playing.exists()
+
+
+        # filter visit check-ins
 
         visiting = latest_visit_checkins.filter(
             status__in=["visiting", "revisiting"]
@@ -321,61 +445,10 @@ class AccountDetailView(DetailView):
         context["visiting"] = visiting
         context["visited"] = visited
         context["living_in"] = living_in
-        context["does_visit_exist"] = does_visit_exist = (
+        context["does_visit_exist"] = (
             visited.exists() or visiting.exists()
         )
 
-        reading = latest_read_checkins.filter(
-            status__in=["reading", "rereading"]
-        ).order_by("-timestamp")[:6]
-        read = latest_read_checkins.filter(
-            status__in=["finished_reading", "reread", "afterthought"]
-        ).order_by("-timestamp")[:6]
-
-        context["reading"] = reading
-        context["read"] = read
-        context["does_read_exist"] = read.exists() or reading.exists()
-
-        looping = latest_listen_checkins.filter(status="looping").order_by(
-            "-timestamp"
-        )[:6]
-        listening = latest_listen_checkins.filter(
-            status__in=["listening", "relistening"]
-        ).order_by("-timestamp")[:6]
-        listened = latest_listen_checkins.filter(
-            status__in=["listened", "relistened"]
-        ).order_by("-timestamp")[:6]
-        subscribed = latest_listen_checkins.filter(status="subscribed").order_by(
-            "-timestamp"
-        )[:6]
-
-        context["looping"] = looping
-        context["listening"] = listening
-        context["listened"] = listened
-        context["subscribed"] = subscribed
-        context["does_listen_exist"] = listened.exists() or looping.exists()
-
-        watching = latest_watch_checkins.filter(
-            status__in=["watching", "rewatching"]
-        ).order_by("-timestamp")[:6]
-        watched = latest_watch_checkins.filter(
-            status__in=["watched", "rewatched"]
-        ).order_by("-timestamp")[:6]
-
-        context["watching"] = watching
-        context["watched"] = watched
-        context["does_watch_exist"] = watched.exists() or watching.exists()
-
-        playing = latest_play_checkins.filter(
-            status__in=["playing", "replaying"]
-        ).order_by("-timestamp")[:6]
-        played = latest_play_checkins.filter(
-            status__in=["played", "replayed"]
-        ).order_by("-timestamp")[:6]
-
-        context["playing"] = playing
-        context["played"] = played
-        context["does_play_exist"] = played.exists() or playing.exists()
 
         # Check each activity item for both MathJax and Mermaid requirements
         include_mathjax, include_mermaid = check_required_js(

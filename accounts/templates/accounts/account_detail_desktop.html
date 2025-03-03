@@ -1,0 +1,189 @@
+{% load static %}
+{% load account_tags %}
+{% load util_filters %}
+{% load markdownify %}
+{% load linkify %}
+
+<!-- For larger screens: keep the existing layout -->
+<!-- Left column -->
+<div class="col-md-8 col-sm-12 d-none d-md-block desktop-version">
+    <!--navbar-->
+    <div class="row">
+        <div class="d-flex flex-wrap justify-content-start">
+            <span class="me-3">
+                <a href="{% url 'write:say_list' object.username %}">Says</a>
+            </span>
+            <span class="me-3">
+                <a href="{% url 'write:post_list' object.username %}">Posts</a>
+            </span>
+            <span class="me-3">
+                <a href="{% url 'write:pin_list' object.username %}">Pins</a>
+            </span>
+            <span class="me-3">
+                <a href="{% url 'write:album_list' object.username %}">Albums</a>
+            </span>
+            <span class="me-3">
+                <a href="{% url 'write:luvlist_list' object.username %}">Lists</a>
+            </span>
+            {% if object.username == user.username %}
+                <span class="me-3">
+                    <a href="{% url 'accounts:liked' object.username %}">Liked</a>
+                </span>
+                <span class="me-3">
+                    <a href="{% url 'write:replied' object.username %}">Replied</a>
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+    {% include "accounts/account_detail_checkins.html" %}
+</div>
+<!-- Right column -->
+<div class="col-md-4 col-sm-12 d-none d-md-block">
+    <div class="bio p-3 bg-light">
+        <div class="d-flex flex-wrap align-items-center">
+            {% if object.display_name %}
+                <span class="me-1">
+                    {{ object.display_name }}
+                </span>
+            {% endif %}
+            <a href="{% url 'accounts:detail' object.username %}" class="h-card me-1" rel="me">
+                @{{ object.username }}
+            </a>
+            {% if object.privacy_level != "public" %}
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" title="This profile is not public" aria-label="This profile is not public">
+                    <path d="M 12 1 C 8.6761905 1 6 3.6761905 6 7 L 6 8 C 4.9 8 4 8.9 4 10 L 4 20 C 4 21.1 4.9 22 6 22 L 18 22 C 19.1 22 20 21.1 20 20 L 20 10 C 20 8.9 19.1 8 18 8 L 18 7 C 18 3.6761905 15.32381 1 12 1 z M 12 3 C 14.27619 3 16 4.7238095 16 7 L 16 8 L 8 8 L 8 7 C 8 4.7238095 9.7238095 3 12 3 z M 12 13 C 13.1 13 14 13.9 14 15 C 14 16.1 13.1 17 12 17 C 10.9 17 10 16.1 10 15 C 10 13.9 10.9 13 12 13 z"></path>
+                </svg>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {% if living_in %}
+                <span class="text-muted">Based in</span>
+                <a href="{% url 'visit:location_detail' living_in.0.content_object.id %}">
+                    {{ living_in.0.content_object.name }}
+                </a>
+            {% endif %}
+            <div class="text-muted">Joined {{ object.date_joined|daysince }} days ago</div>
+        </div>
+        {% if object.bio %}
+            <div>{{ object.bio | linkify_tags | markdownify }}</div>
+        {% endif %}
+        {% if object == request.user %}
+            <div class='d-flex '>
+                <!-- Action buttons -->
+                <a class="btn btn-primary btn-sm mt-3 me-1"
+                href="{% url 'accounts:update' object.username %}"
+                role="button">Update Profile</a>
+                <div class="dropdown mt-3">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                            type="button"
+                            id="actionMenu"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">More</button>
+                    <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                        <li>
+                            <a class="dropdown-item"
+                                href="{% url 'accounts:manage_invitations' object.username %}"
+                                role="button">Invite Friends</a>
+                        </li>
+                        {% if object.is_staff %}
+                        <li>
+                            <a class="dropdown-item"
+                                href="{% url 'manage_invitation_requests' %}"
+                                role="button">Manage Invite Requests</a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a class="dropdown-item"
+                            href="{% url 'accounts:app_password' object.username %}"
+                            role="button">Manage App Passwords</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                            href="{% url 'accounts:crossposters' object.username %}"
+                            role="button">Manage Cross-posters</a>
+                        </li>  
+                        <li>
+                            <a class="dropdown-item"
+                            href="{% url 'accounts:export_user_data' object.username %}"
+                            role="button">Export Data</a>
+                        </li>                                    
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+        {% if object != request.user %}
+            <div class='d-flex'>
+                {% if not request.user|is_blocking:object %}
+                    {% if request.user|is_following:object %}
+                        <form method="POST" action="{% url 'activity_feed:unfollow' object.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-primary btn-sm mt-3 me-1" type="submit">Unfollow</button>
+                        </form>
+                    {% else %}
+                        <form method="POST" action="{% url 'activity_feed:follow' object.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-primary btn-sm mt-3 me-1" type="submit">Follow</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+                <div class="dropdown mt-3">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                            type="button"
+                            id="actionMenu"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">More</button>
+                    <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                        {% if request.user|is_blocking:object %}
+                            <li>
+                                <form method="POST" action="{% url 'activity_feed:unblock' object.id %}">
+                                    {% csrf_token %}
+                                    <button class="dropdown-item" type="submit">Unblock</button>
+                                </form>
+                            </li>
+                        {% else %}
+                            <li>
+                                <form method="POST" action="{% url 'activity_feed:block' object.id %}">
+                                    {% csrf_token %}
+                                    <button class="dropdown-item" type="submit">Block</button>
+                                </form>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <hr>
+    <!-- recent -->
+    <div class="desktop-version">
+        <!--Most recent activity-->
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="fs-5">Recent</div>
+            <a class="btn btn-outline-secondary btn-sm"
+            href="{% url 'accounts:feed' object.username %}">All</a>
+        </div>
+        {% for activity in recent_activities %}
+            {% include "activity_feed/activity_item.html" with width='narrow' %}
+        {% endfor %}
+    </div>
+    {% if object == request.user %}
+    <!-- Following and Followers -->
+    <div class="col-12 order-3 order-md-2 mb-3">
+        <!-- For mobile screens, this block will be after the left column. For desktop screens, it will be in the right column. -->
+        <div>
+            <!--following-->
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="fs-5">Following</div>
+                <a class="btn btn-outline-secondary btn-sm"
+                href="{% url 'accounts:following_list' object.username %}">All</a>
+            </div>
+            {% for follow in recent_following %}
+                <span class="me-2"><a href="{% url 'accounts:detail' username=follow.followed.username %}">{{ follow.followed.display_name|default:follow.followed.username }}</a></span>
+            {% empty %}
+                <p>This user is not following anyone.</p>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>

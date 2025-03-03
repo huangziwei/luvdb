@@ -377,7 +377,7 @@ urlpatterns = [
     path(
         "@<str:username>/listen/audiobook/<int:object_id>/checkins/",
         view=ListenCheckInListView.as_view(),
-        kwargs={"model_name": "podcast"},
+        kwargs={"model_name": "audiobook"},
         name="audiobook_checkin_list",
     ),
     # Watch
