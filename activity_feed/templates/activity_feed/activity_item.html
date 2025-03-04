@@ -429,7 +429,7 @@
                             <span class="text-muted">({{ activity.content_object.content_object.release_date|extract_year }})</span>
                         </div>
                     </a>
-                    {% elif activity.content_object.content_type.model == 'season' %}
+                {% elif activity.content_object.content_type.model == 'season' %}
                     <a href=" {% url 'watch:season_detail' activity.content_object.content_object.series.id activity.content_object.content_object.season_number %} "
                        class="text-decoration-none h-cite p-name">
                         <div class="fs-5">

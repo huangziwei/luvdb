@@ -144,17 +144,34 @@
                                     </div>
                                 {% endfor %}
                             {% endif %}
-                            {% if object.content_object.stars.exists %}
+                            {% if object.content_object.movie_stars %}
                             <div>
                                 {# djlint:off #}
                                 <span class="text-muted">Stars:</span>
                                 {# djlint:on #}
-                                {% for star in object.content_object.stars.all %}
+                                {% for star in object.content_object.movie_stars %}
                                     {% if not forloop.first %}/{% endif %}
-                                    <a href="{% url 'entity:company_detail' star.id %}">{{ star.name }}</a>
+                                    <a href="{% url 'entity:creator_detail' star.creator.id %}">{{ star.creator.name }}</a>
                                 {% endfor %}
                             </div>
                             {% endif %}
+                            {% if object.content_object.season_stars %}
+                            <div>
+                                {# djlint:off #}
+                                <span class="text-muted">Stars:</span>
+                                {# djlint:on #}
+                                {% for cast in object.content_object.season_stars %}
+                                    {% if not forloop.first %}/{% endif %}
+                                    <a href="{% url 'entity:creator_detail' cast.0.id %}">
+                                        {% if cast.1 %}
+                                            {{ cast.1 }}
+                                        {% else %}
+                                            {{ cast.0.name }}
+                                        {% endif %}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                            {% endif %} 
                             {% if object.content_object.studios.exists %}
                             <div>
                                 {# djlint:off #}

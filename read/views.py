@@ -632,7 +632,6 @@ class BookCreateView(LoginRequiredMixin, CreateView):
                     "isbn_13": origin_book.isbn_13,
                     "eisbn_13": origin_book.eisbn_13,
                     "asin": origin_book.asin,
-                    "wikipedia": origin_book.wikipedia,
                     "internet_archive_url": origin_book.internet_archive_url,
                     "notes": origin_book.notes,
                 }
