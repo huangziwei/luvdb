@@ -394,6 +394,14 @@ class CreatorDetailView(DetailView):
         context["releases_count"] = (
             Release.objects.filter(releaserole__creator=creator).distinct().count()
         )
+        context["releases_count_main"] = (
+            sum([
+                len(context["boxset_releases_as_performer"]),
+                len(context["LPs_as_performer"]),
+                len(context["EPs_as_performer"]),
+                len(context["singles_as_performer"]),
+            ])
+        )
         context["audiobooks_count"] = (
             Audiobook.objects.filter(audiobookrole__creator=creator).distinct().count()
         )

@@ -72,14 +72,19 @@
                             <div class="col-12">
                                 <ul class="nav nav-tabs scrollable-tabs" id="myTab" role="tablist">
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link text-muted default-tab" id="all-biblio-tab" data-bs-toggle="tab" data-bs-target="#all-biblio" type="button" role="tab" aria-controls="all" aria-selected="true">All</button>
-                                    </li>
+                                        <button class="nav-link text-muted default-tab" id="all-biblio-tab" data-bs-toggle="tab" data-bs-target="#all-biblio" type="button" role="tab" aria-controls="all" aria-selected="true">
+                                            All ({{ litworks_count }})
+                                        </button>                                    </li>
                                     {% for work_type, lit_work in lit_works.items %}
-                                        {% if lit_work.exists %}
-                                            <li class="nav-item" role="presentation">
-                                                <button class="nav-link text-muted" id="{{work_type}}-tab" data-bs-toggle="tab" data-bs-target="#{{work_type}}" type="button" role="tab" aria-controls="{{work_type}}" aria-selected="true">{{work_type|capfirst}}</button>
-                                            </li>
-                                        {% endif %}
+                                        {% with lit_work_count=lit_work.count %}
+                                            {% if lit_work_count > 0 %}
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link text-muted" id="{{ work_type }}-tab" data-bs-toggle="tab" data-bs-target="#{{ work_type }}" type="button" role="tab" aria-controls="{{ work_type }}" aria-selected="true">
+                                                        {{ work_type|capfirst }} ({{ lit_work_count }})
+                                                    </button>
+                                                </li>
+                                            {% endif %}
+                                        {% endwith %}
                                     {% endfor %}
                                 </ul>
                                 <div class="tab-content" id="myTabContent">
@@ -128,7 +133,7 @@
                                         {% if books_by_role %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}" type="button" role="tab" aria-controls="{{ role|slugify }}" aria-selected="true">
-                                                    {{ role }}
+                                                    {{ role }} 
                                                 </button>
                                             </li>
                                         {% endif %}
@@ -136,7 +141,7 @@
                                     {% if audiobook_as_narrator %}
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link text-muted default-tab" id="narrator-tab" data-bs-toggle="tab" data-bs-target="#narrator" type="button" role="tab" aria-controls="narrator" aria-selected="true">
-                                                Narrator
+                                                Narrator ({{ audiobook_as_narrator|length }})
                                             </button>
                                         </li>
                                     {% endif %}
@@ -153,7 +158,7 @@
                                                         {% for lang, books in books_by_role.items %}
                                                             <li class="nav-item" role="presentation">
                                                                 <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-{{ lang|slugify }}-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-{{ lang|slugify }}-content" type="button" role="tab" aria-controls="{{ role|slugify }}-{{ lang|slugify }}-content" aria-selected="false">
-                                                                    {{ lang|language_name }}
+                                                                    {{ lang|language_name }} ({{ books|length }})
                                                                 </button>
                                                             </li>
                                                         {% endfor %}
@@ -217,7 +222,7 @@
                                     {% if movies_as_cast.exists %}
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link text-muted default-tab" id="as-cast-movie-tab" data-bs-toggle="tab" data-bs-target="#as-cast-movie" type="button" role="tab" aria-controls="as-cast-movie" aria-selected="true">
-                                                Cast
+                                                Cast ({{ movies_as_cast|length }})
                                             </button>
                                         </li>
                                     {% endif %}
@@ -225,7 +230,7 @@
                                         {% if role_movies %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-movie-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-movie" type="button" role="tab" aria-controls="{{ role|slugify }}-movie" aria-selected="true">
-                                                    {{ role }}
+                                                    {{ role }} ({{ role_movies|length }})
                                                 </button>
                                             </li>
                                         {% endif %}
@@ -272,7 +277,7 @@
                                     {% if series_as_cast.exists %}
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link text-muted default-tab" id="as-cast-series-tab" data-bs-toggle="tab" data-bs-target="#as-cast-series" type="button" role="tab" aria-controls="as-cast-series" aria-selected="true">
-                                                Cast
+                                                Cast ({{ series_as_cast|length }})
                                             </button>
                                         </li>
                                     {% endif %}
@@ -280,7 +285,7 @@
                                         {% if role_series %}
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-series-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-series" type="button" role="tab" aria-controls="{{ role|slugify }}-series" aria-selected="true">
-                                                    {{ role }}
+                                                    {{ role }} ({{ role_series|length }})
                                                 </button>
                                             </li>
                                         {% endif %}
@@ -338,52 +343,52 @@
                             <div class="col-12" role="tablist">
                                 <div class="btn-group">
                                     <button class="btn btn-outline-secondary btn-sm active" id="all-disco-tab" data-bs-toggle="tab" data-bs-target="#all-disco" type="button" role="tab" aria-controls="all-disco" aria-selected="true">
-                                        All
+                                        All ({{ releases_count_main }})
                                     </button>
                                 </div>   
                                 {% if boxset_releases_as_performer %}
-                                <button class="btn btn-outline-secondary btn-sm" id="boxset-tab" data-bs-toggle="tab" data-bs-target="#boxset" type="button" role="tab" aria-controls="boxset" aria-selected="false">
-                                    Box Set
-                                </button>
+                                    <button class="btn btn-outline-secondary btn-sm" id="boxset-tab" data-bs-toggle="tab" data-bs-target="#boxset" type="button" role="tab" aria-controls="boxset" aria-selected="false">
+                                        Box Set ({{ boxset_releases_as_performer|length }})
+                                    </button>
                                 {% endif %}
                                 {% if LPs_as_performer %}
-                                <div class="btn-group">
-                                    <button class="btn btn-outline-secondary btn-sm" id="lp-tab" data-bs-toggle="tab" data-bs-target="#lps" type="button" role="tab" aria-controls="lp" aria-selected="false">
-                                        LP
-                                    </button>
-                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="visually-hidden">Toggle Dropdown</span>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        {% if studio_LPs_as_performer %}
-                                        <a class="dropdown-item" id="studio-lps-tab" data-bs-toggle="tab" data-bs-target="#studio-lps" role="tab" aria-controls="studio-lps">Studio</a>
-                                        {% endif %}
-                                        {% if live_LPs_as_performer %}
-                                        <a class="dropdown-item" id="live-lps-tab" data-bs-toggle="tab" data-bs-target="#live-lps" role="tab" aria-controls="live-lps">Live</a>
-                                        {% endif %}
-                                        {% if compilation_LPs_as_performer %}
-                                        <a class="dropdown-item" id="compilation-lps-tab" data-bs-toggle="tab" data-bs-target="#compilation-lps" role="tab" aria-controls="compilation-lps">Compilation</a>
-                                        {% endif %}
+                                    <div class="btn-group">
+                                        <button class="btn btn-outline-secondary btn-sm" id="lp-tab" data-bs-toggle="tab" data-bs-target="#lps" type="button" role="tab" aria-controls="lp" aria-selected="false">
+                                            LP ({{ LPs_as_performer|length }})
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            {% if studio_LPs_as_performer %}
+                                                <a class="dropdown-item" id="studio-lps-tab" data-bs-toggle="tab" data-bs-target="#studio-lps" role="tab" aria-controls="studio-lps">Studio ({{ studio_LPs_as_performer|length }})</a>
+                                            {% endif %}
+                                            {% if live_LPs_as_performer %}
+                                                <a class="dropdown-item" id="live-lps-tab" data-bs-toggle="tab" data-bs-target="#live-lps" role="tab" aria-controls="live-lps">Live ({{ live_LPs_as_performer|length }})</a>
+                                            {% endif %}
+                                            {% if compilation_LPs_as_performer %}
+                                                <a class="dropdown-item" id="compilation-lps-tab" data-bs-toggle="tab" data-bs-target="#compilation-lps" role="tab" aria-controls="compilation-lps">Compilation ({{ compilation_LPs_as_performer|length }})</a>
+                                            {% endif %}
+                                        </div>
                                     </div>
-                                </div>
                                 {% endif %}
                                 {% if EPs_as_performer %}
                                     <div class="btn-group">
                                         <button class="btn btn-outline-secondary btn-sm" id="ep-tab" data-bs-toggle="tab" data-bs-target="#eps" type="button" role="tab" aria-controls="ep" aria-selected="false">
-                                            EP
+                                            EP ({{ EPs_as_performer|length }})
                                         </button>
                                         <button class="btn btn-outline-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                             <span class="visually-hidden">Toggle Dropdown</span>
                                         </button>
                                         <div class="dropdown-menu">
                                             {% if studio_EPs_as_performer %}
-                                            <a class="dropdown-item" id="studio-eps-tab" data-bs-toggle="tab" data-bs-target="#studio-eps" role="tab" aria-controls="studio-eps">Studio</a>
+                                                <a class="dropdown-item" id="studio-eps-tab" data-bs-toggle="tab" data-bs-target="#studio-eps" role="tab" aria-controls="studio-eps">Studio ({{ studio_EPs_as_performer|length }})</a>
                                             {% endif %}
                                             {% if live_EPs_as_performer %}
-                                            <a class="dropdown-item" id="live-eps-tab" data-bs-toggle="tab" data-bs-target="#live-eps" role="tab" aria-controls="live-eps">Live</a>
+                                                <a class="dropdown-item" id="live-eps-tab" data-bs-toggle="tab" data-bs-target="#live-eps" role="tab" aria-controls="live-eps">Live ({{ live_EPs_as_performer|length }})</a>
                                             {% endif %}
                                             {% if compilation_EPs_as_performer %}
-                                            <a class="dropdown-item" id="compilation-eps-tab" data-bs-toggle="tab" data-bs-target="#compilation-eps" role="tab" aria-controls="compilation-eps">Compilation</a>
+                                                <a class="dropdown-item" id="compilation-eps-tab" data-bs-toggle="tab" data-bs-target="#compilation-eps" role="tab" aria-controls="compilation-eps">Compilation ({{ compilation_EPs_as_performer|length }})</a>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -391,20 +396,20 @@
                                 {% if singles_as_performer %}
                                 <div class="btn-group">
                                     <button class="btn btn-outline-secondary btn-sm" id="single-tab" data-bs-toggle="tab" data-bs-target="#singles" type="button" role="tab" aria-controls="single" aria-selected="false">
-                                        Single
+                                        Single ({{ singles_as_performer|length }})
                                     </button>
                                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span class="visually-hidden">Toggle Dropdown</span>
                                     </button>
                                     <div class="dropdown-menu">
                                         {% if studio_singles_as_performer %}
-                                        <a class="dropdown-item" id="studio-singles-tab" data-bs-toggle="tab" data-bs-target="#studio-singles" role="tab" aria-controls="studio-singles">Studio</a>
+                                        <a class="dropdown-item" id="studio-singles-tab" data-bs-toggle="tab" data-bs-target="#studio-singles" role="tab" aria-controls="studio-singles">Studio ({{ studio_singles_as_performer|length }})</a>
                                         {% endif %}
                                         {% if live_singles_as_performer %}
-                                        <a class="dropdown-item" id="live-singles-tab" data-bs-toggle="tab" data-bs-target="#live-singles" role="tab" aria-controls="live-singles">Live</a>
+                                        <a class="dropdown-item" id="live-singles-tab" data-bs-toggle="tab" data-bs-target="#live-singles" role="tab" aria-controls="live-singles">Live ({{ live_singles_as_performer|length }})</a>
                                         {% endif %}
                                         {% if demo_singles_as_performer %}
-                                        <a class="dropdown-item" id="demo-singles-tab" data-bs-toggle="tab" data-bs-target="#demo-singles" role="tab" aria-controls="demo-singles">Demo</a>
+                                        <a class="dropdown-item" id="demo-singles-tab" data-bs-toggle="tab" data-bs-target="#demo-singles" role="tab" aria-controls="demo-singles">Demo ({{ demo_singles_as_performer|length }})</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -633,7 +638,7 @@
                                     {% if role_releases %}
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-release-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-release" type="button" role="tab" aria-controls="{{ role|slugify }}-release" aria-selected="true">
-                                                {{ role }}
+                                                {{ role }} ({{role_releases|length}})
                                             </button>
                                         </li>
                                     {% endif %}
@@ -670,7 +675,7 @@
                                     {% if role_works %}
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-work-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-work" type="button" role="tab" aria-controls="{{ role|slugify }}-work" aria-selected="true">
-                                                {{ role }}
+                                                {{ role }} ({{role_works|length}})
                                             </button>
                                         </li>
                                     {% endif %}
@@ -707,7 +712,7 @@
                                     {% if role_tracks %}
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-track-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-track" type="button" role="tab" aria-controls="{{ role|slugify }}-track" aria-selected="true">
-                                                {{ role }}
+                                                {{ role }} ({{role_tracks|length}})
                                             </button>
                                         </li>
                                     {% endif %}
@@ -746,7 +751,7 @@
                                 {% if games_as_cast %}
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link text-muted default-tab" id="as-cast-game-tab" data-bs-toggle="tab" data-bs-target="#as-cast-game" type="button" role="tab" aria-controls="as-cast-game" aria-selected="true">
-                                            Cast
+                                            Cast ({{ games_as_cast|length }})
                                         </button>
                                     </li>
                                 {% endif %}
@@ -754,7 +759,7 @@
                                     {% if games_by_role %}
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link text-muted default-tab" id="{{ role|slugify }}-game-tab" data-bs-toggle="tab" data-bs-target="#{{ role|slugify }}-game" type="button" role="tab" aria-controls="{{ role|slugify }}-game" aria-selected="true">
-                                                {{ role }}
+                                                {{ role }} ({{ games_by_role|length }})
                                             </button>
                                         </li>
                                     {% endif %}
