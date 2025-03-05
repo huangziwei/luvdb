@@ -127,64 +127,6 @@
                         </ul>
                     </div>
                 {% endif %}
-                {% if instance_checkins|length > 0 %}
-                <div class="fs-3 mb-2">Instance Check-ins</div>
-                <div class="col-sm-11 mb-3">
-                    {% for checkin in instance_checkins %}
-                        {% if checkin.user.privacy_level == "public" or request.user.is_authenticated %}
-                            <div class="d-flex flex-wrap justify-content-start align-items-center mb-2">
-                                <span class='me-2'>
-                                    <a href="{% url 'accounts:detail' checkin.user.username %}">
-                                        {{ checkin.user.display_name|default:checkin.user.username }}
-                                    </a>
-                                </span>
-                                <span class="badge {{ checkin.status|get_status_class }} me-2">{{ checkin.get_status_display }}</span>
-                                <span class='me-2 text-muted'>
-                                    {% if checkin.content_type.model == 'book' %}
-                                        <a class="text-muted" href="{% url 'read:book_detail' checkin.content_object.id%}">{{checkin.content_object.title}}</a>
-                                    {% elif checkin.content_type.model == 'issue' %}
-                                        {{checkin.content_object.periodical.title}}
-                                        <a class="text-muted" href="{% url 'read:issue_detail' checkin.content_object.periodical.id checkin.content_object.id%}">{{checkin.content_object.title}}</a>
-                                    {% endif %}
-                                    ({{checkin.content_object.publication_date|extract_year }})
-                                </span>
-                            </div>
-                            {% if checkin.content %}
-                                <div class="checkin bg-light p-3 mb-2">{{ checkin.content | linkify_tags |  markdownify }}</div>
-                            {% endif %}
-                            <div class="d-flex justify-content-start align-items-start">
-                                {% if checkin.content_type.model == 'book' %}
-                                    <a href="{% url 'write:book_checkin_list' checkin.user.username checkin.content_object.id %}"
-                                        class="text-decoration-none text-secondary">
-                                        {{ checkin.timestamp|date:"Y.m.d H:i"}}
-                                    </a>
-                                {% elif checkin.content_type.model == 'issue' %}
-                                    <a href="{% url 'write:issue_checkin_list' checkin.user.username checkin.content_object.periodical.id checkin.content_object.id %}"
-                                        class="text-decoration-none text-secondary">
-                                        {{ checkin.timestamp|date:"Y.m.d H:i"}}
-                                    </a>
-                                {% endif %}
-                                {% if checkin.comments_enabled %}
-                                    <span class="ms-2 me-2">
-                                        <a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}?reply=true&focus=true"
-                                        class="text-decoration-none">Reply</a>
-                                    </span>
-                                {% endif %}
-                                {% if checkin.get_activity_id %}
-                                    <span class="ms-2 me-2"><a href="{% url 'write:watch_checkin_detail' checkin.user.username checkin.id %}?repost=true&focus=true"
-                                        class="text-decoration-none">Repost</a></span>
-                                {% endif %}
-                                {% if checkin.user == request.user %}
-                                    <span class="ms-2 me-2"><a href="{% url 'write:watch_checkin_update' checkin.user.username checkin.id %}"
-                                        class="text-decoration-none">Edit</a></span>
-                                    <span class="ms-2 me-2"><a href="{% url 'write:watch_checkin_delete' checkin.user.username checkin.id %}"
-                                        class="text-decoration-none">Delete</a></span>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                {% endif %}
             </div>
             <!--Right columns-->
             <div class="d-flex flex-column col-sm-4">

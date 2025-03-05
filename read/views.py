@@ -551,32 +551,6 @@ class InstanceDetailView(DetailView):
         # contributors
         context["contributors"] = get_contributors(self.object)
 
-        instance_checkins = []
-        # Filter ReadCheckIns for BookInstance
-        book_instances = BookInstance.objects.filter(instance=instance)
-        for book_instance in book_instances:
-            check_ins_for_book = ReadCheckIn.objects.filter(
-                content_type=ContentType.objects.get_for_model(Book),
-                object_id=book_instance.book.id,
-                progress_type="CH",
-                progress=str(book_instance.order),
-            )
-            instance_checkins.extend(check_ins_for_book)
-
-        # Filter ReadCheckIns for IssueInstance
-        issue_instances = IssueInstance.objects.filter(instance=instance)
-        for issue_instance in issue_instances:
-            check_ins_for_issue = ReadCheckIn.objects.filter(
-                content_type=ContentType.objects.get_for_model(Issue),
-                object_id=issue_instance.issue.id,
-                progress_type="CH",
-                progress=str(issue_instance.order),
-            )
-            instance_checkins.extend(check_ins_for_issue)
-
-        instance_checkins.sort(key=lambda x: x.timestamp, reverse=True)
-        context["instance_checkins"] = instance_checkins
-
         if instance.work:
             context["related_locations_with_parents"] = get_locations_with_parents(
                 instance.work.related_locations
