@@ -486,24 +486,24 @@
                                                     {% endfor %}
                                                 </div>
                                                 {% endif %}
-                                                {% if object.studios.exists %}
+                                                {% if studios %}
                                                     <div class="mb-0">
                                                         {# djlint:off #}
                                                         <span class="text-muted">Studio{% if object.studios.count > 1 %}s{% endif %}:</span>
                                                         {# djlint:on #}
-                                                        {% for studio in object.studios.all %}
+                                                        {% for studio in studios %}
                                                             <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
                                                             {% if not forloop.last %}/{% endif %}
                                                         {% endfor %}
                                                     </div>
                                                 {% endif %}
-                                                {% if object.distributors.exists %}
+                                                {% if distributors %}
                                                     <div class="mb-0">
                                                         {# djlint:off #}
                                                         <span class="text-muted">Distributor{% if object.distributors.count > 1 %}s{% endif %}:</span>
                                                         {# djlint:on #}
-                                                        {% for studio in object.distributors.all %}
-                                                            <a href="{% url 'entity:company_detail' studio.id %}">{{ studio.name }}</a>
+                                                        {% for distributors in distributors %}
+                                                            <a href="{% url 'entity:company_detail' distributors.id %}">{{ distributors.name }}</a>
                                                             {% if not forloop.last %}/{% endif %}
                                                         {% endfor %}
                                                     </div>

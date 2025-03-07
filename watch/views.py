@@ -30,6 +30,7 @@ from activity_feed.models import Block
 from discover.utils import user_has_upvoted
 from entity.forms import CoverImageFormSet
 from entity.models import CoverAlbum, CoverImage
+from entity.utils import get_company_name
 from entity.views import HistoryViewMixin, get_contributors
 from visit.models import Location
 from visit.utils import get_locations_with_parents, get_parent_locations
@@ -437,6 +438,10 @@ class MovieDetailView(DetailView):
 
         context["all_covers"] = all_covers
 
+        context["studios"] = get_company_name(movie.studios.all(), movie.earliest_release_date)
+        context["distributors"] = get_company_name(
+            movie.distributors.all(), movie.earliest_release_date
+        )
         return context
 
     def post(self, request, *args, **kwargs):
