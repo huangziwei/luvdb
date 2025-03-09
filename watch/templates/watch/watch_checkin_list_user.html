@@ -19,32 +19,32 @@
                         </div>
                         <div class='mb-3'>
                             {% if order == 'timestamp' %}
-                                <a href="?page={{ i }}&layout={{layout}}&order=-timestamp&status={{ status }}"
+                                <a href="?page={{ i }}&layout={{layout}}&order=-timestamp&status={{ status }}&year={{ year }}&month={{ month }}&type={{ type }}"
                                     class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
                             {% else %}
-                                <a href="?page={{ i }}&layout={{layout}}&order=timestamp&status={{ status }}"
+                                <a href="?page={{ i }}&layout={{layout}}&order=timestamp&status={{ status }}&year={{ year }}&month={{ month }}&type={{ type }}"
                                     class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
                             {% endif %}
 
                             {% if layout == 'grid' %}
-                                <a href="?page={{ i }}&layout=list&order={{ order }}&status={{ status }}"
+                                <a href="?page={{ i }}&layout=list&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}&type={{ type }}"
                                     class="btn btn-sm btn-outline-secondary mb-1">List</a>
                             {% else %}
-                                <a href="?page={{ i }}&layout=grid&order={{ order }}&status={{ status }}"
+                                <a href="?page={{ i }}&layout=grid&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}&type={{ type }}"
                                     class="btn btn-sm btn-outline-secondary mb-1">Grid</a>
                             {% endif %}
 
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status="
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=&year=&month=&type="
                                 class="btn btn-sm btn-outline-secondary mb-1">All</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=to_watch"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=to_watch&year={{ year }}&month={{ month }}&type={{ type }}"
                                 class="btn btn-sm btn-info mb-1">To Watch</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=watching_rewatching"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=watching_rewatching&year={{ year }}&month={{ month }}&type={{ type }}"
                                 class="btn btn-sm btn-primary mb-1">(Re)Watching</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=watched_rewatched"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=watched_rewatched&year={{ year }}&month={{ month }}&type={{ type }}"
                                 class="btn btn-sm btn-success mb-1">(Re)Watched</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=paused"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=paused&year={{ year }}&month={{ month }}&type={{ type }}"
                                 class="btn btn-sm btn-warning mb-1">Paused</a>
-                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=abandoned"
+                            <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=abandoned&year={{ year }}&month={{ month }}&type={{ type }}"
                                 class="btn btn-sm btn-danger mb-1">Abandoned</a>
                         </div>
                     </div>
@@ -337,7 +337,7 @@
                                         {% if page_obj.number == i %}
                                             <span class="current">{{ i }}</span>
                                         {% else %}
-                                            <a href="?page={{ i }}&layout={{layout}}&order={{order}}&status={{status}}">{{ i }}</a>
+                                            <a href="?page={{ i }}&layout={{layout}}&order={{order}}&status={{status}}&year={{year}}&month={{ month }}&type={{ type }}">{{ i }}</a>
                                         {% endif %}
                                     {% endfor %}
                                 </span>
@@ -348,8 +348,35 @@
                     {% endif %}
                 </div>
                 <div class="col-12 col-md-4 mt-1 right-column">
+                    <div class="bg-light p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="fs-5 fw-semibold">Filter by type</div>
+                            <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}&type="
+                               class="btn btn-outline-secondary btn-sm {% if not request.GET.type or request.GET.type == 'all' %} active {% endif %}">
+                                All
+                            </a>
+                        </div>
+                        <div class="mt-1 d-flex gap-2">
+                            
+                            <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}&type=movie"
+                               class="btn btn-outline-secondary btn-sm {% if request.GET.type == 'movie' %} active {% endif %}">
+                                Movies
+                            </a>
+                            <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}&type=season"
+                               class="btn btn-outline-secondary btn-sm {% if request.GET.type == 'season' %} active {% endif %}">
+                                Series
+                            </a>
+                        </div>
+                    </div>
+
                     <div class="bg-light p-3 mb-3"> 
-                        <div class="fs-5 fw-semibold">Filter by time</div>    
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="fs-5 fw-semibold me-2">Filter by time</div>
+                            <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year=&month=&type={{ type }}"
+                                class="btn btn-outline-secondary btn-sm {% if not request.GET.year %} active {% endif %}">
+                                All
+                            </a>    
+                        </div>
                         <!-- Filter by Year and Month -->
                         <div class="mt-1">
                             <!-- Display years and their months -->
