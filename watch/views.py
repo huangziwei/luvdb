@@ -2472,9 +2472,10 @@ class GenericCheckInUserListView(ListView):
         context["order"] = self.request.GET.get("order", "-timestamp")
         context["layout"] = self.request.GET.get("layout", "list")
         context["status"] = status = self.request.GET.get("status", "")
+        context["year"] = self.request.GET.get("year", "")
         context["month"] = self.request.GET.get("month", "")
         context["type"] = self.request.GET.get("type", "")
-        
+
         # Extracting the list of years and months
         checkin_queryset = WatchCheckIn.objects.filter(user=profile_user).distinct()
 

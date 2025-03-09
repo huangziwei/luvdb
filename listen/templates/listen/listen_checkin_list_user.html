@@ -19,34 +19,34 @@
                     </div>
                     <div class='mb-3'>
                         {% if order == 'timestamp' %}
-                            <a href="?page={{ i }}&layout={{layout}}&order=-timestamp&status={{ status }}"
+                            <a href="?page={{ i }}&layout={{layout}}&order=-timestamp&status={{ status }}&year={{ year }}&month={{ month }}&type={{ type }}"
                                 class="btn btn-sm btn-outline-secondary mb-1">Newest</a>
                         {% else %}
-                            <a href="?page={{ i }}&layout={{layout}}&order=timestamp&status={{ status }}"
+                            <a href="?page={{ i }}&layout={{layout}}&order=timestamp&status={{ status }}&year={{ year }}&month={{ month }}&type={{ type }}"
                                 class="btn btn-sm btn-outline-secondary mb-1">Oldest</a>
                         {% endif %}
 
                         {% if layout == 'grid' %}
-                            <a href="?page={{ i }}&layout=list&order={{ order }}&status={{ status }}"
+                            <a href="?page={{ i }}&layout=list&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}&type={{ type }}"
                                 class="btn btn-sm btn-outline-secondary mb-1">List</a>
                         {% else %}
-                            <a href="?page={{ i }}&layout=grid&order={{ order }}&status={{ status }}"
+                            <a href="?page={{ i }}&layout=grid&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}&type={{ type }}"
                                 class="btn btn-sm btn-outline-secondary mb-1">Grid</a>
                         {% endif %}
         
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status="
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=&year=&month=&type="
                             class="btn btn-sm btn-outline-secondary mb-1">All</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=to_listen"
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=to_listen&year={{ year }}&month={{ month }}&type={{ type }}"
                             class="btn btn-sm btn-info mb-1">To Listen</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=looping"
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=looping&year={{ year }}&month={{ month }}&type={{ type }}"
                             class="btn btn-sm btn-primary mb-1">Looping</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=listened"
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=listened&year={{ year }}&month={{ month }}&type={{ type }}"
                             class="btn btn-sm btn-success mb-1">Listened</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=subscribed"
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=subscribed&year={{ year }}&month={{ month }}&type={{ type }}"
                             class="btn btn-sm btn-primary mb-1">Subscribed</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=sampled"
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=sampled&year={{ year }}&month={{ month }}&type={{ type }}"
                             class="btn btn-sm btn-success mb-1">Sampled</a>
-                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=unsubscribed"
+                        <a href="?page={{ i }}&layout={{layout}}&order={{ order }}&status=unsubscribed&year={{ year }}&month={{ month }}&type={{ type }}"
                             class="btn btn-sm btn-danger mb-1">Unsubscribed</a>
                     </div>
                 </div>
@@ -352,7 +352,7 @@
                                     {% if page_obj.number == i %}
                                         <span class="current">{{ i }}</span>
                                     {% else %}
-                                        <a href="?page={{ i }}&layout={{layout}}&order={{order}}&status={{status}}">{{ i }}</a>
+                                        <a href="?page={{ i }}&layout={{layout}}&order={{order}}&status={{status}}&year={{ year }}&month={{ month }}&type={{ type }}">{{ i }}</a>
                                     {% endif %}
                                 {% endfor %}
                             </span>
@@ -363,8 +363,38 @@
                 {% endif %}
             </div>
             <div class="col-12 col-md-4 mt-1 right-column">
+                <div class="bg-light p-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="fs-5 fw-semibold">Filter by type</div>
+                        <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}&type="
+                           class="btn btn-outline-secondary btn-sm {% if not request.GET.type or request.GET.type == 'all' %} active {% endif %}">
+                            All
+                        </a>
+                    </div>                       
+                    <div class="mt-1 d-flex gap-2">
+                        <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}&type=release"
+                           class="btn btn-outline-secondary btn-sm {% if request.GET.type == 'release' %} active {% endif %}">
+                            Releases
+                        </a>
+                        <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}&type=podcast"
+                           class="btn btn-outline-secondary btn-sm {% if request.GET.type == 'podcast' %} active {% endif %}">
+                            Podcasts
+                        </a>
+                        <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year={{ year }}&month={{ month }}&type=audiobook"
+                            class="btn btn-outline-secondary btn-sm {% if request.GET.type == 'audiobook' %} active {% endif %}">
+                            Audiobooks
+                        </a>
+                    </div>
+                </div>
+                
                 <div class="bg-light p-3 mb-3"> 
-                    <div class="fs-5 fw-semibold">Filter by time</div>    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="fs-5 fw-semibold me-2">Filter by time</div>
+                        <a href="?page={{ request.GET.page }}&layout={{ layout }}&order={{ order }}&status={{ status }}&year=&month=&type={{ type }}"
+                            class="btn btn-outline-secondary btn-sm {% if not request.GET.year %} active {% endif %}">
+                            All
+                        </a>    
+                    </div>                    
                     <!-- Filter by Year and Month -->
                     <div class="mt-1">
                         <!-- Display years and their months -->

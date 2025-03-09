@@ -1593,6 +1593,19 @@ class GenericCheckInUserListView(ListView):
         if month:
             checkins = checkins.filter(timestamp__month=month)
 
+        # Filtering by type (Release, Podcast, Audiobook or All)
+        checkin_type = self.request.GET.get("type", "").lower()
+        if checkin_type:
+            release_content_type = ContentType.objects.get_for_model(Release)
+            podcast_content_type = ContentType.objects.get_for_model(Podcast)
+            audiobook_content_type = ContentType.objects.get_for_model(Audiobook)
+            
+            if checkin_type == "release":
+                checkins = checkins.filter(content_type=release_content_type)
+            elif checkin_type == "podcast":
+                checkins = checkins.filter(content_type=podcast_content_type)
+            elif checkin_type == "audiobook":
+                checkins = checkins.filter(content_type=audiobook_content_type)
 
         # Adding count of check-ins for each book or issue
         user_checkin_counts = (
@@ -1652,6 +1665,8 @@ class GenericCheckInUserListView(ListView):
         context["layout"] = self.request.GET.get("layout", "list")
         context["status"] = status = self.request.GET.get("status", "")
         context["year"] = self.request.GET.get("year", "")
+        context["month"] = self.request.GET.get("month", "")
+        context["type"] = self.request.GET.get("type", "")
 
         # Extracting the list of years and months
         checkin_queryset = ListenCheckIn.objects.filter(user=profile_user).distinct()
