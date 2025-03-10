@@ -12,6 +12,28 @@
             </div>
         {% else %}
             <div class="col-12 col-md-8 left-column">
+                <div class="col-12 mb-1">
+                    <div class="row">
+                        <div class="d-flex flex-wrap justify-content-start">
+                            <span class="me-3">
+                                <a href="{% url 'write:read_checkin_user_list' profile_user.username %}">Read</a>
+                            </span>
+                            <span class="me-3">
+                                <a href="{% url 'write:watch_checkin_user_list' profile_user.username %}">Watch</a>
+                            </span>
+                            <span class="me-3">
+                                <a href="{% url 'write:listen_checkin_user_list' profile_user.username %}">Listen</a>
+                            </span>
+                            <span class="me-3">
+                                <a href="{% url 'write:play_checkin_user_list' profile_user.username %}">Play</a>
+                            </span>
+                            <span class="me-3">
+                                <a href="{% url 'write:visit_checkin_user_list' profile_user.username %}">Visit</a>
+                            </span>
+                        </div>  
+                    </div>
+                    <hr>
+                </div>
                 <div class="col-sm-12">
                     <div class="fs-4 mb-2">
                         All Listen Check-Ins from

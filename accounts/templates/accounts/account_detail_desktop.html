@@ -8,8 +8,8 @@
 <!-- Left column -->
 <div class="col-md-8 col-sm-12 d-none d-md-block desktop-version">
     <!--navbar-->
-    <div class="row">
-        <div class="d-flex flex-wrap justify-content-start">
+    <div class="d-flex justify-content-between">
+        <div class="justify-content-start">
             <span class="me-3">
                 <a href="{% url 'write:say_list' object.username %}">Says</a>
             </span>
@@ -33,7 +33,7 @@
                     <a href="{% url 'write:replied' object.username %}">Replied</a>
                 </span>
             {% endif %}
-        </div>
+        </div>   
     </div>
     <hr>
     {% include "accounts/account_detail_checkins.html" %}
