@@ -445,7 +445,7 @@ BookRoleFormSet = inlineformset_factory(
 class BookInstanceForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = BookInstance
-        fields = ["instance", "order"]
+        fields = ["instance", "order", "page"]
 
     def clean(self):
         cleaned_data = super().clean()
@@ -594,7 +594,7 @@ IssueRoleFormSet = inlineformset_factory(
 class IssueInstanceForm(forms.ModelForm):
     class Meta(auto_prefetch.Model.Meta):
         model = IssueInstance
-        fields = ["instance", "order"]
+        fields = ["instance", "order", "page"]
 
     def clean(self):
         cleaned_data = super().clean()

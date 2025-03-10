@@ -552,6 +552,7 @@
                                             <a href="{% url 'read:work_detail' book_instance.instance.work.id %}">
                                                 {{ book_instance.alt_title|default:book_instance.instance.title }}
                                             </a>
+                                            {% if book_instance.page %} · p{{book_instance.page}}{% endif %} 
                                         </div>
                                         <!-- Hidden credit section -->
                                         <div class="collapse creditCollapse mb-2">

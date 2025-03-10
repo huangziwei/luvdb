@@ -646,14 +646,15 @@ class BookInstance(auto_prefetch.Model):
     order = models.PositiveIntegerField(
         null=True, blank=True, default=1
     )  # Ordering of the works in a book
+    page = models.PositiveIntegerField(null=True, blank=True)
 
     # history = HistoricalRecords(inherit=True)
 
     class Meta(auto_prefetch.Model.Meta):
-        ordering = ["order"]
+        ordering = ["order", "page"]
 
     def __str__(self):
-        return f"{self.book} - {self.instance} - {self.order}"
+        return f"{self.book} - {self.instance} - {self.order} - {self.page}"
 
 
 # This receiver handles deletion of the cover file when the Book instance is deleted
@@ -1032,13 +1033,14 @@ class IssueInstance(auto_prefetch.Model):
     )
     order = models.PositiveIntegerField(
         null=True, blank=True, default=1
-    )  # Ordering of the works in a book
+    ) 
+    page = models.PositiveIntegerField(null=True, blank=True)
 
     class Meta(auto_prefetch.Model.Meta):
-        ordering = ["order"]
+        ordering = ["order", "page"]
 
     def __str__(self):
-        return f"{self.issue} - {self.instance} - {self.order}"
+        return f"{self.issue} - {self.instance} - {self.order} - {self.page}"
 
 
 class BookSeries(auto_prefetch.Model):

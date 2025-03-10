@@ -170,9 +170,11 @@
                             {% for issueinstance in object.issueinstance_set.all %}
                                 <div class="related-instance">
                                     <div>
+                                        {{issueinstance.order}}.
                                         <a href="{% url 'read:work_detail' issueinstance.instance.work.id %}">
                                             {{ issueinstance.alt_title|default:issueinstance.instance.title }}
                                         </a>
+                                        {% if issueinstance.page %} · p{{issueinstance.page}}{% endif %} 
                                     </div>
                                     <!-- Hidden credit section -->
                                     <div class="collapse creditCollapse mb-2">

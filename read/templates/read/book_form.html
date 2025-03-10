@@ -98,10 +98,11 @@
                 <div class="form-wrapper">
                     <div class="row">
                         {{ form.id }}
-                        <div class="col-md-10">
+                        <div class="col-md-8">
                             {{ form.instance | as_crispy_field }}
                         </div>
                         <div class="col-md-2">{{ form.order | as_crispy_field }}</div>
+                        <div class="col-md-2">{{ form.page | as_crispy_field }}</div>
                     </div>
                 </div>
             {% endfor %}
