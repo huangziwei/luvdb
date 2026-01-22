@@ -19,3 +19,4 @@ cache/*
 embedding.py
 requests.log
 *.backup
+backup

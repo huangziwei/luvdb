@@ -1,5 +1,9 @@
 # LʌvDB
 
+> NOTE
+> 
+> I’m no longer interested in the idea of a social app, so I retreated to doing something similar in a [more personal manner](https://github.com/huangziwei/poetrist).
+
 LʌvDB is your self-hosted inner space. Primarily a media cataloging app, it centers on books and periodicals, movies and series, music, podcasts, audiobooks, and games. The app features an activity feed that allows you to share your media check-ins with friends. Additionally, it supports microblogging (Say), blogging (Post), bookmarking (Pin), and curating lists of in-site content (List).
 
 ## Screenshots / Features
